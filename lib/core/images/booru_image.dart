@@ -49,6 +49,56 @@ class BooruImage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
 
+    return BooruRawImage(
+      imageUrl: imageUrl,
+      placeholderUrl: placeholderUrl,
+      borderRadius: borderRadius,
+      fit: fit,
+      aspectRatio: aspectRatio,
+      cacheHeight: cacheHeight,
+      cacheWidth: cacheWidth,
+      forceFill: forceFill,
+      width: width,
+      height: height,
+      headers: {
+        AppHttpHeaders.userAgentHeader:
+            ref.watch(userAgentGeneratorProvider(config)).generate(),
+        ...ref.watch(extraHttpHeaderProvider(config)),
+      },
+    );
+  }
+}
+
+class BooruRawImage extends StatelessWidget {
+  const BooruRawImage({
+    super.key,
+    required this.imageUrl,
+    this.placeholderUrl,
+    this.borderRadius,
+    this.fit,
+    this.aspectRatio = 1,
+    this.cacheHeight,
+    this.cacheWidth,
+    this.forceFill = false,
+    this.width,
+    this.height,
+    this.headers = const {},
+  });
+
+  final String imageUrl;
+  final String? placeholderUrl;
+  final BorderRadius? borderRadius;
+  final BoxFit? fit;
+  final double? aspectRatio;
+  final int? cacheWidth;
+  final int? cacheHeight;
+  final bool forceFill;
+  final double? width;
+  final double? height;
+  final Map<String, String> headers;
+
+  @override
+  Widget build(BuildContext context) {
     if (imageUrl.isEmpty) {
       return _EmptyImage(
         borderRadius: borderRadius,
@@ -57,12 +107,10 @@ class BooruImage extends ConsumerWidget {
       );
     }
 
-    return forceFill
-        ? _builForceFillImage(ref, config)
-        : _builderNormalImage(ref, config);
+    return forceFill ? _builForceFillImage() : _builderNormalImage();
   }
 
-  Widget _builderNormalImage(WidgetRef ref, BooruConfig config) {
+  Widget _builderNormalImage() {
     return NullableAspectRatio(
       aspectRatio: aspectRatio,
       child: ExtendedImage.network(
@@ -71,13 +119,13 @@ class BooruImage extends ConsumerWidget {
         height: height,
         cacheHeight: cacheHeight,
         cacheWidth: cacheWidth,
-        headers: _getHeaders(config, ref),
+        headers: headers,
         shape: BoxShape.rectangle,
         cacheMaxAge: kDefaultImageCacheDuration,
         borderRadius: borderRadius ?? _defaultRadius,
         fit: fit ?? BoxFit.fill,
         loadStateChanged: (state) => aspectRatio != null
-            ? _buildImageState(state, ref, config)
+            ? _buildImageState(state)
             : state.extendedImageLoadState == LoadState.loading
                 ? ImagePlaceHolder(
                     borderRadius: borderRadius ?? _defaultRadius,
@@ -87,7 +135,7 @@ class BooruImage extends ConsumerWidget {
     );
   }
 
-  Widget _builForceFillImage(WidgetRef ref, BooruConfig config) {
+  Widget _builForceFillImage() {
     return Column(
       children: [
         Expanded(
@@ -95,14 +143,14 @@ class BooruImage extends ConsumerWidget {
             imageUrl,
             width: width ?? double.infinity,
             height: height ?? double.infinity,
-            headers: _getHeaders(config, ref),
+            headers: headers,
             cacheHeight: cacheHeight,
             cacheWidth: cacheWidth,
             shape: BoxShape.rectangle,
             cacheMaxAge: kDefaultImageCacheDuration,
             borderRadius: borderRadius ?? _defaultRadius,
             fit: BoxFit.cover,
-            loadStateChanged: (state) => _buildImageState(state, ref, config),
+            loadStateChanged: (state) => _buildImageState(state),
           ),
         ),
       ],
@@ -111,8 +159,6 @@ class BooruImage extends ConsumerWidget {
 
   Widget? _buildImageState(
     ExtendedImageState state,
-    WidgetRef ref,
-    BooruConfig config,
   ) =>
       switch (state.extendedImageLoadState) {
         LoadState.loading => placeholderUrl.toOption().fold(
@@ -136,7 +182,7 @@ class BooruImage extends ConsumerWidget {
                                   borderRadius: borderRadius ?? _defaultRadius,
                                 )
                               : null,
-                      headers: _getHeaders(config, ref),
+                      headers: headers,
                     )
                   : ImagePlaceHolder(
                       borderRadius: borderRadius ?? _defaultRadius,
@@ -146,12 +192,6 @@ class BooruImage extends ConsumerWidget {
             borderRadius: borderRadius ?? _defaultRadius,
           ),
         LoadState.completed => null,
-      };
-
-  Map<String, String> _getHeaders(BooruConfig config, WidgetRef ref) => {
-        AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config)).generate(),
-        ...ref.watch(extraHttpHeaderProvider(config)),
       };
 }
 

@@ -46,11 +46,64 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final imageGridPadding = ref.watch(
         imageListingSettingsProvider.select((value) => value.imageGridPadding));
+    final imageListType = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageGridSpacing = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
+    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageGridAspectRatio));
 
-    return SliverPadding(
+    return SliverRawPostGrid(
+      constraints: constraints,
+      itemBuilder: itemBuilder,
+      error: error,
+      multiSelectController: multiSelectController,
+      postController: postController,
       padding: EdgeInsets.symmetric(
         horizontal: imageGridPadding,
       ),
+      listType: imageListType,
+      size: gridSize,
+      spacing: imageGridSpacing,
+      aspectRatio: imageGridAspectRatio,
+    );
+  }
+}
+
+class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
+  const SliverRawPostGrid({
+    super.key,
+    required this.constraints,
+    required this.itemBuilder,
+    required this.error,
+    required this.multiSelectController,
+    required this.postController,
+    this.padding,
+    this.listType,
+    this.size,
+    this.spacing,
+    this.aspectRatio,
+    this.borderRadius,
+  });
+
+  final BoxConstraints? constraints;
+  final PostWidgetBuilder<T> itemBuilder;
+  final BooruError? error;
+  final MultiSelectController<T>? multiSelectController;
+  final PostGridController<T> postController;
+  final EdgeInsetsGeometry? padding;
+  final ImageListType? listType;
+  final GridSize? size;
+  final double? spacing;
+  final double? aspectRatio;
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SliverPadding(
+      padding: padding ?? EdgeInsets.zero,
       sliver: Builder(
         builder: (context) {
           if (error != null) {
@@ -107,9 +160,14 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
             valueListenable: postController.refreshingNotifier,
             builder: (_, refreshing, __) {
               return refreshing
-                  ? _Placeholder(
-                      usePlaceholder: true,
+                  ? SliverPostGridPlaceHolder(
                       constraints: constraints,
+                      padding: padding,
+                      listType: listType,
+                      size: size,
+                      spacing: spacing,
+                      aspectRatio: aspectRatio,
+                      borderRadius: borderRadius,
                     )
                   : _buildGrid(ref, context);
             },
@@ -122,31 +180,23 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   void _onErrorRetry() => postController.refresh();
 
   Widget _buildGrid(WidgetRef ref, BuildContext context) {
-    final imageListType = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageListType));
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
-    final imageGridSpacing = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
-    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageGridAspectRatio));
-
     return ValueListenableBuilder(
       valueListenable: postController.itemsNotifier,
       builder: (_, data, __) {
         final crossAxisCount = calculateGridCount(
           constraints?.maxWidth ?? context.screenWidth,
-          gridSize,
+          size ?? GridSize.normal,
         );
+        final imageListType = listType ?? ImageListType.standard;
 
         return data.isNotEmpty
             ? switch (imageListType) {
                 ImageListType.standard => SliverGrid(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: imageGridAspectRatio,
+                      childAspectRatio: aspectRatio ?? 1,
                       crossAxisCount: crossAxisCount,
-                      mainAxisSpacing: imageGridSpacing,
-                      crossAxisSpacing: imageGridSpacing,
+                      mainAxisSpacing: spacing ?? 4,
+                      crossAxisSpacing: spacing ?? 4,
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) => buildItem(context, index, data),
@@ -155,8 +205,8 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
                   ),
                 ImageListType.masonry => SliverMasonryGrid.count(
                     crossAxisCount: crossAxisCount,
-                    mainAxisSpacing: imageGridSpacing,
-                    crossAxisSpacing: imageGridSpacing,
+                    mainAxisSpacing: spacing ?? 4,
+                    crossAxisSpacing: spacing ?? 4,
                     childCount: data.length,
                     itemBuilder: (context, index) =>
                         buildItem(context, index, data),
@@ -198,47 +248,34 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   }
 }
 
-class _Placeholder extends StatelessWidget {
-  const _Placeholder({
-    required this.usePlaceholder,
-    this.constraints,
-  });
-
-  final bool usePlaceholder;
-  final BoxConstraints? constraints;
-
-  @override
-  Widget build(BuildContext context) {
-    return usePlaceholder
-        ? SliverPostGridPlaceHolder(
-            constraints: constraints,
-          )
-        : const SliverSizedBox.shrink();
-  }
-}
-
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
     super.key,
     this.constraints,
+    this.padding,
+    this.listType,
+    this.size,
+    this.spacing,
+    this.aspectRatio,
+    this.borderRadius,
   });
 
   final BoxConstraints? constraints;
+  final EdgeInsetsGeometry? padding;
+  final ImageListType? listType;
+  final GridSize? size;
+  final double? spacing;
+  final double? aspectRatio;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageListType));
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
-    final imageGridSpacing = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
-    final imageBorderRadius = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageBorderRadius));
-    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageGridAspectRatio));
-    final postsPerPage = ref.watch(
-        imageListingSettingsProvider.select((value) => value.postsPerPage));
+    final imageListType = listType ?? ImageListType.standard;
+    final gridSize = size ?? GridSize.normal;
+    final imageGridSpacing = spacing ?? 4;
+    final imageBorderRadius = borderRadius ?? BorderRadius.zero;
+    final imageGridAspectRatio = aspectRatio ?? 1;
+    final postsPerPage = 20;
 
     return Builder(
       builder: (context) {
@@ -257,7 +294,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, _) => ImagePlaceHolder(
-                  borderRadius: BorderRadius.circular(imageBorderRadius),
+                  borderRadius: imageBorderRadius,
                 ),
                 childCount: postsPerPage,
               ),
@@ -270,7 +307,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
               itemBuilder: (context, index) {
                 return createRandomPlaceholderContainer(
                   context,
-                  borderRadius: BorderRadius.circular(imageBorderRadius),
+                  borderRadius: imageBorderRadius,
                 );
               },
             )
