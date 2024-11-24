@@ -19,7 +19,13 @@ final booruConfigProvider =
   name: 'booruConfigProvider',
 );
 
-final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
+final hasBooruConfigsProvider = Provider<bool>((ref) {
+  final configs = ref.watch(booruConfigProvider);
+  return configs.isNotEmpty;
+});
+
+final orderedConfigsProvider =
+    FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
   final configs = ref.watch(booruConfigProvider);
 
   final configMap = {for (final config in configs) config.id: config};

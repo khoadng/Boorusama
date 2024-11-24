@@ -96,6 +96,11 @@ class _EditConfigButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+    final hasConfigs = ref.watch(hasBooruConfigsProvider);
+
+    if (!hasConfigs) {
+      return const SizedBox.shrink();
+    }
 
     return Material(
       color: Colors.transparent,

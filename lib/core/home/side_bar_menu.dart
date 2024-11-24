@@ -43,7 +43,7 @@ class SideBarMenu extends ConsumerWidget {
     return Container(
       color: context.colorScheme.surfaceContainerLow,
       constraints:
-          BoxConstraints.expand(width: min(context.screenWidth * 0.85, 500)),
+          BoxConstraints.expand(width: min(context.screenWidth * 0.85, 400)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

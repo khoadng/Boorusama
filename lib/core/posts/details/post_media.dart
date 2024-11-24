@@ -71,7 +71,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                   customControlsBuilder:
                       orientation.isPortrait ? null : () => null,
                   speed: ref.watchPlaybackSpeed(post.videoUrl),
-                  thumbnailUrl: post.videoThumbnailUrl,
                 ),
               )
         : InteractiveBooruImage(
