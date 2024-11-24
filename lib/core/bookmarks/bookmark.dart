@@ -23,6 +23,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required this.md5,
     required this.tags,
     required this.realSourceUrl,
+    required this.format,
   });
 
   factory Bookmark.fromJson(Map<String, dynamic> json) {
@@ -40,6 +41,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       md5: json['md5'] as String,
       tags: _parseTags(json['tags']),
       realSourceUrl: json['realSourceUrl'] as String?,
+      format: json['format'] as String?,
     );
   }
 
@@ -59,8 +61,16 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   @override
   final Set<String> tags;
   final String? realSourceUrl;
+  final String? format;
 
-  bool get isVideo => isFormatVideo(extension(originalUrl));
+  bool get isVideo {
+    final ext = extension(originalUrl);
+    final effectiveFormat = ext.isEmpty ? format : ext;
+
+    if (effectiveFormat == null) return false;
+
+    return isFormatVideo(effectiveFormat);
+  }
 
   static Bookmark empty = Bookmark(
     id: -1,
@@ -76,6 +86,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     md5: '',
     tags: const {},
     realSourceUrl: null,
+    format: null,
   );
 
   @override
@@ -92,6 +103,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
         height,
         md5,
         tags,
+        realSourceUrl,
+        format,
       ];
 
   Bookmark copyWith({
@@ -107,6 +120,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     double? height,
     String? md5,
     Set<String>? tags,
+    String? Function()? realSourceUrl,
+    String? Function()? format,
   }) {
     return Bookmark(
       id: id ?? this.id,
@@ -121,7 +136,9 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       height: height ?? this.height,
       md5: md5 ?? this.md5,
       tags: tags ?? this.tags,
-      realSourceUrl: realSourceUrl,
+      realSourceUrl:
+          realSourceUrl != null ? realSourceUrl() : this.realSourceUrl,
+      format: format != null ? format() : this.format,
     );
   }
 
@@ -139,6 +156,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       'height': height,
       'md5': md5,
       'tags': tags.toList(),
+      'realSourceUrl': realSourceUrl,
+      'format': format,
     };
   }
 }

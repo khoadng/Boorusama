@@ -5,7 +5,6 @@ part 'bookmark_hive_object.g.dart';
 
 @HiveType(typeId: 4)
 class BookmarkHiveObject extends HiveObject {
-
   BookmarkHiveObject({
     required this.booruId,
     required this.createdAt,
@@ -19,6 +18,7 @@ class BookmarkHiveObject extends HiveObject {
     required this.md5,
     required this.tags,
     required this.realSourceUrl,
+    required this.format,
   });
   @HiveField(0)
   int? booruId;
@@ -55,4 +55,7 @@ class BookmarkHiveObject extends HiveObject {
 
   @HiveField(11)
   String? realSourceUrl;
+
+  @HiveField(12)
+  String? format;
 }
