@@ -56,22 +56,20 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                     .watch(userAgentGeneratorProvider(ref.watchConfig))
                     .generate(),
               )
-            : PerformanceOrientationBuilder(
-                builder: (context, orientation) => BooruVideo(
-                  url: post.videoUrl,
-                  aspectRatio: post.aspectRatio,
-                  onCurrentPositionChanged:
-                      details.controller.onCurrentPositionChanged,
-                  onVisibilityChanged: (value) =>
-                      controller.overlay.value = !value,
-                  autoPlay: autoPlay,
-                  onVideoPlayerCreated: (vpc) =>
-                      details.controller.onVideoPlayerCreated(vpc, post.id),
-                  sound: ref.isGlobalVideoSoundOn,
-                  customControlsBuilder:
-                      orientation.isPortrait ? null : () => null,
-                  speed: ref.watchPlaybackSpeed(post.videoUrl),
-                ),
+            : BooruVideo(
+                url: post.videoUrl,
+                aspectRatio: post.aspectRatio,
+                onCurrentPositionChanged:
+                    details.controller.onCurrentPositionChanged,
+                onVisibilityChanged: (value) =>
+                    controller.overlay.value = !value,
+                autoPlay: autoPlay,
+                onVideoPlayerCreated: (vpc) =>
+                    details.controller.onVideoPlayerCreated(vpc, post.id),
+                sound: ref.isGlobalVideoSoundOn,
+                customControlsBuilder:
+                    !context.isLargeScreen ? null : () => null,
+                speed: ref.watchPlaybackSpeed(post.videoUrl),
               )
         : InteractiveBooruImage(
             useHero: useHero,
