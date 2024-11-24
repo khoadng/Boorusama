@@ -42,16 +42,9 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
   }
 
   void _submit(BuildContext context) {
-    widget.onUpdated?.call(controller.text.trim());
+    Navigator.of(context).pop();
 
-    Future.delayed(
-      Duration.zero,
-      () {
-        if (context.mounted) {
-          Navigator.of(context).pop();
-        }
-      },
-    );
+    widget.onUpdated?.call(controller.text.trim());
   }
 
   @override
@@ -103,8 +96,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
               builder: (_, show, __) {
                 if (!show) return const SizedBox.shrink();
 
-                return SizedBox(
-                  height: 300,
+                return Flexible(
                   child: TagSuggestionItems(
                     tags: tags,
                     onItemTap: (tag) {
