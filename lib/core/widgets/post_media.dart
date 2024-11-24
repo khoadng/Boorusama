@@ -94,7 +94,6 @@ class PostMedia extends ConsumerWidget {
                             sound: ref.isGlobalVideoSoundOn,
                             speed: ref.watchPlaybackSpeed(post.videoUrl),
                             onZoomUpdated: onImageZoomUpdated,
-                            thumbnailUrl: post.videoThumbnailUrl,
                           )
                     : BooruVideo(
                         url: post.videoUrl,
@@ -106,7 +105,6 @@ class PostMedia extends ConsumerWidget {
                         sound: ref.isGlobalVideoSoundOn,
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         onZoomUpdated: onImageZoomUpdated,
-                        thumbnailUrl: post.videoThumbnailUrl,
                       )
                 : PerformanceOrientationBuilder(
                     builder: (context, orientation) => BooruVideo(
@@ -121,7 +119,6 @@ class PostMedia extends ConsumerWidget {
                       onZoomUpdated: onImageZoomUpdated,
                       customControlsBuilder:
                           orientation.isPortrait ? null : () => null,
-                      thumbnailUrl: post.videoThumbnailUrl,
                     ),
                   )
         : InteractiveBooruImage(
