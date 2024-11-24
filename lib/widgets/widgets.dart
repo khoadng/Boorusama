@@ -61,6 +61,7 @@ export 'square_chip.dart';
 export 'swipe_to.dart';
 export 'tag_changed_text.dart';
 export 'tag_cloud.dart';
+export 'time_pulse.dart';
 export 'touch_count_recognizer.dart';
 export 'video_play_duration_icon.dart';
 export 'video_progress_bar.dart';
