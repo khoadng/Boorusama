@@ -355,7 +355,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                     builder: (_, swipe, __) => _buildPageView(
                       swipe,
                       interacting,
-                      !isLargeScreen,
                     ),
                   ),
                 ),
@@ -525,27 +524,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         : const SizedBox.shrink();
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    return ValueListenableBuilder(
-      valueListenable: _controller.freestyleMoveOffset,
-      builder: (_, offset, __) => ValueListenableBuilder(
-        valueListenable: _controller.sheetState,
-        builder: (_, state, __) => GestureDetector(
-          // let the user tap the image to toggle overlay
-          onTap: _controller.onImageTap,
-          child: InteractiveViewExtended(
-            enable: !state.isExpanded,
-            onZoomUpdated: _controller.onZoomUpdated,
-            onTap: _controller.onImageTap,
-            onDoubleTap: widget.onItemDoubleTap,
-            onLongPress: widget.onItemLongPress,
-            child: widget.itemBuilder(context, index),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildDragSheet({
     bool? forceInitialSizeAsMax,
     required SheetState sheetState,
@@ -636,8 +614,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   Widget _buildPageView(
     bool swipe,
     bool interacting,
-    bool isPortrait,
   ) {
+    final isPortrait = !context.isLargeScreen;
+
     return ValueListenableBuilder(
       valueListenable: _controller.sheetState,
       builder: (_, state, __) {
@@ -651,9 +630,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               ? const NeverScrollableScrollPhysics()
               : const DefaultPageViewScrollPhysics(),
           itemCount: widget.itemCount,
-          itemBuilder: isPortrait
-              ? (context, index) => _buildPortraitItem(index)
-              : (context, index) => _buildLandscapeItem(index, blockSwipe),
+          itemBuilder: (context, index) => _buildItem(index, blockSwipe),
         );
       },
     );
@@ -682,76 +659,96 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     );
   }
 
-  Widget _buildPortraitItem(int index) {
-    return ValueListenableBuilder(
-      valueListenable: _controller.canPull,
-      builder: (_, canPull, __) => PointerCountOnScreen(
-        onCountChanged: (count) {
-          _pointerCount.value = count;
-          _interacting.value = count > 1;
-        },
-        child: ValueListenableBuilder(
-          valueListenable: _controller.pulling,
-          builder: (__, pulling, ___) => GestureDetector(
-            onVerticalDragStart:
-                canPull && !_interacting.value ? _onVerticalDragStart : null,
-            onVerticalDragUpdate: pulling ? _onVerticalDragUpdate : null,
-            onVerticalDragEnd: pulling ? _onVerticalDragEnd : null,
-            child: AnimatedBuilder(
-              animation: Listenable.merge([
-                _controller.freestyleMoveOffset,
-                _controller.sheetState,
-              ]),
-              builder: (context, child) => Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()
-                  ..translate(
-                    _controller.freestyleMoveOffset.value.dx,
-                    _controller.freestyleMoveOffset.value.dy,
-                  )
-                  ..scale(_freestyleMoveScale),
-                child: child,
-              ),
-              child: _buildItem(context, index),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  final _dummyAlwaysFalse = ValueNotifier(false);
 
-  Widget _buildLandscapeItem(int index, bool blockSwipe) {
+  Widget _buildItem(int index, bool blockSwipe) {
+    final isSmall = !context.isLargeScreen;
     return Stack(
       children: [
         Positioned.fill(
-          child: _buildItem(context, index),
+          child: ValueListenableBuilder(
+            valueListenable: !isSmall ? _dummyAlwaysFalse : _controller.canPull,
+            builder: (_, canPull, __) => PointerCountOnScreen(
+              enable: isSmall,
+              onCountChanged: (count) {
+                _pointerCount.value = count;
+                _interacting.value = count > 1;
+              },
+              child: ValueListenableBuilder(
+                valueListenable:
+                    !isSmall ? _dummyAlwaysFalse : _controller.pulling,
+                builder: (__, pulling, ___) => GestureDetector(
+                  onVerticalDragStart: canPull && !_interacting.value
+                      ? _onVerticalDragStart
+                      : null,
+                  onVerticalDragUpdate: pulling ? _onVerticalDragUpdate : null,
+                  onVerticalDragEnd: pulling ? _onVerticalDragEnd : null,
+                  child: AnimatedBuilder(
+                    animation: Listenable.merge([
+                      _controller.freestyleMoveOffset,
+                      _controller.sheetState,
+                    ]),
+                    builder: (context, childAb) => Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..translate(
+                          _controller.freestyleMoveOffset.value.dx,
+                          _controller.freestyleMoveOffset.value.dy,
+                        )
+                        ..scale(_freestyleMoveScale),
+                      child: childAb,
+                    ),
+                    child: ValueListenableBuilder(
+                      valueListenable: _controller.freestyleMoveOffset,
+                      builder: (_, offset, __) => ValueListenableBuilder(
+                        valueListenable: _controller.sheetState,
+                        builder: (_, state, __) => GestureDetector(
+                          // let the user tap the image to toggle overlay
+                          onTap: _controller.onImageTap,
+                          child: InteractiveViewExtended(
+                            enable: !state.isExpanded,
+                            onZoomUpdated: _controller.onZoomUpdated,
+                            onTap: _controller.onImageTap,
+                            onDoubleTap: widget.onItemDoubleTap,
+                            onLongPress: widget.onItemLongPress,
+                            child: widget.itemBuilder(context, index),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
-        if (blockSwipe) ...[
-          ValueListenableBuilder(
-            valueListenable: _cooldown,
-            builder: (_, cooldown, __) => PageNavButton(
-              alignment: Alignment.centerRight,
-              controller: _controller,
-              visibleWhen: (page) => page < widget.itemCount - 1,
-              icon: Icon(Symbols.arrow_forward),
-              onPressed: !cooldown
-                  ? () => _controller.nextPage(duration: Duration.zero)
-                  : null,
+        if (!isSmall)
+          if (blockSwipe) ...[
+            ValueListenableBuilder(
+              valueListenable: _cooldown,
+              builder: (_, cooldown, __) => PageNavButton(
+                alignment: Alignment.centerRight,
+                controller: _controller,
+                visibleWhen: (page) => page < widget.itemCount - 1,
+                icon: Icon(Symbols.arrow_forward),
+                onPressed: !cooldown
+                    ? () => _controller.nextPage(duration: Duration.zero)
+                    : null,
+              ),
             ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: _cooldown,
-            builder: (_, cooldown, __) => PageNavButton(
-              alignment: Alignment.centerLeft,
-              controller: _controller,
-              visibleWhen: (page) => page > 0,
-              icon: Icon(Symbols.arrow_back),
-              onPressed: !cooldown
-                  ? () => _controller.previousPage(duration: Duration.zero)
-                  : null,
+            ValueListenableBuilder(
+              valueListenable: _cooldown,
+              builder: (_, cooldown, __) => PageNavButton(
+                alignment: Alignment.centerLeft,
+                controller: _controller,
+                visibleWhen: (page) => page > 0,
+                icon: Icon(Symbols.arrow_back),
+                onPressed: !cooldown
+                    ? () => _controller.previousPage(duration: Duration.zero)
+                    : null,
+              ),
             ),
-          ),
-        ],
+          ],
       ],
     );
   }
@@ -985,11 +982,13 @@ class PageNavButton extends StatelessWidget {
 class PointerCountOnScreen extends StatefulWidget {
   const PointerCountOnScreen({
     super.key,
+    required this.enable,
     required this.onCountChanged,
     required this.child,
   });
 
   final Widget child;
+  final bool enable;
   final void Function(int count) onCountChanged;
 
   @override
@@ -999,12 +998,24 @@ class PointerCountOnScreen extends StatefulWidget {
 class _PointerCountOnScreenState extends State<PointerCountOnScreen> {
   final _pointersOnScreen = ValueNotifier<Set<int>>({});
   final _pointerCount = ValueNotifier<int>(0);
+  late var enable = widget.enable;
 
   @override
   void initState() {
     super.initState();
     _pointersOnScreen.addListener(_onPointerChanged);
     _pointerCount.addListener(_onPointerCountChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant PointerCountOnScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.enable != oldWidget.enable) {
+      setState(() {
+        enable = widget.enable;
+      });
+    }
   }
 
   void _onPointerCountChanged() {
@@ -1033,18 +1044,10 @@ class _PointerCountOnScreenState extends State<PointerCountOnScreen> {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: (event) {
-        _addPointer(event.pointer);
-      },
-      onPointerMove: (event) {
-        _addPointer(event.pointer);
-      },
-      onPointerCancel: (event) {
-        _removePointer(event.pointer);
-      },
-      onPointerUp: (event) {
-        _removePointer(event.pointer);
-      },
+      onPointerDown: enable ? (event) => _addPointer(event.pointer) : null,
+      onPointerMove: enable ? (event) => _addPointer(event.pointer) : null,
+      onPointerCancel: enable ? (event) => _removePointer(event.pointer) : null,
+      onPointerUp: enable ? (event) => _removePointer(event.pointer) : null,
       child: widget.child,
     );
   }
