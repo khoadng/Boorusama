@@ -241,13 +241,21 @@ class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
 
 class _SliverHomeSearchBarState
     extends ConsumerState<SliverHomeSearchBarInternal> {
-  late final selectedTagController = widget.selectedTagController ??
-      SelectedTagController.fromBooruBuilder(
-        builder: widget.booruBuilder,
-        tagInfo: ref.read(tagInfoProvider),
-      );
+  late final SelectedTagController selectedTagController;
 
   late final selectedTagString = widget.selectedTagString ?? ValueNotifier('');
+
+  @override
+  void initState() {
+    super.initState();
+    final tagInfo = ref.read(tagInfoProvider);
+
+    selectedTagController = widget.selectedTagController ??
+        SelectedTagController.fromBooruBuilder(
+          builder: widget.booruBuilder,
+          tagInfo: tagInfo,
+        );
+  }
 
   @override
   void dispose() {
