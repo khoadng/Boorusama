@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 
@@ -31,6 +33,16 @@ class MobileHomePageScaffold extends ConsumerStatefulWidget {
 class _MobileHomePageScaffoldState
     extends ConsumerState<MobileHomePageScaffold> {
   final selectedTagString = ValueNotifier('');
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.readBooruBuilder(ref.readConfig),
+  );
+
+  @override
+  void dispose() {
+    super.dispose();
+    selectedTagString.dispose();
+    selectedTagController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +50,14 @@ class _MobileHomePageScaffoldState
 
     return PostScope(
       fetcher: (page) {
-        final tags = selectedTagString.value;
-
-        return postRepo.getPosts(tags, page);
+        return postRepo.getPostsFromController(selectedTagController, page);
       },
       builder: (context, postController, errors) => InfinitePostListScaffold(
         errors: errors,
         controller: postController,
         sliverHeaders: [
           SliverHomeSearchBar(
+            selectedTagController: selectedTagController,
             controller: widget.controller,
             selectedTagString: selectedTagString,
             onSearch: () {
