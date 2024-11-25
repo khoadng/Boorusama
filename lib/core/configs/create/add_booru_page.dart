@@ -237,7 +237,8 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
   }
 
   void _onNext(String url) {
-    widget.onBooruSubmit?.call(url);
+    final normalizedUrl = url.endsWith('/') ? url : '$url/';
+    widget.onBooruSubmit?.call(normalizedUrl);
   }
 }
 
@@ -249,8 +250,6 @@ extension BooruUrlErrorX on BooruUrlError {
           'booru.validation_invalid_url'.tr().replaceAll('{0}', url),
         BooruUrlError.notAnHttpOrHttpsUrl =>
           'booru.validation_invalid_http_url'.tr().replaceAll('{0}', url),
-        BooruUrlError.missingLastSlash =>
-          'booru.validation_missing_trailing_slash'.tr().replaceAll('{0}', url),
         BooruUrlError.redundantWww =>
           'booru.validation_redundant_www'.tr().replaceAll('{0}', url),
         BooruUrlError.stringHasInbetweenSpaces =>

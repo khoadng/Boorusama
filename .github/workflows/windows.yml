@@ -1,0 +1,29 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v3
+          
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Analyze project source
+        run: flutter build windows
+
+      - uses: actions/upload-artifact@v4
+        with:
+          path: .\build\windows\x64\runner\Release\
