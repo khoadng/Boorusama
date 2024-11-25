@@ -33,10 +33,12 @@ class PlayPauseButton extends StatelessWidget {
     super.key,
     required this.isPlaying,
     required this.onPlayingChanged,
+    this.padding,
   });
 
   final ValueNotifier<bool> isPlaying;
   final void Function(bool value) onPlayingChanged;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class PlayPauseButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: () => onPlayingChanged(playing),
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: padding ?? EdgeInsets.zero,
             child: Icon(
               switch (playing) {
                 true => Symbols.pause,
