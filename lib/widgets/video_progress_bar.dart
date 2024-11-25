@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:video_player/video_player.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/platform.dart';
+
 class VideoProgressBar extends StatefulWidget {
   const VideoProgressBar({
     super.key,
@@ -43,58 +46,192 @@ class VideoProgressBar extends StatefulWidget {
   State<VideoProgressBar> createState() => _VideoProgressBarState();
 }
 
-class _VideoProgressBarState extends State<VideoProgressBar> {
+class _VideoProgressBarState extends State<VideoProgressBar>
+    with SingleTickerProviderStateMixin {
   final isDragging = ValueNotifier(false);
+  final isHovering = ValueNotifier(false);
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  Duration _lastPosition = Duration.zero;
+  Duration? _dragPosition;
+  bool _recentlyDragged = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+    _lastPosition = widget.position;
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(VideoProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Skip animation if video is looping or recently dragged
+    final isLooping = _lastPosition.inMilliseconds >
+            widget.duration.inMilliseconds * 0.95 &&
+        widget.position.inMilliseconds < widget.duration.inMilliseconds * 0.05;
+
+    if (widget.position != _lastPosition &&
+        !isDragging.value &&
+        !_recentlyDragged) {
+      if (isLooping) {
+        _updatePositionWithoutAnimation();
+      } else {
+        _updatePositionWithAnimation();
+      }
+    }
+  }
+
+  void _updatePositionWithoutAnimation() {
+    _lastPosition = widget.position;
+    _animation = Tween<double>(
+      begin: widget.position.inMilliseconds.toDouble(),
+      end: widget.position.inMilliseconds.toDouble(),
+    ).animate(_animationController);
+    _animationController.value = 1.0;
+  }
+
+  void _updatePositionWithAnimation() {
+    _animation = Tween<double>(
+      begin: _lastPosition.inMilliseconds.toDouble(),
+      end: widget.position.inMilliseconds.toDouble(),
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.linear,
+    ));
+
+    _animationController
+      ..duration = const Duration(milliseconds: 500)
+      ..forward(from: 0);
+
+    _lastPosition = widget.position;
+  }
+
+  void _onDragStart() {
+    widget.onDragStart?.call();
+    isDragging.value = true;
+    _animationController.stop();
+    _recentlyDragged = true;
+  }
+
+  void _onDragEnd() {
+    widget.onDragEnd?.call();
+    isDragging.value = false;
+    _lastPosition = _dragPosition ?? widget.position;
+    _dragPosition = null;
+
+    // Reset recently dragged flag after a brief delay
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) {
+        _recentlyDragged = false;
+      }
+    });
+  }
 
   void _seekToRelativePosition(Offset globalPosition) {
-    final box = context.findRenderObject()! as RenderBox;
-    final Offset tapPos = box.globalToLocal(globalPosition);
-    final double relative = tapPos.dx / box.size.width;
-    final Duration position = widget.duration * relative;
+    final renderObject = context.findRenderObject();
+    if (renderObject == null) return;
+
+    final box = renderObject as RenderBox?;
+    if (box == null) return;
+
+    final tapPos = box.globalToLocal(globalPosition);
+    final relative = tapPos.dx / box.size.width;
+    final position = widget.duration * relative;
+
+    _dragPosition = position;
     widget.seekTo(position);
+    // Update last position when seeking
+    _lastPosition = position;
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragStart: (details) {
-        widget.onDragStart?.call();
-        isDragging.value = true;
-      },
-      onHorizontalDragUpdate: (details) {
-        _seekToRelativePosition(details.globalPosition);
-        widget.onDragUpdate?.call();
-      },
-      onHorizontalDragEnd: (details) {
-        widget.onDragEnd?.call();
-        isDragging.value = false;
-      },
-      onTapDown: (details) {
-        _seekToRelativePosition(details.globalPosition);
-      },
-      child: Center(
-        child: Container(
-          height: MediaQuery.sizeOf(context).height,
-          width: MediaQuery.sizeOf(context).width,
-          color: Colors.transparent,
-          child: ValueListenableBuilder(
-            valueListenable: isDragging,
-            builder: (_, dragging, __) => CustomPaint(
-              painter: _ProgressBarPainter(
-                position: widget.position,
-                duration: widget.duration,
-                buffered: widget.buffered,
-                barHeight: widget.barHeight,
-                handleHeight:
-                    !dragging ? widget.handleHeight : widget.handleHeight * 1.5,
-                drawShadow: widget.drawShadow,
-                backgroundColor: widget.backgroundColor,
-                playedColor: widget.playedColor,
-                bufferedColor: widget.bufferedColor,
-                handleColor: widget.handleColor,
-                useHandle: true,
-              ),
-            ),
+    return MouseRegion(
+      onEnter: (_) => isHovering.value = true,
+      onExit: (_) => isHovering.value = false,
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          return GestureDetector(
+            onHorizontalDragStart: (_) => _onDragStart(),
+            onHorizontalDragUpdate: (details) {
+              _seekToRelativePosition(details.globalPosition);
+              widget.onDragUpdate?.call();
+            },
+            onHorizontalDragEnd: (_) => _onDragEnd(),
+            onTapDown: (details) {
+              _seekToRelativePosition(details.globalPosition);
+            },
+            child: _buildBar(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildBar() {
+    final isDesktop = isDesktopPlatform();
+
+    return Center(
+      child: Container(
+        height: MediaQuery.sizeOf(context).height,
+        width: MediaQuery.sizeOf(context).width,
+        color: Colors.transparent,
+        child: ValueListenableBuilder(
+          valueListenable: isDragging,
+          builder: (_, dragging, __) => ValueListenableBuilder(
+            valueListenable: isHovering,
+            builder: (_, hovering, __) {
+              final position = _dragPosition ??
+                  (dragging || _recentlyDragged
+                      ? widget.position
+                      : Duration(milliseconds: _animation.value.toInt()));
+
+              return CustomPaint(
+                painter: _ProgressBarPainter(
+                  position: position,
+                  duration: widget.duration,
+                  buffered: widget.buffered,
+                  barHeight: isDesktop
+                      ? hovering
+                          ? widget.barHeight * 2
+                          : widget.barHeight
+                      : dragging
+                          ? widget.barHeight * 1.5
+                          : widget.barHeight,
+                  handleHeight: isDesktop
+                      ? !hovering
+                          ? 0
+                          : dragging
+                              ? widget.handleHeight * 1.2
+                              : widget.handleHeight
+                      : !dragging
+                          ? widget.handleHeight
+                          : widget.handleHeight * 1.5,
+                  drawShadow: widget.drawShadow,
+                  backgroundColor: widget.backgroundColor,
+                  playedColor: widget.playedColor,
+                  bufferedColor: widget.bufferedColor,
+                  handleColor: widget.handleColor,
+                  useHandle: true,
+                ),
+              );
+            },
           ),
         ),
       ),

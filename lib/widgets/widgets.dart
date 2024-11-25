@@ -47,7 +47,6 @@ export 'option_searchable_sheet.dart';
 export 'pagination.dart';
 export 'parallax_slide_in_page_route.dart';
 export 'performance_orientation_builder.dart';
-export 'platforms/windows/material_desktop_controls.dart';
 export 'result_counter.dart';
 export 'route_transition_builder.dart';
 export 'scroll_to_top.dart';

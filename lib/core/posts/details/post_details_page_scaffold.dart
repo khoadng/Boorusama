@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
@@ -16,9 +17,12 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
@@ -48,7 +52,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageScaffoldState<T extends Post>
-    extends ConsumerState<PostDetailsPageScaffold<T>> {
+    extends ConsumerState<PostDetailsPageScaffold<T>> with RouteAware {
   late final _posts = widget.posts;
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
@@ -58,8 +62,52 @@ class _PostDetailPageScaffoldState<T extends Post>
   List<T> get posts => _posts;
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.controller.setPage(widget.controller.initialPage);
+    });
+  }
+
+  var _isRouteSubscribed = false;
+
+  @override
+  void didChangeDependencies() {
+    final route = ModalRoute.of(context);
+    if (route is PageRoute && route.fullscreenDialog) {
+      routeObserver.subscribe(this, route);
+      _isRouteSubscribed = true;
+    }
+    super.didChangeDependencies();
+  }
+
+  var _previouslyPlaying = false;
+
+  @override
+  void didPushNext() {
+    _previouslyPlaying = widget.controller.isVideoPlaying.value;
+    if (_previouslyPlaying) {
+      widget.controller.pauseCurrentVideo();
+    }
+
+    super.didPushNext();
+  }
+
+  @override
+  void didPopNext() {
+    if (_previouslyPlaying) {
+      widget.controller.playCurrentVideo();
+    }
+    super.didPopNext();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
+    if (_isRouteSubscribed) {
+      routeObserver.unsubscribe(this);
+    }
 
     super.dispose();
   }
@@ -209,7 +257,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                   ref.watch(notesControllerProvider(post)),
                 ),
                 controller: _controller,
-                autoPlay: true,
               ),
               if (previousPost != null && !previousPost.isVideo)
                 Offstage(
@@ -222,16 +269,37 @@ class _PostDetailPageScaffoldState<T extends Post>
                   alignment: Alignment.bottomRight,
                   child: ValueListenableBuilder(
                     valueListenable: _controller.sheetState,
-                    builder: (_, state, __) => state.isExpanded
+                    builder: (_, state, __) => state.isExpanded &&
+                            !context.isLargeScreen
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: VideoSoundScope(
-                              builder: (context, soundOn) => SoundControlButton(
-                                padding: const EdgeInsets.all(8),
-                                soundOn: soundOn,
-                                onSoundChanged: (value) =>
-                                    ref.setGlobalVideoSound(value),
-                              ),
+                            child: Row(
+                              children: [
+                                // duplicate codes, maybe refactor later
+                                PlayPauseButton(
+                                  isPlaying: widget.controller.isVideoPlaying,
+                                  onPlayingChanged: (value) {
+                                    if (value == true) {
+                                      widget.controller
+                                          .pauseVideo(post.id, post.isWebm);
+                                    } else if (value == false) {
+                                      widget.controller
+                                          .playVideo(post.id, post.isWebm);
+                                    } else {
+                                      // do nothing
+                                    }
+                                  },
+                                ),
+                                VideoSoundScope(
+                                  builder: (context, soundOn) =>
+                                      SoundControlButton(
+                                    padding: const EdgeInsets.all(8),
+                                    soundOn: soundOn,
+                                    onSoundChanged: (value) =>
+                                        ref.setGlobalVideoSound(value),
+                                  ),
+                                ),
+                              ],
                             ),
                           )
                         : const SizedBox.shrink(),
@@ -274,22 +342,27 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder) {
-    return Container(
-      color: context.colorScheme.surface,
-      child: CustomScrollView(
-        shrinkWrap: true,
-        slivers: [
-          SliverToBoxAdapter(
-            child: _buildVideoControls(),
+    return CustomScrollView(
+      shrinkWrap: true,
+      slivers: [
+        SliverToBoxAdapter(
+          child: _buildVideoControls(),
+        ),
+        DecoratedSliver(
+          decoration: BoxDecoration(
+            color: context.colorScheme.surface,
           ),
-          ...uiBuilder.preview.keys
-              .map((p) => uiBuilder.buildPart(context, p))
-              .nonNulls,
-          SliverSizedBox(
-            height: MediaQuery.paddingOf(context).bottom,
+          sliver: MultiSliver(
+            children: uiBuilder.preview.keys
+                .map((p) => uiBuilder.buildPart(context, p))
+                .nonNulls
+                .toList(),
           ),
-        ],
-      ),
+        ),
+        SliverSizedBox(
+          height: MediaQuery.paddingOf(context).bottom,
+        ),
+      ],
     );
   }
 
@@ -309,23 +382,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     return ValueListenableBuilder(
       valueListenable: widget.controller.currentPost,
       builder: (context, post, _) => post.isVideo
-          ? ValueListenableBuilder(
-              valueListenable: widget.controller.videoProgress,
-              builder: (_, progress, __) => VideoSoundScope(
-                builder: (context, soundOn) => BooruVideoProgressBar(
-                  soundOn: soundOn,
-                  progress: progress,
-                  playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                  onSeek: (position) => widget.controller.onVideoSeekTo(
-                    position,
-                    post.id,
-                    post.isWebm,
-                  ),
-                  onSpeedChanged: (speed) =>
-                      ref.setPlaybackSpeed(post.videoUrl, speed),
-                  onSoundToggle: (value) => ref.setGlobalVideoSound(value),
-                ),
-              ),
+          ? PostDetailsVideoControls(
+              controller: widget.controller,
             )
           : const SizedBox.shrink(),
     );
@@ -444,13 +502,6 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
 
   void onPageChanged(int page) {
     _videoProgress.value = VideoProgress.zero;
-
-    // // Pause previous video
-    // if (posts[page].videoUrl.endsWith('.webm')) {
-    //   _webmVideoControllers[page]?.pause();
-    // } else {
-    //   _videoControllers[page]?.pause();
-    // }
   }
 
   void onCurrentPositionChanged(
@@ -477,5 +528,172 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
 
   void onVideoPlayerCreated(VideoPlayerController controller, int page) {
     _videoControllers[page] = controller;
+  }
+}
+
+class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
+  const PostDetailsVideoControls({
+    super.key,
+    required this.controller,
+  });
+
+  final PostDetailsController<T> controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rightControls = [
+      VideoSoundScope(
+        builder: (context, soundOn) => SoundControlButton(
+          soundOn: soundOn,
+          onSoundChanged: (value) => ref.setGlobalVideoSound(value),
+        ),
+      ),
+      const SizedBox(
+        width: 12,
+      ),
+      MoreOptionsControlButton(
+        speed: ref.watchPlaybackSpeed(
+          controller.currentPost.value.videoUrl,
+        ),
+        onSpeedChanged: (speed) => ref.setPlaybackSpeed(
+          controller.currentPost.value.videoUrl,
+          speed,
+        ),
+      ),
+      const SizedBox(width: 12)
+    ];
+
+    final isLarge = context.isLargeScreen;
+
+    return Container(
+      padding: isLarge
+          ? const EdgeInsets.only(top: 120)
+          : const EdgeInsets.only(top: 60),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [
+            Colors.black.withOpacity(0.8),
+            Colors.black.withOpacity(0.6),
+            Colors.black.withOpacity(0.4),
+            Colors.black.withOpacity(0.2),
+            Colors.transparent,
+          ],
+          stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+        ),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SafeArea(
+            top: false,
+            left: isLarge,
+            right: false,
+            bottom: isLarge,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    const Spacer(),
+                    if (constraints.maxWidth < 400) ...rightControls,
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const SizedBox(width: 4),
+                    ValueListenableBuilder(
+                      valueListenable: controller.currentPost,
+                      builder: (_, post, __) => PlayPauseButton(
+                        isPlaying: controller.isVideoPlaying,
+                        onPlayingChanged: (value) {
+                          if (value == true) {
+                            controller.pauseVideo(post.id, post.isWebm);
+                          } else if (value == false) {
+                            controller.playVideo(post.id, post.isWebm);
+                          } else {
+                            // do nothing
+                          }
+                        },
+                      ),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: controller.videoProgress,
+                      builder: (_, progress, __) => SizedBox(
+                        width: 48,
+                        child: Text(
+                          formatDurationForMedia(progress.position),
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.transparent,
+                        height: 36,
+                        child: ValueListenableBuilder(
+                          valueListenable: controller.currentPost,
+                          builder: (_, post, __) => ValueListenableBuilder(
+                            valueListenable: controller.videoProgress,
+                            builder: (_, progress, __) => VideoProgressBar(
+                              duration: progress.duration,
+                              position: progress.position,
+                              buffered: const [],
+                              onDragStart: () {
+                                // pause the video when dragging
+                                controller.pauseVideo(post.id, post.isWebm);
+                              },
+                              onDragEnd: () {
+                                // resume the video when dragging ends
+                                controller.playVideo(post.id, post.isWebm);
+                              },
+                              seekTo: (position) => controller.onVideoSeekTo(
+                                position,
+                                post.id,
+                                post.isWebm,
+                              ),
+                              barHeight: 2,
+                              handleHeight: 8,
+                              drawShadow: true,
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .hintColor
+                                  .applyOpacity(0.2),
+                              playedColor:
+                                  Theme.of(context).colorScheme.primary,
+                              bufferedColor:
+                                  Theme.of(context).colorScheme.hintColor,
+                              handleColor:
+                                  Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    ValueListenableBuilder(
+                      valueListenable: controller.videoProgress,
+                      builder: (_, progress, __) => SizedBox(
+                        width: 48,
+                        child: Text(
+                          formatDurationForMedia(progress.duration),
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (constraints.maxWidth >= 400) ...rightControls,
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }

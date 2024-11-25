@@ -10,8 +10,6 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class WebmVideoController {
   WebmVideoController({
@@ -25,7 +23,7 @@ class WebmVideoController {
       ..setBackgroundColor(Colors.black);
 
     if (_webViewController.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
+      AndroidWebViewController.enableDebugging(false);
       (_webViewController.platform as AndroidWebViewController)
           .setMediaPlaybackRequiresUserGesture(false);
     }
@@ -40,7 +38,6 @@ class WebmVideoController {
 
   Future<void> load(String html) async {
     await _webViewController.loadHtmlString(html);
-    await Future.delayed(const Duration(seconds: 1));
   }
 
   Timer? _positionCheckTimer;
@@ -228,43 +225,14 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          showPlay = !showPlay;
-          widget.onVisibilityChanged?.call(!showPlay);
-        });
-      },
-      child: Stack(
-        children: [
-          Container(
-            color: widget.backgroundColor,
-            height: MediaQuery.sizeOf(context).height,
-            child: WebViewWidget(
-                controller: webmVideoController._webViewController),
-          ),
-          _buildHitArea(),
-        ],
+    return Container(
+      color: widget.backgroundColor,
+      height: MediaQuery.sizeOf(context).height,
+      child: IgnorePointer(
+        child: WebViewWidget(
+          controller: webmVideoController._webViewController,
+        ),
       ),
-    );
-  }
-
-  Widget _buildHitArea() {
-    return CenterPlayButton(
-      backgroundColor: context.extendedColorScheme.surfaceContainerOverlay,
-      iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
-      isFinished: false,
-      isPlaying: webmVideoController.isPlaying,
-      show: showPlay,
-      onPressed: () {
-        if (webmVideoController.isPlaying) {
-          webmVideoController.pause();
-        } else {
-          webmVideoController.play();
-        }
-
-        setState(() {});
-      },
     );
   }
 }

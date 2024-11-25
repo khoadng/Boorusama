@@ -8,12 +8,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/time.dart';
-import 'package:boorusama/widgets/video_progress_bar.dart';
 
 // Class to store duration and position of video
 class VideoProgress extends Equatable {
@@ -31,78 +28,37 @@ class VideoProgress extends Equatable {
   List<Object?> get props => [duration, position];
 }
 
-class BooruVideoProgressBar extends StatelessWidget {
-  const BooruVideoProgressBar({
+class PlayPauseButton extends StatelessWidget {
+  const PlayPauseButton({
     super.key,
-    required this.progress,
-    this.onSeek,
-    this.onSoundToggle,
-    required this.onSpeedChanged,
-    this.soundOn = true,
-    required this.playbackSpeed,
+    required this.isPlaying,
+    required this.onPlayingChanged,
   });
 
-  final bool soundOn;
-  final double playbackSpeed;
-  final VideoProgress progress;
-  final void Function(Duration position)? onSeek;
-  final void Function(bool value)? onSoundToggle;
-  final void Function(double value) onSpeedChanged;
+  final ValueNotifier<bool> isPlaying;
+  final void Function(bool value) onPlayingChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const SizedBox(width: 12),
-        Text(
-          formatDurationForMedia(progress.position),
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            color: Colors.transparent,
-            height: 36,
-            child: VideoProgressBar(
-              duration: progress.duration,
-              position: progress.position,
-              buffered: const [],
-              seekTo: (position) => onSeek?.call(position),
-              barHeight: 4,
-              handleHeight: 8,
-              drawShadow: true,
-              backgroundColor:
-                  Theme.of(context).colorScheme.hintColor.applyOpacity(0.2),
-              playedColor: Theme.of(context).colorScheme.primary,
-              bufferedColor: Theme.of(context).colorScheme.hintColor,
-              handleColor: Theme.of(context).colorScheme.primary,
+    return ValueListenableBuilder(
+      valueListenable: isPlaying,
+      builder: (_, playing, __) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () => onPlayingChanged(playing),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              switch (playing) {
+                true => Symbols.pause,
+                false => Symbols.play_arrow,
+              },
+              fill: 1,
             ),
           ),
         ),
-        Text(
-          formatDurationForMedia(progress.duration),
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        SoundControlButton(
-          soundOn: soundOn,
-          onSoundChanged: onSoundToggle,
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        MoreOptionsControlButton(
-          speed: playbackSpeed,
-          onSpeedChanged: onSpeedChanged,
-        ),
-        const SizedBox(width: 12)
-      ],
+      ),
     );
   }
 }

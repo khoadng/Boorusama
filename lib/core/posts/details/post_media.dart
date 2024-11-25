@@ -23,7 +23,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.imageUrl,
     this.useHero = false,
     this.imageOverlayBuilder,
-    this.autoPlay = false,
     required this.controller,
   });
 
@@ -31,7 +30,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final String imageUrl;
   final bool useHero;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
-  final bool autoPlay;
   final PostDetailsPageViewController controller;
 
   @override
@@ -39,38 +37,54 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     final details = PostDetails.of<T>(context);
 
     return post.isVideo
-        ? extension(post.videoUrl) == '.webm' && isAndroid()
-            ? EmbeddedWebViewWebm(
-                url: post.videoUrl,
-                onCurrentPositionChanged:
-                    details.controller.onCurrentPositionChanged,
-                onVisibilityChanged: (value) =>
-                    controller.overlay.value = !value,
-                backgroundColor: context.colorScheme.surface,
-                onWebmVideoPlayerCreated: (wvpc) =>
-                    details.controller.onWebmVideoPlayerCreated(wvpc, post.id),
-                autoPlay: autoPlay,
-                sound: ref.isGlobalVideoSoundOn,
-                playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                userAgent: ref
-                    .watch(userAgentGeneratorProvider(ref.watchConfig))
-                    .generate(),
-              )
-            : BooruVideo(
-                url: post.videoUrl,
-                aspectRatio: post.aspectRatio,
-                onCurrentPositionChanged:
-                    details.controller.onCurrentPositionChanged,
-                onVisibilityChanged: (value) =>
-                    controller.overlay.value = !value,
-                autoPlay: autoPlay,
-                onVideoPlayerCreated: (vpc) =>
-                    details.controller.onVideoPlayerCreated(vpc, post.id),
-                sound: ref.isGlobalVideoSoundOn,
-                customControlsBuilder:
-                    !context.isLargeScreen ? null : () => null,
-                speed: ref.watchPlaybackSpeed(post.videoUrl),
-              )
+        ? Stack(
+            children: [
+              Positioned.fill(
+                child: extension(post.videoUrl) == '.webm' && isAndroid()
+                    ? EmbeddedWebViewWebm(
+                        url: post.videoUrl,
+                        onCurrentPositionChanged:
+                            details.controller.onCurrentPositionChanged,
+                        onVisibilityChanged: (value) =>
+                            controller.overlay.value = !value,
+                        backgroundColor: context.colorScheme.surface,
+                        onWebmVideoPlayerCreated: (wvpc) => details.controller
+                            .onWebmVideoPlayerCreated(wvpc, post.id),
+                        autoPlay: false,
+                        sound: ref.isGlobalVideoSoundOn,
+                        playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
+                        userAgent: ref
+                            .watch(userAgentGeneratorProvider(ref.watchConfig))
+                            .generate(),
+                      )
+                    : BooruVideo(
+                        url: post.videoUrl,
+                        aspectRatio: post.aspectRatio,
+                        onCurrentPositionChanged:
+                            details.controller.onCurrentPositionChanged,
+                        onVisibilityChanged: (value) =>
+                            controller.overlay.value = !value,
+                        onVideoPlayerCreated: (vpc) => details.controller
+                            .onVideoPlayerCreated(vpc, post.id),
+                        sound: ref.isGlobalVideoSoundOn,
+                        speed: ref.watchPlaybackSpeed(post.videoUrl),
+                        thumbnailUrl: post.videoThumbnailUrl,
+                      ),
+              ),
+              if (context.isLargeScreen)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ValueListenableBuilder(
+                    valueListenable: controller.overlay,
+                    builder: (context, overlay, child) =>
+                        overlay ? child! : const SizedBox.shrink(),
+                    child: PostDetailsVideoControls(
+                      controller: details.controller,
+                    ),
+                  ),
+                )
+            ],
+          )
         : InteractiveBooruImage(
             useHero: useHero,
             heroTag: '${post.id}_hero',

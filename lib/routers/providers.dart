@@ -12,6 +12,8 @@ import 'routes.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
+final routeObserver = RouteObserver();
+
 final routerProvider = Provider<GoRouter>((ref) {
   final analytics = ref.watch(analyticsProvider);
 
@@ -19,6 +21,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: navigatorKey,
     observers: [
       analytics.getAnalyticsObserver(),
+      routeObserver,
     ],
     routes: [
       Routes.home(ref),

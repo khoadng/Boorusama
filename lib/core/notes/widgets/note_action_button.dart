@@ -33,6 +33,7 @@ class NoteActionButton extends StatelessWidget {
       return CircularIconButton(
         icon: FaIcon(
           Symbols.translate,
+          size: 22,
         ),
         onPressed: onDownload,
       );

@@ -15,6 +15,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/mobile.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -93,12 +94,15 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   // Use for large screen when details is on the side to prevent spamming
   Timer? _debounceTimer;
   final _cooldown = ValueNotifier(false);
+  final hovering = ValueNotifier(false);
 
   bool get isLargeScreen => context.isLargeScreen;
 
   @override
   void initState() {
     super.initState();
+
+    hovering.addListener(_onHover);
 
     _controller =
         widget.controller ?? PostDetailsPageViewController(initialPage: 0);
@@ -131,13 +135,30 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     widget.onExit?.call();
   }
 
+  void _onHover() {
+    if (!isDesktopPlatform() || !isLargeScreen) {
+      // Overlay is handled by touch gestures on mobile
+      return;
+    }
+
+    if (hovering.value) {
+      _controller.overlay.value = true;
+    } else {
+      _controller.overlay.value = false;
+    }
+  }
+
   void _onPageChanged() {
-    final page = _controller.pageController.page?.round();
+    final page = _controller.pageController.page;
 
-    if (page == null) return;
+    _controller.precisePage.value = page;
 
-    if (page != _controller.page) {
-      _controller.currentPage.value = page;
+    final pageNum = page?.round();
+
+    if (pageNum == null) return;
+
+    if (pageNum != _controller.page) {
+      _controller.currentPage.value = pageNum;
 
       _controller.sheetState.value = switch (_controller.sheetState.value) {
         SheetState.expanded => SheetState.expanded,
@@ -145,7 +166,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         SheetState.hidden => SheetState.collapsed,
       };
 
-      widget.onPageChanged?.call(page);
+      widget.onPageChanged?.call(pageNum);
     }
   }
 
@@ -297,7 +318,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                       child: child,
                     ),
                   ),
-                  child: _buildMain(),
+                  child: MouseRegion(
+                    onEnter: (_) => hovering.value = true,
+                    onExit: (_) => hovering.value = false,
+                    child: _buildMain(),
+                  ),
                 ),
               ),
               !isLargeScreen ? const SizedBox.shrink() : _buildSide(),
@@ -704,11 +729,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                         valueListenable: _controller.sheetState,
                         builder: (_, state, __) => GestureDetector(
                           // let the user tap the image to toggle overlay
-                          onTap: _controller.onImageTap,
+                          onTap: () => _controller.onImageTap(context),
                           child: InteractiveViewExtended(
                             enable: !state.isExpanded,
                             onZoomUpdated: _controller.onZoomUpdated,
-                            onTap: _controller.onImageTap,
+                            onTap: () => _controller.onImageTap(context),
                             onDoubleTap: widget.onItemDoubleTap,
                             onLongPress: widget.onItemLongPress,
                             child: widget.itemBuilder(context, index),
@@ -967,7 +992,7 @@ class PageNavButton extends StatelessWidget {
                     color: context.extendedColorScheme.surfaceContainerOverlay,
                     shape: const CircleBorder(),
                     padding:
-                        context.isLargeScreen ? const EdgeInsets.all(12) : null,
+                        context.isLargeScreen ? const EdgeInsets.all(8) : null,
                     onPressed: onPressed,
                     child: icon,
                   ),
@@ -1270,6 +1295,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   late final displacement = ValueNotifier(0.0);
   late final animating = ValueNotifier(false);
   late final sheetMaxSize = ValueNotifier(maxSize);
+  late final precisePage = ValueNotifier<double?>(initialPage.toDouble());
 
   final swipe = ValueNotifier(true);
   final canPull = ValueNotifier(true);
@@ -1417,8 +1443,12 @@ class PostDetailsPageViewController extends ChangeNotifier {
     showSystemStatus();
   }
 
-  void onImageTap() {
-    toggleOverlay();
+  void onImageTap(BuildContext context) {
+    if (isDesktopPlatform() && context.isLargeScreen) {
+      // overlay is handle by hovering
+    } else {
+      toggleOverlay();
+    }
   }
 
   void startSlideshow() {

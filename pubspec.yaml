@@ -12,7 +12,6 @@ dependencies:
   animated_list_plus: ^0.5.2
   background_downloader: ^8.5.6
   cached_network_image: ^3.4.1
-  chewie: ^1.8.5
   clock: ^1.1.1
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
