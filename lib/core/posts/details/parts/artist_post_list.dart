@@ -18,11 +18,11 @@ class SliverArtistPostList extends ConsumerWidget {
   const SliverArtistPostList({
     super.key,
     required this.tag,
-    required this.builder,
+    required this.child,
   });
 
   final String tag;
-  final Widget Function(String tag) builder;
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,7 +62,7 @@ class SliverArtistPostList extends ConsumerWidget {
         ),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: builder(tag),
+          sliver: child,
         ),
       ],
     );

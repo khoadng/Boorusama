@@ -237,7 +237,7 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
                       .map(
                         (tag) => SliverArtistPostList(
                           tag: tag,
-                          builder: (tag) => ref
+                          child: ref
                               .watch(moebooruPostDetailsArtistProvider(tag))
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
