@@ -15,6 +15,7 @@ import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'l10n.dart';
@@ -198,8 +199,17 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   onPressed: () {
                     // clear default group only
                     ref.read(downloadTasksProvider.notifier).clear(
-                          FileDownloader.defaultGroup,
+                      FileDownloader.defaultGroup,
+                      onFailed: () {
+                        showSimpleSnackBar(
+                          context: context,
+                          content:
+                              Text(DownloadTranslations.downloadNothingToClear)
+                                  .tr(),
+                          duration: const Duration(seconds: 1),
                         );
+                      },
+                    );
                   },
                 ),
               ]

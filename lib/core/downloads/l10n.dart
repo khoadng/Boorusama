@@ -39,6 +39,7 @@ class DownloadTranslations {
   static const String downloadFailedNotification = 'failed';
   static const String downloadCompletedNotification = 'completed';
   static const String downloadStartedNotification = 'Download started';
+  static const String downloadNothingToClear = 'Nothing to clear';
 
   static const String downloadPath = 'settings.download.path';
   static const String downloadSelectFolder =
