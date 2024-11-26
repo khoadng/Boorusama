@@ -46,12 +46,12 @@ class AppTitleBar extends ConsumerWidget {
   }
 
   Widget _buildTitleBar(String appName, BuildContext context) {
-    return ColoredBox(
-      color: context.colorScheme.surface,
-      child: Stack(
-        children: [
-          DoubleTapToMaxOrRestore(
-            child: Row(
+    return DoubleTapToMaxOrRestore(
+      child: ColoredBox(
+        color: context.colorScheme.surface,
+        child: Stack(
+          children: [
+            Row(
               children: [
                 if (!isMacOS()) ...[
                   Container(
@@ -79,12 +79,12 @@ class AppTitleBar extends ConsumerWidget {
                 const Spacer(),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 26),
-            child: child,
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(top: 26),
+              child: child,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -102,9 +102,6 @@ class DoubleTapToMaxOrRestore extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onPanStart: (details) {
-        windowManager.startDragging();
-      },
       onDoubleTap: () async {
         final isMaximized = await windowManager.isMaximized();
         if (!isMaximized) {
