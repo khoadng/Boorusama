@@ -284,8 +284,9 @@ Future<void> boot(BootLogger bootLogger) async {
   void run() {
     runApp(
       Reboot(
+        initialConfigs: allConfigs,
         initialConfig: initialConfig ?? BooruConfig.empty,
-        builder: (context, config) => BooruLocalization(
+        builder: (context, config, configs) => BooruLocalization(
           child: ProviderScope(
             overrides: [
               favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
@@ -297,7 +298,7 @@ Future<void> boot(BootLogger bootLogger) async {
                   .overrideWith(() => SettingsNotifier(settings)),
               booruConfigRepoProvider.overrideWithValue(booruUserRepo),
               booruConfigProvider.overrideWith(() => BooruConfigNotifier(
-                    initialConfigs: allConfigs,
+                    initialConfigs: configs,
                   )),
               initialSettingsBooruConfigProvider.overrideWithValue(config),
               globalBlacklistedTagRepoProvider
