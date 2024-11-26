@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -52,7 +53,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageScaffoldState<T extends Post>
-    extends ConsumerState<PostDetailsPageScaffold<T>> with RouteAware {
+    extends ConsumerState<PostDetailsPageScaffold<T>> {
   late final _posts = widget.posts;
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
@@ -70,47 +71,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     });
   }
 
-  var _isRouteSubscribed = false;
-
-  @override
-  void didChangeDependencies() {
-    final route = ModalRoute.of(context);
-    if (route is PageRoute && route.fullscreenDialog) {
-      routeObserver.subscribe(this, route);
-      _isRouteSubscribed = true;
-    }
-    super.didChangeDependencies();
-  }
-
   var _previouslyPlaying = false;
-
-  @override
-  void didPushNext() {
-    _previouslyPlaying = widget.controller.isVideoPlaying.value;
-    if (_previouslyPlaying) {
-      widget.controller.pauseCurrentVideo();
-    }
-
-    super.didPushNext();
-  }
-
-  @override
-  void didPopNext() {
-    if (_previouslyPlaying) {
-      widget.controller.playCurrentVideo();
-    }
-    super.didPopNext();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    if (_isRouteSubscribed) {
-      routeObserver.unsubscribe(this);
-    }
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +96,22 @@ class _PostDetailPageScaffoldState<T extends Post>
       },
       child: CustomContextMenuOverlay(
         backgroundColor: context.colorScheme.secondaryContainer,
-        child: _build(),
+        child: VisibilityDetector(
+          key: const Key('post_details_page_scaffold'),
+          onVisibilityChanged: (info) {
+            if (info.visibleFraction == 0) {
+              _previouslyPlaying = widget.controller.isVideoPlaying.value;
+              if (_previouslyPlaying) {
+                widget.controller.pauseCurrentVideo();
+              }
+            } else if (info.visibleFraction == 1) {
+              if (_previouslyPlaying) {
+                widget.controller.playCurrentVideo();
+              }
+            }
+          },
+          child: _build(),
+        ),
       ),
     );
   }
