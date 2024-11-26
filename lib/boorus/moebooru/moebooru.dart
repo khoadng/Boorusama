@@ -16,7 +16,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
@@ -29,7 +28,7 @@ import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
     Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+  final dio = ref.watch(dioProvider(booruConfig));
 
   return MoebooruClient.custom(
     baseUrl: booruConfig.url,

@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/http/http.dart';
 
 extension PostDetailsUtils<T extends Post> on List<T> {
   (T? prev, T? next) getPrevAndNextPosts(int index) {

@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
@@ -234,20 +235,20 @@ class DioArgs {
   final BooruFactory booruFactory;
 }
 
-final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
+final dioProvider = Provider.family<Dio, BooruConfig>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
   final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
 
-  return DioArgs(
+  return newDio(DioArgs(
     cacheDir: cacheDir,
     baseUrl: config.url,
     userAgentGenerator: userAgentGenerator,
     booruConfig: config,
     loggerService: loggerService,
     booruFactory: booruFactory,
-  );
+  ));
 });
 
 final httpCacheDirProvider = Provider<Directory>(
@@ -492,7 +493,7 @@ final blacklistTagsProvider =
 
 final booruSiteValidatorProvider =
     FutureProvider.autoDispose.family<bool, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+  final dio = ref.watch(dioProvider(config));
   final login =
       config.login.toOption().fold(() => null, (v) => v.isEmpty ? null : v);
   final apiKey =

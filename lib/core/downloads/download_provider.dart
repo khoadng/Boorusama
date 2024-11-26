@@ -18,7 +18,7 @@ final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
     return BackgroundDownloader();
   },
   dependencies: [
-    dioArgsProvider,
+    dioProvider,
     downloadNotificationProvider,
     currentBooruConfigProvider,
     settingsProvider,

@@ -21,7 +21,6 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
@@ -31,7 +30,7 @@ const kGelbooruV2CustomDownloadFileNameFormat =
 
 final gelbooruV2ClientProvider =
     Provider.family<GelbooruV2Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+  final dio = ref.watch(dioProvider(booruConfig));
 
   return GelbooruV2Client.custom(
     baseUrl: booruConfig.url,
