@@ -60,19 +60,9 @@ class BoorusRoutes {
             final landscape = context.orientation.isLandscape;
 
             if (config == null) {
-              return landscape
-                  ? const BooruDialog(
-                      child: Scaffold(
-                        body: Center(
-                          child: Text('Booru not found or not loaded yet'),
-                        ),
-                      ),
-                    )
-                  : Scaffold(
-                      body: Center(
-                        child: Text('Booru not found or not loaded yet'),
-                      ),
-                    );
+              return const LargeScreenAwareInvalidPage(
+                message: 'Booru not found or not loaded yet',
+              );
             }
 
             final booruBuilder = ref.readBooruBuilder(config);

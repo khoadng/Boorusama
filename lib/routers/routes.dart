@@ -23,10 +23,6 @@ import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'routes/configs.dart';
-import 'routes/downloads.dart';
-import 'routes/settings.dart';
-import 'widgets/failsafe_page.dart';
 
 ///
 /// When navigate to a page, must query the booru builders first to get the correct builder.

@@ -17,8 +17,6 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/routers/widgets/failsafe_page.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'blacklist/blacklist.dart';
 import 'comments/comments.dart';
 import 'dmails/dmails.dart';
@@ -65,38 +63,13 @@ final danbooruCustomRoutes = [
   ),
   GoRoute(
     path: '/internal/danbooru/posts/:id/editor',
-    pageBuilder: (context, state) {
-      final post = state.extra as DanbooruPost?;
-
-      if (post == null) {
-        return CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const InvalidPage(
-            message: 'Invalid post',
-          ),
-        );
-      }
-
-      final page = TagEditPage(
+    pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPost>(
+      errorScreenMessage: 'Invalid post',
+      fullScreen: true,
+      pageBuilder: (context, state, post) => TagEditPage(
         post: post,
-      );
-
-      if (!context.isLargeScreen) {
-        return CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: page,
-        );
-      } else {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          name: state.name,
-          child: page,
-          transitionsBuilder: fadeTransitionBuilder(),
-        );
-      }
-    },
+      ),
+    ),
   ),
   GoRoute(
     path: '/internal/danbooru/posts/:id/comments/editor',
@@ -215,23 +188,10 @@ final danbooruDirectRoutes = [
     routes: [
       GoRoute(
         path: ':id',
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: Builder(
-            builder: (context) {
-              final topic = state.extra as DanbooruForumTopic?;
-
-              if (topic == null) {
-                return const InvalidPage(
-                  message: 'Invalid topic',
-                );
-              }
-
-              return DanbooruForumPostsPage(
-                topic: topic,
-              );
-            },
+        pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruForumTopic>(
+          errorScreenMessage: 'Invalid topic',
+          pageBuilder: (context, state, topic) => DanbooruForumPostsPage(
+            topic: topic,
           ),
         ),
       ),
@@ -247,23 +207,14 @@ final danbooruDirectRoutes = [
     routes: [
       GoRoute(
         path: ':id',
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: Builder(builder: (context) {
-            final group = state.extra as DanbooruFavoriteGroup?;
-
-            if (group == null) {
-              return const InvalidPage(
-                message: 'Invalid group',
-              );
-            }
-
-            return FavoriteGroupDetailsPage(
-              group: group,
-              postIds: QueueList.from(group.postIds),
-            );
-          }),
+        pageBuilder:
+            largeScreenCompatPageBuilderWithExtra<DanbooruFavoriteGroup>(
+          errorScreenMessage: 'Invalid group',
+          fullScreen: true,
+          pageBuilder: (context, state, group) => FavoriteGroupDetailsPage(
+            group: group,
+            postIds: QueueList.from(group.postIds),
+          ),
         ),
       ),
     ],
@@ -326,17 +277,12 @@ final danbooruDirectRoutes = [
   ),
   GoRoute(
     path: '/danbooru/post_versions',
-    pageBuilder: (context, state) {
-      final post = state.extra as DanbooruPost;
-
-      return CupertinoPage(
-        key: state.pageKey,
-        name: state.name,
-        child: DanbooruPostVersionsPage.post(
-          post: post,
-        ),
-      );
-    },
+    pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPost>(
+      errorScreenMessage: 'Invalid post',
+      pageBuilder: (context, state, post) => DanbooruPostVersionsPage.post(
+        post: post,
+      ),
+    ),
   ),
   GoRoute(
     path: '/danbooru/pools',
@@ -347,67 +293,38 @@ final danbooruDirectRoutes = [
     ),
     routes: [
       GoRoute(
-        path: ':id',
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: PoolDetailPage(
-            pool: state.extra as DanbooruPool,
-          ),
+        path: 'search',
+        pageBuilder: largeScreenAwarePageBuilder(
+          useDialog: true,
+          builder: (context, state) => const PoolSearchPage(),
         ),
       ),
       GoRoute(
-        path: 'search',
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const PoolSearchPage(),
+        path: ':id',
+        pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPool>(
+          errorScreenMessage: 'Invalid pool',
+          pageBuilder: (context, state, pool) => PoolDetailPage(
+            pool: pool,
+          ),
         ),
       ),
     ],
   ),
   GoRoute(
     path: '/danbooru/uploads',
-    pageBuilder: (context, state) => CupertinoPage(
-      key: state.pageKey,
-      name: state.name,
-      child: const DanbooruUploadsPage(),
+    pageBuilder: largeScreenAwarePageBuilder(
+      builder: (context, state) => const DanbooruUploadsPage(),
     ),
     routes: [
       GoRoute(
         path: ':id',
-        pageBuilder: (context, state) {
-          final post = state.extra as DanbooruUploadPost?;
-
-          if (post == null) {
-            return CupertinoPage(
-              key: state.pageKey,
-              name: state.name,
-              child: const InvalidPage(
-                message: 'Invalid post',
-              ),
-            );
-          }
-
-          final page = TagEditUploadPage(
+        pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruUploadPost>(
+          errorScreenMessage: 'Invalid upload',
+          fullScreen: true,
+          pageBuilder: (context, state, post) => TagEditUploadPage(
             post: post,
-          );
-
-          if (!context.isLargeScreen) {
-            return CupertinoPage(
-              key: state.pageKey,
-              name: state.name,
-              child: page,
-            );
-          } else {
-            return CustomTransitionPage(
-              key: state.pageKey,
-              name: state.name,
-              child: page,
-              transitionsBuilder: fadeTransitionBuilder(),
-            );
-          }
-        },
+          ),
+        ),
       ),
     ],
   ),
@@ -670,12 +587,7 @@ void goToUserDetailsPage(
 void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
   context.push(
     Uri(
-      pathSegments: [
-        '',
-        'danbooru',
-        'pools',
-        'search',
-      ],
+      path: '/danbooru/pools/search',
     ).toString(),
   );
 }
