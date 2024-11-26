@@ -1,9 +1,11 @@
 // Flutter imports:
-import 'package:boorusama/foundation/platform.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:video_player/video_player.dart';
+
+// Project imports:
+import 'package:boorusama/foundation/platform.dart';
 
 class VideoProgressBar extends StatefulWidget {
   const VideoProgressBar({

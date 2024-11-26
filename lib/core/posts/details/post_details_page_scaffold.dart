@@ -458,7 +458,7 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
       child: CustomScrollView(
         controller: scrollController,
         slivers: [
-          const SliverSizedBox(height: 12),
+          const SliverSizedBox(height: 24),
           ...slivers,
           SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom + 72,
