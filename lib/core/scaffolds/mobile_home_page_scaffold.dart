@@ -54,7 +54,7 @@ class _MobileHomePageScaffoldState
             },
           ),
           const SliverAppAnnouncementBanner(),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: postController,

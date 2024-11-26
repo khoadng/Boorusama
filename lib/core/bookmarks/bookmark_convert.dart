@@ -30,6 +30,7 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
                 md5: hiveObject.md5!,
                 tags: hiveObject.tags?.toSet() ?? {},
                 realSourceUrl: hiveObject.realSourceUrl,
+                format: hiveObject.format,
               ))
           .toList(),
       (o, s) {
@@ -56,6 +57,7 @@ Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
         md5: hiveObject.md5!,
         tags: hiveObject.tags?.toSet() ?? {},
         realSourceUrl: hiveObject.realSourceUrl,
+        format: hiveObject.format,
       ),
       (o, s) => BookmarkGetError.nullField,
     );
@@ -74,6 +76,7 @@ BookmarkHiveObject favoriteToHiveObject(Bookmark bookmark) {
     md5: bookmark.md5,
     tags: bookmark.tags.toList(),
     realSourceUrl: bookmark.realSourceUrl,
+    format: bookmark.format,
   );
 }
 
@@ -126,7 +129,7 @@ extension BookmarkToPost on Bookmark {
         score: 0,
         duration: 0,
         fileSize: 0,
-        format: extension(originalUrl),
+        format: format ?? extension(originalUrl),
         hasSound: null,
         height: height,
         md5: md5,
@@ -154,5 +157,6 @@ extension PostToBookmark on Post {
         md5: md5,
         tags: tags,
         realSourceUrl: source.url,
+        format: format,
       );
 }

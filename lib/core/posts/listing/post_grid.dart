@@ -100,10 +100,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
       refreshAtStart: widget.refreshAtStart,
       enablePullToRefresh: widget.enablePullToRefresh,
       safeArea: widget.safeArea,
-      gridHeader: ResponsiveLayoutBuilder(
-        phone: (context) => _buildConfigHeader(ref, Axis.horizontal),
-        pc: (context) => _buildConfigHeader(ref, Axis.vertical),
-      ),
+      gridHeader: _buildConfigHeader(ref, Axis.horizontal),
       settings: settings,
     );
   }
@@ -366,202 +363,191 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       },
       child: ColoredBox(
         color: context.colorScheme.surface,
-        child: PostGridConfigRegion(
-          postController: controller,
-          blacklistHeader: widget.gridHeader,
-          child: ConditionalParentWidget(
-            condition: widget.safeArea,
-            conditionalBuilder: (child) => SafeArea(
-              bottom: false,
-              child: child,
-            ),
-            child: MultiSelectWidget<T>(
-              footer: widget.footer,
-              multiSelectController: _multiSelectController,
-              onMultiSelectChanged: (p0) => setState(() {
-                multiSelect = p0;
-              }),
-              header: widget.header != null
-                  ? widget.header!
-                  : AppBar(
-                      leading: IconButton(
-                        onPressed: () =>
-                            _multiSelectController.disableMultiSelect(),
-                        icon: const Icon(Symbols.close),
-                      ),
-                      actions: [
-                        IconButton(
-                          onPressed: () =>
-                              _multiSelectController.selectAll(items),
-                          icon: const Icon(Symbols.select_all),
-                        ),
-                        IconButton(
-                          onPressed: _multiSelectController.clearSelected,
-                          icon: const Icon(Symbols.clear_all),
-                        ),
-                      ],
-                      title: ValueListenableBuilder(
-                        valueListenable:
-                            _multiSelectController.selectedItemsNotifier,
-                        builder: (_, selected, __) => selected.isEmpty
-                            ? const Text('Select items')
-                            : Text('${selected.length} Items selected'),
-                      ),
+        child: ConditionalParentWidget(
+          condition: widget.safeArea,
+          conditionalBuilder: (child) => SafeArea(
+            bottom: false,
+            child: child,
+          ),
+          child: MultiSelectWidget<T>(
+            footer: widget.footer,
+            multiSelectController: _multiSelectController,
+            onMultiSelectChanged: (p0) => setState(() {
+              multiSelect = p0;
+            }),
+            header: widget.header != null
+                ? widget.header!
+                : AppBar(
+                    leading: IconButton(
+                      onPressed: () =>
+                          _multiSelectController.disableMultiSelect(),
+                      icon: const Icon(Symbols.close),
                     ),
-              child: Scaffold(
-                extendBody: true,
-                floatingActionButton: ScrollToTop(
-                  scrollController: _autoScrollController,
-                  onBottomReached: () {
-                    if (controller.pageMode == PageMode.infinite && hasMore) {
-                      widget.onLoadMore?.call();
-                      controller.fetchMore();
-                    }
-                  },
-                  child: widget.extendBody
-                      ? Padding(
-                          padding: EdgeInsets.only(
-                            bottom: widget.extendBodyHeight ??
-                                kBottomNavigationBarHeight,
-                          ),
-                          child: BooruScrollToTopButton(
-                            onPressed: _onScrollToTop,
-                          ),
-                        )
-                      : BooruScrollToTopButton(
+                    actions: [
+                      IconButton(
+                        onPressed: () =>
+                            _multiSelectController.selectAll(items),
+                        icon: const Icon(Symbols.select_all),
+                      ),
+                      IconButton(
+                        onPressed: _multiSelectController.clearSelected,
+                        icon: const Icon(Symbols.clear_all),
+                      ),
+                    ],
+                    title: ValueListenableBuilder(
+                      valueListenable:
+                          _multiSelectController.selectedItemsNotifier,
+                      builder: (_, selected, __) => selected.isEmpty
+                          ? const Text('Select items')
+                          : Text('${selected.length} Items selected'),
+                    ),
+                  ),
+            child: Scaffold(
+              extendBody: true,
+              floatingActionButton: ScrollToTop(
+                scrollController: _autoScrollController,
+                onBottomReached: () {
+                  if (controller.pageMode == PageMode.infinite && hasMore) {
+                    widget.onLoadMore?.call();
+                    controller.fetchMore();
+                  }
+                },
+                child: widget.extendBody
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                          bottom: widget.extendBodyHeight ??
+                              kBottomNavigationBarHeight,
+                        ),
+                        child: BooruScrollToTopButton(
                           onPressed: _onScrollToTop,
                         ),
+                      )
+                    : BooruScrollToTopButton(
+                        onPressed: _onScrollToTop,
+                      ),
+              ),
+              body: ConditionalParentWidget(
+                condition: kPreferredLayout.isMobile,
+                conditionalBuilder: (child) => RefreshIndicator(
+                  edgeOffset: 60,
+                  displacement: 50,
+                  notificationPredicate:
+                      widget.enablePullToRefresh ? (_) => true : (_) => false,
+                  onRefresh: () async {
+                    widget.onRefresh?.call();
+                    _multiSelectController.clearSelected();
+                    await controller.refresh(
+                      maintainPage: true,
+                    );
+                  },
+                  child: child,
                 ),
-                body: ConditionalParentWidget(
-                  condition: kPreferredLayout.isMobile,
-                  conditionalBuilder: (child) => RefreshIndicator(
-                    edgeOffset: 60,
-                    displacement: 50,
-                    notificationPredicate:
-                        widget.enablePullToRefresh ? (_) => true : (_) => false,
-                    onRefresh: () async {
-                      widget.onRefresh?.call();
-                      _multiSelectController.clearSelected();
-                      await controller.refresh(
-                        maintainPage: true,
-                      );
-                    },
-                    child: child,
-                  ),
-                  child: ImprovedScrolling(
-                    scrollController: _autoScrollController,
-                    // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
-                    // ignore: avoid_redundant_argument_values
-                    enableKeyboardScrolling: false,
-                    enableMMBScrolling: true,
-                    child: ConditionalParentWidget(
-                      // Should remove this later
-                      condition: true,
-                      conditionalBuilder: (child) => ValueListenableBuilder(
-                        valueListenable: refreshing,
-                        builder: (_, refreshing, __) =>
-                            _buildPaginatedSwipe(context, child, refreshing),
-                      ),
-                      child: CustomScrollView(
-                        controller: _autoScrollController,
-                        slivers: [
-                          if (widget.sliverHeaders != null)
-                            ...widget.sliverHeaders!.map((e) => SliverOffstage(
-                                  offstage: multiSelect,
-                                  sliver: e,
-                                )),
-                          if (settings.showPostListConfigHeader)
-                            ResponsiveLayoutBuilder(
-                              phone: (context) =>
-                                  ConditionalValueListenableBuilder(
-                                valueListenable: refreshing,
-                                useFalseChildAsCache: true,
-                                trueChild: const SliverSizedBox.shrink(),
-                                falseChild: SliverPinnedHeader(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: settings.imageGridPadding,
-                                    ),
-                                    child: widget.gridHeader,
-                                  ),
-                                ),
-                              ),
-                              pc: (context) => const SliverSizedBox.shrink(),
-                            ),
+                child: ImprovedScrolling(
+                  scrollController: _autoScrollController,
+                  // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
+                  // ignore: avoid_redundant_argument_values
+                  enableKeyboardScrolling: false,
+                  enableMMBScrolling: true,
+                  child: ConditionalParentWidget(
+                    // Should remove this later
+                    condition: true,
+                    conditionalBuilder: (child) => ValueListenableBuilder(
+                      valueListenable: refreshing,
+                      builder: (_, refreshing, __) =>
+                          _buildPaginatedSwipe(context, child, refreshing),
+                    ),
+                    child: CustomScrollView(
+                      controller: _autoScrollController,
+                      slivers: [
+                        if (widget.sliverHeaders != null)
+                          ...widget.sliverHeaders!.map((e) => SliverOffstage(
+                                offstage: multiSelect,
+                                sliver: e,
+                              )),
+                        if (settings.showPostListConfigHeader)
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,
                             useFalseChildAsCache: true,
                             trueChild: const SliverSizedBox.shrink(),
-                            falseChild: const SliverToBoxAdapter(
-                              child: HighresPreviewOnMobileDataWarningBanner(),
+                            falseChild: SliverPinnedHeader(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: settings.imageGridPadding,
+                                ),
+                                child: widget.gridHeader,
+                              ),
                             ),
                           ),
+                        ConditionalValueListenableBuilder(
+                          valueListenable: refreshing,
+                          useFalseChildAsCache: true,
+                          trueChild: const SliverSizedBox.shrink(),
+                          falseChild: const SliverToBoxAdapter(
+                            child: HighresPreviewOnMobileDataWarningBanner(),
+                          ),
+                        ),
+                        ConditionalValueListenableBuilder(
+                          valueListenable: refreshing,
+                          useFalseChildAsCache: true,
+                          trueChild: const SliverSizedBox.shrink(),
+                          falseChild: const SliverToBoxAdapter(
+                            child: TooMuchCachedImagesWarningBanner(
+                              threshold: _kImageCacheThreshold,
+                            ),
+                          ),
+                        ),
+                        const SliverSizedBox(
+                          height: 4,
+                        ),
+                        if (pageMode == PageMode.paginated &&
+                            settings.pageIndicatorPosition.isVisibleAtTop)
+                          ConditionalValueListenableBuilder(
+                            valueListenable: refreshing,
+                            useFalseChildAsCache: true,
+                            falseChild: SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: _buildPageIndicator(settings),
+                              ),
+                            ),
+                            trueChild: const SliverSizedBox.shrink(),
+                          ),
+                        widget.body,
+                        if (pageMode == PageMode.infinite)
+                          ConditionalValueListenableBuilder(
+                            valueListenable: loading,
+                            falseChild: const SliverSizedBox.shrink(),
+                            trueChild: SliverPadding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              sliver: SliverToBoxAdapter(
+                                child: Center(
+                                  child: SpinKitPulse(
+                                    color: context.theme.colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (pageMode == PageMode.paginated &&
+                            settings.pageIndicatorPosition.isVisibleAtBottom)
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,
                             useFalseChildAsCache: true,
                             trueChild: const SliverSizedBox.shrink(),
-                            falseChild: const SliverToBoxAdapter(
-                              child: TooMuchCachedImagesWarningBanner(
-                                threshold: _kImageCacheThreshold,
+                            falseChild: SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 40,
+                                  bottom: 20,
+                                ),
+                                child: _buildPageIndicator(settings),
                               ),
                             ),
                           ),
-                          const SliverSizedBox(
-                            height: 4,
-                          ),
-                          if (pageMode == PageMode.paginated &&
-                              settings.pageIndicatorPosition.isVisibleAtTop)
-                            ConditionalValueListenableBuilder(
-                              valueListenable: refreshing,
-                              useFalseChildAsCache: true,
-                              falseChild: SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: _buildPageIndicator(settings),
-                                ),
-                              ),
-                              trueChild: const SliverSizedBox.shrink(),
-                            ),
-                          widget.body,
-                          if (pageMode == PageMode.infinite)
-                            ConditionalValueListenableBuilder(
-                              valueListenable: loading,
-                              falseChild: const SliverSizedBox.shrink(),
-                              trueChild: SliverPadding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                sliver: SliverToBoxAdapter(
-                                  child: Center(
-                                    child: SpinKitPulse(
-                                      color:
-                                          context.theme.colorScheme.onSurface,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          if (pageMode == PageMode.paginated &&
-                              settings.pageIndicatorPosition.isVisibleAtBottom)
-                            ConditionalValueListenableBuilder(
-                              valueListenable: refreshing,
-                              useFalseChildAsCache: true,
-                              trueChild: const SliverSizedBox.shrink(),
-                              falseChild: SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 40,
-                                    bottom: 20,
-                                  ),
-                                  child: _buildPageIndicator(settings),
-                                ),
-                              ),
-                            ),
-                          SliverSizedBox(
-                            height:
-                                MediaQuery.viewPaddingOf(context).bottom + 12,
-                          ),
-                        ],
-                      ),
+                        SliverSizedBox(
+                          height: MediaQuery.viewPaddingOf(context).bottom + 12,
+                        ),
+                      ],
                     ),
                   ),
                 ),

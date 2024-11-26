@@ -184,7 +184,7 @@ class SliverBookmarkGrid extends ConsumerWidget {
             ),
             isAnimated: bookmark.isVideo,
             isAI: bookmark.isAI,
-            onTap: () => context.go('/bookmarks/details?index=$index'),
+            onTap: () => goToBookmarkDetailsPage(context, index),
             image: BooruImage(
               borderRadius: BorderRadius.circular(borderRadius),
               aspectRatio: bookmark.aspectRatio,

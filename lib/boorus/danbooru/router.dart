@@ -82,7 +82,7 @@ final danbooruCustomRoutes = [
         post: post,
       );
 
-      if (context.orientation.isPortrait) {
+      if (!context.isLargeScreen) {
         return CupertinoPage(
           key: state.pageKey,
           name: state.name,
@@ -393,7 +393,7 @@ final danbooruDirectRoutes = [
             post: post,
           );
 
-          if (context.orientation.isPortrait) {
+          if (!context.isLargeScreen) {
             return CupertinoPage(
               key: state.pageKey,
               name: state.name,

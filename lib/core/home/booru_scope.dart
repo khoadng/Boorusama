@@ -68,7 +68,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
     final desktopViews = widget.desktopViews
         .mapIndexed((i, e) => Scaffold(
-              appBar: !context.isLandscapeLayout && i > 0
+              appBar: !context.isLargeScreen && i > 0
                   ? AppBar(
                       leading: BackButton(
                         onPressed: () {
@@ -178,7 +178,7 @@ List<Widget> coreDesktopTabBuilder(
       selectedIcon: Symbols.settings,
       icon: Symbols.settings,
       title: 'sideMenu.settings'.tr(),
-      onTap: () => context.go('/settings'),
+      onTap: () => goToSettingsPage(context),
     ),
     const SizedBox(height: 8),
   ];

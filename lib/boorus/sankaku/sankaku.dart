@@ -162,7 +162,7 @@ class SankakuArtistPostsSection extends ConsumerWidget {
           ? post.artistTags
               .map((tag) => SliverArtistPostList(
                     tag: tag,
-                    builder: (tag) => ref
+                    child: ref
                         .watch(sankakuArtistPostsProvider(
                             post.artistTags.firstOrNull))
                         .maybeWhen(

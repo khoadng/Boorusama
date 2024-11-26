@@ -76,9 +76,10 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (context.isLandscapeLayout) ...[
+                if (context.isLargeScreen) ...[
                   SafeArea(
                     right: false,
+                    bottom: false,
                     child: _SidebarSettingsListener(
                       builder: (_, bottom, __) => bottom
                           ? const SizedBox.shrink()
@@ -101,7 +102,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
               ],
             ),
           ),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             _SidebarSettingsListener(
               builder: (_, bottom, hideLabel) => bottom
                   ? SizedBox(

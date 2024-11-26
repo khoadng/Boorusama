@@ -251,7 +251,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   void _onImportSuccess(String message, List<BooruConfig> configs) {
     final config = configs.first;
-    Reboot.start(context, config);
+    Reboot.start(context, config, configs);
   }
 
   Future<void> _pickBookmarkFolder(WidgetRef ref) =>
