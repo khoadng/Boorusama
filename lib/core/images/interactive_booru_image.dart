@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -21,7 +20,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     required this.aspectRatio,
     required this.imageUrl,
     this.placeholderImageUrl,
-    this.previewCacheManager,
     this.imageOverlayBuilder,
     this.width,
     this.height,
@@ -32,7 +30,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   final double? aspectRatio;
   final String imageUrl;
   final String? placeholderImageUrl;
-  final CacheManager? previewCacheManager;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final double? width;
   final double? height;

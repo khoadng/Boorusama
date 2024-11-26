@@ -767,7 +767,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                         builder: (_, state, __) => GestureDetector(
                           // let the user tap the image to toggle overlay
                           onTap: () => _controller.onImageTap(context),
-                          child: InteractiveViewExtended(
+                          child: InteractiveViewerExtended(
                             enable: !state.isExpanded,
                             onZoomUpdated: _controller.onZoomUpdated,
                             onTap: () => _controller.onImageTap(context),

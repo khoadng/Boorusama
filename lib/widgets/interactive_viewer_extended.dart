@@ -1,8 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-class InteractiveViewExtended extends StatefulWidget {
-  const InteractiveViewExtended({
+class InteractiveViewerExtended extends StatefulWidget {
+  const InteractiveViewerExtended({
     super.key,
     required this.child,
     this.onTap,
@@ -24,11 +24,11 @@ class InteractiveViewExtended extends StatefulWidget {
   final bool enable;
 
   @override
-  State<InteractiveViewExtended> createState() =>
-      _InteractiveViewExtendedState();
+  State<InteractiveViewerExtended> createState() =>
+      _InteractiveViewerExtendedState();
 }
 
-class _InteractiveViewExtendedState extends State<InteractiveViewExtended>
+class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
     with SingleTickerProviderStateMixin {
   late final _controller = widget.controller ?? TransformationController();
   TapDownDetails? _doubleTapDetails;
@@ -50,7 +50,7 @@ class _InteractiveViewExtendedState extends State<InteractiveViewExtended>
   }
 
   @override
-  void didUpdateWidget(covariant InteractiveViewExtended oldWidget) {
+  void didUpdateWidget(covariant InteractiveViewerExtended oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.enable != widget.enable) {

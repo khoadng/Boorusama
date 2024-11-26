@@ -11,7 +11,6 @@ dependencies:
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
   background_downloader: ^8.5.6
-  cached_network_image: ^3.4.1
   clock: ^1.1.1
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
@@ -43,7 +42,6 @@ dependencies:
   fl_chart: ^0.69.0
   flutter:
     sdk: flutter
-  flutter_cache_manager: ^3.4.1
   flutter_html: ^3.0.0-beta.2
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^17.2.3
@@ -80,7 +78,6 @@ dependencies:
   percent_indicator: ^4.2.3
   permission_handler: ^11.3.1
   petitparser: ^6.0.2
-  photo_view: ^0.15.0
   rate_my_app: 1.1.4 # DO NOT UPDATE, 2.0.0 is adding unnecessary permissions
   readmore: ^3.0.0
   recase: ^4.1.0
