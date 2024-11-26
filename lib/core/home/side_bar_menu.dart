@@ -91,7 +91,7 @@ class SideBarMenu extends ConsumerWidget {
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
-                            context.go('/bookmarks');
+                            goToBookmarkPage(context);
                           },
                         ),
                         SideMenuTile(
@@ -99,7 +99,7 @@ class SideBarMenu extends ConsumerWidget {
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
-                            context.go('/global_blacklisted_tags');
+                            goToGlobalBlacklistedTagsPage(context);
                           },
                         ),
                         SideMenuTile(
@@ -107,7 +107,7 @@ class SideBarMenu extends ConsumerWidget {
                           title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
-                            context.go('/favorite_tags');
+                            goToFavoriteTagsPage(context);
                           },
                         ),
                         SideMenuTile(
@@ -127,7 +127,7 @@ class SideBarMenu extends ConsumerWidget {
                           title: const Text('Download manager'),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
-                            context.go('/download_manager');
+                            goToDownloadManagerPage(context);
                           },
                         ),
                         const Divider(
@@ -141,7 +141,7 @@ class SideBarMenu extends ConsumerWidget {
                           title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
-                            context.go('/settings?scrollTo=support');
+                            goToSettingsPage(context, scrollTo: 'support');
                           },
                         ),
                         SideMenuTile(
@@ -152,7 +152,7 @@ class SideBarMenu extends ConsumerWidget {
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
                             if (popOnSelect) context.navigator.pop();
-                            context.go('/settings');
+                            goToSettingsPage(context);
                           },
                         ),
                       ].map((e) => Padding(

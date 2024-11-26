@@ -178,7 +178,7 @@ List<Widget> coreDesktopTabBuilder(
       selectedIcon: Symbols.settings,
       icon: Symbols.settings,
       title: 'sideMenu.settings'.tr(),
-      onTap: () => context.go('/settings'),
+      onTap: () => goToSettingsPage(context),
     ),
     const SizedBox(height: 8),
   ];

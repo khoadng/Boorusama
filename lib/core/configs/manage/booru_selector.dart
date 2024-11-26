@@ -231,7 +231,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
 
   Widget get addButton => IconButton(
         splashRadius: 20,
-        onPressed: () => context.go('/boorus/add'),
+        onPressed: () => goToAddBooruConfigPage(context),
         icon: const Icon(Symbols.add),
       );
 }

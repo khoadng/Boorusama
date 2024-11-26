@@ -24,7 +24,6 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -46,7 +45,9 @@ void goToOriginalImagePage(BuildContext context, Post post) {
   }
 
   context.push(
-    '/original_image_viewer',
+    Uri(
+      path: '/original_image_viewer',
+    ).toString(),
     extra: post,
   );
 }
@@ -56,15 +57,29 @@ void goToSearchPage(
   String? tag,
 }) {
   if (tag == null) {
-    context.push('/search');
+    context.push(
+      Uri(
+        path: '/search',
+      ).toString(),
+    );
   } else {
-    final encodedTag = Uri.encodeComponent(tag);
-    context.push('/search?$kInitialQueryKey=$encodedTag');
+    context.push(
+      Uri(
+        path: '/search',
+        queryParameters: {
+          kInitialQueryKey: tag,
+        },
+      ).toString(),
+    );
   }
 }
 
 void goToFavoritesPage(BuildContext context) {
-  context.go('/favorites');
+  context.push(
+    Uri(
+      path: '/favorites',
+    ).toString(),
+  );
 }
 
 void goToArtistPage(
@@ -73,15 +88,27 @@ void goToArtistPage(
 ) {
   if (artistName == null) return;
 
-  final encodedArtistName = Uri.encodeComponent(artistName);
-  context.push('/artists?$kArtistNameKey=$encodedArtistName');
+  context.push(
+    Uri(
+      path: '/artists',
+      queryParameters: {
+        kArtistNameKey: artistName,
+      },
+    ).toString(),
+  );
 }
 
 void goToCharacterPage(BuildContext context, String character) {
   if (character.isEmpty) return;
 
-  final encodedCharacter = Uri.encodeComponent(character);
-  context.push('/characters?$kCharacterNameKey=$encodedCharacter');
+  context.push(
+    Uri(
+      path: '/characters',
+      queryParameters: {
+        kCharacterNameKey: character,
+      },
+    ).toString(),
+  );
 }
 
 void goToPostDetailsPageFromPosts<T extends Post>({
@@ -118,10 +145,7 @@ void goToPostDetailsPageCore<T extends Post>({
 }) {
   context.push(
     Uri(
-      pathSegments: [
-        '',
-        'details',
-      ],
+      path: '/details',
     ).toString(),
     extra: DetailsPayload(
       initialIndex: initialIndex,
@@ -253,6 +277,16 @@ void goToUpdateBooruConfigPage(
   );
 }
 
+void goToAddBooruConfigPage(
+  BuildContext context,
+) {
+  context.push(
+    Uri(
+      path: '/boorus/add',
+    ).toString(),
+  );
+}
+
 void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
   final builder = ref.readBooruBuilder(ref.readConfig)?.commentPageBuilder;
 
@@ -316,44 +350,6 @@ void goToQuickSearchPage(
   );
 }
 
-Future<T?> showDesktopDialogWindow<T>(
-  BuildContext context, {
-  required Widget Function(BuildContext context) builder,
-  double? width,
-  double? height,
-  Color? backgroundColor,
-  EdgeInsets? margin,
-  RouteSettings? settings,
-}) =>
-    showGeneralDialog(
-      context: context,
-      routeSettings: settings,
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black87,
-      pageBuilder: (context, _, __) {
-        return Dialog(
-          backgroundColor:
-              backgroundColor ?? context.colorScheme.surfaceContainerHighest,
-          child: Container(
-            width: width ?? context.screenWidth * 0.8,
-            height: height ?? context.screenHeight * 0.8,
-            margin: margin ??
-                const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
-              ),
-            ),
-            child: builder(context),
-          ),
-        );
-      },
-    );
-
 Future<void> goToBulkDownloadPage(
   BuildContext context,
   List<String>? tags, {
@@ -370,31 +366,66 @@ Future<void> goToBulkDownloadPage(
   }
 }
 
-Future<T?> showDesktopFullScreenWindow<T>(
-  BuildContext context, {
-  required Widget Function(BuildContext context) builder,
-}) =>
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (context, _, __) {
-        return builder(context);
-      },
-    );
+Future<void> goToBookmarkPage(
+  BuildContext context,
+) async {
+  context.push(
+    Uri(
+      path: '/bookmarks',
+    ).toString(),
+  );
+}
 
-Future<T?> showDesktopWindow<T>(
+Future<void> goToBookmarkDetailsPage(
+  BuildContext context,
+  int index,
+) async {
+  context.push(
+    Uri(
+      path: '/bookmarks/details',
+      queryParameters: {
+        'index': index.toString(),
+      },
+    ).toString(),
+  );
+}
+
+void goToSettingsPage(
   BuildContext context, {
-  required Widget Function(BuildContext context) builder,
-  double? width,
-}) =>
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (context, _, __) => Dialog(
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        child: BooruDialog(
-          width: width ?? context.screenWidth * 0.75,
-          child: builder(context),
-        ),
-      ),
-    );
+  String? scrollTo,
+}) {
+  context.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        if (scrollTo != null) 'scrollTo': scrollTo,
+      },
+    ).toString(),
+  );
+}
+
+void goToDownloadManagerPage(
+  BuildContext context,
+) {
+  context.push(
+    Uri(
+      path: '/download_manager',
+    ).toString(),
+  );
+}
+
+void goToFavoriteTagsPage(BuildContext context) {
+  context.push(
+    Uri(
+      path: '/favorite_tags',
+    ).toString(),
+  );
+}
+
+void goToGlobalBlacklistedTagsPage(BuildContext context) {
+  context.push(
+    Uri(
+      path: '/global_blacklisted_tags',
+    ).toString(),
+  );
+}
