@@ -29,8 +29,8 @@ import 'package:boorusama/string.dart';
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
 
-class AppScope extends StatelessWidget {
-  const AppScope({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class AppScope extends StatelessWidget {
       child: OKToast(
         child: AnalyticsScope(
           child: NetworkListener(
-            child: App(),
+            child: _App(),
           ),
         ),
       ),
@@ -46,8 +46,8 @@ class AppScope extends StatelessWidget {
   }
 }
 
-class App extends ConsumerWidget {
-  const App({super.key});
+class _App extends ConsumerWidget {
+  const _App();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
