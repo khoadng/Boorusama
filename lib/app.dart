@@ -12,7 +12,6 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
@@ -30,66 +29,53 @@ import 'package:boorusama/string.dart';
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
 
-class App extends StatelessWidget {
-  const App({
-    super.key,
-    required this.appName,
-    required this.initialSettings,
-  });
-
-  final String appName;
-  final Settings initialSettings;
+class AppScope extends StatelessWidget {
+  const AppScope({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Portal(
+    return const Portal(
       child: OKToast(
         child: AnalyticsScope(
-          builder: (analyticsEnabled) => ThemeBuilder(
-            builder: (theme, themeMode) => RouterBuilder(
-              builder: (context, router) => NetworkListener(
-                child: ScrollBehaviorBuilder(
-                  builder: (context, behavior) => _buildApp(
-                    theme,
-                    themeMode,
-                    context,
-                    router,
-                    behavior,
-                  ),
-                ),
-              ),
-            ),
+          child: NetworkListener(
+            child: App(),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildApp(
-    ThemeData theme,
-    ThemeMode themeMode,
-    BuildContext context,
-    GoRouter router,
-    ScrollBehavior? scrollBehavior,
-  ) {
-    return MaterialApp.router(
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          iconTheme: Theme.of(context).iconTheme.copyWith(
-                weight: isWindows() ? 200 : 400,
-              ),
+class App extends ConsumerWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    final appInfo = ref.watch(appInfoProvider);
+    final reduceAnimations =
+        ref.watch(settingsProvider.select((value) => value.reduceAnimations));
+
+    return ThemeBuilder(
+      builder: (theme, themeMode) => MaterialApp.router(
+        builder: (context, child) => Theme(
+          data: Theme.of(context).copyWith(
+            iconTheme: Theme.of(context).iconTheme.copyWith(
+                  weight: isWindows() ? 200 : 400,
+                ),
+          ),
+          child: AppTitleBar(child: child!),
         ),
-        child: AppTitleBar(child: child!),
+        scrollBehavior: reduceAnimations ? const NoOverscrollBehavior() : null,
+        theme: theme,
+        themeMode: themeMode,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        debugShowCheckedModeBanner: false,
+        title: appInfo.appName,
+        routerConfig: router,
       ),
-      scrollBehavior: scrollBehavior,
-      theme: theme,
-      themeMode: themeMode,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      debugShowCheckedModeBanner: false,
-      title: appName,
-      routerConfig: router,
     );
   }
 }

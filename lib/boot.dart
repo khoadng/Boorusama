@@ -326,10 +326,7 @@ Future<void> boot(BootLogger bootLogger) async {
               if (crashlyticsReporter != null)
                 errorReporterProvider.overrideWithValue(crashlyticsReporter),
             ],
-            child: App(
-              appName: appInfo.appName,
-              initialSettings: settings,
-            ),
+            child: const App(),
           ),
         ),
       ),

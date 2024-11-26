@@ -29,19 +29,3 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
-
-class RouterBuilder extends ConsumerWidget {
-  const RouterBuilder({
-    super.key,
-    required this.builder,
-  });
-
-  final Widget Function(BuildContext context, GoRouter router) builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-
-    return builder(context, router);
-  }
-}
