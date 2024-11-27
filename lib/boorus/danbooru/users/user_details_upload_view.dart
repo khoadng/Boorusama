@@ -189,7 +189,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                   child: RichText(
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
-                      text: e.tag.replaceUnderscoreWithSpace(),
+                      text: e.tag.replaceAll('_', ' '),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: context.isDark

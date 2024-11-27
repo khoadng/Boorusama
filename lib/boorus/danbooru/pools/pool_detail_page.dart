@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -92,7 +91,7 @@ class PoolDetailPage extends ConsumerWidget {
           SliverToBoxAdapter(
             child: ListTile(
               title: Text(
-                pool.name.replaceUnderscoreWithSpace(),
+                pool.name.replaceAll('_', ' '),
                 style: context.theme.textTheme.titleLarge,
               ),
               subtitle: Text(

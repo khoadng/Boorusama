@@ -17,7 +17,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
@@ -132,7 +131,7 @@ class _FavoriteGroupDetailsPageState
             : null,
         appBar: AppBar(
           centerTitle: false,
-          title: Text(widget.group.name.replaceUnderscoreWithSpace()),
+          title: Text(widget.group.name.replaceAll('_', ' ')),
           actions: [
             if (!editing)
               IconButton(

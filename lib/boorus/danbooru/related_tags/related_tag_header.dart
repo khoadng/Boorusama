@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/related_tags/related_tags.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'related_tags.dart';
@@ -56,7 +55,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
               onAdd: () => widget.onAdded(item),
               onRemove: () => widget.onNegated(item),
               label: Text(
-                item.tag.replaceUnderscoreWithSpace(),
+                item.tag.replaceAll('_', ' '),
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,

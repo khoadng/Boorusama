@@ -95,7 +95,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(
-                          text: tag.name.replaceUnderscoreWithSpace(),
+                          text: tag.name.replaceAll('_', ' '),
                           style: TextStyle(
                             color: selected
                                 ? colors?.foregroundColor

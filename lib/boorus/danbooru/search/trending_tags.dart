@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/tags/danbooru_tag_context_menu.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
@@ -42,7 +41,7 @@ class TrendingTags extends ConsumerWidget {
                   color: color,
                   onPressed: () => onTagTap?.call(e.name.keyword),
                   label: Text(
-                    e.name.keyword.replaceUnderscoreWithSpace(),
+                    e.name.keyword.replaceAll('_', ' '),
                     style: TextStyle(
                       color: context.isDark ? color : null,
                     ),

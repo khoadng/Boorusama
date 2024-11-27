@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/wikis/wikis.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -57,7 +56,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
         itemBuilder: (context, index) => ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(
-            tags[index].tag.replaceUnderscoreWithSpace(),
+            tags[index].tag.replaceAll('_', ' '),
             style: TextStyle(
               color: ref.watch(tagColorProvider(tags[index].category.name)),
             ),

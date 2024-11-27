@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -32,7 +31,7 @@ class PoolTiles extends StatelessWidget {
               onTap: () => goToPoolDetailPage(context, e),
               visualDensity: const ShrinkVisualDensity(),
               title: Text(
-                e.name.replaceUnderscoreWithSpace(),
+                e.name.replaceAll('_', ' '),
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,

@@ -33,14 +33,14 @@ class TagSearchItem extends Equatable {
 
     if (metatag == null) {
       return TagSearchItem(
-        tag: tag.replaceUnderscoreWithSpace(),
+        tag: tag.replaceAll('_', ' '),
         operator: operator,
         originalTag: query,
       );
     }
 
     return TagSearchItem(
-      tag: tag.replaceAll('$metatag:', '').replaceUnderscoreWithSpace(),
+      tag: tag.replaceAll('$metatag:', '').replaceAll('_', ' '),
       operator: operator,
       metatag: metatag,
       originalTag: query,

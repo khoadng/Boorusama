@@ -14,7 +14,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -174,7 +173,7 @@ class _SavedSearchList extends ConsumerWidget {
           label: Text(
             text.fold(
               () => '<empty>',
-              (t) => t.replaceUnderscoreWithSpace(),
+              (t) => t.replaceAll('_', ' '),
             ),
             overflow: TextOverflow.fade,
           ),

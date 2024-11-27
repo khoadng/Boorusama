@@ -223,7 +223,7 @@ class ArtistNameInfoChip extends ConsumerWidget {
         tag: artist,
         child: CompactChip(
           textColor: colors?.foregroundColor,
-          label: artist.replaceUnderscoreWithSpace(),
+          label: artist.replaceAll('_', ' '),
           onTap: () => onTap?.call(artist),
           backgroundColor: colors?.backgroundColor,
         ),

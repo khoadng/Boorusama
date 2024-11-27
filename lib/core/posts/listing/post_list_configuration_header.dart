@@ -188,7 +188,7 @@ class _PostListConfigurationHeaderState
     final tags = [
       for (final tag in hiddenTags!)
         _BadgedChip(
-          label: tag.name.replaceUnderscoreWithSpace(),
+          label: tag.name.replaceAll('_', ' '),
           count: tag.count,
           active: tag.active,
           onChanged: (value) => widget.onChanged(tag.name, value),

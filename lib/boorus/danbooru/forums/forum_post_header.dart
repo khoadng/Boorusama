@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/users/users.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -31,7 +30,7 @@ class ForumPostHeader extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Text(
-            authorName.replaceUnderscoreWithSpace(),
+            authorName.replaceAll('_', ' '),
             style: TextStyle(
               color: authorLevel?.toColor(context),
               fontSize: 15,

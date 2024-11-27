@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 
@@ -81,7 +80,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),
                           label: Text(
-                            tag.name.replaceUnderscoreWithSpace(),
+                            tag.name.replaceAll('_', ' '),
                             style: TextStyle(
                               color: selected
                                   ? context.colorScheme.onPrimary

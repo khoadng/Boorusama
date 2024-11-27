@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -90,7 +89,7 @@ class OtherNameChip extends StatelessWidget {
               maxWidth: MediaQuery.sizeOf(context).width * 0.85,
             ),
             child: Text(
-              otherName.replaceUnderscoreWithSpace(),
+              otherName.replaceAll('_', ' '),
               overflow: TextOverflow.fade,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),

@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -47,8 +46,7 @@ class _EditFavoriteGroupDialogState
 
     if (widget.initialData != null) {
       textController.text = widget.initialData!.postIds.join(' ');
-      nameController.text =
-          widget.initialData!.name.replaceUnderscoreWithSpace();
+      nameController.text = widget.initialData!.name.replaceAll('_', ' ');
       isPrivate = !widget.initialData!.isPublic;
     }
   }

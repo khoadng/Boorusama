@@ -1,7 +1,6 @@
 // Project imports:
 import 'package:boorusama/clients/danbooru/types/post_dto.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/dart.dart';
 import 'danbooru_post.dart';
 import 'post_variant.dart';
 
@@ -17,12 +16,12 @@ DanbooruPost postDtoToPost(
       thumbnailImageUrl: dto.previewFileUrl ?? '',
       sampleImageUrl: dto.largeFileUrl ?? '',
       originalImageUrl: dto.fileUrl ?? '',
-      tags: dto.tagString.splitByWhitespace(),
-      copyrightTags: dto.tagStringCopyright.splitByWhitespace(),
-      characterTags: dto.tagStringCharacter.splitByWhitespace(),
-      artistTags: dto.tagStringArtist.splitByWhitespace(),
-      generalTags: dto.tagStringGeneral.splitByWhitespace(),
-      metaTags: dto.tagStringMeta.splitByWhitespace(),
+      tags: dto.tagString?.split(' ').toSet() ?? {},
+      copyrightTags: dto.tagStringCopyright?.split(' ').toSet() ?? {},
+      characterTags: dto.tagStringCharacter?.split(' ').toSet() ?? {},
+      artistTags: dto.tagStringArtist?.split(' ').toSet() ?? {},
+      generalTags: dto.tagStringGeneral?.split(' ').toSet() ?? {},
+      metaTags: dto.tagStringMeta?.split(' ').toSet() ?? {},
       width: dto.imageWidth?.toDouble() ?? 0.0,
       height: dto.imageHeight?.toDouble() ?? 0.0,
       format: dto.fileExt ?? 'jpg',

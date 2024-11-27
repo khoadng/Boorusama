@@ -11,7 +11,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -147,7 +146,7 @@ class _FavoriteGroupList extends ConsumerWidget {
           animation: animation,
           child: ListTile(
             title: Text(
-              group.name.replaceUnderscoreWithSpace(),
+              group.name.replaceAll('_', ' '),
             ),
             subtitle: Text(group.updatedAt
                 .fuzzify(locale: Localizations.localeOf(context))),
@@ -178,7 +177,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                               .replaceAll('{0}', '${posts.length}')
                               .replaceAll(
                                 '{1}',
-                                group.name.replaceUnderscoreWithSpace(),
+                                group.name.replaceAll('_', ' '),
                               ),
                         ),
                       );

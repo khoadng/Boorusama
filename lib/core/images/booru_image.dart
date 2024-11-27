@@ -164,7 +164,7 @@ class BooruRawImage extends StatelessWidget {
               () => ImagePlaceHolder(
                 borderRadius: borderRadius ?? _defaultRadius,
               ),
-              (url) => url.isNotBlank()
+              (url) => url.isNotEmpty
                   ? ExtendedImage.network(
                       url,
                       width: width ?? double.infinity,

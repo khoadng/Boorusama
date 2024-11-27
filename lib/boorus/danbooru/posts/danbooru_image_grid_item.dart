@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -82,7 +81,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                             ActionChip(
                               visualDensity: VisualDensity.compact,
                               label: Text(
-                                tag.replaceUnderscoreWithSpace(),
+                                tag.replaceAll('_', ' '),
                                 maxLines: 1,
                                 style: TextStyle(
                                   color: context.colorScheme.onErrorContainer,

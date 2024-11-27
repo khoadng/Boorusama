@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class MostSearchTagList extends ConsumerWidget {
@@ -103,7 +102,7 @@ class _Chip extends ConsumerWidget {
         labelPadding: const EdgeInsets.all(1),
         visualDensity: VisualDensity.compact,
         label: Text(
-          search.keyword.replaceUnderscoreWithSpace(),
+          search.keyword.replaceAll('_', ' '),
           style: TextStyle(
             color: isSelected
                 ? context.colorScheme.surface

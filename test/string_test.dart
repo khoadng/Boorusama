@@ -24,16 +24,4 @@ void main() {
     const str = '';
     expect(str.getLastCharacter(), '');
   });
-
-  test('replace with condition should work', () {
-    const str = 'bar';
-    expect(
-      str.replaceAtIndexWhen(
-        condition: (value) => value.getLastCharacter() == 'r',
-        indexSelector: (value) => value.length - 1,
-        newChar: 'T',
-      ),
-      'baT',
-    );
-  });
 }
