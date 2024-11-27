@@ -111,13 +111,7 @@ class BooruConfigLayoutView extends ConsumerWidget {
           ),
           if (uiBuilder != null)
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              // decoration: BoxDecoration(
-              //   border: Border.all(
-              //     color: Theme.of(context).colorScheme.outlineVariant,
-              //   ),
-              //   borderRadius: BorderRadius.circular(8),
-              // ),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
               child: details != null && details.isNotEmpty
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -207,14 +201,6 @@ class BooruConfigLayoutView extends ConsumerWidget {
                         title: Text('No custom widgets, use default'),
                       ),
                     ),
-            ),
-          if (layout.details != null && layout.details!.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.all(8.0),
-              child: FilledButton(
-                onPressed: () {},
-                child: const Text('Preview'),
-              ),
             ),
         ],
       ),
