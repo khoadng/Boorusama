@@ -23,7 +23,6 @@ class DanbooruImageGridItem extends ConsumerWidget {
     required this.enableFav,
     this.onTap,
     required this.image,
-    this.ignoreBanOverlay = false,
   });
 
   final DanbooruPost post;
@@ -32,7 +31,6 @@ class DanbooruImageGridItem extends ConsumerWidget {
   final VoidCallback? onTap;
   final bool enableFav;
   final Widget image;
-  final bool ignoreBanOverlay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +38,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
     final settings = ref.watch(imageListingSettingsProvider);
 
     return ConditionalParentWidget(
-      condition: !ignoreBanOverlay && post.isBanned,
+      condition: post.isBanned,
       conditionalBuilder: (child) => Stack(
         children: [
           child,

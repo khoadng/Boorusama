@@ -126,56 +126,45 @@ class _DanbooruInfinitePostListState
                               post,
                             )
                         : null,
-                child: ExplicitContentBlockOverlay(
-                  block: settings.blurExplicitMedia && post.isExplicit,
-                  width: width ?? 100,
-                  height: height ?? 100,
-                  childBuilder: (block) => DanbooruImageGridItem(
-                    ignoreBanOverlay: block,
-                    post: post,
-                    hideOverlay: multiSelect,
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: _autoScrollController,
-                      index: index,
-                    ),
-                    onTap: !multiSelect
-                        ? () {
-                            if (gestures.canTap &&
-                                postGesturesHandler != null) {
-                              postGesturesHandler(
-                                ref,
-                                ref.watchConfig.postGestures?.preview?.tap,
-                                post,
-                              );
-                            } else {
-                              goToPostDetailsPageFromController(
-                                context: context,
-                                controller: widget.controller,
-                                initialIndex: index,
-                                scrollController: _autoScrollController,
-                              );
-                            }
+                child: DanbooruImageGridItem(
+                  post: post,
+                  hideOverlay: multiSelect,
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
+                  ),
+                  onTap: !multiSelect
+                      ? () {
+                          if (gestures.canTap && postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                            );
+                          } else {
+                            goToPostDetailsPageFromController(
+                              context: context,
+                              controller: widget.controller,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
                           }
-                        : null,
-                    enableFav:
-                        !multiSelect && config.hasLoginDetails() && !block,
-                    image: BooruImage(
-                      aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                      imageUrl: block
-                          ? ''
-                          : post
-                              .thumbnailFromImageQuality(settings.imageQuality),
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      width: width,
-                      height: height,
-                      cacheHeight: cacheHeight,
-                      cacheWidth: cacheWidth,
+                        }
+                      : null,
+                  enableFav: !multiSelect && config.hasLoginDetails(),
+                  image: BooruImage(
+                    aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                    imageUrl:
+                        post.thumbnailFromImageQuality(settings.imageQuality),
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
                     ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    width: width,
+                    height: height,
+                    cacheHeight: cacheHeight,
+                    cacheWidth: cacheWidth,
                   ),
                 ),
               ),

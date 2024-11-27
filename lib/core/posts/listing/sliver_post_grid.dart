@@ -266,18 +266,21 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
                 },
                 post: post,
               ),
-        child: multiSelect
-            ? ValueListenableBuilder(
-                valueListenable: controller.selectedItemsNotifier,
-                builder: (_, selectedItems, __) => SelectableItem(
-                  index: index,
-                  isSelected: selectedItems.contains(post),
-                  onTap: () => controller.toggleSelection(post),
-                  itemBuilder: (context, isSelected) =>
-                      itemBuilder(context, index, post),
-                ),
-              )
-            : itemBuilder(context, index, post),
+        child: ExplicitContentBlockOverlay(
+          rating: post.rating,
+          child: multiSelect
+              ? ValueListenableBuilder(
+                  valueListenable: controller.selectedItemsNotifier,
+                  builder: (_, selectedItems, __) => SelectableItem(
+                    index: index,
+                    isSelected: selectedItems.contains(post),
+                    onTap: () => controller.toggleSelection(post),
+                    itemBuilder: (context, isSelected) =>
+                        itemBuilder(context, index, post),
+                  ),
+                )
+              : itemBuilder(context, index, post),
+        ),
       ),
     );
   }
