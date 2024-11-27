@@ -12,7 +12,6 @@ import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import '../router.dart';
 import 'favorite_groups.dart';
 
@@ -60,7 +59,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
 
                     return ListTile(
                       title: Text(
-                        group.name.replaceUnderscoreWithSpace(),
+                        group.name.replaceAll('_', ' '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

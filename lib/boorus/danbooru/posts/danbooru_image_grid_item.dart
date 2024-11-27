@@ -12,7 +12,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruImageGridItem extends ConsumerWidget {
@@ -82,7 +81,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                             ActionChip(
                               visualDensity: VisualDensity.compact,
                               label: Text(
-                                tag.replaceUnderscoreWithSpace(),
+                                tag.replaceAll('_', ' '),
                                 maxLines: 1,
                                 style: TextStyle(
                                   color: context.colorScheme.onErrorContainer,

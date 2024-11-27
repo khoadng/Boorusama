@@ -19,7 +19,6 @@ import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/string.dart';
 
 class DanbooruForumPostsPage extends ConsumerStatefulWidget {
   const DanbooruForumPostsPage({
@@ -199,7 +198,7 @@ class _VoteChips extends ConsumerWidget {
           color: _color(e.type),
           borderColor: _borderColor(e.type),
           label: Text(
-            creator?.name.replaceUnderscoreWithSpace() ?? 'User',
+            creator?.name.replaceAll('_', ' ') ?? 'User',
             style: TextStyle(
               color: creator?.level.toColor(context),
               fontWeight: FontWeight.w500,

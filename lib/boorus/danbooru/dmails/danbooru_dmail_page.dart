@@ -11,7 +11,6 @@ import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../danbooru_provider.dart';

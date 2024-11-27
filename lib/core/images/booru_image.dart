@@ -13,7 +13,6 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -165,7 +164,7 @@ class BooruRawImage extends StatelessWidget {
               () => ImagePlaceHolder(
                 borderRadius: borderRadius ?? _defaultRadius,
               ),
-              (url) => url.isNotBlank()
+              (url) => url.isNotEmpty
                   ? ExtendedImage.network(
                       url,
                       width: width ?? double.infinity,

@@ -18,7 +18,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 
 class SavedSearchFeedPage extends ConsumerWidget {
   const SavedSearchFeedPage({super.key});
@@ -174,7 +173,7 @@ class _SavedSearchList extends ConsumerWidget {
           label: Text(
             text.fold(
               () => '<empty>',
-              (t) => t.replaceUnderscoreWithSpace(),
+              (t) => t.replaceAll('_', ' '),
             ),
             overflow: TextOverflow.fade,
           ),

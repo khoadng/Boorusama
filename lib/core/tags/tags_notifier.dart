@@ -6,7 +6,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/string.dart';
 
 final invalidTags = [
   ':&lt;',

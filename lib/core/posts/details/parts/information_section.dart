@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -223,7 +223,7 @@ class ArtistNameInfoChip extends ConsumerWidget {
         tag: artist,
         child: CompactChip(
           textColor: colors?.foregroundColor,
-          label: artist.replaceUnderscoreWithSpace(),
+          label: artist.replaceAll('_', ' '),
           onTap: () => onTap?.call(artist),
           backgroundColor: colors?.backgroundColor,
         ),
