@@ -355,6 +355,53 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
   }
 }
 
+class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
+  const SliverPostGridImageGridItem({
+    super.key,
+    required this.post,
+    required this.hideOverlay,
+    required this.quickActionButton,
+    required this.autoScrollOptions,
+    required this.onTap,
+    required this.image,
+    required this.score,
+  });
+
+  final T post;
+  final bool hideOverlay;
+  final Widget? quickActionButton;
+  final AutoScrollOptions? autoScrollOptions;
+  final VoidCallback? onTap;
+  final Widget image;
+  final int? score;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final imageBorderRadius = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageBorderRadius));
+    final showScoresInGrid = ref.watch(
+        imageListingSettingsProvider.select((value) => value.showScoresInGrid));
+
+    return ImageGridItem(
+      borderRadius: BorderRadius.circular(imageBorderRadius),
+      isGif: post.isGif,
+      isAI: post.isAI,
+      hideOverlay: hideOverlay,
+      quickActionButton: quickActionButton,
+      autoScrollOptions: autoScrollOptions,
+      onTap: onTap,
+      image: image,
+      isAnimated: post.isAnimated,
+      isTranslated: post.isTranslated,
+      hasComments: post.hasComment,
+      hasParentOrChildren: post.hasParentOrChildren,
+      hasSound: post.hasSound,
+      duration: post.duration,
+      score: showScoresInGrid ? score : null,
+    );
+  }
+}
+
 class DefaultPostListContextMenuRegion extends StatelessWidget {
   const DefaultPostListContextMenuRegion({
     super.key,

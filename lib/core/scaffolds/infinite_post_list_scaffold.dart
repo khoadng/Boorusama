@@ -126,56 +126,58 @@ class _InfinitePostListScaffoldState<T extends Post>
           itemBuilder: (context, index, post) {
             return ValueListenableBuilder(
               valueListenable: _multiSelectController.multiSelectNotifier,
-              builder: (_, multiSelect, __) => ImageGridItem(
-                isGif: post.isGif,
-                isAI: post.isAI,
-                hideOverlay: multiSelect,
-                onTap: !multiSelect
-                    ? () {
-                        if (gestures.canTap && postGesturesHandler != null) {
-                          postGesturesHandler(
-                            ref,
-                            ref.watchConfig.postGestures?.preview?.tap,
-                            post,
-                          );
-                        } else {
-                          goToPostDetailsPageFromController(
-                            context: context,
-                            controller: widget.controller,
-                            initialIndex: index,
-                            scrollController: _autoScrollController,
-                          );
+              builder: (_, multiSelect, __) => GestureDetector(
+                onLongPress:
+                    gestures.canLongPress && postGesturesHandler != null
+                        ? () => postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.longPress,
+                              post,
+                            )
+                        : null,
+                child: SliverPostGridImageGridItem(
+                  post: post,
+                  hideOverlay: multiSelect,
+                  onTap: !multiSelect
+                      ? () {
+                          if (gestures.canTap && postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                            );
+                          } else {
+                            goToPostDetailsPageFromController(
+                              context: context,
+                              controller: widget.controller,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
+                          }
                         }
-                      }
-                    : null,
-                quickActionButton: !multiSelect
-                    ? DefaultImagePreviewQuickActionButton(post: post)
-                    : null,
-                autoScrollOptions: AutoScrollOptions(
-                  controller: _autoScrollController,
-                  index: index,
-                ),
-                isAnimated: post.isAnimated,
-                isTranslated: post.isTranslated,
-                hasComments: post.hasComment,
-                hasParentOrChildren: post.hasParentOrChildren,
-                score: settings.showScoresInGrid ? post.score : null,
-                borderRadius: BorderRadius.circular(
-                  settings.imageBorderRadius,
-                ),
-                image: BooruImage(
-                  aspectRatio: post.aspectRatio,
-                  imageUrl: gridThumbnailUrlBuilder != null
-                      ? gridThumbnailUrlBuilder(
-                          settings.imageQuality,
-                          post,
-                        )
-                      : post.thumbnailImageUrl,
-                  borderRadius: BorderRadius.circular(
-                    settings.imageBorderRadius,
+                      : null,
+                  quickActionButton: !multiSelect
+                      ? DefaultImagePreviewQuickActionButton(post: post)
+                      : null,
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
                   ),
-                  forceFill: settings.imageListType == ImageListType.standard,
-                  placeholderUrl: post.thumbnailImageUrl,
+                  score: post.score,
+                  image: BooruImage(
+                    aspectRatio: post.aspectRatio,
+                    imageUrl: gridThumbnailUrlBuilder != null
+                        ? gridThumbnailUrlBuilder(
+                            settings.imageQuality,
+                            post,
+                          )
+                        : post.thumbnailImageUrl,
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
+                    ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                  ),
                 ),
               ),
             );

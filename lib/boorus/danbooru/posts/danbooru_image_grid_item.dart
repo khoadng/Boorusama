@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -35,13 +34,34 @@ class DanbooruImageGridItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final artistTags = [...post.artistTags]..remove('banned_artist');
-    final settings = ref.watch(imageListingSettingsProvider);
 
-    return ConditionalParentWidget(
-      condition: post.isBanned,
-      conditionalBuilder: (child) => Stack(
-        children: [
-          child,
+    return Stack(
+      children: [
+        SliverPostGridImageGridItem(
+          post: post,
+          hideOverlay: hideOverlay,
+          quickActionButton: !post.isBanned && enableFav
+              ? DefaultImagePreviewQuickActionButton(post: post)
+              : null,
+          autoScrollOptions: autoScrollOptions,
+          onTap: post.isBanned ? null : onTap,
+          image: image,
+          score: post.isBanned ? null : post.score,
+        ),
+        if (post.isBanned)
+          Positioned.fill(
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              splashFactory: FasterInkSplash.splashFactory,
+              splashColor: Colors.black38,
+              onTap: switch (post.source) {
+                final WebSource source => () =>
+                    launchExternalUrlString(source.url),
+                _ => null,
+              },
+            ),
+          ),
+        if (post.isBanned)
           Positioned.fill(
             child: Center(
               child: Column(
@@ -102,39 +122,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
               ),
             ),
           ),
-        ],
-      ),
-      child: ImageGridItem(
-        borderRadius: BorderRadius.circular(
-          settings.imageBorderRadius,
-        ),
-        isGif: post.isGif,
-        isAI: post.isAI,
-        hideOverlay: hideOverlay,
-        quickActionButton: !post.isBanned && enableFav
-            ? DefaultImagePreviewQuickActionButton(post: post)
-            : null,
-        autoScrollOptions: autoScrollOptions,
-        onTap: post.isBanned
-            ? switch (post.source) {
-                final WebSource source => () =>
-                    launchExternalUrlString(source.url),
-                _ => null,
-              }
-            : onTap,
-        image: image,
-        isAnimated: post.isAnimated,
-        isTranslated: post.isTranslated,
-        hasComments: post.hasComment,
-        hasParentOrChildren: post.hasParentOrChildren,
-        hasSound: post.hasSound,
-        duration: post.duration,
-        score: post.isBanned
-            ? null
-            : settings.showScoresInGrid
-                ? post.score
-                : null,
-      ),
+      ],
     );
   }
 }
