@@ -10,7 +10,7 @@ import 'package:reorderables/reorderables.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/details/details.dart';
+import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
