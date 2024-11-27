@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -16,6 +18,7 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -34,16 +37,23 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
     required this.error,
     required this.multiSelectController,
     required this.postController,
+    this.contextMenuBuilder,
+    this.canSelect,
   });
 
   final BoxConstraints? constraints;
   final PostWidgetBuilder<T> itemBuilder;
   final BooruError? error;
-  final MultiSelectController<T>? multiSelectController;
+  final MultiSelectController<T> multiSelectController;
   final PostGridController<T> postController;
+
+  final Widget Function(T post, void Function() next)? contextMenuBuilder;
+  final bool Function(T post)? canSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final gestures = ref.watch(currentBooruConfigProvider
+        .select((value) => value.postGestures?.preview));
     final imageGridPadding = ref.watch(
         imageListingSettingsProvider.select((value) => value.imageGridPadding));
     final imageListType = ref.watch(
@@ -68,6 +78,9 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       size: gridSize,
       spacing: imageGridSpacing,
       aspectRatio: imageGridAspectRatio,
+      gestures: gestures,
+      contextMenuBuilder: contextMenuBuilder,
+      canSelect: canSelect,
     );
   }
 }
@@ -80,6 +93,9 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
     required this.error,
     required this.multiSelectController,
     required this.postController,
+    required this.gestures,
+    required this.contextMenuBuilder,
+    required this.canSelect,
     this.padding,
     this.listType,
     this.size,
@@ -91,7 +107,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
   final BoxConstraints? constraints;
   final PostWidgetBuilder<T> itemBuilder;
   final BooruError? error;
-  final MultiSelectController<T>? multiSelectController;
+  final MultiSelectController<T> multiSelectController;
   final PostGridController<T> postController;
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
@@ -99,6 +115,10 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
   final double? spacing;
   final double? aspectRatio;
   final BorderRadius? borderRadius;
+
+  final GestureConfig? gestures;
+  final Widget Function(T post, void Function() next)? contextMenuBuilder;
+  final bool Function(T post)? canSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -225,25 +245,40 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
   Widget buildItem(context, index, List<T> data) {
     final controller = multiSelectController;
     final post = data[index];
-
-    if (controller == null) {
-      return itemBuilder(context, index, post);
-    }
+    final canSelect = this.canSelect?.call(post) ?? true;
 
     return ValueListenableBuilder(
       valueListenable: controller.multiSelectNotifier,
-      builder: (_, multiSelect, __) => multiSelect
-          ? ValueListenableBuilder(
-              valueListenable: controller.selectedItemsNotifier,
-              builder: (_, selectedItems, __) => SelectableItem(
-                index: index,
-                isSelected: selectedItems.contains(post),
-                onTap: () => controller.toggleSelection(post),
-                itemBuilder: (context, isSelected) =>
-                    itemBuilder(context, index, post),
+      builder: (_, multiSelect, __) => DefaultPostListContextMenuRegion(
+        gestures: gestures,
+        isEnabled: !multiSelect && canSelect,
+        contextMenu: contextMenuBuilder != null
+            ? contextMenuBuilder!.call(
+                post,
+                () {
+                  multiSelectController.enableMultiSelect();
+                },
+              )
+            : GeneralPostContextMenu(
+                hasAccount: false,
+                onMultiSelect: () {
+                  multiSelectController.enableMultiSelect();
+                },
+                post: post,
               ),
-            )
-          : itemBuilder(context, index, post),
+        child: multiSelect
+            ? ValueListenableBuilder(
+                valueListenable: controller.selectedItemsNotifier,
+                builder: (_, selectedItems, __) => SelectableItem(
+                  index: index,
+                  isSelected: selectedItems.contains(post),
+                  onTap: () => controller.toggleSelection(post),
+                  itemBuilder: (context, isSelected) =>
+                      itemBuilder(context, index, post),
+                ),
+              )
+            : itemBuilder(context, index, post),
+      ),
     );
   }
 }
@@ -313,6 +348,32 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
             )
         };
       },
+    );
+  }
+}
+
+class DefaultPostListContextMenuRegion extends StatelessWidget {
+  const DefaultPostListContextMenuRegion({
+    super.key,
+    this.isEnabled = true,
+    required this.gestures,
+    required this.contextMenu,
+    required this.child,
+  });
+
+  final GestureConfig? gestures;
+  final bool isEnabled;
+  final Widget contextMenu;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (gestures.canLongPress) return child;
+
+    return ContextMenuRegion(
+      isEnabled: isEnabled,
+      contextMenu: contextMenu,
+      child: child,
     );
   }
 }

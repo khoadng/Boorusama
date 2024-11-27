@@ -174,11 +174,13 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
+  final multiSelectController = MultiSelectController<DanbooruUploadPost>();
 
   @override
   void dispose() {
     super.dispose();
     _autoScrollController.dispose();
+    multiSelectController.dispose();
   }
 
   @override
@@ -239,7 +241,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
       scrollController: _autoScrollController,
       body: SliverPostGrid(
         postController: controller,
-        multiSelectController: null,
+        multiSelectController: multiSelectController,
         constraints: constraints,
         itemBuilder: (context, index, post) {
           final isHidden = hideMap[post.id] == true;

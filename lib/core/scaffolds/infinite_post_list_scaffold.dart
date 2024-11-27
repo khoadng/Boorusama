@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -124,6 +123,7 @@ class _InfinitePostListScaffoldState<T extends Post>
           postController: widget.controller,
           multiSelectController: _multiSelectController,
           constraints: constraints,
+          contextMenuBuilder: widget.contextMenuBuilder,
           itemBuilder: (context, index, post) {
             final (width, height, cacheWidth, cacheHeight) =
                 context.sizeFromConstraints(
@@ -133,96 +133,66 @@ class _InfinitePostListScaffoldState<T extends Post>
 
             return ValueListenableBuilder(
               valueListenable: _multiSelectController.multiSelectNotifier,
-              builder: (_, multiSelect, __) => DefaultPostListContextMenuRegion(
-                isEnabled: !multiSelect,
-                gestures: gestures,
-                contextMenu: widget.contextMenuBuilder != null
-                    ? widget.contextMenuBuilder!.call(
-                        post,
-                        () {
-                          _multiSelectController.enableMultiSelect();
-                        },
-                      )
-                    : GeneralPostContextMenu(
-                        hasAccount: false,
-                        onMultiSelect: () {
-                          _multiSelectController.enableMultiSelect();
-                        },
-                        post: post,
-                      ),
-                child: GestureDetector(
-                  onLongPress: gestures.canLongPress &&
-                          postGesturesHandler != null
-                      ? () => postGesturesHandler(
-                            ref,
-                            ref.watchConfig.postGestures?.preview?.longPress,
-                            post,
-                          )
+              builder: (_, multiSelect, __) => ExplicitContentBlockOverlay(
+                width: width ?? 100,
+                height: height ?? 100,
+                block: settings.blurExplicitMedia && post.isExplicit,
+                childBuilder: (block) => ImageGridItem(
+                  isGif: post.isGif,
+                  isAI: post.isAI,
+                  hideOverlay: multiSelect,
+                  onTap: !multiSelect
+                      ? () {
+                          if (gestures.canTap && postGesturesHandler != null) {
+                            postGesturesHandler(
+                              ref,
+                              ref.watchConfig.postGestures?.preview?.tap,
+                              post,
+                            );
+                          } else {
+                            goToPostDetailsPageFromController(
+                              context: context,
+                              controller: widget.controller,
+                              initialIndex: index,
+                              scrollController: _autoScrollController,
+                            );
+                          }
+                        }
                       : null,
-                  child: ExplicitContentBlockOverlay(
-                    width: width ?? 100,
-                    height: height ?? 100,
-                    block: settings.blurExplicitMedia && post.isExplicit,
-                    childBuilder: (block) => ImageGridItem(
-                      isGif: post.isGif,
-                      isAI: post.isAI,
-                      hideOverlay: multiSelect,
-                      onTap: !multiSelect
-                          ? () {
-                              if (gestures.canTap &&
-                                  postGesturesHandler != null) {
-                                postGesturesHandler(
-                                  ref,
-                                  ref.watchConfig.postGestures?.preview?.tap,
-                                  post,
-                                );
-                              } else {
-                                goToPostDetailsPageFromController(
-                                  context: context,
-                                  controller: widget.controller,
-                                  initialIndex: index,
-                                  scrollController: _autoScrollController,
-                                );
-                              }
-                            }
-                          : null,
-                      quickActionButton: !multiSelect && !block
-                          ? DefaultImagePreviewQuickActionButton(post: post)
-                          : null,
-                      autoScrollOptions: AutoScrollOptions(
-                        controller: _autoScrollController,
-                        index: index,
-                      ),
-                      isAnimated: post.isAnimated,
-                      isTranslated: post.isTranslated,
-                      hasComments: post.hasComment,
-                      hasParentOrChildren: post.hasParentOrChildren,
-                      score: settings.showScoresInGrid ? post.score : null,
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      image: BooruImage(
-                        aspectRatio: post.aspectRatio,
-                        imageUrl: block
-                            ? ''
-                            : gridThumbnailUrlBuilder != null
-                                ? gridThumbnailUrlBuilder(
-                                    settings.imageQuality,
-                                    post,
-                                  )
-                                : post.thumbnailImageUrl,
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
-                        ),
-                        forceFill:
-                            settings.imageListType == ImageListType.standard,
-                        placeholderUrl: post.thumbnailImageUrl,
-                        width: width,
-                        height: height,
-                        cacheHeight: cacheHeight,
-                        cacheWidth: cacheWidth,
-                      ),
+                  quickActionButton: !multiSelect && !block
+                      ? DefaultImagePreviewQuickActionButton(post: post)
+                      : null,
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: _autoScrollController,
+                    index: index,
+                  ),
+                  isAnimated: post.isAnimated,
+                  isTranslated: post.isTranslated,
+                  hasComments: post.hasComment,
+                  hasParentOrChildren: post.hasParentOrChildren,
+                  score: settings.showScoresInGrid ? post.score : null,
+                  borderRadius: BorderRadius.circular(
+                    settings.imageBorderRadius,
+                  ),
+                  image: BooruImage(
+                    aspectRatio: post.aspectRatio,
+                    imageUrl: block
+                        ? ''
+                        : gridThumbnailUrlBuilder != null
+                            ? gridThumbnailUrlBuilder(
+                                settings.imageQuality,
+                                post,
+                              )
+                            : post.thumbnailImageUrl,
+                    borderRadius: BorderRadius.circular(
+                      settings.imageBorderRadius,
                     ),
+                    forceFill: settings.imageListType == ImageListType.standard,
+                    placeholderUrl: post.thumbnailImageUrl,
+                    width: width,
+                    height: height,
+                    cacheHeight: cacheHeight,
+                    cacheWidth: cacheWidth,
                   ),
                 ),
               ),
@@ -231,32 +201,6 @@ class _InfinitePostListScaffoldState<T extends Post>
           error: widget.errors,
         ),
       ),
-    );
-  }
-}
-
-class DefaultPostListContextMenuRegion extends StatelessWidget {
-  const DefaultPostListContextMenuRegion({
-    super.key,
-    this.isEnabled = true,
-    required this.gestures,
-    required this.contextMenu,
-    required this.child,
-  });
-
-  final GestureConfig? gestures;
-  final bool isEnabled;
-  final Widget contextMenu;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    if (gestures.canLongPress) return child;
-
-    return ContextMenuRegion(
-      isEnabled: isEnabled,
-      contextMenu: contextMenu,
-      child: child,
     );
   }
 }
