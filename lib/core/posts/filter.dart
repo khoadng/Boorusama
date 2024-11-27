@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/string.dart';
+import 'package:boorusama/dart.dart';
 
 List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
     filter(posts, tags, precomputedFilter: {}).data;

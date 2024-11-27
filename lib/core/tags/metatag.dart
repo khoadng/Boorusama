@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/string.dart';
+import 'package:boorusama/dart.dart';
 
 class Metatag extends Equatable {
   const Metatag({

@@ -2,6 +2,10 @@
 import 'dart:math';
 
 extension StringX on String {
+  String get sentenceCase => _getSentenceCase(this);
+  String get pascalCase => _getPascalCase(this);
+  String get titleCase => _getPascalCase(this, separator: ' ');
+
   String getFirstCharacter() => this == '' ? '' : this[0];
   String getLastCharacter() => this == '' ? '' : this[length - 1];
   String replaceCharAt(int index, String newChar) =>
@@ -88,6 +92,63 @@ extension StringNullX on String? {
     return this!.split(' ').toSet();
   }
 }
+
+String _getSentenceCase(String text, {String separator = ' '}) {
+  // ignore: no_leading_underscores_for_local_identifiers
+  final _words = _groupIntoWords(text);
+
+  final words = _words.map((word) => word.toLowerCase()).toList();
+  if (_words.isNotEmpty) {
+    words[0] = _upperCaseFirstLetter(words[0]);
+  }
+
+  return words.join(separator);
+}
+
+String _getPascalCase(String text, {String separator = ''}) {
+  // ignore: no_leading_underscores_for_local_identifiers
+  final _words = _groupIntoWords(text);
+
+  final words = _words.map(_upperCaseFirstLetter).toList();
+
+  return words.join(separator);
+}
+
+String _upperCaseFirstLetter(String word) {
+  return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
+}
+
+List<String> _groupIntoWords(String text) {
+  StringBuffer sb = StringBuffer();
+  List<String> words = [];
+  bool isAllCaps = text.toUpperCase() == text;
+
+  for (int i = 0; i < text.length; i++) {
+    String char = text[i];
+    String? nextChar = i + 1 == text.length ? null : text[i + 1];
+
+    if (_symbolSet.contains(char)) {
+      continue;
+    }
+
+    sb.write(char);
+
+    bool isEndOfWord = nextChar == null ||
+        (_upperAlphaRegex.hasMatch(nextChar) && !isAllCaps) ||
+        _symbolSet.contains(nextChar);
+
+    if (isEndOfWord) {
+      words.add(sb.toString());
+      sb.clear();
+    }
+  }
+
+  return words;
+}
+
+final RegExp _upperAlphaRegex = RegExp(r'[A-Z]');
+
+const _symbolSet = {' ', '.', '/', '_', '\\', '-'};
 
 String generateRandomWord(final int minLength, final int maxLength) {
   final rand = Random();

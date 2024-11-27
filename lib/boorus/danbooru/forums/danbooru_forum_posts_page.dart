@@ -16,10 +16,10 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/forums/forums.dart';
 import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/string.dart';
 
 class DanbooruForumPostsPage extends ConsumerStatefulWidget {
   const DanbooruForumPostsPage({

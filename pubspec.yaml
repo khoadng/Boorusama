@@ -80,7 +80,6 @@ dependencies:
   petitparser: ^6.0.2
   rate_my_app: 1.1.4 # DO NOT UPDATE, 2.0.0 is adding unnecessary permissions
   readmore: ^3.0.0
-  recase: ^4.1.0
   reorderable_grid_view: ^2.2.8
   reorderables:
     git:

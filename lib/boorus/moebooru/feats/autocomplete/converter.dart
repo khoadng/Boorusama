@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/string.dart';
+import 'package:boorusama/dart.dart';
 
 List<AutocompleteData> convertTagSummaryToAutocompleteData(
   TagSummary tagSummary,
