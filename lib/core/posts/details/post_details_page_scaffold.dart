@@ -431,7 +431,9 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
             )
             .nonNulls,
         const SliverSizedBox(height: 24),
-        const AddCustomDetailsButton(),
+        const SliverToBoxAdapter(
+          child: AddCustomDetailsButton(),
+        ),
       ],
       sheetState: sheetState,
     );
