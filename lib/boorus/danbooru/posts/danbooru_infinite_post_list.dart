@@ -15,7 +15,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -109,12 +108,6 @@ class _DanbooruInfinitePostListState
             post: post,
           ),
           itemBuilder: (context, index, post) {
-            final (width, height, cacheWidth, cacheHeight) =
-                context.sizeFromConstraints(
-              constraints,
-              post.aspectRatio,
-            );
-
             return ValueListenableBuilder(
               valueListenable: _multiSelectController.multiSelectNotifier,
               builder: (_, multiSelect, __) => GestureDetector(
@@ -161,10 +154,6 @@ class _DanbooruInfinitePostListState
                     ),
                     forceFill: settings.imageListType == ImageListType.standard,
                     placeholderUrl: post.thumbnailImageUrl,
-                    width: width,
-                    height: height,
-                    cacheHeight: cacheHeight,
-                    cacheWidth: cacheWidth,
                   ),
                 ),
               ),

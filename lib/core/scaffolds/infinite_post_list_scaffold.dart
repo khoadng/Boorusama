@@ -15,7 +15,6 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -125,12 +124,6 @@ class _InfinitePostListScaffoldState<T extends Post>
           constraints: constraints,
           contextMenuBuilder: widget.contextMenuBuilder,
           itemBuilder: (context, index, post) {
-            final (width, height, cacheWidth, cacheHeight) =
-                context.sizeFromConstraints(
-              constraints,
-              post.aspectRatio,
-            );
-
             return ValueListenableBuilder(
               valueListenable: _multiSelectController.multiSelectNotifier,
               builder: (_, multiSelect, __) => ImageGridItem(
@@ -183,10 +176,6 @@ class _InfinitePostListScaffoldState<T extends Post>
                   ),
                   forceFill: settings.imageListType == ImageListType.standard,
                   placeholderUrl: post.thumbnailImageUrl,
-                  width: width,
-                  height: height,
-                  cacheHeight: cacheHeight,
-                  cacheWidth: cacheWidth,
                 ),
               ),
             );
