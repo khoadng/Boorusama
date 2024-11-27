@@ -82,11 +82,7 @@ class _DanbooruInfinitePostListState
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final hasCustomLongPress = booruBuilder?.canHandlePostGesture(
-          GestureType.longPress,
-          config.postGestures?.preview,
-        ) ??
-        false;
+    final gestures = config.postGestures?.preview;
 
     final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
       context,
@@ -126,7 +122,8 @@ class _DanbooruInfinitePostListState
                   post: post,
                 ),
                 child: GestureDetector(
-                  onLongPress: hasCustomLongPress && postGesturesHandler != null
+                  onLongPress: gestures.canLongPress &&
+                          postGesturesHandler != null
                       ? () => postGesturesHandler(
                             ref,
                             ref.watchConfig.postGestures?.preview?.longPress,
@@ -147,10 +144,7 @@ class _DanbooruInfinitePostListState
                       ),
                       onTap: !multiSelect
                           ? () {
-                              if (booruBuilder?.canHandlePostGesture(
-                                          GestureType.tap,
-                                          config.postGestures?.preview) ==
-                                      true &&
+                              if (gestures.canTap &&
                                   postGesturesHandler != null) {
                                 postGesturesHandler(
                                   ref,

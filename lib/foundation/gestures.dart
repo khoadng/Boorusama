@@ -15,7 +15,6 @@ enum GestureType {
 }
 
 class GestureConfig extends Equatable {
-
   const GestureConfig({
     required this.swipeUp,
     required this.swipeDown,
@@ -101,7 +100,6 @@ class GestureConfig extends Equatable {
 }
 
 class PostGestureConfig extends Equatable {
-
   const PostGestureConfig({
     required this.preview,
     required this.fullview,
@@ -280,4 +278,29 @@ extension PostGestureConfigX on PostGestureConfig {
       ),
     );
   }
+}
+
+extension BooruBuilderGestures on GestureConfig? {
+  bool canHandleGesture(GestureType gesture) {
+    final gestures = this;
+    if (gestures == null) return false;
+
+    return switch (gesture) {
+      GestureType.swipeDown => gestures.swipeDown != null,
+      GestureType.swipeUp => gestures.swipeUp != null,
+      GestureType.swipeLeft => gestures.swipeLeft != null,
+      GestureType.swipeRight => gestures.swipeRight != null,
+      GestureType.doubleTap => gestures.doubleTap != null,
+      GestureType.longPress => gestures.longPress != null,
+      GestureType.tap => gestures.tap != null,
+    };
+  }
+
+  bool get canLongPress => canHandleGesture(GestureType.longPress);
+  bool get canDoubleTap => canHandleGesture(GestureType.doubleTap);
+  bool get canTap => canHandleGesture(GestureType.tap);
+  bool get canSwipeDown => canHandleGesture(GestureType.swipeDown);
+  bool get canSwipeUp => canHandleGesture(GestureType.swipeUp);
+  bool get canSwipeLeft => canHandleGesture(GestureType.swipeLeft);
+  bool get canSwipeRight => canHandleGesture(GestureType.swipeRight);
 }

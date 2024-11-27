@@ -94,11 +94,7 @@ class _InfinitePostListScaffoldState<T extends Post>
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final hasCustomLongPress = booruBuilder?.canHandlePostGesture(
-          GestureType.longPress,
-          config.postGestures?.preview,
-        ) ??
-        false;
+    final gestures = config.postGestures?.preview;
 
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
     final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
@@ -139,6 +135,7 @@ class _InfinitePostListScaffoldState<T extends Post>
               valueListenable: _multiSelectController.multiSelectNotifier,
               builder: (_, multiSelect, __) => DefaultPostListContextMenuRegion(
                 isEnabled: !multiSelect,
+                gestures: gestures,
                 contextMenu: widget.contextMenuBuilder != null
                     ? widget.contextMenuBuilder!.call(
                         post,
@@ -154,7 +151,8 @@ class _InfinitePostListScaffoldState<T extends Post>
                         post: post,
                       ),
                 child: GestureDetector(
-                  onLongPress: hasCustomLongPress && postGesturesHandler != null
+                  onLongPress: gestures.canLongPress &&
+                          postGesturesHandler != null
                       ? () => postGesturesHandler(
                             ref,
                             ref.watchConfig.postGestures?.preview?.longPress,
@@ -171,10 +169,7 @@ class _InfinitePostListScaffoldState<T extends Post>
                       hideOverlay: multiSelect,
                       onTap: !multiSelect
                           ? () {
-                              if (booruBuilder?.canHandlePostGesture(
-                                          GestureType.tap,
-                                          config.postGestures?.preview) ==
-                                      true &&
+                              if (gestures.canTap &&
                                   postGesturesHandler != null) {
                                 postGesturesHandler(
                                   ref,
@@ -240,29 +235,23 @@ class _InfinitePostListScaffoldState<T extends Post>
   }
 }
 
-class DefaultPostListContextMenuRegion extends ConsumerWidget {
+class DefaultPostListContextMenuRegion extends StatelessWidget {
   const DefaultPostListContextMenuRegion({
     super.key,
     this.isEnabled = true,
+    required this.gestures,
     required this.contextMenu,
     required this.child,
   });
 
+  final GestureConfig? gestures;
   final bool isEnabled;
   final Widget contextMenu;
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
-    final hasCustomLongPress = booruBuilder?.canHandlePostGesture(
-          GestureType.longPress,
-          config.postGestures?.preview,
-        ) ??
-        false;
-
-    if (hasCustomLongPress) return child;
+  Widget build(BuildContext context) {
+    if (gestures.canLongPress) return child;
 
     return ContextMenuRegion(
       isEnabled: isEnabled,

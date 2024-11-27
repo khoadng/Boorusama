@@ -120,6 +120,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     final config = ref.watchConfig;
     final booruBuilder = ref.watchBooruBuilder(config);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final gestures = config.postGestures?.fullview;
     final imageUrlBuilder =
         widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
@@ -159,46 +160,32 @@ class _PostDetailPageScaffoldState<T extends Post>
             onPressed: () => goToHomePage(context),
           ),
         ],
-        onItemDoubleTap: booruBuilder?.canHandlePostGesture(
-                      GestureType.doubleTap,
-                      ref.watchConfig.postGestures?.fullview,
-                    ) ==
-                    true &&
-                postGesturesHandler != null
+        onItemDoubleTap: gestures.canDoubleTap && postGesturesHandler != null
             ? () => postGesturesHandler(
                   ref,
                   ref.watchConfig.postGestures?.fullview?.doubleTap,
                   posts[_controller.page],
                 )
             : null,
-        onItemLongPress: booruBuilder?.canHandlePostGesture(
-                      GestureType.longPress,
-                      ref.watchConfig.postGestures?.fullview,
-                    ) ==
-                    true &&
-                postGesturesHandler != null
+        onItemLongPress: gestures.canLongPress && postGesturesHandler != null
             ? () => postGesturesHandler(
                   ref,
                   ref.watchConfig.postGestures?.fullview?.longPress,
                   posts[_controller.page],
                 )
             : null,
-        onSwipeDownThresholdReached: booruBuilder?.canHandlePostGesture(
-                      GestureType.swipeDown,
-                      config.postGestures?.fullview,
-                    ) ==
-                    true &&
-                postGesturesHandler != null
-            ? () {
-                _controller.resetSheet();
+        onSwipeDownThresholdReached:
+            gestures.canSwipeDown && postGesturesHandler != null
+                ? () {
+                    _controller.resetSheet();
 
-                postGesturesHandler(
-                  ref,
-                  config.postGestures?.fullview?.swipeDown,
-                  posts[_controller.page],
-                );
-              }
-            : null,
+                    postGesturesHandler(
+                      ref,
+                      config.postGestures?.fullview?.swipeDown,
+                      posts[_controller.page],
+                    );
+                  }
+                : null,
         sheetBuilder: (context, scrollController) {
           return ValueListenableBuilder(
             valueListenable: _controller.sheetState,

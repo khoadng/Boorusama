@@ -131,22 +131,6 @@ mixin DefaultMultiSelectionActionsBuilderMixin on BooruBuilder {
           );
 }
 
-extension BooruBuilderGestures on BooruBuilder {
-  bool canHandlePostGesture(
-    GestureType gesture,
-    GestureConfig? gestures,
-  ) =>
-      switch (gesture) {
-        GestureType.swipeDown => gestures?.swipeDown != null,
-        GestureType.swipeUp => gestures?.swipeUp != null,
-        GestureType.swipeLeft => gestures?.swipeLeft != null,
-        GestureType.swipeRight => gestures?.swipeRight != null,
-        GestureType.doubleTap => gestures?.doubleTap != null,
-        GestureType.longPress => gestures?.longPress != null,
-        GestureType.tap => gestures?.tap != null,
-      };
-}
-
 mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {
   @override
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
