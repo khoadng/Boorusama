@@ -211,6 +211,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               sheetState: state,
               uiBuilder: uiBuilder,
               preferredParts: preferredParts,
+              canCustomize: widget.uiBuilder == null,
             ),
           );
         },
@@ -383,12 +384,14 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
     required this.uiBuilder,
     required this.sheetState,
     required this.preferredParts,
+    this.canCustomize = true,
   });
 
   final ScrollController? scrollController;
   final SheetState sheetState;
   final PostDetailsUIBuilder? uiBuilder;
   final Set<DetailsPart>? preferredParts;
+  final bool canCustomize;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -431,9 +434,10 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
             )
             .nonNulls,
         const SliverSizedBox(height: 24),
-        const SliverToBoxAdapter(
-          child: AddCustomDetailsButton(),
-        ),
+        if (canCustomize)
+          const SliverToBoxAdapter(
+            child: AddCustomDetailsButton(),
+          ),
       ],
       sheetState: sheetState,
     );

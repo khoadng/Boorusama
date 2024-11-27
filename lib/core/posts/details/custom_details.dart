@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/routers/utils.dart';
+import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 const _kDefaultView = 'default';
@@ -76,7 +76,10 @@ class CustomDetailsDataBuilder extends Equatable {
 }
 
 class AddCustomDetailsButton extends ConsumerWidget {
-  const AddCustomDetailsButton({super.key});
+  const AddCustomDetailsButton({
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
@@ -96,6 +99,95 @@ class AddCustomDetailsButton extends ConsumerWidget {
           );
         },
         title: 'Customize',
+      ),
+    );
+  }
+}
+
+class CustomDetailsChooserPage extends StatefulWidget {
+  const CustomDetailsChooserPage({
+    super.key,
+    required this.availableParts,
+    required this.selectedParts,
+    required this.onDone,
+  });
+
+  final List<DetailsPart> availableParts;
+  final List<DetailsPart> selectedParts;
+  final void Function(List<DetailsPart> parts) onDone;
+
+  @override
+  State<CustomDetailsChooserPage> createState() =>
+      _CustomDetailsChooserPageState();
+}
+
+class _CustomDetailsChooserPageState extends State<CustomDetailsChooserPage> {
+  late List<DetailsPart> selectedParts = widget.selectedParts;
+
+  void _onAdd(DetailsPart part) {
+    setState(() {
+      selectedParts = [...selectedParts, part];
+    });
+  }
+
+  void _onRemove(DetailsPart part) {
+    setState(() {
+      selectedParts =
+          selectedParts.where((element) => element != part).toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Available widgets'),
+      ),
+      body: Column(
+        children: [
+          ListTile(
+            title: Text(
+              '${selectedParts.length}/${widget.availableParts.length} selected',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            trailing: FilledButton(
+              onPressed: selectedParts.isNotEmpty
+                  ? () {
+                      widget.onDone(selectedParts);
+                      Navigator.of(context).pop();
+                    }
+                  : null,
+              child: const Text('Apply'),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.availableParts.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(widget.availableParts[index].name),
+                  leading: Checkbox(
+                    value: selectedParts.contains(widget.availableParts[index]),
+                    onChanged: (value) {
+                      if (value == true) {
+                        _onAdd(widget.availableParts[index]);
+                      } else {
+                        _onRemove(widget.availableParts[index]);
+                      }
+                    },
+                  ),
+                  onTap: () {
+                    if (selectedParts.contains(widget.availableParts[index])) {
+                      _onRemove(widget.availableParts[index]);
+                    } else {
+                      _onAdd(widget.availableParts[index]);
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -93,7 +93,7 @@ class BooruConfigLayoutView extends ConsumerWidget {
                       child: const Text('Customize'),
                       onPressed: () => Navigator.of(context).push(
                         CupertinoPageRoute(
-                          builder: (context) => CustomDetailsChooser(
+                          builder: (context) => CustomDetailsChooserPage(
                             availableParts: uiBuilder.full.keys.toList(),
                             selectedParts:
                                 layout.getParsedParts()?.toList() ?? [],
@@ -212,102 +212,10 @@ class BooruConfigLayoutView extends ConsumerWidget {
             Container(
               margin: const EdgeInsets.all(8.0),
               child: FilledButton(
-                onPressed: () => ref.editNotifier.updateLayout(
-                  layout.copyWith(
-                    details: () => null,
-                  ),
-                ),
+                onPressed: () {},
                 child: const Text('Preview'),
               ),
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomDetailsChooser extends StatefulWidget {
-  const CustomDetailsChooser({
-    super.key,
-    required this.availableParts,
-    required this.selectedParts,
-    required this.onDone,
-  });
-
-  final List<DetailsPart> availableParts;
-  final List<DetailsPart> selectedParts;
-  final void Function(List<DetailsPart> parts) onDone;
-
-  @override
-  State<CustomDetailsChooser> createState() => _CustomDetailsChooserState();
-}
-
-class _CustomDetailsChooserState extends State<CustomDetailsChooser> {
-  late List<DetailsPart> selectedParts = widget.selectedParts;
-
-  void _onAdd(DetailsPart part) {
-    setState(() {
-      selectedParts = [...selectedParts, part];
-    });
-  }
-
-  void _onRemove(DetailsPart part) {
-    setState(() {
-      selectedParts =
-          selectedParts.where((element) => element != part).toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Available widgets'),
-      ),
-      body: Column(
-        children: [
-          ListTile(
-            title: Text(
-              '${selectedParts.length}/${widget.availableParts.length} selected',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            trailing: FilledButton(
-              onPressed: selectedParts.isNotEmpty
-                  ? () {
-                      widget.onDone(selectedParts);
-                      Navigator.of(context).pop();
-                    }
-                  : null,
-              child: const Text('Apply'),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.availableParts.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(widget.availableParts[index].name),
-                  leading: Checkbox(
-                    value: selectedParts.contains(widget.availableParts[index]),
-                    onChanged: (value) {
-                      if (value == true) {
-                        _onAdd(widget.availableParts[index]);
-                      } else {
-                        _onRemove(widget.availableParts[index]);
-                      }
-                    },
-                  ),
-                  onTap: () {
-                    if (selectedParts.contains(widget.availableParts[index])) {
-                      _onRemove(widget.availableParts[index]);
-                    } else {
-                      _onAdd(widget.availableParts[index]);
-                    }
-                  },
-                );
-              },
-            ),
-          ),
         ],
       ),
     );
