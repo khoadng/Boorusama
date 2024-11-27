@@ -11,8 +11,8 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-class CharacterPostList extends ConsumerWidget {
-  const CharacterPostList({
+class SliverCharacterPostList extends ConsumerWidget {
+  const SliverCharacterPostList({
     super.key,
     required this.tags,
   });

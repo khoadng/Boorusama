@@ -29,13 +29,14 @@ class BookmarkHiveObjectAdapter extends TypeAdapter<BookmarkHiveObject> {
       md5: fields[9] as String?,
       tags: (fields[10] as List?)?.cast<String>(),
       realSourceUrl: fields[11] as String?,
+      format: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BookmarkHiveObject obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.booruId)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class BookmarkHiveObjectAdapter extends TypeAdapter<BookmarkHiveObject> {
       ..writeByte(10)
       ..write(obj.tags)
       ..writeByte(11)
-      ..write(obj.realSourceUrl);
+      ..write(obj.realSourceUrl)
+      ..writeByte(12)
+      ..write(obj.format);
   }
 
   @override

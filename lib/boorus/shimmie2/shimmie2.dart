@@ -13,7 +13,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
 
 class Shimmie2Builder
     with
@@ -119,9 +118,11 @@ class Shimmie2FileDetailsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<Shimmie2Post>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      uploaderName: post.uploaderName,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        uploaderName: post.uploaderName,
+      ),
     );
   }
 }

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -188,35 +187,21 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   Widget _buildImage() {
     final config = ref.watchConfig;
 
-    return CachedNetworkImage(
-      httpHeaders: {
-        AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config)).generate(),
-        ...ref.watch(extraHttpHeaderProvider(config)),
-      },
-      imageUrl: widget.imageUrl,
-      imageBuilder: (context, imageProvider) => Hero(
-        tag: '${widget.id}_hero',
-        child: PhotoView(
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.transparent,
-          ),
-          scaleStateChangedCallback: (value) {
-            if (value != PhotoViewScaleState.initial) {
-              setState(() {
-                zoom = true;
-                _setOverlay(false);
-              });
-            } else {
-              setState(() => zoom = false);
-            }
+    return Hero(
+      tag: '${widget.id}_hero',
+      child: InteractiveViewerExtended(
+        onZoomUpdated: (value) {
+          setState(() {
+            zoom = value;
+          });
+        },
+        child: ExtendedImage.network(
+          widget.imageUrl,
+          headers: {
+            AppHttpHeaders.userAgentHeader:
+                ref.watch(userAgentGeneratorProvider(config)).generate(),
+            ...ref.watch(extraHttpHeaderProvider(config)),
           },
-          imageProvider: imageProvider,
-        ),
-      ),
-      progressIndicatorBuilder: (context, url, progress) => Center(
-        child: CircularProgressIndicator.adaptive(
-          value: progress.progress,
         ),
       ),
     );

@@ -23,7 +23,7 @@ class MoebooruRelatedPostsSection extends ConsumerWidget {
 
     return postsAsync.maybeWhen(
       data: (posts) => posts != null
-          ? RelatedPostsSection(
+          ? SliverRelatedPostsSection(
               posts: posts,
               imageUrl: (item) => item.sampleImageUrl,
               onViewAll: () => goToSearchPage(

@@ -53,7 +53,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
     return PostScope(
       fetcher: (page) {
-        final tag = context.isLandscapeLayout
+        final tag = context.isLargeScreen
             ? selectedTagString.value
             : _selectedMostSearchedTag.value;
 
@@ -74,12 +74,12 @@ class _LatestViewState extends ConsumerState<LatestView> {
           ),
           const SliverAppAnnouncementBanner(),
           const SliverUnreadMailsBanner(),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: controller,
             ),
-          if (!context.isLandscapeLayout)
+          if (!context.isLargeScreen)
             SliverToBoxAdapter(
               child: ValueListenableBuilder<String>(
                 valueListenable: _selectedMostSearchedTag,

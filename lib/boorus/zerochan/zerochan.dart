@@ -185,25 +185,27 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
       });
     }
 
-    return error == null
-        ? TagsTile(
-            tags: expanded
-                ? ref.watch(zerochanTagsFromIdProvider(post.id)).maybeWhen(
-                      data: (data) => createTagGroupItems(data),
-                      orElse: () => null,
-                    )
-                : null,
-            post: post,
-            onExpand: () => setState(() => expanded = true),
-            onCollapse: () {
-              // Don't set expanded to false to prevent rebuilding the tags list
-              setState(() => error = null);
-            },
-            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-          )
-        : BasicTagList(
-            tags: post.tags.toList(),
-            onTap: (tag) => goToSearchPage(context, tag: tag),
-          );
+    return SliverToBoxAdapter(
+      child: error == null
+          ? TagsTile(
+              tags: expanded
+                  ? ref.watch(zerochanTagsFromIdProvider(post.id)).maybeWhen(
+                        data: (data) => createTagGroupItems(data),
+                        orElse: () => null,
+                      )
+                  : null,
+              post: post,
+              onExpand: () => setState(() => expanded = true),
+              onCollapse: () {
+                // Don't set expanded to false to prevent rebuilding the tags list
+                setState(() => error = null);
+              },
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+            )
+          : BasicTagList(
+              tags: post.tags.toList(),
+              onTap: (tag) => goToSearchPage(context, tag: tag),
+            ),
+    );
   }
 }

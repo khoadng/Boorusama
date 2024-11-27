@@ -309,21 +309,23 @@ class AnimePicturesTagListSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<AnimePicturesPost>(context);
 
-    return ref.watch(postTagsProvider(post.id)).when(
-          data: (tags) => TagsTile(
-            initialExpanded: true,
-            initialCount: post.tagsCount,
-            post: post,
-            tags: tags,
+    return SliverToBoxAdapter(
+      child: ref.watch(postTagsProvider(post.id)).when(
+            data: (tags) => TagsTile(
+              initialExpanded: true,
+              initialCount: post.tagsCount,
+              post: post,
+              tags: tags,
+            ),
+            loading: () => TagsTile(
+              initialExpanded: true,
+              initialCount: post.tagsCount,
+              post: post,
+              tags: null,
+            ),
+            error: (e, _) => Text('Error: $e'),
           ),
-          loading: () => TagsTile(
-            initialExpanded: true,
-            initialCount: post.tagsCount,
-            post: post,
-            tags: null,
-          ),
-          error: (e, _) => Text('Error: $e'),
-        );
+    );
   }
 }
 
@@ -339,7 +341,7 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
 
     return ref.watch(postDetailsProvider(post.id)).when(
           data: (details) => details.tied != null && details.tied!.isNotEmpty
-              ? RelatedPostsSection(
+              ? SliverRelatedPostsSection(
                   posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
                   imageUrl: defaultPostImageUrlBuilder(ref),
                   onTap: (index) => goToPostDetailsPageFromPosts(

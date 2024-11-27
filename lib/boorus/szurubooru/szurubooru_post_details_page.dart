@@ -16,12 +16,14 @@ class SzurubooruTagListSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
 
-    return TagsTile(
-      post: post,
-      tags: createTagGroupItems(post.tagDetails),
-      initialExpanded: true,
-      tagColorBuilder: (tag) => tag.category.darkColor,
-      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        post: post,
+        tags: createTagGroupItems(post.tagDetails),
+        initialExpanded: true,
+        tagColorBuilder: (tag) => tag.category.darkColor,
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+      ),
     );
   }
 }
@@ -32,9 +34,11 @@ class SzurubooruFileDetailsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
 
-    return DefaultFileDetailsSection(
-      post: post,
-      uploaderName: post.uploaderName,
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        uploaderName: post.uploaderName,
+      ),
     );
   }
 }
@@ -45,14 +49,16 @@ class SzurubooruStatsTileSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
 
-    return Column(
-      children: [
-        SimplePostStatsTile(
-          totalComments: post.commentCount,
-          favCount: post.favoriteCount,
-          score: post.score,
-        ),
-      ],
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          SimplePostStatsTile(
+            totalComments: post.commentCount,
+            favCount: post.favoriteCount,
+            score: post.score,
+          ),
+        ],
+      ),
     );
   }
 }

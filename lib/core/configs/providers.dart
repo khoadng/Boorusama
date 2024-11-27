@@ -9,8 +9,8 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
-    NotifierProvider<BooruConfigNotifier, List<BooruConfig>?>(
-  BooruConfigNotifier.new,
+    NotifierProvider<BooruConfigNotifier, List<BooruConfig>>(
+  () => throw UnimplementedError(),
   dependencies: [
     booruConfigRepoProvider,
     settingsProvider,
@@ -19,9 +19,14 @@ final booruConfigProvider =
   name: 'booruConfigProvider',
 );
 
-final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
+final hasBooruConfigsProvider = Provider<bool>((ref) {
   final configs = ref.watch(booruConfigProvider);
-  if (configs == null) return <BooruConfig>[].lock;
+  return configs.isNotEmpty;
+});
+
+final orderedConfigsProvider =
+    FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
+  final configs = ref.watch(booruConfigProvider);
 
   final configMap = {for (final config in configs) config.id: config};
   final orders = ref
@@ -42,18 +47,18 @@ extension BooruWidgetRef on WidgetRef {
   /// {@template boorusama.booru.readConfig}
   /// Shortcut for `read(currentBooruConfigProvider)`
   /// {@endtemplate}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
+  BooruConfig get readConfig => read(currentReadOnlyBooruConfigProvider);
 
   /// {@template boorusama.booru.watchConfig}
   /// Shortcut for `watch(currentBooruConfigProvider)`
   /// {@endtemplate}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+  BooruConfig get watchConfig => watch(currentReadOnlyBooruConfigProvider);
 }
 
 extension BooruAutoDisposeProviderRef<T> on Ref<T> {
   /// {@macro boorusama.booru.readConfig}
-  BooruConfig get readConfig => read(currentBooruConfigProvider);
+  BooruConfig get readConfig => read(currentReadOnlyBooruConfigProvider);
 
   /// {@macro boorusama.booru.watchConfig}
-  BooruConfig get watchConfig => watch(currentBooruConfigProvider);
+  BooruConfig get watchConfig => watch(currentReadOnlyBooruConfigProvider);
 }

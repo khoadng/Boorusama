@@ -70,7 +70,7 @@ class EditBooruConfigNotifier
       customDownloadFileNameFormat: null,
     );
     final config =
-        arg.isNew ? null : configs?.firstWhereOrNull((e) => e.id == arg.id);
+        arg.isNew ? null : configs.firstWhereOrNull((e) => e.id == arg.id);
 
     return (config ?? defaultConfig).toBooruConfigData();
   }

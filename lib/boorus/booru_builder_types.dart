@@ -124,13 +124,13 @@ class PostDetailsUIBuilder {
   final Map<DetailsPart, Widget Function(BuildContext context)> preview;
   final Map<DetailsPart, Widget Function(BuildContext context)> full;
 
-  Widget buildPart(BuildContext context, DetailsPart part) {
+  Widget? buildPart(BuildContext context, DetailsPart part) {
     final builder = full[part];
     if (builder != null) {
       return builder(context);
     }
 
-    return const SizedBox.shrink();
+    return null;
   }
 }
 

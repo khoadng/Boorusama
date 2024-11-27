@@ -71,9 +71,11 @@ class DefaultInheritedPostActionToolbar<T extends Post>
   Widget build(BuildContext context) {
     final post = InheritedPost.maybeOf<T>(context);
 
-    return post != null
-        ? DefaultPostActionToolbar(post: post)
-        : const SizedBox.shrink();
+    return SliverToBoxAdapter(
+      child: post != null
+          ? DefaultPostActionToolbar(post: post)
+          : const SizedBox.shrink(),
+    );
   }
 }
 

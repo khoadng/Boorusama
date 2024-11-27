@@ -94,9 +94,9 @@ extension DisplayX on BuildContext {
   Screen get screen => Screen.of(this);
   Orientation get orientation => MediaQuery.orientationOf(this);
 
-  bool get isLandscapeLayout =>
+  bool get isLargeScreen =>
       kPreferredLayout.isDesktop ||
-      (kPreferredLayout.isMobile && MediaQuery.orientationOf(this).isLandscape);
+      (kPreferredLayout.isMobile && MediaQuery.sizeOf(this).width > 650);
 }
 
 extension OrientationX on Orientation {
@@ -210,77 +210,3 @@ Future<T?> showAppModalBarBottomSheet<T>({
       isDismissible: isDismissible,
       builder: builder,
     );
-
-class OrientationLayoutBuilder extends StatelessWidget {
-  const OrientationLayoutBuilder({
-    super.key,
-    required this.portrait,
-    this.landscape,
-  });
-
-  final Widget Function(BuildContext context) portrait;
-  final Widget Function(BuildContext context)? landscape;
-
-  @override
-  Widget build(BuildContext context) {
-    final orientation = MediaQuery.orientationOf(context);
-
-    return orientation.isLandscape
-        ? landscape?.call(context) ?? portrait(context)
-        : portrait(context);
-  }
-}
-
-class OrientationLayoutSwitcher extends StatelessWidget {
-  const OrientationLayoutSwitcher({
-    super.key,
-    required this.portrait,
-    this.landscape,
-  });
-
-  final Widget portrait;
-  final Widget? landscape;
-
-  @override
-  Widget build(BuildContext context) {
-    final orientation = MediaQuery.orientationOf(context);
-
-    return orientation.isLandscape ? landscape ?? portrait : portrait;
-  }
-}
-
-class ResponsiveLayoutBuilder extends StatelessWidget {
-  const ResponsiveLayoutBuilder({
-    super.key,
-    required this.phone,
-    this.tablet,
-    this.pc,
-  });
-
-  final Widget Function(BuildContext context) phone;
-  final Widget Function(BuildContext context)? tablet;
-  final Widget Function(BuildContext context)? pc;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).shortestSide;
-
-    Widget buildMobile(BuildContext context) {
-      if (width < 550) {
-        return phone(context);
-      } else {
-        return tablet?.call(context) ?? phone(context);
-      }
-    }
-
-    Widget buildDesktop(BuildContext context) {
-      return pc?.call(context) ?? tablet?.call(context) ?? phone(context);
-    }
-
-    return Builder(
-      builder: (context) => kPreferredLayout.isDesktop
-          ? buildDesktop(context)
-          : buildMobile(context),
-    );
-  }
-}

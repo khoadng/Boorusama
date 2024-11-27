@@ -14,8 +14,8 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/website_logo.dart';
 
-class RelatedPostsSection<T extends Post> extends ConsumerWidget {
-  const RelatedPostsSection({
+class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
+  const SliverRelatedPostsSection({
     super.key,
     required this.posts,
     required this.imageUrl,

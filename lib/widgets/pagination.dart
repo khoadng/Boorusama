@@ -5,7 +5,43 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:material_symbols_icons/symbols.dart';
+
+class ViewportBreakpoint {
+  const ViewportBreakpoint(this.width, this.pageCount);
+
+  final double width;
+  final int pageCount;
+}
+
+class PaginationConfig {
+  const PaginationConfig({
+    this.breakpoints = const [
+      ViewportBreakpoint(1400, 12),
+      ViewportBreakpoint(1000, 10),
+      ViewportBreakpoint(700, 8),
+      ViewportBreakpoint(600, 6),
+      ViewportBreakpoint(550, 5),
+      ViewportBreakpoint(400, 4),
+      ViewportBreakpoint(300, 3),
+      ViewportBreakpoint(200, 2),
+    ],
+    this.defaultPageCount = 1,
+  });
+
+  final List<ViewportBreakpoint> breakpoints;
+  final int defaultPageCount;
+
+  int getPageCount(double viewportWidth) {
+    for (final breakpoint in breakpoints) {
+      if (viewportWidth > breakpoint.width) {
+        return breakpoint.pageCount;
+      }
+    }
+    return defaultPageCount;
+  }
+}
 
 List<int> generatePage({
   required int current,
@@ -13,39 +49,38 @@ List<int> generatePage({
   required int? itemPerPage,
   int maxSelectablePage = 4,
 }) {
-  final maxPage = total != null && itemPerPage != null
-      ? (total / itemPerPage).ceil()
-      : null;
+  // Handle invalid maxSelectablePage
+  if (maxSelectablePage <= 0) return [];
 
-  if (current < maxSelectablePage) {
-    return List.generate(
-      maxSelectablePage,
-      (index) => maxPage != null ? math.min(index + 1, maxPage) : index + 1,
-    ).toSet().toList();
-  }
+  // Calculate maxPage with validation
+  final maxPage = total != null && itemPerPage != null && itemPerPage > 0
+      ? math.max(1, (total / itemPerPage).ceil())
+      : double.maxFinite.toInt();
 
-  final pages = List.generate(
+  // Ensure current page is within bounds
+  current = current.clamp(1, maxPage);
+
+  // Special case for maxSelectablePage = 1
+  if (maxSelectablePage == 1) return [current];
+
+  // AdjusmaxSelectablePage if it's larger than maxPage
+  maxSelectablePage = math.min(maxSelectablePage, maxPage);
+
+  // Calculate half of the maxSelectablePage for centering
+  final half = maxSelectablePage ~/ 2;
+
+  // Calculate start page
+  var start = current - half;
+
+  // Adjust start if too close to beginning or end
+  start = start.clamp(1, math.max(1, maxPage - maxSelectablePage + 1));
+
+  // Generate pages
+  return List.generate(
     maxSelectablePage,
-    (index) => maxPage != null
-        ? math.min(current + index - 1, maxPage)
-        : current + index - 1,
-  ).toSet().toList();
-
-  return _adjustPageIfNeeded(
-    pages: pages,
-    defaultSelectablePage: maxSelectablePage,
-  );
+    (i) => start + i,
+  ).where((page) => page >= 1 && page <= maxPage).toList();
 }
-
-List<int> _adjustPageIfNeeded({
-  required List<int> pages,
-  required int defaultSelectablePage,
-}) =>
-    switch (pages.last) {
-      > 100000 => pages.sublist(0, pages.length - 2),
-      > 10000 => pages.sublist(0, pages.length - 1),
-      _ => pages,
-    };
 
 int? calculateTotalPage(int? total, int? itemPerPage) {
   if (total == null || itemPerPage == null) return null;
@@ -53,6 +88,66 @@ int? calculateTotalPage(int? total, int? itemPerPage) {
   final totalPage = total / itemPerPage;
 
   return totalPage.ceil();
+}
+
+class PaginationInfo extends Equatable {
+  const PaginationInfo({
+    required this.pages,
+    required this.maxSelectablePage,
+    required this.isLowPageCount,
+    required this.isSinglePage,
+    required this.isLastPage,
+    required this.pageInputVisible,
+  });
+
+  final List<int> pages;
+  final int maxSelectablePage;
+  final bool isLowPageCount;
+  final bool isSinglePage;
+  final bool isLastPage;
+  final bool pageInputVisible;
+
+  @override
+  List<Object?> get props => [
+        pages,
+        maxSelectablePage,
+        isLowPageCount,
+        isSinglePage,
+        isLastPage,
+        pageInputVisible,
+      ];
+}
+
+PaginationInfo calculatePaginationInfo({
+  required double maxWidth,
+  required int currentPage,
+  required int? totalResults,
+  required int? itemPerPage,
+  PaginationConfig config = const PaginationConfig(),
+}) {
+  // Generate full page range first
+  final visiblePages = generatePage(
+    current: currentPage,
+    total: totalResults,
+    itemPerPage: itemPerPage,
+    maxSelectablePage: config.getPageCount(maxWidth),
+  );
+
+  final lastPage = visiblePages.lastOrNull;
+  final isLowPageCount =
+      lastPage != null ? lastPage < visiblePages.length : false;
+  final isSinglePage = visiblePages.length == 1 && visiblePages.first == 1;
+  final isLastPage = lastPage != null && lastPage == totalResults;
+  final pageInputVisible = visiblePages.length > 1;
+
+  return PaginationInfo(
+    pages: visiblePages,
+    maxSelectablePage: visiblePages.length,
+    isLowPageCount: isLowPageCount,
+    isSinglePage: isSinglePage,
+    isLastPage: isLastPage,
+    pageInputVisible: pageInputVisible,
+  );
 }
 
 class PageSelector extends StatefulWidget {
@@ -84,29 +179,12 @@ class _PageSelectorState extends State<PageSelector> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxSelectablePage = switch (constraints.maxWidth) {
-          > 1400 => 12,
-          > 1000 => 10,
-          > 700 => 8,
-          > 600 => 6,
-          > 550 => 5,
-          _ => 4,
-        };
-
-        final pages = generatePage(
-          current: widget.currentPage,
-          total: widget.totalResults,
+        final paginationInfo = calculatePaginationInfo(
+          maxWidth: constraints.maxWidth,
+          currentPage: widget.currentPage,
+          totalResults: widget.totalResults,
           itemPerPage: widget.itemPerPage,
-          maxSelectablePage: maxSelectablePage,
         );
-        final lastPage = pages.lastOrNull;
-        final isLowPageCount =
-            lastPage != null ? pages.last < maxSelectablePage : false;
-        final isSinglePage = pages.length == 1 && pages.first == 1;
-        final isLastPage =
-            !isLowPageCount ? false : lastPage == widget.currentPage;
-
-        if (isSinglePage) return const SizedBox.shrink();
 
         return OverflowBar(
           alignment: MainAxisAlignment.center,
@@ -120,7 +198,7 @@ class _PageSelectorState extends State<PageSelector> {
                 size: 32,
               ),
             ),
-            ...pages.map(
+            ...paginationInfo.pages.map(
               (page) => InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: widget.currentPage != page
@@ -149,15 +227,12 @@ class _PageSelectorState extends State<PageSelector> {
                 ),
               ),
             ),
-            if (widget.pageInput)
-              if (!isLowPageCount)
-                _PageInputBox(
-                  onSubmit: onSubmit,
-                )
-              else
-                const SizedBox(width: 50),
+            if (widget.pageInput && paginationInfo.pageInputVisible)
+              _PageInputBox(
+                onSubmit: onSubmit,
+              ),
             IconButton(
-              onPressed: isLastPage ? null : widget.onNext,
+              onPressed: paginationInfo.isLastPage ? null : widget.onNext,
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
               icon: const Icon(

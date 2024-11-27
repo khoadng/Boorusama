@@ -20,11 +20,13 @@ class DefaultInheritedSourceSection<T extends Post> extends StatelessWidget {
   Widget build(BuildContext context) {
     final post = InheritedPost.of<T>(context);
 
-    return post.source.whenWeb(
-      (source) => SourceSection(
-        source: source,
+    return SliverToBoxAdapter(
+      child: post.source.whenWeb(
+        (source) => SourceSection(
+          source: source,
+        ),
+        () => const SizedBox.shrink(),
       ),
-      () => const SizedBox.shrink(),
     );
   }
 }

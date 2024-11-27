@@ -9,7 +9,7 @@ import 'package:boorusama/widgets/widgets.dart';
 class SimplePostStatsTile extends StatelessWidget {
   const SimplePostStatsTile({
     super.key,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16),
+    this.padding,
     required this.totalComments,
     required this.favCount,
     required this.score,
@@ -22,7 +22,7 @@ class SimplePostStatsTile extends StatelessWidget {
   final int totalComments;
   final int favCount;
   final int score;
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final void Function()? onFavCountTap;
   final void Function()? onScoreTap;
   final void Function()? onTotalCommentsTap;
@@ -31,7 +31,11 @@ class SimplePostStatsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding,
+      padding: padding ??
+          const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
       child: Wrap(
         children: [
           _StatButton(

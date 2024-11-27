@@ -14,7 +14,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -188,11 +187,13 @@ class PhilomenaStatsTileSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<PhilomenaPost>(context);
 
-    return SimplePostStatsTile(
-      totalComments: post.commentCount,
-      favCount: post.favCount,
-      score: post.score,
-      votePercentText: _generatePercentText(post),
+    return SliverToBoxAdapter(
+      child: SimplePostStatsTile(
+        totalComments: post.commentCount,
+        favCount: post.favCount,
+        score: post.score,
+        votePercentText: _generatePercentText(post),
+      ),
     );
   }
 
@@ -209,10 +210,12 @@ class PhilomenaArtistInfoSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<PhilomenaPost>(context);
 
-    return ArtistSection(
-      commentary: ArtistCommentary.description(post.description),
-      artistTags: post.artistTags ?? {},
-      source: post.source,
+    return SliverToBoxAdapter(
+      child: ArtistSection(
+        commentary: ArtistCommentary.description(post.description),
+        artistTags: post.artistTags ?? {},
+        source: post.source,
+      ),
     );
   }
 }

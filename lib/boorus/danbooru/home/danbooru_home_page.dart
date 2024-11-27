@@ -69,7 +69,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     if (config.hasStrictSFW) return;
 
-    if (text != null) {
+    final uri = text != null ? Uri.tryParse(text) : null;
+    final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
+
+    if (uri != null && isHttp) {
       context.navigator.push(CupertinoPageRoute(
         builder: (context) {
           return AlertDialog(
@@ -86,13 +89,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  final uri = Uri.tryParse(text);
 
-                  if (uri != null) {
-                    final encodedUri = Uri.encodeFull(text);
-                    final url = '${booruUrl}uploads/new?url=$encodedUri';
-                    launchExternalUrlString(url);
-                  }
+                  final encodedUri = Uri.encodeFull(uri.toString());
+                  final url = '${booruUrl}uploads/new?url=$encodedUri';
+                  launchExternalUrlString(url);
                 },
                 child: const Text('OK'),
               ),

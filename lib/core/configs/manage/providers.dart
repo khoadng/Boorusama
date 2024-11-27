@@ -8,10 +8,21 @@ import 'package:boorusama/core/configs/manage/manage.dart';
 
 final currentBooruConfigProvider =
     NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
-  () => throw UnimplementedError(),
+  CurrentBooruConfigNotifier.new,
   dependencies: [
     settingsProvider,
     loggerProvider,
+    initialSettingsBooruConfigProvider,
   ],
   name: 'currentBooruConfigProvider',
+);
+
+final initialSettingsBooruConfigProvider = Provider<BooruConfig>(
+  (ref) => throw UnimplementedError(),
+  name: 'initialSettingsBooruConfigProvider',
+);
+
+final currentReadOnlyBooruConfigProvider = Provider<BooruConfig>(
+  (ref) => ref.watch(currentBooruConfigProvider),
+  name: 'currentReadOnlyBooruConfigProvider',
 );

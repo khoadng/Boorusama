@@ -24,10 +24,6 @@ import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'routes/configs.dart';
-import 'routes/downloads.dart';
-import 'routes/settings.dart';
-import 'widgets/failsafe_page.dart';
 
 ///
 /// When navigate to a page, must query the booru builders first to get the correct builder.
@@ -54,13 +50,16 @@ const kBulkdownload = 'bulk_download';
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => const AppLockWithSettings(
-          child: RateMyAppScope(
-            child: BackgroundDownloaderBuilder(
-              child: CustomContextMenuOverlay(
-                child: Focus(
-                  autofocus: true,
-                  child: EntryPage(),
+        builder: (context, state) => BooruConfigDeepLinkResolver(
+          path: state.uri.toString(),
+          child: const AppLockWithSettings(
+            child: RateMyAppScope(
+              child: BackgroundDownloaderBuilder(
+                child: CustomContextMenuOverlay(
+                  child: Focus(
+                    autofocus: true,
+                    child: EntryPage(),
+                  ),
                 ),
               ),
             ),

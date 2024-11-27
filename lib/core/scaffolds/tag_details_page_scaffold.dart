@@ -79,8 +79,7 @@ class _DanbooruTagDetailsPageState<T extends Post>
           return widget.gridBuilder.call(
             context,
             [
-              if (kPreferredLayout.isMobile &&
-                  context.orientation.isPortrait) ...[
+              if (!context.isLargeScreen) ...[
                 TagDetailsSlilverAppBar(
                   tagName: widget.tagName,
                 ),

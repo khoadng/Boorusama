@@ -31,34 +31,36 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     final voteNotifier =
         ref.watch(szurubooruPostVotesProvider(config).notifier);
 
-    return PostActionToolbar(
-      children: [
-        if (config.hasLoginDetails())
-          FavoritePostButton(
-            isFaved: isFaved,
-            isAuthorized: config.hasLoginDetails(),
-            addFavorite: () => favNotifier.add(post.id),
-            removeFavorite: () => favNotifier.remove(post.id),
+    return SliverToBoxAdapter(
+      child: PostActionToolbar(
+        children: [
+          if (config.hasLoginDetails())
+            FavoritePostButton(
+              isFaved: isFaved,
+              isAuthorized: config.hasLoginDetails(),
+              addFavorite: () => favNotifier.add(post.id),
+              removeFavorite: () => favNotifier.remove(post.id),
+            ),
+          if (config.hasLoginDetails())
+            UpvotePostButton(
+              voteState: voteState,
+              onUpvote: () => voteNotifier.upvote(post.id),
+              onRemoveUpvote: () => voteNotifier.removeVote(post.id),
+            ),
+          if (config.hasLoginDetails())
+            DownvotePostButton(
+              voteState: voteState,
+              onDownvote: () => voteNotifier.downvote(post.id),
+              onRemoveDownvote: () => voteNotifier.removeVote(post.id),
+            ),
+          BookmarkPostButton(post: post),
+          CommentPostButton(
+            onPressed: () => goToCommentPage(context, ref, post.id),
           ),
-        if (config.hasLoginDetails())
-          UpvotePostButton(
-            voteState: voteState,
-            onUpvote: () => voteNotifier.upvote(post.id),
-            onRemoveUpvote: () => voteNotifier.removeVote(post.id),
-          ),
-        if (config.hasLoginDetails())
-          DownvotePostButton(
-            voteState: voteState,
-            onDownvote: () => voteNotifier.downvote(post.id),
-            onRemoveDownvote: () => voteNotifier.removeVote(post.id),
-          ),
-        BookmarkPostButton(post: post),
-        CommentPostButton(
-          onPressed: () => goToCommentPage(context, ref, post.id),
-        ),
-        DownloadPostButton(post: post),
-        SharePostButton(post: post),
-      ],
+          DownloadPostButton(post: post),
+          SharePostButton(post: post),
+        ],
+      ),
     );
   }
 }

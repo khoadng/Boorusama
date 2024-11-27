@@ -42,34 +42,36 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
     final postVote = ref.watch(danbooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
 
-    return PostActionToolbar(
-      children: [
-        if (config.hasLoginDetails())
-          FavoritePostButton(
-            isFaved: isFaved,
-            isAuthorized: config.hasLoginDetails(),
-            addFavorite: () => ref.danbooruFavorites.add(post.id),
-            removeFavorite: () => ref.danbooruFavorites.remove(post.id),
+    return SliverToBoxAdapter(
+      child: PostActionToolbar(
+        children: [
+          if (config.hasLoginDetails())
+            FavoritePostButton(
+              isFaved: isFaved,
+              isAuthorized: config.hasLoginDetails(),
+              addFavorite: () => ref.danbooruFavorites.add(post.id),
+              removeFavorite: () => ref.danbooruFavorites.remove(post.id),
+            ),
+          if (config.hasLoginDetails())
+            UpvotePostButton(
+              voteState: voteState,
+              onUpvote: () => ref.danbooruUpvote(post.id),
+              onRemoveUpvote: () => ref.danbooruRemoveVote(post.id),
+            ),
+          if (config.hasLoginDetails())
+            DownvotePostButton(
+              voteState: voteState,
+              onDownvote: () => ref.danbooruDownvote(post.id),
+              onRemoveDownvote: () => ref.danbooruRemoveVote(post.id),
+            ),
+          BookmarkPostButton(post: post),
+          CommentPostButton(
+            onPressed: () => goToCommentPage(context, ref, post.id),
           ),
-        if (config.hasLoginDetails())
-          UpvotePostButton(
-            voteState: voteState,
-            onUpvote: () => ref.danbooruUpvote(post.id),
-            onRemoveUpvote: () => ref.danbooruRemoveVote(post.id),
-          ),
-        if (config.hasLoginDetails())
-          DownvotePostButton(
-            voteState: voteState,
-            onDownvote: () => ref.danbooruDownvote(post.id),
-            onRemoveDownvote: () => ref.danbooruRemoveVote(post.id),
-          ),
-        BookmarkPostButton(post: post),
-        CommentPostButton(
-          onPressed: () => goToCommentPage(context, ref, post.id),
-        ),
-        DownloadPostButton(post: post),
-        SharePostButton(post: post),
-      ],
+          DownloadPostButton(post: post),
+          SharePostButton(post: post),
+        ],
+      ),
     );
   }
 }

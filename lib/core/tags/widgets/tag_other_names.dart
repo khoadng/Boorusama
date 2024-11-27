@@ -18,7 +18,7 @@ class TagOtherNames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Screen.of(context).size == ScreenSize.small
+    return !context.isLargeScreen
         ? otherNames != null
             ? otherNames!.length > 3
                 ? Container(
