@@ -42,7 +42,7 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
             ),
             page,
           ),
-      builder: (context, controller, errors) => TagDetailsPageScaffold(
+      builder: (context, controller) => TagDetailsPageScaffold(
         onCategoryToggle: (category) {
           selectedCategory.value = category;
           controller.refresh();
@@ -53,8 +53,7 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
           error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
           loading: () => const TagOtherNames(otherNames: null),
         ),
-        gridBuilder: (context, slivers) => InfinitePostListScaffold(
-          errors: errors,
+        gridBuilder: (context, slivers) => PostGrid(
           controller: controller,
           sliverHeaders: slivers,
         ),

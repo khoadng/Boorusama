@@ -14,13 +14,11 @@ import 'package:boorusama/boorus/danbooru/uploads/uploads.dart';
 import 'package:boorusama/boorus/danbooru/users/users_provider.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -204,14 +202,13 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           return uploads.map((e) => e.previewPost).nonNulls.toList().toResult();
         },
       ),
-      builder: (context, controller, errors) => LayoutBuilder(
+      builder: (context, controller) => LayoutBuilder(
           builder: (context, constraints) =>
               ref.watch(danbooruUploadHideMapProvider).maybeWhen(
                     data: (data) => _buildGrid(
                       controller,
                       settings,
                       constraints,
-                      errors,
                       data,
                     ),
                     orElse: () => const SizedBox.shrink(),
@@ -229,93 +226,70 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
     PostGridController<DanbooruUploadPost> controller,
     ImageListingSettings settings,
     BoxConstraints constraints,
-    BooruError? errors,
     Map<int, bool> hideMap,
   ) {
-    final showHidden = ref.watch(_danbooruShowUploadHiddenProvider);
-
     return PostGrid(
-      //TODO: this is broken, need to be integrated with the new filter system using the post grid controller
-      blacklistedIdString: showHidden ? null : hideMap.keys.toSet().join('\n'),
       controller: controller,
-      scrollController: _autoScrollController,
-      body: SliverPostGrid(
-        postController: controller,
-        multiSelectController: multiSelectController,
-        constraints: constraints,
-        itemBuilder: (context, index, post) {
+      itemBuilder: (context, index, multiSelectController, scrollController) =>
+          ValueListenableBuilder(
+        valueListenable: controller.itemsNotifier,
+        builder: (_, posts, __) {
+          final post = posts[index];
           final isHidden = hideMap[post.id] == true;
 
           return Stack(
             children: [
-              ContextMenuRegion(
+              DefaultDanbooruImageGridItem(
+                index: index,
+                multiSelectController: multiSelectController,
+                autoScrollController: scrollController,
+                controller: controller,
                 contextMenu: GenericContextMenu(
                   buttonConfigs: [
                     ContextMenuButtonConfig(
                       'Hide',
                       onPressed: () {
-                        _changeVisibility(post.id, false);
+                        _changeVisibility(posts[index].id, false);
                       },
                     ),
                   ],
                 ),
-                child: DanbooruImageGridItem(
-                  onTap: () {
-                    if (widget.type == UploadTabType.unposted) {
-                      goToTagEditUploadPage(
-                        context,
-                        post: post,
-                        uploadId: post.uploadId,
-                        //TODO: Refresh later
-                        // onSubmitted: () => controller.refresh(),
-                      );
-                    }
-                  },
-                  post: post,
-                  hideOverlay: false,
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: _autoScrollController,
-                    index: index,
-                  ),
-                  enableFav: false,
-                  image: ConditionalParentWidget(
-                    condition: isHidden,
-                    conditionalBuilder: (child) => Stack(
-                      children: [
-                        child,
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.black.applyOpacity(0.8),
-                          ),
+                onTap: () {
+                  if (widget.type == UploadTabType.unposted) {
+                    goToTagEditUploadPage(
+                      context,
+                      post: post,
+                      uploadId: post.uploadId,
+                      //TODO: Refresh later
+                      // onSubmitted: () => controller.refresh(),
+                    );
+                  }
+                },
+                blockOverlay: isHidden
+                    ? BlockOverlayItem(
+                        overlay: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Container(
+                                color: Colors.black.applyOpacity(0.8),
+                              ),
+                            ),
+                            if (isHidden)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  onPressed: () {
+                                    _changeVisibility(post.id, true);
+                                  },
+                                  icon: const Icon(Icons.visibility),
+                                ),
+                              ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: BooruImage(
-                      aspectRatio: post.aspectRatio,
-                      imageUrl:
-                          post.thumbnailFromImageQuality(settings.imageQuality),
-                      borderRadius: BorderRadius.circular(
-                        settings.imageBorderRadius,
-                      ),
-                      forceFill:
-                          settings.imageListType == ImageListType.standard,
-                      placeholderUrl: post.thumbnailImageUrl,
-                      // null, // Will cause error sometimes, disabled for now
-                    ),
-                  ),
-                ),
+                      )
+                    : null,
               ),
-              if (isHidden)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    onPressed: () {
-                      _changeVisibility(post.id, true);
-                    },
-                    icon: const Icon(Icons.visibility),
-                  ),
-                ),
               if (widget.type == UploadTabType.unposted)
                 _buildUnpostedChip(post),
               if (post.uploaderId != 0 &&
@@ -385,7 +359,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
             ],
           );
         },
-        error: errors,
       ),
     );
   }

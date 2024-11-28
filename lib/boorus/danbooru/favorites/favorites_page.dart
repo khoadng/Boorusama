@@ -49,9 +49,16 @@ class DanbooruFavoritesPageInternal extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: PostScope(
         fetcher: (page) => postRepo.getPosts(query, page),
-        builder: (context, controller, errors) => DanbooruInfinitePostList(
-          errors: errors,
+        builder: (context, controller) => PostGrid(
           controller: controller,
+          itemBuilder:
+              (context, index, multiSelectController, scrollController) =>
+                  DefaultDanbooruImageGridItem(
+            index: index,
+            multiSelectController: multiSelectController,
+            autoScrollController: scrollController,
+            controller: controller,
+          ),
           sliverHeaders: [
             SliverAppBar(
               title: const Text('profile.favorites').tr(),

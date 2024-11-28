@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/functional.dart';
 import '../feats/posts/posts.dart';
 import 'widgets/period_toggle_switch.dart';
@@ -35,7 +34,7 @@ class _MoebooruPopularPageState
       fetcher: (page) => page > 1
           ? TaskEither.of(<Post>[].toResult())
           : repo.getPopularPostsRecent(selectedPeriod.value),
-      builder: (context, controller, errors) => Column(
+      builder: (context, controller) => Column(
         children: [
           PeriodToggleSwitch(
             onToggle: (period) {
@@ -45,8 +44,7 @@ class _MoebooruPopularPageState
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: InfinitePostListScaffold(
-              errors: errors,
+            child: PostGrid(
               controller: controller,
             ),
           ),

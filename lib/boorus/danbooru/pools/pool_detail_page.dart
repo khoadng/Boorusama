@@ -269,11 +269,18 @@ class _DanbooruInfinitePostIdListState
             );
           },
         ),
-        builder: (context, controller, errors) => DanbooruPostGridController(
+        builder: (context, controller) => DanbooruPostGridController(
           controller: controller,
-          child: DanbooruInfinitePostList(
-            errors: errors,
+          child: PostGrid(
             controller: controller,
+            itemBuilder:
+                (context, index, multiSelectController, scrollController) =>
+                    DefaultDanbooruImageGridItem(
+              index: index,
+              multiSelectController: multiSelectController,
+              autoScrollController: scrollController,
+              controller: controller,
+            ),
             sliverHeaders: [
               if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
             ],

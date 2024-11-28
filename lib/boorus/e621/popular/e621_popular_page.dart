@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -42,7 +41,7 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
             fetcher: (page) => page > 1
                 ? TaskEither.of(<E621Post>[].toResult())
                 : repo.getPopularPosts(selectedDate, scale),
-            builder: (context, controller, errors) => Column(
+            builder: (context, controller) => Column(
               children: [
                 Container(
                   color: context.theme.bottomNavigationBarTheme.backgroundColor,
@@ -70,8 +69,7 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
                 ),
                 const SizedBox(height: 12),
                 Expanded(
-                  child: InfinitePostListScaffold(
-                    errors: errors,
+                  child: PostGrid(
                     controller: controller,
                   ),
                 ),

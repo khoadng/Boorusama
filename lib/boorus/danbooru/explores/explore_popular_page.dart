@@ -11,7 +11,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/utils/duration_utils.dart';
@@ -47,9 +46,8 @@ class ExplorePopularPage extends ConsumerWidget {
       fetcher: (page) => ref
           .read(danbooruExploreRepoProvider(config))
           .getPopularPosts(timeAndDate.date, page, timeAndDate.scale),
-      builder: (context, controller, errors) => _PopularContent(
+      builder: (context, controller) => _PopularContent(
         controller: controller,
-        errors: errors,
         onBack: onBack,
       ),
     );
@@ -59,12 +57,10 @@ class ExplorePopularPage extends ConsumerWidget {
 class _PopularContent extends ConsumerWidget {
   const _PopularContent({
     required this.controller,
-    this.errors,
     required this.onBack,
   });
 
   final PostGridController<DanbooruPost> controller;
-  final BooruError? errors;
   final void Function()? onBack;
 
   @override
@@ -88,10 +84,17 @@ class _PopularContent extends ConsumerWidget {
         child: Column(
           children: [
             Expanded(
-              child: DanbooruInfinitePostList(
-                errors: errors,
+              child: PostGrid(
                 controller: controller,
                 safeArea: false,
+                itemBuilder:
+                    (context, index, multiSelectController, scrollController) =>
+                        DefaultDanbooruImageGridItem(
+                  index: index,
+                  multiSelectController: multiSelectController,
+                  autoScrollController: scrollController,
+                  controller: controller,
+                ),
                 sliverHeaders: [
                   ExploreSliverAppBar(
                     title: 'explore.popular'.tr(),

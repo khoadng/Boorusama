@@ -28,9 +28,16 @@ class ExploreHotPage extends ConsumerWidget {
       child: PostScope(
         fetcher: (page) =>
             ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
-        builder: (context, controller, errors) => DanbooruInfinitePostList(
-          errors: errors,
+        builder: (context, controller) => PostGrid(
           controller: controller,
+          itemBuilder:
+              (context, index, multiSelectController, scrollController) =>
+                  DefaultDanbooruImageGridItem(
+            index: index,
+            multiSelectController: multiSelectController,
+            autoScrollController: scrollController,
+            controller: controller,
+          ),
           sliverHeaders: [
             ExploreSliverAppBar(
               title: 'explore.hot'.tr(),

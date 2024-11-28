@@ -59,10 +59,17 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
         return postRepo.getPosts(tag, page);
       },
-      builder: (context, controller, errors) => DanbooruInfinitePostList(
-        errors: errors,
+      builder: (context, controller) => PostGrid(
         controller: controller,
         scrollController: _autoScrollController,
+        itemBuilder:
+            (context, index, multiSelectController, scrollController) =>
+                DefaultDanbooruImageGridItem(
+          index: index,
+          multiSelectController: multiSelectController,
+          autoScrollController: scrollController,
+          controller: controller,
+        ),
         sliverHeaders: [
           SliverHomeSearchBar(
             selectedTagController: selectedTagController,

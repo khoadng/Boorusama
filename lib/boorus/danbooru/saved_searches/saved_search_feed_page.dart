@@ -72,9 +72,16 @@ class _SavedSearchFeedPageState
       fetcher: (page) => ref
           .read(danbooruPostRepoProvider(config))
           .getPosts(_selectedSearch.toQuery(), page),
-      builder: (context, controller, errors) => DanbooruInfinitePostList(
-        errors: errors,
+      builder: (context, controller) => PostGrid(
         controller: controller,
+        itemBuilder:
+            (context, index, multiSelectController, scrollController) =>
+                DefaultDanbooruImageGridItem(
+          index: index,
+          multiSelectController: multiSelectController,
+          autoScrollController: scrollController,
+          controller: controller,
+        ),
         sliverHeaders: [
           SliverAppBar(
             title: const Text('saved_search.saved_search_feed').tr(),

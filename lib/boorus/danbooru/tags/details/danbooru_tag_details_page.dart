@@ -47,7 +47,7 @@ class _DanbooruTagDetailsPageState
         ),
         page,
       ),
-      builder: (context, controller, error) => TagDetailsPageScaffold(
+      builder: (context, controller) => TagDetailsPageScaffold(
         tagName: widget.tagName,
         otherNames: widget.otherNames,
         extras: [
@@ -63,9 +63,16 @@ class _DanbooruTagDetailsPageState
             ),
           ),
         ],
-        gridBuilder: (context, slivers) => DanbooruInfinitePostList(
-          errors: error,
+        gridBuilder: (context, slivers) => PostGrid(
           controller: controller,
+          itemBuilder:
+              (context, index, multiSelectController, scrollController) =>
+                  DefaultDanbooruImageGridItem(
+            index: index,
+            multiSelectController: multiSelectController,
+            autoScrollController: scrollController,
+            controller: controller,
+          ),
           sliverHeaders: slivers,
         ),
         onCategoryToggle: (category) {

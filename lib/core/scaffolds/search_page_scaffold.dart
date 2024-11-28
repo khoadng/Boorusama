@@ -11,11 +11,18 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/widgets/widgets.dart';
+
+typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
+  BuildContext context,
+  int index,
+  MultiSelectController<T> multiSelectController,
+  AutoScrollController autoScrollController,
+  PostGridController<T> controller,
+);
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -26,12 +33,20 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.queryPattern,
     this.metatagsBuilder,
     this.trendingBuilder,
-    this.resultBuilder,
+    this.extraHeaders,
+    this.itemBuilder,
   });
 
   final String? initialQuery;
 
   final Widget Function(BuildContext context)? noticeBuilder;
+
+  final List<Widget> Function(
+    ValueNotifier<String> selectedTagString,
+    SelectedTagController selectedTagController,
+    SearchPageController searchController,
+    PostGridController<T> postController,
+  )? extraHeaders;
 
   final PostsOrErrorCore<T> Function(
     int page,
@@ -40,20 +55,12 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final Map<RegExp, TextStyle>? queryPattern;
 
+  final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
+
   final Widget Function(BuildContext context, SearchPageController controller)?
       metatagsBuilder;
   final Widget Function(BuildContext context, SearchPageController controller)?
       trendingBuilder;
-
-  final Widget Function(
-    ValueNotifier<bool> didSearchOnce,
-    ValueNotifier<String> selectedTagString,
-    AutoScrollController scrollController,
-    SelectedTagController selectedTagController,
-    SearchPageController searchController,
-    BooruError? errors,
-    PostGridController<T> postController,
-  )? resultBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -150,21 +157,8 @@ class _SearchPageScaffoldState<T extends Post>
                             page,
                             searchController.selectedTagController,
                           ),
-                          builder: (context, controller, errors) =>
-                              widget.resultBuilder != null
-                                  ? widget.resultBuilder!(
-                                      _didSearchOnce,
-                                      selectedTagString,
-                                      _scrollController,
-                                      selectedTagController,
-                                      searchController,
-                                      errors,
-                                      controller,
-                                    )
-                                  : _buildDefaultSearchResults(
-                                      errors,
-                                      controller,
-                                    ),
+                          builder: (context, controller) =>
+                              _buildDefaultSearchResults(controller),
                         )
                       : _buildInitial(context, search);
                 },
@@ -248,42 +242,65 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   Widget _buildDefaultSearchResults(
-    BooruError? errors,
-    PostGridController controller,
+    PostGridController<T> controller,
   ) {
-    return InfinitePostListScaffold(
-      errors: errors,
+    return PostGrid<T>(
+      scrollController: _scrollController,
       controller: controller,
+      itemBuilder: widget.itemBuilder != null
+          ? (context, index, multiSelectController, scrollController) {
+              return widget.itemBuilder!(
+                context,
+                index,
+                multiSelectController,
+                _scrollController,
+                controller,
+              );
+            }
+          : null,
       sliverHeaders: [
         SliverSearchAppBar(
           search: () {
+            _didSearchOnce.value = true;
             searchController.search();
-            selectedTagString.value = selectedTagController.rawTagsString;
             controller.refresh();
+            selectedTagString.value = selectedTagController.rawTagsString;
           },
           searchController: searchController,
           selectedTagController: selectedTagController,
+          metatagsBuilder: widget.metatagsBuilder != null
+              ? (context, _) => widget.metatagsBuilder!(
+                    context,
+                    searchController,
+                  )
+              : null,
         ),
         SliverToBoxAdapter(
-            child: SelectedTagListWithData(
-          controller: selectedTagController,
-        )),
+          child: SelectedTagListWithData(
+            controller: selectedTagController,
+          ),
+        ),
+        if (widget.extraHeaders != null)
+          ...widget.extraHeaders!(
+            selectedTagString,
+            selectedTagController,
+            searchController,
+            controller,
+          ),
         SliverToBoxAdapter(
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ...[
-                ValueListenableBuilder(
-                  valueListenable: selectedTagString,
-                  builder: (context, value, _) => ResultHeaderFromController(
-                    controller: controller,
-                    onRefresh: null,
-                    hasCount: ref.watchConfig.booruType.postCountMethod ==
-                        PostCountMethod.search,
-                  ),
+              ValueListenableBuilder(
+                valueListenable: selectedTagString,
+                builder: (context, value, _) => ResultHeaderFromController(
+                  controller: controller,
+                  onRefresh: null,
+                  hasCount: ref.watchConfig.booruType.postCountMethod ==
+                      PostCountMethod.search,
                 ),
-                const Spacer(),
-              ]
+              ),
+              const Spacer(),
             ],
           ),
         ),

@@ -12,7 +12,6 @@ import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
@@ -51,9 +50,8 @@ class ExploreMostViewedPage extends ConsumerWidget {
           : ref
               .read(danbooruExploreRepoProvider(config))
               .getMostViewedPosts(date),
-      builder: (context, controller, errors) => _MostViewedContent(
+      builder: (context, controller) => _MostViewedContent(
         controller: controller,
-        errors: errors,
         onBack: onBack,
       ),
     );
@@ -63,12 +61,10 @@ class ExploreMostViewedPage extends ConsumerWidget {
 class _MostViewedContent extends ConsumerWidget {
   const _MostViewedContent({
     required this.controller,
-    this.errors,
     required this.onBack,
   });
 
   final PostGridController<DanbooruPost> controller;
-  final BooruError? errors;
   final void Function()? onBack;
 
   @override
@@ -92,10 +88,17 @@ class _MostViewedContent extends ConsumerWidget {
         child: Column(
           children: [
             Expanded(
-              child: DanbooruInfinitePostList(
-                errors: errors,
+              child: PostGrid(
                 controller: controller,
                 safeArea: false,
+                itemBuilder:
+                    (context, index, multiSelectController, scrollController) =>
+                        DefaultDanbooruImageGridItem(
+                  index: index,
+                  multiSelectController: multiSelectController,
+                  autoScrollController: scrollController,
+                  controller: controller,
+                ),
                 sliverHeaders: [
                   ExploreSliverAppBar(
                     title: 'explore.most_viewed'.tr(),

@@ -1,10 +1,10 @@
 export 'common.dart';
 export 'danbooru_favorite_group_post_mixin.dart';
 export 'danbooru_image_grid_item.dart';
-export 'danbooru_infinite_post_list.dart';
 export 'danbooru_multi_selection_actions.dart';
 export 'danbooru_post.dart';
 export 'danbooru_post_context_menu.dart';
+export 'default_danbooru_image_grid_item.dart';
 export 'details/danbooru_creator_preloader.dart';
 export 'details/danbooru_more_action_button.dart';
 export 'details/danbooru_post_action_toolbar.dart';

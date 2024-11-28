@@ -12,12 +12,11 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/router.dart';
 import '../danbooru_provider.dart';
 import '../related_tags/related_tags.dart';
 import 'trending_section.dart';
 
-class DanbooruSearchPage extends ConsumerWidget {
+class DanbooruSearchPage extends ConsumerStatefulWidget {
   const DanbooruSearchPage({
     super.key,
     this.initialQuery,
@@ -26,14 +25,19 @@ class DanbooruSearchPage extends ConsumerWidget {
   final String? initialQuery;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DanbooruSearchPage> createState() => _DanbooruSearchPageState();
+}
+
+class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
+  @override
+  Widget build(BuildContext context) {
     final config = ref.watchConfig;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return SearchPageScaffold(
       fetcher: (page, controller) =>
-          postRepo.getPosts(controller.rawTagsString, page),
-      initialQuery: initialQuery,
+          postRepo.getPostsFromController(controller, page),
+      initialQuery: widget.initialQuery,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
             TextStyle(
@@ -46,101 +50,64 @@ class DanbooruSearchPage extends ConsumerWidget {
           controller.tapTag(value);
         },
       ),
-      metatagsBuilder: (context, controller) =>
-          _buildMetatagSection(ref, controller),
-      resultBuilder: (
-        didSearchOnce,
+      metatagsBuilder: (context, controller) => DanbooruMetatagsSection(
+        onOptionTap: (value) {
+          controller.tapRawMetaTag(value);
+          controller.focus.requestFocus();
+          controller.textEditingController
+              .setTextAndCollapseSelection('$value:');
+        },
+      ),
+      itemBuilder: (context, index, multiSelectController, scrollController,
+              postController) =>
+          DefaultDanbooruImageGridItem(
+        index: index,
+        multiSelectController: multiSelectController,
+        autoScrollController: scrollController,
+        controller: postController,
+      ),
+      extraHeaders: (
         selectedTagString,
-        scrollController,
         selectedTagController,
         searchController,
-        errors,
         postController,
-      ) {
-        return DanbooruInfinitePostList(
-          scrollController: scrollController,
-          controller: postController,
-          errors: errors,
-          sliverHeaders: [
-            SliverSearchAppBar(
-              search: () {
-                didSearchOnce.value = true;
-                searchController.search();
+      ) =>
+          [
+        SliverToBoxAdapter(
+          child: ValueListenableBuilder(
+            valueListenable: selectedTagString,
+            builder: (context, selectedTags, _) => RelatedTagSection(
+              query: selectedTags,
+              onAdded: (tag) {
+                selectedTagController.addTag(tag.tag);
                 postController.refresh();
                 selectedTagString.value = selectedTagController.rawTagsString;
+                searchController.search();
               },
-              searchController: searchController,
-              selectedTagController: selectedTagController,
-              metatagsBuilder: (context, ref) => _buildMetatagSection(
-                ref,
-                searchController,
-                popOnSelect: true,
-              ),
+              onNegated: (tag) {
+                selectedTagController.negateTag(tag.tag);
+                postController.refresh();
+                selectedTagString.value = selectedTagController.rawTagsString;
+                searchController.search();
+              },
             ),
-            SliverToBoxAdapter(
-              child: SelectedTagListWithData(
-                controller: searchController.selectedTagController,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: ValueListenableBuilder(
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Row(
+            children: [
+              ValueListenableBuilder(
                 valueListenable: selectedTagString,
-                builder: (context, selectedTags, _) => RelatedTagSection(
-                  query: selectedTags,
-                  onAdded: (tag) {
-                    selectedTagController.addTag(tag.tag);
-                    postController.refresh();
-                    selectedTagString.value =
-                        selectedTagController.rawTagsString;
-                    searchController.search();
-                  },
-                  onNegated: (tag) {
-                    selectedTagController.negateTag(tag.tag);
-                    postController.refresh();
-                    selectedTagString.value =
-                        selectedTagController.rawTagsString;
-                    searchController.search();
-                  },
+                builder: (context, selectedTags, _) => ResultHeaderWithProvider(
+                  selectedTagsString: selectedTags,
+                  onRefresh: null,
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  ValueListenableBuilder(
-                    valueListenable: selectedTagString,
-                    builder: (context, selectedTags, _) =>
-                        ResultHeaderWithProvider(
-                      selectedTagsString: selectedTags,
-                      onRefresh: null,
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildMetatagSection(
-    WidgetRef ref,
-    SearchPageController controller, {
-    bool popOnSelect = false,
-  }) {
-    return DanbooruMetatagsSection(
-      onOptionTap: (value) {
-        controller.tapRawMetaTag(value);
-        controller.focus.requestFocus();
-        controller.textEditingController.setTextAndCollapseSelection('$value:');
-
-        //TODO: need to handle case where the options page is a dialog
-        if (popOnSelect) {
-          ref.context.pop();
-        }
-      },
+              const Spacer(),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

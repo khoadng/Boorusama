@@ -35,36 +35,19 @@ class DanbooruImageGridItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final artistTags = [...post.artistTags]..remove('banned_artist');
 
-    return Stack(
-      children: [
-        SliverPostGridImageGridItem(
-          post: post,
-          hideOverlay: hideOverlay,
-          quickActionButton: !post.isBanned && enableFav
-              ? DefaultImagePreviewQuickActionButton(post: post)
-              : null,
-          autoScrollOptions: autoScrollOptions,
-          onTap: post.isBanned ? null : onTap,
-          image: image,
-          score: post.isBanned ? null : post.score,
-        ),
-        if (post.isBanned)
-          Positioned.fill(
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashFactory: FasterInkSplash.splashFactory,
-              splashColor: Colors.black38,
-              onTap: switch (post.source) {
-                final WebSource source => () =>
-                    launchExternalUrlString(source.url),
-                _ => null,
-              },
-            ),
-          ),
-        if (post.isBanned)
-          Positioned.fill(
-            child: Center(
-              child: Column(
+    return SliverPostGridImageGridItem(
+      post: post,
+      hideOverlay: hideOverlay,
+      quickActionButton: !post.isBanned && enableFav
+          ? DefaultImagePreviewQuickActionButton(post: post)
+          : null,
+      autoScrollOptions: autoScrollOptions,
+      onTap: post.isBanned ? null : onTap,
+      image: image,
+      score: post.isBanned ? null : post.score,
+      blockOverlay: post.isBanned
+          ? BlockOverlayItem(
+              overlay: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -120,9 +103,13 @@ class DanbooruImageGridItem extends ConsumerWidget {
                     ),
                 ],
               ),
-            ),
-          ),
-      ],
+              onTap: switch (post.source) {
+                final WebSource source => () =>
+                    launchExternalUrlString(source.url),
+                _ => null,
+              },
+            )
+          : null,
     );
   }
 }

@@ -11,8 +11,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -28,50 +31,32 @@ import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-typedef ItemWidgetBuilder<T> = Widget Function(
-    BuildContext context, List<T> items, int index);
+typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
+  BuildContext context,
+  int index,
+  MultiSelectController<T> multiSelectController,
+  AutoScrollController autoScrollController,
+);
 
 class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   const PostGrid({
     super.key,
-    this.onLoadMore,
-    this.onRefresh,
     this.sliverHeaders,
     this.scrollController,
-    this.extendBody = false,
-    this.extendBodyHeight,
-    this.footer,
-    this.header,
     this.blacklistedIdString,
-    required this.body,
     this.multiSelectController,
     required this.controller,
-    this.refreshAtStart = true,
-    this.enablePullToRefresh = true,
     this.safeArea = true,
+    this.itemBuilder,
   });
 
-  final VoidCallback? onLoadMore;
-  final void Function()? onRefresh;
   final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
-
-  final bool extendBody;
-  final double? extendBodyHeight;
-
-  final bool refreshAtStart;
-  final bool enablePullToRefresh;
   final bool safeArea;
-
-  final Widget? footer;
-  final Widget? header;
-  final Widget body;
-
   final String? blacklistedIdString;
-
   final MultiSelectController<T>? multiSelectController;
-
   final PostGridController<T> controller;
+  final IndexedSelectableWidgetBuilder<T>? itemBuilder;
 
   @override
   ConsumerState<PostGrid<T>> createState() => _PostGridState();
@@ -79,29 +64,71 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
   final expanded = ValueNotifier<bool?>(null);
+  late final AutoScrollController _autoScrollController;
+  late final _multiSelectController =
+      widget.multiSelectController ?? MultiSelectController<T>();
+
+  @override
+  void initState() {
+    super.initState();
+    _autoScrollController = widget.scrollController ?? AutoScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.multiSelectController == null) {
+      _multiSelectController.dispose();
+    }
+
+    if (widget.scrollController == null) {
+      _autoScrollController.dispose();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
+    final config = ref.watchConfig;
+    final booruBuilder = ref.watchBooruBuilder(config);
 
-    return RawPostGrid<T>(
-      onLoadMore: widget.onLoadMore,
-      onRefresh: widget.onRefresh,
-      sliverHeaders: widget.sliverHeaders,
-      scrollController: widget.scrollController,
-      extendBody: widget.extendBody,
-      extendBodyHeight: widget.extendBodyHeight,
-      footer: widget.footer,
-      header: widget.header,
-      blacklistedIdString: widget.blacklistedIdString,
-      body: widget.body,
-      multiSelectController: widget.multiSelectController,
-      controller: widget.controller,
-      refreshAtStart: widget.refreshAtStart,
-      enablePullToRefresh: widget.enablePullToRefresh,
-      safeArea: widget.safeArea,
-      gridHeader: _buildConfigHeader(ref, Axis.horizontal),
-      settings: settings,
+    final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
+      context,
+      _multiSelectController,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) => RawPostGrid(
+        sliverHeaders: [
+          ...widget.sliverHeaders ?? [],
+          const SliverMasonryGridWarning(),
+        ],
+        scrollController: _autoScrollController,
+        footer: multiSelectActions,
+        blacklistedIdString: widget.blacklistedIdString,
+        multiSelectController: _multiSelectController,
+        controller: widget.controller,
+        safeArea: widget.safeArea,
+        gridHeader: _buildConfigHeader(ref, Axis.horizontal),
+        settings: settings,
+        body: SliverPostGrid(
+          postController: widget.controller,
+          constraints: constraints,
+          itemBuilder: (context, index) =>
+              widget.itemBuilder?.call(
+                context,
+                index,
+                _multiSelectController,
+                _autoScrollController,
+              ) ??
+              DefaultImageGridItem(
+                index: index,
+                multiSelectController: _multiSelectController,
+                autoScrollController: _autoScrollController,
+                controller: widget.controller,
+              ),
+        ),
+      ),
     );
   }
 
@@ -195,6 +222,33 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
 
   void _disableAll() {
     widget.controller.disableAllTags();
+  }
+}
+
+class SliverMasonryGridWarning extends ConsumerWidget {
+  const SliverMasonryGridWarning({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final type = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final booruType = ref.watchConfig.booruType;
+
+    return type == ImageListType.masonry && booruType.masonryLayoutUnsupported
+        ? SliverToBoxAdapter(
+            child: WarningContainer(
+              title: 'Layout',
+              contentBuilder: (context) => Text(
+                'Consider switching to the "Standard" layout. "Masonry" is very jumpy for this booru.',
+                style: TextStyle(
+                  color: context.colorScheme.onSurface,
+                ),
+              ),
+            ),
+          )
+        : const SliverSizedBox.shrink();
   }
 }
 

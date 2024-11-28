@@ -19,6 +19,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../posts/posts.dart';
@@ -49,10 +50,10 @@ class _FavoriteGroupDetailsPageState
   final AutoScrollController scrollController = AutoScrollController();
   //TODO: this part might be broken after the new filtering system, need to check
   late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) => getPostsFromIdQueue(widget.postIds),
+    fetcher: (page) =>
+        TaskEither.Do(($) => getPostsFromIdQueue(widget.postIds)),
     blacklistedTagsFetcher: () =>
         ref.read(blacklistTagsProvider(ref.watchConfig).future),
-    refresher: () => getPostsFromIdQueue(widget.postIds),
     mountedChecker: () => mounted,
   );
 
