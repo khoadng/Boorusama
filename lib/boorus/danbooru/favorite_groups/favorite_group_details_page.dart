@@ -2,22 +2,18 @@
 import 'dart:collection';
 
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:reorderable_grid_view/reorderable_grid_view.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
@@ -25,17 +21,13 @@ import 'package:boorusama/widgets/widgets.dart';
 import '../posts/posts.dart';
 import 'favorite_groups.dart';
 
-// Flutter imports:
-
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
   const FavoriteGroupDetailsPage({
     super.key,
     required this.group,
-    required this.postIds,
   });
 
   final DanbooruFavoriteGroup group;
-  final Queue<int> postIds;
 
   @override
   ConsumerState<FavoriteGroupDetailsPage> createState() =>
@@ -45,276 +37,257 @@ class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
 class _FavoriteGroupDetailsPageState
     extends ConsumerState<FavoriteGroupDetailsPage>
     with DanbooruFavoriteGroupPostMixin {
-  List<List<Object>> commands = [];
-  bool editing = false;
-  final AutoScrollController scrollController = AutoScrollController();
-  //TODO: this part might be broken after the new filtering system, need to check
-  late final controller = PostGridController<DanbooruPost>(
-    fetcher: (page) =>
-        TaskEither.Do(($) => getPostsFromIdQueue(widget.postIds)),
-    blacklistedTagsFetcher: () =>
-        ref.read(blacklistTagsProvider(ref.watchConfig).future),
-    mountedChecker: () => mounted,
-  );
-
-  int rowCountEditMode = 2;
-
-  List<DanbooruPost> items = [];
-  bool refreshing = false;
-  bool loading = false;
-  bool hasMore = false;
+  late var postIds = Queue<int>.from(widget.group.postIds);
 
   @override
   PostRepository<DanbooruPost> get postRepository =>
       ref.read(danbooruPostRepoProvider(ref.readConfig));
 
   @override
-  void initState() {
-    super.initState();
-    controller.addListener(_onControllerChanged);
-    controller.refresh();
-  }
-
-  void _onControllerChanged() {
-    setState(() {
-      items = controller.items.toList();
-      hasMore = controller.hasMore;
-      loading = controller.loading;
-      refreshing = controller.refreshing;
-    });
-  }
-
-  void _aggregate(BooruConfig config) {
-    final ids = widget.group.postIds;
-    for (final cmd in commands) {
-      final toIndex = cmd[2] as int;
-      final fromIndex = cmd[1] as int;
-      final deleteCmd = cmd.first as bool;
-      final deleteTarget = cmd[3] as int;
-
-      if (deleteCmd) {
-        ids.remove(deleteTarget);
-      } else {
-        final item = ids.removeAt(fromIndex);
-        ids.insert(toIndex, item);
-      }
-    }
-
-    ref.read(danbooruFavoriteGroupsProvider(config).notifier).edit(
-          group: widget.group,
-          initialIds: ids.join(' '),
-        );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(_onControllerChanged);
-    controller.dispose();
-    scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final settings = ref.watch(imageListingSettingsProvider);
 
     return CustomContextMenuOverlay(
       child: Scaffold(
-        floatingActionButton: editing
-            ? FloatingActionButton(
-                onPressed: () {
-                  _aggregate(config);
-                  setState(() => editing = false);
-                },
-                child: const Icon(Symbols.save),
-              )
-            : null,
-        appBar: AppBar(
-          centerTitle: false,
-          title: Text(widget.group.name.replaceAll('_', ' ')),
-          actions: [
-            if (!editing)
-              IconButton(
-                onPressed: () {
-                  goToSearchPage(
-                    context,
-                    tag: widget.group.getQueryString(),
-                  );
-                },
-                icon: const Icon(Symbols.search),
+        body: PostScope(
+          fetcher: (page) => TaskEither.Do(($) {
+            return getPostsFromIdQueue(
+              postIds,
+              page - 1,
+              limit: 50,
+            );
+          }),
+          builder: (context, controller) => PostGrid(
+            controller: controller,
+            sliverHeaders: [
+              SliverAppBar(
+                centerTitle: false,
+                title: Text(widget.group.name.replaceAll('_', ' ')),
+                actions: [
+                  _buildSearchButton(),
+                  _buildDownloadButton(),
+                  _buildEditButton(controller, config)
+                ],
+                floating: true,
+                snap: true,
+                pinned: true,
+                backgroundColor: Theme.of(context).colorScheme.surface,
               ),
-            if (!editing)
-              IconButton(
-                onPressed: () {
-                  goToBulkDownloadPage(
-                    context,
-                    [widget.group.getQueryString()],
-                    ref: ref,
-                  );
-                },
-                icon: const Icon(Symbols.download),
-              ),
-            if (!editing)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    editing = true;
-                    commands.clear();
-                  });
-                },
-                icon: const Icon(
-                  Symbols.edit,
-                  fill: 1,
-                ),
-              )
-            else
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    editing = false;
-                    commands.clear();
-                  });
-                },
-                child: const Text('generic.action.cancel').tr(),
-              ),
-          ],
+            ],
+            itemBuilder:
+                (context, index, multiSelectController, autoScrollController) {
+              return DefaultDanbooruImageGridItem(
+                index: index,
+                multiSelectController: multiSelectController,
+                autoScrollController: autoScrollController,
+                controller: controller,
+              );
+            },
+          ),
         ),
-        body: refreshing
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (editing)
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Text('Drag and drop to determine ordering.'),
-                          ),
-                          GridSizeAdjustmentButtons(
-                            minCount: 2,
-                            maxCount: _sizeToGridCount(
-                              Screen.of(context).nextBreakpoint(),
-                            ),
-                            count: rowCountEditMode,
-                            onAdded: (count) =>
-                                setState(() => rowCountEditMode = count + 1),
-                            onDecreased: (count) =>
-                                setState(() => rowCountEditMode = count - 1),
-                          ),
-                        ],
-                      ),
-                    Expanded(
-                      child: InfiniteLoadList(
-                        scrollController: scrollController,
-                        onLoadMore: () => controller.fetchMore(),
-                        enableLoadMore: hasMore,
-                        builder: (context, scrollController) {
-                          final count =
-                              _sizeToGridCount(Screen.of(context).size);
+      ),
+    );
+  }
 
-                          return ReorderableGridView.builder(
-                            controller: scrollController,
-                            dragEnabled: editing,
-                            itemCount: items.length,
-                            onReorder: (oldIndex, newIndex) {
-                              controller.moveAndInsert(
-                                fromIndex: oldIndex,
-                                toIndex: newIndex,
-                                onSuccess: () {
-                                  if (oldIndex != newIndex) {
-                                    setState(() {
-                                      commands
-                                          .add([false, oldIndex, newIndex, 0]);
-                                    });
-                                  }
-                                },
-                              );
-                            },
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:
-                                  editing ? rowCountEditMode : count,
-                              mainAxisSpacing: 4,
-                              crossAxisSpacing: 4,
-                            ),
-                            itemBuilder: (context, index) {
-                              final post = items[index];
+  Widget _buildDownloadButton() {
+    return IconButton(
+      onPressed: () {
+        goToBulkDownloadPage(
+          context,
+          [widget.group.getQueryString()],
+          ref: ref,
+        );
+      },
+      icon: const Icon(Symbols.download),
+    );
+  }
 
-                              return Stack(
-                                key: ValueKey(index),
-                                children: [
-                                  ConditionalParentWidget(
-                                    condition: !editing,
-                                    conditionalBuilder: (child) =>
-                                        ContextMenuRegion(
-                                      contextMenu: DanbooruPostContextMenu(
-                                        post: post,
-                                      ),
-                                      child: child,
-                                    ),
-                                    child: DanbooruImageGridItem(
-                                      image: BooruImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl:
-                                            post.thumbnailFromImageQuality(
-                                                settings.imageQuality),
-                                        placeholderUrl: post.thumbnailImageUrl,
-                                      ),
-                                      enableFav: config.hasLoginDetails(),
-                                      hideOverlay: editing,
-                                      autoScrollOptions: AutoScrollOptions(
-                                        controller: scrollController,
-                                        index: index,
-                                      ),
-                                      post: post,
-                                      onTap: !editing
-                                          ? () => goToPostDetailsPageFromPosts(
-                                                context: context,
-                                                posts: items,
-                                                initialIndex: index,
-                                                scrollController:
-                                                    scrollController,
-                                              )
-                                          : null,
-                                    ),
-                                  ),
-                                  if (editing)
-                                    Positioned(
-                                      top: 4,
-                                      right: 4,
-                                      child: CircularIconButton(
-                                        padding: const EdgeInsets.all(4),
-                                        icon: const Icon(Symbols.close),
-                                        onPressed: () {
-                                          controller
-                                              .remove([post.id], (e) => e.id);
-                                          commands.add([true, 0, 0, post.id]);
-                                        },
-                                      ),
-                                    ),
-                                ],
-                              );
-                            },
-                          );
-                        },
+  Widget _buildSearchButton() {
+    return IconButton(
+      onPressed: () {
+        goToSearchPage(
+          context,
+          tag: widget.group.getQueryString(),
+        );
+      },
+      icon: const Icon(Symbols.search),
+    );
+  }
+
+  Widget _buildEditButton(
+    PostGridController<DanbooruPost> controller,
+    BooruConfig config,
+  ) {
+    return IconButton(
+      onPressed: () {
+        final notifier =
+            ref.read(danbooruFavoriteGroupsProvider(config).notifier);
+
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) => FavoriteGroupEditPage(
+              posts: controller.allItems.toList(),
+              onSave: (reorderedPosts) async {
+                final updatedIds = await notifier.editIds(
+                  group: widget.group,
+                  allIds: postIds.toSet(),
+                  newIds: reorderedPosts.map((e) => e.id).toSet(),
+                  oldIds: controller.allItems.map((e) => e.id).toSet(),
+                  onFailure: (message, translatable) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(message.tr()),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    );
+                  },
+                );
+
+                if (updatedIds != null) {
+                  setState(() {
+                    postIds = Queue<int>.from(updatedIds);
+                    controller.refresh();
+                  });
+                }
+              },
+            ),
+          ),
+        );
+      },
+      icon: const Icon(
+        Symbols.edit,
+        fill: 1,
       ),
     );
   }
 }
 
-int _sizeToGridCount(ScreenSize size) => switch (size) {
-      ScreenSize.small => 2,
-      ScreenSize.medium => 4,
-      ScreenSize.large => 6,
-      ScreenSize.veryLarge => 8
-    };
+class FavoriteGroupEditPage extends StatefulWidget {
+  const FavoriteGroupEditPage({
+    super.key,
+    required this.posts,
+    required this.onSave,
+  });
+
+  final List<DanbooruPost> posts;
+  final void Function(List<DanbooruPost> posts) onSave;
+
+  @override
+  State<FavoriteGroupEditPage> createState() => _FavoriteGroupEditPageState();
+}
+
+class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
+  late final List<DanbooruPost> posts = widget.posts;
+
+  void _onReorder(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
+    final post = posts.removeAt(oldIndex);
+    posts.insert(newIndex, post);
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: () {
+              widget.onSave(posts);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: ReorderableListView.builder(
+          header: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Long press and drag to reorder',
+            ),
+          ),
+          itemBuilder: (context, index) {
+            final post = widget.posts[index];
+            return Container(
+              key: ValueKey(post.id),
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: InkWell(
+                child: Row(
+                  children: [
+                    const SizedBox(width: 16),
+                    InkWell(
+                      onTap: () => goToImagePreviewPage(context, post),
+                      child: LimitedBox(
+                        maxWidth: 80,
+                        child: BooruImage(
+                          fit: BoxFit.cover,
+                          imageUrl: post.thumbnailImageUrl,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Text(post.id.toString()),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_up),
+                      onPressed: () {
+                        if (index > 0) {
+                          setState(() {
+                            final post = posts.removeAt(index);
+                            posts.insert(index - 1, post);
+                          });
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      onPressed: () {
+                        if (index < posts.length - 1) {
+                          setState(() {
+                            final post = posts.removeAt(index);
+                            posts.insert(index + 1, post);
+                          });
+                        }
+                      },
+                    ),
+                    //delete button
+                    IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          posts.removeAt(index);
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          itemCount: widget.posts.length,
+          onReorder: _onReorder,
+        ),
+      ),
+    );
+  }
+}
+
+void goToImagePreviewPage(BuildContext context, DanbooruPost post) {
+  showGeneralDialog(
+    context: context,
+    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
+      child: BooruImage(
+        fit: BoxFit.contain,
+        imageUrl: post.sampleImageUrl,
+      ),
+    ),
+  );
+}

@@ -53,6 +53,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   int _total = 0;
 
   Iterable<T> get items => _filteredItems;
+  Iterable<T> get allItems => _items;
 
   bool get hasMore => _hasMore;
   bool get loading => _loading;

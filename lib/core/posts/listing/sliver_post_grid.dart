@@ -62,7 +62,7 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   }
 }
 
-class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
+class SliverRawPostGrid<T extends Post> extends StatelessWidget {
   const SliverRawPostGrid({
     super.key,
     required this.constraints,
@@ -88,7 +88,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
   final IndexedWidgetBuilder itemBuilder;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return SliverPadding(
       padding: padding ?? EdgeInsets.zero,
       sliver: ValueListenableBuilder(
@@ -157,7 +157,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
                       aspectRatio: aspectRatio,
                       borderRadius: borderRadius,
                     )
-                  : _buildGrid(ref, context);
+                  : _buildGrid(context);
             },
           );
         },
@@ -167,7 +167,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
 
   void _onErrorRetry() => postController.refresh();
 
-  Widget _buildGrid(WidgetRef ref, BuildContext context) {
+  Widget _buildGrid(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: postController.itemsNotifier,
       builder: (_, data, __) {

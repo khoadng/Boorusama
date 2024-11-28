@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/explores/explore_section.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/explores/explores.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final _eroticOnProvider = StateProvider<bool>((ref) => false);
