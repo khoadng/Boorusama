@@ -5,14 +5,16 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/path.dart';
 
-// const _kImageExtensions = {
-//   '.jpg',
-//   '.jpeg',
-//   '.png',
-//   '.gif',
-//   '.webp',
-// };
+const _kImageExtensions = {
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.gif',
+  '.webp',
+  '.avif',
+};
 
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor({
@@ -26,13 +28,12 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // NOTE: Commented out while new image request system is still new
-    // // Don't log image requests
-    // final ext = extension(options.uri.toString());
-    // if (_kImageExtensions.contains(ext)) {
-    //   super.onRequest(options, handler);
-    //   return;
-    // }
+    // Don't log image requests
+    final ext = extension(options.uri.toString());
+    if (_kImageExtensions.contains(ext)) {
+      super.onRequest(options, handler);
+      return;
+    }
 
     logger.logI('Network', 'Sending ${options.method} to ${options.uri}');
     requestTimeLogs[options.uri.toString()] = DateTime.now();
@@ -41,12 +42,11 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // NOTE: Commented out while new image request system is still new
-    // final ext = extension(response.requestOptions.uri.toString());
-    // if (_kImageExtensions.contains(ext)) {
-    //   super.onResponse(response, handler);
-    //   return;
-    // }
+    final ext = extension(response.requestOptions.uri.toString());
+    if (_kImageExtensions.contains(ext)) {
+      super.onResponse(response, handler);
+      return;
+    }
 
     final duration = getRequestDuration(response.requestOptions);
     final durationText = _parseRequestDuration(duration);
