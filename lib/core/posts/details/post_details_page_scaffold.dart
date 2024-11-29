@@ -539,7 +539,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           child: IgnorePointer(
             child: Container(
               decoration: BoxDecoration(
-                color: surfaceColor.applyOpacity(0.5),
+                color: surfaceColor.applyOpacity(0.8),
               ),
             ),
           ),
