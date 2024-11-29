@@ -21,7 +21,6 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'favorites/favorites.dart';
@@ -65,7 +64,7 @@ class HydrusPost extends SimplePost {
 
 final hydrusClientProvider =
     Provider.family<HydrusClient, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+  final dio = ref.watch(dioProvider(config));
 
   return HydrusClient(
     dio: dio,

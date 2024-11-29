@@ -7,12 +7,11 @@ import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfig>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return Shimmie2Client(
       dio: dio,

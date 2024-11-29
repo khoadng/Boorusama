@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruUserRepoProvider =
@@ -37,7 +36,7 @@ final danbooruCurrentUserProvider =
 
   // If the cached id is null, we need to fetch it from the api
   if (id == null) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     final data = await DanbooruClient(
             dio: dio,

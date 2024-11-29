@@ -9,13 +9,12 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'zerochan_post.dart';
 
 final zerochanClientProvider =
     Provider.family<ZerochanClient, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+  final dio = ref.watch(dioProvider(config));
   final logger = ref.watch(loggerProvider);
 
   return ZerochanClient(

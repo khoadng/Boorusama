@@ -21,7 +21,6 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
@@ -38,7 +37,7 @@ String getGelbooruProfileUrl(String url) => url.endsWith('/')
 
 final gelbooruClientProvider =
     Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+  final dio = ref.watch(dioProvider(booruConfig));
 
   return GelbooruClient.custom(
     baseUrl: booruConfig.url,

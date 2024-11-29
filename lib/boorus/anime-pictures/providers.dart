@@ -10,13 +10,12 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'anime_pictures.dart';
 
 final animePicturesClientProvider =
     Provider.family<AnimePicturesClient, BooruConfig>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return AnimePicturesClient(
       dio: dio,

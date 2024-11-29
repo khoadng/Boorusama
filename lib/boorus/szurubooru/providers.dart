@@ -11,7 +11,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
 import 'post_votes/post_votes.dart';
@@ -19,7 +18,7 @@ import 'szurubooru_post.dart';
 
 final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return SzurubooruClient(
       dio: dio,

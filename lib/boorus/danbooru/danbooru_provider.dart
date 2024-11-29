@@ -9,12 +9,11 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruClientProvider =
     Provider.family<DanbooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+  final dio = ref.watch(dioProvider(booruConfig));
 
   return DanbooruClient(
     dio: dio,

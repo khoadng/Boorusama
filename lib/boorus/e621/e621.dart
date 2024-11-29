@@ -14,7 +14,6 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
 import 'favorites/favorites.dart';
@@ -24,7 +23,7 @@ import 'tags/tags.dart';
 
 final e621ClientProvider =
     Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+  final dio = ref.watch(dioProvider(booruConfig));
 
   return E621Client(
     baseUrl: booruConfig.url,

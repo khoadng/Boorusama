@@ -9,12 +9,11 @@ import 'package:boorusama/clients/philomena/types/image_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
 final philomenaClientProvider = Provider.family<PhilomenaClient, BooruConfig>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return PhilomenaClient(
       dio: dio,
