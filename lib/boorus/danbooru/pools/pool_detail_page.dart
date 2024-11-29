@@ -55,7 +55,7 @@ class PoolDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return CustomContextMenuOverlay(
       child: DanbooruInfinitePostIdList(
@@ -237,7 +237,7 @@ class _DanbooruInfinitePostIdListState
   Widget build(BuildContext context) {
     final perPage = ref.watch(
         imageListingSettingsProvider.select((value) => value.postsPerPage));
-    final repo = ref.watch(danbooruPostRepoProvider(ref.watchConfig));
+    final repo = ref.watch(danbooruPostRepoProvider(ref.watchConfigSearch));
 
     return CustomContextMenuOverlay(
       child: PostScope(

@@ -45,7 +45,7 @@ class SimpleTagSearchView extends ConsumerStatefulWidget {
     this.initialConfig,
   });
 
-  final BooruConfig? initialConfig;
+  final BooruConfigAuth? initialConfig;
   final void Function(String tag, bool isMultiple) onSelected;
   final bool ensureValidTag;
   final bool closeOnSelected;
@@ -78,7 +78,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 
   @override
   Widget build(BuildContext context) {
-    final config = widget.initialConfig ?? ref.watchConfig;
+    final config = widget.initialConfig ?? ref.watchConfigAuth;
     final suggestionNotifier = ref.watch(suggestionsProvider(config).notifier);
 
     final inputType = ref.watch(selectedInputTypeSelectorProvider);

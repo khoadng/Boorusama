@@ -9,7 +9,8 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'dmail.dart';
 
 final danbooruDmailsProvider = FutureProvider.autoDispose
-    .family<List<Dmail>, (BooruConfig, DmailFolderType?)>((ref, data) async {
+    .family<List<Dmail>, (BooruConfigAuth, DmailFolderType?)>(
+        (ref, data) async {
   final (config, folderType) = data;
   final client = ref.watch(danbooruClientProvider(config));
   final dmails = await client.getDmails(
@@ -30,7 +31,7 @@ final danbooruDmailsProvider = FutureProvider.autoDispose
 });
 
 final danbooruUnreadDmailsProvider = FutureProvider.autoDispose
-    .family<List<Dmail>, BooruConfig>((ref, config) async {
+    .family<List<Dmail>, BooruConfigAuth>((ref, config) async {
   if (!config.hasLoginDetails()) return [];
   final client = ref.watch(danbooruClientProvider(config));
 

@@ -11,9 +11,10 @@ final invalidTags = [
   ':&lt;',
 ];
 
-class TagsNotifier extends FamilyNotifier<List<TagGroupItem>?, BooruConfig> {
+class TagsNotifier
+    extends FamilyNotifier<List<TagGroupItem>?, BooruConfigAuth> {
   @override
-  List<TagGroupItem>? build(BooruConfig arg) {
+  List<TagGroupItem>? build(BooruConfigAuth arg) {
     return null;
   }
 

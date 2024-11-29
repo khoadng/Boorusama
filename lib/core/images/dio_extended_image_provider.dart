@@ -197,9 +197,9 @@ class DioExtendedNetworkImageProvider
         join((await getTemporaryDirectory()).path, cacheImageFolderName));
     Uint8List? data;
     // exist, try to find cache image file
-    if (await cacheImagesDirectory.exists()) {
+    if (cacheImagesDirectory.existsSync()) {
       final File cacheFlie = File(join(cacheImagesDirectory.path, md5Key));
-      if (await cacheFlie.exists()) {
+      if (cacheFlie.existsSync()) {
         if (key.cacheMaxAge != null) {
           final DateTime now = DateTime.now();
           final FileStat fs = cacheFlie.statSync();
@@ -285,7 +285,7 @@ class DioExtendedNetworkImageProvider
     StreamController<ImageChunkEvent>? chunkEvents,
   ) async {
     cancelToken?.throwIfCancellationRequested();
-    return await RetryHelper.tryRun<Response<List<int>>>(
+    return RetryHelper.tryRun<Response<List<int>>>(
       () async {
         return CancellationTokenSource.register(
           cancelToken,
@@ -358,14 +358,14 @@ class DioExtendedNetworkImageProvider
     final String uId = cacheKey ?? keyToMd5(url);
 
     if (cache) {
-      return await _loadCache(
+      return _loadCache(
         this,
         chunkEvents,
         uId,
       );
     }
 
-    return await _loadNetwork(
+    return _loadNetwork(
       this,
       chunkEvents,
     );

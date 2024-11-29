@@ -36,7 +36,7 @@ class SavedSearchLandingView extends ConsumerWidget {
                   GenericNoDataBox(
                     text: 'saved_search.empty_saved_search'.tr(),
                   ),
-                  if (!ref.watchConfig.hasStrictSFW)
+                  if (!ref.watchConfigAuth.hasStrictSFW)
                     TextButton(
                       onPressed: () => launchExternalUrl(
                         Uri.parse(savedSearchHelpUrl),

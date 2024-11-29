@@ -19,7 +19,7 @@ class E621TagRepositoryApi implements E621TagRepository {
   );
 
   final E621Client client;
-  final BooruConfig booruConfig;
+  final BooruConfigAuth booruConfig;
 
   @override
   Future<List<E621Tag>> getTagsWithWildcard(

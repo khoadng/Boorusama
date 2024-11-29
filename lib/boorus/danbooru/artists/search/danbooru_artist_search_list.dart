@@ -57,16 +57,17 @@ class _DanbooruArtistSearchPageState
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    final artists =
-        await ref.read(danbooruArtistRepoProvider(ref.readConfig)).getArtists(
-              name: widget.nameController.text,
-              url: widget.urlController.text,
-              order: widget.order.value,
-              page: pageKey,
-              isDeleted: false,
-              hasTag: true,
-              includeTag: true,
-            );
+    final artists = await ref
+        .read(danbooruArtistRepoProvider(ref.readConfigAuth))
+        .getArtists(
+          name: widget.nameController.text,
+          url: widget.urlController.text,
+          order: widget.order.value,
+          page: pageKey,
+          isDeleted: false,
+          hasTag: true,
+          includeTag: true,
+        );
 
     if (!mounted) return;
 

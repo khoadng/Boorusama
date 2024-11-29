@@ -33,7 +33,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final favoriteGroups = ref.watch(danbooruFavoriteGroupsProvider(config));
 
     return Scaffold(
@@ -112,7 +112,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     DanbooruFavoriteGroup favGroup,
-    BooruConfig config,
+    BooruConfigSearch config,
   ) {
     showMaterialModalBottomSheet(
       context: context,

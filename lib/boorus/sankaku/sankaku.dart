@@ -80,12 +80,10 @@ class SankakuBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => const SankakuHomePage();
+  HomePageBuilder get homePageBuilder => (context) => const SankakuHomePage();
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as SankakuPost).toList();
 
         return PostDetailsScope(
@@ -104,7 +102,7 @@ class SankakuBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const SankakuFavoritesPage();
+      (context) => const SankakuFavoritesPage();
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -218,7 +216,7 @@ class SankakuArtistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

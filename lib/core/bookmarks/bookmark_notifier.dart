@@ -206,11 +206,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }
 
   Future<void> downloadBookmarks(
-      BooruConfig config, List<Bookmark> bookmarks) async {
+    BooruConfig config,
+    List<Bookmark> bookmarks,
+  ) async {
     final settings = ref.read(settingsProvider);
     final tasks = bookmarks
         .map((bookmark) =>
-            ref.read(downloadServiceProvider(config)).downloadWithSettings(
+            ref.read(downloadServiceProvider(config.auth)).downloadWithSettings(
               settings,
               config: config,
               url: bookmark.originalUrl,
@@ -223,8 +225,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
               filename: bookmark.md5 + extension(bookmark.originalUrl),
               headers: {
                 AppHttpHeaders.userAgentHeader:
-                    ref.read(userAgentProvider(config.booruType)),
-                ...ref.read(extraHttpHeaderProvider(config)),
+                    ref.read(userAgentProvider(config.auth.booruType)),
+                ...ref.read(extraHttpHeaderProvider(config.auth)),
               },
             ).run())
         .toList();

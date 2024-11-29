@@ -35,7 +35,7 @@ class _DanbooruTagDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(

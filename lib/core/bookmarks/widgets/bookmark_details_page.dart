@@ -76,7 +76,7 @@ class _BookmarkDetailsPageState
           onStartSlideshow: () => controller.startSlideshow(),
           onDownload: (post) {
             ref.bookmarks.downloadBookmarks(
-              ref.watchConfig,
+              ref.readConfig,
               [post.toBookmark()],
             );
           },

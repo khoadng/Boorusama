@@ -42,7 +42,7 @@ class ExploreMostViewedPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final date = ref.watch(dateProvider);
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return PostScope(
       fetcher: (page) => page > 1

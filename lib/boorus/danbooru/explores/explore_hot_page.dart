@@ -22,7 +22,7 @@ class ExploreHotPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return CustomContextMenuOverlay(
       child: PostScope(

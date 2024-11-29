@@ -70,7 +70,7 @@ class DanbooruFileDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tagDetails =
-        ref.watch(danbooruTagListProvider(ref.watchConfig))[post.id];
+        ref.watch(danbooruTagListProvider(ref.watchConfigAuth))[post.id];
     final uploader = ref.watch(danbooruCreatorProvider(post.uploaderId));
     final approver = ref.watch(danbooruCreatorProvider(post.approverId));
 
@@ -167,7 +167,7 @@ class DanbooruPostStatsTile extends ConsumerWidget {
 
 final danbooruTagGroupsProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, DanbooruPost>((ref, post) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final tagsNotifier = ref.watch(danbooruTagListProvider(config));
 
   final tagString = tagsNotifier.containsKey(post.id)

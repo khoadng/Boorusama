@@ -21,7 +21,7 @@ class GelbooruV2ArtistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

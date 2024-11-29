@@ -40,7 +40,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return Scaffold(
       body: SafeArea(
@@ -102,7 +102,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
     );
   }
 
-  void _handleSave(String content, BooruConfig config) {
+  void _handleSave(String content, BooruConfigAuth config) {
     context.focusScope.unfocus();
     ref.read(danbooruCommentsProvider(config).notifier).update(
           postId: widget.postId,

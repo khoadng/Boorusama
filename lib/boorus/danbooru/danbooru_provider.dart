@@ -12,8 +12,8 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruClientProvider =
-    Provider.family<DanbooruClient, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config.auth));
+    Provider.family<DanbooruClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return DanbooruClient(
     dio: dio,
@@ -24,7 +24,7 @@ final danbooruClientProvider =
 });
 
 final danbooruAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -73,13 +73,15 @@ final danbooruAutocompleteRepoProvider =
       });
 });
 
-final danbooruTagListProvider = NotifierProviderFamily<DanbooruTagListNotifier,
-    IMap<int, DanbooruTagDetails>, BooruConfig>(DanbooruTagListNotifier.new);
+final danbooruTagListProvider = NotifierProviderFamily<
+    DanbooruTagListNotifier,
+    IMap<int, DanbooruTagDetails>,
+    BooruConfigAuth>(DanbooruTagListNotifier.new);
 
 class DanbooruTagListNotifier
-    extends FamilyNotifier<IMap<int, DanbooruTagDetails>, BooruConfig> {
+    extends FamilyNotifier<IMap<int, DanbooruTagDetails>, BooruConfigAuth> {
   @override
-  IMap<int, DanbooruTagDetails> build(BooruConfig arg) {
+  IMap<int, DanbooruTagDetails> build(BooruConfigAuth arg) {
     return <int, DanbooruTagDetails>{}.lock;
   }
 

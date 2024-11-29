@@ -21,7 +21,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: DanbooruFavoritesPageInternal(
@@ -41,8 +41,7 @@ class DanbooruFavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
+    final config = ref.watchConfigSearch;
     final query = buildFavoriteQuery(username);
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 

@@ -12,12 +12,12 @@ import 'favorite_groups.dart';
 //#region Previews
 final danbooruFavoriteGroupPreviewProvider =
     Provider.autoDispose.family<String, int?>((ref, postId) {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigSearch;
   return ref.watch(danbooruFavoriteGroupPreviewsProvider(config))[postId] ?? '';
 });
 
 final danbooruFavoriteGroupPreviewsProvider = NotifierProvider.family<
-    FavoriteGroupPreviewsNotifier, Map<int, String>, BooruConfig>(
+    FavoriteGroupPreviewsNotifier, Map<int, String>, BooruConfigSearch>(
   FavoriteGroupPreviewsNotifier.new,
   dependencies: [
     danbooruPostRepoProvider,
@@ -27,14 +27,14 @@ final danbooruFavoriteGroupPreviewsProvider = NotifierProvider.family<
 
 //#region Favorite Groups
 final danbooruFavoriteGroupRepoProvider =
-    Provider.family<FavoriteGroupRepository, BooruConfig>((ref, config) {
+    Provider.family<FavoriteGroupRepository, BooruConfigAuth>((ref, config) {
   return FavoriteGroupRepositoryApi(
     client: ref.watch(danbooruClientProvider(config)),
   );
 });
 
 final danbooruFavoriteGroupsProvider = NotifierProvider.family<
-    FavoriteGroupsNotifier, List<DanbooruFavoriteGroup>?, BooruConfig>(
+    FavoriteGroupsNotifier, List<DanbooruFavoriteGroup>?, BooruConfigSearch>(
   FavoriteGroupsNotifier.new,
   dependencies: [
     danbooruFavoriteGroupRepoProvider,
@@ -45,7 +45,7 @@ final danbooruFavoriteGroupsProvider = NotifierProvider.family<
 
 final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose
     .family<FavoriteGroupFilterableNotifier, List<DanbooruFavoriteGroup>?,
-        BooruConfig>(
+        BooruConfigSearch>(
   FavoriteGroupFilterableNotifier.new,
   dependencies: [
     danbooruFavoriteGroupsProvider,

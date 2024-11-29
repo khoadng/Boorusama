@@ -1,11 +1,12 @@
 part of 'gelbooru_v1.dart';
 
-final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final gelbooruV1PostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(gelbooruV1ClientProvider(config));
+    final client = ref.watch(gelbooruV1ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -51,7 +52,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final gelbooruV1AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = GelbooruClient.gelbooru();
 
   return AutocompleteRepositoryBuilder(
@@ -72,8 +73,8 @@ final gelbooruV1AutocompleteRepoProvider =
 });
 
 final gelbooruV1ClientProvider =
-    Provider.family<GelbooruV1Client, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config.auth));
+    Provider.family<GelbooruV1Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return GelbooruV1Client(
     baseUrl: config.url,

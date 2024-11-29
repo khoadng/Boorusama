@@ -19,10 +19,7 @@ import 'package:boorusama/router.dart';
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<E621HomePage> createState() => _E621HomePageState();
@@ -31,7 +28,7 @@ class E621HomePage extends ConsumerStatefulWidget {
 class _E621HomePageState extends ConsumerState<E621HomePage> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return HomePageScaffold(
       mobileMenu: [

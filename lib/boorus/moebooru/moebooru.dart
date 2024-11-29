@@ -27,8 +27,8 @@ import 'pages/widgets/moebooru_information_section.dart';
 import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
-    Provider.family<MoebooruClient, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config.auth));
+    Provider.family<MoebooruClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return MoebooruClient.custom(
     baseUrl: config.url,
@@ -76,8 +76,7 @@ class MoebooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => MoebooruHomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const MoebooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -108,11 +107,10 @@ class MoebooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const MoebooruFavoritesPage();
+      (context) => const MoebooruFavoritesPage();
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as MoebooruPost).toList();
 
         return PostDetailsScope(
@@ -171,7 +169,7 @@ class MoebooruArtistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

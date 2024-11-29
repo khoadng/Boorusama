@@ -46,7 +46,7 @@ class _SavedSearchFeedPageState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return CustomContextMenuOverlay(
       child: ref.watch(danbooruSavedSearchesProvider(config)).when(
@@ -66,7 +66,7 @@ class _SavedSearchFeedPageState
   }
 
   Widget _buildContent(List<SavedSearch> searches) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return PostScope(
       fetcher: (page) => ref

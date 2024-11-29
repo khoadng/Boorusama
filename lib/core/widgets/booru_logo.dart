@@ -20,7 +20,7 @@ class BooruLogo extends StatelessWidget {
   }) : _isFixedIcon = false;
 
   BooruLogo.fromConfig(
-    BooruConfig config, {
+    BooruConfigAuth config, {
     super.key,
     this.width,
     this.height,

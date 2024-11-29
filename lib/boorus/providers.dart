@@ -83,27 +83,27 @@ final announcementProvider = FutureProvider<String>((ref) {
   return client.getAnnouncement();
 });
 
-final postRepoProvider = Provider.family<PostRepository, BooruConfig>(
-    (ref, config) => switch (config.booruType) {
-          BooruType.danbooru => ref.watch(danbooruPostRepoProvider(config)),
-          BooruType.gelbooru => ref.watch(gelbooruPostRepoProvider(config)),
-          BooruType.gelbooruV2 => ref.watch(gelbooruV2PostRepoProvider(config)),
-          BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider(config)),
-          BooruType.moebooru => ref.watch(moebooruPostRepoProvider(config)),
-          BooruType.e621 => ref.watch(e621PostRepoProvider(config)),
-          BooruType.sankaku => ref.watch(sankakuPostRepoProvider(config)),
-          BooruType.philomena => ref.watch(philomenaPostRepoProvider(config)),
-          BooruType.shimmie2 => ref.watch(shimmie2PostRepoProvider(config)),
-          BooruType.zerochan => ref.watch(zerochanPostRepoProvider(config)),
-          BooruType.szurubooru => ref.watch(szurubooruPostRepoProvider(config)),
-          BooruType.hydrus => ref.watch(hydrusPostRepoProvider(config)),
-          BooruType.animePictures =>
-            ref.watch(animePicturesPostRepoProvider(config)),
-          BooruType.unknown => ref.watch(emptyPostRepoProvider),
-        });
+final postRepoProvider = Provider.family<PostRepository, BooruConfigSearch>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.danbooru => ref.watch(danbooruPostRepoProvider(config)),
+    BooruType.gelbooru => ref.watch(gelbooruPostRepoProvider(config)),
+    BooruType.gelbooruV2 => ref.watch(gelbooruV2PostRepoProvider(config)),
+    BooruType.gelbooruV1 => ref.watch(gelbooruV1PostRepoProvider(config)),
+    BooruType.moebooru => ref.watch(moebooruPostRepoProvider(config)),
+    BooruType.e621 => ref.watch(e621PostRepoProvider(config)),
+    BooruType.sankaku => ref.watch(sankakuPostRepoProvider(config)),
+    BooruType.philomena => ref.watch(philomenaPostRepoProvider(config)),
+    BooruType.shimmie2 => ref.watch(shimmie2PostRepoProvider(config)),
+    BooruType.zerochan => ref.watch(zerochanPostRepoProvider(config)),
+    BooruType.szurubooru => ref.watch(szurubooruPostRepoProvider(config)),
+    BooruType.hydrus => ref.watch(hydrusPostRepoProvider(config)),
+    BooruType.animePictures => ref.watch(animePicturesPostRepoProvider(config)),
+    BooruType.unknown => ref.watch(emptyPostRepoProvider),
+  },
+);
 
 final autocompleteRepoProvider = Provider.family<
-    AutocompleteRepository, BooruConfig>((ref, config) => switch (
+    AutocompleteRepository, BooruConfigAuth>((ref, config) => switch (
         config.booruType) {
       BooruType.danbooru => ref.watch(danbooruAutocompleteRepoProvider(config)),
       BooruType.gelbooru => ref.watch(gelbooruAutocompleteRepoProvider(config)),
@@ -126,7 +126,7 @@ final autocompleteRepoProvider = Provider.family<
       BooruType.unknown => ref.watch(emptyAutocompleteRepoProvider),
     });
 
-final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
+final noteRepoProvider = Provider.family<NoteRepository, BooruConfigAuth>(
     (ref, config) => switch (config.booruType) {
           BooruType.danbooru => ref.watch(danbooruNoteRepoProvider(config)),
           BooruType.gelbooru => ref.watch(gelbooruNoteRepoProvider(config)),
@@ -134,7 +134,8 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfig>(
           _ => ref.watch(emptyNoteRepoProvider),
         });
 
-final tagQueryComposerProvider = Provider.family<TagQueryComposer, BooruConfig>(
+final tagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
   (ref, config) => switch (config.booruType) {
     BooruType.danbooru => DanbooruTagQueryComposer(config: config),
     BooruType.gelbooru => GelbooruTagQueryComposer(config: config),
@@ -146,8 +147,16 @@ final tagQueryComposerProvider = Provider.family<TagQueryComposer, BooruConfig>(
   },
 );
 
+final currentTagQueryComposerProvider = Provider<TagQueryComposer>(
+  (ref) {
+    final config = ref.watchConfigSearch;
+
+    return ref.watch(tagQueryComposerProvider(config));
+  },
+);
+
 final downloadFileUrlExtractorProvider =
-    Provider.family<DownloadFileUrlExtractor, BooruConfig>(
+    Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>(
   (ref, config) => switch (config.booruType) {
     BooruType.animePictures =>
       ref.watch(animePicturesDownloadFileUrlExtractorProvider(config)),
@@ -156,7 +165,7 @@ final downloadFileUrlExtractorProvider =
 );
 
 final postArtistCharacterRepoProvider =
-    Provider.family<PostRepository, BooruConfig>(
+    Provider.family<PostRepository, BooruConfigSearch>(
         (ref, config) => switch (config.booruType) {
               BooruType.gelbooru =>
                 ref.watch(gelbooruArtistCharacterPostRepoProvider(config)),
@@ -304,7 +313,7 @@ final appInfoProvider = Provider<AppInfo>(
   name: 'appInfoProvider',
 );
 
-final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     (ref, config) => switch (config.booruType) {
           BooruType.danbooru => ref.watch(danbooruTagRepoProvider(config)),
           BooruType.gelbooru => ref.watch(gelbooruTagRepoProvider(config)),
@@ -324,7 +333,7 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfig>(
         });
 
 final postCountRepoProvider =
-    Provider.family<PostCountRepository?, BooruConfig>(
+    Provider.family<PostCountRepository?, BooruConfigSearch>(
         (ref, config) => switch (config.booruType) {
               BooruType.danbooru =>
                 ref.watch(danbooruPostCountRepoProvider(config)),
@@ -345,7 +354,7 @@ final postCountRepoProvider =
             });
 
 final favoriteProvider = Provider.autoDispose
-    .family<bool, int>((ref, postId) => switch (ref.watchConfig.booruType) {
+    .family<bool, int>((ref, postId) => switch (ref.watchConfigAuth.booruType) {
           BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
           BooruType.e621 => ref.watch(e621FavoriteProvider(postId)),
           BooruType.szurubooru => ref.watch(szurubooruFavoriteProvider(postId)),
@@ -366,44 +375,44 @@ final favoriteProvider = Provider.autoDispose
 
 //TODO: redesign this, it's a mess
 final addFavoriteProvider =
-    Provider<FavoriteAdder?>((r) => switch (r.watchConfig.booruType) {
+    Provider<FavoriteAdder?>((r) => switch (r.watchConfigAuth.booruType) {
           BooruType.danbooru => (postId, ref) =>
               ref.danbooruFavorites.add(postId).then((_) => true),
           BooruType.e621 => (postId, ref) => ref
-              .read(e621FavoritesProvider(ref.readConfig).notifier)
+              .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
               .add(postId)
               .then((value) => true),
           BooruType.szurubooru => (postId, ref) => ref
-              .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
+              .read(szurubooruFavoritesProvider(ref.readConfigAuth).notifier)
               .add(postId)
               .then((value) => true),
           BooruType.hydrus => (postId, ref) => ref
-              .read(hydrusFavoritesProvider(ref.readConfig).notifier)
+              .read(hydrusFavoritesProvider(ref.readConfigAuth).notifier)
               .add(postId)
               .then((value) => true),
-          BooruType.gelbooru => r
-                  .read(gelbooruClientProvider(r.readConfig))
-                  .canFavorite
-              ? (postId, ref) async {
-                  final status = await ref
-                      .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
-                      .add(postId);
+          BooruType.gelbooru =>
+            r.read(gelbooruClientProvider(r.readConfigAuth)).canFavorite
+                ? (postId, ref) async {
+                    final status = await ref
+                        .read(gelbooruFavoritesProvider(ref.readConfigAuth)
+                            .notifier)
+                        .add(postId);
 
-                  final context = ref.context;
+                    final context = ref.context;
 
-                  if (context.mounted) {
-                    if (status == AddFavoriteStatus.alreadyExists) {
-                      showErrorToast(context, 'Already favorited');
-                    } else if (status == AddFavoriteStatus.failure) {
-                      showErrorToast(context, 'Failed to favorite');
-                    } else {
-                      showSuccessToast(context, 'Favorited');
+                    if (context.mounted) {
+                      if (status == AddFavoriteStatus.alreadyExists) {
+                        showErrorToast(context, 'Already favorited');
+                      } else if (status == AddFavoriteStatus.failure) {
+                        showErrorToast(context, 'Failed to favorite');
+                      } else {
+                        showSuccessToast(context, 'Favorited');
+                      }
                     }
-                  }
 
-                  return status == AddFavoriteStatus.success;
-                }
-              : null,
+                    return status == AddFavoriteStatus.success;
+                  }
+                : null,
           BooruType.gelbooruV1 ||
           BooruType.gelbooruV2 ||
           BooruType.zerochan ||
@@ -419,38 +428,38 @@ final addFavoriteProvider =
 
 //TODO: redesign this, it's a mess
 final removeFavoriteProvider =
-    Provider<FavoriteAdder?>((r) => switch (r.watchConfig.booruType) {
+    Provider<FavoriteAdder?>((r) => switch (r.watchConfigAuth.booruType) {
           BooruType.danbooru => (postId, ref) =>
               ref.danbooruFavorites.remove(postId).then((_) => true),
           BooruType.e621 => (postId, ref) => ref
-              .read(e621FavoritesProvider(ref.readConfig).notifier)
+              .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
               .remove(postId)
               .then((value) => true),
           BooruType.szurubooru => (postId, ref) => ref
-              .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
+              .read(szurubooruFavoritesProvider(ref.readConfigAuth).notifier)
               .remove(postId)
               .then((value) => true),
           BooruType.hydrus => (postId, ref) => ref
-              .read(hydrusFavoritesProvider(ref.readConfig).notifier)
+              .read(hydrusFavoritesProvider(ref.readConfigAuth).notifier)
               .remove(postId)
               .then((value) => true),
-          BooruType.gelbooru => r
-                  .read(gelbooruClientProvider(r.readConfig))
-                  .canFavorite
-              ? (postId, ref) async {
-                  await ref
-                      .read(gelbooruFavoritesProvider(ref.readConfig).notifier)
-                      .remove(postId);
+          BooruType.gelbooru =>
+            r.read(gelbooruClientProvider(r.readConfigAuth)).canFavorite
+                ? (postId, ref) async {
+                    await ref
+                        .read(gelbooruFavoritesProvider(ref.readConfigAuth)
+                            .notifier)
+                        .remove(postId);
 
-                  final context = ref.context;
+                    final context = ref.context;
 
-                  if (context.mounted) {
-                    showSuccessToast(context, 'Favorite removed');
+                    if (context.mounted) {
+                      showSuccessToast(context, 'Favorite removed');
+                    }
+
+                    return true;
                   }
-
-                  return true;
-                }
-              : null,
+                : null,
           BooruType.gelbooruV1 ||
           BooruType.gelbooruV2 ||
           BooruType.zerochan ||
@@ -464,8 +473,8 @@ final removeFavoriteProvider =
             null,
         });
 
-final blacklistTagsProvider =
-    FutureProvider.autoDispose.family<Set<String>, BooruConfig>((ref, config) {
+final blacklistTagsProvider = FutureProvider.autoDispose
+    .family<Set<String>, BooruConfigAuth>((ref, config) {
   final globalBlacklistedTags =
       ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
 
@@ -491,8 +500,8 @@ final blacklistTagsProvider =
 });
 
 final booruSiteValidatorProvider =
-    FutureProvider.autoDispose.family<bool, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config.auth));
+    FutureProvider.autoDispose.family<bool, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
   final login =
       config.login.toOption().fold(() => null, (v) => v.isEmpty ? null : v);
   final apiKey =
@@ -571,7 +580,7 @@ final booruSiteValidatorProvider =
 });
 
 final booruProvider =
-    Provider.autoDispose.family<Booru?, BooruConfig>((ref, config) {
+    Provider.autoDispose.family<Booru?, BooruConfigAuth>((ref, config) {
   final booruFactory = ref.watch(booruFactoryProvider);
 
   return config.createBooruFrom(booruFactory);

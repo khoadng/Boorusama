@@ -26,9 +26,6 @@ import 'package:boorusama/router.dart';
 import 'package:background_downloader/background_downloader.dart'
     hide PermissionStatus;
 
-
-
-
 const _serviceName = 'Bulk Download Manager';
 
 enum BulkDownloadTaskStatus {
@@ -233,7 +230,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     int page,
     Iterable<List<TagExpression>>? patterns,
   ) async {
-    final config = ref.readConfig;
+    final config = ref.readConfigSearch;
     final postRepo = ref.read(postRepoProvider(config));
 
     final r = await postRepo.getPostsFromTagsOrEmpty(
@@ -285,22 +282,23 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
     updateTaskStatus(task.id, BulkDownloadTaskStatus.queue);
 
+    final authConfig = ref.readConfigAuth;
     final config = ref.readConfig;
 
     final blacklistedTags =
-        await ref.read(blacklistTagsProvider(config).future);
+        await ref.read(blacklistTagsProvider(authConfig).future);
 
     final patterns = blacklistedTags
         .map((tag) => tag.split(' ').map(TagExpression.parse).toList());
 
     final tags = task.query;
-    final downloader = ref.read(downloadServiceProvider(config));
+    final downloader = ref.read(downloadServiceProvider(authConfig));
     final settings = ref.read(settingsProvider);
     final downloadFileUrlExtractor =
-        ref.read(downloadFileUrlExtractorProvider(config));
+        ref.read(downloadFileUrlExtractorProvider(authConfig));
 
     final fileNameBuilder =
-        ref.readBooruBuilder(config)?.downloadFilenameBuilder;
+        ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
 
     if (fileNameBuilder == null) {
       logger.logE('Bulk Download', 'No file name builder found, aborting...');

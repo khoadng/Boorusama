@@ -110,7 +110,7 @@ class GelbooruV1SearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return SearchPageScaffold(
       noticeBuilder: (context) => InfoContainer(

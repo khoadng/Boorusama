@@ -34,7 +34,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
   final _autoScrollController = AutoScrollController();
   final _selectedMostSearchedTag = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.readBooruBuilder(ref.readConfig),
+    builder: ref.read(currentBooruBuilderProvider),
     tagInfo: ref.read(tagInfoProvider),
   );
 
@@ -48,7 +48,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(

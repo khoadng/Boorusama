@@ -11,7 +11,7 @@ import 'package:boorusama/core/configs/configs.dart';
 part 'pools_search_provider.dart';
 
 final danbooruPoolRepoProvider =
-    Provider.family<PoolRepository, BooruConfig>((ref, config) {
+    Provider.family<PoolRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   DanbooruPool poolDtoToDanbooruPool(danbooru.PoolDto dto) => DanbooruPool(
@@ -66,7 +66,7 @@ final poolSuggestionsProvider = FutureProvider.autoDispose
     .family<List<DanbooruPool>, String>((ref, query) async {
   if (query.isEmpty) return [];
 
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final repo = ref.watch(danbooruPoolRepoProvider(config));
 
   return repo.getPools(
@@ -77,7 +77,7 @@ final poolSuggestionsProvider = FutureProvider.autoDispose
 });
 
 final poolDescriptionRepoProvider =
-    Provider.family<PoolDescriptionRepository, BooruConfig>((ref, config) {
+    Provider.family<PoolDescriptionRepository, BooruConfigAuth>((ref, config) {
   return PoolDescriptionRepoBuilder(
     fetchDescription: (poolId) async {
       final html = await ref
@@ -98,7 +98,7 @@ typedef PoolDescriptionState = ({
 
 final poolDescriptionProvider = FutureProvider.autoDispose
     .family<PoolDescriptionState, PoolId>((ref, poolId) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final repo = ref.watch(poolDescriptionRepoProvider(config));
   final desc = await repo.getDescription(poolId);
 
@@ -115,13 +115,13 @@ final danbooruSelectedPoolOrderProvider =
     StateProvider<DanbooruPoolOrder>((ref) => DanbooruPoolOrder.latest);
 
 final danbooruPoolCoversProvider = NotifierProvider.family<PoolCoversNotifier,
-    Map<int, PoolCover?>, BooruConfig>(
+    Map<int, PoolCover?>, BooruConfigSearch>(
   PoolCoversNotifier.new,
 );
 
 final danbooruPoolCoverProvider =
     Provider.autoDispose.family<PoolCover?, PoolId>((ref, id) {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigSearch;
   final covers = ref.watch(danbooruPoolCoversProvider(config));
 
   return covers[id];

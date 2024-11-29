@@ -8,12 +8,12 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 
 final danbooruWikiRepoProvider =
-    Provider.family<WikiRepository, BooruConfig>((ref, config) {
+    Provider.family<WikiRepository, BooruConfigAuth>((ref, config) {
   return WikiRepositoryApi(ref.watch(danbooruClientProvider(config)));
 });
 
 final danbooruWikisProvider =
-    NotifierProvider.family<WikisNotifier, Map<String, Wiki?>, BooruConfig>(
+    NotifierProvider.family<WikisNotifier, Map<String, Wiki?>, BooruConfigAuth>(
   WikisNotifier.new,
   dependencies: [
     danbooruWikiRepoProvider,
@@ -22,7 +22,7 @@ final danbooruWikisProvider =
 );
 
 final danbooruWikiProvider = Provider.family<WikiState, String>((ref, tag) {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final wikis = ref.watch(danbooruWikisProvider(config));
   if (wikis.containsKey(tag)) {
     return wikis[tag] == null

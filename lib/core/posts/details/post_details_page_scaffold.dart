@@ -117,10 +117,9 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _build() {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = config.postGestures?.fullview;
+    final gestures = ref.watchPostGestures?.fullview;
     final imageUrlBuilder =
         widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
@@ -163,14 +162,14 @@ class _PostDetailPageScaffoldState<T extends Post>
         onItemDoubleTap: gestures.canDoubleTap && postGesturesHandler != null
             ? () => postGesturesHandler(
                   ref,
-                  ref.watchConfig.postGestures?.fullview?.doubleTap,
+                  gestures?.doubleTap,
                   posts[_controller.page],
                 )
             : null,
         onItemLongPress: gestures.canLongPress && postGesturesHandler != null
             ? () => postGesturesHandler(
                   ref,
-                  ref.watchConfig.postGestures?.fullview?.longPress,
+                  gestures?.longPress,
                   posts[_controller.page],
                 )
             : null,
@@ -181,7 +180,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
                     postGesturesHandler(
                       ref,
-                      config.postGestures?.fullview?.swipeDown,
+                      gestures?.swipeDown,
                       posts[_controller.page],
                     );
                   }
@@ -372,7 +371,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
     if (builder == null) {
@@ -554,7 +553,6 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
               bottom: isLarge,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
                     children: [
@@ -664,7 +662,6 @@ class VideoTimeText extends StatelessWidget {
       width: 44,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(

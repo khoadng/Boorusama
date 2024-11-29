@@ -16,9 +16,10 @@ import 'package:boorusama/functional.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
-final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
+final szurubooruClientProvider =
+    Provider.family<SzurubooruClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config.auth));
+    final dio = ref.watch(dioProvider(config));
 
     return SzurubooruClient(
       dio: dio,
@@ -29,12 +30,13 @@ final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
   },
 );
 
-final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final szurubooruPostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(szurubooruClientProvider(config));
+    final client = ref.watch(szurubooruClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -43,7 +45,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         final categories =
-            await ref.read(szurubooruTagCategoriesProvider(config).future);
+            await ref.read(szurubooruTagCategoriesProvider(config.auth).future);
 
         final data = posts.posts
             .map((e) => SzurubooruPost(
@@ -102,8 +104,12 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                 ))
             .toList();
 
-        ref.read(szurubooruFavoritesProvider(config).notifier).preload(data);
-        ref.read(szurubooruPostVotesProvider(config).notifier).getVotes(data);
+        ref
+            .read(szurubooruFavoritesProvider(config.auth).notifier)
+            .preload(data);
+        ref
+            .read(szurubooruPostVotesProvider(config.auth).notifier)
+            .getVotes(data);
 
         return data.toResult(
           total: posts.total,
@@ -115,7 +121,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final szurubooruAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
+    Provider.family<AutocompleteRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(szurubooruClientProvider(config));
 
@@ -150,7 +156,7 @@ final szurubooruAutocompleteRepoProvider =
 );
 
 final szurubooruTagCategoriesProvider =
-    FutureProvider.family<List<TagCategory>, BooruConfig>(
+    FutureProvider.family<List<TagCategory>, BooruConfigAuth>(
   (ref, config) async {
     final client = ref.read(szurubooruClientProvider(config));
 
@@ -181,10 +187,10 @@ class SzurubooruTagQueryComposer implements TagQueryComposer {
     required this.config,
   });
 
-  final BooruConfig config;
+  final BooruConfigSearch config;
   late final TagQueryComposer _composer = DefaultTagQueryComposer(
     config: config,
-    ratingTagsFilter: switch (config.ratingFilter) {
+    ratingTagsFilter: switch (config.filter.ratingFilter) {
       BooruConfigRatingFilter.none => [],
       BooruConfigRatingFilter.hideNSFW => [
           '-rating:sketchy,unsafe',
@@ -193,7 +199,7 @@ class SzurubooruTagQueryComposer implements TagQueryComposer {
           '-rating:unsafe',
         ],
       BooruConfigRatingFilter.custom =>
-        config.granularRatingFiltersWithoutUnknown.toOption().fold(
+        config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
               () => [],
               (ratings) => [
                 ...ratings.map(

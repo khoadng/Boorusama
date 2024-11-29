@@ -9,7 +9,6 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -26,7 +25,6 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   const BooruDesktopScope({
     super.key,
     required this.controller,
-    required this.config,
     required this.menuBuilder,
     required this.mobileMenu,
     required this.views,
@@ -34,7 +32,6 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   });
 
   final HomePageController controller;
-  final BooruConfig config;
   final List<Widget> Function(BuildContext context, BoxConstraints constraints)
       menuBuilder;
 
@@ -129,7 +126,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             bottom: false,
             left: false,
             right: false,
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 color: context.colorScheme.surfaceContainerLow,
                 border: Border(

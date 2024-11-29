@@ -38,7 +38,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final booru = ref.watchConfig;
+    final booru = ref.watchConfigAuth;
 
     return Scaffold(
       appBar: AppBar(

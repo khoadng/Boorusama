@@ -29,8 +29,8 @@ const kGelbooruV2CustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
 
 final gelbooruV2ClientProvider =
-    Provider.family<GelbooruV2Client, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config.auth));
+    Provider.family<GelbooruV2Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return GelbooruV2Client.custom(
     baseUrl: config.url,
@@ -41,7 +41,7 @@ final gelbooruV2ClientProvider =
 });
 
 final gelbooruV2AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(gelbooruV2ClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -73,7 +73,7 @@ final gelbooruV2AutocompleteRepoProvider =
 final gelbooruV2TagsFromIdProvider =
     FutureProvider.autoDispose.family<List<Tag>, int>(
   (ref, id) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final client = ref.watch(gelbooruV2ClientProvider(config));
 
     final data = await client.getTagsFromPostId(postId: id);
@@ -89,7 +89,7 @@ final gelbooruV2TagsFromIdProvider =
 );
 
 final gelbooruV2NoteRepoProvider =
-    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+    Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(gelbooruV2ClientProvider(config));
 
   return NoteRepositoryBuilder(
@@ -150,7 +150,7 @@ class GelbooruV2Builder
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => GelbooruV2HomePage(config: config);
+      (context) => const GelbooruV2HomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -172,8 +172,7 @@ class GelbooruV2Builder
       GelbooruV2SearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
 
         return PostDetailsScope(
@@ -186,7 +185,7 @@ class GelbooruV2Builder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const GelbooruV2FavoritesPage();
+      (context) => const GelbooruV2FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -263,7 +262,7 @@ class GelbooruV2SearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     return SearchPageScaffold(
       initialQuery: initialQuery,
       fetcher: (page, controller) => ref
@@ -278,7 +277,7 @@ class GelbooruV2FavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: GelbooruV2FavoritesPageInternal(
@@ -298,7 +297,7 @@ class GelbooruV2FavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final query = 'fav:$uid';
 
     return FavoritesPageScaffold(

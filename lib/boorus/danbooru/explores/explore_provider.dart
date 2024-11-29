@@ -35,23 +35,22 @@ final timeAndDateProvider = Provider<ScaleAndTime>((ref) {
 ]);
 
 final danbooruExploreRepoProvider =
-    Provider.family<ExploreRepository, BooruConfig>(
+    Provider.family<ExploreRepository, BooruConfigSearch>(
   (ref, config) {
     return ExploreRepositoryCacher(
       repository: ExploreRepositoryApi(
-        transformer: (posts) =>
-            ref.read(danbooruPostFetchTransformerProvider(config))(posts),
-        client: ref.watch(danbooruClientProvider(config)),
+        transformer: (posts) => transformPosts(ref, posts, config),
+        client: ref.watch(danbooruClientProvider(config.auth)),
         postRepository: ref.watch(danbooruPostRepoProvider(config)),
         settings: () => ref.read(imageListingSettingsProvider),
         shouldFilter: (post) {
           // A special rule for safebooru to make sure inappropriate posts are not shown
-          if (config.url == kDanbooruSafeUrl) {
+          if (config.auth.url == kDanbooruSafeUrl) {
             return post.rating != Rating.general;
           }
 
           final filterer =
-              ref.readCurrentBooruBuilder()?.granularRatingFilterer;
+              ref.read(currentBooruBuilderProvider)?.granularRatingFilterer;
 
           if (filterer == null) return false;
 
@@ -75,7 +74,7 @@ final danbooruExploreRepoProvider =
 final danbooruMostViewedTodayProvider =
     FutureProvider<PostResult<DanbooruPost>>((ref) async {
   final repo = ref
-      .watch(danbooruExploreRepoProvider(ref.watchConfig))
+      .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getMostViewedPosts(DateTime.now());
 
   return repo.run().then((value) => value.fold(
@@ -87,7 +86,7 @@ final danbooruMostViewedTodayProvider =
 final danbooruPopularTodayProvider =
     FutureProvider<PostResult<DanbooruPost>>((ref) async {
   final repo = ref
-      .watch(danbooruExploreRepoProvider(ref.watchConfig))
+      .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getPopularPosts(DateTime.now(), 1, TimeScale.day);
 
   return repo.run().then((value) => value.fold(
@@ -98,8 +97,9 @@ final danbooruPopularTodayProvider =
 
 final danbooruHotTodayProvider =
     FutureProvider<PostResult<DanbooruPost>>((ref) async {
-  final repo =
-      ref.watch(danbooruExploreRepoProvider(ref.watchConfig)).getHotPosts(1);
+  final repo = ref
+      .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
+      .getHotPosts(1);
 
   return repo.run().then((value) => value.fold(
         (l) => <DanbooruPost>[].toResult(),

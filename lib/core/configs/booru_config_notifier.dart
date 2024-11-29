@@ -163,9 +163,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       onSuccess?.call(config);
       ref.read(analyticsProvider).sendBooruAddedEvent(
             url: config.url,
-            hintSite: config.booruType.name,
+            hintSite: config.auth.booruType.name,
             totalSites: state.length,
-            hasLogin: config.hasLoginDetails(),
+            hasLogin: config.auth.hasLoginDetails(),
           );
 
       await _add(config);

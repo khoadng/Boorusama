@@ -205,7 +205,7 @@ class _Logo extends ConsumerWidget {
 
     return siteUrl != null
         ? BooruLogo.fromConfig(
-            ref.watchConfig,
+            ref.watchConfigAuth,
             width: 18,
             height: 18,
           )

@@ -9,9 +9,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/path.dart';
 
-final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfig>(
+final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config.auth));
+    final dio = ref.watch(dioProvider(config));
 
     return Shimmie2Client(
       dio: dio,
@@ -20,12 +20,13 @@ final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfig>(
   },
 );
 
-final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final shimmie2PostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(shimmie2ClientProvider(config));
+    final client = ref.watch(shimmie2ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -72,7 +73,7 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final shimmie2AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
+    Provider.family<AutocompleteRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(shimmie2ClientProvider(config));
 

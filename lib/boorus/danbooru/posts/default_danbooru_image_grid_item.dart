@@ -43,10 +43,10 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(imageListingSettingsProvider);
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final config = ref.watchConfigAuth;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = config.postGestures?.preview;
+    final gestures = ref.watchPostGestures?.preview;
 
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
@@ -102,8 +102,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                           postGesturesHandler != null) {
                                         postGesturesHandler(
                                           ref,
-                                          ref.watchConfig.postGestures?.preview
-                                              ?.tap,
+                                          gestures?.tap,
                                           post,
                                         );
                                       } else {

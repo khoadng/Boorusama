@@ -41,11 +41,11 @@ class _FavoriteGroupDetailsPageState
 
   @override
   PostRepository<DanbooruPost> get postRepository =>
-      ref.read(danbooruPostRepoProvider(ref.readConfig));
+      ref.read(danbooruPostRepoProvider(ref.readConfigSearch));
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return CustomContextMenuOverlay(
       child: Scaffold(
@@ -54,7 +54,7 @@ class _FavoriteGroupDetailsPageState
             return getPostsFromIdQueue(
               postIds,
               page - 1,
-              limit: 50,
+              limit: 200,
             );
           }),
           builder: (context, controller) => PostGrid(
@@ -116,7 +116,7 @@ class _FavoriteGroupDetailsPageState
 
   Widget _buildEditButton(
     PostGridController<DanbooruPost> controller,
-    BooruConfig config,
+    BooruConfigSearch config,
   ) {
     return IconButton(
       onPressed: () {

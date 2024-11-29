@@ -93,8 +93,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
       context,
@@ -239,7 +238,7 @@ class SliverMasonryGridWarning extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final type = ref.watch(
         imageListingSettingsProvider.select((value) => value.imageListType));
-    final booruType = ref.watchConfig.booruType;
+    final booruType = ref.watchConfigAuth.booruType;
 
     return type == ImageListType.masonry && booruType.masonryLayoutUnsupported
         ? SliverToBoxAdapter(
@@ -828,10 +827,9 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(imageListingSettingsProvider);
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = config.postGestures?.preview;
+    final gestures = ref.watchPostGestures?.preview;
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
 
     return ValueListenableBuilder(
@@ -844,7 +842,7 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
           return DefaultPostListContextMenuRegion(
             isEnabled: !multiSelect,
             contextMenu: GeneralPostContextMenu(
-              hasAccount: config.hasLoginDetails(),
+              hasAccount: ref.watchConfigAuth.hasLoginDetails(),
               onMultiSelect: () {
                 multiSelectController.enableMultiSelect();
               },
@@ -873,7 +871,7 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
                                   postGesturesHandler != null) {
                                 postGesturesHandler(
                                   ref,
-                                  ref.watchConfig.postGestures?.preview?.tap,
+                                  gestures?.tap,
                                   post,
                                 );
                               } else {

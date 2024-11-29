@@ -138,7 +138,7 @@ class ExploreList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return ref.watch(blacklistTagsProvider(config)).when(
           data: (blacklistedTags) {

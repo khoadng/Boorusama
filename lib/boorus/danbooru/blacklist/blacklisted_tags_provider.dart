@@ -11,7 +11,7 @@ import 'package:boorusama/core/configs/manage/manage.dart';
 import 'blacklisted_tags_notifier.dart';
 
 final danbooruBlacklistedTagsProvider = AsyncNotifierProvider.family<
-    BlacklistedTagsNotifier, List<String>?, BooruConfig>(
+    BlacklistedTagsNotifier, List<String>?, BooruConfigAuth>(
   BlacklistedTagsNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -20,7 +20,7 @@ final danbooruBlacklistedTagsProvider = AsyncNotifierProvider.family<
 
 final danbooruBlacklistedTagsWithCensoredTagsProvider = FutureProvider
     .autoDispose
-    .family<Set<String>, BooruConfig>((ref, config) async {
+    .family<Set<String>, BooruConfigAuth>((ref, config) async {
   final currentUser =
       await ref.watch(danbooruCurrentUserProvider(config).future);
   final globalBlacklistedTags =

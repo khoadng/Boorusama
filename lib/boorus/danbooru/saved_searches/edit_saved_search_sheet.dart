@@ -33,7 +33,7 @@ class CreateSavedSearchSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig).notifier);
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
 
     return SavedSearchSheet(
       initialValue: initialValue != null
@@ -63,7 +63,7 @@ class EditSavedSearchSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig).notifier);
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
 
     return SavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),

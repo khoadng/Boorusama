@@ -31,7 +31,7 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
 class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return SearchPageScaffold(

@@ -192,7 +192,7 @@ class _BackgroundDownloaderScopeState
         WidgetsBinding.instance.addPostFrameCallback(
           (_) {
             try {
-              final config = ref.readConfig;
+              final config = ref.readConfigAuth;
 
               if (config.booruType.hasUnknownFullImageUrl) {
                 // retry after 1 second

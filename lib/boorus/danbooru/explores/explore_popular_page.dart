@@ -40,7 +40,7 @@ class ExplorePopularPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final timeAndDate = ref.watch(timeAndDateProvider);
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return PostScope(
       fetcher: (page) => ref

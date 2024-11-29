@@ -31,7 +31,7 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
   @override
   Widget build(BuildContext context) {
     final artist = ref.watch(e621ArtistProvider(widget.artistName));
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return PostScope(
       fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(

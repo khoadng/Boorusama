@@ -9,19 +9,20 @@ import '../users/users.dart';
 import 'favorite_groups.dart';
 
 class FavoriteGroupsNotifier
-    extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfig> {
+    extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
   @override
-  List<DanbooruFavoriteGroup>? build(BooruConfig arg) {
+  List<DanbooruFavoriteGroup>? build(BooruConfigSearch arg) {
     refresh();
     return null;
   }
 
   FavoriteGroupRepository get repo =>
-      ref.read(danbooruFavoriteGroupRepoProvider(arg));
+      ref.read(danbooruFavoriteGroupRepoProvider(arg.auth));
 
   Future<void> refresh() async {
-    if (!arg.hasLoginDetails()) return;
-    final groups = await repo.getFavoriteGroupsByCreatorName(name: arg.login!);
+    if (!arg.auth.hasLoginDetails()) return;
+    final groups =
+        await repo.getFavoriteGroupsByCreatorName(name: arg.auth.login!);
 
     //TODO: shouldn't load everything
     final ids = groups
@@ -43,7 +44,8 @@ class FavoriteGroupsNotifier
     required bool isPrivate,
     void Function(String message, bool translatable)? onFailure,
   }) async {
-    final currentUser = await ref.read(danbooruCurrentUserProvider(arg).future);
+    final currentUser =
+        await ref.read(danbooruCurrentUserProvider(arg.auth).future);
 
     if (currentUser == null) return;
 
@@ -250,9 +252,9 @@ List<int> updateOrder(
 }
 
 class FavoriteGroupPreviewsNotifier
-    extends FamilyNotifier<Map<int, String>, BooruConfig> {
+    extends FamilyNotifier<Map<int, String>, BooruConfigSearch> {
   @override
-  Map<int, String> build(BooruConfig arg) {
+  Map<int, String> build(BooruConfigSearch arg) {
     return {};
   }
 

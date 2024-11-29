@@ -24,7 +24,7 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final fetcher = ref.watch(postCountRepoProvider(ref.watchConfig));
+    final fetcher = ref.watch(postCountRepoProvider(ref.watchConfigSearch));
 
     if (fetcher == null) return const SizedBox.shrink();
 

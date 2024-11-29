@@ -68,7 +68,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
                 showSuggestions.value = true;
 
                 ref
-                    .read(suggestionsProvider(ref.readConfig).notifier)
+                    .read(suggestionsProvider(ref.readConfigAuth).notifier)
                     .getSuggestions(query);
               },
               decoration: InputDecoration(

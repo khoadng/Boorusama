@@ -148,13 +148,13 @@ class _Boorus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final config = ref.watchConfigSearch;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     if (booruBuilder != null) {
       return Builder(
         key: ValueKey(config),
-        builder: (context) => booruBuilder.homePageBuilder(context, config),
+        builder: (context) => booruBuilder.homePageBuilder(context),
       );
     } else {
       final availableConfigs = ref.watch(booruConfigProvider);

@@ -9,7 +9,8 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 
 final gelbooruV2ArtistPostRepo =
-    Provider.family<PostRepository<GelbooruV2Post>, BooruConfig>((ref, config) {
+    Provider.family<PostRepository<GelbooruV2Post>, BooruConfigSearch>(
+        (ref, config) {
   return PostRepositoryCacher(
     keyBuilder: (tags, page, {limit}) =>
         '${tags.split(' ').join('-')}_${page}_$limit',
@@ -21,9 +22,9 @@ final gelbooruV2ArtistPostRepo =
 final gelbooruV2ArtistPostsProvider = FutureProvider.autoDispose
     .family<List<GelbooruV2Post>, String?>((ref, artistName) async {
   return ref
-      .watch(gelbooruV2ArtistPostRepo(ref.watchConfig))
+      .watch(gelbooruV2ArtistPostRepo(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
       );
 });

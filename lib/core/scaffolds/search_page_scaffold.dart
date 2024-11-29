@@ -71,7 +71,7 @@ class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   var selectedTagString = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.readBooruBuilder(ref.readConfig),
+    builder: ref.read(currentBooruBuilderProvider),
     tagInfo: ref.read(tagInfoProvider),
   );
   final _scrollController = AutoScrollController();
@@ -92,7 +92,7 @@ class _SearchPageScaffoldState<T extends Post>
     textEditingController: textController,
     searchHistory: ref.read(searchHistoryProvider.notifier),
     selectedTagController: selectedTagController,
-    suggestions: ref.read(suggestionsProvider(ref.readConfig).notifier),
+    suggestions: ref.read(suggestionsProvider(ref.readConfigAuth).notifier),
     focus: focus,
     searchState: searchState,
     allowSearch: allowSearch,
@@ -296,7 +296,7 @@ class _SearchPageScaffoldState<T extends Post>
                 builder: (context, value, _) => ResultHeaderFromController(
                   controller: controller,
                   onRefresh: null,
-                  hasCount: ref.watchConfig.booruType.postCountMethod ==
+                  hasCount: ref.watchConfigAuth.booruType.postCountMethod ==
                       PostCountMethod.search,
                 ),
               ),

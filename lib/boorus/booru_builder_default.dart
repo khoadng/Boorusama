@@ -152,8 +152,7 @@ mixin NewGranularRatingOptionsBuilderMixin on BooruBuilder {
 
 mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => const HomePageScaffold();
+  HomePageBuilder get homePageBuilder => (context) => const HomePageScaffold();
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -162,8 +161,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         return PostDetailsScope(
           initialIndex: payload.initialIndex,
           posts: payload.posts,
@@ -201,7 +199,7 @@ class DefaultSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
@@ -216,7 +214,7 @@ class DefaultSearchPage extends ConsumerWidget {
 mixin DefaultHomeMixin implements BooruBuilder {
   @override
   HomeViewBuilder get homeViewBuilder =>
-      (context, config, controller) => MobileHomePageScaffold(
+      (context, controller) => MobileHomePageScaffold(
             controller: controller,
             onSearchTap: () => goToSearchPage(context),
           );
@@ -229,7 +227,7 @@ String Function(
 ) =>
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
-        : ref.watchBooruBuilder(ref.watchConfig)?.postImageDetailsUrlBuilder(
+        : ref.watch(currentBooruBuilderProvider)?.postImageDetailsUrlBuilder(
                   ref.watch(imageListingSettingsProvider).imageQuality,
                   post,
                   ref.watchConfig,
@@ -247,7 +245,7 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     return switch (config.defaultPreviewImageButtonActionType) {
       ImageQuickActionType.bookmark => Container(

@@ -65,13 +65,13 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
 }
 
 class PostDetailsData<T extends Post> {
-  final List<T> posts;
-  final PostDetailsController<T> controller;
-
   const PostDetailsData({
     required this.posts,
     required this.controller,
   });
+
+  final List<T> posts;
+  final PostDetailsController<T> controller;
 }
 
 class PostDetails<T extends Post> extends InheritedWidget {

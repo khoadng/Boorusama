@@ -34,7 +34,7 @@ class DanbooruUploadsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
@@ -183,7 +183,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final settings = ref.watch(imageListingSettingsProvider);
 
     return PostScope(

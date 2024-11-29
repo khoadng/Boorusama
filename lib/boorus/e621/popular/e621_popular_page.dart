@@ -27,7 +27,7 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
   final selectedTimescale = ValueNotifier(TimeScale.day);
 
   E621PopularRepository get repo =>
-      ref.read(e621PopularPostRepoProvider(ref.readConfig));
+      ref.read(e621PopularPostRepoProvider(ref.readConfigAuth));
 
   DateTime get selectedDate => selectedDateNotifier.value;
   TimeScale get scale => selectedTimescale.value;

@@ -110,7 +110,7 @@ class AddUnknownBooruPage extends ConsumerWidget {
 }
 
 final _targetConfigToValidateProvider =
-    StateProvider.autoDispose<BooruConfig?>((ref) {
+    StateProvider.autoDispose<BooruConfigAuth?>((ref) {
   return null;
 });
 
@@ -175,10 +175,12 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                             booruType: engine,
                             url: url!,
                             customDownloadFileNameFormat: null,
-                          ).copyWith(
-                            login: auth.login,
-                            apiKey: auth.apiKey,
-                          );
+                          )
+                              .copyWith(
+                                login: auth.login,
+                                apiKey: auth.apiKey,
+                              )
+                              .auth;
                         }
                       : null,
                   child: const Text('Verify'),

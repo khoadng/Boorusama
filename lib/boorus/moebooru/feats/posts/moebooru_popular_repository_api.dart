@@ -14,7 +14,7 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   );
 
   final MoebooruClient client;
-  final BooruConfig booruConfig;
+  final BooruConfigAuth booruConfig;
 
   @override
   PostsOrError getPopularPostsByDay(DateTime dateTime) =>

@@ -33,7 +33,7 @@ class _MobileHomePageScaffoldState
 
   @override
   Widget build(BuildContext context) {
-    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return PostScope(
       fetcher: (page) {

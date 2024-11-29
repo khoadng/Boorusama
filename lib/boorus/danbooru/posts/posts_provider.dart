@@ -16,11 +16,12 @@ import '../post_votes/post_votes.dart';
 import '../users/users.dart';
 
 final danbooruPostRepoProvider =
-    Provider.family<PostRepository<DanbooruPost>, BooruConfig>((ref, config) {
-  final client = ref.watch(danbooruClientProvider(config));
+    Provider.family<PostRepository<DanbooruPost>, BooruConfigSearch>(
+        (ref, config) {
+  final client = ref.watch(danbooruClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    tagComposer: ref.watch(tagQueryComposerProvider(config)),
+    getComposer: () => ref.read(currentTagQueryComposerProvider),
     fetch: (tags, page, {limit}) async {
       final posts = await client
           .getPosts(
@@ -38,21 +39,20 @@ final danbooruPostRepoProvider =
                   ))
               .toList());
 
-      return ref
-          .read(danbooruPostFetchTransformerProvider(config))(posts.toResult());
+      return transformPosts(ref, posts.toResult(), config);
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );
 });
 
 final danbooruPostCreateProvider = AsyncNotifierProvider.autoDispose
-    .family<DanbooruPostCreateNotifier, DanbooruPost?, BooruConfig>(
+    .family<DanbooruPostCreateNotifier, DanbooruPost?, BooruConfigAuth>(
         DanbooruPostCreateNotifier.new);
 
 class DanbooruPostCreateNotifier
-    extends AutoDisposeFamilyAsyncNotifier<DanbooruPost?, BooruConfig> {
+    extends AutoDisposeFamilyAsyncNotifier<DanbooruPost?, BooruConfigAuth> {
   @override
-  FutureOr<DanbooruPost?> build(BooruConfig arg) {
+  FutureOr<DanbooruPost?> build(BooruConfigAuth arg) {
     return null;
   }
 
@@ -96,29 +96,32 @@ class DanbooruPostCreateNotifier
 typedef PostFetchTransformer = Future<PostResult<DanbooruPost>> Function(
     PostResult<DanbooruPost> posts);
 
-final danbooruPostFetchTransformerProvider =
-    Provider.family<PostFetchTransformer, BooruConfig>((ref, config) {
-  return (r) async {
-    final posts = _filter(
-      r.posts,
-      config.hideBannedPosts,
-    );
+Future<PostResult<DanbooruPost>> transformPosts(
+  Ref ref,
+  PostResult<DanbooruPost> r,
+  BooruConfigSearch config,
+) async {
+  final posts = _filter(
+    r.posts,
+    config.filter.hideBannedPosts,
+  );
 
-    final user = await ref.read(danbooruCurrentUserProvider(config).future);
+  final user = await ref.read(danbooruCurrentUserProvider(config.auth).future);
 
-    if (user != null) {
-      final ids = posts.map((e) => e.id).toList();
+  if (user != null) {
+    final ids = posts.map((e) => e.id).toList();
 
-      ref.read(danbooruFavoritesProvider(config).notifier).checkFavorites(ids);
-      ref.read(danbooruPostVotesProvider(config).notifier).getVotes(posts);
-      ref.read(danbooruTagListProvider(config).notifier).removeTags(ids);
-    }
+    ref
+        .read(danbooruFavoritesProvider(config.auth).notifier)
+        .checkFavorites(ids);
+    ref.read(danbooruPostVotesProvider(config.auth).notifier).getVotes(posts);
+    ref.read(danbooruTagListProvider(config.auth).notifier).removeTags(ids);
+  }
 
-    return r.copyWith(
-      posts: posts,
-    );
-  };
-});
+  return r.copyWith(
+    posts: posts,
+  );
+}
 
 List<DanbooruPost> _filter(List<DanbooruPost> posts, bool hideBannedPosts) {
   posts.removeWhere(
@@ -132,11 +135,11 @@ List<DanbooruPost> _filter(List<DanbooruPost> posts, bool hideBannedPosts) {
 }
 
 final danbooruPostCountRepoProvider =
-    Provider.family<PostCountRepository, BooruConfig>((ref, config) {
+    Provider.family<PostCountRepository, BooruConfigSearch>((ref, config) {
   return PostCountRepositoryBuilder(
     countTags: (tags) =>
-        ref.read(danbooruClientProvider(config)).countPosts(tags: tags),
+        ref.read(danbooruClientProvider(config.auth)).countPosts(tags: tags),
     //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-    extraTags: config.url == kDanbooruSafeUrl ? ['rating:g'] : [],
+    extraTags: config.auth.url == kDanbooruSafeUrl ? ['rating:g'] : [],
   );
 });

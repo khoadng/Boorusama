@@ -21,7 +21,7 @@ class GelbooruV2CommentRepositoryApi implements GelbooruV2CommentRepository {
   });
 
   final GelbooruV2Client client;
-  final BooruConfig booruConfig;
+  final BooruConfigAuth booruConfig;
 
   @override
   Future<List<Comment>> getComments(int postId) => client

@@ -32,10 +32,10 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dmailProvider =
-        danbooruDmailsProvider((ref.watchConfig, _selectedFolder));
+    final config = ref.watchConfigAuth;
+    final dmailProvider = danbooruDmailsProvider((config, _selectedFolder));
     final dmailAsync = ref.watch(dmailProvider);
-    final client = ref.watch(danbooruClientProvider(ref.watchConfig));
+    final client = ref.watch(danbooruClientProvider(config));
 
     return Scaffold(
       appBar: AppBar(

@@ -113,7 +113,7 @@ class _FavoriteTagsFilterScopeState
               a.updatedAt,
               b.updatedAt
             )) {
-              (DateTime ua, DateTime ub) => ub.compareTo(ua),
+              (final DateTime ua, final DateTime ub) => ub.compareTo(ua),
               _ => 0,
             },
           FavoriteTagsSortType.nameAZ => a.name.compareTo(b.name),

@@ -10,7 +10,7 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 
-class BooruConfig extends Equatable with BooruConfigAuthMixin {
+class BooruConfig extends Equatable {
   const BooruConfig({
     required this.id,
     required this.booruId,
@@ -132,14 +132,10 @@ class BooruConfig extends Equatable with BooruConfigAuthMixin {
       );
 
   final int id;
-  @override
   final int booruId;
-  @override
   final int booruIdHint;
   final String url;
-  @override
   final String? apiKey;
-  @override
   final String? login;
   final String? passHash;
   final String name;
@@ -212,7 +208,7 @@ class BooruConfig extends Equatable with BooruConfigAuthMixin {
 
   @override
   String toString() {
-    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${hasLoginDetails()})';
+    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${auth.hasLoginDetails()})';
   }
 
   Map<String, dynamic> toJson() {
@@ -268,6 +264,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
   final int booruId;
   @override
   final int booruIdHint;
+  @override
   final String url;
   @override
   final String? apiKey;
@@ -284,6 +281,65 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
         login,
         passHash,
       ];
+}
+
+class BooruConfigFilter extends Equatable with BooruConfigFilterMixin {
+  const BooruConfigFilter({
+    required this.ratingFilter,
+    required this.granularRatingFilters,
+    required this.alwaysIncludeTags,
+    required this.deletedItemBehavior,
+    required this.bannedPostVisibility,
+  });
+
+  factory BooruConfigFilter.fromConfig(BooruConfig config) {
+    return BooruConfigFilter(
+      ratingFilter: config.ratingFilter,
+      granularRatingFilters: config.granularRatingFilters,
+      alwaysIncludeTags: config.alwaysIncludeTags,
+      deletedItemBehavior: config.deletedItemBehavior,
+      bannedPostVisibility: config.bannedPostVisibility,
+    );
+  }
+
+  final BooruConfigRatingFilter ratingFilter;
+  @override
+  final Set<Rating>? granularRatingFilters;
+  final String? alwaysIncludeTags;
+  final BooruConfigDeletedItemBehavior deletedItemBehavior;
+  @override
+  final BooruConfigBannedPostVisibility bannedPostVisibility;
+
+  @override
+  List<Object?> get props => [
+        ratingFilter,
+        granularRatingFilters,
+        alwaysIncludeTags,
+        deletedItemBehavior,
+        bannedPostVisibility,
+      ];
+}
+
+class BooruConfigSearch extends Equatable {
+  const BooruConfigSearch({
+    required this.filter,
+    required this.auth,
+  });
+
+  factory BooruConfigSearch.fromConfig(BooruConfig config) {
+    return BooruConfigSearch(
+      filter: BooruConfigFilter.fromConfig(config),
+      auth: BooruConfigAuth.fromConfig(config),
+    );
+  }
+
+  final BooruConfigFilter filter;
+  final BooruConfigAuth auth;
+
+  BooruType get booruType => auth.booruType;
+
+  @override
+  List<Object?> get props => [filter, auth];
 }
 
 Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
@@ -334,17 +390,13 @@ extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
       };
 }
 
-extension BooruConfigNullX on BooruConfig? {
-  bool get hideBannedPosts =>
-      this?.bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
-}
-
 mixin BooruConfigAuthMixin {
   int? get booruIdHint;
   int get booruId;
 
   String? get login;
   String? get apiKey;
+  String get url;
 
   BooruType get booruType => intToBooruType(booruIdHint);
 
@@ -356,22 +408,30 @@ mixin BooruConfigAuthMixin {
 
     return true;
   }
-}
 
-extension BooruConfigX on BooruConfig {
   Booru? createBooruFrom(BooruFactory factory) =>
       factory.create(type: intToBooruType(booruId));
 
-  bool isDefault() => id == -1;
-
   bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
   bool get hasSoftSFW => url == kDanbooruSafeUrl;
+}
+
+mixin BooruConfigFilterMixin {
+  Set<Rating>? get granularRatingFilters;
+  BooruConfigBannedPostVisibility get bannedPostVisibility;
 
   Set<Rating>? get granularRatingFiltersWithoutUnknown {
     if (granularRatingFilters == null) return null;
 
     return granularRatingFilters!.where((e) => e != Rating.unknown).toSet();
   }
+
+  bool get hideBannedPosts =>
+      bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
+}
+
+extension BooruConfigX on BooruConfig {
+  bool isDefault() => id == -1;
 
   ImageQuickActionType get defaultPreviewImageButtonActionType =>
       switch (defaultPreviewImageButtonAction) {
@@ -383,6 +443,8 @@ extension BooruConfigX on BooruConfig {
       };
 
   BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
+  BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
+  BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
 }
 
 enum ImageQuickActionType {

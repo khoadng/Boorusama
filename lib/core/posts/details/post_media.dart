@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
@@ -35,8 +36,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
-    final booruType = ref
-        .watch(currentBooruConfigProvider.select((value) => value.booruType));
+    final booruType = ref.watch(
+        currentBooruConfigProvider.select((value) => value.auth.booruType));
 
     return post.isVideo
         ? Stack(
@@ -52,7 +53,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         backgroundColor: context.colorScheme.surface,
                         onWebmVideoPlayerCreated: (wvpc) => details.controller
                             .onWebmVideoPlayerCreated(wvpc, post.id),
-                        autoPlay: false,
                         sound: ref.isGlobalVideoSoundOn,
                         playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
                         userAgent: ref.watch(userAgentProvider(booruType)),

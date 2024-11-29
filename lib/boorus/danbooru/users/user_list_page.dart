@@ -24,7 +24,7 @@ class DanbooruVoterListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final voteRepo = ref.watch(danbooruPostVoteRepoProvider(config));
     final userRepo = ref.watch(danbooruUserRepoProvider(config));
 
@@ -76,7 +76,7 @@ class DanbooruFavoriterListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final client = ref.watch(danbooruClientProvider(config));
     final userRepo = ref.watch(danbooruUserRepoProvider(config));
 

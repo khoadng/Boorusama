@@ -60,7 +60,7 @@ class _DanbooruForumPostsPageState
     }
 
     final posts = await ref
-        .read(danbooruForumPostRepoProvider(ref.readConfig))
+        .read(danbooruForumPostRepoProvider(ref.readConfigAuth))
         .getForumPostsOrEmpty(
           widget.topic.id,
           page: pageKey,
@@ -104,7 +104,7 @@ class _DanbooruForumPostsPageState
   }
 
   Widget _buildPost(DanbooruForumPost post) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final creator = ref.watch(danbooruCreatorProvider(post.creatorId));
     final creatorName = creator?.name ?? '...';
     final creatorLevel = creator?.level ?? UserLevel.member;

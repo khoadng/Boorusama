@@ -8,7 +8,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
 
 final danbooruNoteRepoProvider =
-    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+    Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   return NoteRepositoryBuilder(

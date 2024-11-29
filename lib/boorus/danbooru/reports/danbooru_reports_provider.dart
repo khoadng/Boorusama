@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/danbooru/reports/danbooru_report_repository.dar
 import 'package:boorusama/core/configs/configs.dart';
 
 final danbooruPostReportProvider =
-    Provider.family<DanbooruReportRepository, BooruConfig>((ref, config) {
+    Provider.family<DanbooruReportRepository, BooruConfigAuth>((ref, config) {
   return DanbooruReportRepositoryApi(
     client: ref.watch(danbooruClientProvider(config)),
   );
