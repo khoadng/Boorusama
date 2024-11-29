@@ -66,7 +66,7 @@ class BooruImage extends ConsumerWidget {
       height: height,
       headers: {
         AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config)).generate(),
+            ref.watch(userAgentProvider(config.booruType)),
         ...ref.watch(extraHttpHeaderProvider(config)),
       },
     );

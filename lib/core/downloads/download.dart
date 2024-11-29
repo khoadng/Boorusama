@@ -106,7 +106,7 @@ Future<void> _download(
 
   final headers = {
     AppHttpHeaders.userAgentHeader:
-        ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
+        ref.read(userAgentProvider(booruConfig.booruType)),
     ...ref.read(extraHttpHeaderProvider(booruConfig)),
   };
 

@@ -33,7 +33,7 @@ Dio newDio(
   final booruConfig = args.booruConfig;
   final dir = args.cacheDir;
   final logger = args.loggerService;
-  final generator = args.userAgentGenerator;
+  final userAgent = args.userAgent;
   final baseUrl = args.baseUrl;
   final booruFactory = args.booruFactory;
 
@@ -49,14 +49,14 @@ Dio newDio(
     // This is a hack to clean the url, if there are more sites that need this we should refactor this into something more generic
     baseUrl: _cleanUrl(apiUrl),
     headers: {
-      AppHttpHeaders.userAgentHeader: generator.generate(),
+      AppHttpHeaders.userAgentHeader: userAgent,
     },
   ));
 
   // NativeAdapter only does something on Android and iOS/MacOS
   if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
     dio.httpClientAdapter = newNativeAdapter(
-      userAgent: generator.generate(),
+      userAgent: userAgent,
     );
   } else if (supportsHttp2) {
     dio.httpClientAdapter = Http2Adapter(

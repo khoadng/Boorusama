@@ -48,11 +48,10 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/http/user_agent_generator.dart';
-import 'package:boorusama/foundation/http/user_agent_generator_impl.dart';
 import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -222,14 +221,14 @@ class DioArgs {
   DioArgs({
     required this.cacheDir,
     required this.baseUrl,
-    required this.userAgentGenerator,
+    required this.userAgent,
     required this.booruConfig,
     required this.loggerService,
     required this.booruFactory,
   });
   final Directory cacheDir;
   final String baseUrl;
-  final UserAgentGenerator userAgentGenerator;
+  final String userAgent;
   final BooruConfig booruConfig;
   final Logger loggerService;
   final BooruFactory booruFactory;
@@ -237,14 +236,14 @@ class DioArgs {
 
 final dioProvider = Provider.family<Dio, BooruConfig>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
-  final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
+  final userAgent = ref.watch(userAgentProvider(config.booruType));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
 
   return newDio(DioArgs(
     cacheDir: cacheDir,
     baseUrl: config.url,
-    userAgentGenerator: userAgentGenerator,
+    userAgent: userAgent,
     booruConfig: config,
     loggerService: loggerService,
     booruFactory: booruFactory,
@@ -266,17 +265,15 @@ final miscDataBoxProvider = Provider<Box<String>>(
 final miscDataProvider = NotifierProvider.autoDispose
     .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
 
-final userAgentGeneratorProvider =
-    Provider.family<UserAgentGenerator, BooruConfig>(
-  (ref, config) {
+final userAgentProvider = Provider.family<String, BooruType>(
+  (ref, booruType) {
     final appVersion = ref.watch(packageInfoProvider).version;
     final appName = ref.watch(appInfoProvider).appName;
 
-    return UserAgentGeneratorImpl(
-      appVersion: appVersion,
-      appName: appName,
-      config: config,
-    );
+    return switch (booruType) {
+      BooruType.zerochan => '${appName.sentenceCase}/$appVersion - boorusama',
+      _ => '${appName.sentenceCase}/$appVersion',
+    };
   },
 );
 
