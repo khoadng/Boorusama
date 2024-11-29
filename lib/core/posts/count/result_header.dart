@@ -15,8 +15,10 @@ class ResultHeaderWithProvider extends ConsumerWidget {
     super.key,
     required this.selectedTagsString,
     required this.onRefresh,
+    this.cache = false,
   });
 
+  final bool cache;
   final String selectedTagsString;
   final Future<void> Function(bool maintainPage)? onRefresh;
 
@@ -26,7 +28,11 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
     if (fetcher == null) return const SizedBox.shrink();
 
-    return ref.watch(postCountProvider(selectedTagsString)).when(
+    final provider = cache
+        ? cachedPostCountProvider(selectedTagsString)
+        : postCountProvider(selectedTagsString);
+
+    return ref.watch(provider).when(
           data: (data) => data != null
               ? ResultHeader(
                   count: data,
@@ -134,6 +140,7 @@ class SliverResultHeader extends StatelessWidget {
                     ValueListenableBuilder(
                       valueListenable: selectedTagString,
                       builder: (context, value, _) => ResultHeaderWithProvider(
+                        cache: true,
                         selectedTagsString: value,
                         onRefresh: (maintainPage) => controller.refresh(
                           maintainPage: maintainPage,

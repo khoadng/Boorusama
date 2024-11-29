@@ -19,5 +19,10 @@ final postCountProvider =
   return postCount;
 });
 
+final cachedPostCountProvider =
+    FutureProvider.family<int?, String>((ref, tags) async {
+  return ref.watch(postCountProvider(tags).future);
+});
+
 final emptyPostCountRepoProvider =
     Provider<PostCountRepository>((ref) => const EmptyPostCountRepository());
