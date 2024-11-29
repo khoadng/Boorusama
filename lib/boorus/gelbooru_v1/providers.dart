@@ -20,7 +20,7 @@ final gelbooruV1PostRepoProvider =
                   thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
                   sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
                   originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
-                  tags: e.tags?.split(' ').toSet() ?? {},
+                  tags: e.tags.splitTagString(),
                   rating: mapStringToRating(e.rating),
                   hasComment: false,
                   isTranslated: false,
