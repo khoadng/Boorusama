@@ -292,7 +292,7 @@ class _CreateBooruConfigGranularRatingOptionsState
   Widget build(BuildContext context) {
     final options = widget.options ??
         ref
-            .watchBooruBuilder(widget.config)
+            .watch(currentBooruBuilderProvider)
             ?.granularRatingOptionsBuilder
             ?.call();
 

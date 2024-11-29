@@ -6,6 +6,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 
 const _unknownSize = 26.0;
@@ -40,7 +41,7 @@ class WebsiteLogo extends StatelessWidget {
         minWidth: size,
         minHeight: size,
       ),
-      child: ExtendedImage.network(
+      child: DioExtendedImage.network(
         url,
         clearMemoryCacheIfFailed: false,
         cacheMaxAge: kDefaultImageCacheDuration,

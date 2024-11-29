@@ -22,7 +22,7 @@ class BookmarkPostButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfig;
+    final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
 
     final isBookmarked =
@@ -70,7 +70,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfig;
+    final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
 
     final isBookmarked =
@@ -110,7 +110,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
 
 extension BookmarkPostX on WidgetRef {
   void toggleBookmark(Post post) {
-    final booruConfig = readConfig;
+    final booruConfig = readConfigAuth;
     final bookmarkState = read(bookmarkProvider);
 
     final isBookmarked =

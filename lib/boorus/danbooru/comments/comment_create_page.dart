@@ -38,7 +38,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return Scaffold(
       body: SafeArea(
@@ -95,7 +95,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
     );
   }
 
-  void _handleSend(String content, BooruConfig config) {
+  void _handleSend(String content, BooruConfigAuth config) {
     context.focusScope.unfocus();
     ref.read(danbooruCommentsProvider(config).notifier).send(
           postId: widget.postId,

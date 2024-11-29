@@ -10,9 +10,9 @@ import 'package:boorusama/core/configs/configs.dart';
 const youtubeUrl = 'www.youtube.com';
 
 class CommentsNotifier
-    extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfig> {
+    extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfigAuth> {
   @override
-  Map<int, List<CommentData>?> build(BooruConfig arg) {
+  Map<int, List<CommentData>?> build(BooruConfigAuth arg) {
     return {};
   }
 

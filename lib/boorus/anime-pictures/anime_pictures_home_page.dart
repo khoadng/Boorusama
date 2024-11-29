@@ -20,10 +20,7 @@ import 'anime_pictures_top_page.dart';
 class AnimePicturesHomePage extends ConsumerStatefulWidget {
   const AnimePicturesHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<AnimePicturesHomePage> createState() =>
@@ -33,8 +30,9 @@ class AnimePicturesHomePage extends ConsumerStatefulWidget {
 class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
     final favoritePageBuilder =
-        ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
+        ref.watch(currentBooruBuilderProvider)?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
@@ -57,7 +55,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
             ),
           ),
         ),
-        if (favoritePageBuilder != null && ref.watchConfig.passHash != null)
+        if (favoritePageBuilder != null && config.passHash != null)
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -78,7 +76,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
           icon: Symbols.explore,
           title: 'Top',
         ),
-        if (favoritePageBuilder != null && ref.watchConfig.passHash != null)
+        if (favoritePageBuilder != null && config.passHash != null)
           HomeNavigationTile(
             value: 2,
             controller: controller,
@@ -90,7 +88,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
       ],
       desktopViews: [
         const AnimePicturesTopPage(),
-        if (favoritePageBuilder != null && ref.watchConfig.passHash != null)
+        if (favoritePageBuilder != null && config.passHash != null)
           const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           )

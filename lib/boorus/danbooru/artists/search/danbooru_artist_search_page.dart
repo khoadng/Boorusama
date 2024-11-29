@@ -8,8 +8,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../artists.dart';
 import 'danbooru_artist_search_list.dart';

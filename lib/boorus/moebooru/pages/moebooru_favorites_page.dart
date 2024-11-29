@@ -14,7 +14,7 @@ class MoebooruFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: MoebooruFavoritesPageInternalPage(
@@ -34,7 +34,7 @@ class MoebooruFavoritesPageInternalPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final query = 'vote:3:$username order:vote';
 
     return FavoritesPageScaffold(

@@ -305,7 +305,7 @@ void goToNewBulkDownloadTaskPage(
   BuildContext context, {
   required List<String>? initialValue,
 }) {
-  final config = ref.readConfig;
+  final config = ref.readConfigAuth;
 
   if (!config.booruType.canDownloadMultipleFiles) {
     showBulkDownloadUnsupportErrorToast(context);

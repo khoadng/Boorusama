@@ -57,14 +57,14 @@ class TagSuggestionItems extends ConsumerWidget {
 
           return TagSuggestionItem(
             key: ValueKey(tag.value),
-            showCount: tag.hasCount && !ref.watchConfig.hasStrictSFW,
+            showCount: tag.hasCount && !ref.watchConfigAuth.hasStrictSFW,
             onItemTap: onItemTap,
             tag: tag,
             dense: dense,
             currentQuery: currentQuery,
             textColorBuilder: textColorBuilder,
             metatagExtractor: ref
-                .watchBooruBuilder(ref.watchConfig)
+                .watch(currentBooruBuilderProvider)
                 ?.metatagExtractorBuilder
                 ?.call(tagInfo),
           );

@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
@@ -31,7 +30,7 @@ class CommentHeader extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Text(
-            authorName.replaceUnderscoreWithSpace(),
+            authorName.replaceAll('_', ' '),
             style: TextStyle(
               color: authorTitleColor,
               fontSize: 15,

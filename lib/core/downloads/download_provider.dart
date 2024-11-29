@@ -13,12 +13,13 @@ final downloadNotificationProvider = Provider<DownloadNotifications>((ref) {
   throw UnimplementedError();
 });
 
-final downloadServiceProvider = Provider.family<DownloadService, BooruConfig>(
+final downloadServiceProvider =
+    Provider.family<DownloadService, BooruConfigAuth>(
   (ref, config) {
     return BackgroundDownloader();
   },
   dependencies: [
-    dioArgsProvider,
+    dioProvider,
     downloadNotificationProvider,
     currentBooruConfigProvider,
     settingsProvider,

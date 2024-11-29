@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
-final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(danbooruClientProvider(config));
 
@@ -34,7 +34,7 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
 
 final danbooruTagCategoryProvider =
     FutureProvider.family<TagCategory?, String>((ref, tag) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final store = ref.watch(booruTagTypeStoreProvider);
   final type = await store.get(config.booruType, tag);
 

@@ -10,13 +10,12 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'anime_pictures.dart';
 
 final animePicturesClientProvider =
-    Provider.family<AnimePicturesClient, BooruConfig>(
+    Provider.family<AnimePicturesClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return AnimePicturesClient(
       dio: dio,
@@ -27,12 +26,12 @@ final animePicturesClientProvider =
 );
 
 final animePicturesPostRepoProvider =
-    Provider.family<PostRepository, BooruConfig>(
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(animePicturesClientProvider(config));
+    final client = ref.watch(animePicturesClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -57,7 +56,7 @@ final animePicturesPostRepoProvider =
 );
 
 final animePicturesAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
+    Provider.family<AutocompleteRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(animePicturesClientProvider(config));
 
@@ -83,14 +82,14 @@ final animePicturesAutocompleteRepoProvider =
 );
 
 final animePicturesDownloadFileUrlExtractorProvider =
-    Provider.family<DownloadFileUrlExtractor, BooruConfig>((ref, config) {
+    Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>((ref, config) {
   return AnimePicturesDownloadFileUrlExtractor(
     client: ref.watch(animePicturesClientProvider(config)),
   );
 });
 
 typedef TopParams = ({
-  BooruConfig config,
+  BooruConfigAuth config,
   bool erotic,
 });
 
@@ -118,7 +117,7 @@ final animePicturesWeeklyPopularProvider = FutureProvider.autoDispose
 });
 
 final animePicturesCurrentUserIdProvider =
-    FutureProvider.family<int?, BooruConfig>((ref, config) async {
+    FutureProvider.family<int?, BooruConfigAuth>((ref, config) async {
   final cookie = config.passHash;
   if (cookie == null || cookie.isEmpty) return null;
 

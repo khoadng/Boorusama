@@ -9,13 +9,13 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 
@@ -25,7 +25,6 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   const BooruDesktopScope({
     super.key,
     required this.controller,
-    required this.config,
     required this.menuBuilder,
     required this.mobileMenu,
     required this.views,
@@ -33,7 +32,6 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
   });
 
   final HomePageController controller;
-  final BooruConfig config;
   final List<Widget> Function(BuildContext context, BoxConstraints constraints)
       menuBuilder;
 
@@ -49,11 +47,7 @@ class BooruDesktopScope extends ConsumerStatefulWidget {
 class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   late MultiSplitViewController splitController;
 
-  bool get isDesktop => context.isLandscapeLayout;
-
-  bool get isMobileLandScape =>
-      kPreferredLayout.isMobile &&
-      MediaQuery.orientationOf(context).isLandscape;
+  bool get isDesktop => context.isLargeScreen;
 
   @override
   void initState() {
@@ -135,6 +129,12 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: context.colorScheme.surfaceContainerLow,
+                border: Border(
+                  right: BorderSide(
+                    color: context.colorScheme.hintColor,
+                    width: 0.25,
+                  ),
+                ),
               ),
               child: Column(
                 children: [
@@ -210,12 +210,12 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         body: MultiSplitViewTheme(
           data: MultiSplitViewThemeData(
-            dividerThickness: isMobileLandScape
+            dividerThickness: !isDesktopPlatform()
                 ? Screen.of(context).size.isLarge
                     ? 24
                     : 16
                 : 4,
-            dividerPainter: !isMobileLandScape
+            dividerPainter: isDesktopPlatform()
                 ? DividerPainters.background(
                     animationEnabled: false,
                     color: context.colorScheme.surface,

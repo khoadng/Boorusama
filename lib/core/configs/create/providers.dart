@@ -46,7 +46,7 @@ class EditBooruConfigId extends Equatable {
   EditBooruConfigId.fromConfig(
     BooruConfig config,
   )   : id = config.id,
-        booruType = config.booruType,
+        booruType = config.auth.booruType,
         url = config.url;
 
   final int id;

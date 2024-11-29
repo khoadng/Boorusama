@@ -86,14 +86,16 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
     required this.fetch,
     required this.getSettings,
     this.fetchFromController,
-    required this.tagComposer,
+    required this.getComposer,
   });
+
+  final TagQueryComposer Function() getComposer;
 
   final PostFutureFetcher<T> fetch;
   final PostFutureControllerFetcher<T>? fetchFromController;
   final Future<ImageListingSettings> Function() getSettings;
   @override
-  final TagQueryComposer tagComposer;
+  TagQueryComposer get tagComposer => getComposer();
 
   @override
   PostsOrError<T> getPosts(String tags, int page, {int? limit}) =>

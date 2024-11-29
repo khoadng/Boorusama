@@ -121,7 +121,7 @@ class DanbooruArtistPostsSection extends ConsumerWidget {
           ? post.artistTags
               .map((tag) => SliverArtistPostList(
                     tag: tag,
-                    builder: (tag) => ref
+                    child: ref
                         .watch(danbooruPostDetailsArtistProvider(tag))
                         .maybeWhen(
                           data: (data) => SliverPreviewPostGrid(

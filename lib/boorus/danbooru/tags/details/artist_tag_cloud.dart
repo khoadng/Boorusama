@@ -19,7 +19,7 @@ const _kTagCloudTotal = 30;
 final danbooruRelatedTagCloudProvider =
     FutureProvider.autoDispose.family<List<DanbooruRelatedTagItem>, String>(
   (ref, tag) async {
-    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
+    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfigAuth));
     final relatedTag = await repo.getRelatedTag(tag);
 
     final sorted = relatedTag.tags.sorted(
@@ -56,9 +56,11 @@ class ArtistTagCloud extends ConsumerWidget {
   const ArtistTagCloud({
     super.key,
     required this.tagName,
+    this.scaleFactor,
   });
 
   final String tagName;
+  final double? scaleFactor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -76,6 +78,7 @@ class ArtistTagCloud extends ConsumerWidget {
 
             return ref.watch(_tagCategoryColorsProvider(params)).when(
                   data: (tagColors) => TagCloud(
+                    scaleFactor: scaleFactor,
                     itemCount: tags.length,
                     itemBuilder: (context, i) => DanbooruTagContextMenu(
                       tag: tags[i].tag,

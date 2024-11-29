@@ -21,7 +21,7 @@ import 'package:boorusama/widgets/widgets.dart';
 
 final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, Post>((ref, post) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
 
   final allTagMap = await ref.watch(moebooruAllTagsProvider(config).future);
 
@@ -107,7 +107,7 @@ class _MoebooruPostDetailsPageState
   }
 
   Future<void> _loadFavoriteUsers(int postId) async {
-    final config = ref.readConfig;
+    final config = ref.readConfigAuth;
     final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
 
     await booru?.whenMoebooru(
@@ -170,7 +170,7 @@ class MoebooruCharacterListSection extends ConsumerWidget {
   const MoebooruCharacterListSection({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final post = InheritedPost.of<MoebooruPost>(context);
 
     return ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
@@ -197,7 +197,7 @@ class MoebooruCharacterListSection extends ConsumerWidget {
 }
 
 Set<String>? _extractCharacter(
-  BooruConfig booruConfig,
+  BooruConfigAuth booruConfig,
   List<TagGroupItem>? tagGroups,
 ) {
   if (tagGroups == null) return null;
@@ -209,7 +209,7 @@ Set<String>? _extractCharacter(
 }
 
 List<String>? _extractArtist(
-  BooruConfig booruConfig,
+  BooruConfigAuth booruConfig,
   List<TagGroupItem>? tagGroups,
 ) {
   if (tagGroups == null) return null;
@@ -224,7 +224,7 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
   const MoebooruArtistPostsSection({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final post = InheritedPost.of<MoebooruPost>(context);
 
     return MultiSliver(
@@ -237,7 +237,7 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
                       .map(
                         (tag) => SliverArtistPostList(
                           tag: tag,
-                          builder: (tag) => ref
+                          child: ref
                               .watch(moebooruPostDetailsArtistProvider(tag))
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
@@ -286,7 +286,7 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final post = InheritedPost.of<MoebooruPost>(context);
     final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
@@ -310,7 +310,7 @@ class _Toolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
 
     return SimplePostActionToolbar(

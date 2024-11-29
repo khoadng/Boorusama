@@ -11,7 +11,6 @@ import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../danbooru_provider.dart';
@@ -33,10 +32,10 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final dmailProvider =
-        danbooruDmailsProvider((ref.watchConfig, _selectedFolder));
+    final config = ref.watchConfigAuth;
+    final dmailProvider = danbooruDmailsProvider((config, _selectedFolder));
     final dmailAsync = ref.watch(dmailProvider);
-    final client = ref.watch(danbooruClientProvider(ref.watchConfig));
+    final client = ref.watch(danbooruClientProvider(config));
 
     return Scaffold(
       appBar: AppBar(

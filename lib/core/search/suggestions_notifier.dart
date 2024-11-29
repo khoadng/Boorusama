@@ -12,7 +12,7 @@ import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
 
 final suggestionsProvider = NotifierProvider.family<SuggestionsNotifier,
-    IMap<String, IList<AutocompleteData>>, BooruConfig>(
+    IMap<String, IList<AutocompleteData>>, BooruConfigAuth>(
   SuggestionsNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -27,7 +27,7 @@ final fallbackSuggestionsProvider =
 final suggestionProvider =
     Provider.autoDispose.family<IList<AutocompleteData>, String>(
   (ref, tag) {
-    final booruConfig = ref.watchConfig;
+    final booruConfig = ref.watchConfigAuth;
     final suggestions = ref.watch(suggestionsProvider(booruConfig));
     return suggestions[sanitizeQuery(tag)] ??
         ref.watch(fallbackSuggestionsProvider);
@@ -39,13 +39,12 @@ final suggestionProvider =
   ],
 );
 
-class SuggestionsNotifier
-    extends FamilyNotifier<IMap<String, IList<AutocompleteData>>, BooruConfig>
-    with DebounceMixin {
+class SuggestionsNotifier extends FamilyNotifier<
+    IMap<String, IList<AutocompleteData>>, BooruConfigAuth> with DebounceMixin {
   SuggestionsNotifier() : super();
 
   @override
-  IMap<String, IList<AutocompleteData>> build(BooruConfig arg) {
+  IMap<String, IList<AutocompleteData>> build(BooruConfigAuth arg) {
     return <String, IList<AutocompleteData>>{}.lock;
   }
 
@@ -76,7 +75,7 @@ class SuggestionsNotifier
         final filter = filterNsfw(
           data,
           tagInfo.r18Tags,
-          shouldFilter: arg.hasSoftSFW,
+          shouldFilter: ref.readConfigAuth.hasSoftSFW,
         );
 
         state = state.add(sanitized, filter);

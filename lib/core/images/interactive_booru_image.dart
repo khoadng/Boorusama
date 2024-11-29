@@ -2,15 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
@@ -21,7 +19,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
     required this.aspectRatio,
     required this.imageUrl,
     this.placeholderImageUrl,
-    this.previewCacheManager,
     this.imageOverlayBuilder,
     this.width,
     this.height,
@@ -32,7 +29,6 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   final double? aspectRatio;
   final String imageUrl;
   final String? placeholderImageUrl;
-  final CacheManager? previewCacheManager;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final double? width;
   final double? height;
@@ -45,8 +41,8 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
 class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
-    final ua = ref.watch(userAgentGeneratorProvider(config)).generate();
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
 
     if (widget.imageUrl.isEmpty) {
       return NullableAspectRatio(
@@ -67,8 +63,9 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
               child: LayoutBuilder(
                 builder: (context, constraints) => Stack(
                   children: [
-                    ExtendedImage.network(
+                    DioExtendedImage.network(
                       widget.imageUrl,
+                      dio: dio,
                       width: constraints.maxWidth.isFinite
                           ? constraints.maxWidth
                           : null,
@@ -78,7 +75,6 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                       fit: BoxFit.contain,
                       cacheMaxAge: kDefaultImageCacheDuration,
                       headers: {
-                        AppHttpHeaders.userAgentHeader: ua,
                         ...ref.watch(extraHttpHeaderProvider(config)),
                       },
                     ),
@@ -88,8 +84,9 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
               ),
             )
           : LayoutBuilder(
-              builder: (context, constraints) => ExtendedImage.network(
+              builder: (context, constraints) => DioExtendedImage.network(
                 widget.imageUrl,
+                dio: dio,
                 width:
                     constraints.maxWidth.isFinite ? constraints.maxWidth : null,
                 height: constraints.maxHeight.isFinite
@@ -98,7 +95,6 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                 cacheMaxAge: kDefaultImageCacheDuration,
                 fit: BoxFit.contain,
                 headers: {
-                  AppHttpHeaders.userAgentHeader: ua,
                   ...ref.watch(extraHttpHeaderProvider(config)),
                 },
               ),

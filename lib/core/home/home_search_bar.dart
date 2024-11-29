@@ -206,7 +206,7 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     return SliverHomeSearchBarInternal(
       controller: controller,
@@ -241,13 +241,21 @@ class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
 
 class _SliverHomeSearchBarState
     extends ConsumerState<SliverHomeSearchBarInternal> {
-  late final selectedTagController = widget.selectedTagController ??
-      SelectedTagController.fromBooruBuilder(
-        builder: widget.booruBuilder,
-        tagInfo: ref.read(tagInfoProvider),
-      );
+  late final SelectedTagController selectedTagController;
 
   late final selectedTagString = widget.selectedTagString ?? ValueNotifier('');
+
+  @override
+  void initState() {
+    super.initState();
+    final tagInfo = ref.read(tagInfoProvider);
+
+    selectedTagController = widget.selectedTagController ??
+        SelectedTagController.fromBooruBuilder(
+          builder: widget.booruBuilder,
+          tagInfo: tagInfo,
+        );
+  }
 
   @override
   void dispose() {
@@ -258,20 +266,10 @@ class _SliverHomeSearchBarState
     super.dispose();
   }
 
-  bool get isDesktop => kPreferredLayout.isDesktop;
-
-  bool get isTablet => MediaQuery.sizeOf(context).shortestSide >= 550;
-
-  bool get isMobileLandscape =>
-      kPreferredLayout.isMobile &&
-      MediaQuery.orientationOf(context).isLandscape;
-
   @override
   Widget build(BuildContext context) {
-    if (isDesktop) {
-      return _buildPinned(context);
-    } else if (isMobileLandscape) {
-      return isTablet
+    if (context.isLargeScreen) {
+      return MediaQuery.sizeOf(context).height >= 550
           ? _buildPinned(context)
           : SliverToBoxAdapter(
               child: _buildDesktop(),
@@ -284,23 +282,16 @@ class _SliverHomeSearchBarState
       return SliverAppBar(
         backgroundColor: context.colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
-        title: LayoutBuilder(
-          builder: (context, constraints) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (constraints.maxWidth < 600)
-                  Expanded(child: homeSearchBar)
-                else
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 500,
-                    ),
-                    child: homeSearchBar,
-                  ),
-              ],
-            );
-          },
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: LimitedBox(
+                maxWidth: 500,
+                child: homeSearchBar,
+              ),
+            ),
+          ],
         ),
         floating: true,
         snap: true,
