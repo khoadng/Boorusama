@@ -13,13 +13,13 @@ import 'package:rxdart/rxdart.dart';
 import 'package:boorusama/boorus/danbooru/saved_searches/saved_searches.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
 
 class CreateSavedSearchSheet extends ConsumerWidget {
@@ -33,7 +33,7 @@ class CreateSavedSearchSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig).notifier);
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
 
     return SavedSearchSheet(
       initialValue: initialValue != null
@@ -63,7 +63,7 @@ class EditSavedSearchSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig).notifier);
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
 
     return SavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),

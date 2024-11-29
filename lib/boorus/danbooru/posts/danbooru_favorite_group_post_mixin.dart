@@ -6,16 +6,30 @@ import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/dart.dart';
 import 'danbooru_post.dart';
 import 'utils.dart';
 
 mixin DanbooruFavoriteGroupPostMixin {
   PostRepository<DanbooruPost> get postRepository;
 
-  Future<PostResult<DanbooruPost>> getPostsFromIdQueue(Queue<int> queue) async {
-    final ids = queue.dequeue(20);
+  Future<PostResult<DanbooruPost>> getPostsFromIdQueue(
+    Queue<int> queue,
+    int page, {
+    int limit = 20,
+  }) async {
+    // Calculate skip based on page number (0-based pagination)
+    final skip = page * limit;
 
+    // Check if we have enough items
+    if (queue.length < skip) {
+      return <DanbooruPost>[]
+          .toResult(); // Return empty result if page is beyond available items
+    }
+
+    // Skip items for pagination and take required limit
+    final ids = queue.skip(skip).take(limit).toList();
+
+    // Get posts from repository
     final r = await postRepository
         .getPostsFromIds(ids)
         .run()
@@ -24,11 +38,13 @@ mixin DanbooruFavoriteGroupPostMixin {
               (r) => r,
             ));
 
+    // Create order map for sorting
     final orderMap = <int, int>{};
     for (var index = 0; index < ids.length; index++) {
       orderMap[ids[index]] = index;
     }
 
+    // Sort posts according to original order
     final orderedPosts = r.posts
         .where((e) => orderMap.containsKey(e.id))
         .map((e) => _Payload(orderMap[e.id]!, e))

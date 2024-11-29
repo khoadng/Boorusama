@@ -12,7 +12,6 @@ import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import '../router.dart';
 import 'favorite_groups.dart';
 
@@ -34,7 +33,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final favoriteGroups = ref.watch(danbooruFavoriteGroupsProvider(config));
 
     return Scaffold(
@@ -60,7 +59,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
 
                     return ListTile(
                       title: Text(
-                        group.name.replaceUnderscoreWithSpace(),
+                        group.name.replaceAll('_', ' '),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
@@ -113,7 +112,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     DanbooruFavoriteGroup favGroup,
-    BooruConfig config,
+    BooruConfigSearch config,
   ) {
     showMaterialModalBottomSheet(
       context: context,

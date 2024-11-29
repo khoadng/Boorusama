@@ -13,9 +13,9 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 
 class BlacklistedTagsNotifier
-    extends FamilyAsyncNotifier<List<String>?, BooruConfig> {
+    extends FamilyAsyncNotifier<List<String>?, BooruConfigAuth> {
   @override
-  Future<List<String>?> build(BooruConfig arg) async {
+  Future<List<String>?> build(BooruConfigAuth arg) async {
     final user = await ref.watch(danbooruCurrentUserProvider(arg).future);
 
     if (user == null) return null;

@@ -25,7 +25,7 @@ class DanbooruTagContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return GeneralTagContextMenu(
       tag: tag,

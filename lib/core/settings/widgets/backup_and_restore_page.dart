@@ -77,7 +77,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                   ...first5Configs.map(
                     (e) => ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: BooruLogo.fromConfig(e),
+                      child: BooruLogo.fromConfig(e.auth),
                     ),
                   ),
                   if (first5Configs.length < configs.length)

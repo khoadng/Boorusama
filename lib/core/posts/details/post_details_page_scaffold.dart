@@ -117,9 +117,9 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _build() {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final gestures = ref.watchPostGestures?.fullview;
     final imageUrlBuilder =
         widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
@@ -159,46 +159,32 @@ class _PostDetailPageScaffoldState<T extends Post>
             onPressed: () => goToHomePage(context),
           ),
         ],
-        onItemDoubleTap: booruBuilder?.canHandlePostGesture(
-                      GestureType.doubleTap,
-                      ref.watchConfig.postGestures?.fullview,
-                    ) ==
-                    true &&
-                postGesturesHandler != null
+        onItemDoubleTap: gestures.canDoubleTap && postGesturesHandler != null
             ? () => postGesturesHandler(
                   ref,
-                  ref.watchConfig.postGestures?.fullview?.doubleTap,
+                  gestures?.doubleTap,
                   posts[_controller.page],
                 )
             : null,
-        onItemLongPress: booruBuilder?.canHandlePostGesture(
-                      GestureType.longPress,
-                      ref.watchConfig.postGestures?.fullview,
-                    ) ==
-                    true &&
-                postGesturesHandler != null
+        onItemLongPress: gestures.canLongPress && postGesturesHandler != null
             ? () => postGesturesHandler(
                   ref,
-                  ref.watchConfig.postGestures?.fullview?.longPress,
+                  gestures?.longPress,
                   posts[_controller.page],
                 )
             : null,
-        onSwipeDownThresholdReached: booruBuilder?.canHandlePostGesture(
-                      GestureType.swipeDown,
-                      config.postGestures?.fullview,
-                    ) ==
-                    true &&
-                postGesturesHandler != null
-            ? () {
-                _controller.resetSheet();
+        onSwipeDownThresholdReached:
+            gestures.canSwipeDown && postGesturesHandler != null
+                ? () {
+                    _controller.resetSheet();
 
-                postGesturesHandler(
-                  ref,
-                  config.postGestures?.fullview?.swipeDown,
-                  posts[_controller.page],
-                );
-              }
-            : null,
+                    postGesturesHandler(
+                      ref,
+                      gestures?.swipeDown,
+                      posts[_controller.page],
+                    );
+                  }
+                : null,
         sheetBuilder: (context, scrollController) {
           return ValueListenableBuilder(
             valueListenable: _controller.sheetState,
@@ -385,7 +371,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watchBooruBuilder(ref.watchConfig);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
     if (builder == null) {
@@ -567,7 +553,6 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
               bottom: isLarge,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
                     children: [
@@ -677,7 +662,6 @@ class VideoTimeText extends StatelessWidget {
       width: 44,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(

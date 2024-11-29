@@ -9,12 +9,12 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final gelbooruPostRepoProvider =
-    Provider.family<PostRepository<GelbooruPost>, BooruConfig>(
+    Provider.family<PostRepository<GelbooruPost>, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(gelbooruClientProvider(config));
+    final client = ref.watch(gelbooruClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             tags: tags,
@@ -37,7 +37,7 @@ final gelbooruPostRepoProvider =
 );
 
 final gelbooruArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository, BooruConfig>(
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
     return PostRepositoryCacher(
       repository: ref.watch(gelbooruPostRepoProvider(config)),

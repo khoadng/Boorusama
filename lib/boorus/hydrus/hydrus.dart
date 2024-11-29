@@ -21,7 +21,6 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'favorites/favorites.dart';
@@ -64,8 +63,8 @@ class HydrusPost extends SimplePost {
 }
 
 final hydrusClientProvider =
-    Provider.family<HydrusClient, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+    Provider.family<HydrusClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return HydrusClient(
     dio: dio,
@@ -74,10 +73,10 @@ final hydrusClientProvider =
   );
 });
 
-final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final hydrusPostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(hydrusClientProvider(config));
-    final composer = ref.watch(tagQueryComposerProvider(config));
+    final client = ref.watch(hydrusClientProvider(config.auth));
 
     Future<PostResult<HydrusPost>> getPosts(
       List<String> tags,
@@ -126,16 +125,19 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
             total: files.count,
           );
 
-      ref.read(hydrusFavoritesProvider(config).notifier).preload(data.posts);
+      ref
+          .read(hydrusFavoritesProvider(config.auth).notifier)
+          .preload(data.posts);
 
       return data;
     }
 
     return PostRepositoryBuilder(
-      tagComposer: composer,
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchFromController: (controller, page, {limit}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
+        final composer = ref.read(currentTagQueryComposerProvider);
 
         return getPosts(
           composer.compose(tags),
@@ -149,7 +151,7 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final hydrusAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(hydrusClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -242,8 +244,7 @@ class HydrusBuilder
       (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as HydrusPost).toList();
 
         return PostDetailsScope(
@@ -256,13 +257,11 @@ class HydrusBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const HydrusFavoritesPage();
+      (context) => const HydrusFavoritesPage();
 
   @override
   @override
-  HomePageBuilder get homePageBuilder => (context, config) => HydrusHomePage(
-        config: config,
-      );
+  HomePageBuilder get homePageBuilder => (context) => const HydrusHomePage();
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -296,10 +295,7 @@ class HydrusBuilder
 class HydrusHomePage extends StatelessWidget {
   const HydrusHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   Widget build(BuildContext context) {
@@ -329,7 +325,7 @@ class HydrusHomePage extends StatelessWidget {
 }
 
 final ratingServiceNameProvider =
-    FutureProvider.family<String?, BooruConfig>((ref, config) async {
+    FutureProvider.family<String?, BooruConfigAuth>((ref, config) async {
   final client = ref.read(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();
@@ -403,7 +399,7 @@ class HydrusPostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<HydrusPost>(context);
     final canFav =
-        ref.watch(hydrusCanFavoriteProvider(ref.watchConfig)).maybeWhen(
+        ref.watch(hydrusCanFavoriteProvider(ref.watchConfigAuth)).maybeWhen(
               data: (fav) => fav,
               orElse: () => false,
             );
@@ -430,7 +426,7 @@ class HydrusSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     return SearchPageScaffold(
       initialQuery: initialQuery,
       fetcher: (page, controller) => ref

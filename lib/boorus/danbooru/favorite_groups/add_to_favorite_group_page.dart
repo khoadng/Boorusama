@@ -17,7 +17,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import '../posts/posts.dart';
 import '../router.dart';
@@ -33,7 +32,7 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return Scaffold(
       appBar: AppBar(
@@ -111,7 +110,7 @@ class _FavoriteGroupList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final filteredGroups =
         ref.watch(danbooruFavoriteGroupFilterableProvider(config));
 
@@ -132,7 +131,7 @@ class _FavoriteGroupList extends ConsumerWidget {
     List<DanbooruFavoriteGroup> groups,
     BuildContext context,
     WidgetRef ref,
-    BooruConfig config,
+    BooruConfigSearch config,
   ) {
     return ImplicitlyAnimatedList<DanbooruFavoriteGroup>(
       items: groups,
@@ -147,7 +146,7 @@ class _FavoriteGroupList extends ConsumerWidget {
           animation: animation,
           child: ListTile(
             title: Text(
-              group.name.replaceUnderscoreWithSpace(),
+              group.name.replaceAll('_', ' '),
             ),
             subtitle: Text(group.updatedAt
                 .fuzzify(locale: Localizations.localeOf(context))),
@@ -178,7 +177,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                               .replaceAll('{0}', '${posts.length}')
                               .replaceAll(
                                 '{1}',
-                                group.name.replaceUnderscoreWithSpace(),
+                                group.name.replaceAll('_', ' '),
                               ),
                         ),
                       );

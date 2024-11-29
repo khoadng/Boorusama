@@ -9,7 +9,7 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'e621_note.dart';
 
 final e621NoteRepoProvider =
-    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+    Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(e621ClientProvider(config));
 
   return NoteRepositoryBuilder(

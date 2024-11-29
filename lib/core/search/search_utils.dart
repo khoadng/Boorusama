@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/string.dart';
+import 'package:boorusama/dart.dart';
 
 String sanitizeQuery(String query) {
   final trimmed = query.trim().replaceAll(' ', '_');

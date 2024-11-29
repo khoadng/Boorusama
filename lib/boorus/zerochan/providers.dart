@@ -9,13 +9,12 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/foundation/path.dart' as path;
 import 'zerochan_post.dart';
 
 final zerochanClientProvider =
-    Provider.family<ZerochanClient, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+    Provider.family<ZerochanClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
   final logger = ref.watch(loggerProvider);
 
   return ZerochanClient(
@@ -24,12 +23,13 @@ final zerochanClientProvider =
   );
 });
 
-final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final zerochanPostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(zerochanClientProvider(config));
+    final client = ref.watch(zerochanClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -77,7 +77,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final zerochanAutoCompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(zerochanClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -106,7 +106,7 @@ final zerochanAutoCompleteRepoProvider =
 final zerochanTagsFromIdProvider =
     FutureProvider.autoDispose.family<List<Tag>, int>(
   (ref, id) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final client = ref.watch(zerochanClientProvider(config));
 
     final data = await client.getTagsFromPostId(postId: id);

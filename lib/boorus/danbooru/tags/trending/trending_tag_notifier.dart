@@ -11,9 +11,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
 class TrendingTagNotifier
-    extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfig> {
+    extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfigAuth> {
   @override
-  FutureOr<List<Search>> build(BooruConfig arg) {
+  FutureOr<List<Search>> build(BooruConfigAuth arg) {
     return fetch();
   }
 

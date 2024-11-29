@@ -2,22 +2,12 @@
 import 'dart:math';
 
 extension StringX on String {
+  String get sentenceCase => _getSentenceCase(this);
+  String get pascalCase => _getPascalCase(this);
+  String get titleCase => _getPascalCase(this, separator: ' ');
+
   String getFirstCharacter() => this == '' ? '' : this[0];
   String getLastCharacter() => this == '' ? '' : this[length - 1];
-  String replaceCharAt(int index, String newChar) =>
-      substring(0, index) + newChar + substring(index + 1);
-
-  String replaceAtIndexWhen({
-    required bool Function(String value) condition,
-    required int Function(String value) indexSelector,
-    required String newChar,
-  }) {
-    if (condition(this)) {
-      return replaceCharAt(indexSelector(this), newChar);
-    }
-
-    return this;
-  }
 
   String pipe(
     List<String Function(String text)> funcs,
@@ -32,8 +22,6 @@ extension StringX on String {
 
   int? toInt() => int.tryParse(this);
   bool? toBool() => bool.tryParse(this);
-
-  String replaceUnderscoreWithSpace() => replaceAll('_', ' ');
 
   ///
   /// Add a [char] at a [position] with the given string.
@@ -72,22 +60,62 @@ extension StringX on String {
   }
 }
 
-extension StringNullX on String? {
-  bool isBlank() {
-    if (this == null) return true;
+String _getSentenceCase(String text, {String separator = ' '}) {
+  // ignore: no_leading_underscores_for_local_identifiers
+  final _words = _groupIntoWords(text);
 
-    return this!.trim().isEmpty;
+  final words = _words.map((word) => word.toLowerCase()).toList();
+  if (_words.isNotEmpty) {
+    words[0] = _upperCaseFirstLetter(words[0]);
   }
 
-  bool isNotBlank() => !isBlank();
-
-  Set<String> splitByWhitespace() {
-    if (this == null) return {};
-    if (this!.isEmpty) return {};
-
-    return this!.split(' ').toSet();
-  }
+  return words.join(separator);
 }
+
+String _getPascalCase(String text, {String separator = ''}) {
+  // ignore: no_leading_underscores_for_local_identifiers
+  final _words = _groupIntoWords(text);
+
+  final words = _words.map(_upperCaseFirstLetter).toList();
+
+  return words.join(separator);
+}
+
+String _upperCaseFirstLetter(String word) {
+  return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
+}
+
+List<String> _groupIntoWords(String text) {
+  final sb = StringBuffer();
+  final words = <String>[];
+  final isAllCaps = text.toUpperCase() == text;
+
+  for (int i = 0; i < text.length; i++) {
+    final char = text[i];
+    final nextChar = i + 1 == text.length ? null : text[i + 1];
+
+    if (_symbolSet.contains(char)) {
+      continue;
+    }
+
+    sb.write(char);
+
+    final isEndOfWord = nextChar == null ||
+        (_upperAlphaRegex.hasMatch(nextChar) && !isAllCaps) ||
+        _symbolSet.contains(nextChar);
+
+    if (isEndOfWord) {
+      words.add(sb.toString());
+      sb.clear();
+    }
+  }
+
+  return words;
+}
+
+final RegExp _upperAlphaRegex = RegExp('[A-Z]');
+
+const _symbolSet = {' ', '.', '/', '_', r'\', '-'};
 
 String generateRandomWord(final int minLength, final int maxLength) {
   final rand = Random();

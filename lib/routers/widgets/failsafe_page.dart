@@ -1,6 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/widgets/widgets.dart';
+
 class UnimplementedPage extends StatelessWidget {
   const UnimplementedPage({super.key});
 
@@ -15,8 +19,30 @@ class UnimplementedPage extends StatelessWidget {
   }
 }
 
+class LargeScreenAwareInvalidPage extends StatelessWidget {
+  const LargeScreenAwareInvalidPage({
+    super.key,
+    this.useDialog = true,
+    required this.message,
+  });
+
+  final String message;
+  final bool useDialog;
+
+  @override
+  Widget build(BuildContext context) {
+    final isLarge = context.isLargeScreen;
+    final page = InvalidPage(message: message);
+
+    return isLarge && useDialog ? BooruDialog(child: page) : page;
+  }
+}
+
 class InvalidPage extends StatelessWidget {
-  const InvalidPage({super.key, required this.message});
+  const InvalidPage({
+    super.key,
+    required this.message,
+  });
 
   final String message;
 

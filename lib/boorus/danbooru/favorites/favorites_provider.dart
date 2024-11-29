@@ -9,15 +9,15 @@ import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruFavoriteRepoProvider =
-    Provider.family<FavoritePostRepository, BooruConfig>((ref, config) {
+    Provider.family<FavoritePostRepository, BooruConfigAuth>((ref, config) {
   return FavoritePostRepositoryApi(
     ref.watch(danbooruClientProvider(config)),
   );
 });
 
 // Provider to check if a post is favorited
-final danbooruFavoritesProvider =
-    NotifierProvider.family<FavoritesNotifier, IMap<int, bool>, BooruConfig>(
+final danbooruFavoritesProvider = NotifierProvider.family<FavoritesNotifier,
+    IMap<int, bool>, BooruConfigAuth>(
   FavoritesNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -27,7 +27,7 @@ final danbooruFavoritesProvider =
 // Provider to check a single post is favorited or not
 final danbooruFavoriteProvider = Provider.autoDispose.family<bool, int>(
   (ref, postId) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     return ref.watch(danbooruFavoritesProvider(config))[postId] ?? false;
   },
 );

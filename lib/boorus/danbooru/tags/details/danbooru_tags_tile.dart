@@ -34,7 +34,7 @@ class DanbooruTagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final tagDetails =
         allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
     final count = tagDetails?.allTags.length ?? post.tags.length;

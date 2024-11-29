@@ -12,6 +12,7 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
@@ -24,13 +25,12 @@ import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/windows.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
 
-class AppScope extends StatelessWidget {
-  const AppScope({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class AppScope extends StatelessWidget {
       child: OKToast(
         child: AnalyticsScope(
           child: NetworkListener(
-            child: App(),
+            child: _App(),
           ),
         ),
       ),
@@ -46,8 +46,8 @@ class AppScope extends StatelessWidget {
   }
 }
 
-class App extends ConsumerWidget {
-  const App({super.key});
+class _App extends ConsumerWidget {
+  const _App();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

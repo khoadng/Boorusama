@@ -22,7 +22,7 @@ class SelectedTagListWithData extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final tagComposer = ref.watch(tagQueryComposerProvider(config));
+    final tagComposer = ref.watch(currentTagQueryComposerProvider);
 
     return ColoredBox(
         color: context.colorScheme.surface,

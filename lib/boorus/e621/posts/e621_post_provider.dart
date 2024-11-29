@@ -13,11 +13,11 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/path.dart';
 
 final e621PostRepoProvider =
-    Provider.family<PostRepository<E621Post>, BooruConfig>((ref, config) {
-  final client = ref.watch(e621ClientProvider(config));
+    Provider.family<PostRepository<E621Post>, BooruConfigSearch>((ref, config) {
+  final client = ref.watch(e621ClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    tagComposer: ref.watch(tagQueryComposerProvider(config)),
+    getComposer: () => ref.read(currentTagQueryComposerProvider),
     fetch: (tags, page, {limit}) async {
       final data = await client
           .getPosts(
@@ -35,7 +35,7 @@ final e621PostRepoProvider =
                   ))
               .toList());
 
-      ref.read(e621FavoritesProvider(config).notifier).preload(data);
+      ref.read(e621FavoritesProvider(config.auth).notifier).preload(data);
 
       return data.toResult();
     },
@@ -45,7 +45,7 @@ final e621PostRepoProvider =
 });
 
 final e621PopularPostRepoProvider =
-    Provider.family<E621PopularRepository, BooruConfig>((ref, config) {
+    Provider.family<E621PopularRepository, BooruConfigAuth>((ref, config) {
   return E621PopularRepositoryApi(
     ref.watch(e621ClientProvider(config)),
     ref.watchConfig,

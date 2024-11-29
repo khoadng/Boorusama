@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
@@ -44,21 +45,40 @@ final orderedConfigsProvider =
 });
 
 extension BooruWidgetRef on WidgetRef {
-  /// {@template boorusama.booru.readConfig}
-  /// Shortcut for `read(currentBooruConfigProvider)`
-  /// {@endtemplate}
   BooruConfig get readConfig => read(currentReadOnlyBooruConfigProvider);
 
-  /// {@template boorusama.booru.watchConfig}
-  /// Shortcut for `watch(currentBooruConfigProvider)`
-  /// {@endtemplate}
   BooruConfig get watchConfig => watch(currentReadOnlyBooruConfigProvider);
+
+  BooruConfigAuth get readConfigAuth =>
+      read(currentReadOnlyBooruConfigAuthProvider);
+
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentReadOnlyBooruConfigAuthProvider);
+
+  BooruConfigSearch get readConfigSearch =>
+      read(currentReadOnlyBooruConfigSearchProvider);
+
+  BooruConfigSearch get watchConfigSearch =>
+      watch(currentReadOnlyBooruConfigSearchProvider);
+
+  PostGestureConfig? get watchPostGestures =>
+      watch(currentReadOnlyBooruConfigGestureProvider);
 }
 
 extension BooruAutoDisposeProviderRef<T> on Ref<T> {
-  /// {@macro boorusama.booru.readConfig}
   BooruConfig get readConfig => read(currentReadOnlyBooruConfigProvider);
 
-  /// {@macro boorusama.booru.watchConfig}
   BooruConfig get watchConfig => watch(currentReadOnlyBooruConfigProvider);
+
+  BooruConfigAuth get readConfigAuth =>
+      read(currentReadOnlyBooruConfigAuthProvider);
+
+  BooruConfigAuth get watchConfigAuth =>
+      watch(currentReadOnlyBooruConfigAuthProvider);
+
+  BooruConfigSearch get readConfigSearch =>
+      read(currentReadOnlyBooruConfigSearchProvider);
+
+  BooruConfigSearch get watchConfigSearch =>
+      watch(currentReadOnlyBooruConfigSearchProvider);
 }

@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/home/home.dart';
@@ -25,14 +24,11 @@ const String kMenuWidthCacheKey = 'menu_width';
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
     super.key,
-    required this.config,
     required this.mobileMenu,
     required this.desktopMenuBuilder,
     required this.desktopViews,
     this.controller,
   });
-
-  final BooruConfig config;
 
   final List<Widget> Function(
     BuildContext context,
@@ -86,7 +82,6 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
       child: CustomContextMenuOverlay(
         child: BooruDesktopScope(
           controller: controller,
-          config: widget.config,
           menuBuilder: (context, constraints) => widget.desktopMenuBuilder(
             context,
             controller,

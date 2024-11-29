@@ -2,7 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/string.dart';
+import 'package:boorusama/dart.dart';
 
 void main() {
   test('get first character should return correct value', () {
@@ -23,17 +23,5 @@ void main() {
   test('get last character should return empty if string is empty', () {
     const str = '';
     expect(str.getLastCharacter(), '');
-  });
-
-  test('replace with condition should work', () {
-    const str = 'bar';
-    expect(
-      str.replaceAtIndexWhen(
-        condition: (value) => value.getLastCharacter() == 'r',
-        indexSelector: (value) => value.length - 1,
-        newChar: 'T',
-      ),
-      'baT',
-    );
   });
 }

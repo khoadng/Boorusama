@@ -9,10 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BoorusRoutes {
@@ -60,22 +60,12 @@ class BoorusRoutes {
             final landscape = context.orientation.isLandscape;
 
             if (config == null) {
-              return landscape
-                  ? const BooruDialog(
-                      child: Scaffold(
-                        body: Center(
-                          child: Text('Booru not found or not loaded yet'),
-                        ),
-                      ),
-                    )
-                  : Scaffold(
-                      body: Center(
-                        child: Text('Booru not found or not loaded yet'),
-                      ),
-                    );
+              return const LargeScreenAwareInvalidPage(
+                message: 'Booru not found or not loaded yet',
+              );
             }
 
-            final booruBuilder = ref.readBooruBuilder(config);
+            final booruBuilder = ref.readBooruBuilder(config.auth);
 
             final page = booruBuilder?.updateConfigPageBuilder(
                   context,

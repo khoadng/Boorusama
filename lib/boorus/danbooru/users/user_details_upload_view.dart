@@ -16,7 +16,6 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'users.dart';
 
@@ -190,7 +189,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                   child: RichText(
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
-                      text: e.tag.replaceUnderscoreWithSpace(),
+                      text: e.tag.replaceAll('_', ' '),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: context.isDark

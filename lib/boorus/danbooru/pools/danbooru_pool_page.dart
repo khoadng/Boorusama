@@ -165,8 +165,8 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
     String? name,
     String? description,
   }) async {
-    final config = ref.readConfig;
-    final repo = ref.read(danbooruPoolRepoProvider(config));
+    final config = ref.readConfigSearch;
+    final repo = ref.read(danbooruPoolRepoProvider(config.auth));
     try {
       final newItems = await repo.getPools(
         pageKey,

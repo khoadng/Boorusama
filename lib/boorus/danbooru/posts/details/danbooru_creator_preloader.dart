@@ -30,7 +30,7 @@ class _DanbooruCreatorPreloaderState
   void initState() {
     super.initState();
     ref
-        .read(danbooruCreatorsProvider(ref.readConfig).notifier)
+        .read(danbooruCreatorsProvider(ref.readConfigAuth).notifier)
         .load(widget.posts.extractEmbeddedUserIds());
   }
 

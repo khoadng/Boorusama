@@ -138,7 +138,7 @@ class ExploreList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return ref.watch(blacklistTagsProvider(config)).when(
           data: (blacklistedTags) {
@@ -169,12 +169,8 @@ class ExploreList extends ConsumerWidget {
           final post = filteredPosts[index];
 
           return ExplicitContentBlockOverlay(
-            block: ref.watch(imageListingSettingsProvider
-                    .select((value) => value.blurExplicitMedia)) &&
-                post.isExplicit,
-            width: post.width,
-            height: post.height,
-            childBuilder: (block) => Padding(
+            rating: post.rating,
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: GestureDetector(
                 onTap: () => goToPostDetailsPageFromPosts(
@@ -187,9 +183,8 @@ class ExploreList extends ConsumerWidget {
                   children: [
                     BooruImage(
                       aspectRatio: post.aspectRatio,
-                      imageUrl:
-                          block ? '' : defaultPostImageUrlBuilder(ref)(post),
-                      placeholderUrl: block ? '' : post.thumbnailImageUrl,
+                      imageUrl: defaultPostImageUrlBuilder(ref)(post),
+                      placeholderUrl: post.thumbnailImageUrl,
                     ),
                     if (post.isAnimated)
                       Positioned(

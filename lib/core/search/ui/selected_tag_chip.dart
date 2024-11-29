@@ -9,7 +9,6 @@ import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tag_colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import 'selected_tag_edit_dialog.dart';
 
 class SelectedTagChip extends StatelessWidget {
@@ -104,7 +103,7 @@ class SelectedTagChip extends StatelessWidget {
               TextSpan(
                 text: isRaw
                     ? tagSearchItem.tag
-                    : tagSearchItem.tag.replaceUnderscoreWithSpace(),
+                    : tagSearchItem.tag.replaceAll('_', ' '),
                 style: TextStyle(
                   color: context.colorScheme.onSecondaryContainer,
                 ),

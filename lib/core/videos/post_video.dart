@@ -128,7 +128,6 @@ class _BooruVideoState extends State<BooruVideo> {
               ? Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Flexible(
                       child: BooruImage(

@@ -1,19 +1,21 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -47,9 +49,11 @@ class BooruImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
 
     return BooruRawImage(
+      dio: dio,
       imageUrl: imageUrl,
       placeholderUrl: placeholderUrl,
       borderRadius: borderRadius,
@@ -62,7 +66,7 @@ class BooruImage extends ConsumerWidget {
       height: height,
       headers: {
         AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config)).generate(),
+            ref.watch(userAgentProvider(config.booruType)),
         ...ref.watch(extraHttpHeaderProvider(config)),
       },
     );
@@ -72,6 +76,7 @@ class BooruImage extends ConsumerWidget {
 class BooruRawImage extends StatelessWidget {
   const BooruRawImage({
     super.key,
+    required this.dio,
     required this.imageUrl,
     this.placeholderUrl,
     this.borderRadius,
@@ -85,6 +90,7 @@ class BooruRawImage extends StatelessWidget {
     this.headers = const {},
   });
 
+  final Dio dio;
   final String imageUrl;
   final String? placeholderUrl;
   final BorderRadius? borderRadius;
@@ -113,8 +119,9 @@ class BooruRawImage extends StatelessWidget {
   Widget _builderNormalImage() {
     return NullableAspectRatio(
       aspectRatio: aspectRatio,
-      child: ExtendedImage.network(
+      child: DioExtendedImage.network(
         imageUrl,
+        dio: dio,
         width: width,
         height: height,
         cacheHeight: cacheHeight,
@@ -139,8 +146,9 @@ class BooruRawImage extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: ExtendedImage.network(
+          child: DioExtendedImage.network(
             imageUrl,
+            dio: dio,
             width: width ?? double.infinity,
             height: height ?? double.infinity,
             headers: headers,
@@ -165,9 +173,10 @@ class BooruRawImage extends StatelessWidget {
               () => ImagePlaceHolder(
                 borderRadius: borderRadius ?? _defaultRadius,
               ),
-              (url) => url.isNotBlank()
-                  ? ExtendedImage.network(
+              (url) => url.isNotEmpty
+                  ? DioExtendedImage.network(
                       url,
+                      dio: dio,
                       width: width ?? double.infinity,
                       height: height ?? double.infinity,
                       cacheHeight: cacheHeight,

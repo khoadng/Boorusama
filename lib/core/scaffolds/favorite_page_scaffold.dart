@@ -12,7 +12,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/sliver_sized_box.dart';
-import 'infinite_post_list_scaffold.dart';
 
 class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
   const FavoritesPageScaffold({
@@ -29,8 +28,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: PostScope(
         fetcher: (page) => fetcher(page),
-        builder: (context, controller, errors) => InfinitePostListScaffold(
-          errors: errors,
+        builder: (context, controller) => PostGrid(
           controller: controller,
           sliverHeaders: [
             SliverAppBar(

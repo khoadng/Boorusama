@@ -7,12 +7,12 @@ import 'package:boorusama/core/configs/configs.dart';
 import '../tags.dart';
 
 final trendingTagsProvider = AsyncNotifierProvider.autoDispose
-    .family<TrendingTagNotifier, List<Search>, BooruConfig>(
+    .family<TrendingTagNotifier, List<Search>, BooruConfigAuth>(
   TrendingTagNotifier.new,
 );
 
 final popularSearchProvider =
-    Provider.family<PopularSearchRepository, BooruConfig>(
+    Provider.family<PopularSearchRepository, BooruConfigAuth>(
   (ref, config) {
     return PopularSearchRepositoryApi(
       client: ref.watch(danbooruClientProvider(config)),
