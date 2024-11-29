@@ -24,7 +24,7 @@ class E621CommentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final client = ref.watch(e621ClientProvider(config));
 
     return CommentPageScaffold(
@@ -57,7 +57,7 @@ class _CommentItem extends StatelessWidget {
   });
 
   final Comment comment;
-  final BooruConfig config;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context) {

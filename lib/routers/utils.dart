@@ -288,7 +288,7 @@ void goToAddBooruConfigPage(
 }
 
 void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
-  final builder = ref.readBooruBuilder(ref.readConfig)?.commentPageBuilder;
+  final builder = ref.read(currentBooruBuilderProvider)?.commentPageBuilder;
 
   if (builder == null) return;
 
@@ -305,7 +305,7 @@ void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
 void goToQuickSearchPage(
   BuildContext context, {
   bool ensureValidTag = false,
-  BooruConfig? initialConfig,
+  BooruConfigAuth? initialConfig,
   required WidgetRef ref,
   Widget Function(String text)? floatingActionButton,
   required void Function(String tag, bool isMultiple) onSelected,

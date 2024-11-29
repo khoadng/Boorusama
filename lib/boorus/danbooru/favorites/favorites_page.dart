@@ -21,7 +21,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: DanbooruFavoritesPageInternal(
@@ -41,17 +41,23 @@ class DanbooruFavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-
+    final config = ref.watchConfigSearch;
     final query = buildFavoriteQuery(username);
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return CustomContextMenuOverlay(
       child: PostScope(
         fetcher: (page) => postRepo.getPosts(query, page),
-        builder: (context, controller, errors) => DanbooruInfinitePostList(
-          errors: errors,
+        builder: (context, controller) => PostGrid(
           controller: controller,
+          itemBuilder:
+              (context, index, multiSelectController, scrollController) =>
+                  DefaultDanbooruImageGridItem(
+            index: index,
+            multiSelectController: multiSelectController,
+            autoScrollController: scrollController,
+            controller: controller,
+          ),
           sliverHeaders: [
             SliverAppBar(
               title: const Text('profile.favorites').tr(),

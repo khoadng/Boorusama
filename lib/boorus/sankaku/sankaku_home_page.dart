@@ -15,9 +15,10 @@ import 'package:boorusama/router.dart';
 
 class SankakuHomePage extends ConsumerWidget {
   const SankakuHomePage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final login = config.login;
 
     return HomePageScaffold(
@@ -52,7 +53,7 @@ class SankakuFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: SankakuFavoritesPageInternal(
@@ -72,7 +73,7 @@ class SankakuFavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final query = 'fav:$username';
 
     return FavoritesPageScaffold(

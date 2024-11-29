@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/explores/explore_section.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/explores/explores.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final _eroticOnProvider = StateProvider<bool>((ref) => false);
@@ -26,10 +25,12 @@ class AnimePicturesTopPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
     return ExplorePage(
       useAppBarPadding: useAppBarPadding,
       sliverOverviews: [
-        if (ref.watchConfig.passHash != null)
+        if (config.passHash != null)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -140,7 +141,7 @@ class _PopularExploreState extends ConsumerState<_DailyPopularExplore> {
   @override
   Widget build(BuildContext context) {
     final params = (
-      config: ref.watchConfig,
+      config: ref.watchConfigAuth,
       erotic: ref.watch(_eroticOnProvider),
     );
 
@@ -175,7 +176,7 @@ class _WeeklyPopularExploreState extends ConsumerState<_WeeklyPopularExplore> {
   @override
   Widget build(BuildContext context) {
     final params = (
-      config: ref.watchConfig,
+      config: ref.watchConfigAuth,
       erotic: ref.watch(_eroticOnProvider),
     );
 

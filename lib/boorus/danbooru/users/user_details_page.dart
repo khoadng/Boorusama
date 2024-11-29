@@ -59,7 +59,7 @@ final userDataProvider = FutureProvider.autoDispose
     .family<List<DanbooruReportDataPoint>, DanbooruReportDataParams>(
         (ref, params) async {
   final tag = params.tag;
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final now = DateTime.now();
 
   final selectedRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
@@ -95,7 +95,7 @@ final userCopyrightDataProvider =
     FutureProvider.family<DanbooruRelatedTag, DanbooruCopyrightDataParams>(
         (ref, params) async {
   final username = params.username;
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   return ref.watch(danbooruRelatedTagRepProvider(config)).getRelatedTag(
         'user:$username',
         order: RelatedType.frequency,
@@ -113,7 +113,7 @@ class DanbooruProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final userId = ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
           data: (user) => user?.id,
           orElse: () => null,

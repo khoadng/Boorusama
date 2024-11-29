@@ -36,7 +36,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
   void initState() {
     super.initState();
     ref
-        .read(danbooruCommentsProvider(ref.readConfig).notifier)
+        .read(danbooruCommentsProvider(ref.readConfigAuth).notifier)
         .load(widget.postId);
 
     isEditing.addListener(_onEditing);
@@ -72,7 +72,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final comments = ref.watch(danbooruCommentsProvider(config))[widget.postId];
 
     return ValueListenableBuilder(

@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -213,7 +212,6 @@ final danbooruDirectRoutes = [
           fullScreen: true,
           pageBuilder: (context, state, group) => FavoriteGroupDetailsPage(
             group: group,
-            postIds: QueueList.from(group.postIds),
           ),
         ),
       ),

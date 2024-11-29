@@ -9,12 +9,12 @@ import 'package:boorusama/clients/philomena/types/image_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
-final philomenaClientProvider = Provider.family<PhilomenaClient, BooruConfig>(
+final philomenaClientProvider =
+    Provider.family<PhilomenaClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return PhilomenaClient(
       dio: dio,
@@ -25,11 +25,11 @@ final philomenaClientProvider = Provider.family<PhilomenaClient, BooruConfig>(
 );
 
 final philomenaPostRepoProvider =
-    Provider.family<PostRepository, BooruConfig>((ref, config) {
-  final client = ref.watch(philomenaClientProvider(config));
+    Provider.family<PostRepository, BooruConfigSearch>((ref, config) {
+  final client = ref.watch(philomenaClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    tagComposer: ref.watch(tagQueryComposerProvider(config)),
+    getComposer: () => ref.read(currentTagQueryComposerProvider),
     getSettings: () async => ref.read(imageListingSettingsProvider),
     fetch: (tags, page, {limit}) async {
       final isEmpty = tags.join(' ').isEmpty;
@@ -111,7 +111,7 @@ const _kSlugReplacement = [
 ];
 
 final philomenaAutoCompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(philomenaClientProvider(config));
 
   return AutocompleteRepositoryBuilder(

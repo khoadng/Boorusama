@@ -8,7 +8,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'artists.dart';
 
 final danbooruArtistCommentaryRepoProvider =
-    Provider.family<DanbooruArtistCommentaryRepository, BooruConfig>(
+    Provider.family<DanbooruArtistCommentaryRepository, BooruConfigAuth>(
   (ref, config) {
     return DanbooruArtistCommentaryRepositoryApi(
       ref.watch(danbooruClientProvider(config)),
@@ -19,7 +19,7 @@ final danbooruArtistCommentaryRepoProvider =
 final danbooruArtistCommentaryProvider =
     FutureProvider.autoDispose.family<ArtistCommentary, int>(
   (ref, postId) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final repo = ref.watch(danbooruArtistCommentaryRepoProvider(config));
     final commentary = await repo.getCommentary(postId);
 

@@ -354,7 +354,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         SheetState.expanded => child!,
         SheetState.collapsed => const SizedBox.shrink(),
         SheetState.hidden => Offstage(
-            offstage: true,
             child: child,
           ),
       },
@@ -364,7 +363,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         child: Container(
           constraints: const BoxConstraints(maxWidth: 360),
           color: Theme.of(context).colorScheme.surface,
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               border: Border(
                 left: BorderSide(
@@ -942,7 +941,7 @@ class SheetDragline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Container(
+      child: ColoredBox(
         color: Colors.transparent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

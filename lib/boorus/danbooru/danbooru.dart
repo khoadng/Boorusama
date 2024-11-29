@@ -112,8 +112,7 @@ class DanbooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => DanbooruHomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => DanbooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -135,8 +134,7 @@ class DanbooruBuilder
       (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as DanbooruPost).toList();
 
         return PostDetailsScope<DanbooruPost>(
@@ -149,7 +147,7 @@ class DanbooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const DanbooruFavoritesPage();
+      (context) => const DanbooruFavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -275,19 +273,19 @@ class DanbooruBuilder
 
   @override
   GranularRatingFilterer? get granularRatingFilterer =>
-      (post, config) => switch (config.ratingFilter) {
+      (post, config) => switch (config.filter.ratingFilter) {
             BooruConfigRatingFilter.none => false,
             BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
             BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
             BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+              config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
                     () => false,
                     (ratings) => ratings.contains(post.rating),
                   ),
           };
 
   @override
-  HomeViewBuilder get homeViewBuilder => (context, config, controller) {
+  HomeViewBuilder get homeViewBuilder => (context, controller) {
         return UserCustomHomeBuilder(
           homePageController: controller,
           defaultView: LatestView(
@@ -447,7 +445,7 @@ extension DanbooruX on WidgetRef {
 
   void danbooruRemoveVote(int postId) {
     _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfig).notifier)
+      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
           .removeVote(postId);
 
       if (context.mounted) {
@@ -461,7 +459,8 @@ extension DanbooruX on WidgetRef {
 
   void danbooruUpvote(int postId) {
     _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
+      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
+          .upvote(postId);
 
       if (context.mounted) {
         _showSuccessSnackBar(
@@ -474,7 +473,7 @@ extension DanbooruX on WidgetRef {
 
   void danbooruDownvote(int postId) {
     _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfig).notifier)
+      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
           .downvote(postId);
 
       if (context.mounted) {
@@ -514,7 +513,7 @@ extension DanbooruX on WidgetRef {
 }
 
 void guardLogin(WidgetRef ref, void Function() action) {
-  if (!ref.readConfig.hasLoginDetails()) {
+  if (!ref.readConfigAuth.hasLoginDetails()) {
     showSimpleSnackBar(
       context: ref.context,
       content: const Text(

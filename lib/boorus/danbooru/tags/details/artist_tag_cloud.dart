@@ -19,7 +19,7 @@ const _kTagCloudTotal = 30;
 final danbooruRelatedTagCloudProvider =
     FutureProvider.autoDispose.family<List<DanbooruRelatedTagItem>, String>(
   (ref, tag) async {
-    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
+    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfigAuth));
     final relatedTag = await repo.getRelatedTag(tag);
 
     final sorted = relatedTag.tags.sorted(

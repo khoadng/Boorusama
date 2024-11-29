@@ -33,7 +33,7 @@ class DefaultBooruConfigSearchView extends ConsumerWidget {
 
     return BooruConfigSearchView(
       hasRatingFilter: hasRatingFilter,
-      config: config,
+      config: config.auth,
     );
   }
 }
@@ -48,7 +48,7 @@ class BooruConfigSearchView extends ConsumerWidget {
 
   final bool hasRatingFilter;
   final List<Widget>? extras;
-  final BooruConfig config;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -273,7 +273,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
 
     if (config == null) return const SizedBox.shrink();
 
-    final tagComposer = ref.watch(tagQueryComposerProvider(config));
+    final tagComposer = ref.watch(tagQueryComposerProvider(config.search));
 
     final rawTags = tagComposer.compose([]);
 

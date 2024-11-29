@@ -25,7 +25,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return LayoutBuilder(
       builder: (context, constraints) => Column(

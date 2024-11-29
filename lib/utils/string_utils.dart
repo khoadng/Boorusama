@@ -113,9 +113,9 @@ List<String> _groupIntoWords(String text) {
   return words;
 }
 
-final RegExp _upperAlphaRegex = RegExp(r'[A-Z]');
+final RegExp _upperAlphaRegex = RegExp('[A-Z]');
 
-const _symbolSet = {' ', '.', '/', '_', '\\', '-'};
+const _symbolSet = {' ', '.', '/', '_', r'\', '-'};
 
 String generateRandomWord(final int minLength, final int maxLength) {
   final rand = Random();

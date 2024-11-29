@@ -29,6 +29,8 @@ class BooruFactory {
     return null;
   }
 
+  Booru? getBooruFromId(int id) => boorus.firstWhereOrNull((e) => e.id == id);
+
   Booru? create({
     required BooruType type,
   }) {
@@ -49,6 +51,6 @@ class BooruFactory {
       BooruType.unknown => 0,
     };
 
-    return boorus.firstWhereOrNull((e) => e.id == id);
+    return getBooruFromId(id);
   }
 }

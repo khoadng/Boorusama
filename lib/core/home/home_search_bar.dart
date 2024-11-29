@@ -206,7 +206,7 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     return SliverHomeSearchBarInternal(
       controller: controller,

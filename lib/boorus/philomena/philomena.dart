@@ -71,8 +71,7 @@ class PhilomenaBuilder
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as PhilomenaPost).toList();
 
         return PostDetailsScope(

@@ -246,7 +246,7 @@ class SimpleInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final supportArtist = booruBuilder?.isArtistSupported ?? false;
 
     return InformationSection(

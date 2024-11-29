@@ -34,7 +34,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
   final _autoScrollController = AutoScrollController();
   final _selectedMostSearchedTag = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.readBooruBuilder(ref.readConfig),
+    builder: ref.read(currentBooruBuilderProvider),
     tagInfo: ref.read(tagInfoProvider),
   );
 
@@ -48,7 +48,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
@@ -59,10 +59,17 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
         return postRepo.getPosts(tag, page);
       },
-      builder: (context, controller, errors) => DanbooruInfinitePostList(
-        errors: errors,
+      builder: (context, controller) => PostGrid(
         controller: controller,
         scrollController: _autoScrollController,
+        itemBuilder:
+            (context, index, multiSelectController, scrollController) =>
+                DefaultDanbooruImageGridItem(
+          index: index,
+          multiSelectController: multiSelectController,
+          autoScrollController: scrollController,
+          controller: controller,
+        ),
         sliverHeaders: [
           SliverHomeSearchBar(
             selectedTagController: selectedTagController,

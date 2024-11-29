@@ -22,7 +22,6 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
@@ -38,19 +37,19 @@ String getGelbooruProfileUrl(String url) => url.endsWith('/')
     : '$url/index.php?page=account&s=options';
 
 final gelbooruClientProvider =
-    Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<GelbooruClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return GelbooruClient.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
-    passHash: booruConfig.passHash,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
+    passHash: config.passHash,
     dio: dio,
   );
 });
 
-final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
+final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(gelbooruClientProvider(config));
 
@@ -75,7 +74,7 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfig>(
 );
 
 final gelbooruAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(gelbooruClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -117,7 +116,7 @@ String _extractAutocompleteTag(AutocompleteDto dto) {
 }
 
 final gelbooruNoteRepoProvider =
-    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+    Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(gelbooruClientProvider(config));
 
   return NoteRepositoryBuilder(
@@ -177,8 +176,7 @@ class GelbooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => GelbooruHomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const GelbooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -200,8 +198,7 @@ class GelbooruBuilder
       (context, initialQuery) => GelbooruSearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as GelbooruPost).toList();
 
         return PostDetailsScope(
@@ -214,7 +211,7 @@ class GelbooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const GelbooruFavoritesPage();
+      (context) => const GelbooruFavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -300,7 +297,7 @@ class GelbooruSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     return SearchPageScaffold(
       initialQuery: initialQuery,
       fetcher: (page, controller) => ref

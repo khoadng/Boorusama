@@ -8,10 +8,11 @@ import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/functional.dart';
 import 'e621_favorites_provider.dart';
 
-class E621FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfig>
+class E621FavoritesNotifier
+    extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {
   @override
-  IMap<int, bool> build(BooruConfig arg) {
+  IMap<int, bool> build(BooruConfigAuth arg) {
     ref.watchConfig;
 
     return <int, bool>{}.lock;

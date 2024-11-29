@@ -28,9 +28,9 @@ final tagEditFilteredListProvider =
 });
 
 class DanbooruTagEditColorNotifier
-    extends FamilyNotifier<Map<String, ChipColors?>, BooruConfig> {
+    extends FamilyNotifier<Map<String, ChipColors?>, BooruConfigAuth> {
   @override
-  Map<String, ChipColors> build(BooruConfig arg) {
+  Map<String, ChipColors> build(BooruConfigAuth arg) {
     return {};
   }
 
@@ -45,27 +45,26 @@ class DanbooruTagEditColorNotifier
   }
 
   Future<void> fetchColors(Set<String> tags) async {
-    final repo = ref.read(tagRepoProvider(ref.watchConfig));
+    final repo = ref.read(tagRepoProvider(arg));
 
     final t = await repo.getTagsByName(tags, 1);
 
     await ref
         .watch(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(ref.watchConfig.booruType, t);
+        .saveTagIfNotExist(ref.watchConfigAuth.booruType, t);
 
     return _load(tags.toList());
   }
 
   Future<void> _load(List<String> tags) async {
     final colors = <String, ChipColors?>{};
-    final config = ref.watchConfig;
     final tagTypeStore = ref.read(booruTagTypeStoreProvider);
     final colorScheme = ref.read(colorSchemeProvider);
     final enableDynamicColoring = ref
         .read(settingsProvider.select((value) => value.enableDynamicColoring));
 
     for (final tag in tags) {
-      final tagType = await tagTypeStore.get(config.booruType, tag);
+      final tagType = await tagTypeStore.get(arg.booruType, tag);
 
       if (tagType == null) {
         colors[tag] = null;
@@ -95,7 +94,7 @@ class DanbooruTagEditColorNotifier
 }
 
 final danbooruTagEditColorsProvider = NotifierProvider.family<
-    DanbooruTagEditColorNotifier, Map<String, ChipColors?>, BooruConfig>(
+    DanbooruTagEditColorNotifier, Map<String, ChipColors?>, BooruConfigAuth>(
   DanbooruTagEditColorNotifier.new,
   dependencies: [
     _tagsProvider,
@@ -110,7 +109,7 @@ final danbooruTagEditColorsProvider = NotifierProvider.family<
 
 final _tagColorProvider = Provider.autoDispose.family<ChipColors?, String>(
   (ref, tag) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final colors = ref.watch(danbooruTagEditColorsProvider(config));
 
     return colors[tag];
@@ -175,7 +174,7 @@ class _SliverTagEditListViewState
     super.didChangeDependencies();
 
     ref
-        .read(danbooruTagEditColorsProvider(ref.readConfig).notifier)
+        .read(danbooruTagEditColorsProvider(ref.readConfigAuth).notifier)
         .load(ref.read(_tagsProvider).toList());
   }
 
@@ -191,7 +190,9 @@ class _SliverTagEditListViewState
     ref.listen(
       tagEditProvider.select((value) => value.toBeAdded),
       (prev, cur) {
-        ref.read(danbooruTagEditColorsProvider(ref.readConfig).notifier).load(
+        ref
+            .read(danbooruTagEditColorsProvider(ref.readConfigAuth).notifier)
+            .load(
               cur.toList(),
             );
       },
@@ -325,7 +326,7 @@ class TagEditFilterHeader extends ConsumerWidget {
   Future<void> _fetch(WidgetRef ref) async {
     final tags = ref.read(_tagsProvider);
     ref
-        .read(danbooruTagEditColorsProvider(ref.watchConfig).notifier)
+        .read(danbooruTagEditColorsProvider(ref.watchConfigAuth).notifier)
         .fetchColors(tags);
   }
 }

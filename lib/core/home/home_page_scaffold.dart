@@ -45,14 +45,14 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final layout = ref.watchLayoutConfigs;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final customHome = booruBuilder?.homeViewBuilder;
-    final viewKey = config.layout?.home;
+    final viewKey = layout?.home;
 
     final views = [
       if (customHome != null)
-        customHome(context, config, controller)
+        customHome(context, controller)
       else
         const Scaffold(
           body: Center(child: Text('No home view builder found')),
@@ -62,7 +62,6 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
     return BooruScope(
       controller: controller,
-      config: config,
       mobileMenu: widget.mobileMenu ?? [],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(

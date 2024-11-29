@@ -18,7 +18,7 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final notifier =
         ref.watch(danbooruBlacklistedTagsProvider(config).notifier);
 

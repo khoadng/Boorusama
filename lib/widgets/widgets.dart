@@ -21,7 +21,6 @@ export 'dotted_border.dart';
 export 'drag_line.dart';
 export 'editable_mixin.dart';
 export 'embedded_webview_webm.dart';
-export 'explicit_block_overlay.dart';
 export 'fade_page_route.dart';
 export 'faster_ink_splash.dart';
 export 'filterable_scope.dart';

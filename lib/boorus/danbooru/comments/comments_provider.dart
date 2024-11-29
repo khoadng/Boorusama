@@ -11,7 +11,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 
 final danbooruCommentRepoProvider =
-    Provider.family<CommentRepository<DanbooruComment>, BooruConfig>(
+    Provider.family<CommentRepository<DanbooruComment>, BooruConfigAuth>(
         (ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
@@ -35,7 +35,7 @@ final danbooruCommentRepoProvider =
 });
 
 final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
-    Map<int, List<CommentData>?>, BooruConfig>(
+    Map<int, List<CommentData>?>, BooruConfigAuth>(
   CommentsNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -44,13 +44,13 @@ final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
 
 final danbooruCommentProvider =
     Provider.autoDispose.family<List<CommentData>?, int>((ref, postId) {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   return ref.watch(danbooruCommentsProvider(config))[postId];
 });
 
 final danbooruCommentCountProvider =
     FutureProvider.autoDispose.family<int, int>((ref, postId) {
-  final client = ref.watch(danbooruClientProvider(ref.watchConfig));
+  final client = ref.watch(danbooruClientProvider(ref.watchConfigAuth));
 
   return client.getCommentCount(postId: postId);
 });

@@ -15,7 +15,6 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
 import 'favorites/favorites.dart';
@@ -25,19 +24,19 @@ import 'posts/posts.dart';
 import 'tags/tags.dart';
 
 final e621ClientProvider =
-    Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<E621Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return E621Client(
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     dio: dio,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    login: config.login,
+    apiKey: config.apiKey,
   );
 });
 
 final e621AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(e621ClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -139,8 +138,7 @@ class E621Builder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => E621HomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const E621HomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -162,8 +160,7 @@ class E621Builder
       (context, initialQuery) => E621SearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as E621Post).toList();
 
         return PostDetailsScope(
@@ -176,7 +173,7 @@ class E621Builder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const E621FavoritesPage();
+      (context) => const E621FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>

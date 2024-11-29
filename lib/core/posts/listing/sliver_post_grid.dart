@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -16,30 +17,21 @@ import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-typedef PostWidgetBuilder<T extends Post> = Widget Function(
-  BuildContext context,
-  int index,
-  T post,
-);
 
 class SliverPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPostGrid({
     super.key,
     required this.constraints,
     required this.itemBuilder,
-    required this.error,
-    required this.multiSelectController,
     required this.postController,
   });
 
   final BoxConstraints? constraints;
-  final PostWidgetBuilder<T> itemBuilder;
-  final BooruError? error;
-  final MultiSelectController<T>? multiSelectController;
+  final IndexedWidgetBuilder itemBuilder;
   final PostGridController<T> postController;
 
   @override
@@ -58,8 +50,6 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
     return SliverRawPostGrid(
       constraints: constraints,
       itemBuilder: itemBuilder,
-      error: error,
-      multiSelectController: multiSelectController,
       postController: postController,
       padding: EdgeInsets.symmetric(
         horizontal: imageGridPadding,
@@ -72,13 +62,10 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   }
 }
 
-class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
+class SliverRawPostGrid<T extends Post> extends StatelessWidget {
   const SliverRawPostGrid({
     super.key,
     required this.constraints,
-    required this.itemBuilder,
-    required this.error,
-    required this.multiSelectController,
     required this.postController,
     this.padding,
     this.listType,
@@ -86,12 +73,10 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
     this.spacing,
     this.aspectRatio,
     this.borderRadius,
+    required this.itemBuilder,
   });
 
   final BoxConstraints? constraints;
-  final PostWidgetBuilder<T> itemBuilder;
-  final BooruError? error;
-  final MultiSelectController<T>? multiSelectController;
   final PostGridController<T> postController;
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
@@ -100,17 +85,20 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
   final double? aspectRatio;
   final BorderRadius? borderRadius;
 
+  final IndexedWidgetBuilder itemBuilder;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return SliverPadding(
       padding: padding ?? EdgeInsets.zero,
-      sliver: Builder(
-        builder: (context) {
+      sliver: ValueListenableBuilder(
+        valueListenable: postController.errors,
+        builder: (_, error, __) {
           if (error != null) {
-            final message = translateBooruError(error!);
+            final message = translateBooruError(error);
 
             return SliverToBoxAdapter(
-              child: switch (error!) {
+              child: switch (error) {
                 AppError _ => ErrorBox(
                     errorMessage: message.tr(),
                     onRetry: _onErrorRetry,
@@ -169,7 +157,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
                       aspectRatio: aspectRatio,
                       borderRadius: borderRadius,
                     )
-                  : _buildGrid(ref, context);
+                  : _buildGrid(context);
             },
           );
         },
@@ -179,7 +167,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
 
   void _onErrorRetry() => postController.refresh();
 
-  Widget _buildGrid(WidgetRef ref, BuildContext context) {
+  Widget _buildGrid(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: postController.itemsNotifier,
       builder: (_, data, __) {
@@ -199,7 +187,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
                       crossAxisSpacing: spacing ?? 4,
                     ),
                     delegate: SliverChildBuilderDelegate(
-                      (context, index) => buildItem(context, index, data),
+                      itemBuilder,
                       childCount: data.length,
                     ),
                   ),
@@ -208,8 +196,7 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
                     mainAxisSpacing: spacing ?? 4,
                     crossAxisSpacing: spacing ?? 4,
                     childCount: data.length,
-                    itemBuilder: (context, index) =>
-                        buildItem(context, index, data),
+                    itemBuilder: itemBuilder,
                   ),
               }
             : const SliverToBoxAdapter(
@@ -219,31 +206,6 @@ class SliverRawPostGrid<T extends Post> extends ConsumerWidget {
                 ),
               );
       },
-    );
-  }
-
-  Widget buildItem(context, index, List<T> data) {
-    final controller = multiSelectController;
-    final post = data[index];
-
-    if (controller == null) {
-      return itemBuilder(context, index, post);
-    }
-
-    return ValueListenableBuilder(
-      valueListenable: controller.multiSelectNotifier,
-      builder: (_, multiSelect, __) => multiSelect
-          ? ValueListenableBuilder(
-              valueListenable: controller.selectedItemsNotifier,
-              builder: (_, selectedItems, __) => SelectableItem(
-                index: index,
-                isSelected: selectedItems.contains(post),
-                onTap: () => controller.toggleSelection(post),
-                itemBuilder: (context, isSelected) =>
-                    itemBuilder(context, index, post),
-              ),
-            )
-          : itemBuilder(context, index, post),
     );
   }
 }
@@ -313,6 +275,112 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
             )
         };
       },
+    );
+  }
+}
+
+class BlockOverlayItem {
+  const BlockOverlayItem({
+    this.onTap,
+    required this.overlay,
+  });
+
+  final VoidCallback? onTap;
+  final Widget overlay;
+}
+
+class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
+  const SliverPostGridImageGridItem({
+    super.key,
+    required this.post,
+    required this.hideOverlay,
+    required this.quickActionButton,
+    required this.autoScrollOptions,
+    required this.onTap,
+    required this.image,
+    required this.score,
+    this.blockOverlay,
+  });
+
+  final T post;
+  final bool hideOverlay;
+  final Widget? quickActionButton;
+  final AutoScrollOptions? autoScrollOptions;
+  final VoidCallback? onTap;
+  final Widget image;
+  final int? score;
+  final BlockOverlayItem? blockOverlay;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final imageBorderRadius = ref.watch(imageListingSettingsProvider
+        .select((value) => value.imageBorderRadius));
+    final showScoresInGrid = ref.watch(
+        imageListingSettingsProvider.select((value) => value.showScoresInGrid));
+
+    final overlay = blockOverlay;
+
+    return Stack(
+      children: [
+        ImageGridItem(
+          borderRadius: BorderRadius.circular(imageBorderRadius),
+          isGif: post.isGif,
+          isAI: post.isAI,
+          hideOverlay: hideOverlay,
+          quickActionButton: quickActionButton,
+          autoScrollOptions: autoScrollOptions,
+          onTap: onTap,
+          image: image,
+          isAnimated: post.isAnimated,
+          isTranslated: post.isTranslated,
+          hasComments: post.hasComment,
+          hasParentOrChildren: post.hasParentOrChildren,
+          hasSound: post.hasSound,
+          duration: post.duration,
+          score: showScoresInGrid ? score : null,
+        ),
+        if (overlay != null) ...[
+          Positioned.fill(
+            child: InkWell(
+              highlightColor: Colors.transparent,
+              splashFactory: FasterInkSplash.splashFactory,
+              splashColor: Colors.black38,
+              onTap: blockOverlay?.onTap,
+            ),
+          ),
+          Positioned.fill(
+            child: Center(
+              child: overlay.overlay,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class DefaultPostListContextMenuRegion extends StatelessWidget {
+  const DefaultPostListContextMenuRegion({
+    super.key,
+    this.isEnabled = true,
+    required this.gestures,
+    required this.contextMenu,
+    required this.child,
+  });
+
+  final GestureConfig? gestures;
+  final bool isEnabled;
+  final Widget contextMenu;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (gestures.canLongPress) return child;
+
+    return ContextMenuRegion(
+      isEnabled: isEnabled,
+      contextMenu: contextMenu,
+      child: child,
     );
   }
 }

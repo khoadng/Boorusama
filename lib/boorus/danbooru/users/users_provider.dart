@@ -11,11 +11,10 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruUserRepoProvider =
-    Provider.family<UserRepository, BooruConfig>((ref, config) {
+    Provider.family<UserRepository, BooruConfigAuth>((ref, config) {
   return UserRepositoryApi(
     ref.watch(danbooruClientProvider(config)),
     ref.watch(tagInfoProvider).defaultBlacklistedTags,
@@ -25,7 +24,7 @@ final danbooruUserRepoProvider =
 const _kCurrentUserIdKey = '_current_uid';
 
 final danbooruCurrentUserProvider =
-    FutureProvider.family<UserSelf?, BooruConfig>((ref, config) async {
+    FutureProvider.family<UserSelf?, BooruConfigAuth>((ref, config) async {
   if (!config.hasLoginDetails()) return null;
 
   // First, we try to get the user id from the cache
@@ -37,7 +36,7 @@ final danbooruCurrentUserProvider =
 
   // If the cached id is null, we need to fetch it from the api
   if (id == null) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     final data = await DanbooruClient(
             dio: dio,
@@ -81,7 +80,7 @@ final danbooruUserUploadsProvider =
   final name = params.username;
 
   if (uploadCount == 0) return [];
-  final config = ref.watchConfig;
+  final config = ref.watchConfigSearch;
 
   final repo = ref.watch(danbooruPostRepoProvider(config));
   final uploads = await repo.getPostsFromTagsOrEmpty(
@@ -94,7 +93,7 @@ final danbooruUserUploadsProvider =
 
 final danbooruUserFavoritesProvider = FutureProvider.autoDispose
     .family<List<DanbooruPost>, int>((ref, uid) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigSearch;
   final user = await ref.watch(danbooruUserProvider(uid).future);
   final repo = ref.watch(danbooruPostRepoProvider(config));
   final favs = await repo.getPostsFromTagsOrEmpty(
@@ -110,7 +109,7 @@ final danbooruCreatorHiveBoxProvider = Provider<Box>((ref) {
 });
 
 final danbooruCreatorRepoProvider =
-    Provider.family<CreatorRepository, BooruConfig>(
+    Provider.family<CreatorRepository, BooruConfigAuth>(
   (ref, config) {
     return CreatorRepositoryFromUserRepo(
       ref.watch(danbooruUserRepoProvider(config)),
@@ -122,12 +121,11 @@ final danbooruCreatorRepoProvider =
   ],
 );
 
-final danbooruCreatorsProvider =
-    NotifierProvider.family<CreatorsNotifier, IMap<int, Creator>, BooruConfig>(
-        CreatorsNotifier.new);
+final danbooruCreatorsProvider = NotifierProvider.family<CreatorsNotifier,
+    IMap<int, Creator>, BooruConfigAuth>(CreatorsNotifier.new);
 
 final danbooruCreatorProvider = Provider.family<Creator?, int?>((ref, id) {
   if (id == null) return null;
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   return ref.watch(danbooruCreatorsProvider(config))[id];
 });

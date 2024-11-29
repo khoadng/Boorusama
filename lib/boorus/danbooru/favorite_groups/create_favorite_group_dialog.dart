@@ -60,7 +60,7 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return BooruDialog(
       color: context.colorScheme.surfaceContainer,
@@ -218,7 +218,7 @@ class PrivacyToggle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.readConfig;
+    final config = ref.watchConfigAuth;
     final currentUser = ref.watch(danbooruCurrentUserProvider(config));
 
     return BooruAnimatedCrossFade(

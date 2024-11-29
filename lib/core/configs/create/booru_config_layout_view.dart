@@ -59,7 +59,7 @@ class _CustomDetailsSection extends ConsumerWidget {
                 .select((value) => value.layoutTyped)) ??
         LayoutConfigs.undefined();
 
-    final uiBuilder = ref.watchBooruBuilder(config)?.postDetailsUIBuilder;
+    final uiBuilder = ref.watchBooruBuilder(config.auth)?.postDetailsUIBuilder;
     final details = layout.details ??
         convertDetailsParts(uiBuilder?.full.keys.toList() ?? []);
 
@@ -174,7 +174,7 @@ class _HomeScreenSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watchBooruBuilder(config.auth);
     final layout = ref.watch(
             editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
                 .select((value) => value.layoutTyped)) ??

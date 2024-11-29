@@ -33,10 +33,9 @@ class SimplePostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfig;
     final commentPageBuilder =
-        ref.watchBooruBuilder(booruConfig)?.commentPageBuilder;
-    final booruBuilder = ref.watch(booruBuilderProvider);
+        ref.watch(currentBooruBuilderProvider)?.commentPageBuilder;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     return PostActionToolbar(
       children: [
@@ -91,7 +90,7 @@ class DefaultPostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final isFaved = ref.watch(favoriteProvider(post.id));
     final favoriteAdder = ref.watch(addFavoriteProvider);
     final favoriteRemover = ref.watch(removeFavoriteProvider);

@@ -65,7 +65,7 @@ class BoorusRoutes {
               );
             }
 
-            final booruBuilder = ref.readBooruBuilder(config);
+            final booruBuilder = ref.readBooruBuilder(config.auth);
 
             final page = booruBuilder?.updateConfigPageBuilder(
                   context,

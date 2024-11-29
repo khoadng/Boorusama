@@ -11,7 +11,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -19,59 +22,45 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/filesize.dart';
+import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/keyboard.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
-typedef ItemWidgetBuilder<T> = Widget Function(
-    BuildContext context, List<T> items, int index);
+typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
+  BuildContext context,
+  int index,
+  MultiSelectController<T> multiSelectController,
+  AutoScrollController autoScrollController,
+);
 
 class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   const PostGrid({
     super.key,
-    this.onLoadMore,
-    this.onRefresh,
     this.sliverHeaders,
     this.scrollController,
-    this.extendBody = false,
-    this.extendBodyHeight,
-    this.footer,
-    this.header,
     this.blacklistedIdString,
-    required this.body,
     this.multiSelectController,
     required this.controller,
-    this.refreshAtStart = true,
-    this.enablePullToRefresh = true,
     this.safeArea = true,
+    this.itemBuilder,
+    this.body,
   });
 
-  final VoidCallback? onLoadMore;
-  final void Function()? onRefresh;
   final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
-
-  final bool extendBody;
-  final double? extendBodyHeight;
-
-  final bool refreshAtStart;
-  final bool enablePullToRefresh;
   final bool safeArea;
-
-  final Widget? footer;
-  final Widget? header;
-  final Widget body;
-
   final String? blacklistedIdString;
-
   final MultiSelectController<T>? multiSelectController;
-
   final PostGridController<T> controller;
+  final IndexedSelectableWidgetBuilder<T>? itemBuilder;
+  final Widget? body;
 
   @override
   ConsumerState<PostGrid<T>> createState() => _PostGridState();
@@ -79,29 +68,71 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
   final expanded = ValueNotifier<bool?>(null);
+  late final AutoScrollController _autoScrollController;
+  late final _multiSelectController =
+      widget.multiSelectController ?? MultiSelectController<T>();
+
+  @override
+  void initState() {
+    super.initState();
+    _autoScrollController = widget.scrollController ?? AutoScrollController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.multiSelectController == null) {
+      _multiSelectController.dispose();
+    }
+
+    if (widget.scrollController == null) {
+      _autoScrollController.dispose();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(imageListingSettingsProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
-    return RawPostGrid<T>(
-      onLoadMore: widget.onLoadMore,
-      onRefresh: widget.onRefresh,
-      sliverHeaders: widget.sliverHeaders,
-      scrollController: widget.scrollController,
-      extendBody: widget.extendBody,
-      extendBodyHeight: widget.extendBodyHeight,
-      footer: widget.footer,
-      header: widget.header,
-      blacklistedIdString: widget.blacklistedIdString,
-      body: widget.body,
-      multiSelectController: widget.multiSelectController,
-      controller: widget.controller,
-      refreshAtStart: widget.refreshAtStart,
-      enablePullToRefresh: widget.enablePullToRefresh,
-      safeArea: widget.safeArea,
-      gridHeader: _buildConfigHeader(ref, Axis.horizontal),
-      settings: settings,
+    final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
+      context,
+      _multiSelectController,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) => RawPostGrid(
+        sliverHeaders: [
+          ...widget.sliverHeaders ?? [],
+          const SliverMasonryGridWarning(),
+        ],
+        scrollController: _autoScrollController,
+        footer: multiSelectActions,
+        blacklistedIdString: widget.blacklistedIdString,
+        multiSelectController: _multiSelectController,
+        controller: widget.controller,
+        safeArea: widget.safeArea,
+        gridHeader: _buildConfigHeader(ref, Axis.horizontal),
+        settings: settings,
+        body: widget.body ??
+            SliverPostGrid(
+              postController: widget.controller,
+              constraints: constraints,
+              itemBuilder: (context, index) =>
+                  widget.itemBuilder?.call(
+                    context,
+                    index,
+                    _multiSelectController,
+                    _autoScrollController,
+                  ) ??
+                  DefaultImageGridItem(
+                    index: index,
+                    multiSelectController: _multiSelectController,
+                    autoScrollController: _autoScrollController,
+                    controller: widget.controller,
+                  ),
+            ),
+      ),
     );
   }
 
@@ -195,6 +226,33 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
 
   void _disableAll() {
     widget.controller.disableAllTags();
+  }
+}
+
+class SliverMasonryGridWarning extends ConsumerWidget {
+  const SliverMasonryGridWarning({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final type = ref.watch(
+        imageListingSettingsProvider.select((value) => value.imageListType));
+    final booruType = ref.watchConfigAuth.booruType;
+
+    return type == ImageListType.masonry && booruType.masonryLayoutUnsupported
+        ? SliverToBoxAdapter(
+            child: WarningContainer(
+              title: 'Layout',
+              contentBuilder: (context) => Text(
+                'Consider switching to the "Standard" layout. "Masonry" is very jumpy for this booru.',
+                style: TextStyle(
+                  color: context.colorScheme.onSurface,
+                ),
+              ),
+            ),
+          )
+        : const SliverSizedBox.shrink();
   }
 }
 
@@ -749,5 +807,164 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
           loading: () => const SizedBox.shrink(),
           error: (e, _) => const SizedBox.shrink(),
         );
+  }
+}
+
+class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
+  const DefaultImageGridItem({
+    super.key,
+    required this.index,
+    required this.multiSelectController,
+    required this.autoScrollController,
+    required this.controller,
+  });
+
+  final int index;
+  final MultiSelectController<T> multiSelectController;
+  final AutoScrollController autoScrollController;
+  final PostGridController<T> controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(imageListingSettingsProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final gestures = ref.watchPostGestures?.preview;
+    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
+
+    return ValueListenableBuilder(
+      valueListenable: multiSelectController.multiSelectNotifier,
+      builder: (_, multiSelect, __) => ValueListenableBuilder(
+        valueListenable: controller.itemsNotifier,
+        builder: (_, posts, __) {
+          final post = posts[index];
+
+          return DefaultPostListContextMenuRegion(
+            isEnabled: !multiSelect,
+            contextMenu: GeneralPostContextMenu(
+              hasAccount: ref.watchConfigAuth.hasLoginDetails(),
+              onMultiSelect: () {
+                multiSelectController.enableMultiSelect();
+              },
+              post: post,
+            ),
+            gestures: gestures,
+            child: ExplicitContentBlockOverlay(
+              rating: post.rating,
+              child: Builder(
+                builder: (context) {
+                  final item = GestureDetector(
+                    onLongPress:
+                        gestures.canLongPress && postGesturesHandler != null
+                            ? () => postGesturesHandler(
+                                  ref,
+                                  gestures?.longPress,
+                                  post,
+                                )
+                            : null,
+                    child: SliverPostGridImageGridItem(
+                      post: post,
+                      hideOverlay: multiSelect,
+                      onTap: !multiSelect
+                          ? () {
+                              if (gestures.canTap &&
+                                  postGesturesHandler != null) {
+                                postGesturesHandler(
+                                  ref,
+                                  gestures?.tap,
+                                  post,
+                                );
+                              } else {
+                                goToPostDetailsPageFromController(
+                                  context: context,
+                                  controller: controller,
+                                  initialIndex: index,
+                                  scrollController: autoScrollController,
+                                );
+                              }
+                            }
+                          : null,
+                      quickActionButton: !multiSelect
+                          ? DefaultImagePreviewQuickActionButton(post: post)
+                          : null,
+                      autoScrollOptions: AutoScrollOptions(
+                        controller: autoScrollController,
+                        index: index,
+                      ),
+                      score: post.score,
+                      image: BooruImage(
+                        aspectRatio: post.aspectRatio,
+                        imageUrl: gridThumbnailUrlBuilder != null
+                            ? gridThumbnailUrlBuilder(
+                                settings.imageQuality,
+                                post,
+                              )
+                            : post.thumbnailImageUrl,
+                        borderRadius: BorderRadius.circular(
+                          settings.imageBorderRadius,
+                        ),
+                        forceFill:
+                            settings.imageListType == ImageListType.standard,
+                        placeholderUrl: post.thumbnailImageUrl,
+                      ),
+                    ),
+                  );
+
+                  return multiSelect
+                      ? ValueListenableBuilder(
+                          valueListenable:
+                              multiSelectController.selectedItemsNotifier,
+                          builder: (_, selectedItems, __) => SelectableItem(
+                            index: index,
+                            isSelected: selectedItems.contains(post),
+                            onTap: () =>
+                                multiSelectController.toggleSelection(post),
+                            itemBuilder: (context, isSelected) => item,
+                          ),
+                        )
+                      : item;
+                },
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class SinglePagePostListScaffold<T extends Post>
+    extends ConsumerStatefulWidget {
+  const SinglePagePostListScaffold({
+    super.key,
+    required this.posts,
+    this.sliverHeaders,
+  });
+
+  final List<T> posts;
+  final List<Widget>? sliverHeaders;
+
+  @override
+  ConsumerState<SinglePagePostListScaffold<T>> createState() =>
+      _SinglePagePostListScaffoldState<T>();
+}
+
+class _SinglePagePostListScaffoldState<T extends Post>
+    extends ConsumerState<SinglePagePostListScaffold<T>> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) => TaskEither.Do(
+          ($) async => page == 1 ? widget.posts.toResult() : <T>[].toResult(),
+        ),
+        builder: (context, controller) => PostGrid(
+          controller: controller,
+          sliverHeaders: [
+            if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
+          ],
+        ),
+      ),
+    );
   }
 }

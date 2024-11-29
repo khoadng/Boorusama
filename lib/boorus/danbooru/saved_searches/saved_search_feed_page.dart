@@ -46,7 +46,7 @@ class _SavedSearchFeedPageState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return CustomContextMenuOverlay(
       child: ref.watch(danbooruSavedSearchesProvider(config)).when(
@@ -66,15 +66,22 @@ class _SavedSearchFeedPageState
   }
 
   Widget _buildContent(List<SavedSearch> searches) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return PostScope(
       fetcher: (page) => ref
           .read(danbooruPostRepoProvider(config))
           .getPosts(_selectedSearch.toQuery(), page),
-      builder: (context, controller, errors) => DanbooruInfinitePostList(
-        errors: errors,
+      builder: (context, controller) => PostGrid(
         controller: controller,
+        itemBuilder:
+            (context, index, multiSelectController, scrollController) =>
+                DefaultDanbooruImageGridItem(
+          index: index,
+          multiSelectController: multiSelectController,
+          autoScrollController: scrollController,
+          controller: controller,
+        ),
         sliverHeaders: [
           SliverAppBar(
             title: const Text('saved_search.saved_search_feed').tr(),

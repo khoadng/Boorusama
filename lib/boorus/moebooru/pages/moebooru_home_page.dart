@@ -19,10 +19,7 @@ import 'moebooru_popular_recent_page.dart';
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<MoebooruHomePage> createState() => _MoebooruHomePageState();
@@ -31,6 +28,8 @@ class MoebooruHomePage extends ConsumerStatefulWidget {
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
+
     return HomePageScaffold(
       mobileMenu: [
         SideMenuTile(
@@ -71,7 +70,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             ),
           ),
         ),
-        if (widget.config.hasLoginDetails()) ...[
+        if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,

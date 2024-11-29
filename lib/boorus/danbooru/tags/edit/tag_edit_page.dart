@@ -46,7 +46,7 @@ class TagEditPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final tags = ref.watch(danbooruTagListProvider(config));
     final initialRating =
         tags.containsKey(post.id) ? tags[post.id]!.rating : post.rating;
@@ -100,7 +100,7 @@ class TagEditSubmitButton extends ConsumerWidget {
               rating != initialRating)
           ? () {
               ref
-                  .read(danbooruTagListProvider(ref.readConfig).notifier)
+                  .read(danbooruTagListProvider(ref.readConfigAuth).notifier)
                   .setTags(
                     postId,
                     addedTags: addedTags.toList(),
@@ -234,8 +234,6 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
-
     final expandMode =
         ref.watch(tagEditProvider.select((value) => value.expandMode));
 
@@ -307,7 +305,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
                 ? Column(
                     children: [
                       Expanded(
-                        child: _buildSplit(context, config),
+                        child: _buildSplit(),
                       ),
                       TagEditExpandContent(
                         viewController: viewController,
@@ -353,7 +351,7 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
     );
   }
 
-  Widget _buildSplit(BuildContext context, BooruConfig config) {
+  Widget _buildSplit() {
     return Theme(
       data: context.theme.copyWith(
         focusColor: context.colorScheme.primary,

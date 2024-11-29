@@ -8,7 +8,7 @@ import 'package:boorusama/core/configs/providers.dart';
 class UserNotifier extends AutoDisposeFamilyAsyncNotifier<DanbooruUser, int> {
   @override
   Future<DanbooruUser> build(int arg) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final user =
         await ref.watch(danbooruUserRepoProvider(config)).getUserById(arg);
     return user;
