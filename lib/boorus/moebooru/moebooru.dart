@@ -27,13 +27,13 @@ import 'pages/widgets/moebooru_information_section.dart';
 import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
-    Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = ref.watch(dioProvider(booruConfig));
+    Provider.family<MoebooruClient, BooruConfig>((ref, config) {
+  final dio = ref.watch(dioProvider(config.auth));
 
   return MoebooruClient.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
     dio: dio,
   );
 });

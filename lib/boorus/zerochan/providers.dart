@@ -14,7 +14,7 @@ import 'zerochan_post.dart';
 
 final zerochanClientProvider =
     Provider.family<ZerochanClient, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config));
+  final dio = ref.watch(dioProvider(config.auth));
   final logger = ref.watch(loggerProvider);
 
   return ZerochanClient(

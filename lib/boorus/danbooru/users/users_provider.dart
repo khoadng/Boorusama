@@ -36,7 +36,7 @@ final danbooruCurrentUserProvider =
 
   // If the cached id is null, we need to fetch it from the api
   if (id == null) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     final data = await DanbooruClient(
             dio: dio,

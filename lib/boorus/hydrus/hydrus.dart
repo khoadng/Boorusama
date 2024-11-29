@@ -64,7 +64,7 @@ class HydrusPost extends SimplePost {
 
 final hydrusClientProvider =
     Provider.family<HydrusClient, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config));
+  final dio = ref.watch(dioProvider(config.auth));
 
   return HydrusClient(
     dio: dio,

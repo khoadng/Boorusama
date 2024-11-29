@@ -10,7 +10,7 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart';
 
-class BooruConfig extends Equatable {
+class BooruConfig extends Equatable with BooruConfigAuthMixin {
   const BooruConfig({
     required this.id,
     required this.booruId,
@@ -132,10 +132,14 @@ class BooruConfig extends Equatable {
       );
 
   final int id;
+  @override
   final int booruId;
+  @override
   final int booruIdHint;
   final String url;
+  @override
   final String? apiKey;
+  @override
   final String? login;
   final String? passHash;
   final String name;
@@ -239,6 +243,49 @@ class BooruConfig extends Equatable {
   }
 }
 
+class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
+  const BooruConfigAuth({
+    required this.booruId,
+    required this.booruIdHint,
+    required this.url,
+    required this.apiKey,
+    required this.login,
+    required this.passHash,
+  });
+
+  factory BooruConfigAuth.fromConfig(BooruConfig config) {
+    return BooruConfigAuth(
+      booruId: config.booruId,
+      booruIdHint: config.booruIdHint,
+      url: config.url,
+      apiKey: config.apiKey,
+      login: config.login,
+      passHash: config.passHash,
+    );
+  }
+
+  @override
+  final int booruId;
+  @override
+  final int booruIdHint;
+  final String url;
+  @override
+  final String? apiKey;
+  @override
+  final String? login;
+  final String? passHash;
+
+  @override
+  List<Object?> get props => [
+        booruId,
+        booruIdHint,
+        url,
+        apiKey,
+        login,
+        passHash,
+      ];
+}
+
 Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
   if (granularRatingFilterString == null) return null;
 
@@ -288,25 +335,32 @@ extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
 }
 
 extension BooruConfigNullX on BooruConfig? {
+  bool get hideBannedPosts =>
+      this?.bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
+}
+
+mixin BooruConfigAuthMixin {
+  int? get booruIdHint;
+  int get booruId;
+
+  String? get login;
+  String? get apiKey;
+
+  BooruType get booruType => intToBooruType(booruIdHint);
+
+  bool isUnverified() => booruId != booruIdHint;
+
   bool hasLoginDetails() {
-    if (this == null) return false;
-    if (this!.login == null || this!.apiKey == null) return false;
-    if (this!.login!.isEmpty && this!.apiKey!.isEmpty) return false;
+    if (login == null || apiKey == null) return false;
+    if (login!.isEmpty && apiKey!.isEmpty) return false;
 
     return true;
   }
-
-  bool get hideBannedPosts =>
-      this?.bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
 }
 
 extension BooruConfigX on BooruConfig {
   Booru? createBooruFrom(BooruFactory factory) =>
       factory.create(type: intToBooruType(booruId));
-
-  BooruType get booruType => intToBooruType(booruIdHint);
-
-  bool isUnverified() => booruId != booruIdHint;
 
   bool isDefault() => id == -1;
 
@@ -327,6 +381,8 @@ extension BooruConfigX on BooruConfig {
         '' => ImageQuickActionType.none,
         _ => ImageQuickActionType.defaultAction,
       };
+
+  BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
 }
 
 enum ImageQuickActionType {

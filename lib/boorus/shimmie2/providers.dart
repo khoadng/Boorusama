@@ -11,7 +11,7 @@ import 'package:boorusama/foundation/path.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfig>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     return Shimmie2Client(
       dio: dio,

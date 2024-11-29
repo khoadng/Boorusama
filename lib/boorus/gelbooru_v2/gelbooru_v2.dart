@@ -29,13 +29,13 @@ const kGelbooruV2CustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
 
 final gelbooruV2ClientProvider =
-    Provider.family<GelbooruV2Client, BooruConfig>((ref, booruConfig) {
-  final dio = ref.watch(dioProvider(booruConfig));
+    Provider.family<GelbooruV2Client, BooruConfig>((ref, config) {
+  final dio = ref.watch(dioProvider(config.auth));
 
   return GelbooruV2Client.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
     dio: dio,
   );
 });

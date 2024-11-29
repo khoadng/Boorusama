@@ -36,14 +36,14 @@ String getGelbooruProfileUrl(String url) => url.endsWith('/')
     : '$url/index.php?page=account&s=options';
 
 final gelbooruClientProvider =
-    Provider.family<GelbooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = ref.watch(dioProvider(booruConfig));
+    Provider.family<GelbooruClient, BooruConfig>((ref, config) {
+  final dio = ref.watch(dioProvider(config.auth));
 
   return GelbooruClient.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
-    passHash: booruConfig.passHash,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
+    passHash: config.passHash,
     dio: dio,
   );
 });

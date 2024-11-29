@@ -18,7 +18,7 @@ import 'szurubooru_post.dart';
 
 final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     return SzurubooruClient(
       dio: dio,

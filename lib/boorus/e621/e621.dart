@@ -22,14 +22,14 @@ import 'posts/posts.dart';
 import 'tags/tags.dart';
 
 final e621ClientProvider =
-    Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
-  final dio = ref.watch(dioProvider(booruConfig));
+    Provider.family<E621Client, BooruConfig>((ref, config) {
+  final dio = ref.watch(dioProvider(config.auth));
 
   return E621Client(
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     dio: dio,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    login: config.login,
+    apiKey: config.apiKey,
   );
 });
 

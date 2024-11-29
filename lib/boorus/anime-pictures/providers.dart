@@ -15,7 +15,7 @@ import 'anime_pictures.dart';
 final animePicturesClientProvider =
     Provider.family<AnimePicturesClient, BooruConfig>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     return AnimePicturesClient(
       dio: dio,

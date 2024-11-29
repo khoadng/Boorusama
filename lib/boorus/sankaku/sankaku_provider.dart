@@ -2,7 +2,7 @@ part of 'sankaku.dart';
 
 final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
     final booruFactory = ref.watch(booruFactoryProvider);
     final booru = booruFactory.create(type: config.booruType);
 

@@ -185,7 +185,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   Widget _buildImage() {
     final config = ref.watchConfig;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     return Hero(
       tag: '${widget.id}_hero',

@@ -12,14 +12,14 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruClientProvider =
-    Provider.family<DanbooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = ref.watch(dioProvider(booruConfig));
+    Provider.family<DanbooruClient, BooruConfig>((ref, config) {
+  final dio = ref.watch(dioProvider(config.auth));
 
   return DanbooruClient(
     dio: dio,
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
   );
 });
 

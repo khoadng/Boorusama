@@ -50,7 +50,7 @@ class BooruImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     return BooruRawImage(
       dio: dio,

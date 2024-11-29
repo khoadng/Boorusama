@@ -42,7 +42,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfig;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     if (widget.imageUrl.isEmpty) {
       return NullableAspectRatio(

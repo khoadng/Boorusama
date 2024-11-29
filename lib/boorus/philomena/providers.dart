@@ -13,7 +13,7 @@ import 'package:boorusama/functional.dart';
 
 final philomenaClientProvider = Provider.family<PhilomenaClient, BooruConfig>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioProvider(config.auth));
 
     return PhilomenaClient(
       dio: dio,

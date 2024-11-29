@@ -217,37 +217,39 @@ final settingsRepoProvider = Provider<SettingsRepository>(
   name: 'settingsRepoProvider',
 );
 
-class DioArgs {
-  DioArgs({
+class DioOptions {
+  DioOptions({
     required this.cacheDir,
     required this.baseUrl,
     required this.userAgent,
-    required this.booruConfig,
+    required this.authConfig,
     required this.loggerService,
     required this.booruFactory,
   });
   final Directory cacheDir;
   final String baseUrl;
   final String userAgent;
-  final BooruConfig booruConfig;
+  final BooruConfigAuth authConfig;
   final Logger loggerService;
   final BooruFactory booruFactory;
 }
 
-final dioProvider = Provider.family<Dio, BooruConfig>((ref, config) {
+final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
   final userAgent = ref.watch(userAgentProvider(config.booruType));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
 
-  return newDio(DioArgs(
-    cacheDir: cacheDir,
-    baseUrl: config.url,
-    userAgent: userAgent,
-    booruConfig: config,
-    loggerService: loggerService,
-    booruFactory: booruFactory,
-  ));
+  return newDio(
+    options: DioOptions(
+      cacheDir: cacheDir,
+      baseUrl: config.url,
+      userAgent: userAgent,
+      authConfig: config,
+      loggerService: loggerService,
+      booruFactory: booruFactory,
+    ),
+  );
 });
 
 final httpCacheDirProvider = Provider<Directory>(
@@ -490,7 +492,7 @@ final blacklistTagsProvider =
 
 final booruSiteValidatorProvider =
     FutureProvider.autoDispose.family<bool, BooruConfig>((ref, config) {
-  final dio = ref.watch(dioProvider(config));
+  final dio = ref.watch(dioProvider(config.auth));
   final login =
       config.login.toOption().fold(() => null, (v) => v.isEmpty ? null : v);
   final apiKey =

@@ -27,15 +27,13 @@ String _cleanUrl(String url) {
   }
 }
 
-Dio newDio(
-  DioArgs args,
-) {
-  final booruConfig = args.booruConfig;
-  final dir = args.cacheDir;
-  final logger = args.loggerService;
-  final userAgent = args.userAgent;
-  final baseUrl = args.baseUrl;
-  final booruFactory = args.booruFactory;
+Dio newDio({required DioOptions options}) {
+  final booruConfig = options.authConfig;
+  final dir = options.cacheDir;
+  final logger = options.loggerService;
+  final userAgent = options.userAgent;
+  final baseUrl = options.baseUrl;
+  final booruFactory = options.booruFactory;
 
   final booru = booruFactory.getBooruFromUrl(baseUrl) ??
       booruFactory.getBooruFromId(booruConfig.booruId);
@@ -79,7 +77,7 @@ Dio newDio(
   if (context != null) {
     dio.interceptors.add(
       CloudflareChallengeInterceptor(
-        storagePath: args.cacheDir.path,
+        storagePath: options.cacheDir.path,
         context: context,
       ),
     );
@@ -88,7 +86,6 @@ Dio newDio(
   dio.interceptors.add(
     LoggingInterceptor(
       logger: logger,
-      booruConfig: booruConfig,
     ),
   );
 

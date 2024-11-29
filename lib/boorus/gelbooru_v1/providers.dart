@@ -72,11 +72,11 @@ final gelbooruV1AutocompleteRepoProvider =
 });
 
 final gelbooruV1ClientProvider =
-    Provider.family<GelbooruV1Client, BooruConfig>((ref, booruConfig) {
-  final dio = ref.watch(dioProvider(booruConfig));
+    Provider.family<GelbooruV1Client, BooruConfig>((ref, config) {
+  final dio = ref.watch(dioProvider(config.auth));
 
   return GelbooruV1Client(
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     dio: dio,
   );
 });
