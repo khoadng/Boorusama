@@ -6,7 +6,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({
@@ -18,7 +17,7 @@ class TagOtherNames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Screen.of(context).size == ScreenSize.small
+    return !context.isLargeScreen
         ? otherNames != null
             ? otherNames!.length > 3
                 ? Container(
@@ -90,7 +89,7 @@ class OtherNameChip extends StatelessWidget {
               maxWidth: MediaQuery.sizeOf(context).width * 0.85,
             ),
             child: Text(
-              otherName.replaceUnderscoreWithSpace(),
+              otherName.replaceAll('_', ' '),
               overflow: TextOverflow.fade,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),

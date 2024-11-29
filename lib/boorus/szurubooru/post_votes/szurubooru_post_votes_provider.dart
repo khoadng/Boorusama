@@ -13,10 +13,10 @@ import '../szurubooru_post.dart';
 import 'post_votes.dart';
 
 class SzurubooruPostVotesNotifier
-    extends FamilyNotifier<IMap<int, SzurubooruPostVote?>, BooruConfig>
+    extends FamilyNotifier<IMap<int, SzurubooruPostVote?>, BooruConfigAuth>
     with VotesNotifierMixin<SzurubooruPostVote, SzurubooruPost> {
   @override
-  IMap<int, SzurubooruPostVote?> build(BooruConfig arg) {
+  IMap<int, SzurubooruPostVote?> build(BooruConfigAuth arg) {
     return <int, SzurubooruPostVote?>{}.lock;
   }
 
@@ -72,7 +72,9 @@ class SzurubooruPostVotesNotifier
 }
 
 final szurubooruPostVotesProvider = NotifierProvider.family<
-    SzurubooruPostVotesNotifier, IMap<int, SzurubooruPostVote?>, BooruConfig>(
+    SzurubooruPostVotesNotifier,
+    IMap<int, SzurubooruPostVote?>,
+    BooruConfigAuth>(
   SzurubooruPostVotesNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -82,7 +84,7 @@ final szurubooruPostVotesProvider = NotifierProvider.family<
 final szurubooruPostVoteProvider =
     Provider.autoDispose.family<SzurubooruPostVote?, int>(
   (ref, postId) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     return ref.watch(szurubooruPostVotesProvider(config))[postId];
   },
 );

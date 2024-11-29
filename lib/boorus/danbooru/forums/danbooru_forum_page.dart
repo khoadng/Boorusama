@@ -40,7 +40,7 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    final config = ref.readConfig;
+    final config = ref.readConfigAuth;
 
     final topics = await ref
         .read(danbooruForumTopicRepoProvider(config))

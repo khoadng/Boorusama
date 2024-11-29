@@ -17,7 +17,7 @@ class GelbooruFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: GelbooruFavoritesPageInternal(
@@ -37,7 +37,7 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final query = 'fav:$uid';
 
     return FavoritesPageScaffold(
@@ -47,7 +47,9 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
             ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page));
 
         // all posts from this page are already favorited by the user
-        ref.read(gelbooruFavoritesProvider(config).notifier).preloadInternal(
+        ref
+            .read(gelbooruFavoritesProvider(config.auth).notifier)
+            .preloadInternal(
               r.posts,
               selfFavorited: (post) => true,
             );
@@ -59,10 +61,10 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
 }
 
 class GelbooruFavoritesNotifier
-    extends FamilyNotifier<IMap<int, bool>, BooruConfig>
+    extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {
   @override
-  IMap<int, bool> build(BooruConfig arg) {
+  IMap<int, bool> build(BooruConfigAuth arg) {
     ref.watchConfig;
 
     return <int, bool>{}.lock;
@@ -72,7 +74,7 @@ class GelbooruFavoritesNotifier
   Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
       (postId) => ref
           .read(
-            gelbooruClientProvider(ref.watchConfig),
+            gelbooruClientProvider(arg),
           )
           .addFavorite(postId: postId)
           .then((value) => switch (value) {
@@ -85,7 +87,7 @@ class GelbooruFavoritesNotifier
   @override
   Future<bool> Function(int postId) get favoriteRemover => (postId) => ref
       .read(
-        gelbooruClientProvider(ref.watchConfig),
+        gelbooruClientProvider(arg),
       )
       .removeFavorite(postId: postId)
       .then((value) => true)
@@ -100,13 +102,13 @@ class GelbooruFavoritesNotifier
 }
 
 final gelbooruFavoritesProvider = NotifierProvider.family<
-    GelbooruFavoritesNotifier, IMap<int, bool>, BooruConfig>(
+    GelbooruFavoritesNotifier, IMap<int, bool>, BooruConfigAuth>(
   GelbooruFavoritesNotifier.new,
 );
 
 final gelbooruFavoriteProvider =
     Provider.autoDispose.family<bool, int>((ref, postId) {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final favorites = ref.watch(gelbooruFavoritesProvider(config));
   return favorites[postId] ?? false;
 });

@@ -60,7 +60,7 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
         password = value;
         final hashed = hashBooruPasswordSHA1(
           url: config.url,
-          booru: config.createBooruFrom(booruFactory),
+          booru: config.auth.createBooruFrom(booruFactory),
           password: value,
         );
         ref.editNotifier.updateApiKey(hashed);

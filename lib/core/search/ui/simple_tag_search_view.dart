@@ -1,9 +1,5 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +15,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 void showSimpleTagSearchView(
@@ -29,29 +24,11 @@ void showSimpleTagSearchView(
   RouteSettings? settings,
   required Widget Function(BuildContext context, bool isMobile) builder,
 }) {
-  if (kPreferredLayout.isMobile) {
-    showAppModalBarBottomSheet(
-      context: context,
-      settings: settings,
-      builder: (context) => builder(context, true),
-    );
-  } else {
-    showDesktopDialogWindow(
-      context,
-      settings: settings,
-      backgroundColor: context.colorScheme.surfaceContainerHighest,
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-      width: min(context.screenWidth * 0.7, 600),
-      height: min(context.screenHeight * 0.7, 500),
-      builder: (context) => CallbackShortcuts(
-        bindings: {
-          const SingleActivator(LogicalKeyboardKey.escape): () =>
-              context.navigator.pop(),
-        },
-        child: builder(context, false),
-      ),
-    );
-  }
+  showAppModalBarBottomSheet(
+    context: context,
+    settings: settings,
+    builder: (context) => builder(context, true),
+  );
 }
 
 class SimpleTagSearchView extends ConsumerStatefulWidget {
@@ -68,7 +45,7 @@ class SimpleTagSearchView extends ConsumerStatefulWidget {
     this.initialConfig,
   });
 
-  final BooruConfig? initialConfig;
+  final BooruConfigAuth? initialConfig;
   final void Function(String tag, bool isMultiple) onSelected;
   final bool ensureValidTag;
   final bool closeOnSelected;
@@ -101,7 +78,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 
   @override
   Widget build(BuildContext context) {
-    final config = widget.initialConfig ?? ref.watchConfig;
+    final config = widget.initialConfig ?? ref.watchConfigAuth;
     final suggestionNotifier = ref.watch(suggestionsProvider(config).notifier);
 
     final inputType = ref.watch(selectedInputTypeSelectorProvider);

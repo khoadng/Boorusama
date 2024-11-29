@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -67,6 +67,8 @@ class InformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final createdAt = this.createdAt;
+
     return Padding(
       padding: padding ??
           const EdgeInsets.only(
@@ -83,10 +85,10 @@ class InformationSection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (characterTags.isNotEmpty)
+                if (characterTags.isNotEmpty) ...[
                   Text(
                     generateCharacterOnlyReadableName(characterTags)
-                        .replaceUnderscoreWithSpace()
+                        .replaceAll('_', ' ')
                         .titleCase,
                     overflow: TextOverflow.fade,
                     style: context.textTheme.titleLarge?.copyWith(
@@ -96,36 +98,42 @@ class InformationSection extends ConsumerWidget {
                     maxLines: 1,
                     softWrap: false,
                   ),
-                if (characterTags.isNotEmpty) const SizedBox(height: 5),
+                  const SizedBox(height: 4),
+                ],
                 if (copyrightTags.isNotEmpty)
                   Text(
                     generateCopyrightOnlyReadableName(copyrightTags)
-                        .replaceUnderscoreWithSpace()
+                        .replaceAll('_', ' ')
                         .titleCase,
                     overflow: TextOverflow.fade,
                     style: context.textTheme.bodyLarge,
                     maxLines: 1,
                     softWrap: false,
                   ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 4),
                 Row(
                   children: [
-                    if (artistTags.isNotEmpty)
+                    if (artistTags.isNotEmpty) ...[
                       ArtistNameInfoChip(
                         artistTags: artistTags,
                         onTap: (artist) =>
                             onArtistTagTap?.call(context, artist),
                       ),
-                    if (artistTags.isNotEmpty) const SizedBox(width: 5),
+                      const SizedBox(width: 4),
+                    ],
                     if (createdAt != null)
                       DateTooltip(
-                        date: createdAt!,
-                        child: Text(
-                          createdAt!
-                              .fuzzify(locale: Localizations.localeOf(context)),
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: context
-                                .theme.listTileTheme.subtitleTextStyle?.color,
+                        date: createdAt,
+                        child: TimePulse(
+                          initial: createdAt,
+                          updateInterval: const Duration(minutes: 1),
+                          builder: (context, _) => Text(
+                            createdAt.fuzzify(
+                                locale: Localizations.localeOf(context)),
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context
+                                  .theme.listTileTheme.subtitleTextStyle?.color,
+                            ),
                           ),
                         ),
                       ),
@@ -151,53 +159,42 @@ class InformationSection extends ConsumerWidget {
 }
 
 String generateCopyrightOnlyReadableName(Set<String> copyrightTags) {
-  final copyrights = copyrightTags;
-  final copyright = copyrights.isEmpty ? 'original' : copyrights.first;
+  if (copyrightTags.isEmpty) return 'original';
 
-  final remainedCopyrightString = copyrights.skip(1).isEmpty
-      ? ''
-      : ' and ${copyrights.skip(1).length} more';
-
-  return '$copyright$remainedCopyrightString';
+  return copyrightTags.length == 1
+      ? copyrightTags.first
+      : '${copyrightTags.first} and ${copyrightTags.length - 1} more';
 }
 
 String generateCharacterOnlyReadableName(Set<String> characterTags) {
-  final charaters = characterTags;
-  final cleanedCharacterList = [];
+  if (characterTags.isEmpty) return 'original';
 
-  // Remove copyright string in character name
-  for (final character in charaters) {
+  final cleanedCharacterList = characterTags.map((character) {
     final index = character.indexOf('(');
-    var cleanedName = character;
+    return index > 0 ? character.substring(0, index - 1) : character;
+  }).toSet();
 
-    if (index > 0) {
-      cleanedName = character.substring(0, index - 1);
-    }
+  final buffer = StringBuffer();
+  buffer.write(cleanedCharacterList.take(3).join(', '));
 
-    if (!cleanedCharacterList.contains(cleanedName)) {
-      cleanedCharacterList.add(cleanedName);
-    }
+  if (cleanedCharacterList.length > 3) {
+    buffer.write(' and ${cleanedCharacterList.length - 3} more');
   }
 
-  final characterString = cleanedCharacterList.take(3).join(', ');
-  final remainedCharacterString = cleanedCharacterList.skip(3).isEmpty
-      ? ''
-      : ' and ${cleanedCharacterList.skip(3).length} more';
-
-  return '${characterString.isEmpty ? 'original' : characterString}$remainedCharacterString';
+  return buffer.toString();
 }
+
+const _excludedTags = {
+  'banned_artist',
+  'voice_actor',
+};
 
 String chooseArtistTag(Set<String> artistTags) {
   if (artistTags.isEmpty) return 'Unknown artist';
 
-  final excludedTags = {
-    'banned_artist',
-    'voice_actor',
-  };
-
   // find the first artist name that not contains excludedTags
   final artist = artistTags.firstWhereOrNull(
-    (tag) => !excludedTags.any(tag.contains),
+    (tag) => !_excludedTags.any(tag.contains),
   );
 
   return artist ?? 'Unknown artist';
@@ -226,7 +223,7 @@ class ArtistNameInfoChip extends ConsumerWidget {
         tag: artist,
         child: CompactChip(
           textColor: colors?.foregroundColor,
-          label: artist.replaceUnderscoreWithSpace(),
+          label: artist.replaceAll('_', ' '),
           onTap: () => onTap?.call(artist),
           backgroundColor: colors?.backgroundColor,
         ),
@@ -249,7 +246,7 @@ class SimpleInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final supportArtist = booruBuilder?.isArtistSupported ?? false;
 
     return InformationSection(

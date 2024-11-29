@@ -31,7 +31,7 @@ class MoebooruFavoritesNotifier extends FamilyNotifier<Set<String>?, int> {
     _cancelToken = CancelToken();
 
     try {
-      final client = ref.watch(moebooruClientProvider(ref.readConfig));
+      final client = ref.watch(moebooruClientProvider(ref.readConfigAuth));
 
       final users = await client.getFavoriteUsers(
         postId: arg,

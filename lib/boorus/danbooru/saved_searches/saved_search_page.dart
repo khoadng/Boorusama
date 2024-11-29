@@ -24,7 +24,7 @@ class SavedSearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchesAsync =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfig));
+        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth));
 
     return Scaffold(
       appBar: AppBar(
@@ -129,7 +129,7 @@ class _SuccessView extends ConsumerWidget {
       context: context,
       builder: (_) => ModalSavedSearchAction(
         onDelete: () => ref
-            .read(danbooruSavedSearchesProvider(ref.readConfig).notifier)
+            .read(danbooruSavedSearchesProvider(ref.readConfigAuth).notifier)
             .delete(savedSearch: savedSearch),
         onEdit: () => goToSavedSearchPatchPage(context, savedSearch),
       ),

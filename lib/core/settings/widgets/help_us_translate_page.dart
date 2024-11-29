@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -57,7 +57,7 @@ class HelpUseTranslatePage extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    ExtendedImage.network(
+                    DioExtendedImage.network(
                       appInfo.translationBadgeUrl,
                       height: 66,
                       width: 287,

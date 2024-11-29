@@ -77,7 +77,7 @@ const _entries = [
   ),
 ];
 
-const double _kThresholdWidth = 550;
+const double _kThresholdWidth = 650;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -323,7 +323,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
   Widget build(BuildContext context) {
     final entries = SettingsPageScope.of(context).options.entries;
 
-    ref.watch(settingsProvider.select((value) => value.language));
+    // ref.watch(settingsProvider.select((value) => value.language));
     final options = SettingsPageScope.of(context).options;
 
     return Row(
@@ -378,7 +378,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final options = SettingsPageScope.of(context).options;
 
     return Column(

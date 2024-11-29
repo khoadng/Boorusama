@@ -10,12 +10,12 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final gelbooruV2PostRepoProvider =
-    Provider.family<PostRepository<GelbooruV2Post>, BooruConfig>(
+    Provider.family<PostRepository<GelbooruV2Post>, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(gelbooruV2ClientProvider(config));
+    final client = ref.watch(gelbooruV2ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             tags: tags,
@@ -38,7 +38,7 @@ final gelbooruV2PostRepoProvider =
 );
 
 final gelbooruV2ArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository, BooruConfig>(
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
     return PostRepositoryCacher(
       repository: ref.watch(gelbooruV2PostRepoProvider(config)),
@@ -50,9 +50,9 @@ final gelbooruV2ArtistCharacterPostRepoProvider =
 final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
     .family<List<GelbooruV2Post>, GelbooruV2Post>((ref, post) async {
   return ref
-      .watch(gelbooruV2PostRepoProvider(ref.watchConfig))
+      .watch(gelbooruV2PostRepoProvider(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: post.relationshipQuery,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
       );
 });

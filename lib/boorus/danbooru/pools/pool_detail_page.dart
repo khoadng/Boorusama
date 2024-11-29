@@ -20,7 +20,6 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/utils/html_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -56,7 +55,7 @@ class PoolDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return CustomContextMenuOverlay(
       child: DanbooruInfinitePostIdList(
@@ -92,7 +91,7 @@ class PoolDetailPage extends ConsumerWidget {
           SliverToBoxAdapter(
             child: ListTile(
               title: Text(
-                pool.name.replaceUnderscoreWithSpace(),
+                pool.name.replaceAll('_', ' '),
                 style: context.theme.textTheme.titleLarge,
               ),
               subtitle: Text(
@@ -238,7 +237,7 @@ class _DanbooruInfinitePostIdListState
   Widget build(BuildContext context) {
     final perPage = ref.watch(
         imageListingSettingsProvider.select((value) => value.postsPerPage));
-    final repo = ref.watch(danbooruPostRepoProvider(ref.watchConfig));
+    final repo = ref.watch(danbooruPostRepoProvider(ref.watchConfigSearch));
 
     return CustomContextMenuOverlay(
       child: PostScope(
@@ -270,11 +269,18 @@ class _DanbooruInfinitePostIdListState
             );
           },
         ),
-        builder: (context, controller, errors) => DanbooruPostGridController(
+        builder: (context, controller) => DanbooruPostGridController(
           controller: controller,
-          child: DanbooruInfinitePostList(
-            errors: errors,
+          child: PostGrid(
             controller: controller,
+            itemBuilder:
+                (context, index, multiSelectController, scrollController) =>
+                    DefaultDanbooruImageGridItem(
+              index: index,
+              multiSelectController: multiSelectController,
+              autoScrollController: scrollController,
+              controller: controller,
+            ),
             sliverHeaders: [
               if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
             ],

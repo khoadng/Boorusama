@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {
@@ -44,12 +43,11 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
-    final customHome = ref.watchBooruBuilder(ref.watchConfig)?.homeViewBuilder;
+    final customHome = ref.watch(currentBooruBuilderProvider)?.homeViewBuilder;
 
     final views = [
       if (customHome != null)
-        customHome(context, config, controller)
+        customHome(context, controller)
       else
         const Scaffold(
           body: Center(child: Text('No home view builder found')),
@@ -59,7 +57,6 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
     return BooruScope(
       controller: controller,
-      config: config,
       mobileMenu: widget.mobileMenu ?? [],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(

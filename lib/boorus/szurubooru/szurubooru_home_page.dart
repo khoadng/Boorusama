@@ -2,6 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -11,16 +12,15 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'szurubooru.dart';
 
-class SzurubooruHomePage extends StatelessWidget {
+class SzurubooruHomePage extends ConsumerWidget {
   const SzurubooruHomePage({
     super.key,
-    required this.config,
   });
 
-  final BooruConfig config;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
     return HomePageScaffold(
       mobileMenu: [
         if (config.hasLoginDetails()) ...[

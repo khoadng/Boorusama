@@ -34,10 +34,7 @@ import '../users/users.dart';
 class DanbooruHomePage extends ConsumerStatefulWidget {
   const DanbooruHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<DanbooruHomePage> createState() => _DanbooruHomePageState();
@@ -63,7 +60,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
   void _onSharedTextsReceived(SharedMedia media) {
     final text = media.content;
-    final config = ref.readConfig;
+    final config = ref.readConfigAuth;
     final booruName = config.booruType.stringify();
     final booruUrl = config.url;
 
@@ -111,14 +108,15 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final userId =
-        ref.watch(danbooruCurrentUserProvider(widget.config)).maybeWhen(
-              data: (user) => user?.id,
-              orElse: () => null,
-            );
+    final config = ref.watchConfigAuth;
+
+    final userId = ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+          data: (user) => user?.id,
+          orElse: () => null,
+        );
 
     ref.listen(
-      trendingTagsProvider(ref.watchConfig),
+      trendingTagsProvider(config),
       (previous, next) {
         // Only used to prevent the provider from being disposed
       },
@@ -126,7 +124,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     return HomePageScaffold(
       mobileMenu: [
-        if (widget.config.hasLoginDetails() && userId != null)
+        if (config.hasLoginDetails() && userId != null)
           SideMenuTile(
             icon: const _Icon(
               Symbols.account_box,
@@ -170,7 +168,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             goToArtistSearchPage(context);
           },
         ),
-        if (widget.config.hasLoginDetails()) ...[
+        if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const _Icon(
               Symbols.favorite,
@@ -244,7 +242,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           icon: Symbols.search,
           title: 'Artists',
         ),
-        if (widget.config.hasLoginDetails()) ...[
+        if (config.hasLoginDetails()) ...[
           if (userId != null)
             HomeNavigationTile(
               value: 5,
@@ -297,7 +295,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         const DanbooruForumPage(),
         // 4
         const DanbooruArtistSearchPage(),
-        if (widget.config.hasLoginDetails()) ...[
+        if (config.hasLoginDetails()) ...[
           if (userId != null)
             // 5
             const DanbooruProfilePage(

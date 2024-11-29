@@ -16,26 +16,6 @@ extension ImageExtension on BuildContext {
     return (num * MediaQuery.devicePixelRatioOf(this)).round();
   }
 
-  // Not sure how correct this is, so I'm commenting it out for now
-  (double? width, double? height, int? cacheWidth, int? cacheHeight)
-      sizeFromConstraints(
-    BoxConstraints constraints,
-    double? aspectRatio,
-  ) {
-    // final width = constraints.maxWidth.isInfinite ? null : constraints.maxWidth;
-    // final height =
-    //     constraints.maxHeight.isInfinite ? null : constraints.maxHeight;
-
-    // final (cachedWith, cachedHeight) = calculateCacheSize(
-    //   width,
-    //   height,
-    //   aspectRatio,
-    // );
-
-    // return (width, height, cachedWith, cachedHeight);
-    return (null, null, null, null);
-  }
-
   (int? width, int? height) calculateCacheSize(
     double? width,
     double? height,

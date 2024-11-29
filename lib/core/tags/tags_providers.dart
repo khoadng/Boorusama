@@ -14,7 +14,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 final tagsProvider =
-    NotifierProvider.family<TagsNotifier, List<TagGroupItem>?, BooruConfig>(
+    NotifierProvider.family<TagsNotifier, List<TagGroupItem>?, BooruConfigAuth>(
   TagsNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -34,7 +34,7 @@ final booruTagTypePathProvider = Provider<String?>((ref) {
 
 final booruTagTypeProvider =
     FutureProvider.autoDispose.family<String?, String>((ref, tag) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final store = ref.watch(booruTagTypeStoreProvider);
   final sanitized = tag.toLowerCase().replaceAll(' ', '_');
   final data = await store.get(config.booruType, sanitized);
@@ -44,7 +44,7 @@ final booruTagTypeProvider =
 
 final tagColorProvider = Provider.family<Color?, String>(
   (ref, tag) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     final colorBuilder = _getCurrentConfigColorBuilder(
       tag,
@@ -77,7 +77,7 @@ final tagColorProvider = Provider.family<Color?, String>(
 TagColorBuilder? _getCurrentConfigColorBuilder(
   String tag,
   Map<BooruType, BooruBuilder Function()> builders,
-  BooruConfig config,
+  BooruConfigAuth config,
 ) {
   final booruBuilderFunc = builders[config.booruType];
   final booruBuilder = booruBuilderFunc != null ? booruBuilderFunc() : null;

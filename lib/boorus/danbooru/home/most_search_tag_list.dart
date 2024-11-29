@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -24,7 +23,7 @@ class MostSearchTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return ref.watch(trendingTagsProvider(config)).when(
           data: (searches) => searches.isNotEmpty
@@ -103,7 +102,7 @@ class _Chip extends ConsumerWidget {
         labelPadding: const EdgeInsets.all(1),
         visualDensity: VisualDensity.compact,
         label: Text(
-          search.keyword.replaceUnderscoreWithSpace(),
+          search.keyword.replaceAll('_', ' '),
           style: TextStyle(
             color: isSelected
                 ? context.colorScheme.surface

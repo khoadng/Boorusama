@@ -8,7 +8,6 @@ import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
 class PostMetadata extends Equatable {
-
   const PostMetadata({
     this.page,
     this.search,
@@ -202,8 +201,6 @@ extension PostX on Post {
         extractTagFilterData(),
         pattern,
       );
-
-  bool get isExplicit => rating == Rating.explicit;
 
   String get relationshipQuery => hasParent ? 'parent:$parentId' : 'parent:$id';
 }

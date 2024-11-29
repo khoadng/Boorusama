@@ -21,7 +21,7 @@ class GelbooruCommentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     return CommentPageScaffold(
       postId: postId,
       useAppBar: useAppBar,

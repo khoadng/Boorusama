@@ -19,7 +19,7 @@ import 'trending_tags.dart';
 final _kTrendingTagCount = 15;
 
 final _top15TrendingTagsProvider = FutureProvider.autoDispose
-    .family<List<TrendingTag>, BooruConfig>((ref, config) async {
+    .family<List<TrendingTag>, BooruConfigAuth>((ref, config) async {
   final tags = await ref.watch(trendingTagsProvider(config).future);
 
   final trendingTags = <TrendingTag>[];
@@ -80,7 +80,7 @@ class TrendingSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return ref.watch(_top15TrendingTagsProvider(config)).when(
           data: (tags) => Column(

@@ -7,12 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class DanbooruImageGridItem extends ConsumerWidget {
@@ -24,7 +22,6 @@ class DanbooruImageGridItem extends ConsumerWidget {
     required this.enableFav,
     this.onTap,
     required this.image,
-    this.ignoreBanOverlay = false,
   });
 
   final DanbooruPost post;
@@ -33,21 +30,24 @@ class DanbooruImageGridItem extends ConsumerWidget {
   final VoidCallback? onTap;
   final bool enableFav;
   final Widget image;
-  final bool ignoreBanOverlay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final artistTags = [...post.artistTags]..remove('banned_artist');
-    final settings = ref.watch(imageListingSettingsProvider);
 
-    return ConditionalParentWidget(
-      condition: !ignoreBanOverlay && post.isBanned,
-      conditionalBuilder: (child) => Stack(
-        children: [
-          child,
-          Positioned.fill(
-            child: Center(
-              child: Column(
+    return SliverPostGridImageGridItem(
+      post: post,
+      hideOverlay: hideOverlay,
+      quickActionButton: !post.isBanned && enableFav
+          ? DefaultImagePreviewQuickActionButton(post: post)
+          : null,
+      autoScrollOptions: autoScrollOptions,
+      onTap: post.isBanned ? null : onTap,
+      image: image,
+      score: post.isBanned ? null : post.score,
+      blockOverlay: post.isBanned
+          ? BlockOverlayItem(
+              overlay: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -82,7 +82,7 @@ class DanbooruImageGridItem extends ConsumerWidget {
                             ActionChip(
                               visualDensity: VisualDensity.compact,
                               label: Text(
-                                tag.replaceUnderscoreWithSpace(),
+                                tag.replaceAll('_', ' '),
                                 maxLines: 1,
                                 style: TextStyle(
                                   color: context.colorScheme.onErrorContainer,
@@ -103,41 +103,13 @@ class DanbooruImageGridItem extends ConsumerWidget {
                     ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-      child: ImageGridItem(
-        borderRadius: BorderRadius.circular(
-          settings.imageBorderRadius,
-        ),
-        isGif: post.isGif,
-        isAI: post.isAI,
-        hideOverlay: hideOverlay,
-        quickActionButton: !post.isBanned && enableFav
-            ? DefaultImagePreviewQuickActionButton(post: post)
-            : null,
-        autoScrollOptions: autoScrollOptions,
-        onTap: post.isBanned
-            ? switch (post.source) {
+              onTap: switch (post.source) {
                 final WebSource source => () =>
                     launchExternalUrlString(source.url),
                 _ => null,
-              }
-            : onTap,
-        image: image,
-        isAnimated: post.isAnimated,
-        isTranslated: post.isTranslated,
-        hasComments: post.hasComment,
-        hasParentOrChildren: post.hasParentOrChildren,
-        hasSound: post.hasSound,
-        duration: post.duration,
-        score: post.isBanned
-            ? null
-            : settings.showScoresInGrid
-                ? post.score
-                : null,
-      ),
+              },
+            )
+          : null,
     );
   }
 }

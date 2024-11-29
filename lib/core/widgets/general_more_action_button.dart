@@ -29,7 +29,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watchConfig;
+    final booru = ref.watchConfigAuth;
 
     return SizedBox(
       width: 40,

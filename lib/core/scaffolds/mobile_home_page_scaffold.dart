@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 
@@ -34,7 +33,7 @@ class _MobileHomePageScaffoldState
 
   @override
   Widget build(BuildContext context) {
-    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return PostScope(
       fetcher: (page) {
@@ -42,8 +41,7 @@ class _MobileHomePageScaffoldState
 
         return postRepo.getPosts(tags, page);
       },
-      builder: (context, postController, errors) => InfinitePostListScaffold(
-        errors: errors,
+      builder: (context, postController) => PostGrid(
         controller: postController,
         sliverHeaders: [
           SliverHomeSearchBar(
@@ -54,7 +52,7 @@ class _MobileHomePageScaffoldState
             },
           ),
           const SliverAppAnnouncementBanner(),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: postController,

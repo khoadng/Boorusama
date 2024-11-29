@@ -36,4 +36,6 @@ extension RatingX on Rating {
         Rating.questionable => 'q',
         Rating.unknown => '',
       };
+
+  bool get isExplicit => this == Rating.explicit;
 }

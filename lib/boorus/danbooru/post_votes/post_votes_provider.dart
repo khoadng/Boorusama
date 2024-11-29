@@ -12,11 +12,11 @@ import 'post_vote_repository_api.dart';
 import 'post_votes_notifier.dart';
 
 final danbooruPostVoteRepoProvider =
-    Provider.family<PostVoteRepository, BooruConfig>(
+    Provider.family<PostVoteRepository, BooruConfigAuth>(
   (ref, config) {
     return PostVoteApiRepositoryApi(
       client: ref.watch(danbooruClientProvider(config)),
-      booruConfig: config,
+      authConfig: config,
     );
   },
   dependencies: [
@@ -26,7 +26,7 @@ final danbooruPostVoteRepoProvider =
 );
 
 final danbooruPostVotesProvider = NotifierProvider.family<PostVotesNotifier,
-    IMap<int, DanbooruPostVote?>, BooruConfig>(
+    IMap<int, DanbooruPostVote?>, BooruConfigAuth>(
   PostVotesNotifier.new,
   dependencies: [
     danbooruPostVoteRepoProvider,
@@ -37,7 +37,7 @@ final danbooruPostVotesProvider = NotifierProvider.family<PostVotesNotifier,
 final danbooruPostVoteProvider =
     Provider.autoDispose.family<DanbooruPostVote?, int>(
   (ref, postId) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     return ref.watch(danbooruPostVotesProvider(config))[postId];
   },
 );

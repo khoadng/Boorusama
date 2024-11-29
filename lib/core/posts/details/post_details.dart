@@ -65,13 +65,13 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
 }
 
 class PostDetailsData<T extends Post> {
-  final List<T> posts;
-  final PostDetailsController<T> controller;
-
   const PostDetailsData({
     required this.posts,
     required this.controller,
   });
+
+  final List<T> posts;
+  final PostDetailsController<T> controller;
 }
 
 class PostDetails<T extends Post> extends InheritedWidget {
@@ -123,11 +123,18 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   void setPage(int page) {
     currentPage.value = page;
     _videoProgress.value = VideoProgress.zero;
+    _isVideoPlaying.value = false;
 
     final post = posts.getOrNull(page);
 
     if (post != null) {
       currentPost.value = post;
+      if (page == initialPage.toDouble()) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          playVideo(post.id, post.isWebm);
+        });
+        return;
+      }
     }
   }
 
@@ -142,12 +149,14 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }
 
   final _videoProgress = ValueNotifier(VideoProgress.zero);
+  final _isVideoPlaying = ValueNotifier<bool>(false);
 
   //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
   final Map<int, VideoPlayerController> _videoControllers = {};
   final Map<int, WebmVideoController> _webmVideoControllers = {};
 
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
+  ValueNotifier<bool> get isVideoPlaying => _isVideoPlaying;
 
   void onCurrentPositionChanged(double current, double total, String url) {
     // // check if the current video is the same as the one being played
@@ -165,6 +174,46 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     } else {
       _videoControllers[id]?.seekTo(position);
     }
+  }
+
+  bool isPlaying(int id, bool isWebm) {
+    if (isWebm && isAndroid()) {
+      return _webmVideoControllers[id]?.isPlaying ?? false;
+    } else {
+      return _videoControllers[id]?.value.isPlaying ?? false;
+    }
+  }
+
+  Future<void> playVideo(int id, bool isWebm) async {
+    if (isWebm && isAndroid()) {
+      _webmVideoControllers[id]?.play();
+    } else {
+      _videoControllers[id]?.play();
+    }
+
+    _isVideoPlaying.value = true;
+  }
+
+  Future<void> playCurrentVideo() {
+    final post = currentPost.value;
+
+    return playVideo(post.id, post.isWebm);
+  }
+
+  Future<void> pauseCurrentVideo() {
+    final post = currentPost.value;
+
+    return pauseVideo(post.id, post.isWebm);
+  }
+
+  Future<void> pauseVideo(int id, bool isWebm) async {
+    if (isWebm && isAndroid()) {
+      _webmVideoControllers[id]?.pause();
+    } else {
+      _videoControllers[id]?.pause();
+    }
+
+    _isVideoPlaying.value = false;
   }
 
   void onWebmVideoPlayerCreated(WebmVideoController controller, int id) {

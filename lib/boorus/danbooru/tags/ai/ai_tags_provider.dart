@@ -10,7 +10,7 @@ import '../tags.dart';
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
   (ref, postId) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final booru =
         ref.watch(booruFactoryProvider).create(type: config.booruType);
     final aiTagSupport = booru?.hasAiTagSupported(config.url);

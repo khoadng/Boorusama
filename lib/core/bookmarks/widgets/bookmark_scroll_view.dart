@@ -150,6 +150,7 @@ class SliverBookmarkGrid extends ConsumerWidget {
       (value) => value.imageBorderRadius,
     ));
     final context = ref.context;
+    final config = ref.watchConfigAuth;
 
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
@@ -157,7 +158,7 @@ class SliverBookmarkGrid extends ConsumerWidget {
           ContextMenuButtonConfig(
             'download.download'.tr(),
             onPressed: () => ref.bookmarks.downloadBookmarks(
-              ref.watchConfig,
+              ref.readConfig,
               [bookmark],
             ),
           ),
@@ -169,7 +170,7 @@ class SliverBookmarkGrid extends ConsumerWidget {
               bookmark,
             ),
           ),
-          if (!ref.watchConfig.hasStrictSFW)
+          if (!config.hasStrictSFW)
             ContextMenuButtonConfig(
               'Open source in browser',
               onPressed: () => launchExternalUrlString(bookmark.sourceUrl),
@@ -184,7 +185,7 @@ class SliverBookmarkGrid extends ConsumerWidget {
             ),
             isAnimated: bookmark.isVideo,
             isAI: bookmark.isAI,
-            onTap: () => context.go('/bookmarks/details?index=$index'),
+            onTap: () => goToBookmarkDetailsPage(context, index),
             image: BooruImage(
               borderRadius: BorderRadius.circular(borderRadius),
               aspectRatio: bookmark.aspectRatio,

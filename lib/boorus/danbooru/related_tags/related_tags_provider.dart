@@ -11,7 +11,7 @@ import 'related_tags.dart';
 const _kTagLimit = 300;
 
 final danbooruRelatedTagRepProvider =
-    Provider.family<RelatedTagRepository, BooruConfig>((ref, config) {
+    Provider.family<RelatedTagRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   return RelatedTagRepositoryBuilder(
@@ -45,7 +45,7 @@ final danbooruRelatedTagProvider = FutureProvider.autoDispose
     .family<DanbooruRelatedTag, String>((ref, tag) async {
   if (tag.isEmpty) return const DanbooruRelatedTag.empty();
 
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
 
   final repo = ref.watch(danbooruRelatedTagRepProvider(config));
   final relatedTag = await repo.getRelatedTag(tag);
@@ -56,7 +56,7 @@ final danbooruRelatedTagProvider = FutureProvider.autoDispose
 final danbooruWikiTagsProvider = FutureProvider.family<List<Tag>, String>(
   (ref, tag) async {
     if (tag.isEmpty) return [];
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     final related = await ref
         .watch(danbooruRelatedTagRepProvider(config))
@@ -74,7 +74,7 @@ final danbooruRelatedTagsProvider = FutureProvider.family<List<Tag>, String>(
   (ref, tag) async {
     if (tag.isEmpty) return [];
 
-    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfig));
+    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfigAuth));
     final related = await repo.getRelatedTag(tag, limit: 30);
 
     final tags = related.tags

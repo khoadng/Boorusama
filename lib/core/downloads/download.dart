@@ -29,7 +29,7 @@ extension PostDownloadX on WidgetRef {
 
   Future<void> download(Post post) async {
     final settings = read(settingsProvider);
-    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
+    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfigAuth));
     final perm = await _getPermissionStatus();
 
     await _download(
@@ -53,8 +53,8 @@ extension PostDownloadX on WidgetRef {
     String? downloadPath,
   }) async {
     final settings = read(settingsProvider);
-    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
-    final config = readConfig;
+    final config = readConfigAuth;
+    final urlExtractor = read(downloadFileUrlExtractorProvider(config));
 
     // ensure that the booru supports bulk download
     if (!config.booruType.canDownloadMultipleFiles) {
@@ -99,15 +99,15 @@ Future<void> _download(
   void Function()? onStarted,
 }) async {
   final booruConfig = ref.readConfig;
-  final service = ref.read(downloadServiceProvider(booruConfig));
+  final service = ref.read(downloadServiceProvider(booruConfig.auth));
   final fileNameBuilder =
-      ref.readBooruBuilder(booruConfig)?.downloadFilenameBuilder;
+      ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
   final logger = ref.read(loggerProvider);
 
   final headers = {
     AppHttpHeaders.userAgentHeader:
-        ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
-    ...ref.read(extraHttpHeaderProvider(booruConfig)),
+        ref.read(userAgentProvider(booruConfig.auth.booruType)),
+    ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
   };
 
   final deviceStoragePermissionNotifier =

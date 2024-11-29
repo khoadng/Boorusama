@@ -6,11 +6,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 
 class DefaultInheritedFileDetailsSection<T extends Post>
     extends StatelessWidget {

@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/entry_page.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';
@@ -22,12 +21,7 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'routes/configs.dart';
-import 'routes/downloads.dart';
-import 'routes/settings.dart';
-import 'widgets/failsafe_page.dart';
 
 ///
 /// When navigate to a page, must query the booru builders first to get the correct builder.
@@ -104,8 +98,7 @@ class Routes {
   static GoRoute postDetails(Ref ref) => GoRoute(
         path: 'details',
         pageBuilder: (context, state) {
-          final config = ref.read(currentBooruConfigProvider);
-          final booruBuilder = ref.readBooruBuilder(config);
+          final booruBuilder = ref.read(currentBooruBuilderProvider);
           final builder = booruBuilder?.postDetailsPageBuilder;
 
           final payload = castOrNull<DetailsPayload>(state.extra);
@@ -123,14 +116,14 @@ class Routes {
                   key: state.pageKey,
                   name: state.name,
                   child: builder != null
-                      ? builder(context, config, payload)
+                      ? builder(context, payload)
                       : const UnimplementedPage(),
                 )
               : builder != null
                   ? FastFadePage(
                       key: state.pageKey,
                       name: state.name,
-                      child: builder(context, config, payload),
+                      child: builder(context, payload),
                     )
                   : MaterialPage(
                       key: state.pageKey,
@@ -146,7 +139,7 @@ class Routes {
         path: 'search',
         name: '/search',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.readBooruBuilder(ref.readConfig);
+          final booruBuilder = ref.read(currentBooruBuilderProvider);
           final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
@@ -165,16 +158,14 @@ class Routes {
         path: 'favorites',
         name: '/favorites',
         pageBuilder: (context, state) {
-          final config = ref.read(currentBooruConfigProvider);
-          final booruBuilder = ref.readBooruBuilder(config);
+          final booruBuilder = ref.read(currentBooruBuilderProvider);
           final builder = booruBuilder?.favoritesPageBuilder;
 
           return CupertinoPage(
             key: state.pageKey,
             name: state.name,
-            child: builder != null
-                ? builder(context, config)
-                : const UnimplementedPage(),
+            child:
+                builder != null ? builder(context) : const UnimplementedPage(),
           );
         },
       );
@@ -184,7 +175,7 @@ class Routes {
         name: '/artists',
         pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.readBooruBuilder(ref.readConfig);
+            final booruBuilder = ref.read(currentBooruBuilderProvider);
             final builder = booruBuilder?.artistPageBuilder;
             final artistName = state.uri.queryParameters[kArtistNameKey];
 
@@ -202,7 +193,7 @@ class Routes {
         name: '/characters',
         pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.readBooruBuilder(ref.readConfig);
+            final booruBuilder = ref.read(currentBooruBuilderProvider);
             final builder = booruBuilder?.characterPageBuilder;
             final characterName = state.uri.queryParameters[kCharacterNameKey];
 

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
 import 'package:boorusama/core/scaffolds/tag_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
@@ -34,15 +33,14 @@ class _ArtistPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     return PostScope(
       fetcher: (page) => widget.fetcher(page, selectedCategory.value),
-      builder: (context, controller, errors) => TagDetailsPageScaffold(
+      builder: (context, controller) => TagDetailsPageScaffold(
         onCategoryToggle: (category) {
           selectedCategory.value = category;
           controller.refresh();
         },
         tagName: widget.artistName,
         otherNames: const SizedBox(height: 40, width: 40),
-        gridBuilder: (context, slivers) => InfinitePostListScaffold(
-          errors: errors,
+        gridBuilder: (context, slivers) => PostGrid(
           controller: controller,
           sliverHeaders: slivers,
         ),

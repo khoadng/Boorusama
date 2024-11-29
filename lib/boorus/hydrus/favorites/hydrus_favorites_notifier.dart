@@ -9,10 +9,10 @@ import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/functional.dart';
 
 class HydrusFavoritesNotifier
-    extends FamilyNotifier<IMap<int, bool>, BooruConfig>
+    extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {
   @override
-  IMap<int, bool> build(BooruConfig arg) {
+  IMap<int, bool> build(BooruConfigAuth arg) {
     ref.watchConfig;
 
     return <int, bool>{}.lock;

@@ -47,7 +47,7 @@ class _GelbooruTagListSectionState
   }
 
   void _fetchTags() {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final post = InheritedPost.of<GelbooruPost>(context);
 
     ref.read(tagsProvider(config).notifier).load(
@@ -71,7 +71,7 @@ class _GelbooruTagListSectionState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final post = InheritedPost.of<GelbooruPost>(context);
 
     return SliverToBoxAdapter(
@@ -141,7 +141,7 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                     ? tags
                         .map((tag) => SliverArtistPostList(
                               tag: tag,
-                              builder: (tag) => ref
+                              child: ref
                                   .watch(gelbooruArtistPostsProvider(tag))
                                   .maybeWhen(
                                     data: (data) => SliverPreviewPostGrid(

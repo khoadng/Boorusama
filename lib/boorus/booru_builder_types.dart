@@ -15,7 +15,6 @@ typedef UpdateConfigPageBuilder = Widget Function(
 
 typedef HomePageBuilder = Widget Function(
   BuildContext context,
-  BooruConfig config,
 );
 
 typedef SearchPageBuilder = Widget Function(
@@ -25,13 +24,11 @@ typedef SearchPageBuilder = Widget Function(
 
 typedef PostDetailsPageBuilder = Widget Function(
   BuildContext context,
-  BooruConfig config,
   DetailsPayload payload,
 );
 
 typedef FavoritesPageBuilder = Widget Function(
   BuildContext context,
-  BooruConfig config,
 );
 
 typedef QuickFavoriteButtonBuilder = Widget Function(
@@ -65,10 +62,13 @@ typedef NoteFetcher = Future<List<Note>> Function(int postId);
 typedef FavoriteAdder = Future<bool> Function(int postId, WidgetRef ref);
 typedef FavoriteRemover = Future<bool> Function(int postId, WidgetRef ref);
 
-typedef GranularRatingFilterer = bool Function(Post post, BooruConfig config);
+typedef GranularRatingFilterer = bool Function(
+  Post post,
+  BooruConfigSearch config,
+);
 typedef GranularRatingQueryBuilder = List<String> Function(
   List<String> currentQuery,
-  BooruConfig config,
+  BooruConfigSearch config,
 );
 
 typedef GranularRatingOptionsBuilder = Set<Rating> Function();
@@ -106,7 +106,6 @@ typedef MetatagExtractorBuilder = MetatagExtractor Function(
 
 typedef HomeViewBuilder = Widget Function(
   BuildContext context,
-  BooruConfig config,
   HomePageController controller,
 );
 

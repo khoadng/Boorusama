@@ -6,9 +6,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'favorite_groups.dart';
 
 class FavoriteGroupFilterableNotifier extends AutoDisposeFamilyNotifier<
-    List<DanbooruFavoriteGroup>?, BooruConfig> {
+    List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
   @override
-  List<DanbooruFavoriteGroup>? build(BooruConfig arg) {
+  List<DanbooruFavoriteGroup>? build(BooruConfigSearch arg) {
     return ref.watch(danbooruFavoriteGroupsProvider(arg));
   }
 

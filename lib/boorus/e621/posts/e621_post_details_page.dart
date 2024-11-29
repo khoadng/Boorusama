@@ -29,9 +29,7 @@ class E621ArtistPostsSection extends ConsumerWidget {
           ? post.artistTags
               .map((tag) => SliverArtistPostList(
                     tag: tag,
-                    builder: (tag) => ref
-                        .watch(e621ArtistPostsProvider(tag))
-                        .maybeWhen(
+                    child: ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
                           data: (data) => SliverPreviewPostGrid(
                             posts: data,
                             onTap: (postIdx) => goToPostDetailsPageFromPosts(

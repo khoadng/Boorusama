@@ -61,13 +61,13 @@ final booruTypeCountProvider =
 
 final tagColorProvider = FutureProvider.autoDispose.family<Color?, String>(
   (ref, tag) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
     final tagType = await tagTypeStore.get(config.booruType, tag);
     final colorScheme = ref.watch(colorSchemeProvider);
 
     final color = ref
-        .watch(booruBuilderProvider)
+        .watch(currentBooruBuilderProvider)
         ?.tagColorBuilder(colorScheme.brightness, tagType);
 
     return color;

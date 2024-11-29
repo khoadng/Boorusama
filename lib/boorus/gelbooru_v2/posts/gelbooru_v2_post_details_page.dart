@@ -103,7 +103,7 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
                 ? tags
                     .map((tag) => SliverArtistPostList(
                           tag: tag,
-                          builder: (tag) => ref
+                          child: ref
                               .watch(gelbooruV2ArtistPostsProvider(tag))
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
