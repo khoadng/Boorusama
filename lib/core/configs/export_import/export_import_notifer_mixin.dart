@@ -142,4 +142,34 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
       ),
     );
   }
+
+  Future<void> importFromRawString({
+    required String jsonString,
+    void Function(String message)? onFailure,
+    void Function(String message, List<BooruConfig> configs)? onSuccess,
+    Future<bool> Function(BooruConfigExportData data)? onWillImport,
+  }) async {
+    tryDecodeData(data: jsonString)
+        .map(
+      (a) => BooruConfigExportData(
+        data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),
+        exportData: a,
+      ),
+    )
+        .fold(
+      (l) {
+        onFailure?.call(l.toString());
+      },
+      (data) async {
+        final willImport = await onWillImport?.call(data);
+        if (willImport == null || !willImport) return;
+
+        final configRepo = ref.read(booruConfigRepoProvider);
+
+        await configRepo.clear();
+        state = await configRepo.addAll(data.data);
+        onSuccess?.call('Imported successfully', data.data);
+      },
+    );
+  }
 }

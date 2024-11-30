@@ -27,6 +27,7 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'sync_data_page.dart';
 import 'widgets/settings_page_scaffold.dart';
 
 class BackupAndRestorePage extends ConsumerStatefulWidget {
@@ -55,6 +56,22 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         _buildBlacklistedTags(),
         const SizedBox(height: 8),
         _buildSettings(),
+        const SizedBox(height: 8),
+        const Divider(),
+        const SizedBox(height: 8),
+        FilledButton(
+          onPressed: () {
+            goToSyncDataPage(context, mode: TransferMode.export);
+          },
+          child: Text('Transfer data to another device'),
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: () {
+            goToSyncDataPage(context, mode: TransferMode.import);
+          },
+          child: Text('Import data from another device'),
+        ),
       ],
     );
   }

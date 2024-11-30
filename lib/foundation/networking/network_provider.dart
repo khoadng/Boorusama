@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -28,6 +30,38 @@ final networkStateProvider = Provider<NetworkState>((ref) {
         loading: () => NetworkInitialState(),
         error: (_, __) => NetworkDisconnectedState(),
       );
+});
+
+final localIPAddressProvider = FutureProvider<String?>((ref) async {
+  // listen to changes in network state
+  ref.listen(
+    connectivityProvider,
+    (previous, next) {
+      // if the network state changes, we want to update the IP address
+      ref.invalidateSelf();
+    },
+  );
+
+  try {
+    final interfaces = await NetworkInterface.list();
+    for (var interface in interfaces) {
+      // Look for the WiFi or Ethernet interface
+      if (interface.addresses.isNotEmpty) {
+        // Filter for IPv4 addresses
+        final ipv4 = interface.addresses.firstWhere(
+          (addr) => addr.type == InternetAddressType.IPv4,
+          orElse: () => interface.addresses.first,
+        );
+        // Skip loopback addresses (127.0.0.1)
+        if (!ipv4.address.startsWith('127.')) {
+          return ipv4.address;
+        }
+      }
+    }
+  } catch (e) {
+    print('Error getting IP address: $e');
+  }
+  return '127.0.0.1'; // Fallback to localhost
 });
 
 class NetworkListener extends ConsumerWidget {

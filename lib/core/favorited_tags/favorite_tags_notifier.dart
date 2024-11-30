@@ -129,6 +129,20 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
         );
   }
 
+  // exportWithLabels to raw string
+  Future<String> exportWithLabelsToRawString() async {
+    return await ref
+        .read(favoriteTagsIOHandlerProvider)
+        .exportToRawString(state)
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => '',
+            (r) => r,
+          ),
+        );
+  }
+
   Future<void> importWithLabels({
     required BuildContext context,
     required String path,
@@ -137,6 +151,24 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
         .read(favoriteTagsIOHandlerProvider)
         .import(
           from: path,
+        )
+        .run()
+        .then(
+          (value) => value.fold(
+            (l) => showErrorToast(context, l.toString()),
+            (r) => repo.createFrom(r).then((value) => load()),
+          ),
+        );
+  }
+
+  Future<void> importWithLabelsFromRawString({
+    required BuildContext context,
+    required String text,
+  }) async {
+    await ref
+        .read(favoriteTagsIOHandlerProvider)
+        .importFromRawString(
+          text: text,
         )
         .run()
         .then(
