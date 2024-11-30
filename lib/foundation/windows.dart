@@ -46,71 +46,124 @@ class AppTitleBar extends ConsumerWidget {
   }
 
   Widget _buildTitleBar(String appName, BuildContext context) {
-    return DoubleTapToMaxOrRestore(
-      child: ColoredBox(
-        color: context.colorScheme.surface,
-        child: Stack(
-          children: [
-            Row(
-              children: [
-                if (!isMacOS()) ...[
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 18,
-                      height: 18,
-                      isAntiAlias: true,
-                      filterQuality: FilterQuality.none,
-                    ),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: Text(
-                      appName,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.colorScheme.onSurface,
+    return VirtualWindowFrame(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kWindowCaptionHeight),
+          child: isMacOS()
+              ? MacosCaption(
+                  backgroundColor: context.colorScheme.surface,
+                  brightness: context.brightness,
+                )
+              : WindowCaption(
+                  backgroundColor: context.colorScheme.surface,
+                  brightness: context.brightness,
+                  title: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          width: 18,
+                          height: 18,
+                          isAntiAlias: true,
+                          filterQuality: FilterQuality.none,
+                        ),
                       ),
-                    ),
+                      Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          appName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-                const Spacer(),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 26),
-              child: child,
-            ),
-          ],
+                ),
         ),
+        body: child,
       ),
     );
   }
 }
 
-class DoubleTapToMaxOrRestore extends StatelessWidget {
-  const DoubleTapToMaxOrRestore({
+class MacosCaption extends StatefulWidget {
+  const MacosCaption({
     super.key,
-    required this.child,
+    this.backgroundColor,
+    this.brightness,
   });
 
-  final Widget child;
+  final Color? backgroundColor;
+  final Brightness? brightness;
+
+  @override
+  State<MacosCaption> createState() => _MacosCaptionState();
+}
+
+class _MacosCaptionState extends State<MacosCaption> with WindowListener {
+  @override
+  void initState() {
+    windowManager.addListener(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onDoubleTap: () async {
-        final isMaximized = await windowManager.isMaximized();
-        if (!isMaximized) {
-          windowManager.maximize();
-        } else {
-          windowManager.unmaximize();
-        }
-      },
-      child: child,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: widget.backgroundColor ??
+            (widget.brightness == Brightness.dark
+                ? const Color(0xff1C1C1C)
+                : Colors.transparent),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: DragToMoveArea(
+              child: SizedBox(
+                height: double.infinity,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: DefaultTextStyle(
+                        style: TextStyle(
+                          color: widget.brightness == Brightness.light
+                              ? Colors.black.withOpacity(0.8956)
+                              : Colors.white,
+                          fontSize: 14,
+                        ),
+                        child: Container(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  @override
+  void onWindowMaximize() {
+    setState(() {});
+  }
+
+  @override
+  void onWindowUnmaximize() {
+    setState(() {});
   }
 }
