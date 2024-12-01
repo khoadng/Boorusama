@@ -95,7 +95,7 @@ class AddCustomDetailsButton extends ConsumerWidget {
           goToUpdateBooruConfigPage(
             context,
             config: config,
-            initialTab: 'layout',
+            initialTab: 'appearance',
           );
         },
         title: 'Customize',

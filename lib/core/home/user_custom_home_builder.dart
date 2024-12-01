@@ -104,7 +104,7 @@ class CustomHomeContainer extends ConsumerWidget {
                     onTap: () => goToUpdateBooruConfigPage(
                       context,
                       config: config,
-                      initialTab: 'layout',
+                      initialTab: 'appearance',
                     ),
                     child: Container(
                       margin: const EdgeInsets.all(4),

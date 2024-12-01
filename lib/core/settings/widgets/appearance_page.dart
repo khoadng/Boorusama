@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/create/booru_config_theme_view.dart';
+import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -41,25 +41,20 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           _buildSimpleTheme(settings)
         else
           ThemeSettingsInteractionBlocker(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ThemeListTile(
-                    colorSettings: settings.colors,
-                    onThemeUpdated: (colors) {
-                      ref.updateSettings(
-                        settings.copyWith(
-                          colors: colors,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ThemeListTile(
+                  colorSettings: settings.colors,
+                  onThemeUpdated: (colors) {
+                    ref.updateSettings(
+                      settings.copyWith(
+                        colors: colors,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         const Divider(thickness: 1),
