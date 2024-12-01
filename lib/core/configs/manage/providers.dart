@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 final currentBooruConfigProvider =
     NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
@@ -43,6 +44,11 @@ final currentReadOnlyBooruConfigGestureProvider = Provider<PostGestureConfig?>(
   (ref) => ref
       .watch(currentBooruConfigProvider.select((value) => value.postGestures)),
   name: 'currentReadOnlyBooruConfigGestureProvider',
+);
+
+final currentReadOnlyBooruConfigThemeProvider = Provider<ThemeConfigs?>(
+  (ref) => ref.watch(currentBooruConfigProvider.select((value) => value.theme)),
+  name: 'currentReadOnlyBooruConfigThemeProvider',
 );
 
 final currentReadOnlyBooruConfigLayoutProvider = Provider<LayoutConfigs?>(

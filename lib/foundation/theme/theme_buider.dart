@@ -42,7 +42,7 @@ class ThemeBuilder extends ConsumerWidget {
             : (null, null);
 
         final customColorScheme = kHasPremium
-            ? ref.watchConfig.theme?.enable == true
+            ? ref.watchThemeConfigs?.enable == true
                 ? getSchemeFromColorSettings(
                     ref.watchConfig.theme?.colors,
                     dynamicDarkScheme: dark,

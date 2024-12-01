@@ -7,6 +7,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
@@ -63,6 +64,9 @@ extension BooruWidgetRef on WidgetRef {
 
   PostGestureConfig? get watchPostGestures =>
       watch(currentReadOnlyBooruConfigGestureProvider);
+
+  ThemeConfigs? get watchThemeConfigs =>
+      watch(currentReadOnlyBooruConfigThemeProvider);
 
   LayoutConfigs? get watchLayoutConfigs =>
       watch(currentReadOnlyBooruConfigLayoutProvider);
