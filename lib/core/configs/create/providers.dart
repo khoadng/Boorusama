@@ -8,6 +8,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 final editBooruConfigIdProvider = Provider.autoDispose<EditBooruConfigId>(
   (ref) => throw UnimplementedError(),
@@ -183,4 +184,9 @@ class EditBooruConfigNotifier
     LayoutConfigs? layout,
   ) =>
       state = state.copyWith(layout: () => layout);
+
+  void updateTheme(
+    ThemeConfigs? theme,
+  ) =>
+      state = state.copyWith(theme: () => theme);
 }

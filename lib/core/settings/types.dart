@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme/theme_mode.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 
 export 'types_l10n.dart';
@@ -144,6 +144,7 @@ class Settings extends Equatable {
     required this.reduceAnimations,
     required this.downloadFileExistedBehavior,
     required this.videoAudioDefaultState,
+    required this.colors,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -213,6 +214,9 @@ class Settings extends Equatable {
         videoAudioDefaultState = json['videoAudioDefaultState'] != null
             ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
             : VideoAudioDefaultState.unspecified,
+        colors = json['colors'] != null
+            ? ColorSettings.fromJson(json['colors'])
+            : null,
         reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5;
@@ -233,6 +237,7 @@ class Settings extends Equatable {
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
     ),
+    colors: null,
     safeMode: true,
     blacklistedTags: '',
     themeMode: AppThemeMode.amoledDark,
@@ -314,6 +319,8 @@ class Settings extends Equatable {
 
   final VideoAudioDefaultState videoAudioDefaultState;
 
+  final ColorSettings? colors;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -344,6 +351,7 @@ class Settings extends Equatable {
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
     VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
+    ColorSettings? colors,
   }) =>
       Settings(
         listing: listing ?? this.listing,
@@ -387,6 +395,7 @@ class Settings extends Equatable {
             downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
         videoAudioDefaultState:
             videoAudioDefaultState ?? this.videoAudioDefaultState,
+        colors: colors ?? this.colors,
       );
 
   Map<String, dynamic> toJson() {
@@ -422,12 +431,14 @@ class Settings extends Equatable {
       'reduceAnimations': reduceAnimations,
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
       'videoAudioDefaultState': videoAudioDefaultState.index,
+      'colors': colors?.toJson(),
     };
   }
 
   @override
   List<Object?> get props => [
         listing,
+        colors,
         safeMode,
         blacklistedTags,
         themeMode,

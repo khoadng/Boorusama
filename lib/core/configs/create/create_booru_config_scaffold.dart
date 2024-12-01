@@ -12,6 +12,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'booru_config_theme_view.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -118,6 +119,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
       'Listing': listingTab ?? const DefaultBooruConfigListingView(),
+      'Theme': const BooruConfigThemeView(),
       'booru.download': downloadTab ?? const BooruConfigDownloadView(),
       'Search': searchTab ?? const DefaultBooruConfigSearchView(),
       'Layout': layoutTab ?? const DefaultBooruConfigLayoutView(),

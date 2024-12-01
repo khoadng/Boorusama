@@ -7,9 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'app_theme.dart';
-import 'colors.dart';
-import 'theme_mode.dart';
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/foundation/theme.dart';
+
+//FIXME: remove this when premium is implemented
+const kHasPremium = true;
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
@@ -26,6 +28,8 @@ class ThemeBuilder extends ConsumerWidget {
     final enableDynamicColor = ref
         .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
+    final colors = ref.watch(settingsProvider.select((value) => value.colors));
+
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
@@ -37,12 +41,29 @@ class ThemeBuilder extends ConsumerWidget {
                 : (null, null)
             : (null, null);
 
-        final scheme = AppTheme.generateScheme(
-          theme,
-          dynamicDarkScheme: dark,
-          dynamicLightScheme: light,
-          systemDarkMode: systemDarkMode,
-        );
+        final customColorScheme = kHasPremium
+            ? ref.watchConfig.theme?.enable == true
+                ? getSchemeFromColorSettings(
+                    ref.watchConfig.theme?.colors,
+                    dynamicDarkScheme: dark,
+                    dynamicLightScheme: light,
+                    systemDarkMode: systemDarkMode,
+                  )
+                : getSchemeFromColorSettings(
+                    colors,
+                    dynamicDarkScheme: dark,
+                    dynamicLightScheme: light,
+                    systemDarkMode: systemDarkMode,
+                  )
+            : null;
+
+        final scheme = customColorScheme ??
+            AppTheme.generateScheme(
+              theme,
+              dynamicDarkScheme: dark,
+              dynamicLightScheme: light,
+              systemDarkMode: systemDarkMode,
+            );
 
         return Builder(
           builder: (context) => ProviderScope(
@@ -53,7 +74,7 @@ class ThemeBuilder extends ConsumerWidget {
             ],
             child: builder(
               AppTheme.themeFrom(
-                theme,
+                customColorScheme != null ? null : theme,
                 colorScheme: scheme,
                 systemDarkMode: systemDarkMode,
               ),

@@ -7,6 +7,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
 
 class BooruConfigData extends Equatable {
   const BooruConfigData({
@@ -28,6 +29,7 @@ class BooruConfigData extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.theme,
     required this.alwaysIncludeTags,
     required this.layout,
   });
@@ -61,6 +63,7 @@ class BooruConfigData extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        theme: null,
         alwaysIncludeTags: null,
         layout: null,
       );
@@ -90,6 +93,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction:
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
+        theme: json['theme'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
         layout: json['layout'] as String?,
       );
@@ -118,6 +122,7 @@ class BooruConfigData extends Equatable {
       'postGestures': postGestures,
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
+      'theme': theme,
       'alwaysIncludeTags': alwaysIncludeTags,
       'layout': layout,
     };
@@ -141,6 +146,7 @@ class BooruConfigData extends Equatable {
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
   final String? listing;
+  final String? theme;
   final String? alwaysIncludeTags;
   final String? layout;
 
@@ -164,6 +170,7 @@ class BooruConfigData extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        theme,
         alwaysIncludeTags,
         layout,
       ];
@@ -180,6 +187,10 @@ extension BooruConfigDataX on BooruConfigData {
 
   LayoutConfigs? get layoutTyped {
     return LayoutConfigs.fromJsonString(layout);
+  }
+
+  ThemeConfigs? get themeTyped {
+    return ThemeConfigs.fromJsonString(theme);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
@@ -234,6 +245,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     PostGestureConfig? Function()? postGestures,
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
+    ThemeConfigs? Function()? theme,
     String? Function()? alwaysIncludeTags,
     LayoutConfigs? Function()? layout,
   }) {
@@ -276,6 +288,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           ? defaultPreviewImageButtonAction()
           : this.defaultPreviewImageButtonAction,
       listing: listing != null ? listing()?.toJsonString() : this.listing,
+      theme: theme != null ? theme()?.toJsonString() : this.theme,
       alwaysIncludeTags: alwaysIncludeTags != null
           ? alwaysIncludeTags()
           : this.alwaysIncludeTags,

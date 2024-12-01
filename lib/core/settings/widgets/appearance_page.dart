@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs/create/booru_config_theme_view.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -34,8 +36,32 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return SettingsPageScaffold(
       title: const Text('settings.appearance.appearance').tr(),
       children: [
-        SettingsHeader(label: 'settings.general'.tr()),
-        _buildSimpleTheme(settings),
+        SettingsHeader(label: 'settings.theme.theme'.tr()),
+        if (!kHasPremium)
+          _buildSimpleTheme(settings)
+        else
+          ThemeSettingsInteractionBlocker(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ThemeListTile(
+                    colorSettings: settings.colors,
+                    onThemeUpdated: (colors) {
+                      ref.updateSettings(
+                        settings.copyWith(
+                          colors: colors,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
         const Divider(thickness: 1),
         SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
         ListingSettingsInteractionBlocker(
@@ -88,6 +114,47 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   : null,
             );
           },
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 8,
+          ),
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 4,
+          ),
+          decoration: BoxDecoration(
+            color: context.colorScheme.surfaceContainerHigh.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: context.colorScheme.outlineVariant.withOpacity(0.6),
+              width: 0.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Unlock more themes with Plus',
+                  style: TextStyle(
+                    color: context.colorScheme.hintColor,
+                  ),
+                ).tr(),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const ThemePreviewPreviewView(),
+                    ),
+                  );
+                },
+                child: Text('Preview').tr(),
+              ),
+            ],
+          ),
         ),
       ],
     );

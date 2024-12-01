@@ -13,6 +13,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme/theme_configs.dart';
 import 'package:boorusama/functional.dart';
 
 class BooruConfig extends Equatable {
@@ -36,6 +37,7 @@ class BooruConfig extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.theme,
     required this.alwaysIncludeTags,
     required this.layout,
   });
@@ -82,6 +84,9 @@ class BooruConfig extends Equatable {
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+      theme: json['theme'] == null
+          ? null
+          : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
       alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
       layout: json['layout'] == null
           ? null
@@ -109,6 +114,7 @@ class BooruConfig extends Equatable {
     postGestures: null,
     defaultPreviewImageButtonAction: null,
     listing: null,
+    theme: null,
     alwaysIncludeTags: null,
     layout: null,
   );
@@ -138,6 +144,7 @@ class BooruConfig extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        theme: null,
         alwaysIncludeTags: null,
         layout: null,
       );
@@ -161,6 +168,7 @@ class BooruConfig extends Equatable {
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
+  final ThemeConfigs? theme;
   final String? alwaysIncludeTags;
   final LayoutConfigs? layout;
 
@@ -190,6 +198,7 @@ class BooruConfig extends Equatable {
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
+      theme: theme,
       alwaysIncludeTags: alwaysIncludeTags,
       layout: layout,
     );
@@ -216,6 +225,7 @@ class BooruConfig extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        theme,
         alwaysIncludeTags,
         layout,
       ];
@@ -248,6 +258,7 @@ class BooruConfig extends Equatable {
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
+      'theme': theme?.toJson(),
       'alwaysIncludeTags': alwaysIncludeTags,
       'layout': layout?.toJson(),
     };

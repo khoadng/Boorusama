@@ -810,6 +810,65 @@ class SettingsInteractionBlocker extends ConsumerWidget {
   }
 }
 
+class ThemeSettingsInteractionBlocker extends ConsumerWidget {
+  const ThemeSettingsInteractionBlocker({
+    super.key,
+    this.padding,
+    this.onNavigateAway,
+    required this.child,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final void Function()? onNavigateAway;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasCustomTheme = ref.watch(hasCustomThemeSettingsProvider);
+    final config = ref.watchConfig;
+
+    return SettingsInteractionBlocker(
+      padding: padding,
+      block: hasCustomTheme,
+      description: RichText(
+        text: TextSpan(
+          style: context.textTheme.titleSmall?.copyWith(
+            color: context.theme.hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
+          children: [
+            const TextSpan(
+              text: 'These settings are overridden by custom theme. Go to ',
+            ),
+            TextSpan(
+              text: 'Theme',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  goToUpdateBooruConfigPage(
+                    context,
+                    config: config,
+                    initialTab: 'theme',
+                  );
+
+                  onNavigateAway?.call();
+                },
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.primary,
+              ),
+            ),
+            const TextSpan(
+              text: ' page instead.',
+            ),
+          ],
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
 class ListingSettingsInteractionBlocker extends ConsumerWidget {
   const ListingSettingsInteractionBlocker({
     super.key,
