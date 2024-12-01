@@ -8,6 +8,33 @@ import 'package:version/version.dart';
 import 'package:boorusama/functional.dart';
 import 'backups.dart';
 
+class DataBackupConverter {
+  DataBackupConverter({
+    required this.version,
+    required this.exportVersion,
+  });
+
+  final int version;
+  final Version? exportVersion;
+
+  Either<ExportError, String> tryEncode({
+    required List<dynamic> payload,
+  }) =>
+      tryEncodeData(
+        version: version,
+        exportDate: DateTime.now(),
+        exportVersion: exportVersion,
+        payload: payload,
+      );
+
+  Either<ImportError, ExportDataPayload> tryDecode({
+    required String data,
+  }) =>
+      tryDecodeData(
+        data: data,
+      );
+}
+
 Either<ExportError, String> tryEncodeData({
   required int version,
   required DateTime exportDate,

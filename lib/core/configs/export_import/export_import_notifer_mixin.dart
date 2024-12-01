@@ -14,7 +14,6 @@ import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/version.dart';
 
 mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
-  // import from json
   Future<void> import({
     required String path,
     required BuildContext context,
@@ -24,7 +23,7 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
   }) async {
     final configRepo = ref.read(booruConfigRepoProvider);
 
-    ref
+    await ref
         .read(booruConfigFileHandlerProvider)
         .import(
           from: path,
@@ -53,39 +52,8 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
             },
           ),
         );
-
-    // ref
-    //     .read(booruConfigFileHandlerProvider)
-    //     .import(
-    //       from: path,
-    //     )
-    //     .run()
-    //     .then(
-    //       (value) => value.fold(
-    //         (l) => onFailure?.call(l.toString()),
-    //         (r) async {
-    //           final appVersion = ref.read(appVersionProvider);
-    //           if (appVersion.significantlyLowerThan(r.exportVersion)) {
-    //             final shouldImport = await showBackwardImportAlertDialog(
-    //               context: context,
-    //               data: r.exportData,
-    //             );
-
-    //             if (shouldImport == null || !shouldImport) return;
-    //           }
-
-    //           final willImport = await onWillImport?.call(r);
-    //           if (willImport == null || !willImport) return;
-
-    //           await configRepo.clear();
-    //           state = await configRepo.addAll(r.data);
-    //           onSuccess?.call('Imported successfully', r.data);
-    //         },
-    //       ),
-    //     );
   }
 
-  // export to json
   Future<void> export({
     required String path,
     void Function(String message)? onFailure,
@@ -113,12 +81,11 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
     void Function(String message)? onSuccess,
     required Version? appVersion,
   }) async {
-    BooruConfigIOHandler.exportToClipboard(
-      configs: state,
-      onSucceed: () => onSuccess?.call('Copied to clipboard'),
-      onError: (e) => onFailure?.call(e),
-      appVersion: appVersion,
-    );
+    await ref.read(booruConfigFileHandlerProvider).exportToClipboard(
+          configs: state,
+          onSucceed: () => onSuccess?.call('Copied to clipboard'),
+          onError: (e) => onFailure?.call(e),
+        );
   }
 
   Future<void> importClipboard({
@@ -126,20 +93,20 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
     void Function(String message, List<BooruConfig> configs)? onSuccess,
     Future<bool> Function(BooruConfigExportData data)? onWillImport,
   }) async {
-    BooruConfigIOHandler.importFromClipboard().then(
-      (value) => value.fold(
-        (l) => onFailure?.call(l.toString()),
-        (r) async {
-          final willImport = await onWillImport?.call(r);
-          if (willImport == null || !willImport) return;
+    await ref.read(booruConfigFileHandlerProvider).importFromClipboard().then(
+          (value) => value.fold(
+            (l) => onFailure?.call(l.toString()),
+            (r) async {
+              final willImport = await onWillImport?.call(r);
+              if (willImport == null || !willImport) return;
 
-          final configRepo = ref.read(booruConfigRepoProvider);
+              final configRepo = ref.read(booruConfigRepoProvider);
 
-          await configRepo.clear();
-          state = await configRepo.addAll(r.data);
-          onSuccess?.call('Imported successfully', r.data);
-        },
-      ),
-    );
+              await configRepo.clear();
+              state = await configRepo.addAll(r.data);
+              onSuccess?.call('Imported successfully', r.data);
+            },
+          ),
+        );
   }
 }
