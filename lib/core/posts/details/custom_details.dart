@@ -113,7 +113,7 @@ class CustomDetailsChooserPage extends StatefulWidget {
   });
 
   final List<DetailsPart> availableParts;
-  final List<DetailsPart> selectedParts;
+  final List<DetailsPart>? selectedParts;
   final void Function(List<DetailsPart> parts) onDone;
 
   @override
@@ -122,7 +122,8 @@ class CustomDetailsChooserPage extends StatefulWidget {
 }
 
 class _CustomDetailsChooserPageState extends State<CustomDetailsChooserPage> {
-  late List<DetailsPart> selectedParts = widget.selectedParts;
+  late List<DetailsPart> selectedParts =
+      widget.selectedParts ?? widget.availableParts;
 
   void _onAdd(DetailsPart part) {
     setState(() {

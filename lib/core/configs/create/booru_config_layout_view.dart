@@ -41,6 +41,8 @@ class BooruConfigLayoutView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const _ThemeSection(),
+          const Divider(),
           const _HomeScreenSection(),
           const Divider(),
           const _CustomDetailsSection(),
@@ -67,8 +69,6 @@ class _CustomDetailsSection extends ConsumerWidget {
 
     return Column(
       children: [
-        _ThemeSection(),
-        const Divider(),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: ListTile(
@@ -82,8 +82,7 @@ class _CustomDetailsSection extends ConsumerWidget {
                       CupertinoPageRoute(
                         builder: (context) => CustomDetailsChooserPage(
                           availableParts: uiBuilder.full.keys.toList(),
-                          selectedParts:
-                              layout.getParsedParts()?.toList() ?? [],
+                          selectedParts: layout.getParsedParts()?.toList(),
                           onDone: (parts) => ref.editNotifier.updateLayout(
                             layout.copyWith(
                               details: () => convertDetailsParts(parts),
@@ -123,6 +122,7 @@ class _CustomDetailsSection extends ConsumerWidget {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Theme.of(context).colorScheme.outlineVariant,
+                          width: 0.75,
                         ),
                         color:
                             Theme.of(context).colorScheme.surfaceContainerLow,

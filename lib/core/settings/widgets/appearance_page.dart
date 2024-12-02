@@ -41,6 +41,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           _buildSimpleTheme(settings)
         else
           ThemeSettingsInteractionBlocker(
+            padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
