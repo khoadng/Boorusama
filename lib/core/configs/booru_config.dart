@@ -485,14 +485,17 @@ class LayoutConfigs extends Equatable {
   const LayoutConfigs({
     required this.home,
     required this.details,
+    required this.previewDetails,
   });
 
   LayoutConfigs.undefined()
       : home = CustomHomeViewKey.defaultValue(),
+        previewDetails = null,
         details = null;
 
   final CustomHomeViewKey? home;
   final List<CustomDetailsPartKey>? details;
+  final List<CustomDetailsPartKey>? previewDetails;
 
   factory LayoutConfigs.fromJson(Map<String, dynamic> json) {
     final home = json['home'] == null
@@ -505,19 +508,29 @@ class LayoutConfigs extends Equatable {
             .map((e) => CustomDetailsPartKey.fromJson(e))
             .toList();
 
+    final previewDetails = json['previewDetails'] == null
+        ? null
+        : (json['previewDetails'] as List<dynamic>)
+            .map((e) => CustomDetailsPartKey.fromJson(e))
+            .toList();
+
     return LayoutConfigs(
       home: home,
       details: details,
+      previewDetails: previewDetails,
     );
   }
 
   LayoutConfigs copyWith({
     CustomHomeViewKey? Function()? home,
     List<CustomDetailsPartKey>? Function()? details,
+    List<CustomDetailsPartKey>? Function()? previewDetails,
   }) {
     return LayoutConfigs(
       home: home != null ? home() : this.home,
       details: details != null ? details() : this.details,
+      previewDetails:
+          previewDetails != null ? previewDetails() : this.previewDetails,
     );
   }
 
@@ -534,11 +547,12 @@ class LayoutConfigs extends Equatable {
     return {
       'home': home?.toJson(),
       'details': details?.map((e) => e.toJson()).toList(),
+      'previewDetails': previewDetails?.map((e) => e.toJson()).toList(),
     };
   }
 
   @override
-  List<Object?> get props => [home, details];
+  List<Object?> get props => [home, details, previewDetails];
 }
 
 extension CustomViewKeyX on LayoutConfigs {
@@ -549,6 +563,23 @@ extension CustomViewKeyX on LayoutConfigs {
     final parts = <DetailsPart>{};
 
     for (final part in details!) {
+      final parsedPart = parseDetailsPart(part.name);
+
+      if (parsedPart != null) {
+        parts.add(parsedPart);
+      }
+    }
+
+    return parts;
+  }
+
+  Set<DetailsPart>? getPreviewParsedParts() {
+    if (previewDetails == null) return null;
+    if (previewDetails!.isEmpty) return null;
+
+    final parts = <DetailsPart>{};
+
+    for (final part in previewDetails!) {
       final parsedPart = parseDetailsPart(part.name);
 
       if (parsedPart != null) {

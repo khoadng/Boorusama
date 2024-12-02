@@ -73,6 +73,7 @@ class _BookmarkDetailsPageState
       imageUrlBuilder: (post) => post.sampleImageUrl,
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
+      preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
       topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
           post: InheritedPost.of<BookmarkPost>(context),

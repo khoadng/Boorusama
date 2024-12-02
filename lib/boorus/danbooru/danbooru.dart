@@ -355,6 +355,9 @@ class DanbooruBuilder
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    previewAllowedParts: {
+      DetailsPart.tags,
+    },
     preview: {
       DetailsPart.info: (context) => const DanbooruInformationSection(),
       DetailsPart.toolbar: (context) =>

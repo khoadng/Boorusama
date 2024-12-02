@@ -38,6 +38,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     this.uiBuilder,
     this.preferredParts,
+    this.preferredPreviewParts,
   });
 
   final List<T> posts;
@@ -48,6 +49,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final PostDetailsController<T> controller;
   final PostDetailsUIBuilder? uiBuilder;
   final Set<DetailsPart>? preferredParts;
+  final Set<DetailsPart>? preferredPreviewParts;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -311,6 +313,11 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder) {
+    final layout = ref.watchLayoutConfigs;
+    final preferredPreviewParts = widget.preferredPreviewParts ??
+        layout?.getPreviewParsedParts() ??
+        uiBuilder.preview.keys.toSet();
+
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
@@ -322,7 +329,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             color: context.colorScheme.surface,
           ),
           sliver: MultiSliver(
-            children: uiBuilder.preview.keys
+            children: preferredPreviewParts
                 .map((p) => uiBuilder.buildPart(context, p))
                 .nonNulls
                 .toList(),

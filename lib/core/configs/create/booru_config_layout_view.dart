@@ -41,9 +41,9 @@ class BooruConfigLayoutView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const _ThemeSection(),
-          const Divider(),
           const _HomeScreenSection(),
+          const Divider(),
+          const _ThemeSection(),
           const Divider(),
           const _CustomDetailsSection(),
         ],
@@ -52,11 +52,27 @@ class BooruConfigLayoutView extends ConsumerWidget {
   }
 }
 
-class _CustomDetailsSection extends ConsumerWidget {
+class _CustomDetailsSection extends ConsumerStatefulWidget {
   const _CustomDetailsSection();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_CustomDetailsSection> createState() =>
+      _CustomDetailsSectionState();
+}
+
+class _CustomDetailsSectionState extends ConsumerState<_CustomDetailsSection> {
+  final scrollController1 = ScrollController();
+  final scrollController2 = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController1.dispose();
+    scrollController2.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
     final layout = ref.watch(
             editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
@@ -66,108 +82,160 @@ class _CustomDetailsSection extends ConsumerWidget {
     final uiBuilder = ref.watchBooruBuilder(config.auth)?.postDetailsUIBuilder;
     final details = layout.details ??
         convertDetailsParts(uiBuilder?.full.keys.toList() ?? []);
+    final previewDetails = layout.previewDetails ??
+        convertDetailsParts(uiBuilder?.preview.keys.toList() ?? []);
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-            title: const Text("Information widgets"),
-            trailing: uiBuilder != null
-                ? TextButton(
-                    child: const Text('Customize'),
-                    onPressed: () => Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => CustomDetailsChooserPage(
-                          availableParts: uiBuilder.full.keys.toList(),
-                          selectedParts: layout.getParsedParts()?.toList(),
-                          onDone: (parts) => ref.editNotifier.updateLayout(
-                            layout.copyWith(
-                              details: () => convertDetailsParts(parts),
-                            ),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
+          title: const Text("Preview widgets"),
+          trailing: uiBuilder != null
+              ? TextButton(
+                  child: const Text('Customize'),
+                  onPressed: () => Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => CustomDetailsChooserPage(
+                        availableParts:
+                            uiBuilder.buildablePreviewParts.toList(),
+                        selectedParts: layout.getPreviewParsedParts()?.toList(),
+                        onDone: (parts) => ref.editNotifier.updateLayout(
+                          layout.copyWith(
+                            previewDetails: () => convertDetailsParts(parts),
                           ),
                         ),
                       ),
                     ),
-                  )
-                : null,
-          ),
+                  ),
+                )
+              : null,
         ),
         if (uiBuilder != null)
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            child: ReorderableColumn(
-              onReorder: (int oldIndex, int newIndex) {
-                final newDetails = details.toList();
-
-                final item = newDetails.removeAt(oldIndex);
-                newDetails.insert(newIndex, item);
-
-                ref.editNotifier.updateLayout(
-                  layout.copyWith(details: () => newDetails),
-                );
-              },
-              children: details
-                  .map(
-                    (e) => Container(
-                      key: ValueKey(e.name),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.outlineVariant,
-                          width: 0.75,
+          _buildDragPreviewItems(
+            'preview_details_',
+            previewDetails,
+            (parts) {
+              ref.editNotifier.updateLayout(
+                layout.copyWith(
+                  previewDetails: () => parts,
+                ),
+              );
+            },
+            scrollController1,
+          ),
+        const SizedBox(height: 8),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
+          title: const Text("Information widgets"),
+          trailing: uiBuilder != null
+              ? TextButton(
+                  child: const Text('Customize'),
+                  onPressed: () => Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => CustomDetailsChooserPage(
+                        availableParts: uiBuilder.full.keys.toList(),
+                        selectedParts: layout.getParsedParts()?.toList(),
+                        onDone: (parts) => ref.editNotifier.updateLayout(
+                          layout.copyWith(
+                            details: () => convertDetailsParts(parts),
+                          ),
                         ),
-                        color:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.drag_indicator,
-                          color: Theme.of(context).colorScheme.hintColor,
-                        ),
-                        trailing: BooruPopupMenuButton(
-                          onSelected: (value) {
-                            if (value == 'remove') {
-                              if (details.length == 1) {
-                                showErrorToast(
-                                  context,
-                                  'At least one item is required',
-                                );
-                                return;
-                              }
-
-                              ref.editNotifier.updateLayout(
-                                layout.copyWith(
-                                  details: () => details
-                                      .where((element) => element != e)
-                                      .toList(),
-                                ),
-                              );
-                            }
-                          },
-                          itemBuilder: {
-                            'remove': const Text('Remove'),
-                          },
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                        ),
-                        title: Text(e.name),
                       ),
                     ),
-                  )
-                  .toList(),
-            ),
+                  ),
+                )
+              : null,
+        ),
+        if (uiBuilder != null)
+          _buildDragPreviewItems(
+            'details_',
+            details,
+            (parts) {
+              ref.editNotifier.updateLayout(
+                layout.copyWith(
+                  details: () => parts,
+                ),
+              );
+            },
+            scrollController2,
           ),
       ],
+    );
+  }
+
+  Widget _buildDragPreviewItems(
+    String prefix,
+    List<CustomDetailsPartKey> details,
+    void Function(List<CustomDetailsPartKey> parts) onReorder,
+    ScrollController? controller,
+  ) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      child: ReorderableColumn(
+        scrollController: controller,
+        onReorder: (int oldIndex, int newIndex) {
+          final newDetails = details.toList();
+
+          final item = newDetails.removeAt(oldIndex);
+          newDetails.insert(newIndex, item);
+
+          onReorder(newDetails);
+        },
+        children: details
+            .map(
+              (e) => Container(
+                key: ValueKey(prefix + e.name),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                ),
+                margin: const EdgeInsets.symmetric(
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                    width: 0.75,
+                  ),
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListTile(
+                  leading: Icon(
+                    Icons.drag_indicator,
+                    color: Theme.of(context).colorScheme.hintColor,
+                  ),
+                  trailing: BooruPopupMenuButton(
+                    onSelected: (value) {
+                      if (value == 'remove') {
+                        if (details.length == 1) {
+                          showErrorToast(
+                            context,
+                            'At least one item is required',
+                          );
+                          return;
+                        }
+
+                        final newDetails =
+                            details.where((element) => element != e).toList();
+
+                        onReorder(newDetails);
+                      }
+                    },
+                    itemBuilder: {
+                      'remove': const Text('Remove'),
+                    },
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                  ),
+                  title: Text(e.name),
+                ),
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }
