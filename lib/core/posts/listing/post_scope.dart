@@ -48,9 +48,9 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
         final bookmarks = settings.shouldFilterBookmarks
             ? ref.read(bookmarkProvider).bookmarks
-            : <Bookmark>[].lock;
+            : const IMap<String, Bookmark>.empty();
 
-        return bookmarks.map((e) => e.originalUrl).toSet();
+        return bookmarks.keys.toSet();
       } catch (_) {
         return {};
       }

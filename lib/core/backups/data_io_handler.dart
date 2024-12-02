@@ -1,9 +1,6 @@
 // Dart imports:
 import 'dart:io';
 
-// Package imports:
-import 'package:version/version.dart';
-
 // Project imports:
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -18,19 +15,16 @@ class DataIOHandler {
     required this.permissionRequester,
     required this.exporter,
     required this.importer,
-    required this.version,
-    required this.exportVersion,
+    required this.converter,
   });
 
   factory DataIOHandler.file({
     required DeviceInfo deviceInfo,
     required String prefixName,
-    required int version,
-    required Version? exportVersion,
+    required DataBackupConverter converter,
   }) =>
       DataIOHandler(
-        version: version,
-        exportVersion: exportVersion,
+        converter: converter,
         permissionChecker: () => checkMediaPermissions(deviceInfo),
         permissionRequester: () => requestMediaPermissions(deviceInfo),
         exporter: (path, data) async {
@@ -52,8 +46,7 @@ class DataIOHandler {
   final Future<PermissionStatus> Function() permissionRequester;
   final Future<void> Function(String path, String data) exporter;
   final Future<String> Function(String path) importer;
-  final int version;
-  final Version? exportVersion;
+  final DataBackupConverter converter;
 
   TaskEither<ExportError, Unit> export({
     required List<dynamic> data,
@@ -71,12 +64,8 @@ class DataIOHandler {
             }
           }
 
-          final jsonString = await $(tryEncodeData(
-            version: version,
-            exportDate: DateTime.now(),
-            exportVersion: exportVersion,
-            payload: data,
-          ).toTaskEither());
+          final jsonString =
+              await $(converter.tryEncode(payload: data).toTaskEither());
 
           return $(TaskEither.tryCatch(
             () async {
@@ -107,7 +96,7 @@ class DataIOHandler {
       TaskEither.Do(
         ($) async {
           final json = await importer(path);
-          final data = $(TaskEither.fromEither(tryDecodeData(data: json)));
+          final data = await $(converter.tryDecode(data: json).toTaskEither());
 
           return data;
         },

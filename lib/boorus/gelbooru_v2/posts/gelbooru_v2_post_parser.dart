@@ -16,7 +16,7 @@ GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
     thumbnailImageUrl: dto.previewUrl ?? '',
     sampleImageUrl: dto.sampleUrl ?? dto.fileUrl ?? '',
     originalImageUrl: dto.fileUrl ?? '',
-    tags: dto.tags?.split(' ').toSet() ?? {},
+    tags: dto.tags.splitTagString(),
     width: dto.width?.toDouble() ?? 0,
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.fileUrl ?? 'foo.png').substring(1),
@@ -43,6 +43,6 @@ bool _checkIfHasNotes(PostV2Dto dto) {
   }
 
   // check if tags contains 'translated' and not contains 'hard_translated'
-  final tags = dto.tags?.split(' ') ?? [];
+  final tags = dto.tags.splitTagString();
   return tags.contains('translated') && !tags.contains('hard_translated');
 }
