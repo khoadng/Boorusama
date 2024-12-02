@@ -24,20 +24,33 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
   final sortType = ref.watch(selectedBookmarkSortTypeProvider);
   final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
-  final tagsList = tags.split(' ').where((e) => e.isNotEmpty).toList();
+  // Only split tags if there are any
+  final tagsList = tags.isEmpty
+      ? const <String>[]
+      : tags.split(' ').where((e) => e.isNotEmpty).toList();
 
-  return bookmarks
-      .where((bookmark) => selectedBooruUrl == null
-          ? true
-          : bookmark.sourceUrl.contains(selectedBooruUrl))
-      .where((bookmark) => tagsList.every((tag) => bookmark.tags.contains(tag)))
+  // Filter in a single pass without converting to values() first
+  final filtered = selectedBooruUrl == null && tagsList.isEmpty
+      // No filtering needed, just sort all bookmarks
+      ? bookmarks.entries.map((e) => e.value)
+      : bookmarks.entries
+          .where((entry) =>
+              // URL filter
+              (selectedBooruUrl == null ||
+                  entry.value.sourceUrl.contains(selectedBooruUrl)) &&
+              // Tags filter
+              (tagsList.isEmpty ||
+                  tagsList.every((tag) => entry.value.tags.contains(tag))))
+          .map((e) => e.value);
+
+  // Sort filtered results
+  return filtered
       .sorted((a, b) => switch (sortType) {
             BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
             BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt)
           })
       .toList();
 });
-
 final bookmarkEditProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 final tagCountProvider = Provider.autoDispose.family<int, String>((ref, tag) {
@@ -54,9 +67,10 @@ final booruTypeCountProvider =
 
   final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
-  return bookmarks
-      .where((bookmark) => intToBooruType(bookmark.booruId) == booruType)
-      .length;
+  return bookmarks.entries.fold(
+      0,
+      (count, entry) =>
+          intToBooruType(entry.value.booruId) == booruType ? count + 1 : count);
 });
 
 final tagColorProvider = FutureProvider.autoDispose.family<Color?, String>(
@@ -78,15 +92,15 @@ final tagColorProvider = FutureProvider.autoDispose.family<Color?, String>(
 final tagMapProvider = Provider<Map<String, int>>((ref) {
   final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
-  final tagMap = <String, int>{};
-
-  for (final bookmark in bookmarks) {
-    for (final tag in bookmark.tags) {
-      tagMap[tag] = (tagMap[tag] ?? 0) + 1;
-    }
-  }
-
-  return tagMap;
+  return bookmarks.values.fold<Map<String, int>>(
+    {},
+    (map, bookmark) {
+      for (final tag in bookmark.tags) {
+        map.update(tag, (value) => value + 1, ifAbsent: () => 1);
+      }
+      return map;
+    },
+  );
 });
 
 final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
@@ -95,11 +109,12 @@ final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
 
   final tagMap = ref.watch(tagMapProvider);
 
-  final tags = tagMap.keys.toList();
-
-  tags.sort((a, b) => tagMap[b]!.compareTo(tagMap[a]!));
-
-  return tags.where((e) => e.contains(tag)).toList().take(10).toList();
+  return tagMap.entries
+      .where((e) => e.key.contains(tag))
+      .sorted((a, b) => b.value.compareTo(a.value))
+      .take(10)
+      .map((e) => e.key)
+      .toList();
 });
 
 final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
@@ -125,15 +140,14 @@ final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
         .toList());
 
 final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
-  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
-
-  return bookmarks
-      .map((e) => e.sourceUrl)
-      .map((e) => Uri.tryParse(e))
-      .nonNulls
-      .map((e) => e.host)
-      .toSet()
-      .toList();
+  return ref.watch(bookmarkProvider).bookmarks.values.fold(
+    <String>{},
+    (hosts, bookmark) {
+      final uri = Uri.tryParse(bookmark.sourceUrl);
+      if (uri?.host != null) hosts.add(uri!.host);
+      return hosts;
+    },
+  ).toList();
 });
 
 final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {

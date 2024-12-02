@@ -13,10 +13,12 @@ class BookmarkHiveRepository implements BookmarkRepository {
 
   @override
   Future<Bookmark> addBookmark(int booruId, String booruUrl, Post post) async {
+    final now = DateTime.now();
+
     final favoriteHiveObject = BookmarkHiveObject(
       booruId: booruId,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: now,
+      updatedAt: now,
       thumbnailUrl: post.thumbnailImageUrl,
       sampleUrl: post.sampleImageUrl,
       originalUrl: post.originalImageUrl,
@@ -28,27 +30,21 @@ class BookmarkHiveRepository implements BookmarkRepository {
       realSourceUrl: post.source.url,
       format: post.format,
     );
-    await _box.add(favoriteHiveObject);
+    final id = await _box.add(favoriteHiveObject);
 
-    return tryMapBookmarkHiveObjectToBookmark(favoriteHiveObject).fold(
-      (l) => Bookmark.empty,
-      (r) => r,
-    );
+    return tryMapBookmarkHiveObjectToBookmark(favoriteHiveObject)
+        .getOrElse((_) => Bookmark.empty)
+        .copyWith(id: id);
   }
 
   @override
   Future<void> removeBookmark(Bookmark favorite) async {
-    final hiveObject = _box.values.firstWhere(
-      (element) => element.key == favorite.id,
-      orElse: () => throw Exception('Favorite not found'),
-    );
-    await hiveObject.delete();
+    await _box.delete(favorite.id);
   }
 
   @override
   Future<void> updateBookmark(Bookmark favorite) async {
-    final obj = favoriteToHiveObject(favorite);
-    _box.put(favorite.id, obj);
+    await _box.put(favorite.id, favoriteToHiveObject(favorite));
   }
 
   @override
@@ -64,14 +60,13 @@ class BookmarkHiveRepository implements BookmarkRepository {
     Iterable<Post> posts,
   ) async {
     final futures = posts.map((post) => addBookmark(booruId, booruUrl, post));
-    final bookmarks = await Future.wait(futures);
-    return bookmarks.toList();
+
+    return Future.wait(futures);
   }
 
   @override
   Future<void> addBookmarkWithBookmarks(List<Bookmark> bookmarks) {
-    final futures =
-        bookmarks.map((bookmark) => _box.add(favoriteToHiveObject(bookmark)));
-    return Future.wait(futures);
+    final hiveObjects = bookmarks.map(favoriteToHiveObject).toList();
+    return _box.addAll(hiveObjects);
   }
 }
