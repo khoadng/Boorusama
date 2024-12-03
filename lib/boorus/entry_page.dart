@@ -38,7 +38,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.showChangelogDialogIfNeeded();
       final configs = ref.read(booruConfigProvider);
-      updateAndroidWidget("You have ${configs?.length ?? 0} boorus");
+      updateAndroidWidget("You have ${configs.length} boorus");
     });
   }
 
