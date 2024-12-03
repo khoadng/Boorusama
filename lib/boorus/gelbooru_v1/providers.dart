@@ -1,11 +1,12 @@
 part of 'gelbooru_v1.dart';
 
-final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final gelbooruV1PostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(gelbooruV1ClientProvider(config));
+    final client = ref.watch(gelbooruV1ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -19,7 +20,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
                   thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
                   sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
                   originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
-                  tags: e.tags?.split(' ').toSet() ?? {},
+                  tags: e.tags.splitTagString(),
                   rating: mapStringToRating(e.rating),
                   hasComment: false,
                   isTranslated: false,
@@ -51,7 +52,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final gelbooruV1AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = GelbooruClient.gelbooru();
 
   return AutocompleteRepositoryBuilder(
@@ -72,11 +73,11 @@ final gelbooruV1AutocompleteRepoProvider =
 });
 
 final gelbooruV1ClientProvider =
-    Provider.family<GelbooruV1Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<GelbooruV1Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return GelbooruV1Client(
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     dio: dio,
   );
 });

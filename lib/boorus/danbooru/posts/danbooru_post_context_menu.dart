@@ -29,7 +29,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfig;
+    final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
@@ -131,7 +131,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return GenericContextMenu(
       buttonConfigs: [

@@ -20,7 +20,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/widgets/info_container.dart';
 
 part 'providers.dart';
@@ -111,7 +110,7 @@ class GelbooruV1SearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return SearchPageScaffold(
       noticeBuilder: (context) => InfoContainer(

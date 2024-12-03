@@ -5,9 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/wikis/wikis.dart';
 import 'package:boorusama/core/configs/configs.dart';
 
-class WikisNotifier extends FamilyNotifier<Map<String, Wiki?>, BooruConfig> {
+class WikisNotifier
+    extends FamilyNotifier<Map<String, Wiki?>, BooruConfigAuth> {
   @override
-  Map<String, Wiki?> build(BooruConfig arg) {
+  Map<String, Wiki?> build(BooruConfigAuth arg) {
     return {};
   }
 

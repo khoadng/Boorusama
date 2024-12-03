@@ -79,7 +79,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   }
 
   Widget _buildSearchBar() {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return SearchAppBar(
       dense: true,
@@ -187,7 +187,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                           selectedTagController.addTagFromSearchHistory(value);
                           FocusScope.of(context).unfocus();
                         },
-                        metatagsBuilder: ref.watchConfig.booruType ==
+                        metatagsBuilder: ref.watchConfigAuth.booruType ==
                                 BooruType.danbooru
                             ? (context) => DanbooruMetatagsSection(
                                   onOptionTap: (value) {

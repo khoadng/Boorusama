@@ -28,7 +28,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final fromUser = ref.watch(danbooruCreatorProvider(dmail.fromId));
     final toUser = ref.watch(danbooruCreatorProvider(dmail.toId));
 

@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/error.dart';
 
 const _kFirstPage = 1;
 const _kJumpStep = 1;
@@ -23,7 +24,6 @@ extension TagCountX on Map<String, Set<int>> {
 class PostGridController<T extends Post> extends ChangeNotifier {
   PostGridController({
     required this.fetcher,
-    required this.refresher,
     required this.blacklistedTagsFetcher,
     required this.mountedChecker,
     this.debounceDuration = const Duration(milliseconds: 500),
@@ -31,8 +31,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     this.blacklistedUrlsFetcher,
   }) : _pageMode = pageMode;
 
-  final ItemFetcher<T> fetcher;
-  final ItemRefresher<T> refresher;
+  final PostScopeFetcher<T> fetcher;
   PageMode _pageMode;
 
   final Set<String> Function()? blacklistedUrlsFetcher;
@@ -54,6 +53,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   int _total = 0;
 
   Iterable<T> get items => _filteredItems;
+  Iterable<T> get allItems => _items;
 
   bool get hasMore => _hasMore;
   bool get loading => _loading;
@@ -74,6 +74,29 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   final activeFilters = ValueNotifier<Map<String, bool>>({});
   final tagCounts = ValueNotifier<Map<String, Set<int>>>({});
   final hasBlacklist = ValueNotifier(false);
+
+  final errors = ValueNotifier<BooruError?>(null);
+
+  Future<PostResult<T>> _refreshPosts() => _fetchPosts(_kFirstPage);
+
+  Future<PostResult<T>> _fetchPosts(int page) async {
+    if (errors.value != null) {
+      errors.value = null;
+    }
+
+    final result = await fetcher(page).run();
+
+    return result.fold(
+      (l) {
+        if (mountedChecker()) {
+          errors.value = l;
+        }
+
+        return <T>[].toResult();
+      },
+      (r) => r,
+    );
+  }
 
   Future<void> setBlacklistedTags(Set<String> tags) async {
     // check if the tags are the same
@@ -190,8 +213,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     count.value = null;
     notifyListeners();
 
-    final newItems =
-        await (_pageMode == PageMode.infinite ? refresher() : fetcher(_page));
+    final newItems = await (_pageMode == PageMode.infinite
+        ? _refreshPosts()
+        : _fetchPosts(_page));
 
     if (!mountedChecker()) return;
 
@@ -222,7 +246,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       }
       notifyListeners();
 
-      final newItems = await fetcher(_page);
+      final newItems = await _fetchPosts(_page);
       _hasMore = newItems.posts.isNotEmpty;
       if (_hasMore) {
         await _addAll(newItems.posts);
@@ -245,7 +269,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _setRefreshing(true);
     notifyListeners();
 
-    final newItems = await fetcher(_page);
+    final newItems = await _fetchPosts(_page);
     _hasMore = newItems.posts.isNotEmpty;
     if (_hasMore) {
       await _addAll(newItems.posts);

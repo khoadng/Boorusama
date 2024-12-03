@@ -9,10 +9,10 @@ import 'comment_votes_provider.dart';
 import 'danbooru_comment.dart';
 import 'danbooru_comment_vote.dart';
 
-class CommentVotesNotifier
-    extends FamilyNotifier<Map<CommentId, DanbooruCommentVote>, BooruConfig> {
+class CommentVotesNotifier extends FamilyNotifier<
+    Map<CommentId, DanbooruCommentVote>, BooruConfigAuth> {
   @override
-  Map<int, DanbooruCommentVote> build(BooruConfig arg) {
+  Map<int, DanbooruCommentVote> build(BooruConfigAuth arg) {
     return {};
   }
 

@@ -13,7 +13,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../related_tags/related_tags.dart';
 
@@ -162,7 +161,7 @@ class _RelatedTagChips extends ConsumerWidget {
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(
-                text: tag.name.replaceUnderscoreWithSpace(),
+                text: tag.name.replaceAll('_', ' '),
                 style: TextStyle(
                   color: selected
                       ? colors?.foregroundColor

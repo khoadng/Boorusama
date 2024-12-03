@@ -27,7 +27,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return DefaultMultiSelectionActions(
       controller: controller,
@@ -117,7 +117,7 @@ class MassEditRatingSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedRating = ref.watch(_selectedRatingProvider);
     final notifier =
-        ref.watch(danbooruTagListProvider(ref.watchConfig).notifier);
+        ref.watch(danbooruTagListProvider(ref.watchConfigAuth).notifier);
 
     return Material(
       color: Theme.of(context).colorScheme.surfaceContainer,

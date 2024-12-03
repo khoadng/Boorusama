@@ -9,9 +9,8 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'comments.dart';
 
-final danbooruCommentVoteRepoProvider =
-    Provider.family<CommentVoteRepository<DanbooruCommentVote>, BooruConfig>(
-        (ref, config) {
+final danbooruCommentVoteRepoProvider = Provider.family<
+    CommentVoteRepository<DanbooruCommentVote>, BooruConfigAuth>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   return CommentVoteRepositoryBuilder(
@@ -33,7 +32,7 @@ final danbooruCommentVoteRepoProvider =
 });
 
 final danbooruCommentVotesProvider = NotifierProvider.family<
-    CommentVotesNotifier, Map<CommentId, DanbooruCommentVote>, BooruConfig>(
+    CommentVotesNotifier, Map<CommentId, DanbooruCommentVote>, BooruConfigAuth>(
   CommentVotesNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -43,7 +42,7 @@ final danbooruCommentVotesProvider = NotifierProvider.family<
 // comment vote for a single comment
 final danbooruCommentVoteProvider = Provider.autoDispose
     .family<DanbooruCommentVote?, CommentId>((ref, commentId) {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final votes = ref.watch(danbooruCommentVotesProvider(config));
   return votes[commentId];
 });

@@ -14,7 +14,7 @@ class E621FavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: E621FavoritesPageInternal(
@@ -34,8 +34,8 @@ class E621FavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'fav:${config.login?.replaceAll(' ', '_')}';
+    final config = ref.watchConfigSearch;
+    final query = 'fav:${config.auth.login?.replaceAll(' ', '_')}';
 
     return FavoritesPageScaffold(
         favQueryBuilder: () => query,

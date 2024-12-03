@@ -9,7 +9,8 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'danbooru_post_version.dart';
 
 final danbooruPostVersionsRepoProvider =
-    Provider.family<DanbooruPostVersionRepository, BooruConfig>((ref, config) {
+    Provider.family<DanbooruPostVersionRepository, BooruConfigAuth>(
+        (ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   return DanbooruPostVersionRepository(client: client);
@@ -17,14 +18,13 @@ final danbooruPostVersionsRepoProvider =
 
 final danbooruPostVersionsProvider = FutureProvider.autoDispose
     .family<List<DanbooruPostVersion>, int>((ref, id) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final repo = ref.watch(danbooruPostVersionsRepoProvider(config));
 
   return repo.getPostVersions(id: id);
 });
 
 class DanbooruPostVersionRepository {
-
   DanbooruPostVersionRepository({
     required this.client,
   });

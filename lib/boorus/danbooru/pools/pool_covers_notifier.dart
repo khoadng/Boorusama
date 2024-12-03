@@ -8,9 +8,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 class PoolCoversNotifier
-    extends FamilyNotifier<Map<PoolId, PoolCover?>, BooruConfig> {
+    extends FamilyNotifier<Map<PoolId, PoolCover?>, BooruConfigSearch> {
   @override
-  Map<PoolId, PoolCover?> build(BooruConfig arg) {
+  Map<PoolId, PoolCover?> build(BooruConfigSearch arg) {
     return {};
   }
 

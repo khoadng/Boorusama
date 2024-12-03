@@ -34,7 +34,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
   final _autoScrollController = AutoScrollController();
   final _selectedMostSearchedTag = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.readBooruBuilder(ref.readConfig),
+    builder: ref.read(currentBooruBuilderProvider),
     tagInfo: ref.read(tagInfoProvider),
   );
 
@@ -48,21 +48,28 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
     return PostScope(
       fetcher: (page) {
-        final tag = context.isLandscapeLayout
+        final tag = context.isLargeScreen
             ? selectedTagString.value
             : _selectedMostSearchedTag.value;
 
         return postRepo.getPosts(tag, page);
       },
-      builder: (context, controller, errors) => DanbooruInfinitePostList(
-        errors: errors,
+      builder: (context, controller) => PostGrid(
         controller: controller,
         scrollController: _autoScrollController,
+        itemBuilder:
+            (context, index, multiSelectController, scrollController) =>
+                DefaultDanbooruImageGridItem(
+          index: index,
+          multiSelectController: multiSelectController,
+          autoScrollController: scrollController,
+          controller: controller,
+        ),
         sliverHeaders: [
           SliverHomeSearchBar(
             selectedTagController: selectedTagController,
@@ -74,12 +81,12 @@ class _LatestViewState extends ConsumerState<LatestView> {
           ),
           const SliverAppAnnouncementBanner(),
           const SliverUnreadMailsBanner(),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: controller,
             ),
-          if (!context.isLandscapeLayout)
+          if (!context.isLargeScreen)
             SliverToBoxAdapter(
               child: ValueListenableBuilder<String>(
                 valueListenable: _selectedMostSearchedTag,

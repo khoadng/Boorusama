@@ -47,7 +47,7 @@ class NotesControllerNotifier
     extends AutoDisposeFamilyNotifier<NotesControllerState, Post> {
   @override
   NotesControllerState build(Post arg) {
-    ref.watchConfig;
+    ref.watchConfigAuth;
 
     return NotesControllerState.initial();
   }
@@ -62,7 +62,7 @@ class NotesControllerNotifier
     if (state.isInvalidNoteState(arg)) return;
 
     if (state.notes.isEmpty && arg.isTranslated) {
-      final noteRepo = ref.read(noteRepoProvider(ref.readConfig));
+      final noteRepo = ref.read(noteRepoProvider(ref.readConfigAuth));
 
       final notes = await noteRepo.getNotes(arg.id);
 

@@ -21,7 +21,6 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/router.dart';
 import 'sankaku_post.dart';
 
@@ -81,12 +80,10 @@ class SankakuBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => const SankakuHomePage();
+  HomePageBuilder get homePageBuilder => (context) => const SankakuHomePage();
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as SankakuPost).toList();
 
         return PostDetailsScope(
@@ -105,7 +102,7 @@ class SankakuBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const SankakuFavoritesPage();
+      (context) => const SankakuFavoritesPage();
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -162,7 +159,7 @@ class SankakuArtistPostsSection extends ConsumerWidget {
           ? post.artistTags
               .map((tag) => SliverArtistPostList(
                     tag: tag,
-                    builder: (tag) => ref
+                    child: ref
                         .watch(sankakuArtistPostsProvider(
                             post.artistTags.firstOrNull))
                         .maybeWhen(
@@ -219,7 +216,7 @@ class SankakuArtistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

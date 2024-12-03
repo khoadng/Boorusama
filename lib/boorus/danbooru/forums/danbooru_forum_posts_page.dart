@@ -19,7 +19,6 @@ import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/string.dart';
 
 class DanbooruForumPostsPage extends ConsumerStatefulWidget {
   const DanbooruForumPostsPage({
@@ -61,7 +60,7 @@ class _DanbooruForumPostsPageState
     }
 
     final posts = await ref
-        .read(danbooruForumPostRepoProvider(ref.readConfig))
+        .read(danbooruForumPostRepoProvider(ref.readConfigAuth))
         .getForumPostsOrEmpty(
           widget.topic.id,
           page: pageKey,
@@ -105,7 +104,7 @@ class _DanbooruForumPostsPageState
   }
 
   Widget _buildPost(DanbooruForumPost post) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final creator = ref.watch(danbooruCreatorProvider(post.creatorId));
     final creatorName = creator?.name ?? '...';
     final creatorLevel = creator?.level ?? UserLevel.member;
@@ -199,7 +198,7 @@ class _VoteChips extends ConsumerWidget {
           color: _color(e.type),
           borderColor: _borderColor(e.type),
           label: Text(
-            creator?.name.replaceUnderscoreWithSpace() ?? 'User',
+            creator?.name.replaceAll('_', ' ') ?? 'User',
             style: TextStyle(
               color: creator?.level.toColor(context),
               fontWeight: FontWeight.w500,

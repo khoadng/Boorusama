@@ -11,7 +11,6 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../users/users.dart';
 import 'favorite_groups.dart';
@@ -47,8 +46,7 @@ class _EditFavoriteGroupDialogState
 
     if (widget.initialData != null) {
       textController.text = widget.initialData!.postIds.join(' ');
-      nameController.text =
-          widget.initialData!.name.replaceUnderscoreWithSpace();
+      nameController.text = widget.initialData!.name.replaceAll('_', ' ');
       isPrivate = !widget.initialData!.isPublic;
     }
   }
@@ -62,7 +60,7 @@ class _EditFavoriteGroupDialogState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return BooruDialog(
       color: context.colorScheme.surfaceContainer,
@@ -220,7 +218,7 @@ class PrivacyToggle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.readConfig;
+    final config = ref.watchConfigAuth;
     final currentUser = ref.watch(danbooruCurrentUserProvider(config));
 
     return BooruAnimatedCrossFade(

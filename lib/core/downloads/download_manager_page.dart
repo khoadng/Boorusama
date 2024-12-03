@@ -15,7 +15,6 @@ import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'l10n.dart';
 

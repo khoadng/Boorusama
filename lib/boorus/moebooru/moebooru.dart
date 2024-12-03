@@ -16,7 +16,6 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';
@@ -28,13 +27,13 @@ import 'pages/widgets/moebooru_information_section.dart';
 import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
-    Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<MoebooruClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return MoebooruClient.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
     dio: dio,
   );
 });
@@ -77,8 +76,7 @@ class MoebooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => MoebooruHomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const MoebooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -109,11 +107,10 @@ class MoebooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const MoebooruFavoritesPage();
+      (context) => const MoebooruFavoritesPage();
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as MoebooruPost).toList();
 
         return PostDetailsScope(
@@ -172,7 +169,7 @@ class MoebooruArtistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

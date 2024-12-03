@@ -9,14 +9,15 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/tags/tags.dart';
 
 final moebooruTagRepoProvider =
-    Provider.family<MoebooruTagRepository, BooruConfig>((ref, config) {
+    Provider.family<MoebooruTagRepository, BooruConfigAuth>((ref, config) {
   return MoebooruTagRepository(
     repo: ref.watch(moebooruTagSummaryRepoProvider(config)),
   );
 });
 
 final moebooruAllTagsProvider =
-    FutureProvider.family<Map<String, Tag>, BooruConfig>((ref, config) async {
+    FutureProvider.family<Map<String, Tag>, BooruConfigAuth>(
+        (ref, config) async {
   if (config.booruType != BooruType.moebooru) return {};
 
   final repo = ref.watch(moebooruTagSummaryRepoProvider(config));

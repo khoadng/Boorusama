@@ -43,7 +43,7 @@ class _Logo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -57,7 +57,7 @@ class _Tile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,6 +96,11 @@ class _EditConfigButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
+    final hasConfigs = ref.watch(hasBooruConfigsProvider);
+
+    if (!hasConfigs) {
+      return const SizedBox.shrink();
+    }
 
     return Material(
       color: Colors.transparent,

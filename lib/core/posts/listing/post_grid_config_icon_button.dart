@@ -9,16 +9,15 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
@@ -31,7 +30,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsNotifier = ref.watch(settingsProvider.notifier);
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));
     final imageListType = ref.watch(
@@ -114,8 +113,8 @@ class PostGridActionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postStatsPageBuilder =
-        ref.watchBooruBuilder(ref.watchConfig)?.postStatisticsPageBuilder;
-    final settingsNotifier = ref.watch(settingsProvider.notifier);
+        ref.watch(currentBooruBuilderProvider)?.postStatisticsPageBuilder;
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
     final mobileButtons = [
       ListingSettingsInteractionBlocker(

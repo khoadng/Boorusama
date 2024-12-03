@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/routers/routers.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'widgets/dialog_page.dart';
 
 GoRouterPageBuilder genericMobilePageBuilder({
   required Widget Function(BuildContext context, GoRouterState state) builder,
@@ -18,12 +18,45 @@ GoRouterPageBuilder genericMobilePageBuilder({
           child: builder(context, state),
         );
 
+GoRouterPageBuilder largeScreenCompatPageBuilderWithExtra<T>({
+  String? errorScreenMessage,
+  bool fullScreen = false,
+  required Widget Function(BuildContext context, GoRouterState state, T extra)
+      pageBuilder,
+}) =>
+    (context, state) {
+      final extra = state.extra as T?;
+
+      if (extra == null) {
+        return largeScreenAwarePageBuilder(
+          useDialog: !fullScreen,
+          builder: (context, state) => LargeScreenAwareInvalidPage(
+            useDialog: !fullScreen,
+            message: errorScreenMessage ?? 'Invalid parameters',
+          ),
+        )(context, state);
+      }
+
+      final builtPage = pageBuilder(context, state, extra);
+
+      final page = context.isLargeScreen && !fullScreen
+          ? BooruDialog(
+              child: builtPage,
+            )
+          : builtPage;
+
+      return largeScreenAwarePageBuilder(
+        useDialog: !fullScreen,
+        builder: (context, state) => page,
+      )(context, state);
+    };
+
 GoRouterPageBuilder largeScreenAwarePageBuilder<T>({
   required Widget Function(BuildContext context, GoRouterState state) builder,
   bool useDialog = false,
 }) =>
     (context, state) {
-      return context.orientation.isPortrait
+      return !context.isLargeScreen
           ? CupertinoPage<T>(
               key: state.pageKey,
               name: state.name,

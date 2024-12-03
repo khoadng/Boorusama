@@ -9,19 +9,20 @@ import '../users/users.dart';
 import 'favorite_groups.dart';
 
 class FavoriteGroupsNotifier
-    extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfig> {
+    extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
   @override
-  List<DanbooruFavoriteGroup>? build(BooruConfig arg) {
+  List<DanbooruFavoriteGroup>? build(BooruConfigSearch arg) {
     refresh();
     return null;
   }
 
   FavoriteGroupRepository get repo =>
-      ref.read(danbooruFavoriteGroupRepoProvider(arg));
+      ref.read(danbooruFavoriteGroupRepoProvider(arg.auth));
 
   Future<void> refresh() async {
-    if (!arg.hasLoginDetails()) return;
-    final groups = await repo.getFavoriteGroupsByCreatorName(name: arg.login!);
+    if (!arg.auth.hasLoginDetails()) return;
+    final groups =
+        await repo.getFavoriteGroupsByCreatorName(name: arg.auth.login!);
 
     //TODO: shouldn't load everything
     final ids = groups
@@ -43,7 +44,8 @@ class FavoriteGroupsNotifier
     required bool isPrivate,
     void Function(String message, bool translatable)? onFailure,
   }) async {
-    final currentUser = await ref.read(danbooruCurrentUserProvider(arg).future);
+    final currentUser =
+        await ref.read(danbooruCurrentUserProvider(arg.auth).future);
 
     if (currentUser == null) return;
 
@@ -86,7 +88,7 @@ class FavoriteGroupsNotifier
     }
   }
 
-  Future<void> edit({
+  Future<bool> edit({
     required DanbooruFavoriteGroup group,
     String? initialIds,
     String? name,
@@ -110,8 +112,10 @@ class FavoriteGroupsNotifier
 
     if (success) {
       refresh();
+      return true;
     } else {
       onFailure?.call('Fail to edit favorite group', false);
+      return false;
     }
   }
 
@@ -175,10 +179,82 @@ class FavoriteGroupsNotifier
   }
 }
 
+extension FavoriteGroupsNotifierX on FavoriteGroupsNotifier {
+  Future<List<int>?> editIds({
+    required DanbooruFavoriteGroup group,
+    required Set<int> newIds,
+    required Set<int> oldIds,
+    required Set<int> allIds,
+    void Function(String message, bool translatable)? onFailure,
+  }) async {
+    final updatedIds = updateOrder(allIds, oldIds, newIds);
+
+    final success = await edit(
+      group: group,
+      initialIds: updatedIds.join(' '),
+      onFailure: onFailure,
+    );
+
+    return success ? updatedIds : null;
+  }
+}
+
+List<int> updateOrder(
+  Set<int> allIds,
+  Set<int> oldIds,
+  Set<int> newIds,
+) {
+  // Handle empty inputs
+  if (allIds.isEmpty) return [];
+  if (oldIds.isEmpty) return allIds.toList();
+  if (newIds.isEmpty) return []; // If newIds is empty, everything is deleted
+
+  // Validate that oldIds and newIds are subsets of allIds
+  if (!oldIds.every((id) => allIds.contains(id)) ||
+      !newIds.every((id) => allIds.contains(id))) {
+    return allIds.toList(); // Return original order if invalid IDs found
+  }
+
+  final allIdString = allIds.join(' ');
+  final oldIdString = oldIds.join(' ');
+
+  // Make sure sequence of IDs is the same
+  if (!allIdString.contains(oldIdString)) {
+    throw ArgumentError('Old IDs are not have the same sequence as all IDs');
+  }
+
+  // Remove any IDs in newIds that are not in oldIds
+  final validNewIds = newIds.where((id) => oldIds.contains(id)).toSet();
+
+  // Convert allIds to list and remove deleted items
+  final toDelete = oldIds.difference(validNewIds);
+  final result = allIds.where((id) => !toDelete.contains(id)).toList();
+
+  // Check if there's any intersection between old and new IDs
+  if (oldIds.intersection(validNewIds).isEmpty) return result;
+
+  // Find the start index of the section to reorder
+  final firstOldId = oldIds.firstWhere(
+    (id) => result.contains(id),
+    orElse: () => result.first,
+  );
+  final startIndex = result.indexOf(firstOldId);
+
+  // Replace section with new order
+  final newIdsOrdered = validNewIds.toList();
+  for (var i = 0;
+      i < newIdsOrdered.length && (startIndex + i) < result.length;
+      i++) {
+    result[startIndex + i] = newIdsOrdered[i];
+  }
+
+  return result;
+}
+
 class FavoriteGroupPreviewsNotifier
-    extends FamilyNotifier<Map<int, String>, BooruConfig> {
+    extends FamilyNotifier<Map<int, String>, BooruConfigSearch> {
   @override
-  Map<int, String> build(BooruConfig arg) {
+  Map<int, String> build(BooruConfigSearch arg) {
     return {};
   }
 

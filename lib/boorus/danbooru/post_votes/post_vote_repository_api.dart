@@ -8,10 +8,10 @@ import 'post_vote_repository.dart';
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
     required this.client,
-    required this.booruConfig,
+    required this.authConfig,
   });
 
-  final BooruConfig booruConfig;
+  final BooruConfigAuth authConfig;
   final DanbooruClient client;
 
   @override

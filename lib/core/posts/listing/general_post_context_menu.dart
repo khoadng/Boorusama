@@ -29,12 +29,12 @@ class GeneralPostContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfig;
+    final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruType);
     final commentPageBuilder =
-        ref.watchBooruBuilder(booruConfig)?.commentPageBuilder;
+        ref.watch(currentBooruBuilderProvider)?.commentPageBuilder;
 
     return GenericContextMenu(
       buttonConfigs: [

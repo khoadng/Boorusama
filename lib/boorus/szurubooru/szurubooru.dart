@@ -84,21 +84,18 @@ class SzurubooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const SzurubooruFavoritesPage();
+      (context) => const SzurubooruFavoritesPage();
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => SzurubooruHomePage(
-            config: config,
-          );
+      (context) => const SzurubooruHomePage();
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
       SzurubooruSearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
 
         return PostDetailsScope(
@@ -147,10 +144,10 @@ class SzurubooruSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return SearchPageScaffold(
-      noticeBuilder: (context) => !config.hasLoginDetails()
+      noticeBuilder: (context) => !config.auth.hasLoginDetails()
           ? InfoContainer(
               contentBuilder: (context) => const AppHtml(
                 data:
@@ -178,7 +175,7 @@ class SzurubooruCommentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final client = ref.watch(szurubooruClientProvider(ref.watchConfig));
+    final client = ref.watch(szurubooruClientProvider(ref.watchConfigAuth));
 
     return CommentPageScaffold(
       postId: postId,
@@ -207,7 +204,7 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
       child: SzurubooruFavoritesPageInternal(
@@ -227,8 +224,8 @@ class SzurubooruFavoritesPageInternal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'fav:${config.login?.replaceAll(' ', '_')}';
+    final config = ref.watchConfigSearch;
+    final query = 'fav:${config.auth.login?.replaceAll(' ', '_')}';
 
     return FavoritesPageScaffold(
         favQueryBuilder: () => query,

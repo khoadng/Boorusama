@@ -82,10 +82,10 @@ class NoAnalyticsInterface implements AnalyticsInterface {
 class AnalyticsScope extends ConsumerWidget {
   const AnalyticsScope({
     super.key,
-    required this.builder,
+    required this.child,
   });
 
-  final Widget Function(bool analyticsEnabled) builder;
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,6 +103,6 @@ class AnalyticsScope extends ConsumerWidget {
       },
     );
 
-    return builder(enabled);
+    return child;
   }
 }

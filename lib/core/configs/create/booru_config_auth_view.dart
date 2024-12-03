@@ -113,7 +113,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
   }
 
   void _openBrowser(WidgetRef ref, BuildContext context, BooruConfig config) {
-    final loginUrl = ref.read(booruProvider(config))?.getLoginUrl();
+    final loginUrl = ref.read(booruProvider(config.auth))?.getLoginUrl();
 
     if (loginUrl == null) {
       showErrorToast(context, 'Login URL for this booru is not available');

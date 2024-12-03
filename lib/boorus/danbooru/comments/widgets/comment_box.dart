@@ -55,7 +55,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return ValueListenableBuilder(
       valueListenable: widget.commentReply,

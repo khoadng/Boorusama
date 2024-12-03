@@ -31,11 +31,6 @@ const _entries = [
     content: AppearancePage(),
   ),
   SettingEntry(
-    title: 'Layout',
-    icon: FontAwesomeIcons.borderAll,
-    content: LayoutPage(),
-  ),
-  SettingEntry(
     title: 'settings.language.language',
     icon: Symbols.translate,
     content: LanguagePage(),
@@ -77,7 +72,7 @@ const _entries = [
   ),
 ];
 
-const double _kThresholdWidth = 550;
+const double _kThresholdWidth = 650;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({
@@ -323,7 +318,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
   Widget build(BuildContext context) {
     final entries = SettingsPageScope.of(context).options.entries;
 
-    ref.watch(settingsProvider.select((value) => value.language));
+    // ref.watch(settingsProvider.select((value) => value.language));
     final options = SettingsPageScope.of(context).options;
 
     return Row(
@@ -378,7 +373,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final options = SettingsPageScope.of(context).options;
 
     return Column(
@@ -826,7 +821,6 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hasCustomListing = ref.watch(hasCustomListingSettingsProvider);
     final config = ref.watchConfig;
-    final configs = ref.watch(booruConfigProvider);
 
     return SettingsInteractionBlocker(
       padding: padding,
@@ -842,28 +836,23 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
             const TextSpan(
               text: 'These settings are overridden by custom listing. Go to ',
             ),
-            if (configs != null)
-              TextSpan(
-                text: "Booru's profile",
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    goToUpdateBooruConfigPage(
-                      context,
-                      config: config,
-                      initialTab: 'listing',
-                    );
+            TextSpan(
+              text: "Booru's profile",
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  goToUpdateBooruConfigPage(
+                    context,
+                    config: config,
+                    initialTab: 'listing',
+                  );
 
-                    onNavigateAway?.call();
-                  },
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
-                ),
-              )
-            else
-              TextSpan(
-                text: "Booru's profile",
+                  onNavigateAway?.call();
+                },
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: context.colorScheme.primary,
               ),
+            ),
             const TextSpan(
               text: ' page instead.',
             ),

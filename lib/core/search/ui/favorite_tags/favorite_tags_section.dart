@@ -13,7 +13,6 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'import_tag_button.dart';
 
 const kSearchSelectedFavoriteTagLabelKey = 'search_selected_favorite_tag';
@@ -63,7 +62,7 @@ class FavoriteTagsSection extends ConsumerWidget {
           visualDensity: VisualDensity.compact,
           onPressed: () => onTagTap?.call(tag.name),
           label: Text(
-            tag.name.replaceUnderscoreWithSpace(),
+            tag.name.replaceAll('_', ' '),
             style: TextStyle(
               color: colors?.foregroundColor,
             ),

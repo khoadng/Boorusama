@@ -91,9 +91,10 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (context.isLandscapeLayout) ...[
+                if (context.isLargeScreen) ...[
                   SafeArea(
                     right: false,
+                    bottom: false,
                     child: _SidebarSettingsListener(
                       builder: (_, bottom, __) => bottom
                           ? const SizedBox.shrink()
@@ -116,7 +117,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
               ],
             ),
           ),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             _SidebarSettingsListener(
               builder: (_, bottom, hideLabel) => bottom
                   ? SizedBox(
@@ -162,17 +163,17 @@ class _Boorus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final config = ref.watchConfigSearch;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     if (booruBuilder != null) {
       return Builder(
         key: ValueKey(config),
-        builder: (context) => booruBuilder.homePageBuilder(context, config),
+        builder: (context) => booruBuilder.homePageBuilder(context),
       );
     } else {
       final availableConfigs = ref.watch(booruConfigProvider);
-      return availableConfigs != null && availableConfigs.isNotEmpty
+      return availableConfigs.isNotEmpty
           ? _buildInvalid(availableConfigs, ref)
           : const EmptyBooruConfigHomePage();
     }

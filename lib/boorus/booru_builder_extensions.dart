@@ -5,23 +5,18 @@ extension BooruBuilderFeatureCheck on BooruBuilder {
 }
 
 extension BooruRef on Ref {
-  BooruBuilder? readBooruBuilder(BooruConfig? config) {
+  BooruBuilder? readBooruBuilder(BooruConfigAuth? config) {
     if (config == null) return null;
 
     final booruBuilders = read(booruBuildersProvider);
     final booruBuilderFunc = booruBuilders[config.booruType];
 
     return booruBuilderFunc != null ? booruBuilderFunc() : null;
-  }
-
-  BooruBuilder? readCurrentBooruBuilder() {
-    final config = read(currentBooruConfigProvider);
-    return readBooruBuilder(config);
   }
 }
 
 extension BooruWidgetRef on WidgetRef {
-  BooruBuilder? readBooruBuilder(BooruConfig? config) {
+  BooruBuilder? readBooruBuilder(BooruConfigAuth? config) {
     if (config == null) return null;
 
     final booruBuilders = read(booruBuildersProvider);
@@ -30,7 +25,7 @@ extension BooruWidgetRef on WidgetRef {
     return booruBuilderFunc != null ? booruBuilderFunc() : null;
   }
 
-  BooruBuilder? watchBooruBuilder(BooruConfig? config) {
+  BooruBuilder? watchBooruBuilder(BooruConfigAuth? config) {
     if (config == null) return null;
 
     final booruBuilders = watch(booruBuildersProvider);
@@ -40,8 +35,8 @@ extension BooruWidgetRef on WidgetRef {
   }
 }
 
-final booruBuilderProvider = Provider<BooruBuilder?>((ref) {
-  final config = ref.watchConfig;
+final currentBooruBuilderProvider = Provider<BooruBuilder?>((ref) {
+  final config = ref.watchConfigAuth;
   final booruBuilders = ref.watch(booruBuildersProvider);
   final booruBuilderFunc = booruBuilders[config.booruType];
 

@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -8,15 +9,19 @@ import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/configs/export_import/export_import.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/analytics.dart';
 
-class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
+class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     with BooruConfigExportImportMixin {
+  BooruConfigNotifier({
+    required this.initialConfigs,
+  });
+
+  final List<BooruConfig> initialConfigs;
+
   @override
-  List<BooruConfig>? build() {
-    fetch();
-    return null;
+  List<BooruConfig> build() {
+    return initialConfigs;
   }
 
   Future<void> fetch() async {
@@ -28,9 +33,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = [...orders, booruConfig.id];
 
-    await ref.read(settingsProvider.notifier).updateOrder(newOrders);
+    await ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
 
-    state = [...state ?? [], booruConfig];
+    state = [...state, booruConfig];
   }
 
   Future<void> duplicate({
@@ -50,14 +55,13 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
-    if (state == null) return;
     try {
       // check if deleting the last config
-      if (state!.length == 1) {
+      if (state.length == 1) {
         await ref.read(booruConfigRepoProvider).remove(config);
-        state = null;
+        await ref.read(booruConfigProvider.notifier).fetch();
         // reset order
-        await ref.read(settingsProvider.notifier).updateOrder([]);
+        await ref.read(settingsNotifierProvider.notifier).updateOrder([]);
         await ref.read(currentBooruConfigProvider.notifier).setEmpty();
 
         onSuccess?.call(config);
@@ -68,11 +72,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       // check if deleting current config, if so, set current to the first config
       final currentConfig = ref.read(currentBooruConfigProvider);
       if (currentConfig.id == config.id) {
-        final firstConfig = state!.first;
+        final firstConfig = state.first;
 
         // check if deleting the first config
         final targetConfig =
-            firstConfig.id == config.id ? state!.skip(1).first : firstConfig;
+            firstConfig.id == config.id ? state.skip(1).first : firstConfig;
 
         await ref
             .read(currentBooruConfigProvider.notifier)
@@ -83,9 +87,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = [...orders..remove(config.id)];
 
-      await ref.read(settingsProvider.notifier).updateOrder(newOrders);
+      await ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
 
-      final tmp = [...state!];
+      final tmp = [...state];
       tmp.remove(config);
       state = tmp;
       onSuccess?.call(config);
@@ -100,23 +104,44 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
-    if (state == null) return;
-    final updatedConfig = await ref
-        .read(booruConfigRepoProvider)
-        .update(oldConfigId, booruConfigData);
+    try {
+      // Validate inputs
+      if (oldConfigId < 0) {
+        _logError('Invalid config id: $oldConfigId');
+        onFailure?.call('Unable to find this account');
+        return;
+      }
 
-    if (updatedConfig == null) {
-      onFailure?.call('Failed to update account');
+      // Check if config exists
+      final existingConfig = state.firstWhereOrNull((c) => c.id == oldConfigId);
+      if (existingConfig == null) {
+        _logError('Config not found: $oldConfigId');
+        onFailure?.call('This profile no longer exists');
+        return;
+      }
 
-      return;
+      final updatedConfig = await ref
+          .read(booruConfigRepoProvider)
+          .update(oldConfigId, booruConfigData);
+
+      if (updatedConfig == null) {
+        _logError('Failed to update config: $oldConfigId');
+        onFailure?.call('Unable to update profile. Failed to save changes');
+        return;
+      }
+
+      final newConfigs = state.map((config) {
+        return config.id == oldConfigId ? updatedConfig : config;
+      }).toList();
+
+      _logInfo('Updated config: $oldConfigId');
+      state = newConfigs;
+      onSuccess?.call(updatedConfig);
+    } catch (e) {
+      _logError('Failed to update config: $oldConfigId');
+      onFailure?.call(
+          'Something went wrong while updating your profile. Please try again');
     }
-
-    final newConfigs =
-        state!.replaceFirst(updatedConfig, (item) => item.id == oldConfigId);
-
-    onSuccess?.call(updatedConfig);
-
-    state = newConfigs;
   }
 
   Future<void> add({
@@ -129,7 +154,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       final config = await ref.read(booruConfigRepoProvider).add(data);
 
       if (config == null) {
-        onFailure?.call('Fail to add account. Account might be incorrect');
+        onFailure?.call(
+            'Unable to add profile. Please check your inputs and try again');
 
         return;
       }
@@ -137,19 +163,28 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>?>
       onSuccess?.call(config);
       ref.read(analyticsProvider).sendBooruAddedEvent(
             url: config.url,
-            hintSite: config.booruType.name,
-            totalSites: state?.length ?? 0,
-            hasLogin: config.hasLoginDetails(),
+            hintSite: config.auth.booruType.name,
+            totalSites: state.length,
+            hasLogin: config.auth.hasLoginDetails(),
           );
 
       await _add(config);
 
-      if (setAsCurrent || state?.length == 1) {
+      if (setAsCurrent || state.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
       }
     } catch (e) {
-      onFailure?.call('Failed to add account');
+      onFailure?.call(
+          'Something went wrong while adding your profile. Please try again');
     }
+  }
+
+  void _logError(String message) {
+    ref.read(loggerProvider).logE('Configs', message);
+  }
+
+  void _logInfo(String message) {
+    ref.read(loggerProvider).logI('Configs', message);
   }
 }
 

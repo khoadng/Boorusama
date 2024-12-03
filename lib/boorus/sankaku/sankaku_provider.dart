@@ -1,8 +1,8 @@
 part of 'sankaku.dart';
 
-final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
+final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
     final booruFactory = ref.watch(booruFactoryProvider);
     final booru = booruFactory.create(type: config.booruType);
 
@@ -20,12 +20,12 @@ final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
 );
 
 final sankakuPostRepoProvider =
-    Provider.family<PostRepository<SankakuPost>, BooruConfig>(
+    Provider.family<PostRepository<SankakuPost>, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(sankakuClientProvider(config));
+    final client = ref.watch(sankakuClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -118,7 +118,7 @@ final sankakuPostRepoProvider =
 );
 
 final sankakuAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(sankakuClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -137,7 +137,8 @@ final sankakuAutocompleteRepoProvider =
 });
 
 final sankakuArtistPostRepo =
-    Provider.family<PostRepository<SankakuPost>, BooruConfig>((ref, config) {
+    Provider.family<PostRepository<SankakuPost>, BooruConfigSearch>(
+        (ref, config) {
   return PostRepositoryCacher(
     keyBuilder: (tags, page, {limit}) =>
         '${tags.split(' ').join('-')}_${page}_$limit',
@@ -149,10 +150,10 @@ final sankakuArtistPostRepo =
 final sankakuArtistPostsProvider = FutureProvider.autoDispose
     .family<List<SankakuPost>, String?>((ref, artistName) async {
   return ref
-      .watch(sankakuArtistPostRepo(ref.watchConfig))
+      .watch(sankakuArtistPostRepo(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
       );
 });
 

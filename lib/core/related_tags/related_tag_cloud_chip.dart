@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 
 class RelatedTagCloudChip extends ConsumerWidget {
@@ -37,7 +36,7 @@ class RelatedTagCloudChip extends ConsumerWidget {
       },
       child: BooruChip(
         label: Text(
-          tag.replaceUnderscoreWithSpace(),
+          tag.replaceAll('_', ' '),
           style: TextStyle(
             fontSize: max((60 - (index * 2)).toDouble(), 24),
             color: isDummy ? Colors.transparent : null,

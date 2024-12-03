@@ -15,10 +15,10 @@ import 'post_vote_repository.dart';
 import 'post_votes_provider.dart';
 
 class PostVotesNotifier
-    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfig>
+    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfigAuth>
     with VotesNotifierMixin<DanbooruPostVote, DanbooruPost> {
   @override
-  IMap<int, DanbooruPostVote?> build(BooruConfig arg) {
+  IMap<int, DanbooruPostVote?> build(BooruConfigAuth arg) {
     return <int, DanbooruPostVote?>{}.lock;
   }
 

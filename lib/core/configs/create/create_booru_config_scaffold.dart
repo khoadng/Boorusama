@@ -34,7 +34,7 @@ class UpdateBooruConfigScope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final configs = ref.watch(booruConfigProvider);
-    final config = configs?.firstWhereOrNull((e) => e.id == id.id);
+    final config = configs.firstWhereOrNull((e) => e.id == id.id);
 
     if (config == null) {
       return Scaffold(

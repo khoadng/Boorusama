@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/backups/data_io_handler.dart';
-import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/core/backups/backups.dart';
 import 'favorited_tags.dart';
 
 final favoriteTagRepoProvider =
@@ -33,8 +32,9 @@ final favoriteTagLabelsProvider = Provider<List<String>>((ref) {
 final favoriteTagsIOHandlerProvider = Provider<FavoriteTagsIOHandler>(
   (ref) => FavoriteTagsIOHandler(
     handler: DataIOHandler.file(
-      version: 1,
-      exportVersion: ref.watch(appVersionProvider),
+      converter: ref.watch(
+        defaultBackupConverterProvider(1),
+      ),
       deviceInfo: ref.watch(deviceInfoProvider),
       prefixName: 'boorusama_favorite_tags',
     ),
@@ -113,7 +113,7 @@ class _FavoriteTagsFilterScopeState
               a.updatedAt,
               b.updatedAt
             )) {
-              (DateTime ua, DateTime ub) => ub.compareTo(ua),
+              (final DateTime ua, final DateTime ub) => ub.compareTo(ua),
               _ => 0,
             },
           FavoriteTagsSortType.nameAZ => a.name.compareTo(b.name),

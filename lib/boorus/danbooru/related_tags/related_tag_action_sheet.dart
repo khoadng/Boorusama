@@ -12,7 +12,6 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/wikis/wikis.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'related_tags.dart';
 
@@ -39,7 +38,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final booru = ref.watchConfig;
+    final booru = ref.watchConfigAuth;
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +56,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
         itemBuilder: (context, index) => ListTile(
           visualDensity: VisualDensity.compact,
           title: Text(
-            tags[index].tag.replaceUnderscoreWithSpace(),
+            tags[index].tag.replaceAll('_', ' '),
             style: TextStyle(
               color: ref.watch(tagColorProvider(tags[index].category.name)),
             ),

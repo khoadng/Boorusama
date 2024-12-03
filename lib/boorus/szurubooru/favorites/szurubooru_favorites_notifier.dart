@@ -11,10 +11,10 @@ import 'package:boorusama/functional.dart';
 import '../post_votes/post_votes.dart';
 
 class SzurubooruFavoritesNotifier
-    extends FamilyNotifier<IMap<int, bool>, BooruConfig>
+    extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {
   @override
-  IMap<int, bool> build(BooruConfig arg) {
+  IMap<int, bool> build(BooruConfigAuth arg) {
     ref.watchConfig;
 
     return <int, bool>{}.lock;

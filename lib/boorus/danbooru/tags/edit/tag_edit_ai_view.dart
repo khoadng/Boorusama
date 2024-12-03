@@ -12,7 +12,6 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {
@@ -96,7 +95,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                       child: RichText(
                         overflow: TextOverflow.ellipsis,
                         text: TextSpan(
-                          text: tag.name.replaceUnderscoreWithSpace(),
+                          text: tag.name.replaceAll('_', ' '),
                           style: TextStyle(
                             color: selected
                                 ? colors?.foregroundColor

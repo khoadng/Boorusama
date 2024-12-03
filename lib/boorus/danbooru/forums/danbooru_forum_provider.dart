@@ -10,7 +10,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/forums/forums.dart';
 
 final danbooruForumTopicRepoProvider =
-    Provider.family<ForumTopicRepository<DanbooruForumTopic>, BooruConfig>(
+    Provider.family<ForumTopicRepository<DanbooruForumTopic>, BooruConfigAuth>(
         (ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
@@ -47,9 +47,9 @@ final danbooruForumTopicRepoProvider =
   );
 });
 
-final danbooruForumPostRepoProvider =
-    Provider.family<ForumPostRepositoryBuilder<DanbooruForumPost>, BooruConfig>(
-        (ref, config) {
+final danbooruForumPostRepoProvider = Provider.family<
+    ForumPostRepositoryBuilder<DanbooruForumPost>,
+    BooruConfigAuth>((ref, config) {
   final client = ref.watch(danbooruClientProvider(config));
 
   // page is the last forum post id

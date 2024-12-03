@@ -10,7 +10,6 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/functional.dart';
 
 typedef PostScopeFetcher<T extends Post> = PostsOrErrorCore<T> Function(
@@ -27,7 +26,6 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(
     BuildContext context,
     PostGridController<T> controller,
-    BooruError? errors,
   ) builder;
 
   @override
@@ -36,12 +34,11 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
   late final _controller = PostGridController<T>(
-    fetcher: (page) => fetchPosts(page),
-    refresher: () => fetchPosts(1),
+    fetcher: widget.fetcher,
     blacklistedTagsFetcher: () {
       if (!mounted) return Future.value({});
 
-      return ref.read(blacklistTagsProvider(ref.readConfig).future);
+      return ref.read(blacklistTagsProvider(ref.readConfigAuth).future);
     },
     pageMode: ref
         .read(imageListingSettingsProvider.select((value) => value.pageMode)),
@@ -51,35 +48,15 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
         final bookmarks = settings.shouldFilterBookmarks
             ? ref.read(bookmarkProvider).bookmarks
-            : <Bookmark>[].lock;
+            : const IMap<String, Bookmark>.empty();
 
-        return bookmarks.map((e) => e.originalUrl).toSet();
+        return bookmarks.keys.toSet();
       } catch (_) {
         return {};
       }
     },
     mountedChecker: () => mounted,
   );
-
-  BooruError? errors;
-
-  Future<PostResult<T>> fetchPosts(int page) {
-    if (errors != null) {
-      setState(() {
-        errors = null;
-      });
-    }
-
-    return widget.fetcher(page).run().then((value) => value.fold(
-          (l) {
-            if (mounted) {
-              setState(() => errors = l);
-            }
-            return <T>[].toResult();
-          },
-          (r) => r,
-        ));
-  }
 
   @override
   void dispose() {
@@ -100,7 +77,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
     );
 
     ref.listen(
-      blacklistTagsProvider(ref.watchConfig),
+      blacklistTagsProvider(ref.watchConfigAuth),
       (previous, next) {
         if (previous != next) {
           next.when(
@@ -120,7 +97,6 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
     return widget.builder(
       context,
       _controller,
-      errors,
     );
   }
 }

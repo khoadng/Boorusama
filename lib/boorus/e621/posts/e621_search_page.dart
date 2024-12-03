@@ -18,7 +18,7 @@ class E621SearchPage extends ConsumerWidget {
   final String? initialQuery;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return SearchPageScaffold(
       initialQuery: initialQuery,

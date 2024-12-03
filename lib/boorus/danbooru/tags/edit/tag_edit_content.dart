@@ -62,7 +62,7 @@ class TagEditExpandContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final booru =
         ref.watch(booruFactoryProvider).create(type: config.booruType);
     final aiTagSupport = booru?.hasAiTagSupported(config.url);

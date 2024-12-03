@@ -1,19 +1,21 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -47,8 +49,62 @@ class BooruImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
 
+    return BooruRawImage(
+      dio: dio,
+      imageUrl: imageUrl,
+      placeholderUrl: placeholderUrl,
+      borderRadius: borderRadius,
+      fit: fit,
+      aspectRatio: aspectRatio,
+      cacheHeight: cacheHeight,
+      cacheWidth: cacheWidth,
+      forceFill: forceFill,
+      width: width,
+      height: height,
+      headers: {
+        AppHttpHeaders.userAgentHeader:
+            ref.watch(userAgentProvider(config.booruType)),
+        ...ref.watch(extraHttpHeaderProvider(config)),
+      },
+    );
+  }
+}
+
+class BooruRawImage extends StatelessWidget {
+  const BooruRawImage({
+    super.key,
+    required this.dio,
+    required this.imageUrl,
+    this.placeholderUrl,
+    this.borderRadius,
+    this.fit,
+    this.aspectRatio = 1,
+    this.cacheHeight,
+    this.cacheWidth,
+    this.forceFill = false,
+    this.width,
+    this.height,
+    this.headers = const {},
+  });
+
+  final Dio dio;
+  final String imageUrl;
+  final String? placeholderUrl;
+  final BorderRadius? borderRadius;
+  final BoxFit? fit;
+  final double? aspectRatio;
+  final int? cacheWidth;
+  final int? cacheHeight;
+  final bool forceFill;
+  final double? width;
+  final double? height;
+  final Map<String, String> headers;
+
+  @override
+  Widget build(BuildContext context) {
     if (imageUrl.isEmpty) {
       return _EmptyImage(
         borderRadius: borderRadius,
@@ -57,27 +113,26 @@ class BooruImage extends ConsumerWidget {
       );
     }
 
-    return forceFill
-        ? _builForceFillImage(ref, config)
-        : _builderNormalImage(ref, config);
+    return forceFill ? _builForceFillImage() : _builderNormalImage();
   }
 
-  Widget _builderNormalImage(WidgetRef ref, BooruConfig config) {
+  Widget _builderNormalImage() {
     return NullableAspectRatio(
       aspectRatio: aspectRatio,
-      child: ExtendedImage.network(
+      child: DioExtendedImage.network(
         imageUrl,
+        dio: dio,
         width: width,
         height: height,
         cacheHeight: cacheHeight,
         cacheWidth: cacheWidth,
-        headers: _getHeaders(config, ref),
+        headers: headers,
         shape: BoxShape.rectangle,
         cacheMaxAge: kDefaultImageCacheDuration,
         borderRadius: borderRadius ?? _defaultRadius,
         fit: fit ?? BoxFit.fill,
         loadStateChanged: (state) => aspectRatio != null
-            ? _buildImageState(state, ref, config)
+            ? _buildImageState(state)
             : state.extendedImageLoadState == LoadState.loading
                 ? ImagePlaceHolder(
                     borderRadius: borderRadius ?? _defaultRadius,
@@ -87,22 +142,23 @@ class BooruImage extends ConsumerWidget {
     );
   }
 
-  Widget _builForceFillImage(WidgetRef ref, BooruConfig config) {
+  Widget _builForceFillImage() {
     return Column(
       children: [
         Expanded(
-          child: ExtendedImage.network(
+          child: DioExtendedImage.network(
             imageUrl,
+            dio: dio,
             width: width ?? double.infinity,
             height: height ?? double.infinity,
-            headers: _getHeaders(config, ref),
+            headers: headers,
             cacheHeight: cacheHeight,
             cacheWidth: cacheWidth,
             shape: BoxShape.rectangle,
             cacheMaxAge: kDefaultImageCacheDuration,
             borderRadius: borderRadius ?? _defaultRadius,
             fit: BoxFit.cover,
-            loadStateChanged: (state) => _buildImageState(state, ref, config),
+            loadStateChanged: (state) => _buildImageState(state),
           ),
         ),
       ],
@@ -111,17 +167,16 @@ class BooruImage extends ConsumerWidget {
 
   Widget? _buildImageState(
     ExtendedImageState state,
-    WidgetRef ref,
-    BooruConfig config,
   ) =>
       switch (state.extendedImageLoadState) {
         LoadState.loading => placeholderUrl.toOption().fold(
               () => ImagePlaceHolder(
                 borderRadius: borderRadius ?? _defaultRadius,
               ),
-              (url) => url.isNotBlank()
-                  ? ExtendedImage.network(
+              (url) => url.isNotEmpty
+                  ? DioExtendedImage.network(
                       url,
+                      dio: dio,
                       width: width ?? double.infinity,
                       height: height ?? double.infinity,
                       cacheHeight: cacheHeight,
@@ -136,7 +191,7 @@ class BooruImage extends ConsumerWidget {
                                   borderRadius: borderRadius ?? _defaultRadius,
                                 )
                               : null,
-                      headers: _getHeaders(config, ref),
+                      headers: headers,
                     )
                   : ImagePlaceHolder(
                       borderRadius: borderRadius ?? _defaultRadius,
@@ -146,12 +201,6 @@ class BooruImage extends ConsumerWidget {
             borderRadius: borderRadius ?? _defaultRadius,
           ),
         LoadState.completed => null,
-      };
-
-  Map<String, String> _getHeaders(BooruConfig config, WidgetRef ref) => {
-        AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentGeneratorProvider(config)).generate(),
-        ...ref.watch(extraHttpHeaderProvider(config)),
       };
 }
 

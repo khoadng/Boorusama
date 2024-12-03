@@ -94,8 +94,7 @@ class AnimePicturesBuilder
   );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
 
         return PostDetailsScope(
@@ -108,11 +107,11 @@ class AnimePicturesBuilder
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => AnimePicturesHomePage(config: config);
+      (context) => const AnimePicturesHomePage();
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const AnimePicturesCurrentUserIdScope(
+      (context) => const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           );
 
@@ -144,7 +143,9 @@ class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(animePicturesCurrentUserIdProvider(ref.watchConfig)).when(
+    return ref
+        .watch(animePicturesCurrentUserIdProvider(ref.watchConfigAuth))
+        .when(
           data: (value) => value != null
               ? ProviderScope(
                   overrides: [
@@ -184,7 +185,7 @@ class AnimePicturesFavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = ref.watch(_uidProvider);
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return FavoritesPageScaffold(
       favQueryBuilder: null,
@@ -239,7 +240,7 @@ class AnimePicturesDownloadFileUrlExtractor
 
 final postDetailsProvider =
     FutureProvider.autoDispose.family<PostDetailsDto, int>((ref, id) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final client = ref.watch(animePicturesClientProvider(config));
 
   final post = await client.getPostDetails(id: id);

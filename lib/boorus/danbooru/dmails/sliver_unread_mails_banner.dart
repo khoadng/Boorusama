@@ -14,7 +14,9 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
   const SliverUnreadMailsBanner({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruUnreadDmailsProvider(ref.watchConfig)).maybeWhen(
+    return ref
+        .watch(danbooruUnreadDmailsProvider(ref.watchConfigAuth))
+        .maybeWhen(
           data: (mails) => mails.isNotEmpty
               ? SliverToBoxAdapter(
                   child: DismissableInfoContainer(

@@ -68,8 +68,7 @@ class Shimmie2Builder
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as Shimmie2Post).toList();
 
         return PostDetailsScope(

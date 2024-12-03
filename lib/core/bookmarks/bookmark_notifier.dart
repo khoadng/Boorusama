@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,7 +38,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
   BookmarkState build() {
     getAllBookmarks();
-    return BookmarkState(bookmarks: <Bookmark>[].lock);
+    return BookmarkState(bookmarks: const IMap.empty());
   }
 
   BookmarkRepository get bookmarkRepository => ref.read(bookmarkRepoProvider);
@@ -51,7 +50,10 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
-              bookmarks: bookmarks.lock,
+              bookmarks: IMap.fromIterables(
+                bookmarks.map((b) => b.originalUrl),
+                bookmarks,
+              ),
             ),
           ),
         );
@@ -68,7 +70,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       final bookmarks =
           await bookmarkRepository.addBookmarks(booruId, booruUrl, posts);
       onSuccess?.call();
-      state = state.copyWith(bookmarks: state.bookmarks.addAll(bookmarks));
+
+      final map = IMap.fromIterables(
+        bookmarks.map((b) => b.originalUrl),
+        bookmarks,
+      );
+
+      state = state.copyWith(bookmarks: state.bookmarks.addAll(map));
     } catch (e) {
       onError?.call();
     }
@@ -85,7 +93,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       final bookmark =
           await bookmarkRepository.addBookmark(booruId, booruUrl, post);
       onSuccess?.call();
-      state = state.copyWith(bookmarks: state.bookmarks.add(bookmark));
+      state = state.copyWith(
+          bookmarks: state.bookmarks.add(bookmark.originalUrl, bookmark));
     } catch (e) {
       onError?.call();
     }
@@ -100,7 +109,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       await bookmarkRepository.removeBookmark(bookmark);
       onSuccess?.call();
       state = state.copyWith(
-        bookmarks: state.bookmarks.remove(bookmark),
+        bookmarks: state.bookmarks.remove(bookmark.originalUrl),
       );
     } catch (e) {
       onError?.call();
@@ -115,10 +124,12 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     try {
       await bookmarkRepository.updateBookmark(bookmark);
       onSuccess?.call();
+
       state = state.copyWith(
-        bookmarks: state.bookmarks.replaceFirstWhere(
-          (item) => item.id == bookmark.id,
-          (item) => bookmark,
+        bookmarks: state.bookmarks.update(
+          bookmark.originalUrl,
+          (b) => bookmark,
+          ifAbsent: () => bookmark,
         ),
       );
     } catch (e) {
@@ -144,7 +155,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
       final file = File(join(dir.path, 'boorusama_bookmarks_$date.json'));
       final json =
-          state.bookmarks.map((bookmark) => bookmark.toJson()).toList();
+          state.bookmarks.values.map((bookmark) => bookmark.toJson()).toList();
       final jsonString = jsonEncode(json);
       await file.writeAsString(jsonString);
 
@@ -168,16 +179,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
   Future<void> importBookmarks(BuildContext context, File file) async {
     try {
-      final jsonString = file.readAsStringSync();
+      final jsonString = await file.readAsString();
       final json = jsonDecode(jsonString) as List<dynamic>;
       try {
         final bookmarks = json
             .map((bookmark) => Bookmark.fromJson(bookmark))
             .toList()
             // remove duplicates
-            .where((bookmark) => !state.bookmarks
-                .where((b) => b.originalUrl == bookmark.originalUrl)
-                .isNotEmpty)
+            .where((bookmark) =>
+                !state.bookmarks.containsKey(bookmark.originalUrl))
             .toList();
 
         await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
@@ -206,11 +216,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }
 
   Future<void> downloadBookmarks(
-      BooruConfig config, List<Bookmark> bookmarks) async {
+    BooruConfig config,
+    List<Bookmark> bookmarks,
+  ) async {
     final settings = ref.read(settingsProvider);
     final tasks = bookmarks
         .map((bookmark) =>
-            ref.read(downloadServiceProvider(config)).downloadWithSettings(
+            ref.read(downloadServiceProvider(config.auth)).downloadWithSettings(
               settings,
               config: config,
               url: bookmark.originalUrl,
@@ -223,8 +235,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
               filename: bookmark.md5 + extension(bookmark.originalUrl),
               headers: {
                 AppHttpHeaders.userAgentHeader:
-                    ref.read(userAgentGeneratorProvider(config)).generate(),
-                ...ref.read(extraHttpHeaderProvider(config)),
+                    ref.read(userAgentProvider(config.auth.booruType)),
+                ...ref.read(extraHttpHeaderProvider(config.auth)),
               },
             ).run())
         .toList();
@@ -308,11 +320,11 @@ class BookmarkState extends Equatable {
     required this.bookmarks,
     this.error = '',
   });
-  final IList<Bookmark> bookmarks;
+  final IMap<String, Bookmark> bookmarks;
   final String error;
 
   BookmarkState copyWith({
-    IList<Bookmark>? bookmarks,
+    IMap<String, Bookmark>? bookmarks,
     String? error,
   }) {
     return BookmarkState(
@@ -328,12 +340,11 @@ class BookmarkState extends Equatable {
 extension BookmarkCubitX on BookmarkState {
   // check if a post is bookmarked
   bool isBookmarked(Post post, BooruType booru) {
-    return bookmarks.any((b) => b.originalUrl == post.originalImageUrl);
+    return bookmarks.containsKey(post.originalImageUrl);
   }
 
   // get bookmark from Post
   Bookmark? getBookmark(Post post, BooruType booru) {
-    return bookmarks
-        .firstWhereOrNull((b) => b.originalUrl == post.originalImageUrl);
+    return bookmarks[post.originalImageUrl];
   }
 }

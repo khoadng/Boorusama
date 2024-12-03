@@ -50,7 +50,7 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return Scaffold(
       appBar: widget.useAppBar
@@ -90,7 +90,7 @@ class _CommentItem extends StatelessWidget {
   });
 
   final Comment comment;
-  final BooruConfig config;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context) {

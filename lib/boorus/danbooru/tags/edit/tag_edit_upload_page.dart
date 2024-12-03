@@ -21,6 +21,7 @@ import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/filesize.dart';
@@ -29,7 +30,6 @@ import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_favorite_view.dart';
 import 'tag_edit_notifier.dart';
@@ -79,7 +79,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final rating = ref.watch(selectedTagEditRatingProvider(null));
 
     ref.listen(
@@ -387,7 +387,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                               ),
                               onPressed: () {
                                 final url =
-                                    '${ref.readConfig.url}/artists/new?artist[source]=${widget.post.pageUrl}';
+                                    '${ref.readConfigAuth.url}/artists/new?artist[source]=${widget.post.pageUrl}';
                                 launchExternalUrlString(url);
                               },
                               child: const Text('Create'),
@@ -514,7 +514,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
 
   Widget _buildTagTab(
     TextEditingController textEditingController,
-    BooruConfig config,
+    BooruConfigAuth config,
     SourceDto source,
   ) {
     return Theme(
@@ -527,7 +527,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: _buildRatingSelector(config),
+            child: _buildRatingSelector(),
           ),
           const SliverSizedBox(height: 8),
           SliverToBoxAdapter(
@@ -741,7 +741,8 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     );
   }
 
-  Widget _buildRatingSelector(BooruConfig config) {
+  Widget _buildRatingSelector() {
+    final config = ref.watchConfigAuth;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -791,7 +792,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     Rating? rating,
   ) {
     final notifier =
-        ref.watch(danbooruPostCreateProvider(ref.watchConfig).notifier);
+        ref.watch(danbooruPostCreateProvider(ref.watchConfigAuth).notifier);
 
     return Row(
       children: [
@@ -824,7 +825,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                       rating != null &&
                       widget.post.source.url != null)
                   ? ref
-                      .watch(danbooruPostCreateProvider(ref.watchConfig))
+                      .watch(danbooruPostCreateProvider(ref.watchConfigAuth))
                       .maybeWhen(
                         loading: () => null,
                         orElse: () => () {
@@ -917,7 +918,7 @@ class _TagEditUploadTextControllerScopeState
       ref.read(_lastWord.notifier).state = lastWord;
 
       ref
-          .read(suggestionsProvider(ref.readConfig).notifier)
+          .read(suggestionsProvider(ref.readConfigAuth).notifier)
           .getSuggestions(lastWord);
     }
 

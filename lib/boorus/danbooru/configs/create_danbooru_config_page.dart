@@ -32,7 +32,7 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: DefaultBooruAuthConfigView(
-        showInstructionWhen: !config.hasStrictSFW,
+        showInstructionWhen: !config.auth.hasStrictSFW,
         customInstruction: RichText(
           text: TextSpan(
             style: context.textTheme.titleSmall?.copyWith(
@@ -84,7 +84,7 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
       ),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,
-        config: config,
+        config: config.auth,
         extras: const [
           DanbooruHideDeletedSwitch(),
           DanbooruHideBannedSwitch(),

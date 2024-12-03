@@ -6,7 +6,6 @@ import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 
 class ForumPostHeader extends StatelessWidget {
   const ForumPostHeader({
@@ -31,7 +30,7 @@ class ForumPostHeader extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Text(
-            authorName.replaceUnderscoreWithSpace(),
+            authorName.replaceAll('_', ' '),
             style: TextStyle(
               color: authorLevel?.toColor(context),
               fontSize: 15,

@@ -44,7 +44,7 @@ class BookmarkAppBar extends ConsumerWidget {
                   break;
                 case 'download_all':
                   ref.bookmarks.downloadBookmarks(
-                    ref.watchConfig,
+                    ref.readConfig,
                     ref.read(filteredBookmarksProvider),
                   );
                   break;

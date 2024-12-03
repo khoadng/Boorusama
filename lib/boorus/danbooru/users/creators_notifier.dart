@@ -6,11 +6,12 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/functional.dart';
 import 'users.dart';
 
-class CreatorsNotifier extends FamilyNotifier<IMap<int, Creator>, BooruConfig> {
+class CreatorsNotifier
+    extends FamilyNotifier<IMap<int, Creator>, BooruConfigAuth> {
   CreatorRepository get repo => ref.watch(danbooruCreatorRepoProvider(arg));
 
   @override
-  IMap<int, Creator> build(BooruConfig arg) {
+  IMap<int, Creator> build(BooruConfigAuth arg) {
     return <int, Creator>{}.lock;
   }
 

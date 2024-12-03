@@ -7,9 +7,9 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/dart.dart';
 
 class SavedSearchesNotifier
-    extends FamilyAsyncNotifier<List<SavedSearch>, BooruConfig> {
+    extends FamilyAsyncNotifier<List<SavedSearch>, BooruConfigAuth> {
   @override
-  Future<List<SavedSearch>> build(BooruConfig arg) async {
+  Future<List<SavedSearch>> build(BooruConfigAuth arg) async {
     final savedSearches = await repo.getSavedSearches(page: 1);
 
     final searches = _sort(savedSearches);

@@ -46,7 +46,7 @@ class EditBooruConfigId extends Equatable {
   EditBooruConfigId.fromConfig(
     BooruConfig config,
   )   : id = config.id,
-        booruType = config.booruType,
+        booruType = config.auth.booruType,
         url = config.url;
 
   final int id;
@@ -70,7 +70,7 @@ class EditBooruConfigNotifier
       customDownloadFileNameFormat: null,
     );
     final config =
-        arg.isNew ? null : configs?.firstWhereOrNull((e) => e.id == arg.id);
+        arg.isNew ? null : configs.firstWhereOrNull((e) => e.id == arg.id);
 
     return (config ?? defaultConfig).toBooruConfigData();
   }

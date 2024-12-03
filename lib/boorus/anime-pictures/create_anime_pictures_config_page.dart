@@ -77,7 +77,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
-    final loginUrl = ref.watch(booruProvider(config))?.getLoginUrl();
+    final loginUrl = ref.watch(booruProvider(config.auth))?.getLoginUrl();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),

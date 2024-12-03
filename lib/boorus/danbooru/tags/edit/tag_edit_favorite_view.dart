@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/string.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =
     'tag_edit_favorite_view_selected_label';
@@ -81,7 +80,7 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),
                           label: Text(
-                            tag.name.replaceUnderscoreWithSpace(),
+                            tag.name.replaceAll('_', ' '),
                             style: TextStyle(
                               color: selected
                                   ? context.colorScheme.onPrimary

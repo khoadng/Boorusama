@@ -16,10 +16,7 @@ import 'package:boorusama/router.dart';
 class GelbooruV2HomePage extends ConsumerStatefulWidget {
   const GelbooruV2HomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<GelbooruV2HomePage> createState() => _GelbooruV2HomePageState();
@@ -28,12 +25,13 @@ class GelbooruV2HomePage extends ConsumerStatefulWidget {
 class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
     final favoritePageBuilder =
-        ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
+        ref.watch(currentBooruBuilderProvider)?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
+        if (favoritePageBuilder != null && config.hasLoginDetails())
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -46,7 +44,7 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
           ),
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
+        if (favoritePageBuilder != null && config.hasLoginDetails())
           HomeNavigationTile(
             value: 1,
             controller: controller,

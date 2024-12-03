@@ -260,6 +260,9 @@ class _ImageListingSettingsSectionState
         _buildPaddingSlider(settings),
         const SizedBox(height: 10),
         _buildAspectRatioSlider(settings),
+        const SizedBox(height: 10),
+        const Divider(thickness: 1),
+        const LayoutSection(),
       ],
     );
   }
@@ -334,6 +337,41 @@ class _ImageListingSettingsSectionState
           padding: EdgeInsets.zero,
         );
       },
+    );
+  }
+}
+
+class LayoutSection extends ConsumerWidget {
+  const LayoutSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
+        SettingsTile(
+          title: const Text('settings.appearance.booru_config_placement').tr(),
+          selectedOption: settings.booruConfigSelectorPosition,
+          items: const [...BooruConfigSelectorPosition.values],
+          onChanged: (value) => ref.updateSettings(
+              settings.copyWith(booruConfigSelectorPosition: value)),
+          optionBuilder: (value) => Text(value.localize()),
+        ),
+        SettingsTile(
+          title: const Text('Label').tr(),
+          selectedOption: settings.booruConfigLabelVisibility,
+          items: const [...BooruConfigLabelVisibility.values],
+          onChanged: (value) => ref.updateSettings(
+              settings.copyWith(booruConfigLabelVisibility: value)),
+          optionBuilder: (value) => Text(value.localize()),
+        ),
+      ],
     );
   }
 }
