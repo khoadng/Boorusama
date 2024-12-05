@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
@@ -15,22 +16,12 @@ final gelbooruPostRepoProvider =
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
-      fetch: (tags, page, {limit}) => client
-          .getPosts(
-            tags: tags,
-            page: page,
-            limit: limit,
-          )
-          .then((value) => value.posts
-              .map((e) => gelbooruPostDtoToGelbooruPost(
-                    e,
-                    PostMetadata(
-                      page: page,
-                      search: tags.join(' '),
-                    ),
-                  ))
-              .toList()
-              .toResult(total: value.count)),
+      fetch: client.getPostResults,
+      fetchFromController: (controller, page, {limit}) {
+        final tags = controller.tags.map((e) => e.originalTag).toList();
+
+        return client.getPostResults(tags, page, limit: limit);
+      },
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
@@ -45,3 +36,25 @@ final gelbooruArtistCharacterPostRepoProvider =
     );
   },
 );
+
+extension GelbooruClientX on GelbooruClient {
+  Future<PostResult<GelbooruPost>> getPostResults(
+    List<String> tags,
+    int page, {
+    int? limit,
+  }) =>
+      getPosts(
+        tags: tags,
+        page: page,
+        limit: limit,
+      ).then((value) => value.posts
+          .map((e) => gelbooruPostDtoToGelbooruPost(
+                e,
+                PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ))
+          .toList()
+          .toResult(total: value.count));
+}

@@ -76,7 +76,8 @@ class GelbooruV2Client with GelbooruClientFavorites {
     final data = response.data;
 
     final result = switch (data) {
-      final List l => l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
+      final List l =>
+        l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
       final String s => (jsonDecode(s) as List<dynamic>)
           .map<PostV2Dto>((item) => PostV2Dto.fromJson(item, baseUrl))
           .toList(),
