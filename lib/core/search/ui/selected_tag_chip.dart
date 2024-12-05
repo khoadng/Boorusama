@@ -81,7 +81,11 @@ class SelectedTagChip extends StatelessWidget {
                 ),
               ] else if (hasOperator)
                 TextSpan(
-                  text: '—',
+                  text: switch (tagSearchItem.operator) {
+                    FilterOperator.none => '',
+                    FilterOperator.not => '—',
+                    FilterOperator.or => '⁓',
+                  },
                   style: TextStyle(
                     color: context.brightness == Brightness.light
                         ? TagColors.dark().copyright

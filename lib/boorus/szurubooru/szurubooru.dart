@@ -145,6 +145,7 @@ class SzurubooruSearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
+    final postRepo = ref.watch(szurubooruPostRepoProvider(config));
 
     return SearchPageScaffold(
       noticeBuilder: (context) => !config.auth.hasLoginDetails()
@@ -156,9 +157,8 @@ class SzurubooruSearchPage extends ConsumerWidget {
             )
           : const SizedBox.shrink(),
       initialQuery: initialQuery,
-      fetcher: (page, controller) => ref
-          .read(szurubooruPostRepoProvider(config))
-          .getPosts(controller.rawTagsString, page),
+      fetcher: (page, controller) =>
+          postRepo.getPostsFromController(controller, page),
     );
   }
 }
