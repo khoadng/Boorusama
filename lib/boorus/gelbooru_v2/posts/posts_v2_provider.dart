@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
@@ -16,22 +17,12 @@ final gelbooruV2PostRepoProvider =
 
     return PostRepositoryBuilder(
       tagComposer: ref.watch(tagQueryComposerProvider(config)),
-      fetch: (tags, page, {limit}) => client
-          .getPosts(
-            tags: tags,
-            page: page,
-            limit: limit,
-          )
-          .then((value) => value
-              .map((e) => gelbooruV2PostDtoToGelbooruPost(
-                    e,
-                    PostMetadata(
-                      page: page,
-                      search: tags.join(' '),
-                    ),
-                  ))
-              .toList()
-              .toResult()),
+      fetch: client.getPostResults,
+      fetchFromController: (controller, page, {limit}) {
+        final tags = controller.tags.map((e) => e.originalTag).toList();
+
+        return client.getPostResults(tags, page, limit: limit);
+      },
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
@@ -56,3 +47,28 @@ final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
         blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
       );
 });
+
+extension GelbooruV2ClientX on GelbooruV2Client {
+  Future<PostResult<GelbooruV2Post>> getPostResults(
+    List<String> tags,
+    int page, {
+    int? limit,
+  }) async {
+    final posts = await getPosts(
+      tags: tags,
+      page: page,
+      limit: limit,
+    );
+
+    return posts
+        .map((e) => gelbooruV2PostDtoToGelbooruPost(
+              e,
+              PostMetadata(
+                page: page,
+                search: tags.join(' '),
+              ),
+            ))
+        .toList()
+        .toResult();
+  }
+}

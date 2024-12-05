@@ -51,11 +51,15 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
     return PostScope(
       fetcher: (page) {
-        final tag = context.isLandscapeLayout
-            ? selectedTagString.value
-            : _selectedMostSearchedTag.value;
-
-        return postRepo.getPosts(tag, page);
+        return context.isLandscapeLayout
+            ? postRepo.getPostsFromController(
+                selectedTagController,
+                page,
+              )
+            : postRepo.getPosts(
+                _selectedMostSearchedTag.value,
+                page,
+              );
       },
       builder: (context, controller, errors) => DanbooruInfinitePostList(
         errors: errors,
