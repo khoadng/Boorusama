@@ -6,7 +6,7 @@ import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 
 // Project imports:
 import 'package:boorusama/foundation/iap/iap.dart';
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'constants.dart';
 import 'revenuecat.dart';
 

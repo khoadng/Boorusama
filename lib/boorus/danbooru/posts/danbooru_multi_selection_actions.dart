@@ -13,7 +13,8 @@ import 'package:boorusama/boorus/danbooru/tags/edit/widgets/tag_edit_rating_sele
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

@@ -6,10 +6,10 @@ import 'package:collection/collection.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'post_stats.dart';
 
 class PostStatisticsPage extends StatelessWidget {
   const PostStatisticsPage({

@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import '../post.dart';
+import '../sources/source.dart';
 
 class PostShareNotifier
     extends AutoDisposeFamilyNotifier<PostShareState, Post> {

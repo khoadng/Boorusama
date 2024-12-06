@@ -1,12 +1,12 @@
 // Flutter imports:
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/platform.dart';
 import '../iap/iap.dart' as i;
 import 'constants.dart';

@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/functional.dart';
-import '../posts.dart';
+import '../../posts.dart';
 
 const kLocalPostVoteId = -99;
 
