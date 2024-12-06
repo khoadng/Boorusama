@@ -3,7 +3,7 @@ import 'dart:convert';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/functional.dart';
 
 abstract class TagQueryComposer {

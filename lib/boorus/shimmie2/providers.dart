@@ -6,7 +6,8 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/foundation/path.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(

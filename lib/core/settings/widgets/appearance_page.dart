@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/create/booru_config_layout_view.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';

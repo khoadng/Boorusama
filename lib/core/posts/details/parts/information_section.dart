@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -16,6 +15,9 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../post.dart';
+import '../../sources/source.dart';
+import '../inherited_post.dart';
 
 class DefaultInheritedInformationSection<T extends Post>
     extends StatelessWidget {

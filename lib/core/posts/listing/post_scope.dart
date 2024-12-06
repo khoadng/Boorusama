@@ -8,12 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
-
-typedef PostScopeFetcher<T extends Post> = PostsOrErrorCore<T> Function(
-    int page);
+import '../post.dart';
+import 'post_grid_controller.dart';
 
 class PostScope<T extends Post> extends ConsumerStatefulWidget {
   const PostScope({
@@ -22,7 +20,7 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
     required this.builder,
   });
 
-  final PostScopeFetcher<T> fetcher;
+  final PostGridFetcher<T> fetcher;
   final Widget Function(
     BuildContext context,
     PostGridController<T> controller,

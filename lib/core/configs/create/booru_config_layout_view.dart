@@ -9,15 +9,15 @@ import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/details/custom_details.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'create.dart';
+import 'providers.dart';
 
 class DefaultBooruConfigLayoutView extends ConsumerWidget {
   const DefaultBooruConfigLayoutView({super.key});

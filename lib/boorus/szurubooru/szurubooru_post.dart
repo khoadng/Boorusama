@@ -2,7 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';

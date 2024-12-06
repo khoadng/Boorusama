@@ -11,7 +11,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:boorusama/boorus/danbooru/errors.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -21,6 +20,8 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post.dart';
+import 'post_grid_controller.dart';
 
 class SliverPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPostGrid({

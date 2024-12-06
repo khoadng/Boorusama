@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage/booru_selector.dart';
 import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
 import 'package:boorusama/core/home/home.dart';

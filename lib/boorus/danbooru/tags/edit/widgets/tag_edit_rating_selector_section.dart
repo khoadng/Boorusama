@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/widgets.dart';

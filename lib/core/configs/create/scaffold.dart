@@ -7,11 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'booru_config_layout_view.dart';
 import 'download.dart';
 import 'gestures.dart';
 import 'listing.dart';

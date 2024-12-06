@@ -2,8 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/dart.dart';
+import 'post.dart';
+import 'rating.dart';
+import 'sources/source.dart';
 
 List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
     filter(posts, tags, precomputedFilter: {}).data;
@@ -46,6 +48,28 @@ List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
   }
 
   return (data: nonFiltered, filtered: filtered);
+}
+
+extension PostFilterX on Post {
+  TagFilterData extractTagFilterData() => TagFilterData(
+        tags: tags,
+        rating: rating,
+        score: score,
+        downvotes: downvotes,
+        uploaderId: uploaderId,
+        source: switch (source) {
+          final WebSource w => w.url,
+          final NonWebSource nw => nw.value,
+          _ => null,
+        },
+        id: id,
+      );
+
+  bool containsTagPattern(List<TagExpression> pattern) =>
+      checkIfTagsContainsTagExpression(
+        extractTagFilterData(),
+        pattern,
+      );
 }
 
 extension TagFilterDataX on Set<String> {

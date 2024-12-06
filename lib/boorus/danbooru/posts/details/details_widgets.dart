@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/pools/pool_tiles.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/core/artists/artists.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
