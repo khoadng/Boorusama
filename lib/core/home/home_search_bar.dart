@@ -15,7 +15,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/app_update/app_update.dart';
+import 'package:boorusama/foundation/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';

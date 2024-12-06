@@ -8,12 +8,17 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
+import 'riverpod_widgets.dart';
+import 'types.dart';
+import 'widgets.dart';
 
 class AddUnknownBooruPage extends ConsumerWidget {
   const AddUnknownBooruPage({

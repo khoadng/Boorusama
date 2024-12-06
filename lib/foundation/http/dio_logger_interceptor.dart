@@ -2,9 +2,9 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/http/http_utils.dart';
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/path.dart';
+import 'dio_response.dart';
 
 const _kImageExtensions = {
   '.jpg',

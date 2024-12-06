@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search/ui/selected_tag_edit_dialog.dart';
 import 'package:boorusama/dart.dart';

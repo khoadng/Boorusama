@@ -3,7 +3,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import 'package:boorusama/core/backups/backups.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/functional.dart';
 

@@ -9,8 +9,7 @@ import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -18,6 +17,10 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'booru_config_provider.dart';
+import 'booru_selector_item.dart';
+import 'current_booru_providers.dart';
+import 'remove_booru_alert_dialog.dart';
 
 class BooruSelector extends ConsumerWidget {
   const BooruSelector({

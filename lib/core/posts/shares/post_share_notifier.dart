@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/posts/posts.dart';
 
 class PostShareNotifier
@@ -31,7 +31,6 @@ class PostShareNotifier
 }
 
 class PostShareState extends Equatable {
-
   const PostShareState({
     required this.booruLink,
     required this.sourceLink,

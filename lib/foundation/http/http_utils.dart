@@ -23,15 +23,6 @@ TaskEither<BooruError, T> tryFetchRemoteData<T>({
           : AppError(type: AppErrorType.loadDataFromServerFailed),
     );
 
-extension DioResponseX<T> on Response<T> {
-  bool get isFailure => statusCode.toOption().fold(
-        () => true,
-        (code) => code >= 400,
-      );
-
-  int get statusCodeOrZero => statusCode != null ? statusCode! : 0;
-}
-
 abstract interface class AppHttpHeaders {
   static const cookieHeader = 'cookie';
   static const contentLengthHeader = 'content-length';

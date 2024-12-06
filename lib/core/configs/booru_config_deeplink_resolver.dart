@@ -7,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'manage/providers.dart';
+import 'booru_config.dart';
+import 'manage/booru_config_provider.dart';
+import 'manage/current_booru_providers.dart';
+import 'providers.dart';
 
 class BooruConfigDeepLinkResolver extends ConsumerStatefulWidget {
   const BooruConfigDeepLinkResolver({

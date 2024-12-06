@@ -1,5 +1,5 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
+// Dart imports:
+import 'dart:ui';
 
 abstract final class GreyscaleShades {
   static const Color gray0 = Color.fromARGB(255, 0, 0, 0);

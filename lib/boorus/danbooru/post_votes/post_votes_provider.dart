@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/functional.dart';
 import 'danbooru_post_vote.dart';
 import 'post_vote_repository_api.dart';
