@@ -14,7 +14,7 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/details.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
 import 'favorites/favorites.dart';

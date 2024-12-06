@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../posts.dart';
+import '../../posts.dart';
 
 class InheritedPost<T extends Post> extends InheritedWidget {
   const InheritedPost({

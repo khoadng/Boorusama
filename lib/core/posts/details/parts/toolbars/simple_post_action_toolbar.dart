@@ -9,9 +9,14 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import '../../../post.dart';
+import '../../../shares/share_post_button.dart';
+import '../../inherited_post.dart';
+import 'bookmark_post_button.dart';
+import 'comment_post_button.dart';
+import 'download_post_button.dart';
 
 class SimplePostActionToolbar extends ConsumerWidget {
   const SimplePostActionToolbar({

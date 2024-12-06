@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
 import 'package:boorusama/core/datetimes/datetimes.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import 'package:boorusama/functional.dart';

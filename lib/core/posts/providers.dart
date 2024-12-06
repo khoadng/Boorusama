@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
+import 'post_repository.dart';
 
 final emptyPostRepoProvider = Provider<PostRepository>(
   (ref) => EmptyPostRepository(),
