@@ -8,8 +8,22 @@ import 'package:yaml/yaml.dart';
 // Project imports:
 import 'package:boorusama/foundation/loggers.dart';
 import 'booru.dart';
+import 'booru_factory.dart';
 
 const String _assetUrl = 'boorus.yaml';
+
+Future<List<Booru>> loadBoorus(dynamic yaml) async {
+  final boorus = <Booru>[];
+
+  for (final item in yaml) {
+    final name = item.keys.first as String;
+    final values = item[name];
+
+    boorus.add(BooruFactory.parse(name, values));
+  }
+
+  return boorus;
+}
 
 Future<List<Booru>> loadBoorusFromAssets() async {
   final yaml = await rootBundle.loadString(_assetUrl);

@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/booru.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/media_scanner.dart';

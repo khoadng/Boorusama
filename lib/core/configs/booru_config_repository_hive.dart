@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 
 // Project imports:
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/utils/utils.dart';

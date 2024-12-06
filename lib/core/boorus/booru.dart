@@ -2,70 +2,15 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
-const int kDanbooruId = 20;
-const int kGelbooruId = 21;
-const int kGelbooruV1Id = 22;
-const int kGelbooruV2Id = 23;
-const int kMoebooruId = 24;
-const int kE621Id = 25;
-const int kZerochanId = 26;
-const int kSankaku = 27;
-const int kPhilomenaId = 28;
-const int kShimmie2Id = 29;
-const int kSzurubooruId = 30;
-const int kHydrusId = 31;
-const int kAnimePicturesId = 32;
-
-enum NetworkProtocol {
-  https_1_1,
-  https_2_0,
-}
-
-NetworkProtocol? stringToNetworkProtocol(String value) => switch (value) {
-      'https_1_1' || 'https_1' => NetworkProtocol.https_1_1,
-      'https_2_0' || 'https_2' => NetworkProtocol.https_2_0,
-      _ => null,
-    };
-
-NetworkProtocol _parseProtocol(dynamic value) => switch (value) {
-      final String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
-      _ => NetworkProtocol.https_1_1,
-    };
-
-Future<List<Booru>> loadBoorus(dynamic yaml) async {
-  final boorus = <Booru>[];
-
-  for (final item in yaml) {
-    final name = item.keys.first as String;
-    final values = item[name];
-
-    boorus.add(Booru.from(name, values));
-  }
-
-  return boorus;
-}
+// Project imports:
+import 'booru_type.dart';
+import 'network_protocol.dart';
 
 sealed class Booru extends Equatable {
   const Booru({
     required this.name,
     required this.protocol,
   });
-
-  factory Booru.from(String name, dynamic data) => switch (name.toLowerCase()) {
-        'danbooru' => Danbooru.from(name, data),
-        'gelbooru' => Gelbooru.from(name, data),
-        'moebooru' => Moebooru.from(name, data),
-        'gelbooru_v1' => GelbooruV1.from(name, data),
-        'gelbooru_v2' => GelbooruV2.from(name, data),
-        'e621' => E621.from(name, data),
-        'zerochan' => Zerochan.from(name, data),
-        'sankaku' => Sankaku.from(name, data),
-        'philomena' => Philomena.from(name, data),
-        'shimmie2' => Shimmie2.from(name, data),
-        'szurubooru' => Szurubooru.from(name, data),
-        'anime-pictures' => AnimePictures.from(name, data),
-        _ => throw Exception('Unknown booru: $name'),
-      };
 
   final String name;
   final NetworkProtocol protocol;
@@ -201,7 +146,7 @@ final class Danbooru extends Booru {
 
     return Danbooru(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: sites,
     );
   }
@@ -220,7 +165,7 @@ final class Gelbooru extends Booru with PassHashAuthMixin {
   factory Gelbooru.from(String name, dynamic data) {
     return Gelbooru(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
       loginUrl: data['login-url'],
     );
@@ -241,7 +186,7 @@ final class GelbooruV1 extends Booru {
   factory GelbooruV1.from(String name, dynamic data) {
     return GelbooruV1(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -271,7 +216,7 @@ class GelbooruV2 extends Booru {
 
     return GelbooruV2(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: sites,
     );
   }
@@ -289,7 +234,7 @@ class E621 extends Booru {
   factory E621.from(String name, dynamic data) {
     return E621(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -307,7 +252,7 @@ class Zerochan extends Booru {
   factory Zerochan.from(String name, dynamic data) {
     return Zerochan(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -349,13 +294,13 @@ final class Moebooru extends Booru {
         salt: salt,
         favoriteSupport: favoriteSupport,
         overrideProtocol:
-            overrideProtocol != null ? _parseProtocol(overrideProtocol) : null,
+            overrideProtocol != null ? parseProtocol(overrideProtocol) : null,
       ));
     }
 
     return Moebooru(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: sites,
     );
   }
@@ -385,7 +330,7 @@ class Sankaku extends Booru {
 
     return Sankaku(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
       headers: map,
     );
@@ -405,7 +350,7 @@ class Philomena extends Booru {
   factory Philomena.from(String name, dynamic data) {
     return Philomena(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -423,7 +368,7 @@ class Shimmie2 extends Booru {
   factory Shimmie2.from(String name, dynamic data) {
     return Shimmie2(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -441,7 +386,7 @@ class Szurubooru extends Booru {
   factory Szurubooru.from(String name, dynamic data) {
     return Szurubooru(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -459,7 +404,7 @@ class Hydrus extends Booru {
   factory Hydrus.from(String name, dynamic data) {
     return Hydrus(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
     );
   }
@@ -478,7 +423,7 @@ class AnimePictures extends Booru with PassHashAuthMixin {
   factory AnimePictures.from(String name, dynamic data) {
     return AnimePictures(
       name: name,
-      protocol: _parseProtocol(data['protocol']),
+      protocol: parseProtocol(data['protocol']),
       sites: List.from(data['sites']),
       loginUrl: data['login-url'],
     );
@@ -489,125 +434,6 @@ class AnimePictures extends Booru with PassHashAuthMixin {
   @override
   final String? loginUrl;
 }
-
-enum BooruType {
-  unknown,
-  danbooru,
-  gelbooru,
-  moebooru,
-  gelbooruV2,
-  e621,
-  zerochan,
-  gelbooruV1,
-  sankaku,
-  philomena,
-  shimmie2,
-  szurubooru,
-  hydrus,
-  animePictures,
-}
-
-enum PostCountMethod {
-  notSupported,
-  endpoint,
-  search,
-}
-
-extension BooruTypeX on BooruType {
-  String stringify() => switch (this) {
-        BooruType.unknown => 'UNKNOWN',
-        BooruType.danbooru => 'Danbooru',
-        BooruType.gelbooruV1 => 'Gelbooru 0.1.x',
-        BooruType.gelbooru => 'Gelbooru 0.2.5',
-        BooruType.gelbooruV2 => 'Gelbooru 0.2',
-        BooruType.moebooru => 'Moebooru',
-        BooruType.e621 => 'e621',
-        BooruType.zerochan => 'Zerochan',
-        BooruType.sankaku => 'Sankaku',
-        BooruType.philomena => 'Philomena',
-        BooruType.shimmie2 => 'Shimmie2',
-        BooruType.szurubooru => 'Szurubooru',
-        BooruType.hydrus => 'Hydrus',
-        BooruType.animePictures => 'Anime Pictures',
-      };
-
-  bool get isGelbooruBased =>
-      this == BooruType.gelbooru ||
-      this == BooruType.gelbooruV1 ||
-      this == BooruType.gelbooruV2;
-
-  bool get isMoeBooruBased => [
-        BooruType.moebooru,
-      ].contains(this);
-
-  bool get isDanbooruBased => [
-        BooruType.danbooru,
-      ].contains(this);
-
-  bool get isE621Based => this == BooruType.e621;
-
-  bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
-
-  bool get supportBlacklistedTags => isDanbooruBased;
-
-  bool get canDownloadMultipleFiles => this != BooruType.animePictures;
-
-  bool get masonryLayoutUnsupported => this == BooruType.gelbooruV1;
-
-  bool get hasUnknownFullImageUrl =>
-      this == BooruType.zerochan || this == BooruType.gelbooruV1;
-
-  PostCountMethod get postCountMethod => switch (this) {
-        BooruType.danbooru => PostCountMethod.endpoint,
-        BooruType.gelbooru => PostCountMethod.search,
-        BooruType.moebooru => PostCountMethod.notSupported,
-        BooruType.gelbooruV2 => PostCountMethod.notSupported,
-        BooruType.e621 => PostCountMethod.notSupported,
-        BooruType.zerochan => PostCountMethod.notSupported,
-        BooruType.gelbooruV1 => PostCountMethod.notSupported,
-        BooruType.sankaku => PostCountMethod.notSupported,
-        BooruType.philomena => PostCountMethod.search,
-        BooruType.shimmie2 => PostCountMethod.notSupported,
-        BooruType.szurubooru => PostCountMethod.search,
-        BooruType.hydrus => PostCountMethod.notSupported,
-        BooruType.animePictures => PostCountMethod.notSupported,
-        BooruType.unknown => PostCountMethod.notSupported,
-      };
-
-  int toBooruId() => switch (this) {
-        BooruType.danbooru => kDanbooruId,
-        BooruType.gelbooru => kGelbooruId,
-        BooruType.moebooru => kMoebooruId,
-        BooruType.gelbooruV2 => kGelbooruV2Id,
-        BooruType.e621 => kE621Id,
-        BooruType.zerochan => kZerochanId,
-        BooruType.gelbooruV1 => kGelbooruV1Id,
-        BooruType.sankaku => kSankaku,
-        BooruType.philomena => kPhilomenaId,
-        BooruType.shimmie2 => kShimmie2Id,
-        BooruType.szurubooru => kSzurubooruId,
-        BooruType.hydrus => kHydrusId,
-        BooruType.animePictures => kAnimePicturesId,
-        BooruType.unknown => 0,
-      };
-}
-
-BooruType intToBooruType(int? value) => switch (value) {
-      1 || 2 || 3 || 5 || kDanbooruId => BooruType.danbooru,
-      4 || kGelbooruId => BooruType.gelbooru,
-      6 || 7 || 8 || 10 || kMoebooruId => BooruType.moebooru,
-      9 || kGelbooruV2Id => BooruType.gelbooruV2,
-      11 || 12 || kE621Id => BooruType.e621,
-      13 || kZerochanId => BooruType.zerochan,
-      14 || kGelbooruV1Id => BooruType.gelbooruV1,
-      kSankaku => BooruType.sankaku,
-      kPhilomenaId => BooruType.philomena,
-      kShimmie2Id => BooruType.shimmie2,
-      kSzurubooruId => BooruType.szurubooru,
-      kHydrusId => BooruType.hydrus,
-      kAnimePicturesId => BooruType.animePictures,
-      _ => BooruType.unknown
-    };
 
 mixin PassHashAuthMixin {
   String? get loginUrl;

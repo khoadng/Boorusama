@@ -10,7 +10,7 @@ import 'package:native_dio_adapter/native_dio_adapter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/router.dart';
 import 'cloudflare_challenge_interceptor.dart';
 import 'dio_logger_interceptor.dart';

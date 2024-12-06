@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'anime-pictures/anime_pictures.dart';
 import 'booru_builder_types.dart';
