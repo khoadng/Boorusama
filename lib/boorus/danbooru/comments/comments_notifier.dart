@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 
 const youtubeUrl = 'www.youtube.com';
 

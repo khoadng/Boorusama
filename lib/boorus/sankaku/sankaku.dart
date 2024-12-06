@@ -14,13 +14,15 @@ import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
 import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/create.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/router.dart';
 import 'sankaku_post.dart';
 

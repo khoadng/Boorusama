@@ -1,8 +1,11 @@
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'booru_config.dart';
+import 'booru_config_data.dart';
+import 'rating_parser.dart';
+import 'types.dart';
 
 extension BooruConfigDataConverter on BooruConfigData? {
   BooruConfig? toBooruConfig({required int? id}) {

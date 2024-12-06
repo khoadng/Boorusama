@@ -2,12 +2,15 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
+import 'booru_config.dart';
+import 'rating_parser.dart';
+import 'types.dart';
 
 class BooruConfigData extends Equatable {
   const BooruConfigData({

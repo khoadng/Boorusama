@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/tags/metatag.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/theme.dart';

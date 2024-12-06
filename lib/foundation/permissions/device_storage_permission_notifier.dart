@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/loggers/loggers.dart';
-import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'permission.dart';
+import 'permission_utils.dart';
 
 class DeviceStoragePermissionState extends Equatable {
   const DeviceStoragePermissionState({

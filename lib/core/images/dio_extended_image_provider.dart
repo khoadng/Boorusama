@@ -14,7 +14,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/networking/dio.dart';
+import 'package:boorusama/foundation/http/dio.dart';
 
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>

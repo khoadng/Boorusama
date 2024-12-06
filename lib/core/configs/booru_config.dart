@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -16,6 +16,9 @@ import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme/theme_configs.dart';
 import 'package:boorusama/functional.dart';
+import 'booru_config_data.dart';
+import 'rating_parser.dart';
+import 'types.dart';
 
 class BooruConfig extends Equatable {
   const BooruConfig({
@@ -367,54 +370,6 @@ class BooruConfigSearch extends Equatable {
 
   @override
   List<Object?> get props => [filter, auth];
-}
-
-Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
-  if (granularRatingFilterString == null) return null;
-
-  return granularRatingFilterString
-      .split('|')
-      .map((e) => mapStringToRating(e))
-      .toSet();
-}
-
-String? granularRatingFilterToString(Set<Rating>? granularRatingFilters) {
-  if (granularRatingFilters == null) return null;
-
-  return granularRatingFilters.map((e) => e.toShortString()).join('|');
-}
-
-enum BooruConfigDeletedItemBehavior {
-  show,
-  hide,
-}
-
-enum BooruConfigRatingFilter {
-  none,
-  hideExplicit,
-  hideNSFW,
-  custom,
-}
-
-enum BooruConfigBannedPostVisibility {
-  show,
-  hide,
-}
-
-extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
-  String getRatingTerm() => switch (this) {
-        BooruConfigRatingFilter.none => 'None',
-        BooruConfigRatingFilter.hideExplicit => 'Safeish',
-        BooruConfigRatingFilter.hideNSFW => 'Safe',
-        BooruConfigRatingFilter.custom => 'Custom'
-      };
-
-  String getFilterRatingTerm() => switch (this) {
-        BooruConfigRatingFilter.none => 'None',
-        BooruConfigRatingFilter.hideExplicit => 'Moderate',
-        BooruConfigRatingFilter.hideNSFW => 'Aggressive',
-        BooruConfigRatingFilter.custom => 'Custom'
-      };
 }
 
 mixin BooruConfigAuthMixin {

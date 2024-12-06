@@ -2,8 +2,8 @@
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/caching.dart';
+import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/functional.dart';
 import 'filter.dart';
 import 'post.dart';

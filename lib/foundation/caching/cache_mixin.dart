@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/foundation/caching/caching.dart';
+import 'lru_cacher.dart';
 
 class Cache<T> with CacheMixin<T> {
   Cache({
@@ -15,7 +15,6 @@ class Cache<T> with CacheMixin<T> {
 }
 
 class CacheEntry<T> {
-
   CacheEntry(this.value) : timestamp = DateTime.now();
   final DateTime timestamp;
   final T value;

@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/http.dart';
 import 'types/post_dto.dart';
 
 enum GelbooruFavoriteStatus {
