@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'logger.dart';
 
 class MultiChannelLogger implements Logger {
   MultiChannelLogger({

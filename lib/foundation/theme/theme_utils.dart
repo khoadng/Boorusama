@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../theme.dart';
+import 'colors.dart';
+import 'extended_color_scheme.dart';
 
 extension ThemeX on BuildContext {
   ThemeData get theme => Theme.of(this);
