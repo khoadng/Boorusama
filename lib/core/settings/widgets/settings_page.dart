@@ -31,11 +31,6 @@ const _entries = [
     content: AppearancePage(),
   ),
   SettingEntry(
-    title: 'Layout',
-    icon: FontAwesomeIcons.borderAll,
-    content: LayoutPage(),
-  ),
-  SettingEntry(
     title: 'settings.language.language',
     icon: Symbols.translate,
     content: LanguagePage(),

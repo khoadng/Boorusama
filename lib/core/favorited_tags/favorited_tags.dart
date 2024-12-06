@@ -1,7 +1,6 @@
 export 'favorite_tag.dart';
 export 'favorite_tag_hive_object.dart';
 export 'favorite_tag_io_handler.dart';
-export 'favorite_tag_repository.dart';
 export 'favorite_tag_repository_hive.dart';
 export 'favorite_tags_notifier.dart';
 export 'favorite_tags_provider.dart';

@@ -163,6 +163,9 @@ PODS:
   - PurchasesHybridCommon (13.5.0):
     - RevenueCat (= 5.6.0)
   - RevenueCat (5.6.0)
+  - rate_my_app (2.2.0):
+    - Flutter
+    - FlutterMacOS
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -197,6 +200,7 @@ DEPENDENCIES:
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - purchases_flutter (from `Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos`)
+  - rate_my_app (from `Flutter/ephemeral/.symlinks/plugins/rate_my_app/darwin`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -257,6 +261,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
   purchases_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos
+  rate_my_app:
+    :path: Flutter/ephemeral/.symlinks/plugins/rate_my_app/darwin
   screen_retriever_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
   share_plus:
@@ -306,6 +312,7 @@ SPEC CHECKSUMS:
   purchases_flutter: 544f01dee8ccf8c899c6e6d295bfb81d9610fc97
   PurchasesHybridCommon: 7c6fb07b091588d82180eec2590035f216ffbf55
   RevenueCat: a7117d40c27bc1e8a48e41ca4ea6856209664097
+  rate_my_app: cd3e1c44d12f387482698ffaf6ea9bd669a69b94
   screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
   share_plus: 1fa619de8392a4398bfaf176d441853922614e89
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78

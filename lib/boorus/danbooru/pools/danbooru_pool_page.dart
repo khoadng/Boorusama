@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/pools/pools.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -231,6 +234,42 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
           crossAxisSpacing: imageGridSpacing,
         ),
       ),
+    );
+  }
+}
+
+class DanbooruPoolGridItem extends ConsumerWidget {
+  const DanbooruPoolGridItem({
+    super.key,
+    required this.pool,
+  });
+
+  final DanbooruPool pool;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PoolGridItem(
+      image: PoolImage(pool: pool),
+      onTap: () => goToPoolDetailPage(context, pool),
+      total: pool.postCount,
+      name: pool.name,
+    );
+  }
+}
+
+class PoolSearchButton extends ConsumerWidget {
+  const PoolSearchButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      splashRadius: 24,
+      onPressed: () {
+        goToPoolSearchPage(context, ref);
+      },
+      icon: const Icon(Symbols.search),
     );
   }
 }

@@ -285,11 +285,12 @@ class GelbooruSearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
+    final postRepo = ref.watch(gelbooruPostRepoProvider(config));
+
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, controller) => ref
-          .watch(gelbooruPostRepoProvider(config))
-          .getPosts(controller.rawTagsString, page),
+      fetcher: (page, controller) =>
+          postRepo.getPostsFromController(controller, page),
     );
   }
 }

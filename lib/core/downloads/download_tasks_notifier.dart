@@ -18,8 +18,11 @@ class DownloadTaskState extends Equatable {
     );
   }
 
-  DownloadTaskState _clear(String group) {
-    _tasks.remove(group);
+  DownloadTaskState? _clear(String group) {
+    if (!_tasks.containsKey(group)) return null;
+
+    final removed = _tasks.remove(group);
+    if (removed == null) return null;
 
     return DownloadTaskState(
       tasks: {
@@ -85,8 +88,17 @@ class DownloadTasksNotifier extends Notifier<DownloadTaskState> {
     );
   }
 
-  void clear(String group) {
-    state = state._clear(group);
+  void clear(
+    String group, {
+    void Function()? onFailed,
+  }) {
+    final newState = state._clear(group);
+
+    if (newState != null) {
+      state = newState;
+    } else {
+      onFailed?.call();
+    }
   }
 
   void addOrUpdate(TaskUpdate update) {

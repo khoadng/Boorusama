@@ -6,7 +6,6 @@ export 'show_tag_list_page.dart';
 export 'tag.dart';
 export 'tag_category.dart';
 export 'tag_colors.dart';
-export 'tag_filter_category.dart';
 export 'tag_group_item.dart';
 export 'tag_info_service.dart';
 export 'tag_query_composer.dart';
