@@ -8,10 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'create.dart';
+import 'cookie_access_webview_page.dart';
+import 'providers.dart';
+import 'riverpod_widgets.dart';
 
 class DefaultCookieAuthConfigSection extends ConsumerWidget {
   const DefaultCookieAuthConfigSection({

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'analytics_providers.dart';
 
 class AnalyticsScope extends ConsumerWidget {

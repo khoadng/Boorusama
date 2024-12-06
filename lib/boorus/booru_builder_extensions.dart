@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'booru_builder.dart';
 
 extension BooruBuilderFeatureCheck on BooruBuilder {

@@ -10,7 +10,8 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts/post.dart';
@@ -22,6 +23,59 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
+
+class BooruConfigDownloadView extends ConsumerWidget {
+  const BooruConfigDownloadView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(initialBooruConfigProvider);
+    final id = ref.watch(editBooruConfigIdProvider);
+    final customDownloadFileNameFormat = ref.watch(editBooruConfigProvider(id)
+        .select((value) => value.customDownloadFileNameFormat));
+    final customDownloadLocation = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.customDownloadLocation));
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          DownloadFolderSelectorSection(
+            storagePath: customDownloadLocation,
+            deviceInfo: ref.watch(deviceInfoProvider),
+            onPathChanged: (path) =>
+                ref.editNotifier.updateCustomDownloadLocation(path),
+            title: 'Download location',
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Leave empty to use the download location in settings.',
+            style: ref.context.textTheme.titleSmall?.copyWith(
+              color: ref.context.colorScheme.hintColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(height: 8),
+          CustomDownloadFileNameSection(
+            config: config,
+            format: customDownloadFileNameFormat,
+            onIndividualDownloadChanged: (value) =>
+                ref.editNotifier.updateCustomDownloadFileNameFormat(value),
+            onBulkDownloadChanged: (value) =>
+                ref.editNotifier.updateCustomBulkDownloadFileNameFormat(value),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
   const CustomDownloadFileNameSection({

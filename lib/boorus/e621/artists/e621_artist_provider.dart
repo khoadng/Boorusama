@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
 

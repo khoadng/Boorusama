@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
 
 class DefaultBooruConfigGesturesView extends ConsumerWidget {
   const DefaultBooruConfigGesturesView({super.key});
@@ -172,6 +172,29 @@ class BooruConfigGesturesView extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class BooruConfigSettingsHeader extends StatelessWidget {
+  const BooruConfigSettingsHeader({
+    super.key,
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: context.colorScheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

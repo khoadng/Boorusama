@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';

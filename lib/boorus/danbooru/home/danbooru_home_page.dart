@@ -12,7 +12,7 @@ import 'package:share_handler/share_handler.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';

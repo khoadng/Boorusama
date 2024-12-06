@@ -11,7 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/bulks/create_bulk_download_task_sheet.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/images.dart';

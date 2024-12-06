@@ -8,8 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/create/auth.dart';
+import 'package:boorusama/core/configs/create/providers.dart';
+import 'package:boorusama/core/configs/create/scaffold.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {

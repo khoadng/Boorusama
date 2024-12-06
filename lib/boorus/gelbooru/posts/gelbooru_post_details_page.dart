@@ -9,7 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
 import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';

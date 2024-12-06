@@ -2,58 +2,23 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
+import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-
-const kDefaultPreviewImageButtonAction = {
-  '',
-  null,
-  kToggleBookmarkAction,
-  kDownloadAction,
-  kViewArtistAction,
-};
-
-class UpdateBooruConfigScope extends ConsumerWidget {
-  const UpdateBooruConfigScope({
-    super.key,
-    required this.id,
-    required this.child,
-  });
-
-  final EditBooruConfigId id;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final configs = ref.watch(booruConfigProvider);
-    final config = configs.firstWhereOrNull((e) => e.id == id.id);
-
-    if (config == null) {
-      return Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: Text('Config not found'),
-        ),
-      );
-    }
-
-    return ProviderScope(
-      overrides: [
-        editBooruConfigIdProvider.overrideWithValue(id),
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: child,
-    );
-  }
-}
+import 'download.dart';
+import 'gestures.dart';
+import 'listing.dart';
+import 'providers.dart';
+import 'riverpod_widgets.dart';
+import 'search.dart';
+import 'viewer.dart';
 
 class CreateBooruConfigScope extends ConsumerWidget {
   const CreateBooruConfigScope({
@@ -271,25 +236,37 @@ class _TabControllerProviderState extends State<_TabControllerProvider>
   }
 }
 
-class BooruConfigSettingsHeader extends StatelessWidget {
-  const BooruConfigSettingsHeader({
+class SelectedBooruChip extends StatelessWidget {
+  const SelectedBooruChip({
     super.key,
-    required this.label,
+    required this.booruType,
+    required this.url,
   });
 
-  final String label;
+  final BooruType booruType;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: context.colorScheme.primary,
-          fontWeight: FontWeight.w500,
+    final source = PostSource.from(url);
+
+    return ListTile(
+      minVerticalPadding: 0,
+      horizontalTitleGap: 12,
+      contentPadding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      leading: BooruLogo.fromBooruType(booruType, url),
+      title: Text(
+        source.whenWeb(
+          (source) => source.uri.host,
+          () => url,
         ),
+        style: context.textTheme.titleLarge,
+        maxLines: 1,
+        softWrap: false,
+        overflow: TextOverflow.ellipsis,
       ),
+      subtitle: Text('using ${booruType.stringify()}'),
     );
   }
 }

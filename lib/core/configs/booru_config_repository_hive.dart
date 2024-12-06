@@ -6,9 +6,12 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/utils/utils.dart';
+import 'booru_config.dart';
+import 'booru_config_converter.dart';
+import 'booru_config_data.dart';
+import 'types.dart';
 
 class HiveBooruConfigRepository implements BooruConfigRepository {
   HiveBooruConfigRepository({

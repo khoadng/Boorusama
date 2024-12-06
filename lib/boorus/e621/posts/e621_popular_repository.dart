@@ -2,7 +2,7 @@
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/e621/types/types.dart' as e;
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/caching.dart';

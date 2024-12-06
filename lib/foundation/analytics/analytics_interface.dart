@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/configs.dart';
 import 'analytics_network_info.dart';
 
 abstract interface class AnalyticsInterface {

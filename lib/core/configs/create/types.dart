@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
+import '../booru_config_data.dart';
 
 class AuthConfigData extends Equatable {
   const AuthConfigData({
