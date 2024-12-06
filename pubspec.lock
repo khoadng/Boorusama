@@ -1092,14 +1092,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2799.0"
-  media_scanner:
-    dependency: "direct main"
-    description:
-      name: media_scanner
-      sha256: "745e8b0c05d7c1d9040cc5bbb5508bd7fb1b6a36125d360537f1dd92d26bd050"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   meta:
     dependency: transitive
     description:
@@ -1368,10 +1360,10 @@ packages:
     dependency: "direct main"
     description:
       name: rate_my_app
-      sha256: fe210e9e6068095945f89fc2310a71b1cc2caae7f64fa65b83fc796badcb05e3
+      sha256: "5a414413c7e25f2dfa6a0216945a28cbffada3557de5d71af19c3ab109ed7e66"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "2.2.0"
   readmore:
     dependency: "direct main"
     description:

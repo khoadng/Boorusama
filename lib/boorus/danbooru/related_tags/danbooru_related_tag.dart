@@ -1,9 +1,13 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/caching/caching.dart';
 
 class DanbooruRelatedTag extends Equatable {
   const DanbooruRelatedTag({
@@ -90,4 +94,58 @@ enum RelatedType {
   cosine,
   overlap,
   frequency,
+}
+
+abstract class RelatedTagRepository {
+  Future<DanbooruRelatedTag> getRelatedTag(
+    String query, {
+    TagCategory? category,
+    RelatedType? order,
+    int? limit,
+  });
+}
+
+class RelatedTagRepositoryBuilder
+    with SimpleCacheMixin<DanbooruRelatedTag>
+    implements RelatedTagRepository {
+  RelatedTagRepositoryBuilder({
+    required this.fetch,
+  }) {
+    cache = Cache(
+      maxCapacity: 100,
+      staleDuration: const Duration(minutes: 30),
+    );
+  }
+
+  final Future<DanbooruRelatedTag> Function(
+    String query, {
+    TagCategory? category,
+    RelatedType? order,
+    int? limit,
+  }) fetch;
+
+  @override
+  Future<DanbooruRelatedTag> getRelatedTag(
+    String query, {
+    TagCategory? category,
+    RelatedType? order,
+    int? limit,
+  }) =>
+      tryGet(
+        jsonEncode({
+          'query': query,
+          'category': category?.name,
+          'order': order?.name,
+          'limit': limit,
+        }),
+        orElse: () => fetch(
+          query,
+          category: category,
+          order: order,
+          limit: limit,
+        ),
+      );
+
+  @override
+  late Cache<DanbooruRelatedTag> cache;
 }

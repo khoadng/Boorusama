@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gal/gal.dart';
-import 'package:media_scanner/media_scanner.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/booru.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/media_scanner.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;

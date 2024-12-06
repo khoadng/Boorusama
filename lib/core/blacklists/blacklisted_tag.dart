@@ -2,7 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 class BlacklistedTag extends Equatable {
-
   const BlacklistedTag({
     required this.id,
     required this.name,
@@ -34,4 +33,20 @@ class BlacklistedTag extends Equatable {
       updatedDate: updatedDate ?? this.updatedDate,
     );
   }
+}
+
+abstract class GlobalBlacklistedTagRepository {
+  Future<BlacklistedTag?> addTag(String tag);
+  Future<void> removeTag(int tagId);
+  Future<List<BlacklistedTag>> getBlacklist();
+  Future<BlacklistedTag> updateTag(int tagId, String newTag);
+}
+
+List<String>? sanitizeBlacklistTagString(String tagString) {
+  final trimmed = tagString.trim();
+  final tags = trimmed.split('\n');
+
+  if (tags.isEmpty) return null;
+
+  return tags;
 }

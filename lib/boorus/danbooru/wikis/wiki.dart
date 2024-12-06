@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 class Wiki extends Equatable {
@@ -23,4 +24,11 @@ class Wiki extends Equatable {
 
   @override
   List<Object?> get props => [id, title, body, otherNames];
+}
+
+abstract class WikiRepository {
+  Future<Wiki?> getWikiFor(
+    String title, {
+    CancelToken? cancelToken,
+  });
 }

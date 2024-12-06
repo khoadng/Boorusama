@@ -35,3 +35,19 @@ DanbooruReportDataPoint danbooruReportDataPointDtoToDanbooruReportDataPoint(
     postCount: dto.posts ?? 0,
   );
 }
+
+abstract class DanbooruReportRepository {
+  Future<List<DanbooruReportDataPoint>> getPostReports({
+    required List<String> tags,
+    required DanbooruReportPeriod period,
+    required DateTime from,
+    required DateTime to,
+  });
+}
+
+enum DanbooruReportPeriod {
+  day,
+  week,
+  month,
+  year,
+}

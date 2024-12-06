@@ -1,9 +1,6 @@
 // Project imports:
 import 'package:boorusama/foundation/caching/caching.dart';
-
-abstract class PoolDescriptionRepository {
-  Future<String> getDescription(int poolId);
-}
+import 'danbooru_pool.dart';
 
 class PoolDescriptionRepoBuilder
     with SimpleCacheMixin<String>

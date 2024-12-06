@@ -3,7 +3,6 @@ import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'danbooru_post_vote.dart';
-import 'post_vote_repository.dart';
 
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({

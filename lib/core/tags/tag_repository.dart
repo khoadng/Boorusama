@@ -5,14 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/foundation/caching/caching.dart';
 import 'tag.dart';
 
-abstract class TagRepository {
-  Future<List<Tag>> getTagsByName(
-    Set<String> tags,
-    int page, {
-    CancelToken? cancelToken,
-  });
-}
-
 bool storeTagLargerThan1000Posts(Tag tag) => tag.postCount > 1000;
 
 class TagRepositoryBuilder

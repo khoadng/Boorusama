@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/comments/parse_utils.dart';
+import 'package:boorusama/core/comments/utils.dart';
 import 'package:boorusama/dart.dart';
 
 String parseDtext(String text) => text.pipe([

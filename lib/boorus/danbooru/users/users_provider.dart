@@ -12,6 +12,7 @@ import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/functional.dart';
+import 'user_repository.dart';
 
 final danbooruUserRepoProvider =
     Provider.family<UserRepository, BooruConfigAuth>((ref, config) {
