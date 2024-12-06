@@ -9,13 +9,16 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post.dart';
+import 'post_details.dart';
+import 'post_details_page_view.dart';
+import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({

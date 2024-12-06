@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -30,9 +29,14 @@ import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post.dart';
+import 'general_post_context_menu.dart';
+import 'post_grid_config_icon_button.dart';
+import 'post_grid_controller.dart';
+import 'post_list_configuration_header.dart';
+import 'sliver_post_grid.dart';
 
 typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
   BuildContext context,
@@ -929,42 +933,6 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class SinglePagePostListScaffold<T extends Post>
-    extends ConsumerStatefulWidget {
-  const SinglePagePostListScaffold({
-    super.key,
-    required this.posts,
-    this.sliverHeaders,
-  });
-
-  final List<T> posts;
-  final List<Widget>? sliverHeaders;
-
-  @override
-  ConsumerState<SinglePagePostListScaffold<T>> createState() =>
-      _SinglePagePostListScaffoldState<T>();
-}
-
-class _SinglePagePostListScaffoldState<T extends Post>
-    extends ConsumerState<SinglePagePostListScaffold<T>> {
-  @override
-  Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => TaskEither.Do(
-          ($) async => page == 1 ? widget.posts.toResult() : <T>[].toResult(),
-        ),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-          sliverHeaders: [
-            if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
-          ],
-        ),
       ),
     );
   }

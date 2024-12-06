@@ -8,12 +8,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../sources/source.dart';
 
 final _cachedImageFileProvider =
     FutureProvider.autoDispose.family<XFile?, ModelShareImageData>(

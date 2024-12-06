@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
 
 enum TagEditExpandMode {
   favorite,

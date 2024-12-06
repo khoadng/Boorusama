@@ -7,7 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/listing.dart';
+import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';

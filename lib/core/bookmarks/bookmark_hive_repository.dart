@@ -3,7 +3,8 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/functional.dart';
 
 class BookmarkHiveRepository implements BookmarkRepository {

@@ -8,7 +8,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/related_tags/related_tags.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';

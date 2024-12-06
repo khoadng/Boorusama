@@ -9,7 +9,8 @@ import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/foundation/path.dart';
 
 final e621PostRepoProvider =

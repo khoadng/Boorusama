@@ -9,7 +9,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/settings/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -19,6 +18,8 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post.dart';
+import 'post_grid_controller.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({
