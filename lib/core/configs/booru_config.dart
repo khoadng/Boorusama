@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -588,5 +589,22 @@ extension CustomViewKeyX on LayoutConfigs {
     }
 
     return parts;
+  }
+}
+
+abstract class BooruConfigRepository {
+  Future<BooruConfig?> add(BooruConfigData booruConfigData);
+  Future<BooruConfig?> update(int id, BooruConfigData booruConfigData);
+  Future<void> remove(BooruConfig booruConfig);
+  Future<List<BooruConfig>> getAll();
+  Future<void> clear();
+  Future<List<BooruConfig>> addAll(List<BooruConfig> booruConfigs);
+}
+
+extension BooruConfigRepositoryX on BooruConfigRepository {
+  Future<BooruConfig?> getCurrentBooruConfigFrom(Settings settings) async {
+    final booruConfigs = await getAll();
+    return booruConfigs
+        .firstWhereOrNull((e) => e.id == settings.currentBooruConfigId);
   }
 }

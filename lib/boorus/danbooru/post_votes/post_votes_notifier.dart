@@ -11,7 +11,6 @@ import 'package:boorusama/functional.dart';
 import '../posts/posts.dart';
 import '../users/users.dart';
 import 'danbooru_post_vote.dart';
-import 'post_vote_repository.dart';
 import 'post_votes_provider.dart';
 
 class PostVotesNotifier
