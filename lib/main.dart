@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'boot.dart';
 
 void main() async {

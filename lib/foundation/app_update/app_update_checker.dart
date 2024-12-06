@@ -1,37 +1,6 @@
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'play_store_update_checker.dart';
-
 abstract class AppUpdateChecker {
   Future<UpdateStatus> checkForUpdate();
 }
-
-final shouldCheckForUpdateProvider = Provider<bool>((ref) {
-  return !ref.watch(isDevEnvironmentProvider) && isAndroid();
-});
-
-final appUpdateCheckerProvider = Provider<AppUpdateChecker>(
-  (ref) => isAndroid()
-      ? PlayStoreUpdateChecker(
-          packageInfo: ref.watch(packageInfoProvider),
-          countryCode: 'US',
-          languageCode: 'en',
-        )
-      : UnsupportedPlatformChecker(),
-);
-
-final appUpdateStatusProvider = FutureProvider<UpdateStatus>((ref) async {
-  if (!ref.watch(shouldCheckForUpdateProvider)) {
-    return const UpdateNotAvailable();
-  }
-
-  final checker = ref.watch(appUpdateCheckerProvider);
-  return checker.checkForUpdate();
-});
 
 sealed class UpdateStatus {
   const UpdateStatus();

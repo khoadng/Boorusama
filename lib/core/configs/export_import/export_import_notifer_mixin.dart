@@ -8,10 +8,11 @@ import 'package:version/version.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/backups/backups.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/export_import/export_import.dart';
+import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/version.dart';
+import 'booru_config_io_handler.dart';
+import 'providers.dart';
 
 mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
   Future<void> import({
