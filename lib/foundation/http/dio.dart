@@ -11,9 +11,10 @@ import 'package:native_dio_adapter/native_dio_adapter.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/router.dart';
 import 'cloudflare_challenge_interceptor.dart';
+import 'dio_logger_interceptor.dart';
+import 'http_utils.dart';
 
 // Some user might input the url with /index.php/ or /index.php so we need to clean it
 String _cleanUrl(String url) {

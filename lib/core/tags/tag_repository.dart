@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/foundation/caching.dart';
 import 'tag.dart';
 
 bool storeTagLargerThan1000Posts(Tag tag) => tag.postCount > 1000;

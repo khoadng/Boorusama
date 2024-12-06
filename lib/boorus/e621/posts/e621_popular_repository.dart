@@ -5,8 +5,8 @@ import 'package:boorusama/clients/e621/types/types.dart' as e;
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/caching.dart';
+import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/functional.dart';
 
 abstract interface class E621PopularRepository {

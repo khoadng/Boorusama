@@ -13,9 +13,6 @@ import 'firebase_analytics.dart';
 import 'firebase_crashlytics.dart';
 import 'firebase_options.dart';
 
-export 'firebase_analytics.dart';
-export 'firebase_crashlytics.dart';
-
 Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
     ensureFirebaseInitialized(Settings settings) async {
   if (!_isFirebasePlatformSupported()) {

@@ -18,7 +18,7 @@ import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'logger.dart';
 
 typedef BootLogData = ({
   DateTime dateTime,

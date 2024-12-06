@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/foundation/analytics.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
+import 'network_state.dart';
 
 const _serviceName = 'Connectivity';
 

@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/foundation/caching.dart';
 
 final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfigSearch>(

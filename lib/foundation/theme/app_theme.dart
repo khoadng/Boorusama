@@ -7,7 +7,11 @@ import 'package:dynamic_color/dynamic_color.dart';
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'colors.dart';
+import 'extended_color_scheme.dart';
+import 'grayscale_shades.dart';
+import 'slider.dart';
+import 'theme_mode.dart';
 
 const staticLightScheme = ColorScheme(
   brightness: Brightness.light,

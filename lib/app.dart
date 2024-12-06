@@ -18,7 +18,7 @@ import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
+import 'package:boorusama/foundation/networking.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';

@@ -18,7 +18,7 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
+import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';

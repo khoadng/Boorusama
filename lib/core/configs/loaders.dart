@@ -6,7 +6,7 @@ import 'package:http/http.dart';
 import 'package:yaml/yaml.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers/loggers.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'booru.dart';
 
 const String _assetUrl = 'boorus.yaml';

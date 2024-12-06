@@ -4,7 +4,7 @@ import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/functional.dart';
 
 class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
