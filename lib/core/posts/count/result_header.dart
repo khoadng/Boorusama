@@ -7,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../listing/post_grid_controller.dart';
+import '../post.dart';
+import 'post_count_provider.dart';
 
 class ResultHeaderWithProvider extends ConsumerWidget {
   const ResultHeaderWithProvider({

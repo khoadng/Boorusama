@@ -14,17 +14,21 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post.dart';
+import '../shares/post_share_provider.dart';
+import 'common.dart';
+import 'post_details.dart';
+import 'post_details_page_view.dart';
+import 'post_media.dart';
+import 'video_controls.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
@@ -495,183 +499,5 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
 
   void onVideoPlayerCreated(VideoPlayerController controller, int page) {
     _videoControllers[page] = controller;
-  }
-}
-
-const _kMinWidth = 320.0;
-
-class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
-  const PostDetailsVideoControls({
-    super.key,
-    required this.controller,
-  });
-
-  final PostDetailsController<T> controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final rightControls = [
-      VideoSoundScope(
-        builder: (context, soundOn) => SoundControlButton(
-          soundOn: soundOn,
-          onSoundChanged: (value) => ref.setGlobalVideoSound(value),
-        ),
-      ),
-      const SizedBox(width: 8),
-      MoreOptionsControlButton(
-        speed: ref.watchPlaybackSpeed(
-          controller.currentPost.value.videoUrl,
-        ),
-        onSpeedChanged: (speed) => ref.setPlaybackSpeed(
-          controller.currentPost.value.videoUrl,
-          speed,
-        ),
-      ),
-      const SizedBox(width: 8)
-    ];
-
-    final isLarge = context.isLargeScreen;
-    final surfaceColor = context.colorScheme.surface;
-
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(
-                color: surfaceColor.applyOpacity(0.8),
-              ),
-            ),
-          ),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return SafeArea(
-              top: false,
-              left: isLarge,
-              right: false,
-              bottom: isLarge,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      const Spacer(),
-                      if (constraints.maxWidth < _kMinWidth) ...rightControls,
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      ValueListenableBuilder(
-                        valueListenable: controller.currentPost,
-                        builder: (_, post, __) => PlayPauseButton(
-                          isPlaying: controller.isVideoPlaying,
-                          onPlayingChanged: (value) {
-                            if (value == true) {
-                              controller.pauseVideo(post.id, post.isWebm);
-                            } else if (value == false) {
-                              controller.playVideo(post.id, post.isWebm);
-                            } else {
-                              // do nothing
-                            }
-                          },
-                        ),
-                      ),
-                      ValueListenableBuilder(
-                        valueListenable: controller.videoProgress,
-                        builder: (_, progress, __) => VideoTimeText(
-                          duration: progress.position,
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          color: Colors.transparent,
-                          height: 28,
-                          child: ValueListenableBuilder(
-                            valueListenable: controller.currentPost,
-                            builder: (_, post, __) => ValueListenableBuilder(
-                              valueListenable: controller.videoProgress,
-                              builder: (_, progress, __) => VideoProgressBar(
-                                duration: progress.duration,
-                                position: progress.position,
-                                buffered: const [],
-                                onDragStart: () {
-                                  // pause the video when dragging
-                                  controller.pauseVideo(post.id, post.isWebm);
-                                },
-                                onDragEnd: () {
-                                  // resume the video when dragging ends
-                                  controller.playVideo(post.id, post.isWebm);
-                                },
-                                seekTo: (position) => controller.onVideoSeekTo(
-                                  position,
-                                  post.id,
-                                  post.isWebm,
-                                ),
-                                barHeight: 2,
-                                handleHeight: 6,
-                                drawShadow: true,
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .hintColor
-                                    .applyOpacity(0.2),
-                                playedColor:
-                                    Theme.of(context).colorScheme.primary,
-                                bufferedColor:
-                                    Theme.of(context).colorScheme.hintColor,
-                                handleColor:
-                                    Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      ValueListenableBuilder(
-                        valueListenable: controller.videoProgress,
-                        builder: (_, progress, __) => VideoTimeText(
-                          duration: progress.duration,
-                        ),
-                      ),
-                      if (constraints.maxWidth >= _kMinWidth) ...rightControls,
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class VideoTimeText extends StatelessWidget {
-  const VideoTimeText({
-    super.key,
-    required this.duration,
-  });
-
-  final Duration duration;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 44,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            formatDurationForMedia(duration),
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

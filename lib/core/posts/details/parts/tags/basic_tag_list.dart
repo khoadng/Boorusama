@@ -7,11 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import '../../../post.dart';
+import '../../inherited_post.dart';
 
 class DefaultInheritedTagList<T extends Post> extends ConsumerWidget {
   const DefaultInheritedTagList({super.key});

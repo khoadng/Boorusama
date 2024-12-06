@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/danbooru/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts.dart';
 
 final danbooruPostDetailsArtistProvider = FutureProvider.family
     .autoDispose<List<DanbooruPost>, String>((ref, tag) async {

@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';

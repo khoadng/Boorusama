@@ -6,16 +6,21 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
+import '../filter.dart';
+import '../post.dart';
+import '../post_repository.dart';
 
 const _kFirstPage = 1;
 const _kJumpStep = 1;
 
 typedef ItemFetcher<T extends Post> = Future<PostResult<T>> Function(int page);
 typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
+
+typedef PostGridFetcher<T extends Post> = PostsOrErrorCore<T> Function(
+    int page);
 
 extension TagCountX on Map<String, Set<int>> {
   int get totalNonDuplicatesPostCount => values.expand((e) => e).toSet().length;
@@ -31,7 +36,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     this.blacklistedUrlsFetcher,
   }) : _pageMode = pageMode;
 
-  final PostScopeFetcher<T> fetcher;
+  final PostGridFetcher<T> fetcher;
   PageMode _pageMode;
 
   final Set<String> Function()? blacklistedUrlsFetcher;

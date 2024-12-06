@@ -9,11 +9,12 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post.dart';
+import 'inherited_post.dart';
 
 class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsScope({
