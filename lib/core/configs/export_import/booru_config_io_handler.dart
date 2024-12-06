@@ -12,27 +12,25 @@ const kBooruConfigsExporterImporterVersion = 1;
 class BooruConfigIOHandler {
   BooruConfigIOHandler({
     required this.handler,
+    required this.converter,
   });
 
-  static void exportToClipboard({
+  final DataIOHandler handler;
+  final DataBackupConverter converter;
+
+  Future<void> exportToClipboard({
     required List<BooruConfig> configs,
-    required Version? appVersion,
     void Function()? onSucceed,
     void Function(String error)? onError,
   }) =>
-      tryEncodeData(
-        version: kBooruConfigsExporterImporterVersion,
-        exportDate: DateTime.now(),
-        payload: configs,
-        exportVersion: appVersion,
-      ).fold(
-        (l) => onError?.call(l.toString()),
-        (r) => AppClipboard.copy(r)
-            .then((value) => onSucceed?.call())
-            .catchError((e, st) => onError?.call(e.toString())),
-      );
+      converter.tryEncode(payload: configs).fold(
+            (l) async => onError?.call(l.toString()),
+            (r) => AppClipboard.copy(r)
+                .then((value) => onSucceed?.call())
+                .catchError((e, st) => onError?.call(e.toString())),
+          );
 
-  static Future<Either<ImportError, BooruConfigExportData>>
+  Future<Either<ImportError, BooruConfigExportData>>
       importFromClipboard() async {
     final jsonString = await AppClipboard.paste('text/plain');
 
@@ -40,15 +38,13 @@ class BooruConfigIOHandler {
       return left(const ImportErrorEmpty());
     }
 
-    return tryDecodeData(data: jsonString).map(
-      (a) => BooruConfigExportData(
-        data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),
-        exportData: a,
-      ),
-    );
+    return converter.tryDecode(data: jsonString).map(
+          (a) => BooruConfigExportData(
+            data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),
+            exportData: a,
+          ),
+        );
   }
-
-  final DataIOHandler handler;
 
   TaskEither<ExportError, Unit> export({
     required List<BooruConfig> configs,

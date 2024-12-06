@@ -3,7 +3,6 @@ export 'bookmark_convert.dart';
 export 'bookmark_hive_object.dart';
 export 'bookmark_hive_repository.dart';
 export 'bookmark_notifier.dart';
-export 'bookmark_repository.dart';
 export 'widgets/add_bookmarks_button.dart';
 export 'widgets/bookmark_appbar.dart';
 export 'widgets/bookmark_booru_type_selector.dart';

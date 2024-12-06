@@ -3,9 +3,12 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
+import 'package:boorusama/functional.dart';
 
 class PostMetadata extends Equatable {
   const PostMetadata({
@@ -154,6 +157,76 @@ abstract class SimplePost extends Equatable
   List<Object?> get props => [id];
 }
 
+abstract class PostRepository<T extends Post> {
+  PostsOrError<T> getPosts(
+    String tags,
+    int page, {
+    int? limit,
+  });
+
+  PostsOrError<T> getPostsFromController(
+    SelectedTagController controller,
+    int page, {
+    int? limit,
+  });
+
+  TagQueryComposer get tagComposer;
+}
+
+class PostResult<T extends Post> extends Equatable {
+  const PostResult({
+    required this.posts,
+    required this.total,
+  });
+
+  PostResult.empty()
+      : posts = <T>[],
+        total = 0;
+
+  PostResult<T> copyWith({
+    List<T>? posts,
+    int? Function()? total,
+  }) =>
+      PostResult(
+        posts: posts ?? this.posts,
+        total: total != null ? total() : this.total,
+      );
+
+  final List<T> posts;
+  final int? total;
+
+  @override
+  List<Object?> get props => [posts, total];
+}
+
+extension PostResultX<T extends Post> on List<T> {
+  PostResult<T> toResult({
+    int? total,
+  }) =>
+      PostResult(
+        posts: this,
+        total: total,
+      );
+}
+
+typedef PostsOrErrorCore<T extends Post>
+    = TaskEither<BooruError, PostResult<T>>;
+
+typedef PostsOrError<T extends Post> = PostsOrErrorCore<T>;
+
+typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
+  List<String> tags,
+  int page, {
+  int? limit,
+});
+
+typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
+    Function(
+  SelectedTagController controller,
+  int page, {
+  int? limit,
+});
+
 mixin NoTagDetailsMixin implements Post {
   @override
   Set<String>? get artistTags => null;
@@ -256,4 +329,15 @@ extension PostsX on Iterable<Post> {
 
     return tagCounts;
   }
+}
+
+Set<String> splitRawTagString(String? rawTagString) {
+  if (rawTagString == null) return {};
+  if (rawTagString.isEmpty) return {};
+
+  return rawTagString.split(' ').where((element) => element.isNotEmpty).toSet();
+}
+
+extension TagStringSplitter on String? {
+  Set<String> splitTagString() => splitRawTagString(this);
 }

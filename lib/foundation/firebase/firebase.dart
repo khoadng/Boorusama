@@ -18,11 +18,13 @@ export 'firebase_crashlytics.dart';
 
 Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
     ensureFirebaseInitialized(Settings settings) async {
-  if (!isFirebaseEnabled(dataCollectingStatus: settings.dataCollectingStatus)) {
+  if (!_isFirebasePlatformSupported()) {
     return (null, null);
   }
 
+  // Always initialize to prevent crashings
   await Firebase.initializeApp(
+    name: 'boorusama',
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
@@ -34,14 +36,14 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
   await firebaseAnalytics.ensureInitialized();
   await crashlyticsReporter.enstureInitialized();
 
-  return (firebaseAnalytics, crashlyticsReporter);
+  return isFirebaseEnabled(dataCollectingStatus: settings.dataCollectingStatus)
+      ? (firebaseAnalytics, crashlyticsReporter)
+      : (null, null);
 }
 
 bool isFirebaseEnabled({
   required DataCollectingStatus dataCollectingStatus,
 }) =>
-    dataCollectingStatus == DataCollectingStatus.allow &&
-    kReleaseMode &&
-    _isFirebasePlatformSupported();
+    dataCollectingStatus == DataCollectingStatus.allow && kReleaseMode;
 
 bool _isFirebasePlatformSupported() => isAndroid() || isIOS() || isMacOS();

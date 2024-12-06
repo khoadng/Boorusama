@@ -15,4 +15,3 @@ export 'latest_posts_view.dart';
 export 'post_variant.dart';
 export 'posts_provider.dart';
 export 'statistics.dart';
-export 'utils.dart';

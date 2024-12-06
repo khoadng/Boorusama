@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/zerochan/zerochan.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/home/home.dart';
