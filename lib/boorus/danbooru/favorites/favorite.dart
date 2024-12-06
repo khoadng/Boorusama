@@ -34,3 +34,17 @@ extension FavoriteX on Favorite {
         userId: userId ?? this.userId,
       );
 }
+
+abstract class FavoritePostRepository {
+  Future<bool> addToFavorites(int postId);
+  Future<bool> removeFromFavorites(int postId);
+  Future<List<Favorite>> filterFavoritesFromUserId(
+    List<int> postIds,
+    int userId,
+    int limit,
+  );
+  Future<List<Favorite>> getFavorites(int postId, int page);
+}
+
+String buildFavoriteQuery(String username) =>
+    'ordfav:${username.replaceAll(' ', '_')}'.trim();

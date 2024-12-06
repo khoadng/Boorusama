@@ -2,16 +2,6 @@
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client_reports.dart';
 import 'danbooru_report_data_point.dart';
-import 'types.dart';
-
-abstract class DanbooruReportRepository {
-  Future<List<DanbooruReportDataPoint>> getPostReports({
-    required List<String> tags,
-    required DanbooruReportPeriod period,
-    required DateTime from,
-    required DateTime to,
-  });
-}
 
 class DanbooruReportRepositoryApi implements DanbooruReportRepository {
   DanbooruReportRepositoryApi({

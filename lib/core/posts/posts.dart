@@ -34,8 +34,6 @@ export 'listing/sliver_post_grid.dart';
 export 'media_info_mixin.dart';
 export 'post.dart';
 export 'post_repository.dart';
-export 'post_repository_cacher.dart';
-export 'post_utils.dart';
 export 'providers.dart';
 export 'rating.dart';
 export 'shares/post_model_share.dart';
