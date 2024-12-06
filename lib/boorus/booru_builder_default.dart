@@ -1,4 +1,26 @@
-part of 'booru_builder.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'package:boorusama/core/configs/configs.dart';
+import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/functional.dart';
+import 'package:boorusama/router.dart';
+import 'booru_builder.dart';
+import 'providers.dart';
 
 mixin FavoriteNotSupportedMixin implements BooruBuilder {
   @override

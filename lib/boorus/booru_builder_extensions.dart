@@ -1,4 +1,9 @@
-part of 'booru_builder.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'package:boorusama/core/configs/configs.dart';
+import 'booru_builder.dart';
 
 extension BooruBuilderFeatureCheck on BooruBuilder {
   bool get isArtistSupported => artistPageBuilder != null;
