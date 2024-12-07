@@ -9,12 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'widgets/settings_header.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../widgets/settings_header.dart';
+import '../widgets/settings_page_scaffold.dart';
 
 final tagHighlightingCacheProvider =
     FutureProvider.autoDispose<int>((ref) async {
@@ -43,6 +43,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final notifier = ref.read(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.data_and_storage.data_and_storage').tr(),
@@ -101,7 +102,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
           value: settings.clearImageCacheOnStartup,
           title: const Text('settings.data_and_storage.clear_cache_on_start_up')
               .tr(),
-          onChanged: (value) => ref.updateSettings(
+          onChanged: (value) => notifier.updateSettings(
             settings.copyWith(clearImageCacheOnStartup: value),
           ),
         ),

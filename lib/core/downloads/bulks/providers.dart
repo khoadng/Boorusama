@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 
 final downloadGroupCompletedProvider =
     Provider.autoDispose.family<bool, String>((ref, group) {

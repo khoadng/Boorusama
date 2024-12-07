@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/networking.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'biometrics.dart';

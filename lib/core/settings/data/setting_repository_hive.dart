@@ -5,8 +5,9 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
+import '../settings.dart';
+import 'settings_repository.dart';
 
 const _settingsKey = 'settings';
 

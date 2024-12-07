@@ -8,7 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';

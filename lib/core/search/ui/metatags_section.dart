@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/search/ui/common/option_tags_arena.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';

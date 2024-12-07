@@ -18,7 +18,7 @@ import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/posts/statistics.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';

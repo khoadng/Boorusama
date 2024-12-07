@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
+import 'package:boorusama/core/settings/data.dart';
 import '../post_votes/post_votes.dart';
 import '../users/users.dart';
 

@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'reporter.dart';
 
 void initializeErrorHandlers(Settings settings, ErrorReporter? reporter) {

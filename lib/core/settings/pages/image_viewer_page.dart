@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/settings/widgets/widgets/settings_header.dart';
-import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../types.dart';
+import '../types_l10n.dart';
+import '../widgets/settings_header.dart';
+import '../widgets/settings_page_scaffold.dart';
+import '../widgets/settings_tile.dart';
 
 class ImageViewerPage extends ConsumerStatefulWidget {
   const ImageViewerPage({
@@ -27,6 +28,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.image_viewer.image_viewer').tr(),
@@ -40,7 +42,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                   .tr(),
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
-              onChanged: (value) => ref.updateSettings(
+              onChanged: (value) => notifer.updateSettings(
                   settings.copyWith(postDetailsOverlayInitialState: value)),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
@@ -50,7 +52,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               title: const Text('Slideshow mode'),
               selectedOption: settings.slideshowDirection,
               items: SlideshowDirection.values,
-              onChanged: (value) => ref
+              onChanged: (value) => notifer
                   .updateSettings(settings.copyWith(slideshowDirection: value)),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
@@ -61,7 +63,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               selectedOption: settings.slideshowInterval,
               items: getSlideShowIntervalPossibleValue(),
               onChanged: (newValue) {
-                ref.updateSettings(
+                notifer.updateSettings(
                     settings.copyWith(slideshowInterval: newValue));
               },
               optionBuilder: (value) => Text(
@@ -71,7 +73,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SwitchListTile(
               title: const Text('Skip slideshow transition'),
               value: settings.skipSlideshowTransition,
-              onChanged: (value) => ref.updateSettings(
+              onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
                   slideshowTransitionType: value
                       ? SlideshowTransitionType.none
@@ -84,7 +86,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SwitchListTile(
               title: const Text('Mute video by default'),
               value: settings.muteAudioByDefault,
-              onChanged: (value) => ref.updateSettings(
+              onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
                   videoAudioDefaultState: value
                       ? VideoAudioDefaultState.mute
@@ -110,3 +112,10 @@ Future<void> openImageViewerSettingsPage(BuildContext context) {
     ).toString(),
   );
 }
+
+List<double> getSlideShowIntervalPossibleValue() => [
+      0.1,
+      0.25,
+      0.5,
+      ...[for (var i = 1; i <= 30; i += 1) i.toDouble()],
+    ];

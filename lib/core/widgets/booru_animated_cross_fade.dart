@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/settings/data.dart';
 
 class BooruAnimatedCrossFade extends ConsumerWidget {
   const BooruAnimatedCrossFade({

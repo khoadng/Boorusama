@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 
 class DownloadUrlData extends Equatable {
   const DownloadUrlData({

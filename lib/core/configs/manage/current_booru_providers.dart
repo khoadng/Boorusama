@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/gestures.dart';
 
 final currentBooruConfigProvider =

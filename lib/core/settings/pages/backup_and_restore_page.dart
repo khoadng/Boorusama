@@ -28,7 +28,8 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../widgets/settings_page_scaffold.dart';
 
 class BackupAndRestorePage extends ConsumerStatefulWidget {
   const BackupAndRestorePage({

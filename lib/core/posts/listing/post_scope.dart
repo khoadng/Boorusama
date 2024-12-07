@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/functional.dart';
 import '../post.dart';
 import 'post_grid_controller.dart';

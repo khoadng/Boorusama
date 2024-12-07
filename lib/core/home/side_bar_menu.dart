@@ -9,10 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage/booru_selector.dart';
 import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';

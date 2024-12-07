@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../types.dart';
+import '../widgets/settings_page_scaffold.dart';
 
 class PrivacyPage extends ConsumerWidget {
   const PrivacyPage({
@@ -18,6 +18,7 @@ class PrivacyPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.privacy.privacy').tr(),
@@ -27,7 +28,7 @@ class PrivacyPage extends ConsumerWidget {
           trailing: Switch(
             value: settings.dataCollectingStatus == DataCollectingStatus.allow,
             onChanged: (value) {
-              ref.updateSettings(settings.copyWith(
+              notifer.updateSettings(settings.copyWith(
                 dataCollectingStatus: value
                     ? DataCollectingStatus.allow
                     : DataCollectingStatus.prohibit,
@@ -43,7 +44,7 @@ class PrivacyPage extends ConsumerWidget {
           trailing: Switch(
             value: settings.enableIncognitoModeForKeyboard,
             onChanged: (value) {
-              ref.updateSettings(settings.copyWith(
+              notifer.updateSettings(settings.copyWith(
                 enableIncognitoModeForKeyboard: value,
               ));
             },
@@ -57,7 +58,7 @@ class PrivacyPage extends ConsumerWidget {
           trailing: Switch(
             value: settings.appLockType == AppLockType.biometrics,
             onChanged: (value) {
-              ref.updateSettings(
+              notifer.updateSettings(
                 settings.copyWith(
                   appLockType:
                       value ? AppLockType.biometrics : AppLockType.none,

@@ -10,6 +10,7 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'anime_pictures.dart';
 

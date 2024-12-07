@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pools/pools.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class PoolImage extends ConsumerWidget {

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'booru_config.dart';
 import 'booru_config_data.dart';

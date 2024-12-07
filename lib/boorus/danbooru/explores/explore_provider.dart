@@ -15,6 +15,7 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/datetimes/datetimes.dart';
 import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/settings/data.dart';
 
 typedef ScaleAndTime = ({
   TimeScale scale,

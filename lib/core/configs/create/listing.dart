@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/settings/widgets/widgets.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'providers.dart';

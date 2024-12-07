@@ -5,17 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'widgets.dart';
-import 'widgets/settings_header.dart';
-import 'widgets/settings_page_scaffold.dart';
-import 'widgets/settings_slider_tile.dart';
-import 'widgets/settings_tile.dart';
+import '../data/settings_providers.dart';
+import '../settings.dart';
+import '../types.dart';
+import '../types_l10n.dart';
+import '../widgets/settings_header.dart';
+import '../widgets/settings_interaction_blocker.dart';
+import '../widgets/settings_page_scaffold.dart';
+import '../widgets/settings_slider_tile.dart';
+import '../widgets/settings_tile.dart';
 
 class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({
@@ -30,6 +32,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final notifier = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.appearance.appearance').tr(),
@@ -42,7 +45,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           child: ImageListingSettingsSection(
             listing: settings.listing,
             onUpdate: (value) =>
-                ref.updateSettings(settings.copyWith(listing: value)),
+                notifier.updateSettings(settings.copyWith(listing: value)),
           ),
         ),
         const SizedBox(
@@ -54,6 +57,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 
   Widget _buildSimpleTheme(Settings settings) {
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
+    final notifier = ref.watch(settingsNotifierProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +67,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
           selectedOption: settings.themeMode,
           items: AppThemeMode.values,
           onChanged: (value) =>
-              ref.updateSettings(settings.copyWith(themeMode: value)),
+              notifier.updateSettings(settings.copyWith(themeMode: value)),
           optionBuilder: (value) => Text(value.localize()).tr(),
         ),
         Builder(
@@ -83,7 +87,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                     ),
               value: settings.enableDynamicColoring,
               onChanged: dynamicColorSupported
-                  ? (value) => ref.updateSettings(
+                  ? (value) => notifier.updateSettings(
                       settings.copyWith(enableDynamicColoring: value))
                   : null,
             );
@@ -349,6 +353,7 @@ class LayoutSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+    final notifier = ref.watch(settingsNotifierProvider.notifier);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -359,7 +364,7 @@ class LayoutSection extends ConsumerWidget {
           title: const Text('settings.appearance.booru_config_placement').tr(),
           selectedOption: settings.booruConfigSelectorPosition,
           items: const [...BooruConfigSelectorPosition.values],
-          onChanged: (value) => ref.updateSettings(
+          onChanged: (value) => notifier.updateSettings(
               settings.copyWith(booruConfigSelectorPosition: value)),
           optionBuilder: (value) => Text(value.localize()),
         ),
@@ -367,7 +372,7 @@ class LayoutSection extends ConsumerWidget {
           title: const Text('Label').tr(),
           selectedOption: settings.booruConfigLabelVisibility,
           items: const [...BooruConfigLabelVisibility.values],
-          onChanged: (value) => ref.updateSettings(
+          onChanged: (value) => notifier.updateSettings(
               settings.copyWith(booruConfigLabelVisibility: value)),
           optionBuilder: (value) => Text(value.localize()),
         ),
@@ -375,3 +380,6 @@ class LayoutSection extends ConsumerWidget {
     );
   }
 }
+
+List<int> getPostsPerPagePossibleValue() =>
+    [for (var i = 10; i <= 200; i += 1) i];

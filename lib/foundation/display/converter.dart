@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'types.dart';
 
 ScreenSize screenWidthToDisplaySize(double width) => switch (width) {

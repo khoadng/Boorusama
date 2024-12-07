@@ -10,7 +10,7 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/functional.dart';
 

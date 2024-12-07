@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/analytics.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';

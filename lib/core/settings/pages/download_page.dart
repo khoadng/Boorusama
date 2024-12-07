@@ -9,10 +9,11 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/downloads/l10n.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/router.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../widgets/settings_page_scaffold.dart';
+import '../widgets/settings_tile.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
   const DownloadPage({
@@ -27,6 +28,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.download.title').tr(),
@@ -34,7 +36,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         DownloadFolderSelectorSection(
           storagePath: settings.downloadPath,
           onPathChanged: (path) =>
-              ref.updateSettings(settings.copyWith(downloadPath: path)),
+              notifer.updateSettings(settings.copyWith(downloadPath: path)),
           deviceInfo: ref.watch(deviceInfoProvider),
         ),
         const SizedBox(height: 12),
@@ -43,7 +45,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
           selectedOption: settings.downloadQuality,
           items: DownloadQuality.values,
           onChanged: (value) =>
-              ref.updateSettings(settings.copyWith(downloadQuality: value)),
+              notifer.updateSettings(settings.copyWith(downloadQuality: value)),
           optionBuilder: (value) =>
               Text('settings.download.qualities.${value.name}').tr(),
         ),
@@ -56,7 +58,11 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
           trailing: Switch(
             value: settings.skipDownloadIfExists,
             onChanged: (value) async {
-              await ref.updateDownloadFileExistedBehavior(settings, value);
+              await notifer.updateSettings(settings.copyWith(
+                downloadFileExistedBehavior: value
+                    ? DownloadFileExistedBehavior.skip
+                    : DownloadFileExistedBehavior.appDecide,
+              ));
             },
           ),
         ),

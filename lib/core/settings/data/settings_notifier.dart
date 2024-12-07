@@ -10,10 +10,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/backups/backups.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/version.dart';
+import '../settings.dart';
+import 'settings_io_handler.dart';
+
+final settingIOHandlerProvider = Provider<SettingsIOHandler>(
+  (ref) => SettingsIOHandler(
+    handler: DataIOHandler.file(
+      converter: ref.watch(
+        defaultBackupConverterProvider(1),
+      ),
+      deviceInfo: ref.watch(deviceInfoProvider),
+      prefixName: 'boorusama_settings',
+    ),
+  ),
+);
 
 class SettingsNotifier extends Notifier<Settings> {
   SettingsNotifier(this.initialSettings);
@@ -115,9 +128,4 @@ extension SettingsNotifierX on SettingsNotifier {
           booruConfigIdOrders: configIds.join(' '),
         ),
       );
-}
-
-extension SettingsNotifierWidgetRefX on WidgetRef {
-  Future<void> updateSettings(Settings settings) =>
-      read(settingsNotifierProvider.notifier).updateSettings(settings);
 }

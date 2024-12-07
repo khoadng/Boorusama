@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../types.dart';
+import '../widgets/settings_page_scaffold.dart';
 
 class SearchSettingsPage extends ConsumerStatefulWidget {
   const SearchSettingsPage({
@@ -25,6 +25,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.search.search').tr(),
@@ -35,7 +36,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
             activeColor: context.colorScheme.primary,
             value: settings.autoFocusSearchBar,
             onChanged: (value) {
-              ref.updateSettings(settings.copyWith(
+              notifer.updateSettings(settings.copyWith(
                 autoFocusSearchBar: value,
               ));
             },
@@ -49,7 +50,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
             activeColor: context.colorScheme.primary,
             value: settings.shouldFilterBookmarks,
             onChanged: (value) {
-              ref.updateSettings(settings.copyWith(
+              notifer.updateSettings(settings.copyWith(
                 bookmarkFilterType: value
                     ? BookmarkFilterType.hideAll
                     : BookmarkFilterType.none,

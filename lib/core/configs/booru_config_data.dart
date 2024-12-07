@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings/types.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'rating_parser.dart';

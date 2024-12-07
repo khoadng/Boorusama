@@ -1,6 +1,6 @@
 // Project imports:
 import 'package:boorusama/functional.dart';
-import 'settings.dart';
+import '../settings.dart';
 
 typedef SettingsOrError = TaskEither<SettingsLoadError, Settings>;
 

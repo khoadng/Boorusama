@@ -16,6 +16,7 @@ import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

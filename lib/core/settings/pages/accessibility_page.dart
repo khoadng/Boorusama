@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/widgets/settings_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'widgets/settings_page_scaffold.dart';
+import '../data/settings_providers.dart';
+import '../widgets/settings_page_scaffold.dart';
 
 class AccessibilityPage extends ConsumerStatefulWidget {
   const AccessibilityPage({
@@ -25,6 +25,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
       title: const Text('settings.accessibility.accessibility').tr(),
@@ -34,7 +35,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
                   'settings.accessibility.reverseBooruConfigSelectorScrollDirection')
               .tr(),
           value: settings.reverseBooruConfigSelectorScrollDirection,
-          onChanged: (value) => ref.updateSettings(
+          onChanged: (value) => notifer.updateSettings(
             settings.copyWith(
               booruConfigSelectorScrollDirection: value
                   ? BooruConfigScrollDirection.reversed
@@ -54,7 +55,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           selectedOption: settings.swipeAreaToOpenSidebarPercentage,
           items: getSwipeAreaPossibleValue(),
           onChanged: (newValue) {
-            ref.updateSettings(
+            notifer.updateSettings(
                 settings.copyWith(swipeAreaToOpenSidebarPercentage: newValue));
           },
           optionBuilder: (value) => Text(
@@ -66,7 +67,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           subtitle: const Text(
               'Some features may not work as expected when this is enabled.'),
           value: settings.reduceAnimations,
-          onChanged: (value) => ref.updateSettings(
+          onChanged: (value) => notifer.updateSettings(
             settings.copyWith(
               reduceAnimations: value,
             ),
@@ -76,3 +77,5 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
     );
   }
 }
+
+List<int> getSwipeAreaPossibleValue() => [for (var i = 5; i <= 100; i += 5) i];

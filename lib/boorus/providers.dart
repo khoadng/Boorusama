@@ -42,13 +42,12 @@ import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/favorites/favorites.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
@@ -188,40 +187,6 @@ final postArtistCharacterRepoProvider =
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
             });
-
-final settingsProvider = Provider<Settings>(
-  (ref) => ref.watch(settingsNotifierProvider),
-  name: 'settingsProvider',
-  dependencies: [settingsNotifierProvider],
-);
-
-final settingsNotifierProvider = NotifierProvider<SettingsNotifier, Settings>(
-  () => throw UnimplementedError(),
-  name: 'settingsNotifierProvider',
-);
-
-final hasCustomListingSettingsProvider = Provider<bool>((ref) {
-  final listingConfigs =
-      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
-
-  return listingConfigs != null && listingConfigs.enable;
-});
-
-final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
-  final listing = ref.watch(settingsProvider.select((value) => value.listing));
-
-  // check if user has set custom settings
-  final listingConfigs =
-      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
-
-  // if user has set it and it's enabled, return it
-  if (listingConfigs != null && listingConfigs.enable) {
-    return listingConfigs.settings;
-  }
-
-  // otherwise, return the global settings
-  return listing;
-});
 
 final settingsRepoProvider = Provider<SettingsRepository>(
   (ref) => throw UnimplementedError(),
