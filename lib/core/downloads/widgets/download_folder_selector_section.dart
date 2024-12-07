@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info_service.dart';
 import 'package:boorusama/foundation/html.dart';
@@ -13,7 +12,8 @@ import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'l10n.dart';
+import '../l10n.dart';
+import '../path/validator.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
@@ -38,7 +38,8 @@ class DownloadFolderSelectorSection extends StatefulWidget {
 }
 
 class _DownloadFolderSelectorSectionState
-    extends State<DownloadFolderSelectorSection> with DownloadMixin {
+    extends State<DownloadFolderSelectorSection>
+    with DownloadPathValidatorMixin {
   @override
   late String? storagePath = widget.storagePath;
 

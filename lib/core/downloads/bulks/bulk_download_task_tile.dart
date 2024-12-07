@@ -10,7 +10,6 @@ import 'package:readmore/readmore.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
@@ -20,6 +19,9 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import '../l10n.dart';
+import 'bulk_download_notifier.dart';
+import 'bulk_download_task.dart';
+import 'providers.dart';
 
 final _currentDownloadTaskProvider =
     Provider.autoDispose.family<BulkDownloadTask, String>(

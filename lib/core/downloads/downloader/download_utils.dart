@@ -1,12 +1,15 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
@@ -15,8 +18,14 @@ import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+import '../l10n.dart';
+import '../urls/download_url.dart';
+import 'download_service.dart';
+import 'metadata.dart';
+import 'providers.dart';
 
 extension PostDownloadX on WidgetRef {
   Future<PermissionStatus?> _getPermissionStatus() async {
@@ -200,4 +209,25 @@ Future<void> _download(
       },
     );
   }
+}
+
+void showDownloadStartToast(BuildContext context, {String? message}) {
+  showToast(
+    message ?? DownloadTranslations.downloadStartedNotification.tr(),
+    context: context,
+    position: const ToastPosition(
+      align: Alignment.bottomCenter,
+    ),
+    textPadding: const EdgeInsets.all(12),
+    textStyle: TextStyle(color: context.colorScheme.surface),
+    backgroundColor: context.colorScheme.onSurface,
+  );
+}
+
+void showBulkDownloadUnsupportErrorToast(BuildContext context) {
+  showErrorToast(
+    context,
+    duration: const Duration(seconds: 3),
+    'This booru does not support downloading multiple files',
+  );
 }

@@ -13,14 +13,16 @@ import 'package:gal/gal.dart';
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/media_scanner.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/functional.dart' as fp;
 import 'package:boorusama/router.dart';
-import 'downloads.dart';
-import 'l10n.dart';
+import '../l10n.dart';
+import '../manager/download_tasks_notifier.dart';
+import '../path/download_path.dart';
+import 'download_service.dart';
+import 'metadata.dart';
 
 extension FileDownloadX on FileDownloader {
   Future<String> enqueueIfNeeded(
@@ -39,24 +41,6 @@ extension FileDownloadX on FileDownloader {
 
     return file;
   }
-}
-
-extension TaskUpdateX on TaskUpdate {
-  int? get fileSize => switch (this) {
-        final TaskStatusUpdate s => () {
-            final defaultSize =
-                DownloaderMetadata.fromJsonString(task.metaData).fileSize;
-            final fileSizeString = s.responseHeaders.toOption().fold(
-                  () => '',
-                  (headers) => headers[AppHttpHeaders.contentLengthHeader],
-                );
-            final fileSize =
-                fileSizeString != null ? int.tryParse(fileSizeString) : null;
-
-            return fileSize ?? defaultSize;
-          }(),
-        final TaskProgressUpdate p => p.expectedFileSize,
-      };
 }
 
 class BackgroundDownloader implements DownloadService {

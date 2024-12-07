@@ -6,10 +6,10 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
+import 'metadata.dart';
 
 enum FileSystemDownloadErrorType {
   directoryNotFound,
@@ -137,4 +137,9 @@ String removeFileExtension(String url) {
     // If there is no '.', return the original URL
     return url;
   }
+}
+
+extension BooruConfigDownloadX on BooruConfig {
+  bool get hasCustomDownloadLocation =>
+      customDownloadLocation != null && customDownloadLocation!.isNotEmpty;
 }

@@ -4,10 +4,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
-import 'package:boorusama/foundation/android.dart';
-import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
+import '../manager/download_task.dart';
+import '../manager/download_tasks_notifier.dart';
+import 'bulk_download_notifier.dart';
+import 'bulk_download_task.dart';
+import 'notifications/providers.dart';
+
+final bulkDownloadQualityProvider = Provider.autoDispose<DownloadQuality>(
+  (ref) => ref.watch(settingsProvider.select((e) => e.downloadQuality)),
+  dependencies: [
+    settingsProvider,
+  ],
+);
+
+final createBulkDownloadInitialProvider =
+    Provider.autoDispose<List<String>?>((ref) {
+  return null;
+});
 
 class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
   @override
@@ -101,20 +117,5 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
 
     final notifier = ref.read(bulkdownloadProvider.notifier);
     notifier.addTask(state);
-  }
-}
-
-extension BulkDownloadTaskXX on BulkDownloadTask {
-  bool valid({
-    int? androidSdkInt,
-  }) {
-    if (tags.isEmpty) return false;
-    if (path.isEmpty) return false;
-
-    if (!isAndroid()) return true;
-
-    return !shouldDisplayWarning(
-      hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
-    );
   }
 }

@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/foundation/i18n.dart';

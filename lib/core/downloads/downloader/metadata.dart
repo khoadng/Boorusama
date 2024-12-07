@@ -7,16 +7,6 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/functional.dart';
 
-enum DownloadFilter {
-  all,
-  pending,
-  paused,
-  inProgress,
-  completed,
-  canceled,
-  failed,
-}
-
 class DownloaderMetadata extends Equatable {
   const DownloaderMetadata({
     required this.thumbnailUrl,

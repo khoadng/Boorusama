@@ -10,7 +10,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/widgets/settings_tile.dart';
@@ -21,7 +20,12 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+import '../downloader/download_utils.dart';
 import '../l10n.dart';
+import '../widgets/download_folder_selector_section.dart';
+import 'bulk_download_task.dart';
+import 'create_bulk_download_notifier.dart';
+import 'providers.dart';
 
 class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({

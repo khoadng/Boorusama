@@ -1,76 +1,16 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:equatable/equatable.dart';
-import 'package:path/path.dart';
-
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';
-
-abstract class DownloadFilenameGenerator<T extends Post> {
-  Set<String> get availableTokens;
-
-  Map<RegExp, TextStyle> get patternMatchMap;
-
-  List<String> getTokenOptions(String token);
-  TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption);
-
-  Future<String> generate(
-    Settings settings,
-    BooruConfig config,
-    T post, {
-    Map<String, String>? metadata,
-    required String downloadUrl,
-  });
-
-  Future<String> generateForBulkDownload(
-    Settings settings,
-    BooruConfig config,
-    T post, {
-    Map<String, String>? metadata,
-    required String downloadUrl,
-  });
-
-  String generateSample(String format);
-
-  List<String> generateSamples(String format);
-
-  String get defaultFileNameFormat;
-  String get defaultBulkDownloadFileNameFormat;
-}
-
-typedef DownloadFilenameTokenHandler<T extends Post> = String? Function(
-  T post,
-  DownloadFilenameTokenOptions options,
-);
-
-class DownloadFilenameTokenOptions extends Equatable {
-  const DownloadFilenameTokenOptions({
-    required this.downloadUrl,
-    required this.fallbackFilename,
-    required this.format,
-    this.metadata,
-  });
-
-  final String downloadUrl;
-  final String fallbackFilename;
-  final String format;
-  final Map<String, String>? metadata;
-
-  @override
-  List<Object?> get props => [downloadUrl, fallbackFilename, format, metadata];
-}
-
-extension DownloadFilenameTokenOptionsX on DownloadFilenameTokenOptions {
-  int? get index => metadata?['index']?.toIntOrNull();
-}
+import '../urls/sanitizer.dart';
+import 'generator.dart';
+import 'token_options.dart';
 
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {

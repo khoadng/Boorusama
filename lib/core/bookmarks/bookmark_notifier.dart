@@ -15,7 +15,7 @@ import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';

@@ -10,31 +10,30 @@ import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/downloads.dart';
 import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
+import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'l10n.dart';
+import '../downloader/metadata.dart';
+import '../internal_widgets/download_tile.dart';
+import '../l10n.dart';
+import 'download_filter.dart';
+import 'download_task.dart';
+import 'download_tasks_notifier.dart';
 
 final downloadFilterProvider =
     StateProvider.family<DownloadFilter, String?>((ref, initialFilter) {
-  return _convertFilter(initialFilter);
+  return convertFilter(initialFilter);
 });
 
 final downloadGroupProvider = Provider<String>(
   (ref) => FileDownloader.defaultGroup,
   name: 'downloadGroupProvider',
 );
-
-DownloadFilter _convertFilter(String? filter) => switch (filter) {
-      'error' => DownloadFilter.failed,
-      'running' => DownloadFilter.inProgress,
-      'complete' => DownloadFilter.completed,
-      _ => DownloadFilter.all,
-    };
 
 final downloadFilteredProvider =
     Provider.family<List<TaskUpdate>, String?>((ref, initialFilter) {
@@ -155,7 +154,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
 
     if (widget.filter != null) {
       // scroll to the selected filter
-      final filterType = _convertFilter(widget.filter);
+      final filterType = convertFilter(widget.filter);
       final index = _filterOptions.indexOf(filterType);
 
       if (index != -1) {
@@ -490,6 +489,24 @@ class SimpleDownloadTile extends ConsumerWidget {
       ),
     );
   }
+}
+
+extension TaskUpdateX on TaskUpdate {
+  int? get fileSize => switch (this) {
+        final TaskStatusUpdate s => () {
+            final defaultSize =
+                DownloaderMetadata.fromJsonString(task.metaData).fileSize;
+            final fileSizeString = s.responseHeaders.toOption().fold(
+                  () => '',
+                  (headers) => headers[AppHttpHeaders.contentLengthHeader],
+                );
+            final fileSize =
+                fileSizeString != null ? int.tryParse(fileSizeString) : null;
+
+            return fileSize ?? defaultSize;
+          }(),
+        final TaskProgressUpdate p => p.expectedFileSize,
+      };
 }
 
 class _TaskSubtitle extends ConsumerWidget {

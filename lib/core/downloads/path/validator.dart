@@ -1,14 +1,3 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:oktoast/oktoast.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'l10n.dart';
-
 const String _basePath = '/storage/emulated';
 const String _sdCardBasePath = '/storage';
 
@@ -18,12 +7,6 @@ const List<String> _allowedDownloadFolders = [
   'Documents',
   'Pictures',
 ];
-
-const kBoorusamaCustomDownloadFileNameFormat =
-    '{character:nomod,delimiter=comma ,limit=5} ({copyright:nomod,limit=3}) drawn by {artist} - {md5}.{extension}';
-
-const kBoorusamaBulkDownloadCustomFileNameFormat =
-    '{index}_{md5:maxlength=8}.{extension}';
 
 bool isInternalStorage(String? path) => path?.startsWith(_basePath) ?? false;
 
@@ -82,7 +65,7 @@ bool isPublicDirectories(String? path) {
   }
 }
 
-mixin DownloadMixin {
+mixin DownloadPathValidatorMixin {
   String? get storagePath;
 
   bool shouldDisplayWarning({
@@ -119,25 +102,4 @@ mixin DownloadMixin {
           ? (isPublicDirectories(storagePath) ||
               isSdCardPublicDirectories(storagePath))
           : true);
-}
-
-void showDownloadStartToast(BuildContext context, {String? message}) {
-  showToast(
-    message ?? DownloadTranslations.downloadStartedNotification.tr(),
-    context: context,
-    position: const ToastPosition(
-      align: Alignment.bottomCenter,
-    ),
-    textPadding: const EdgeInsets.all(12),
-    textStyle: TextStyle(color: context.colorScheme.surface),
-    backgroundColor: context.colorScheme.onSurface,
-  );
-}
-
-void showBulkDownloadUnsupportErrorToast(BuildContext context) {
-  showErrorToast(
-    context,
-    duration: const Duration(seconds: 3),
-    'This booru does not support downloading multiple files',
-  );
 }

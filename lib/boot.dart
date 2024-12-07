@@ -21,7 +21,7 @@ import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/bulks/notifications.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/settings.dart';
@@ -42,6 +42,7 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/tracking.dart';
 import 'package:boorusama/foundation/windows.dart' as window;
 import 'app.dart';
+import 'core/downloads/notifications.dart';
 import 'foundation/i18n.dart';
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {

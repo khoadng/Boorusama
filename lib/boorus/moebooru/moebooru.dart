@@ -13,7 +13,7 @@ import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tags.dart';

@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DownloadTaskState extends Equatable {
   const DownloadTaskState({
@@ -9,7 +8,7 @@ class DownloadTaskState extends Equatable {
   }) : _tasks = tasks;
   final Map<String, List<TaskUpdate>> _tasks;
 
-  DownloadTaskState _updateWith(String group, List<TaskUpdate> updates) {
+  DownloadTaskState updateWith(String group, List<TaskUpdate> updates) {
     return DownloadTaskState(
       tasks: {
         ..._tasks,
@@ -18,7 +17,7 @@ class DownloadTaskState extends Equatable {
     );
   }
 
-  DownloadTaskState? _clear(String group) {
+  DownloadTaskState? clear(String group) {
     if (!_tasks.containsKey(group)) return null;
 
     final removed = _tasks.remove(group);
@@ -74,47 +73,4 @@ extension DownloadTaskStateX on DownloadTaskState {
       .whereType<TaskStatusUpdate>()
       .where((e) => e.status == TaskStatus.paused)
       .toList();
-}
-
-final downloadTasksProvider =
-    NotifierProvider<DownloadTasksNotifier, DownloadTaskState>(
-        DownloadTasksNotifier.new);
-
-class DownloadTasksNotifier extends Notifier<DownloadTaskState> {
-  @override
-  DownloadTaskState build() {
-    return const DownloadTaskState(
-      tasks: {},
-    );
-  }
-
-  void clear(
-    String group, {
-    void Function()? onFailed,
-  }) {
-    final newState = state._clear(group);
-
-    if (newState != null) {
-      state = newState;
-    } else {
-      onFailed?.call();
-    }
-  }
-
-  void addOrUpdate(TaskUpdate update) {
-    final totalTasks = state._tasks;
-    final group = update.task.group;
-
-    final updates = totalTasks[group] ?? [];
-
-    final index = updates.indexWhere((element) => element.task == update.task);
-
-    if (index == -1) {
-      updates.add(update);
-    } else {
-      updates[index] = update;
-    }
-
-    state = state._updateWith(group, updates);
-  }
 }
