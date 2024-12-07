@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/details/widgets/tag_details_page_scaffold.dart';
+import 'package:boorusama/core/tags/tag/filter_category.dart';
 import 'artist_tag_cloud.dart';
 
 class DanbooruTagDetailsPage extends ConsumerStatefulWidget {

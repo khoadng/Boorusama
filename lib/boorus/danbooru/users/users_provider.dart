@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/functional.dart';
 import 'user_repository.dart';
 

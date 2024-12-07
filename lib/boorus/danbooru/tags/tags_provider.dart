@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/store.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {

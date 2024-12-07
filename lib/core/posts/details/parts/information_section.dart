@@ -8,7 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';

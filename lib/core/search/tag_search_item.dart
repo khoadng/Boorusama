@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/dart.dart';
 import 'filter_operator.dart';
 

@@ -20,7 +20,7 @@ import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/posts/statistics.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';

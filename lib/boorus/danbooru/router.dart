@@ -9,7 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/pools/pool_detail_page.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';

@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/search/queries.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 

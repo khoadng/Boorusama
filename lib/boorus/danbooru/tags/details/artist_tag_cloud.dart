@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/related_tags/related_tags.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/related_tags/related_tags.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../danbooru_tag_context_menu.dart';

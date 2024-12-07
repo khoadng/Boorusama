@@ -10,9 +10,9 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/metatag/providers.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
-import '../danbooru_provider.dart';
 import '../related_tags/related_tags.dart';
 import 'trending_section.dart';
 

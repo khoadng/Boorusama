@@ -8,7 +8,6 @@ import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/functional.dart';
 
 final danbooruClientProvider =
@@ -122,8 +121,3 @@ class DanbooruTagListNotifier
     state = state.removeWhere((key, value) => postIds.contains(key));
   }
 }
-
-final metatagsProvider = Provider<Set<Metatag>>(
-  (ref) => ref.watch(tagInfoProvider).metatags,
-  dependencies: [tagInfoProvider],
-);

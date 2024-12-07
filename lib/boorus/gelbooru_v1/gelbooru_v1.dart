@@ -22,6 +22,7 @@ import 'package:boorusama/core/downloads/urls.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/search/queries.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/info_container.dart';

@@ -10,11 +10,12 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/search/queries.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/functional.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
@@ -175,44 +176,3 @@ final szurubooruTagCategoriesProvider =
         .toList();
   },
 );
-
-String _ratingToSzurubooruRatingString(Rating rating) => switch (rating) {
-      Rating.unknown => 'sketchy',
-      Rating.explicit => 'unsafe',
-      Rating.questionable => 'sketchy',
-      Rating.sensitive => 'sketchy',
-      Rating.general => 'safe',
-    };
-
-class SzurubooruTagQueryComposer implements TagQueryComposer {
-  SzurubooruTagQueryComposer({
-    required this.config,
-  });
-
-  final BooruConfigSearch config;
-  late final TagQueryComposer _composer = DefaultTagQueryComposer(
-    config: config,
-    ratingTagsFilter: switch (config.filter.ratingFilter) {
-      BooruConfigRatingFilter.none => [],
-      BooruConfigRatingFilter.hideNSFW => [
-          '-rating:sketchy,unsafe',
-        ],
-      BooruConfigRatingFilter.hideExplicit => [
-          '-rating:unsafe',
-        ],
-      BooruConfigRatingFilter.custom =>
-        config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => [],
-              (ratings) => [
-                ...ratings.map(
-                    (e) => '-rating:${_ratingToSzurubooruRatingString(e)}'),
-              ],
-            ),
-    },
-  );
-
-  @override
-  List<String> compose(List<String> tags) {
-    return _composer.compose(tags);
-  }
-}

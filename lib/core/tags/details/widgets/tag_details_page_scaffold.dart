@@ -6,10 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
+import '../../tag/filter_category.dart';
+import '../internal_widgets/category_toggle_switch.dart';
+import '../internal_widgets/tag_detail_region.dart';
+import '../internal_widgets/tag_details_sliver_app_bar.dart';
+import '../internal_widgets/tag_title_name.dart';
 
 class TagDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const TagDetailsPageScaffold({

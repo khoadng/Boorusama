@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/search/ui/common/option_tags_arena.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'favorite_tags/add_tag_button.dart';

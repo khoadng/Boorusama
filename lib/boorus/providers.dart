@@ -48,7 +48,8 @@ import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/tag/store.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/caching.dart';
@@ -72,8 +73,6 @@ import 'szurubooru/providers.dart';
 
 final booruFactoryProvider =
     Provider<BooruFactory>((ref) => throw UnimplementedError());
-
-final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 
 final booruConfigRepoProvider = Provider<BooruConfigRepository>(
   (ref) => throw UnimplementedError(),
@@ -134,27 +133,6 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfigAuth>(
           BooruType.gelbooruV2 => ref.watch(gelbooruV2NoteRepoProvider(config)),
           _ => ref.watch(emptyNoteRepoProvider),
         });
-
-final tagQueryComposerProvider =
-    Provider.family<TagQueryComposer, BooruConfigSearch>(
-  (ref, config) => switch (config.booruType) {
-    BooruType.danbooru => DanbooruTagQueryComposer(config: config),
-    BooruType.gelbooru => GelbooruTagQueryComposer(config: config),
-    BooruType.gelbooruV2 => GelbooruV2TagQueryComposer(config: config),
-    BooruType.e621 => LegacyTagQueryComposer(config: config),
-    BooruType.moebooru => LegacyTagQueryComposer(config: config),
-    BooruType.szurubooru => SzurubooruTagQueryComposer(config: config),
-    _ => DefaultTagQueryComposer(config: config),
-  },
-);
-
-final currentTagQueryComposerProvider = Provider<TagQueryComposer>(
-  (ref) {
-    final config = ref.watchConfigSearch;
-
-    return ref.watch(tagQueryComposerProvider(config));
-  },
-);
 
 final downloadFileUrlExtractorProvider =
     Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>(

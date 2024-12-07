@@ -16,7 +16,7 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/tag/filter_category.dart';
 import 'package:boorusama/functional.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/posts/posts.dart';

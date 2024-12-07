@@ -9,8 +9,9 @@ import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/details/widgets/tag_details_page_scaffold.dart';
+import 'package:boorusama/core/tags/details/widgets/tag_other_names.dart';
+import 'package:boorusama/core/tags/tag/filter_category.dart';
 import 'package:boorusama/functional.dart';
 
 class E621ArtistPage extends ConsumerStatefulWidget {

@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
+import '../../widgets/tag_chips_placeholder.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({

@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/i18n.dart';

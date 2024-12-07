@@ -7,7 +7,9 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/store.dart';
+import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
 

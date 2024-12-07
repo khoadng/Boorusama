@@ -6,7 +6,10 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/store.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import '../tags.dart';
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(

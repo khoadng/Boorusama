@@ -2,7 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/dart.dart';
+import '../categories/tag_category.dart';
+import '../tag/display.dart';
+import '../tag/tag.dart';
 
 class TagGroupItem extends Equatable {
   const TagGroupItem({
@@ -30,4 +33,20 @@ extension TagGroupItemX on TagGroupItem {
   List<String> extractGeneralTags() => extractRawTag(TagCategory.general());
   List<String> extractMetaTags() => extractRawTag(TagCategory.meta());
   List<String> extractCopyRightTags() => extractRawTag(TagCategory.copyright());
+}
+
+List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
+  tags.sort((a, b) => a.rawName.compareTo(b.rawName));
+  final group = tags
+      .groupBy((e) => e.category)
+      .entries
+      .map((e) => TagGroupItem(
+            category: e.key.id,
+            groupName: e.key.name.sentenceCase,
+            tags: e.value,
+            order: e.key.order ?? 99999,
+          ))
+      .toList()
+    ..sort((a, b) => a.order.compareTo(b.order));
+  return group;
 }

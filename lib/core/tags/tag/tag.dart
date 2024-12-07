@@ -1,10 +1,8 @@
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
-import 'tag_category.dart';
+import '../categories/tag_category.dart';
 
 typedef PostCount = int;
 
@@ -54,39 +52,8 @@ class Tag extends Equatable {
   final PostCount postCount;
 
   @override
-  String toString() => '$rawName ($postCount)';
+  String toString() => '$name ($postCount)';
 
   @override
   List<Object?> get props => [name, category, postCount];
 }
-
-extension TagX on Tag {
-  String get displayName => name.replaceAll('_', ' ');
-  String get rawName => name;
-}
-
-abstract class TagRepository {
-  Future<List<Tag>> getTagsByName(
-    Set<String> tags,
-    int page, {
-    CancelToken? cancelToken,
-  });
-}
-
-enum TagFilterCategory {
-  newest,
-  popular,
-}
-
-typedef TagFilterCategoryStringBuilder = Option<String> Function(
-    TagFilterCategory category);
-
-String queryFromTagFilterCategory({
-  required TagFilterCategory category,
-  required TagFilterCategoryStringBuilder builder,
-  required String tag,
-}) =>
-    builder(category).fold(
-      () => tag,
-      (query) => [tag, query].join(' '),
-    );

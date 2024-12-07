@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
+import '../categories/providers.dart';
+import '../categories/store.dart';
+import '../tag/store.dart';
+import '../tag/tag.dart';
+import 'item.dart';
 
 final invalidTags = [
   ':&lt;',
@@ -51,20 +54,4 @@ Future<List<Tag>> loadTags({
   final tags = await repo.getTagsByName(filtered, 1);
 
   return tags;
-}
-
-List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
-  tags.sort((a, b) => a.rawName.compareTo(b.rawName));
-  final group = tags
-      .groupBy((e) => e.category)
-      .entries
-      .map((e) => TagGroupItem(
-            category: e.key.id,
-            groupName: e.key.name.sentenceCase,
-            tags: e.value,
-            order: e.key.order ?? 99999,
-          ))
-      .toList()
-    ..sort((a, b) => a.order.compareTo(b.order));
-  return group;
 }

@@ -6,7 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tag_colors.dart';
+import 'package:boorusama/core/tags/tag/colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'selected_tag_edit_dialog.dart';

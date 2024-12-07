@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/pools/pools.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/tag/colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/i18n.dart';

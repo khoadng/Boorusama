@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/users.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/users/users.dart';
 import 'package:boorusama/functional.dart';
 

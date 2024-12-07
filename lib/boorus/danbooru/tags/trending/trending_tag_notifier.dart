@@ -8,7 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/store.dart';
+import 'package:boorusama/core/tags/configs/providers.dart';
 
 class TrendingTagNotifier
     extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfigAuth> {

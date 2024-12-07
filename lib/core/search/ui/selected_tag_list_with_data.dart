@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/search/queries.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';

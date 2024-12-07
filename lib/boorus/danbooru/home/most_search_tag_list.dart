@@ -8,7 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/widgets/tag_chips_placeholder.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class MostSearchTagList extends ConsumerWidget {

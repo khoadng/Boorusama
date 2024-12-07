@@ -91,7 +91,9 @@ class BookmarkSearchBar extends ConsumerWidget {
                           style: {
                             'p': Style(
                               fontSize: FontSize.medium,
-                              color: ref.watch(tagColorProvider(e)).maybeWhen(
+                              color: ref
+                                  .watch(bookmarkTagColorProvider(e))
+                                  .maybeWhen(
                                     data: (color) => color,
                                     orElse: () => null,
                                   ),

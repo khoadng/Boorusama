@@ -9,12 +9,14 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/blacklists/blacklists.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../tag/display.dart';
+import '../tag/providers.dart';
+import '../tag/tag.dart';
 
 final selectedViewTagQueryProvider =
     StateProvider.autoDispose<String>((ref) => '');

@@ -5,7 +5,8 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/caching.dart';
 

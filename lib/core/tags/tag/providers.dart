@@ -1,5 +1,5 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
+// Dart imports:
+import 'dart:ui';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
@@ -11,37 +11,11 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/theme.dart';
-
-final tagsProvider =
-    NotifierProvider.family<TagsNotifier, List<TagGroupItem>?, BooruConfigAuth>(
-  TagsNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
-);
+import 'store.dart';
 
 final emptyTagRepoProvider =
     Provider<TagRepository>((ref) => EmptyTagRepository());
-
-final booruTagTypeStoreProvider = Provider<BooruTagTypeStore>(
-  (ref) => BooruTagTypeStore(),
-);
-
-final booruTagTypePathProvider = Provider<String?>((ref) {
-  return null;
-});
-
-final booruTagTypeProvider =
-    FutureProvider.autoDispose.family<String?, String>((ref, tag) async {
-  final config = ref.watchConfigAuth;
-  final store = ref.watch(booruTagTypeStoreProvider);
-  final sanitized = tag.toLowerCase().replaceAll(' ', '_');
-  final data = await store.get(config.booruType, sanitized);
-
-  return data;
-});
 
 final tagColorProvider = Provider.family<Color?, String>(
   (ref, tag) {

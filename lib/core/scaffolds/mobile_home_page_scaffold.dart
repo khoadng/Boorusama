@@ -12,6 +12,7 @@ import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 

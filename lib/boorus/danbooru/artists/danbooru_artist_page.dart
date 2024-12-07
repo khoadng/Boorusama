@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/details/widgets/tag_other_names.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import '../tags/tags.dart';
 import 'artists.dart';

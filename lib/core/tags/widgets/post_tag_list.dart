@@ -8,12 +8,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 // Project imports:
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../groups/item.dart';
+import '../tag/display.dart';
+import '../tag/providers.dart';
+import '../tag/tag.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({

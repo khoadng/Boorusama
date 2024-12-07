@@ -6,7 +6,8 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'tag.dart';
+import '../tag/display.dart';
+import '../tag/tag.dart';
 
 /// This class is a kitchen sink for all sites, use as last resort
 class BooruTagTypeStore {

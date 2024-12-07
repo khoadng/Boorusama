@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../tag/filter_category.dart';
 
 class CategoryToggleSwitch extends StatelessWidget {
   const CategoryToggleSwitch({
