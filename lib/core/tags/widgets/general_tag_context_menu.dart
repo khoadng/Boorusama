@@ -6,7 +6,7 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';

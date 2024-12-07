@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/bookmarks/bookmark.dart';
+import 'package:boorusama/core/bookmarks/providers.dart';
 import 'package:boorusama/core/configs/providers.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/functional.dart';

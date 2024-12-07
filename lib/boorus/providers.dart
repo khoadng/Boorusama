@@ -9,7 +9,6 @@ import 'package:hive/hive.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
@@ -38,12 +37,12 @@ import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
 import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
+import 'package:boorusama/core/bookmarks/bookmark.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/urls.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
@@ -61,6 +60,7 @@ import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
 import 'danbooru/danbooru_provider.dart';
+import 'danbooru/favorites/providers.dart';
 import 'danbooru/notes/notes.dart';
 import 'e621/e621.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
@@ -321,8 +321,10 @@ final favoriteProvider = Provider.autoDispose
 //TODO: redesign this, it's a mess
 final addFavoriteProvider =
     Provider<FavoriteAdder?>((r) => switch (r.watchConfigAuth.booruType) {
-          BooruType.danbooru => (postId, ref) =>
-              ref.danbooruFavorites.add(postId).then((_) => true),
+          BooruType.danbooru => (postId, ref) => ref
+              .read(danbooruFavoritesProvider(ref.readConfigAuth).notifier)
+              .add(postId)
+              .then((_) => true),
           BooruType.e621 => (postId, ref) => ref
               .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
               .add(postId)
@@ -374,8 +376,10 @@ final addFavoriteProvider =
 //TODO: redesign this, it's a mess
 final removeFavoriteProvider =
     Provider<FavoriteAdder?>((r) => switch (r.watchConfigAuth.booruType) {
-          BooruType.danbooru => (postId, ref) =>
-              ref.danbooruFavorites.remove(postId).then((_) => true),
+          BooruType.danbooru => (postId, ref) => ref
+              .read(danbooruFavoritesProvider(ref.readConfigAuth).notifier)
+              .remove(postId)
+              .then((_) => true),
           BooruType.e621 => (postId, ref) => ref
               .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
               .remove(postId)

@@ -11,13 +11,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
 

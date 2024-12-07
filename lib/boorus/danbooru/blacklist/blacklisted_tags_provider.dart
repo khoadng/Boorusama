@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';

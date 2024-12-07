@@ -9,9 +9,10 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/core/users/colors.dart';
+import 'package:boorusama/core/users/user.dart';
+import '../favorites/favorite.dart';
 import 'user_level.dart';
 
 class DanbooruUser extends Equatable {

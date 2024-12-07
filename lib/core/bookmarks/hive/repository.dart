@@ -2,10 +2,12 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/functional.dart';
+import '../bookmark.dart';
+import '../bookmark_convert.dart';
+import 'object.dart';
 
 class BookmarkHiveRepository implements BookmarkRepository {
   const BookmarkHiveRepository(this._box);

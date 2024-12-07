@@ -10,8 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
+import 'package:boorusama/core/bookmarks/providers.dart';
+import 'package:boorusama/core/bookmarks/widgets/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/export_import.dart';
 import 'package:boorusama/core/configs/manage.dart';

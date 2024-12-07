@@ -10,7 +10,6 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -19,6 +18,9 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
+import 'booru_scope.dart';
+import 'home_page_controller.dart';
+import 'side_bar_menu.dart';
 
 const double _kDefaultMenuSize = 220;
 

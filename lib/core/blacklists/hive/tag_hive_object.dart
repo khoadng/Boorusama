@@ -1,11 +1,10 @@
 // Package imports:
 import 'package:hive/hive.dart';
 
-part 'blacklisted_tag_hive_object.g.dart';
+part 'tag_hive_object.g.dart';
 
 @HiveType(typeId: 3)
 class BlacklistedTagHiveObject extends HiveObject {
-
   BlacklistedTagHiveObject({
     required this.name,
     required this.isActive,

@@ -7,7 +7,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/home/home_navigation_tile.dart';
+import 'package:boorusama/core/home/home_page_scaffold.dart';
+import 'package:boorusama/core/home/side_menu_tile.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'szurubooru.dart';

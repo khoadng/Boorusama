@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/notifications.dart';
-import 'package:boorusama/core/home/home.dart';
+import 'package:boorusama/core/home/empty_booru_config_home_page.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/clients/gelbooru/types/types.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/comment.dart';
 import 'package:boorusama/core/configs.dart';
 
 abstract interface class GelbooruCommentRepository {

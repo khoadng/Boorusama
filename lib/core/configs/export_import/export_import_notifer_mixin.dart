@@ -7,7 +7,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/backups/backups.dart';
+import 'package:boorusama/core/backups/backward_import_alert_dialog.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/version.dart';

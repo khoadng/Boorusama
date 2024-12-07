@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/explores/explores.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/explores/explores.dart';
+import 'package:boorusama/core/explores/explore_page.dart';
 import 'package:boorusama/foundation/i18n.dart';
 
 class DanbooruExplorePage extends ConsumerWidget {

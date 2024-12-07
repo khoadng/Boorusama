@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'bookmark_hive_object.dart';
+part of 'object.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

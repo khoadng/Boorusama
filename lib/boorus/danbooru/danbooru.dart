@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/create.dart';
@@ -32,7 +33,8 @@ import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'comments/comments.dart';
 import 'configs/create_danbooru_config_page.dart';
-import 'favorites/favorites.dart';
+import 'favorites/favorites_page.dart';
+import 'favorites/providers.dart';
 import 'home/danbooru_home_page.dart';
 import 'post_votes/post_votes.dart';
 import 'posts/posts.dart';
@@ -385,6 +387,9 @@ bool handleDanbooruGestureAction(
 }
 
 extension DanbooruX on WidgetRef {
+  FavoritesNotifier get danbooruFavorites =>
+      read(danbooruFavoritesProvider(readConfigAuth).notifier);
+
   void danbooruToggleFavorite(int postId) {
     _guardLogin(() async {
       final isFaved = read(danbooruFavoriteProvider(postId));

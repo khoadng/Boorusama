@@ -1,100 +1,15 @@
 // Flutter imports:
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/core/posts/listing/post_grid_config_icon_button.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
-
-// Class to store duration and position of video
-class VideoProgress extends Equatable {
-  const VideoProgress(
-    this.duration,
-    this.position,
-  );
-
-  final Duration duration;
-  final Duration position;
-
-  static const zero = VideoProgress(Duration.zero, Duration.zero);
-
-  @override
-  List<Object?> get props => [duration, position];
-}
-
-class PlayPauseButton extends StatelessWidget {
-  const PlayPauseButton({
-    super.key,
-    required this.isPlaying,
-    required this.onPlayingChanged,
-    this.padding,
-  });
-
-  final ValueNotifier<bool> isPlaying;
-  final void Function(bool value) onPlayingChanged;
-  final EdgeInsetsGeometry? padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: isPlaying,
-      builder: (_, playing, __) => Material(
-        color: Colors.transparent,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: () => onPlayingChanged(playing),
-          child: Padding(
-            padding: padding ?? EdgeInsets.zero,
-            child: Icon(
-              switch (playing) {
-                true => Symbols.pause,
-                false => Symbols.play_arrow,
-              },
-              fill: 1,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SoundControlButton extends StatelessWidget {
-  const SoundControlButton({
-    super.key,
-    required this.soundOn,
-    this.onSoundChanged,
-    this.padding,
-  });
-
-  final bool soundOn;
-  final void Function(bool hasSound)? onSoundChanged;
-  final EdgeInsetsGeometry? padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: () => onSoundChanged?.call(!soundOn),
-        child: Padding(
-          padding: padding ?? EdgeInsets.zero,
-          child: Icon(
-            soundOn ? Symbols.volume_up : Symbols.volume_off,
-            fill: 1,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
@@ -140,10 +55,12 @@ class BooruVideoOptionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Material(
       color: kPreferredLayout.isDesktop
-          ? context.colorScheme.surface
-          : context.colorScheme.surfaceContainer,
+          ? colorScheme.surface
+          : colorScheme.surfaceContainer,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Column(
@@ -174,18 +91,6 @@ class BooruVideoOptionSheet extends StatelessWidget {
   }
 }
 
-String _buildSpeedText(double speed) {
-  if (speed == 1.0) return 'Normal';
-
-  final speedText = speed.toStringAsFixed(2);
-  // if end with zero, remove it
-  final cleanned = speedText.endsWith('0')
-      ? speedText.substring(0, speedText.length - 1)
-      : speedText;
-
-  return '${cleanned}x';
-}
-
 class PlaybackSpeedActionSheet extends StatelessWidget {
   const PlaybackSpeedActionSheet({
     super.key,
@@ -199,7 +104,7 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: 8,
@@ -212,7 +117,7 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
                 (e) => ListTile(
                   title: Text(_buildSpeedText(e)),
                   onTap: () {
-                    context.navigator.pop();
+                    Navigator.of(context).pop();
                     onChanged(e);
                   },
                 ),
@@ -222,4 +127,16 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
       ),
     );
   }
+}
+
+String _buildSpeedText(double speed) {
+  if (speed == 1.0) return 'Normal';
+
+  final speedText = speed.toStringAsFixed(2);
+  // if end with zero, remove it
+  final cleanned = speedText.endsWith('0')
+      ? speedText.substring(0, speedText.length - 1)
+      : speedText;
+
+  return '${cleanned}x';
 }

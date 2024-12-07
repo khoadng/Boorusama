@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/functional.dart';
 import '../post_votes/post_votes.dart';
 import '../users/users.dart';
-import 'favorites_provider.dart';
+import 'providers.dart';
 
 class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {
@@ -94,9 +94,4 @@ class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
   @override
   void Function(IMap<int, bool> data) get updateFavorites =>
       (data) => state = data;
-}
-
-extension DanbooruFavoritesX on WidgetRef {
-  FavoritesNotifier get danbooruFavorites =>
-      read(danbooruFavoritesProvider(readConfigAuth).notifier);
 }

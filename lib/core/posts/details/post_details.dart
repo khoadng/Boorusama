@@ -9,7 +9,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/videos/videos.dart';
+import 'package:boorusama/core/videos/video_progress.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/comment_vote.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'comments.dart';

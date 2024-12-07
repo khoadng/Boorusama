@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/explores/explores.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/datetimes/datetimes.dart';
+import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
 

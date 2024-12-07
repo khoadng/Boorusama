@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/related_tags/related_tags.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/related_tags/related_tags.dart';
+import 'package:boorusama/core/related_tags/related_tag_cloud_chip.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';

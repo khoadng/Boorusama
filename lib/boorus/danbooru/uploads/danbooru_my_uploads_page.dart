@@ -18,7 +18,7 @@ import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/core/users/colors.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/filesize.dart';

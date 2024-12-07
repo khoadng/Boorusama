@@ -11,12 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/backups/backups.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/backups/types.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/animations.dart';
@@ -26,15 +25,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
-
-final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
-  BookmarkNotifier.new,
-  dependencies: [
-    bookmarkRepoProvider,
-    settingsProvider,
-    downloadServiceProvider,
-  ],
-);
+import 'bookmark.dart';
 
 class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
@@ -244,10 +235,6 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         .toList();
     await Future.wait(tasks);
   }
-}
-
-extension BookmarkNotifierX on WidgetRef {
-  BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
 }
 
 extension BookmarkCubitToastX on BookmarkNotifier {

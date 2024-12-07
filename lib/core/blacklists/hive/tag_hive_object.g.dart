@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'blacklisted_tag_hive_object.dart';
+part of 'tag_hive_object.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

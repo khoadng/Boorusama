@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/wikis/wikis.dart';
+import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 

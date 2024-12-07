@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/users.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/comment_vote.dart';
 import 'danbooru_comment.dart';
 
 typedef CommentVoteId = int;

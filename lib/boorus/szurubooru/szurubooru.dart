@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/post_votes/szurubooru_post_action_toolbar.dart';
 import 'package:boorusama/boorus/szurubooru/providers.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/comment.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';

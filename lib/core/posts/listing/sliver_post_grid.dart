@@ -9,7 +9,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/images/booru_image.dart';
+import 'package:boorusama/core/images/utils.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

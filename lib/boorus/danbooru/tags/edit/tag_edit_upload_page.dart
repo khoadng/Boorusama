@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/uploads/uploads.dart';
 import 'package:boorusama/clients/danbooru/types/source_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';

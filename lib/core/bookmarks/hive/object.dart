@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:hive/hive.dart';
 
-part 'bookmark_hive_object.g.dart';
+part 'object.g.dart';
 
 @HiveType(typeId: 4)
 class BookmarkHiveObject extends HiveObject {

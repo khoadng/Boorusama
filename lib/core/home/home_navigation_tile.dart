@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/navigation_tile.dart';
+import 'home_page_controller.dart';
 
 class HomeNavigationTile extends StatelessWidget {
   const HomeNavigationTile({

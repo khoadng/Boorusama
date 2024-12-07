@@ -4,7 +4,6 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/boorus/providers.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/functional.dart';
+import '../favorites/favorite.dart';
 import 'user_repository.dart';
 
 final danbooruUserRepoProvider =

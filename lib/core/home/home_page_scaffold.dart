@@ -7,7 +7,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/home/home.dart';
+import 'booru_scope.dart';
+import 'home_navigation_tile.dart';
+import 'home_page_controller.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({

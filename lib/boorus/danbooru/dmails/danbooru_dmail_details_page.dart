@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/dmails/dmails.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/core/users/colors.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme/theme_utils.dart';
 import 'package:boorusama/foundation/url_launcher.dart';

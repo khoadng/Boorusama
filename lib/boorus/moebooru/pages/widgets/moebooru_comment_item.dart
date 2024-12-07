@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/comment_header.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/html.dart';

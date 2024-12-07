@@ -7,7 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/bookmarks/bookmark_notifier.dart';
+import 'package:boorusama/core/bookmarks/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/foundation/i18n.dart';

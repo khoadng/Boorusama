@@ -6,7 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/comments/comments.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/comment_vote.dart';
+import 'package:boorusama/core/comments/comment_vote_section.dart';
+import 'package:boorusama/core/comments/vote_event.dart';
+import 'package:boorusama/core/comments/youtube_preview_box.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';

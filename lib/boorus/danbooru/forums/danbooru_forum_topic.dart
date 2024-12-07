@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/forums/forums.dart';
+import 'package:boorusama/core/forums/forum_topic.dart';
 
 enum DanbooruTopicCategory {
   general,

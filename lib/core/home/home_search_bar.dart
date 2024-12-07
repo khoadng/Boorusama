@@ -10,7 +10,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/home/home.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
@@ -21,6 +20,7 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
+import 'home_page_controller.dart';
 
 class HomeSearchBar extends ConsumerWidget {
   const HomeSearchBar({

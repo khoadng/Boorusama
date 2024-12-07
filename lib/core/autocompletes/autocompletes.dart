@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/core/users/colors.dart';
 import 'package:boorusama/functional.dart';
 
 export 'autocomplete_repository.dart';

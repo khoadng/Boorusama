@@ -10,13 +10,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({

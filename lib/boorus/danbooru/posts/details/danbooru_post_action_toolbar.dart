@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/boorus/danbooru/favorites/providers.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/favorites/favorite_post_button.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/votes.dart';
 import 'package:boorusama/router.dart';
-import '../../favorites/favorites.dart';
 import '../../post_votes/post_votes.dart';
 import '../posts.dart';
 

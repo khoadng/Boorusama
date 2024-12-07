@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/comments/comments.dart';
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/vote_event.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

@@ -7,12 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
+import '../bookmark.dart';
+import '../providers.dart';
 
 enum BookmarkSortType {
   newest,

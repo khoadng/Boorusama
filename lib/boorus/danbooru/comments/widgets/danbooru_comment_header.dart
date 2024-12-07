@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/core/comments/comment_header.dart';
+import 'package:boorusama/core/users/colors.dart';
 
 class DanbooruCommentHeader extends ConsumerWidget {
   const DanbooruCommentHeader({

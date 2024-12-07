@@ -8,8 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'booru_image.dart';
+import 'providers.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({

@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
-import 'package:boorusama/core/wikis/wikis.dart';
+import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/i18n.dart';
 

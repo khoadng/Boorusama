@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts/sources.dart';
 
 class BooruLogo extends StatelessWidget {

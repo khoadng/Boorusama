@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search/search.dart';
 import 'package:boorusama/flutter.dart';

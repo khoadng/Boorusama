@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/users/users.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
+import 'package:boorusama/core/blacklists/blacklisted_tag.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';

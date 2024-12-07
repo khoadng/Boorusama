@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/hydrus/hydrus.dart';
 import 'package:boorusama/clients/hydrus/hydrus_client.dart';
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/functional.dart';
 
 class HydrusFavoritesNotifier

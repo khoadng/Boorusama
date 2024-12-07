@@ -5,15 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comments.dart';
+import 'package:boorusama/core/comments/vote_event.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
-
-enum VoteEvent {
-  upvoted,
-  downvote,
-  voteRemoved,
-}
+import 'comment_vote.dart';
 
 class CommentVoteSection extends StatelessWidget {
   const CommentVoteSection({
