@@ -6,15 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/favorites/providers.dart';
+import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
+import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/favorites/favorite_post_button.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/votes.dart';
 import 'package:boorusama/router.dart';
-import '../../post_votes/post_votes.dart';
-import '../posts.dart';
+import '../votes/post_votes_notifier.dart';
 
 class DanbooruInheritedPostActionToolbar extends StatelessWidget {
   const DanbooruInheritedPostActionToolbar({super.key});

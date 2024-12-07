@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/tags/details/widgets/tag_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/tag/filter_category.dart';
+import 'package:boorusama/functional.dart';
+import '../../posts/listing/default_danbooru_image_grid_item.dart';
+import '../../posts/post/providers.dart';
 import 'artist_tag_cloud.dart';
 
 class DanbooruTagDetailsPage extends ConsumerStatefulWidget {
@@ -83,3 +85,6 @@ class _DanbooruTagDetailsPageState
     );
   }
 }
+
+Option<String> tagFilterCategoryToString(TagFilterCategory category) =>
+    category == TagFilterCategory.popular ? const Some('order:score') : none();

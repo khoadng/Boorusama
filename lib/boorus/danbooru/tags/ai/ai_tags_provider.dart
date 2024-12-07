@@ -10,7 +10,7 @@ import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import '../tags.dart';
+import 'ai_tag.dart';
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
   (ref, postId) async {

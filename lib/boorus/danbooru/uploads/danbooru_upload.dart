@@ -3,13 +3,12 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/users/users.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client_uploads.dart';
+import 'package:boorusama/boorus/danbooru/uploads/danbooru_upload_post.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import '../posts/post/converter.dart';
+import '../users/user/user.dart';
 
 class DanbooruUpload extends Equatable {
   const DanbooruUpload({
@@ -53,111 +52,6 @@ class DanbooruUpload extends Equatable {
         error,
         mediaAssetCount,
       ];
-}
-
-class DanbooruUploadRepository {
-  const DanbooruUploadRepository({
-    required this.client,
-  });
-
-  final DanbooruClient client;
-
-  Future<List<DanbooruUpload>> getUploads({
-    required int userId,
-    int? page,
-    int? limit,
-    bool? isPosted,
-    UploadOrder? order,
-    UploadStatus? status,
-    List<String>? tags,
-  }) async {
-    final dtos = await client.getUploads(
-      userId: userId,
-      page: page,
-      limit: limit,
-      isPosted: isPosted,
-      order: order,
-      status: status,
-      tags: tags,
-    );
-
-    return dtos.map(
-      (e) {
-        return DanbooruUpload(
-          id: e.id ?? 0,
-          source: e.source ?? '',
-          uploaderId: e.uploaderId ?? 0,
-          status: e.status ?? '',
-          createdAt: e.createdAt ?? DateTime(1),
-          updatedAt: e.updatedAt ?? DateTime(1),
-          refererUrl: e.refererUrl ?? '',
-          error: e.error ?? '',
-          mediaAssetCount: e.mediaAssetCount ?? 0,
-          postedCount: e.posts?.length ?? 0,
-          uploadMediaAssets: e.uploadMediaAssets ?? <UploadMediaAssetsDto>[],
-          uploader: e.uploader != null ? userDtoToUser(e.uploader!) : null,
-          mediaAssets: e.mediaAssets ?? <MediaAssetDto>[],
-        );
-      },
-    ).toList();
-  }
-}
-
-class DanbooruUploadPost extends DanbooruPost {
-  DanbooruUploadPost({
-    required super.id,
-    required super.thumbnailImageUrl,
-    required super.sampleImageUrl,
-    required super.originalImageUrl,
-    required super.tags,
-    required super.copyrightTags,
-    required super.characterTags,
-    required super.artistTags,
-    required super.generalTags,
-    required super.metaTags,
-    required super.width,
-    required super.height,
-    required super.format,
-    required super.md5,
-    required super.lastCommentAt,
-    required super.source,
-    required super.createdAt,
-    required super.score,
-    required super.upScore,
-    required super.downScore,
-    required super.favCount,
-    required super.uploaderId,
-    required super.approverId,
-    required super.rating,
-    required super.fileSize,
-    required super.isBanned,
-    required super.hasChildren,
-    required super.parentId,
-    required super.hasLarge,
-    required super.duration,
-    required super.variants,
-    required super.pixelHash,
-    required this.uploader,
-    required this.mediaAssetCount,
-    required this.postedCount,
-    required this.mediaAssetId,
-    required this.uploadId,
-    required this.uploadMediaAssetId,
-    required this.pageUrl,
-    required this.sourceRaw,
-    required super.metadata,
-  });
-
-  final DanbooruUser? uploader;
-  final int mediaAssetCount;
-  final int postedCount;
-  final int mediaAssetId;
-  final int uploadId;
-  final int uploadMediaAssetId;
-  final String pageUrl;
-  final String sourceRaw;
-
-  int get unPostedCount => mediaAssetCount - postedCount;
 }
 
 extension DanbooruUploadX on DanbooruUpload {

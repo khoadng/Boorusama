@@ -2,10 +2,11 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/users.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'favorite_groups.dart';
+import '../users/creator/creator.dart';
+import 'danbooru_favorite_group.dart';
+import 'favorite_group_repository.dart';
 
 const _favGroupLimit = 1000;
 

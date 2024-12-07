@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -19,6 +18,7 @@ import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';
 
 final tagEditFilteredListProvider =

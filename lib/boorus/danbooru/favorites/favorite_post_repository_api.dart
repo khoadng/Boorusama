@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'favorite.dart';
+import 'favorite_post_repository.dart';
 
 class FavoritePostRepositoryApi implements FavoritePostRepository {
   FavoritePostRepositoryApi(

@@ -13,8 +13,7 @@ import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/users/users.dart';
+import 'package:boorusama/boorus/danbooru/tags/user_metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
@@ -42,6 +41,8 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/tracking.dart';
 import 'package:boorusama/foundation/windows.dart' as window;
 import 'app.dart';
+import 'boorus/danbooru/tags/user_metatags/providers.dart';
+import 'boorus/danbooru/users/creator/providers.dart';
 import 'core/blacklists/hive/tag_repository.dart';
 import 'core/blacklists/providers.dart';
 import 'core/bookmarks/hive/object.dart';

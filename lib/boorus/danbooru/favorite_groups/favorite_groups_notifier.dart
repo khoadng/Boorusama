@@ -3,10 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/posts.dart';
-import '../posts/posts.dart';
-import '../users/users.dart';
-import 'favorite_groups.dart';
+import 'package:boorusama/core/configs/manage.dart';
+import '../users/level/user_level.dart';
+import '../users/user/providers.dart';
+import 'danbooru_favorite_group.dart';
+import 'favorite_group_previews_notifier.dart';
+import 'favorite_group_repository.dart';
+import 'providers.dart';
+
+final danbooruFavoriteGroupsProvider = NotifierProvider.family<
+    FavoriteGroupsNotifier, List<DanbooruFavoriteGroup>?, BooruConfigSearch>(
+  FavoriteGroupsNotifier.new,
+  dependencies: [
+    danbooruFavoriteGroupRepoProvider,
+    currentBooruConfigProvider,
+    danbooruCurrentUserProvider,
+  ],
+);
 
 class FavoriteGroupsNotifier
     extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
@@ -249,33 +262,4 @@ List<int> updateOrder(
   }
 
   return result;
-}
-
-class FavoriteGroupPreviewsNotifier
-    extends FamilyNotifier<Map<int, String>, BooruConfigSearch> {
-  @override
-  Map<int, String> build(BooruConfigSearch arg) {
-    return {};
-  }
-
-  Future<void> fetch(List<int> postIds) async {
-    // check if the postIds are already cached, if so, don't fetch them again
-    final cachedPostIds = state.keys.toList();
-    final postIdsToFetch = postIds.where((id) => !cachedPostIds.contains(id));
-    if (postIdsToFetch.isEmpty) return;
-
-    final r = await ref
-        .watch(danbooruPostRepoProvider(arg))
-        .getPostsFromIds(postIdsToFetch.toList())
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[].toResult(),
-              (r) => r,
-            ));
-
-    final map = {for (final p in r.posts) p.id: p.thumbnailImageUrl};
-
-    // merge the new map with the old one
-    state = {...state, ...map};
-  }
 }

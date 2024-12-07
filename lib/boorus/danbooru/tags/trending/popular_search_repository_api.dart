@@ -2,9 +2,10 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/time.dart';
+import 'popular_search_repository.dart';
+import 'search.dart';
 
 class PopularSearchRepositoryApi implements PopularSearchRepository {
   PopularSearchRepositoryApi({

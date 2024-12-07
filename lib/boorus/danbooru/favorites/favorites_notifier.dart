@@ -3,11 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/functional.dart';
-import '../post_votes/post_votes.dart';
-import '../users/users.dart';
+import '../posts/votes/post_votes_notifier.dart';
+import '../users/user/providers.dart';
 import 'providers.dart';
+
+final danbooruFavoritesProvider = NotifierProvider.family<FavoritesNotifier,
+    IMap<int, bool>, BooruConfigAuth>(
+  FavoritesNotifier.new,
+  dependencies: [
+    currentBooruConfigProvider,
+  ],
+);
+
+final danbooruFavoriteProvider = Provider.autoDispose.family<bool, int>(
+  (ref, postId) {
+    final config = ref.watchConfigAuth;
+    return ref.watch(danbooruFavoritesProvider(config))[postId] ?? false;
+  },
+);
 
 class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {

@@ -11,6 +11,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/artists/search/artist_search_page.dart';
+import 'package:boorusama/boorus/danbooru/blacklist/blacklisted_tags_page.dart';
+import 'package:boorusama/boorus/danbooru/forums/topics/forum_page.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/home/home_navigation_tile.dart';
@@ -22,17 +25,15 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
-import '../artists/artists.dart';
-import '../blacklist/blacklist.dart';
 import '../explores/danbooru_explore_page.dart';
-import '../favorite_groups/favorite_groups.dart';
+import '../favorite_groups/favorite_groups_page.dart';
 import '../favorites/favorites_page.dart';
-import '../forums/forums.dart';
-import '../pools/danbooru_pool_page.dart';
+import '../pools/listing/danbooru_pool_page.dart';
 import '../router.dart';
-import '../saved_searches/saved_searches.dart';
-import '../tags/tags.dart';
-import '../users/users.dart';
+import '../saved_searches/feed/saved_search_feed_page.dart';
+import '../tags/trending/trending_tag_notifier.dart';
+import '../users/details/user_details_page.dart';
+import '../users/user/providers.dart';
 
 class DanbooruHomePage extends ConsumerStatefulWidget {
   const DanbooruHomePage({

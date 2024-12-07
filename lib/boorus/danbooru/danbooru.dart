@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs.dart';
@@ -31,16 +30,23 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import 'comments/comments.dart';
+import 'artists/artist/artist_page.dart';
+import 'comments/comment/comment_page.dart';
 import 'configs/create_danbooru_config_page.dart';
+import 'favorites/danbooru_quick_favorite_button.dart';
 import 'favorites/favorites_page.dart';
-import 'favorites/providers.dart';
 import 'home/danbooru_home_page.dart';
-import 'post_votes/post_votes.dart';
-import 'posts/posts.dart';
-import 'reports/reports.dart';
-import 'search/search.dart';
-import 'tags/tags.dart';
+import 'home/latest_posts_view.dart';
+import 'posts/details/danbooru_post_action_toolbar.dart';
+import 'posts/details/danbooru_post_details_page.dart';
+import 'posts/details/details_widgets.dart';
+import 'posts/listing/danbooru_multi_selection_actions.dart';
+import 'posts/post/danbooru_post.dart';
+import 'posts/post/post_variant.dart';
+import 'posts/statistics/post_statistics_page.dart';
+import 'posts/votes/post_votes_notifier.dart';
+import 'search/danbooru_search_page.dart';
+import 'tags/details/danbooru_character_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 

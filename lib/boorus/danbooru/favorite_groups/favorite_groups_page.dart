@@ -13,7 +13,10 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import '../router.dart';
-import 'favorite_groups.dart';
+import 'danbooru_favorite_group.dart';
+import 'favorite_group_previews_notifier.dart';
+import 'favorite_groups_notifier.dart';
+import 'modal_favorite_group_action.dart';
 
 class FavoriteGroupsPage extends ConsumerWidget {
   const FavoriteGroupsPage({super.key});

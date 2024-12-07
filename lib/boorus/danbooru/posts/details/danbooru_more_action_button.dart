@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post.dart';
 import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../post/danbooru_post.dart';
 
 class DanbooruMoreActionButton extends ConsumerWidget {
   const DanbooruMoreActionButton({

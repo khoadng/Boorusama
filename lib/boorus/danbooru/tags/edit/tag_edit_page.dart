@@ -10,31 +10,20 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
-import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import '../../posts/post/danbooru_post.dart';
+import '../shared/tag_list_notifier.dart';
+import 'providers.dart';
 import 'tag_edit_content.dart';
 import 'tag_edit_notifier.dart';
+import 'tag_edit_view_controller.dart';
 import 'widgets/tag_edit_rating_selector_section.dart';
-
-const kHowToRateUrl = 'https://danbooru.donmai.us/wiki_pages/howto:rate';
-
-final selectedTagEditRatingProvider =
-    StateProvider.family.autoDispose<Rating?, Rating?>((ref, rating) {
-  return rating;
-});
-
-final tagEditProvider = NotifierProvider<TagEditNotifier, TagEditState>(() {
-  throw UnimplementedError();
-});
 
 class TagEditPage extends ConsumerWidget {
   const TagEditPage({
@@ -112,65 +101,6 @@ class TagEditSubmitButton extends ConsumerWidget {
           : null,
       child: const Text('Submit'),
     );
-  }
-}
-
-class TagEditViewController extends ChangeNotifier {
-  TagEditViewController();
-
-  final MultiSplitViewController splitController = MultiSplitViewController(
-    areas: [
-      Area(
-        id: 'image',
-        data: 'image',
-        size: 250,
-        min: 25,
-      ),
-      Area(
-        id: 'content',
-        data: 'content',
-      ),
-    ],
-  );
-
-  void setDefaultSplit() {
-    splitController.areas = [
-      Area(
-        id: 'image',
-        data: 'image',
-        size: 250,
-        min: 25,
-      ),
-      Area(
-        id: 'content',
-        data: 'content',
-      ),
-    ];
-
-    notifyListeners();
-  }
-
-  void setMaxSplit(BuildContext context) {
-    splitController.areas = [
-      Area(
-        id: 'image',
-        data: 'image',
-        size: context.screenHeight * 0.5,
-        min: 50 + MediaQuery.viewPaddingOf(context).top,
-      ),
-      Area(
-        id: 'content',
-        data: 'content',
-      ),
-    ];
-
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    splitController.dispose();
   }
 }
 

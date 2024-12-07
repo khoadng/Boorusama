@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../router.dart';
-import 'dmails.dart';
+import 'providers.dart';
 
 class SliverUnreadMailsBanner extends ConsumerWidget {
   const SliverUnreadMailsBanner({super.key});

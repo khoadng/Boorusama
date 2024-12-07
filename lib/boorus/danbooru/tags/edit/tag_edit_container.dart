@@ -9,8 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/tags/edit/tag_edit_view_controller.dart';
 import 'package:boorusama/foundation/theme.dart';
-import 'tag_edit_page.dart';
+import 'tag_edit_notifier.dart';
 
 class TagEditContainer extends ConsumerWidget {
   const TagEditContainer({

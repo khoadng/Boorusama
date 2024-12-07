@@ -6,13 +6,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/related_tags/related_tags.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/related_tags/related_tag_cloud_chip.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../danbooru_tag_context_menu.dart';
+import '../related/danbooru_related_tag.dart';
+import '../related/providers.dart';
+import '../widgets/danbooru_tag_context_menu.dart';
 
 const _kTagCloudTotal = 30;
 

@@ -8,9 +8,6 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
@@ -59,9 +56,12 @@ import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
-import 'danbooru/danbooru_provider.dart';
-import 'danbooru/favorites/providers.dart';
-import 'danbooru/notes/notes.dart';
+import 'danbooru/autocompletes/providers.dart';
+import 'danbooru/blacklist/providers.dart';
+import 'danbooru/favorites/favorites_notifier.dart';
+import 'danbooru/notes/providers.dart';
+import 'danbooru/posts/post/providers.dart';
+import 'danbooru/tags/tag/providers.dart';
 import 'e621/e621.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/favorites/favorites.dart';

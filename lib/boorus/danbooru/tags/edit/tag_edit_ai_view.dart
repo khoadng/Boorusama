@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/dart.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../ai/ai_tags_provider.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {
   const TagEditAITagView({

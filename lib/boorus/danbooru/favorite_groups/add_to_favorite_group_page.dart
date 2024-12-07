@@ -18,9 +18,11 @@ import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/time.dart';
-import '../posts/posts.dart';
+import '../posts/post/danbooru_post.dart';
 import '../router.dart';
-import 'favorite_groups.dart';
+import 'danbooru_favorite_group.dart';
+import 'favorite_groups_filterable_notifier.dart';
+import 'favorite_groups_notifier.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
   const AddToFavoriteGroupPage({

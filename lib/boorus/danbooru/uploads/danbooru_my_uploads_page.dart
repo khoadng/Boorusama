@@ -8,23 +8,25 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/uploads/uploads.dart';
-import 'package:boorusama/boorus/danbooru/users/users_provider.dart';
+import 'package:boorusama/boorus/danbooru/uploads/danbooru_upload_post.dart';
+import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/users/colors.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../posts/listing/default_danbooru_image_grid_item.dart';
+import '../users/user/providers.dart';
+import 'danbooru_upload.dart';
+import 'providers.dart';
 
 enum UploadTabType {
   posted,

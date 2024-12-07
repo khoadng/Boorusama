@@ -1,38 +1,51 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/pools/pool_detail_page.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'blacklist/blacklist.dart';
-import 'comments/comments.dart';
-import 'dmails/dmails.dart';
-import 'explores/explores.dart';
-import 'favorite_groups/favorite_groups.dart';
-import 'forums/forums.dart';
-import 'pools/pool_search_page.dart';
-import 'pools/pools.dart';
-import 'posts/posts.dart';
-import 'related_tags/related_tags.dart';
-import 'saved_searches/saved_searches.dart';
-import 'tags/danbooru_show_tag_list_page.dart';
-import 'tags/tags.dart';
+import 'artists/search/artist_search_page.dart';
+import 'blacklist/blacklisted_tags_page.dart';
+import 'comments/comment/comment_create_page.dart';
+import 'comments/comment/comment_update_page.dart';
+import 'dmails/dmail.dart';
+import 'dmails/dmail_page.dart';
+import 'explores/danbooru_explore_page.dart';
+import 'explores/explore_hot_page.dart';
+import 'explores/explore_most_viewed_page.dart';
+import 'explores/explore_popular_page.dart';
+import 'favorite_groups/add_to_favorite_group_page.dart';
+import 'favorite_groups/create_favorite_group_dialog.dart';
+import 'favorite_groups/danbooru_favorite_group.dart';
+import 'favorite_groups/favorite_group_details_page.dart';
+import 'favorite_groups/favorite_groups_page.dart';
+import 'forums/posts/forum_posts_page.dart';
+import 'forums/topics/forum_page.dart';
+import 'forums/topics/forum_topic.dart';
+import 'pools/details/pool_detail_page.dart';
+import 'pools/listing/danbooru_pool_page.dart';
+import 'pools/pool/danbooru_pool.dart';
+import 'pools/search/pool_search_page.dart';
+import 'posts/post/danbooru_post.dart';
+import 'saved_searches/feed/saved_search_feed_page.dart';
+import 'saved_searches/listing/saved_search_page.dart';
+import 'tags/edit/tag_edit_page.dart';
+import 'tags/pages/danbooru_show_tag_list_page.dart';
+import 'tags/related/danbooru_related_tag.dart';
+import 'tags/related/related_tag_action_sheet.dart';
 import 'uploads/danbooru_my_uploads_page.dart';
-import 'uploads/uploads.dart';
-import 'users/users.dart';
-import 'versions/versions.dart';
+import 'uploads/danbooru_upload_post.dart';
+import 'uploads/tag_edit_upload_page.dart';
+import 'users/details/user_details_page.dart';
+import 'users/pages/user_list_page.dart';
+import 'versions/danbooru_post_versions_page.dart';
 
 // Internal custom routes
 final danbooruCustomRoutes = [
@@ -636,70 +649,6 @@ void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
         'voter',
       ],
     ).toString(),
-  );
-}
-
-void goToSavedSearchCreatePage(
-  BuildContext context, {
-  String? initialValue,
-}) {
-  if (kPreferredLayout.isMobile) {
-    showMaterialModalBottomSheet(
-      context: context,
-      settings: const RouteSettings(
-        name: RouterPageConstant.savedSearchCreate,
-      ),
-      backgroundColor: context.colorScheme.surfaceContainer,
-      builder: (_) => CreateSavedSearchSheet(
-        initialValue: initialValue,
-      ),
-    );
-  } else {
-    showGeneralDialog(
-      context: context,
-      routeSettings: const RouteSettings(
-        name: RouterPageConstant.savedSearchCreate,
-      ),
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black54,
-      pageBuilder: (context, _, __) {
-        return Dialog(
-          child: Container(
-            width: context.screenWidth * 0.8,
-            height: context.screenHeight * 0.8,
-            margin: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 16,
-            ),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
-              ),
-            ),
-            child: CreateSavedSearchSheet(
-              initialValue: initialValue,
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-void goToSavedSearchPatchPage(
-  BuildContext context,
-  SavedSearch savedSearch,
-) {
-  showMaterialModalBottomSheet(
-    context: context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.savedSearchPatch,
-    ),
-    backgroundColor: context.colorScheme.surfaceContainer,
-    builder: (_) => EditSavedSearchSheet(
-      savedSearch: savedSearch,
-    ),
   );
 }
 

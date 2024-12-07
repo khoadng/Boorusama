@@ -7,14 +7,15 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import '../danbooru_tag_context_menu.dart';
+import '../../posts/details/danbooru_post_details_page.dart';
+import '../../posts/post/danbooru_post.dart';
+import '../shared/tag_list_notifier.dart';
+import '../widgets/danbooru_tag_context_menu.dart';
 
 final danbooruTagTileExpansionStateProvider =
     StateProvider.autoDispose.family<bool, bool>((ref, value) {

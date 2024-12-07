@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
 
-// Project imports:
-
 class ExploreSliverAppBar extends StatelessWidget {
   const ExploreSliverAppBar({
     super.key,

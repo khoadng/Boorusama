@@ -6,15 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/pools/pool_tiles.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/artists/commentaries/providers.dart';
+import 'package:boorusama/boorus/danbooru/comments/comment/providers.dart';
+import 'package:boorusama/boorus/danbooru/pools/widgets/pool_tiles.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../tags/details/danbooru_tags_tile.dart';
+import '../post/danbooru_post.dart';
+import 'danbooru_post_details_page.dart';
+import 'providers.dart';
 
 class DanbooruPoolTiles extends ConsumerWidget {
   const DanbooruPoolTiles({super.key});

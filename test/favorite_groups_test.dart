@@ -2,7 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/favorite_groups/favorite_groups.dart';
+import 'package:boorusama/boorus/danbooru/favorite_groups/favorite_groups_notifier.dart';
 
 void main() {
   group('updateOrder', () {

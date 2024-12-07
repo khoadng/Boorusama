@@ -12,8 +12,10 @@ import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../users/users.dart';
-import 'favorite_groups.dart';
+import '../users/level/user_level.dart';
+import '../users/user/providers.dart';
+import 'danbooru_favorite_group.dart';
+import 'favorite_groups_notifier.dart';
 
 class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
   const EditFavoriteGroupDialog({
