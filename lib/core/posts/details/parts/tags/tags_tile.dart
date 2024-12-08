@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/tags/groups/item.dart';
+import 'package:boorusama/core/tags/tag/display.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
+import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
+import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
 import '../../../post.dart';
 
 class TagsTile extends ConsumerWidget {
@@ -38,10 +41,10 @@ class TagsTile extends ConsumerWidget {
     final count = initialCount ?? post.tags.length;
 
     return Theme(
-      data: context.theme.copyWith(
-        listTileTheme: context.theme.listTileTheme.copyWith(
-          visualDensity: VisualDensity.compact,
-        ),
+      data: Theme.of(context).copyWith(
+        listTileTheme: Theme.of(context).listTileTheme.copyWith(
+              visualDensity: VisualDensity.compact,
+            ),
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../animations.dart';
+import '../widgets/side_sheet.dart';
 import 'screen_size.dart';
 import 'types.dart';
 
@@ -77,14 +77,11 @@ Future<T?> showAdaptiveBottomSheet<T>(
           settings: settings,
           barrierColor: Colors.black45,
           backgroundColor: backgroundColor ?? Colors.transparent,
-          builder: (context) => ConditionalParentWidget(
-            condition: !expand,
-            child: builder(context),
-            conditionalBuilder: (child) => SizedBox(
-              height: height,
-              child: child,
-            ),
-          ),
+          builder: (context) {
+            Widget child = builder(context);
+            child = !expand ? SizedBox(height: height, child: child) : child;
+            return child;
+          },
         );
 }
 

@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme.dart';
-import '../danbooru_provider.dart';
-import '../related_tags/related_tags.dart';
+import 'package:boorusama/core/search/search_ui.dart';
+import 'package:boorusama/core/tags/metatag/providers.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
+import '../posts/listing/default_danbooru_image_grid_item.dart';
+import '../posts/post/providers.dart';
+import '../tags/related/related_tag_section.dart';
+import 'danbooru_metatags_section.dart';
 import 'trending_section.dart';
 
 class DanbooruSearchPage extends ConsumerStatefulWidget {
@@ -42,7 +42,7 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
             TextStyle(
           fontWeight: FontWeight.w800,
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       },
       trendingBuilder: (context, controller) => TrendingSection(

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/danbooru_tag_context_menu.dart';
+import 'package:boorusama/boorus/danbooru/tags/widgets/danbooru_tag_context_menu.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/booru_chip.dart';
 import 'trending_section.dart';
 
@@ -43,7 +43,7 @@ class TrendingTags extends ConsumerWidget {
                   label: Text(
                     e.name.keyword.replaceAll('_', ' '),
                     style: TextStyle(
-                      color: context.isDark ? color : null,
+                      color: Theme.of(context).brightness.isDark ? color : null,
                     ),
                   ),
                 ),
@@ -70,7 +70,7 @@ class TrendingTagsPlaceholder extends StatelessWidget {
       children: tags.map((e) {
         return BooruChip(
           chipColors: (
-            backgroundColor: context.colorScheme.surfaceContainerLow,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
             borderColor: Colors.transparent,
             foregroundColor: Colors.transparent,
           ),

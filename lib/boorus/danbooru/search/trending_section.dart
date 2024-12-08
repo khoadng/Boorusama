@@ -7,13 +7,16 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import '../tags/tag/providers.dart';
+import '../tags/trending/search.dart';
+import '../tags/trending/trending_tag_notifier.dart';
 import 'trending_tags.dart';
 
 final _kTrendingTagCount = 15;
@@ -113,9 +116,9 @@ class TrendingSection extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         'search.trending'.tr().toUpperCase(),
-        style: context.textTheme.titleSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
       ),
     );
   }

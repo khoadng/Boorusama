@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
 
 class BookmarkAppBar extends ConsumerWidget {
   const BookmarkAppBar({
@@ -30,7 +30,7 @@ class BookmarkAppBar extends ConsumerWidget {
                   ref.read(bookmarkEditProvider.notifier).state = false,
               icon: Icon(
                 Symbols.check,
-                color: context.theme.colorScheme.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
             )
           : null,

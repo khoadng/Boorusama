@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/widgets/image_grid_item.dart';
 import '../post.dart';
 

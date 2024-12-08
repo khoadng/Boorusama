@@ -2,7 +2,8 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/datetimes/datetimes.dart';
+import 'package:boorusama/core/datetimes/types.dart';
+import 'package:boorusama/core/datetimes/utils.dart';
 
 void main() {
   group('[explore time test]', () {

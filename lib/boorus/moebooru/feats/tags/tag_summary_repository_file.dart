@@ -2,8 +2,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+// Package imports:
+import 'package:booru_clients/moebooru.dart';
+
 // Project imports:
-import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'package:boorusama/foundation/path.dart';
 
 class TagSummaryRepositoryFile {

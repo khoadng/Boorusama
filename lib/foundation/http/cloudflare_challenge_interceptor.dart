@@ -9,7 +9,7 @@ import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/toast.dart';
+import '../toast.dart';
 import 'http_utils.dart';
 
 const kCloudflareClearanceKey = 'cf_clearance';

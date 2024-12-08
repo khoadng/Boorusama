@@ -2,10 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/users.dart';
+import '../users/creator/creator.dart';
 
 class DanbooruPostVersion extends Equatable {
-
   const DanbooruPostVersion({
     required this.id,
     required this.postId,

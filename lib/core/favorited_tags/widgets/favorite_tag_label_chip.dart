@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import 'favorite_tag_label_details_page.dart';
 
 class FavoriteTagLabelChip extends ConsumerWidget {
@@ -23,7 +23,7 @@ class FavoriteTagLabelChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.generateChipColors(
-      context.colorScheme.primary,
+      Theme.of(context).colorScheme.primary,
       ref.watch(settingsProvider),
     );
 
@@ -31,7 +31,7 @@ class FavoriteTagLabelChip extends ConsumerWidget {
       height: 28,
       child: RawChip(
         onPressed: () {
-          context.navigator.push(
+          Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) => FavoriteTagLabelDetailsPage(
                 label: label,
@@ -54,7 +54,7 @@ class FavoriteTagLabelChip extends ConsumerWidget {
         ),
         label: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: context.screenWidth * 0.7,
+            maxWidth: MediaQuery.sizeOf(context).width * 0.7,
           ),
           child: RichText(
             overflow: TextOverflow.ellipsis,

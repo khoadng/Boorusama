@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/bookmarks/widgets/providers.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class BookmarkSortButton extends ConsumerWidget {

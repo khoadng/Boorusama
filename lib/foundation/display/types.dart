@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../platform.dart';
 import 'screen_size.dart';
 
 const _kRawPreferredLayout = String.fromEnvironment('PREFERRED_LAYOUT');

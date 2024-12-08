@@ -1,29 +1,35 @@
 // Flutter imports:
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/anime-pictures/anime_pictures_home_page.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/booru_builder_types.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
-import 'package:boorusama/clients/anime-pictures/types/types.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/create/scaffold.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/downloads/filename.dart';
+import 'package:boorusama/core/downloads/urls.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/groups/item.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../booru_builder_default.dart';
 import 'create_anime_pictures_config_page.dart';
 import 'providers.dart';
 

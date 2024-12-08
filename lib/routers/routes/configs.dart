@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -31,14 +30,14 @@ class BoorusRoutes {
 
             final page = AddBooruPage(
               backgroundColor: landscape
-                  ? context.colorScheme.surfaceContainerLow
-                  : context.colorScheme.surface,
+                  ? Theme.of(context).colorScheme.surfaceContainerLow
+                  : Theme.of(context).colorScheme.surface,
               setCurrentBooruOnSubmit: setAsCurrent,
             );
 
             return landscape
                 ? BooruDialog(
-                    color: context.colorScheme.surfaceContainerLow,
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
                     child: page,
                   )
                 : page;
@@ -72,8 +71,8 @@ class BoorusRoutes {
                   context,
                   EditBooruConfigId.fromConfig(config),
                   backgroundColor: landscape
-                      ? context.colorScheme.surfaceContainerLow
-                      : context.colorScheme.surface,
+                      ? Theme.of(context).colorScheme.surfaceContainerLow
+                      : Theme.of(context).colorScheme.surface,
                   initialTab: q,
                 ) ??
                 Scaffold(
@@ -86,7 +85,7 @@ class BoorusRoutes {
 
             return landscape
                 ? BooruDialog(
-                    color: context.colorScheme.surfaceContainerLow,
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
                     child: page,
                   )
                 : page;
