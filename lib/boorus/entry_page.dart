@@ -3,22 +3,26 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/cache/providers.dart';
+import 'package:boorusama/core/changelogs/utils.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/configs/widgets.dart';
+import 'package:boorusama/core/downloads/notifications.dart';
+import 'package:boorusama/core/home/empty_booru_config_home_page.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:home_widget/home_widget.dart';
 
@@ -36,7 +40,9 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.showChangelogDialogIfNeeded();
+      final miscBox = ref.read(miscDataBoxProvider);
+      ref.showChangelogDialogIfNeeded(miscBox);
+
       final configs = ref.read(booruConfigProvider);
       updateAndroidWidget("You have ${configs.length} boorus");
     });
@@ -189,14 +195,14 @@ class _Boorus extends ConsumerWidget {
           children: [
             Text(
               'Current selected profile is invalid',
-              style: context.textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             if (availableConfigs.isNotEmpty == true)
               Text(
                 'Select a profile from the list below to continue',
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.colorScheme.hintColor,
-                ),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.hintColor,
+                    ),
               ),
             const SizedBox(height: 16),
             Expanded(

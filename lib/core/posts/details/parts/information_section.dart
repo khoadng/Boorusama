@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../post.dart';
 import '../../sources/source.dart';
@@ -93,10 +94,10 @@ class InformationSection extends ConsumerWidget {
                         .replaceAll('_', ' ')
                         .titleCase,
                     overflow: TextOverflow.fade,
-                    style: context.textTheme.titleLarge?.copyWith(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
                     maxLines: 1,
                     softWrap: false,
                   ),
@@ -108,7 +109,7 @@ class InformationSection extends ConsumerWidget {
                         .replaceAll('_', ' ')
                         .titleCase,
                     overflow: TextOverflow.fade,
-                    style: context.textTheme.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyLarge,
                     maxLines: 1,
                     softWrap: false,
                   ),
@@ -132,10 +133,13 @@ class InformationSection extends ConsumerWidget {
                           builder: (context, _) => Text(
                             createdAt.fuzzify(
                                 locale: Localizations.localeOf(context)),
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context
-                                  .theme.listTileTheme.subtitleTextStyle?.color,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .listTileTheme
+                                          .subtitleTextStyle
+                                          ?.color,
+                                    ),
                           ),
                         ),
                       ),

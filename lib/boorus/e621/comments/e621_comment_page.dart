@@ -6,11 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/comments/comment.dart';
+import 'package:boorusama/core/comments/comment_header.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/theme.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({
@@ -68,7 +69,7 @@ class _CommentItem extends StatelessWidget {
           authorName: comment.creatorName == null
               ? comment.creatorId?.toString() ?? 'Anon'
               : comment.creatorName!,
-          authorTitleColor: context.colorScheme.primary,
+          authorTitleColor: Theme.of(context).colorScheme.primary,
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),

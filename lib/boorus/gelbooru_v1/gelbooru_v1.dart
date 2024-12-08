@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
@@ -11,18 +12,23 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v1/create_gelbooru_v1_config_page.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/downloads/filename.dart';
+import 'package:boorusama/core/downloads/urls.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/search/query_composer_providers.dart';
+import 'package:boorusama/core/search/search_ui.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/info_container.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 
 part 'providers.dart';
 

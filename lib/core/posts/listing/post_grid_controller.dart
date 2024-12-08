@@ -6,7 +6,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';
 import '../filter.dart';

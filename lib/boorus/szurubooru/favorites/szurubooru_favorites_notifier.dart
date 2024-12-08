@@ -1,13 +1,14 @@
 // Package imports:
+import 'package:booru_clients/szurubooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/szurubooru/providers.dart';
 import 'package:boorusama/boorus/szurubooru/szurubooru_post.dart';
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/favorites/favorite.dart';
 import '../post_votes/post_votes.dart';
 
 class SzurubooruFavoritesNotifier

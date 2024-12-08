@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/images/providers.dart';
 
 const _unknownSize = 26.0;
 const _faviconSize = 32.0;

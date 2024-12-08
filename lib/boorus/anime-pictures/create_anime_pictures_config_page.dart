@@ -6,13 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/create/auth.dart';
-import 'package:boorusama/core/configs/create/providers.dart';
-import 'package:boorusama/core/configs/create/scaffold.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/boorus/providers.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/create.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {
   const CreateAnimePicturesConfigPage({
@@ -39,7 +36,7 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                color: context.theme.colorScheme.secondaryContainer,
+                color: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
@@ -51,13 +48,13 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
                   Icon(
                     Symbols.info,
                     size: 16,
-                    color: context.theme.colorScheme.error,
+                    color: Theme.of(context).colorScheme.error,
                   ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       "Bulk download and blacklist won't work for this booru.",
-                      style: context.textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ],

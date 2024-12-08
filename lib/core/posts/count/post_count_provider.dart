@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'post_count_repository.dart';
 
 final postCountProvider =

@@ -1,17 +1,20 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
-import 'package:dio/dio.dart';
+import 'package:booru_clients/anime_pictures.dart';
+import 'package:booru_clients/boorusama.dart';
+import 'package:booru_clients/danbooru.dart';
+import 'package:booru_clients/e621.dart';
+import 'package:booru_clients/gelbooru.dart';
+import 'package:booru_clients/hydrus.dart';
+import 'package:booru_clients/moebooru.dart';
+import 'package:booru_clients/philomena.dart';
+import 'package:booru_clients/sankaku.dart';
+import 'package:booru_clients/shimmie2.dart';
+import 'package:booru_clients/szurubooru.dart';
+import 'package:booru_clients/zerochan.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/blacklist/blacklist.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
@@ -23,45 +26,28 @@ import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart'
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/zerochan/providers.dart';
-import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
-import 'package:boorusama/clients/boorusama/boorusama_client.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/e621/e621_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
-import 'package:boorusama/clients/hydrus/hydrus_client.dart';
-import 'package:boorusama/clients/moebooru/moebooru_client.dart';
-import 'package:boorusama/clients/philomena/philomena_client.dart';
-import 'package:boorusama/clients/sankaku/sankaku_client.dart';
-import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/downloads/urls.dart';
+import 'package:boorusama/core/favorites/favorite.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/tag/store.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
-import 'danbooru/danbooru_provider.dart';
-import 'danbooru/notes/notes.dart';
+import 'booru_builder_types.dart';
+import 'danbooru/autocompletes/providers.dart';
+import 'danbooru/blacklist/providers.dart';
+import 'danbooru/favorites/favorites_notifier.dart';
+import 'danbooru/notes/providers.dart';
+import 'danbooru/posts/post/providers.dart';
+import 'danbooru/tags/tag/providers.dart';
 import 'e621/e621.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/favorites/favorites.dart';
@@ -70,15 +56,6 @@ import 'moebooru/feats/autocomplete/autocomplete.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
 import 'szurubooru/providers.dart';
-
-final booruFactoryProvider =
-    Provider<BooruFactory>((ref) => throw UnimplementedError());
-
-final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
-
-final booruConfigRepoProvider = Provider<BooruConfigRepository>(
-  (ref) => throw UnimplementedError(),
-);
 
 final announcementProvider = FutureProvider<String>((ref) {
   final client = BoorusamaClient();
@@ -136,27 +113,6 @@ final noteRepoProvider = Provider.family<NoteRepository, BooruConfigAuth>(
           _ => ref.watch(emptyNoteRepoProvider),
         });
 
-final tagQueryComposerProvider =
-    Provider.family<TagQueryComposer, BooruConfigSearch>(
-  (ref, config) => switch (config.booruType) {
-    BooruType.danbooru => DanbooruTagQueryComposer(config: config),
-    BooruType.gelbooru => GelbooruTagQueryComposer(config: config),
-    BooruType.gelbooruV2 => GelbooruV2TagQueryComposer(config: config),
-    BooruType.e621 => LegacyTagQueryComposer(config: config),
-    BooruType.moebooru => LegacyTagQueryComposer(config: config),
-    BooruType.szurubooru => SzurubooruTagQueryComposer(config: config),
-    _ => DefaultTagQueryComposer(config: config),
-  },
-);
-
-final currentTagQueryComposerProvider = Provider<TagQueryComposer>(
-  (ref) {
-    final config = ref.watchConfigSearch;
-
-    return ref.watch(tagQueryComposerProvider(config));
-  },
-);
-
 final downloadFileUrlExtractorProvider =
     Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>(
   (ref, config) => switch (config.booruType) {
@@ -188,132 +144,6 @@ final postArtistCharacterRepoProvider =
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
             });
-
-final settingsProvider = Provider<Settings>(
-  (ref) => ref.watch(settingsNotifierProvider),
-  name: 'settingsProvider',
-  dependencies: [settingsNotifierProvider],
-);
-
-final settingsNotifierProvider = NotifierProvider<SettingsNotifier, Settings>(
-  () => throw UnimplementedError(),
-  name: 'settingsNotifierProvider',
-);
-
-final hasCustomListingSettingsProvider = Provider<bool>((ref) {
-  final listingConfigs =
-      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
-
-  return listingConfigs != null && listingConfigs.enable;
-});
-
-final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
-  final listing = ref.watch(settingsProvider.select((value) => value.listing));
-
-  // check if user has set custom settings
-  final listingConfigs =
-      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
-
-  // if user has set it and it's enabled, return it
-  if (listingConfigs != null && listingConfigs.enable) {
-    return listingConfigs.settings;
-  }
-
-  // otherwise, return the global settings
-  return listing;
-});
-
-final settingsRepoProvider = Provider<SettingsRepository>(
-  (ref) => throw UnimplementedError(),
-  name: 'settingsRepoProvider',
-);
-
-class DioOptions {
-  DioOptions({
-    required this.cacheDir,
-    required this.baseUrl,
-    required this.userAgent,
-    required this.authConfig,
-    required this.loggerService,
-    required this.booruFactory,
-  });
-  final Directory cacheDir;
-  final String baseUrl;
-  final String userAgent;
-  final BooruConfigAuth authConfig;
-  final Logger loggerService;
-  final BooruFactory booruFactory;
-}
-
-final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
-  final cacheDir = ref.watch(httpCacheDirProvider);
-  final userAgent = ref.watch(userAgentProvider(config.booruType));
-  final loggerService = ref.watch(loggerProvider);
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return newDio(
-    options: DioOptions(
-      cacheDir: cacheDir,
-      baseUrl: config.url,
-      userAgent: userAgent,
-      authConfig: config,
-      loggerService: loggerService,
-      booruFactory: booruFactory,
-    ),
-  );
-});
-
-final httpCacheDirProvider = Provider<Directory>(
-  (ref) => throw UnimplementedError(),
-  name: 'httpCacheDirProvider',
-);
-
-final miscDataBoxProvider = Provider<Box<String>>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'miscDataBoxProvider',
-);
-
-final miscDataProvider = NotifierProvider.autoDispose
-    .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
-
-final userAgentProvider = Provider.family<String, BooruType>(
-  (ref, booruType) {
-    final appVersion = ref.watch(packageInfoProvider).version;
-    final appName = ref.watch(appInfoProvider).appName;
-
-    return switch (booruType) {
-      BooruType.zerochan => '${appName.sentenceCase}/$appVersion - boorusama',
-      _ => '${appName.sentenceCase}/$appVersion',
-    };
-  },
-);
-
-final loggerProvider = Provider<Logger>((ref) => throw UnimplementedError());
-
-final bookmarkRepoProvider = Provider<BookmarkRepository>(
-  (ref) => throw UnimplementedError(),
-  name: 'bookmarkRepoProvider',
-);
-
-final deviceInfoProvider = Provider<DeviceInfo>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'deviceInfoProvider',
-);
-
-final cacheSizeProvider =
-    NotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
-        CacheSizeNotifier.new);
-
-final appInfoProvider = Provider<AppInfo>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'appInfoProvider',
-);
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     (ref, config) => switch (config.booruType) {
@@ -378,8 +208,10 @@ final favoriteProvider = Provider.autoDispose
 //TODO: redesign this, it's a mess
 final addFavoriteProvider =
     Provider<FavoriteAdder?>((r) => switch (r.watchConfigAuth.booruType) {
-          BooruType.danbooru => (postId, ref) =>
-              ref.danbooruFavorites.add(postId).then((_) => true),
+          BooruType.danbooru => (postId, ref) => ref
+              .read(danbooruFavoritesProvider(ref.readConfigAuth).notifier)
+              .add(postId)
+              .then((_) => true),
           BooruType.e621 => (postId, ref) => ref
               .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
               .add(postId)
@@ -431,8 +263,10 @@ final addFavoriteProvider =
 //TODO: redesign this, it's a mess
 final removeFavoriteProvider =
     Provider<FavoriteAdder?>((r) => switch (r.watchConfigAuth.booruType) {
-          BooruType.danbooru => (postId, ref) =>
-              ref.danbooruFavorites.remove(postId).then((_) => true),
+          BooruType.danbooru => (postId, ref) => ref
+              .read(danbooruFavoritesProvider(ref.readConfigAuth).notifier)
+              .remove(postId)
+              .then((_) => true),
           BooruType.e621 => (postId, ref) => ref
               .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
               .remove(postId)
@@ -580,25 +414,3 @@ final booruSiteValidatorProvider =
     BooruType.unknown => Future.value(false),
   };
 });
-
-final booruProvider =
-    Provider.autoDispose.family<Booru?, BooruConfigAuth>((ref, config) {
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return config.createBooruFrom(booruFactory);
-});
-
-class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
-  @override
-  String build(String arg) {
-    final miscDataBox = ref.watch(miscDataBoxProvider);
-    return miscDataBox.get(arg) ?? '';
-  }
-
-  Future<void> put(String value) async {
-    final miscDataBox = ref.watch(miscDataBoxProvider);
-    await miscDataBox.put(arg, value);
-
-    state = value;
-  }
-}

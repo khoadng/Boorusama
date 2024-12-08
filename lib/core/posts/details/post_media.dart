@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/videos/videos.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/http/providers.dart';
+import 'package:boorusama/core/images/interactive_booru_image.dart';
+import 'package:boorusama/core/videos/providers.dart';
+import 'package:boorusama/core/videos/video_player.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
 import 'post_details.dart';
@@ -53,7 +53,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                             details.controller.onCurrentPositionChanged,
                         onVisibilityChanged: (value) =>
                             controller.overlay.value = !value,
-                        backgroundColor: context.colorScheme.surface,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
                         onWebmVideoPlayerCreated: (wvpc) => details.controller
                             .onWebmVideoPlayerCreated(wvpc, post.id),
                         sound: ref.isGlobalVideoSoundOn,

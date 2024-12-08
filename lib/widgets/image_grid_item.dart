@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/videos/video_play_duration_icon.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class AutoScrollOptions {
@@ -239,7 +241,7 @@ class _ImageInkWellWithBorderOnFocusState
                         borderRadius: widget.borderRadius ??
                             const BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
-                          color: context.colorScheme.primary,
+                          color: Theme.of(context).colorScheme.primary,
                           width: 6,
                         ),
                       ),
@@ -250,7 +252,7 @@ class _ImageInkWellWithBorderOnFocusState
         ),
         InkWell(
           focusNode: node,
-          focusColor: context.colorScheme.primary.withAlpha(50),
+          focusColor: Theme.of(context).colorScheme.primary.withAlpha(50),
           highlightColor: Colors.transparent,
           splashFactory: FasterInkSplash.splashFactory,
           splashColor: Colors.black38,

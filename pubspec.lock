@@ -86,6 +86,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  booru_clients:
+    dependency: "direct main"
+    description:
+      path: "packages/booru_clients"
+      relative: true
+    source: path
+    version: "0.0.0"
   build:
     dependency: transitive
     description:
@@ -384,7 +391,7 @@ packages:
     source: hosted
     version: "1.7.0"
   easy_localization:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: easy_localization
       sha256: fa59bcdbbb911a764aa6acf96bbb6fa7a5cf8234354fc45ec1a43a0349ef0201
@@ -392,7 +399,7 @@ packages:
     source: hosted
     version: "3.0.7"
   easy_logger:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: easy_logger
       sha256: c764a6e024846f33405a2342caf91c62e357c24b02c04dbc712ef232bf30ffb7
@@ -740,8 +747,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.8.0"
-  fpdart:
+  foundation:
     dependency: "direct main"
+    description:
+      path: "packages/foundation"
+      relative: true
+    source: path
+    version: "0.0.0"
+  fpdart:
+    dependency: transitive
     description:
       name: fpdart
       sha256: "1b84ce64453974159f08046f5d05592020d1fcb2099d7fe6ec58da0e7337af77"
@@ -917,7 +931,7 @@ packages:
     source: hosted
     version: "1.0.4"
   jiffy:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: jiffy
       sha256: "3497caaa36d36a29033e66803c9739ce6bccbc7e241ca46070f76ee9e6f6eb0c"
@@ -2068,7 +2082,7 @@ packages:
     source: hosted
     version: "1.1.0"
   xml:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: xml
       sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
@@ -2084,5 +2098,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.5.0 <4.0.0"
+  dart: ">=3.5.4 <4.0.0"
   flutter: ">=3.24.0"

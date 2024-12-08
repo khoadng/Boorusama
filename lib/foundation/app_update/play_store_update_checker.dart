@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/package_info.dart';
+import '../package_info.dart';
 import 'app_update_checker.dart';
 
 class PlayStoreUpdateChecker implements AppUpdateChecker {

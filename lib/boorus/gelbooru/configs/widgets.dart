@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/theme.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
   const GelbooruApiKeyField({
@@ -61,7 +60,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return FilledButton.icon(
       style: FilledButton.styleFrom(
-        backgroundColor: context.colorScheme.secondaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       ),
       onPressed: () => AppClipboard.paste('text/plain').then(
         (value) {
@@ -75,12 +74,12 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
       ),
       icon: Icon(
         Symbols.content_paste,
-        color: context.colorScheme.onSecondaryContainer,
+        color: Theme.of(context).colorScheme.onSecondaryContainer,
       ),
       label: Text(
         'Paste from clipboard',
         style: TextStyle(
-          color: context.colorScheme.onSecondaryContainer,
+          color: Theme.of(context).colorScheme.onSecondaryContainer,
         ),
       ),
     );

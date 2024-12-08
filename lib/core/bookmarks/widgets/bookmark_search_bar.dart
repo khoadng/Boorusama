@@ -8,9 +8,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:searchfield/searchfield.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'providers.dart';
 
 class BookmarkSearchBar extends ConsumerWidget {
@@ -51,7 +51,7 @@ class BookmarkSearchBar extends ConsumerWidget {
         ),
         itemHeight: kPreferredLayout.isMobile ? 42 : 40,
         suggestionsDecoration: SuggestionDecoration(
-          color: context.colorScheme.surfaceContainerHigh,
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(8),
         ),
         searchInputDecoration: SearchInputDecoration(
@@ -91,7 +91,9 @@ class BookmarkSearchBar extends ConsumerWidget {
                           style: {
                             'p': Style(
                               fontSize: FontSize.medium,
-                              color: ref.watch(tagColorProvider(e)).maybeWhen(
+                              color: ref
+                                  .watch(bookmarkTagColorProvider(e))
+                                  .maybeWhen(
                                     data: (color) => color,
                                     orElse: () => null,
                                   ),

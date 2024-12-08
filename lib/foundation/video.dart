@@ -1,7 +1,7 @@
 //TODO: handle other kind of video format
 
 // Project imports:
-import 'package:boorusama/foundation/path.dart';
+import 'path.dart';
 
 final _supportVideoFormat = {'mp4', 'webm', 'zip'};
 

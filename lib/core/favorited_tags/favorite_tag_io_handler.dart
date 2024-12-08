@@ -1,6 +1,9 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/core/backups/backups.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/backups/data_io_handler.dart';
+import 'package:boorusama/core/backups/types.dart';
 import 'favorite_tag.dart';
 
 class FavoriteTagsIOHandler {

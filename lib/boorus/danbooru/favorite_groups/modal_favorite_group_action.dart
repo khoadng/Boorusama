@@ -2,12 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 
 class ModalFavoriteGroupAction extends StatelessWidget {
   const ModalFavoriteGroupAction({
@@ -22,7 +20,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.surface,
+      color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         top: false,
         child: Column(
@@ -35,7 +33,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
                 fill: 1,
               ),
               onTap: () {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 onEdit?.call();
               },
             ),
@@ -43,7 +41,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
               title: const Text('generic.action.delete').tr(),
               leading: const Icon(Symbols.clear),
               onTap: () {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 onDelete?.call();
               },
             ),

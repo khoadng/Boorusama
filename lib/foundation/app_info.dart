@@ -4,6 +4,16 @@ import 'dart:convert';
 // Flutter imports:
 import 'package:flutter/services.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final appInfoProvider = Provider<AppInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'appInfoProvider',
+);
+
 const String _assetUrl = 'assets/information.json';
 
 typedef YearRange = ({

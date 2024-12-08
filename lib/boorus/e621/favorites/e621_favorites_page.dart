@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/failsafe.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 
 class E621FavoritesPage extends ConsumerWidget {

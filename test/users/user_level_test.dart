@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/users.dart';
+import 'package:boorusama/boorus/danbooru/users/level/user_level.dart';
 
 void main() {
   group('[int to UserLevel]', () {

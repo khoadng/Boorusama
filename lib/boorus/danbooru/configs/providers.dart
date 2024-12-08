@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 
 final hideDeletedProvider =
     StateProvider.autoDispose.family<bool, BooruConfig>((ref, config) {

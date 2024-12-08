@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
+import 'package:boorusama/core/configs/failsafe.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../posts/listing/default_danbooru_image_grid_item.dart';
+import '../posts/post/providers.dart';
+import 'favorite.dart';
 
 class DanbooruFavoritesPage extends ConsumerWidget {
   const DanbooruFavoritesPage({super.key});
@@ -78,32 +79,6 @@ class DanbooruFavoritesPageInternal extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DanbooruQuickFavoriteButton extends ConsumerWidget {
-  const DanbooruQuickFavoriteButton({
-    super.key,
-    required this.post,
-  });
-
-  final DanbooruPost post;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isFaved =
-        post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
-
-    return QuickFavoriteButton(
-      isFaved: isFaved,
-      onFavToggle: (isFaved) async {
-        if (!isFaved) {
-          ref.danbooruFavorites.remove(post.id);
-        } else {
-          ref.danbooruFavorites.add(post.id);
-        }
-      },
     );
   }
 }

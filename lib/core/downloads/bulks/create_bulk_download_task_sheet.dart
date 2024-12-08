@@ -3,25 +3,29 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/settings/widgets/widgets/settings_tile.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/search/history_providers.dart';
+import 'package:boorusama/core/search/history_widgets.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/widgets/settings_tile.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+import '../downloader/download_utils.dart';
 import '../l10n.dart';
+import '../widgets/download_folder_selector_section.dart';
+import 'bulk_download_task.dart';
+import 'create_bulk_download_notifier.dart';
+import 'providers.dart';
 
 class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({
@@ -76,7 +80,7 @@ class _CreateBulkDownloadTaskSheetState
         .select((value) => value.androidDeviceInfo?.version.sdkInt));
 
     return Material(
-      color: context.colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: Container(
         margin: EdgeInsets.only(
           bottom: MediaQuery.viewInsetsOf(context).bottom,
@@ -92,7 +96,7 @@ class _CreateBulkDownloadTaskSheetState
                 children: [
                   Text(
                     widget.title,
-                    style: context.textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
               ),
@@ -110,10 +114,10 @@ class _CreateBulkDownloadTaskSheetState
                   DownloadTranslations.bulkDownloadSaveToFolder
                       .tr()
                       .toUpperCase(),
-                  style: context.theme.textTheme.titleSmall?.copyWith(
-                    color: context.colorScheme.hintColor,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.hintColor,
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
               ),
               _buildPathSelector(task),
@@ -194,7 +198,7 @@ class _CreateBulkDownloadTaskSheetState
                     //   style: FilledButton.styleFrom(
                     //     foregroundColor: context.iconTheme.color,
                     //     backgroundColor:
-                    //         context.colorScheme.surfaceContainerHighest,
+                    //         Theme.of(context).colorScheme.surfaceContainerHighest,
                     //     shape: const RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.all(Radius.circular(16)),
                     //     ),
@@ -203,7 +207,7 @@ class _CreateBulkDownloadTaskSheetState
                     //       ? () {
                     //           notifier.queue();
                     //           widget.onSubmitted(context, true);
-                    //           context.navigator.pop();
+                    //           Navigator.of(context).pop();
                     //         }
                     //       : null,
                     //   child: const Text(
@@ -215,7 +219,8 @@ class _CreateBulkDownloadTaskSheetState
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: FilledButton(
                           style: FilledButton.styleFrom(
-                            foregroundColor: context.colorScheme.onPrimary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
                             shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(16)),
@@ -226,7 +231,7 @@ class _CreateBulkDownloadTaskSheetState
                                   final success = notifier.start();
                                   if (success) {
                                     widget.onSubmitted(context, false);
-                                    context.navigator.pop();
+                                    Navigator.of(context).pop();
                                   }
                                 }
                               : null,
@@ -267,9 +272,9 @@ class _CreateBulkDownloadTaskSheetState
           return Material(
             child: Ink(
               decoration: BoxDecoration(
-                color: context.colorScheme.surfaceContainerHighest,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 border: Border.fromBorderSide(
-                  BorderSide(color: context.colorScheme.hintColor),
+                  BorderSide(color: Theme.of(context).colorScheme.hintColor),
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
@@ -285,8 +290,11 @@ class _CreateBulkDownloadTaskSheetState
                     : Text(
                         DownloadTranslations.bulkDownloadSelectFolder.tr(),
                         overflow: TextOverflow.fade,
-                        style: context.theme.textTheme.titleMedium!
-                            .copyWith(color: context.colorScheme.hintColor),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.hintColor),
                       ),
                 trailing: IconButton(
                   onPressed: () => _pickFolder(context),
@@ -371,12 +379,12 @@ class _CreateBulkDownloadTagListState
           ...tags.map(
             (e) => Chip(
               backgroundColor:
-                  context.theme.colorScheme.surfaceContainerHighest,
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
               label: Text(e.replaceAll('_', ' ')),
               deleteIcon: Icon(
                 Symbols.close,
                 size: 16,
-                color: context.theme.colorScheme.error,
+                color: Theme.of(context).colorScheme.error,
               ),
               onDeleted: () => notifier.removeTag(e),
             ),
@@ -397,7 +405,7 @@ class _CreateBulkDownloadTagListState
                               showTime: true,
                               histories: data.histories,
                               onHistoryTap: (history) {
-                                context.navigator.pop();
+                                Navigator.of(context).pop();
                                 notifier.addFromSearchHistory(history);
                               },
                             ),
@@ -406,7 +414,7 @@ class _CreateBulkDownloadTagListState
                       : const SizedBox.shrink(),
                 ),
                 onSubmitted: (context, text, _) {
-                  context.navigator.pop();
+                  Navigator.of(context).pop();
                   notifier.addTag(text);
                 },
                 onSelected: (tag, _) {

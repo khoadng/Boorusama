@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/posts/e621_post_provider.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/search/search_ui.dart';
 
 class E621SearchPage extends ConsumerWidget {
   const E621SearchPage({

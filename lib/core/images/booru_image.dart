@@ -1,23 +1,19 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
 
@@ -255,7 +251,10 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHigh.applyOpacity(0.5),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHigh
+            .applyOpacity(0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
@@ -278,7 +277,7 @@ class ErrorPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLow,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
@@ -289,10 +288,31 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
           ),
         ),
       ),
     );
+  }
+}
+
+class NullableAspectRatio extends StatelessWidget {
+  const NullableAspectRatio({
+    super.key,
+    this.aspectRatio,
+    required this.child,
+  });
+
+  final double? aspectRatio;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return aspectRatio == null
+        ? child
+        : AspectRatio(
+            aspectRatio: aspectRatio!,
+            child: child,
+          );
   }
 }

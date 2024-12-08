@@ -2,9 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import '../manager/download_task.dart';
+import '../manager/download_tasks_notifier.dart';
+import 'bulk_download_task.dart';
+import 'create_bulk_download_notifier.dart';
+
+// Project imports:
+
 
 final downloadGroupCompletedProvider =
     Provider.autoDispose.family<bool, String>((ref, group) {
@@ -31,20 +35,6 @@ final percentCompletedProvider =
   return completed.length / total.length;
 });
 
-final bulkdownloadProvider =
-    NotifierProvider<BulkDownloadNotifier, List<BulkDownloadTask>>(
-        BulkDownloadNotifier.new);
-
-final bulkDownloadNotificationQueueProvider =
-    StateProvider<Map<String, bool>>((ref) => {});
-
-final bulkDownloadErrorNotificationQueueProvider =
-    StateProvider<String?>((ref) => null);
-
-final bulkDownloadNotificationProvider = Provider<BulkDownloadNotifications>(
-  (ref) => throw UnimplementedError(),
-);
-
 final createBulkDownloadProvider =
     NotifierProvider.autoDispose<CreateBulkDownloadNotifier, BulkDownloadTask>(
   CreateBulkDownloadNotifier.new,
@@ -53,15 +43,3 @@ final createBulkDownloadProvider =
     bulkDownloadQualityProvider,
   ],
 );
-
-final bulkDownloadQualityProvider = Provider.autoDispose<DownloadQuality>(
-  (ref) => ref.watch(settingsProvider.select((e) => e.downloadQuality)),
-  dependencies: [
-    settingsProvider,
-  ],
-);
-
-final createBulkDownloadInitialProvider =
-    Provider.autoDispose<List<String>?>((ref) {
-  return null;
-});

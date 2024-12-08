@@ -3,41 +3,51 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/downloads/downloader.dart';
+import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/posts/statistics.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import 'comments/comments.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
+import 'artists/artist/artist_page.dart';
+import 'comments/comment/comment_page.dart';
 import 'configs/create_danbooru_config_page.dart';
-import 'favorites/favorites.dart';
+import 'favorites/danbooru_quick_favorite_button.dart';
+import 'favorites/favorites_page.dart';
 import 'home/danbooru_home_page.dart';
-import 'post_votes/post_votes.dart';
-import 'posts/posts.dart';
-import 'reports/reports.dart';
-import 'search/search.dart';
-import 'tags/tags.dart';
+import 'home/latest_posts_view.dart';
+import 'posts/details/danbooru_post_action_toolbar.dart';
+import 'posts/details/danbooru_post_details_page.dart';
+import 'posts/details/details_widgets.dart';
+import 'posts/listing/danbooru_multi_selection_actions.dart';
+import 'posts/post/danbooru_post.dart';
+import 'posts/post/post_variant.dart';
+import 'posts/statistics/post_statistics_page.dart';
+import 'posts/votes/post_votes_notifier.dart';
+import 'search/danbooru_search_page.dart';
+import 'tags/details/danbooru_character_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 
@@ -384,6 +394,9 @@ bool handleDanbooruGestureAction(
 }
 
 extension DanbooruX on WidgetRef {
+  FavoritesNotifier get danbooruFavorites =>
+      read(danbooruFavoritesProvider(readConfigAuth).notifier);
+
   void danbooruToggleFavorite(int postId) {
     _guardLogin(() async {
       final isFaved = read(danbooruFavoriteProvider(postId));

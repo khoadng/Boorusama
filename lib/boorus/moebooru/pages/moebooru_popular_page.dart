@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/datetimes/datetimes.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/datetimes/datetime_selector.dart';
+import 'package:boorusama/core/datetimes/time_scale_toggle_switch.dart';
+import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import '../feats/posts/posts.dart';
 
 enum MoebooruPopularType {
@@ -73,7 +74,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
             ),
           ),
           Container(
-            color: context.theme.bottomNavigationBarTheme.backgroundColor,
+            color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
             margin: EdgeInsets.only(
               bottom: MediaQuery.viewPaddingOf(context).bottom,
             ),

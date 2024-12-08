@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../router.dart';
-import 'dmails.dart';
+import 'providers.dart';
 
 class SliverUnreadMailsBanner extends ConsumerWidget {
   const SliverUnreadMailsBanner({super.key});

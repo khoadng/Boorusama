@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/backups.dart';
 import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'types.dart';
 
 Future<bool?> showBackwardImportAlertDialog({
   required BuildContext context,
@@ -97,7 +96,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             const SizedBox(height: 20),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: context.colorScheme.errorContainer,
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
                 shadowColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -109,7 +108,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
                 child: Text(
                   'Sure',
                   style: TextStyle(
-                    color: context.colorScheme.onErrorContainer,
+                    color: Theme.of(context).colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/users/users.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/core/blacklists/blacklisted_tag.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/foundation/toast.dart';
+import '../users/user/providers.dart';
 
 class BlacklistedTagsNotifier
     extends FamilyAsyncNotifier<List<String>?, BooruConfigAuth> {

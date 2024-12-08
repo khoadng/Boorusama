@@ -5,26 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/uploads/uploads.dart';
-import 'package:boorusama/boorus/danbooru/users/users_provider.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/boorus/danbooru/uploads/danbooru_upload_post.dart';
+import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
+import 'package:boorusama/core/configs/failsafe.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/users/users.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../posts/listing/default_danbooru_image_grid_item.dart';
+import '../users/user/providers.dart';
+import 'danbooru_upload.dart';
+import 'providers.dart';
 
 enum UploadTabType {
   posted,
@@ -416,19 +418,19 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
             children: [
               TextSpan(
                 text: '${post.postedCount}',
-                style: context.textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               TextSpan(
                 text: ' / ',
-                style: context.textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               TextSpan(
                 text: '${post.mediaAssetCount}',
-                style: context.textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               TextSpan(
                 text: ' posted',
-                style: context.textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
           ),
@@ -447,7 +449,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 2,
         ),
         decoration: BoxDecoration(
-          color: context.colorScheme.surface.applyOpacity(0.8),
+          color: Theme.of(context).colorScheme.surface.applyOpacity(0.8),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Builder(
@@ -459,13 +461,14 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                       children: [
                         TextSpan(
                           text: 'By ',
-                          style: context.textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                         TextSpan(
                           text: uploader.name,
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: uploader.level.toColor(context),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: uploader.level.toColor(context),
+                                  ),
                         ),
                       ],
                     ),

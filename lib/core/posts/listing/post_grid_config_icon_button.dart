@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/settings/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
+import 'package:boorusama/core/settings/pages.dart';
+import 'package:boorusama/core/settings/widgets.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
 import 'post_grid_controller.dart';
@@ -124,7 +124,7 @@ class PostGridActionSheet extends ConsumerWidget {
           vertical: 4,
         ),
         onNavigateAway: () {
-          if (popOnSelect) context.navigator.pop();
+          if (popOnSelect) Navigator.of(context).pop();
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,7 +133,7 @@ class PostGridActionSheet extends ConsumerWidget {
               value: pageMode.localize().tr(),
               title: 'settings.result_layout.result_layout'.tr(),
               onTap: () {
-                if (popOnSelect) context.navigator.pop();
+                if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
                   builder: (_) => OptionActionSheet(
@@ -148,7 +148,7 @@ class PostGridActionSheet extends ConsumerWidget {
               value: gridSize.localize().tr(),
               title: 'settings.image_grid.image_grid'.tr(),
               onTap: () {
-                if (popOnSelect) context.navigator.pop();
+                if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
                   builder: (_) => OptionActionSheet(
@@ -163,7 +163,7 @@ class PostGridActionSheet extends ConsumerWidget {
               value: imageListType.localize().tr(),
               title: 'settings.image_list.image_list'.tr(),
               onTap: () {
-                if (popOnSelect) context.navigator.pop();
+                if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
                   builder: (_) => OptionActionSheet(
@@ -178,7 +178,7 @@ class PostGridActionSheet extends ConsumerWidget {
               value: imageQuality.localize().tr(),
               title: 'settings.image_grid.image_quality.image_quality'.tr(),
               onTap: () {
-                if (popOnSelect) context.navigator.pop();
+                if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
                   builder: (_) => OptionActionSheet(
@@ -198,7 +198,7 @@ class PostGridActionSheet extends ConsumerWidget {
         ListTile(
           title: const Text('Stats for nerds'),
           onTap: () {
-            context.navigator.pop();
+            Navigator.of(context).pop();
             showMaterialModalBottomSheet(
               context: context,
               duration: AppDurations.bottomSheet,
@@ -213,7 +213,7 @@ class PostGridActionSheet extends ConsumerWidget {
       ],
       FilledButton(
         onPressed: () {
-          context.navigator.pop();
+          Navigator.of(context).pop();
           openAppearancePage(context);
         },
         child: const Text('More'),
@@ -272,8 +272,8 @@ class PostGridActionSheet extends ConsumerWidget {
 
     return Material(
       color: kPreferredLayout.isDesktop
-          ? context.colorScheme.surface
-          : context.colorScheme.surfaceContainer,
+          ? Theme.of(context).colorScheme.surface
+          : Theme.of(context).colorScheme.surfaceContainer,
       child: ConditionalParentWidget(
         condition: kPreferredLayout.isMobile,
         conditionalBuilder: (child) => Padding(
@@ -316,7 +316,7 @@ class MobilePostGridConfigTile extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
-                color: context.colorScheme.hintColor,
+                color: Theme.of(context).colorScheme.hintColor,
                 fontSize: 14,
               ),
             ),
@@ -344,7 +344,7 @@ class OptionActionSheet<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: 8,
@@ -356,7 +356,7 @@ class OptionActionSheet<T> extends StatelessWidget {
             ...options.map((e) => ListTile(
                   title: Text(optionName(e)),
                   onTap: () {
-                    context.navigator.pop();
+                    Navigator.of(context).pop();
                     onChanged(e);
                   },
                 )),

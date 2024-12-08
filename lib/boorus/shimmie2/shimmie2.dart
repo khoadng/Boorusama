@@ -9,13 +9,15 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/shimmie2/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 
 class Shimmie2Builder
     with

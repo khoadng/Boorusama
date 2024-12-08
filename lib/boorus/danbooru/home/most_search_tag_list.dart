@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/boorus/danbooru/tags/widgets/danbooru_tag_context_menu.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/widgets/tag_chips_placeholder.dart';
+import 'package:boorusama/core/theme/utils.dart';
+import '../tags/tag/providers.dart';
+import '../tags/trending/search.dart';
+import '../tags/trending/trending_tag_notifier.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -84,10 +88,10 @@ class _Chip extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: ChoiceChip(
         showCheckmark: false,
-        disabledColor: context.theme.chipTheme.disabledColor,
-        backgroundColor:
-            colors?.backgroundColor ?? context.theme.chipTheme.backgroundColor,
-        selectedColor: context.colorScheme.onSurface,
+        disabledColor: Theme.of(context).chipTheme.disabledColor,
+        backgroundColor: colors?.backgroundColor ??
+            Theme.of(context).chipTheme.backgroundColor,
+        selectedColor: Theme.of(context).colorScheme.onSurface,
         selected: isSelected,
         side: BorderSide(
           color: isSelected
@@ -105,7 +109,7 @@ class _Chip extends ConsumerWidget {
           search.keyword.replaceAll('_', ' '),
           style: TextStyle(
             color: isSelected
-                ? context.colorScheme.surface
+                ? Theme.of(context).colorScheme.surface
                 : colors?.foregroundColor,
           ),
           overflow: TextOverflow.ellipsis,

@@ -1,206 +1,40 @@
 // Dart imports:
 import 'dart:isolate';
 
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/http.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
+import '../downloader/metadata.dart';
+import '../downloader/providers.dart';
+import '../manager/download_task.dart';
+import '../manager/download_tasks_notifier.dart';
+import 'bulk_download_task.dart';
+import 'notifications/providers.dart';
 
 import 'package:background_downloader/background_downloader.dart'
     hide PermissionStatus;
 
 const _serviceName = 'Bulk Download Manager';
 
-enum BulkDownloadTaskStatus {
-  created,
-  queue,
-  inProgress,
-  canceled,
-  error,
-}
-
-class PageProgress extends Equatable {
-  const PageProgress({
-    required this.completed,
-    required this.perPage,
-  });
-
-  PageProgress copyWith({
-    int? completed,
-    int? perPage,
-  }) {
-    return PageProgress(
-      completed: completed ?? this.completed,
-      perPage: perPage ?? this.perPage,
-    );
-  }
-
-  final int completed;
-  final int perPage;
-
-  @override
-  List<Object?> get props => [completed];
-}
-
-class BulkDownloadOptions extends Equatable {
-  const BulkDownloadOptions({
-    required this.notications,
-    required this.skipIfExists,
-    required this.quality,
-  });
-
-  const BulkDownloadOptions.defaults()
-      : notications = true,
-        quality = null,
-        skipIfExists = true;
-
-  BulkDownloadOptions copyWith({
-    bool? notications,
-    bool? skipIfExists,
-    DownloadQuality? Function()? quality,
-  }) {
-    return BulkDownloadOptions(
-      notications: notications ?? this.notications,
-      skipIfExists: skipIfExists ?? this.skipIfExists,
-      quality: quality != null ? quality() : this.quality,
-    );
-  }
-
-  final bool notications;
-  final bool skipIfExists;
-  final DownloadQuality? quality;
-
-  @override
-  List<Object?> get props => [
-        notications,
-        skipIfExists,
-        quality,
-      ];
-}
-
-class BulkDownloadTask extends Equatable with DownloadMixin {
-  const BulkDownloadTask({
-    required this.id,
-    required this.status,
-    required this.tags,
-    required this.path,
-    required this.estimatedDownloadSize,
-    required this.coverUrl,
-    required this.totalItems,
-    required this.mixedMedia,
-    required this.siteUrl,
-    required this.pageProgress,
-    required this.options,
-    required this.error,
-  });
-
-  BulkDownloadTask.randomId({
-    required this.tags,
-    required this.path,
-    required DownloadQuality quality,
-  })  : id = 'task${DateTime.now().millisecondsSinceEpoch}',
-        estimatedDownloadSize = null,
-        coverUrl = null,
-        totalItems = null,
-        mixedMedia = null,
-        siteUrl = null,
-        pageProgress = null,
-        error = null,
-        options = const BulkDownloadOptions.defaults().copyWith(
-          quality: () => quality,
-        ),
-        status = BulkDownloadTaskStatus.created;
-
-  BulkDownloadTask copyWith({
-    String? id,
-    BulkDownloadTaskStatus? status,
-    List<String>? tags,
-    String? path,
-    int? Function()? estimatedDownloadSize,
-    String? Function()? coverUrl,
-    int? Function()? totalItems,
-    bool? Function()? mixedMedia,
-    String? Function()? siteUrl,
-    PageProgress? Function()? pageProgress,
-    BulkDownloadOptions? options,
-    String? Function()? error,
-  }) {
-    return BulkDownloadTask(
-      id: id ?? this.id,
-      status: status ?? this.status,
-      tags: tags ?? this.tags,
-      path: path ?? this.path,
-      estimatedDownloadSize:
-          estimatedDownloadSize?.call() ?? this.estimatedDownloadSize,
-      coverUrl: coverUrl?.call() ?? this.coverUrl,
-      totalItems: totalItems?.call() ?? this.totalItems,
-      mixedMedia: mixedMedia?.call() ?? this.mixedMedia,
-      siteUrl: siteUrl?.call() ?? this.siteUrl,
-      pageProgress: pageProgress?.call() ?? this.pageProgress,
-      options: options ?? this.options,
-      error: error?.call() ?? this.error,
-    );
-  }
-
-  final String id;
-  final BulkDownloadTaskStatus status;
-  final List<String> tags;
-  final String path;
-  final int? estimatedDownloadSize;
-  final int? totalItems;
-  final bool? mixedMedia;
-  final String? coverUrl;
-  final String? siteUrl;
-  final PageProgress? pageProgress;
-
-  final BulkDownloadOptions options;
-
-  final String? error;
-
-  @override
-  List<Object?> get props => [
-        id,
-        status,
-        tags,
-        path,
-        estimatedDownloadSize,
-        coverUrl,
-        totalItems,
-        mixedMedia,
-        siteUrl,
-        pageProgress,
-        options,
-        error,
-      ];
-
-  @override
-  String? get storagePath => path;
-}
-
-extension BulkDownloadTaskX on BulkDownloadTask {
-  String get query => tags.join(' ');
-  String get displayName => tags.join(', ');
-}
-
 const _perPage = 200;
+
+final bulkdownloadProvider =
+    NotifierProvider<BulkDownloadNotifier, List<BulkDownloadTask>>(
+        BulkDownloadNotifier.new);
 
 class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
   @override
@@ -503,81 +337,4 @@ List<Post> _filterInIsolate(
   }
 
   return posts.where((e) => !filterIds.contains(e.id)).toList();
-}
-
-final bulkDownloadOnTapStreamProvider = StreamProvider<String>(
-  (ref) {
-    return ref.watch(bulkDownloadNotificationProvider).tapStream;
-  },
-);
-
-class BulkDownloadNotificationScope extends ConsumerWidget {
-  const BulkDownloadNotificationScope({
-    super.key,
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(
-      downloadTasksProvider,
-      (prev, cur) {
-        final notifQueue = ref.read(bulkDownloadNotificationQueueProvider);
-
-        if (notifQueue.isEmpty) return;
-
-        for (final group in cur.tasks.keys) {
-          if (!notifQueue.containsKey(group)) {
-            continue;
-          }
-
-          final curComleted = cur.allCompleted(group);
-
-          if (curComleted) {
-            final task = ref.read(bulkdownloadProvider).firstWhereOrNull(
-                  (e) => e.id == group,
-                );
-
-            if (task == null) return;
-
-            ref.read(bulkDownloadNotificationProvider).showNotification(
-                  task.displayName,
-                  'Downloaded ${task.totalItems} files',
-                );
-
-            notifQueue.remove(group);
-
-            ref.read(bulkDownloadNotificationQueueProvider.notifier).state = {
-              ...notifQueue
-            };
-          }
-        }
-      },
-    );
-
-    ref.listen(
-      bulkDownloadErrorNotificationQueueProvider,
-      (prev, cur) {
-        if (cur == null) return;
-
-        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
-            null;
-
-        showErrorToast(context, cur);
-      },
-    );
-
-    ref.listen(
-      bulkDownloadOnTapStreamProvider,
-      (prev, cur) {
-        if (prev == null) return;
-
-        context.pushNamed(kBulkdownload);
-      },
-    );
-
-    return child;
-  }
 }

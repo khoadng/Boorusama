@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../groups/item.dart';
+import '../tag/display.dart';
+import '../tag/providers.dart';
+import '../tag/tag.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -32,7 +35,7 @@ class PostTagList extends StatelessWidget {
     if (tags == null) {
       return SpinKitPulse(
         size: 42,
-        color: context.colorScheme.onSurface,
+        color: Theme.of(context).colorScheme.onSurface,
       );
     }
 
@@ -99,6 +102,7 @@ class PostTagListChip extends ConsumerWidget {
       color ?? ref.watch(tagColorProvider(tag.category.name)),
       ref.watch(settingsProvider),
     );
+    final screenWith = MediaQuery.sizeOf(context).width;
 
     return RawCompactChip(
       onTap: onTap,
@@ -118,7 +122,7 @@ class PostTagListChip extends ConsumerWidget {
       ),
       label: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: maxTagWidth ?? context.screenWidth * 0.7,
+          maxWidth: maxTagWidth ?? screenWith * 0.7,
         ),
         child: RichText(
           overflow: TextOverflow.ellipsis,
@@ -132,12 +136,12 @@ class PostTagListChip extends ConsumerWidget {
               if (!ref.watchConfigAuth.hasStrictSFW && tag.postCount > 0)
                 TextSpan(
                   text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                  style: context.textTheme.bodySmall?.copyWith(
-                    fontSize: 11,
-                    color: context.isLight
-                        ? Colors.white.applyOpacity(0.85)
-                        : Colors.grey.applyOpacity(0.85),
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 11,
+                        color: Theme.of(context).brightness.isLight
+                            ? Colors.white.applyOpacity(0.85)
+                            : Colors.grey.applyOpacity(0.85),
+                      ),
                 ),
             ],
           ),
@@ -192,8 +196,10 @@ class _TagHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: Text(
         title,
-        style:
-            context.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w900),
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(fontWeight: FontWeight.w900),
       ),
     );
   }

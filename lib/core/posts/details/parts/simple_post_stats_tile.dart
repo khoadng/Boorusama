@@ -1,9 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class SimplePostStatsTile extends StatelessWidget {
@@ -46,7 +48,7 @@ class SimplePostStatsTile extends StatelessWidget {
                 text: '$favCount ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 children: [
                   TextSpan(
@@ -54,7 +56,7 @@ class SimplePostStatsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.colorScheme.hintColor,
+                      color: Theme.of(context).colorScheme.hintColor,
                     ),
                   ),
                 ],
@@ -69,7 +71,7 @@ class SimplePostStatsTile extends StatelessWidget {
                 text: '$score ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 children: [
                   TextSpan(
@@ -78,7 +80,7 @@ class SimplePostStatsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.colorScheme.hintColor,
+                      color: Theme.of(context).colorScheme.hintColor,
                     ),
                   ),
                 ],
@@ -93,7 +95,7 @@ class SimplePostStatsTile extends StatelessWidget {
                 text: '$totalComments ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 children: [
                   TextSpan(
@@ -101,7 +103,7 @@ class SimplePostStatsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.colorScheme.hintColor,
+                      color: Theme.of(context).colorScheme.hintColor,
                     ),
                   ),
                 ],

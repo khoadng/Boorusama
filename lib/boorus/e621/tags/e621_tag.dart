@@ -2,10 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
 
 class E621Tag extends Equatable {
-
   const E621Tag({
     required this.id,
     required this.name,
@@ -42,7 +41,6 @@ class E621Tag extends Equatable {
 }
 
 class E621RelatedTag extends Equatable {
-
   const E621RelatedTag({
     required this.tag,
     required this.score,

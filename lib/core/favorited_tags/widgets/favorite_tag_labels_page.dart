@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
 import '../favorited_tags.dart';
 
 class FavoriteTagLabelsPage extends ConsumerWidget {
@@ -33,7 +32,7 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
                   title: Text(label),
                   subtitle: Text('$count tags'),
                   onTap: () {
-                    context.navigator.push(
+                    Navigator.of(context).push(
                       CupertinoPageRoute(
                         builder: (context) => FavoriteTagLabelDetailsPage(
                           label: label,

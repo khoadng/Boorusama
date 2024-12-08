@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:lottie/lottie.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/i18n.dart';
 
 class ErrorBox extends StatelessWidget {
   const ErrorBox({

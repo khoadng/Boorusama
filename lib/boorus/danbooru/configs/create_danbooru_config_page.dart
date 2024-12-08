@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'widgets.dart';
 
@@ -35,11 +35,11 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         showInstructionWhen: !config.auth.hasStrictSFW,
         customInstruction: RichText(
           text: TextSpan(
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.colorScheme.hintColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
             children: [
               const TextSpan(
                 text: '*Log in to your account on the browser, visit ',
@@ -52,7 +52,7 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
                   },
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: context.colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const TextSpan(

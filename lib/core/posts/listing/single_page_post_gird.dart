@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/functional.dart';
 import '../post.dart';
 import '../post_repository.dart';
 import 'post_grid.dart';

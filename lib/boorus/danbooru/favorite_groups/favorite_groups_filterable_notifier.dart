@@ -2,8 +2,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
-import 'favorite_groups.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'danbooru_favorite_group.dart';
+import 'favorite_groups_notifier.dart';
+
+final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose
+    .family<FavoriteGroupFilterableNotifier, List<DanbooruFavoriteGroup>?,
+        BooruConfigSearch>(
+  FavoriteGroupFilterableNotifier.new,
+  dependencies: [
+    danbooruFavoriteGroupsProvider,
+  ],
+);
 
 class FavoriteGroupFilterableNotifier extends AutoDisposeFamilyNotifier<
     List<DanbooruFavoriteGroup>?, BooruConfigSearch> {

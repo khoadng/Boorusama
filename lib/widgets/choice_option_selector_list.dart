@@ -8,7 +8,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 sealed class OptionSelectorItem {
@@ -92,7 +92,7 @@ class _ChoiceOptionSelectorListState<T>
 
     return Container(
       height: 32,
-      color: context.colorScheme.surface,
+      color: Theme.of(context).colorScheme.surface,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListView.builder(
         padding: widget.padding,
@@ -118,8 +118,8 @@ class _ChoiceOptionSelectorListState<T>
                     borderRadius: BorderRadius.circular(8),
                     disabled: !selected,
                     color: selected
-                        ? context.colorScheme.onSurface
-                        : context.colorScheme.hintColor,
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.hintColor,
                     onPressed: () => _onSelect(
                       null,
                       index,
@@ -128,7 +128,9 @@ class _ChoiceOptionSelectorListState<T>
                     label: Text(
                       widget.optionLabelBuilder(null),
                       style: TextStyle(
-                        color: selected ? null : context.colorScheme.onSurface,
+                        color: selected
+                            ? null
+                            : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -141,8 +143,8 @@ class _ChoiceOptionSelectorListState<T>
                     borderRadius: BorderRadius.circular(8),
                     disabled: !selected,
                     color: selected
-                        ? context.colorScheme.onSurface
-                        : context.colorScheme.hintColor,
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.hintColor,
                     onPressed: () => _onSelect(
                       o.data,
                       index,
@@ -151,7 +153,9 @@ class _ChoiceOptionSelectorListState<T>
                     label: Text(
                       widget.optionLabelBuilder(o.data),
                       style: TextStyle(
-                        color: selected ? null : context.colorScheme.onSurface,
+                        color: selected
+                            ? null
+                            : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),

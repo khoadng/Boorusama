@@ -2,13 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:intl/intl.dart';
-import 'package:jiffy/jiffy.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/datetimes/datetimes.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'types.dart';
+import 'utils.dart';
 
 class DateTimeSelector extends StatelessWidget {
   const DateTimeSelector({
@@ -42,9 +41,9 @@ class DateTimeSelector extends StatelessWidget {
           ),
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: context.textTheme.titleLarge?.color,
+              foregroundColor: Theme.of(context).textTheme.titleLarge?.color,
               backgroundColor: backgroundColor ??
-                  context.colorScheme.surfaceContainerHighest,
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(18)),
               ),

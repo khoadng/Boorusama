@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../platform.dart';
 
 String prettyPrintJson(dynamic json) {
   if (json == null) return '';

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 
 typedef HiddenData = ({
   String name,
@@ -77,7 +77,7 @@ class _PostListConfigurationHeaderState
   Widget build(BuildContext context) {
     return Card(
       color: widget.axis == Axis.horizontal && expanded
-          ? context.colorScheme.surface
+          ? Theme.of(context).colorScheme.surface
           : Colors.transparent,
       elevation: widget.axis == Axis.horizontal && expanded ? null : 0,
       shadowColor: widget.axis == Axis.horizontal && expanded
@@ -133,11 +133,13 @@ class _PostListConfigurationHeaderState
                               Chip(
                                 padding: EdgeInsets.zero,
                                 visualDensity: const ShrinkVisualDensity(),
-                                backgroundColor: context.colorScheme.primary,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
                                 label: Text(
                                   '${widget.hiddenCount} of ${widget.postCount}',
                                   style: TextStyle(
-                                    color: context.colorScheme.onPrimary,
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -171,7 +173,7 @@ class _PostListConfigurationHeaderState
                     if (widget.axis == Axis.horizontal)
                       Text(
                         '${widget.postCount} Posts',
-                        style: context.textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     const Spacer(),
                     FittedBox(
@@ -201,12 +203,12 @@ class _PostListConfigurationHeaderState
         ActionChip(
           visualDensity: const ShrinkVisualDensity(),
           side: BorderSide(
-            color: context.colorScheme.outlineVariant,
+            color: Theme.of(context).colorScheme.outlineVariant,
             width: 0.7,
           ),
           shape: StadiumBorder(
             side: BorderSide(
-              color: context.colorScheme.outlineVariant,
+              color: Theme.of(context).colorScheme.outlineVariant,
               width: 0.7,
             ),
           ),
@@ -352,11 +354,11 @@ class _BadgedChip extends StatelessWidget {
         3 => const Offset(-8, -4),
         _ => const Offset(-12, -4),
       },
-      backgroundColor: context.colorScheme.primary,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       label: Text(
         count.toString(),
         style: TextStyle(
-          color: context.colorScheme.onPrimary,
+          color: Theme.of(context).colorScheme.onPrimary,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -365,10 +367,12 @@ class _BadgedChip extends StatelessWidget {
         visualDensity: const ShrinkVisualDensity(),
         selected: active,
         side: BorderSide(
-          color: active ? context.colorScheme.hintColor : Colors.transparent,
+          color: active
+              ? Theme.of(context).colorScheme.hintColor
+              : Colors.transparent,
           width: 0.7,
         ),
-        backgroundColor: context.colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         label: Text(label),
         onSelected: (value) => onChanged(value),
       ),

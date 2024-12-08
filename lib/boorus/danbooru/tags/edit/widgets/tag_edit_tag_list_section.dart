@@ -7,15 +7,19 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/search/search_bar.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/store.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';
 
 final tagEditFilteredListProvider =
@@ -209,7 +213,7 @@ class _SliverTagEditListViewState
           title: Text(
             tag.replaceAll('_', ' '),
             style: TextStyle(
-              color: context.isLight
+              color: Theme.of(context).brightness.isLight
                   ? colors?.backgroundColor
                   : colors?.foregroundColor,
               fontWeight: isNewlyAdded ? FontWeight.w900 : null,
@@ -276,7 +280,8 @@ class TagEditFilterHeader extends ConsumerWidget {
                           style: FilledButton.styleFrom(
                               visualDensity: VisualDensity.compact,
                               shape: const CircleBorder(),
-                              backgroundColor: context.colorScheme.primary),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary),
                           onPressed: () {
                             ref
                                 .read(tagEditTagFilterModeProvider.notifier)
@@ -288,7 +293,7 @@ class TagEditFilterHeader extends ConsumerWidget {
                           child: Icon(
                             Symbols.check,
                             size: 16,
-                            color: context.colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ],

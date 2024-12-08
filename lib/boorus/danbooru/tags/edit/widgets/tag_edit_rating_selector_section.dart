@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../../tags.dart';
+import 'tag_how_to_rate_button.dart';
 
 class TagEditRatingSelectorSection extends ConsumerWidget {
   const TagEditRatingSelectorSection({
@@ -39,16 +37,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
                   'Rating',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                if (!config.hasStrictSFW)
-                  IconButton(
-                    splashRadius: 20,
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => launchExternalUrlString(kHowToRateUrl),
-                    icon: const Icon(
-                      FontAwesomeIcons.circleQuestion,
-                      size: 16,
-                    ),
-                  ),
+                if (!config.hasStrictSFW) const TagHowToRateButton(),
               ],
             ),
           ),

@@ -1,5 +1,7 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/functional.dart';
 import 'source_utils.dart';
 
 sealed class PostSource {

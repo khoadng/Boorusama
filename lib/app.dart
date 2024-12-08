@@ -8,23 +8,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/app_info.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/windows.dart';
 import 'package:boorusama/router.dart';
+import 'core/theme/theme_buider.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;

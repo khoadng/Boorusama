@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../../related_tags/related_tags.dart';
+import '../related/providers.dart';
 
 class TagEditWikiView extends ConsumerStatefulWidget {
   const TagEditWikiView({
@@ -146,7 +146,7 @@ class _RelatedTagChips extends ConsumerWidget {
           selectedColor: colors?.backgroundColor,
           backgroundColor: selected
               ? colors?.backgroundColor
-              : context.colorScheme.surfaceContainer,
+              : Theme.of(context).colorScheme.surfaceContainer,
           side: colors != null
               ? BorderSide(
                   color: selected ? colors.borderColor : Colors.transparent,
@@ -156,7 +156,7 @@ class _RelatedTagChips extends ConsumerWidget {
               value ? onAdded(tag.name) : onRemoved(tag.name),
           label: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: context.screenWidth * 0.8,
+              maxWidth: MediaQuery.sizeOf(context).width * 0.8,
             ),
             child: RichText(
               overflow: TextOverflow.ellipsis,
@@ -165,20 +165,20 @@ class _RelatedTagChips extends ConsumerWidget {
                 style: TextStyle(
                   color: selected
                       ? colors?.foregroundColor
-                      : context.colorScheme.onSurfaceVariant,
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
                 children: [
                   TextSpan(
                     text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                    style: context.textTheme.bodySmall?.copyWith(
-                      fontSize: 11,
-                      color: context.isLight
-                          ? !selected
-                              ? null
-                              : Colors.white.applyOpacity(0.85)
-                          : context.colorScheme.hintColor,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 11,
+                          color: Theme.of(context).brightness.isLight
+                              ? !selected
+                                  ? null
+                                  : Colors.white.applyOpacity(0.85)
+                              : Theme.of(context).colorScheme.hintColor,
+                        ),
                   ),
                 ],
               ),

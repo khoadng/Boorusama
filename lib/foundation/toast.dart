@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
 
 void showSuccessToast(
   BuildContext context,
@@ -60,7 +59,7 @@ void showSimpleSnackBar({
     width: _calculateSnackBarWidth(context, snackBarBehavior),
     content: content,
   );
-  context.scaffoldMessenger.showSnackBar(snackbar);
+  ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }
 
 double? _calculateSnackBarWidth(
@@ -68,7 +67,7 @@ double? _calculateSnackBarWidth(
   SnackBarBehavior behavior,
 ) {
   if (behavior == SnackBarBehavior.fixed) return null;
-  final width = context.screenWidth;
+  final width = MediaQuery.sizeOf(context).width;
 
   return width > 400 ? 400 : width;
 }

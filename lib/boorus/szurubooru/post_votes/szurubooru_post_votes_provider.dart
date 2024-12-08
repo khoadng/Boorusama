@@ -1,12 +1,13 @@
 // Package imports:
+import 'package:booru_clients/szurubooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/votes.dart';
-import 'package:boorusama/functional.dart';
 import '../favorites/favorites.dart';
 import '../providers.dart';
 import '../szurubooru_post.dart';

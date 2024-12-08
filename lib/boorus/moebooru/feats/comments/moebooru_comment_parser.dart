@@ -1,5 +1,7 @@
+// Package imports:
+import 'package:booru_clients/moebooru.dart';
+
 // Project imports:
-import 'package:boorusama/clients/moebooru/types/types.dart';
 import 'moebooru_comment.dart';
 
 MoebooruComment moebooruCommentDtoToMoebooruComment(CommentDto dto) {

@@ -1,5 +1,4 @@
 export 'caching/cache_mixin.dart';
-export 'caching/cache_notifier.dart';
 export 'caching/cacher.dart';
 export 'caching/double_layer_cache_mixin.dart';
 export 'caching/fifo_cacher.dart';

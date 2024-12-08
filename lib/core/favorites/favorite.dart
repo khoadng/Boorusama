@@ -1,6 +1,8 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/functional.dart';
 
 enum AddFavoriteStatus {
   success,

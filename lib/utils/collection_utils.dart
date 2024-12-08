@@ -48,12 +48,6 @@ extension ListX<E> on List<E> {
     return replaceAt(index, e);
   }
 
-  E? getOrNull(int index) {
-    if (index < 0 || index >= length) return null;
-
-    return this[index];
-  }
-
   bool reorder(int oldIndex, int newIndex) {
     // Check if oldIndex and newIndex are within the bounds of the list
     if (oldIndex < 0 ||

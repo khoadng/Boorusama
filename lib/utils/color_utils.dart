@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 
 typedef ChipColors = ({
   Color foregroundColor,
