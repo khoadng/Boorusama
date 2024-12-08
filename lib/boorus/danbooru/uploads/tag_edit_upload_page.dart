@@ -17,7 +17,8 @@ import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/suggestions.dart';
+import 'package:boorusama/core/search/suggestions_widgets.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
@@ -914,7 +915,7 @@ class _TagEditUploadTextControllerScopeState
       ref.read(_lastWord.notifier).state = lastWord;
 
       ref
-          .read(suggestionsProvider(ref.readConfigAuth).notifier)
+          .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
           .getSuggestions(lastWord);
     }
 

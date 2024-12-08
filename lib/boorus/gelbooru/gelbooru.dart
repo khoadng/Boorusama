@@ -21,7 +21,7 @@ import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/store.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';

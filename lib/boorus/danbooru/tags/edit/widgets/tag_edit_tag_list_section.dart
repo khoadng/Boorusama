@@ -10,7 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/search_bar.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/categories/store.dart';

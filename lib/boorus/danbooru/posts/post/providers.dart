@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/search/queries.dart';
+import 'package:boorusama/core/search/query_composer_providers.dart';
 import 'package:boorusama/core/settings/data.dart';
 import '../../tags/shared/tag_list_notifier.dart';
 import '../../users/user/providers.dart';

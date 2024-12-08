@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/search_bar.dart';
 import 'package:boorusama/core/tags/tag/colors.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';

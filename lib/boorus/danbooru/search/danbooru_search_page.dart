@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/tags/metatag/providers.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/theme.dart';
 import '../posts/listing/default_danbooru_image_grid_item.dart';
 import '../posts/post/providers.dart';
 import '../tags/related/related_tag_section.dart';
+import 'danbooru_metatags_section.dart';
 import 'trending_section.dart';
 
 class DanbooruSearchPage extends ConsumerStatefulWidget {

@@ -16,6 +16,7 @@ import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/posts/statistics.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/filter.dart';
 import 'package:boorusama/dart.dart';
 import 'metatag.dart';
 

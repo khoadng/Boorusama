@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/queries.dart';
-import 'package:boorusama/core/search/search.dart';
+import 'package:boorusama/core/search/query_composer.dart';
+import 'package:boorusama/core/search/selected_tags.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/foundation/error.dart';

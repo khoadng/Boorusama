@@ -19,6 +19,7 @@ import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'create_szurubooru_config_page.dart';

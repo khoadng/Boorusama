@@ -20,7 +20,6 @@ import 'package:boorusama/core/configs.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/bulks/notifications.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
@@ -48,6 +47,7 @@ import 'core/blacklists/providers.dart';
 import 'core/bookmarks/hive/object.dart';
 import 'core/bookmarks/hive/repository.dart';
 import 'core/downloads/notifications.dart';
+import 'core/search/boot.dart';
 import 'foundation/i18n.dart';
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
@@ -92,8 +92,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Initialize Hive');
   Hive.init(dbDirectory.path);
 
-  bootLogger.l('Register search history adapter');
-  Hive.registerAdapter(SearchHistoryHiveObjectAdapter());
   bootLogger.l('Register bookmark adapter');
   Hive.registerAdapter(BookmarkHiveObjectAdapter());
   bootLogger.l('Register favorite tag adapter');
@@ -204,11 +202,8 @@ Future<void> boot(BootLogger bootLogger) async {
   }
   final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
 
-  bootLogger.l('Initialize search history repository');
-  final searchHistoryBox =
-      await Hive.openBox<SearchHistoryHiveObject>('search_history');
-  final searchHistoryRepo = SearchHistoryRepositoryHive(
-    db: searchHistoryBox,
+  final searchHistoryRepoOverride = await createSearchHistoryRepoOverride(
+    logger: bootLogger,
   );
 
   bootLogger.l('Initialize favorite tag repository');
@@ -298,7 +293,7 @@ Future<void> boot(BootLogger bootLogger) async {
           child: ProviderScope(
             overrides: [
               favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
+              searchHistoryRepoOverride,
               booruFactoryProvider.overrideWithValue(booruFactory),
               tagInfoProvider.overrideWithValue(tagInfo),
               settingsRepoProvider.overrideWithValue(settingRepository),

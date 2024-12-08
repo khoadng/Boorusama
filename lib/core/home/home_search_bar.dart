@@ -10,8 +10,9 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/core/search/history_providers.dart';
+import 'package:boorusama/core/search/search_bar.dart';
+import 'package:boorusama/core/search/selected_tags.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/app_update.dart';

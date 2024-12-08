@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -18,15 +17,14 @@ import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/search/ui/selected_tag_edit_dialog.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
+import 'package:boorusama/core/search/search_ui.dart';
+import 'package:boorusama/core/search/tag_edit.dart';
+import 'package:boorusama/core/search/view_tags.dart';
 import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
@@ -228,27 +226,6 @@ void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
       ),
-    ),
-  );
-}
-
-void goToSearchHistoryPage(
-  BuildContext context, {
-  required Function() onClear,
-  required Function(SearchHistory history) onRemove,
-  required Function(SearchHistory history) onTap,
-}) {
-  showMaterialModalBottomSheet(
-    context: context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.searchHistories,
-    ),
-    duration: AppDurations.bottomSheet,
-    builder: (context) => FullHistoryPage(
-      onClear: onClear,
-      onRemove: onRemove,
-      onTap: onTap,
-      scrollController: ModalScrollController.of(context),
     ),
   );
 }
