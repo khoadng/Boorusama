@@ -213,7 +213,7 @@ class _SliverTagEditListViewState
           title: Text(
             tag.replaceAll('_', ' '),
             style: TextStyle(
-              color: context.isLight
+              color: Theme.of(context).brightness.isLight
                   ? colors?.backgroundColor
                   : colors?.foregroundColor,
               fontWeight: isNewlyAdded ? FontWeight.w900 : null,
@@ -280,7 +280,8 @@ class TagEditFilterHeader extends ConsumerWidget {
                           style: FilledButton.styleFrom(
                               visualDensity: VisualDensity.compact,
                               shape: const CircleBorder(),
-                              backgroundColor: context.colorScheme.primary),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary),
                           onPressed: () {
                             ref
                                 .read(tagEditTagFilterModeProvider.notifier)
@@ -292,7 +293,7 @@ class TagEditFilterHeader extends ConsumerWidget {
                           child: Icon(
                             Symbols.check,
                             size: 16,
-                            color: context.colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ],

@@ -1,9 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/platform.dart';
 import '../path/validator.dart';
 

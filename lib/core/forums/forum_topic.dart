@@ -1,6 +1,8 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
 
 abstract class ForumTopic {

@@ -12,8 +12,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
 import '../../histories/providers.dart';
@@ -128,10 +126,10 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     return Container(
       constraints: BoxConstraints(
         maxWidth: min(
-          context.screenWidth * 0.7,
+          MediaQuery.sizeOf(context).width * 0.7,
           500,
         ),
-        maxHeight: min(context.screenHeight * 0.8, 500),
+        maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 500),
       ),
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
@@ -143,7 +141,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
               query.text.isNotEmpty
                   ? TagSuggestionItems(
                       dense: true,
-                      backgroundColor: context.colorScheme.surfaceContainer,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainer,
                       tags: suggestionTags,
                       currentQuery: query.text,
                       onItemTap: (tag) {
@@ -165,13 +164,14 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: context.colorScheme.surfaceContainer,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: SearchLandingView(
                         disableAnimation: true,
                         reverseScheme: true,
-                        backgroundColor: context.colorScheme.surfaceContainer,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceContainer,
                         onHistoryCleared: () => ref
                             .read(searchHistoryProvider.notifier)
                             .clearHistories(),
@@ -202,7 +202,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   right: 4,
                   child: MaterialButton(
                     minWidth: 0,
-                    color: context.colorScheme.secondaryContainer,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     shape: const CircleBorder(),
                     onPressed: () {
                       textEditingController.clear();
@@ -213,7 +213,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                       padding: const EdgeInsets.all(4),
                       child: Icon(
                         Symbols.close,
-                        color: context.colorScheme.onSecondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
                     ),
                   ),

@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../artist/artist.dart';
 import 'artist_search_list.dart';
@@ -99,7 +99,7 @@ class _DanbooruArtistSearchPageState
           width: 62,
           child: Text(
             'Sort by',
-            style: context.textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
         ValueListenableBuilder(
@@ -137,7 +137,7 @@ class _DanbooruArtistSearchPageState
             width: 48,
             child: Text(
               'URL',
-              style: context.textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           const SizedBox(width: 8),
@@ -168,7 +168,7 @@ class _DanbooruArtistSearchPageState
             width: 48,
             child: Text(
               'Name',
-              style: context.textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           const SizedBox(width: 8),

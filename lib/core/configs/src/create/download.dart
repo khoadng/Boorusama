@@ -16,7 +16,6 @@ import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts/post.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -57,11 +56,11 @@ class BooruConfigDownloadView extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             'Leave empty to use the download location in settings.',
-            style: ref.context.textTheme.titleSmall?.copyWith(
-              color: ref.context.colorScheme.hintColor,
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                ),
           ),
           const SizedBox(height: 8),
           CustomDownloadFileNameSection(
@@ -150,7 +149,7 @@ class _CustomDownloadFileNameSectionState
           text: TextSpan(
             text: 'Custom filename format',
             style: TextStyle(
-              color: context.colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -257,10 +256,10 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainer,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
-          color: context.colorScheme.outlineVariant,
+          color: Theme.of(context).colorScheme.outlineVariant,
           width: 1.5,
         ),
       ),
@@ -268,13 +267,13 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         theme: ExpandableThemeData(
           headerAlignment: ExpandablePanelHeaderAlignment.center,
           tapBodyToCollapse: true,
-          iconColor: context.iconTheme.color,
+          iconColor: Theme.of(context).iconTheme.color,
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Text(
             widget.title,
-            style: context.textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
         collapsed: preview,
@@ -362,16 +361,16 @@ class FilenamePreview extends StatelessWidget {
           FaIcon(
             FontAwesomeIcons.hashtag,
             size: 16,
-            color: context.colorScheme.primary,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(width: 4),
           Expanded(
               child: Text(
             filename,
-            style: context.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.colorScheme.hintColor,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.hintColor,
+                ),
           )),
         ],
       ),
@@ -399,7 +398,7 @@ class AvailableTokens extends ConsumerWidget {
         const Text('Available tokens: '),
         for (final token in availableTokens)
           RawChip(
-            backgroundColor: context.colorScheme.secondaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             visualDensity: VisualDensity.compact,
             label: Text(token),
             onPressed: () {
@@ -446,7 +445,7 @@ class TokenOptionHelpModal extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: context.navigator.pop,
+            onPressed: Navigator.of(context).pop,
             icon: const Icon(Symbols.close),
           ),
         ],
@@ -459,7 +458,7 @@ class TokenOptionHelpModal extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
                     token,
-                    style: context.textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -518,7 +517,7 @@ class TokenOptionHelpModal extends StatelessWidget {
     return CompactChip(
       label: label,
       borderRadius: BorderRadius.circular(12),
-      backgroundColor: context.colorScheme.secondaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       padding: const EdgeInsets.symmetric(
         horizontal: 10,
         vertical: 2,

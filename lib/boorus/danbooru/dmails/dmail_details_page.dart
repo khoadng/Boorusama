@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/theme/theme_utils.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import '../comments/comment/dtext_parser.dart';
 import '../users/creator/creators_notifier.dart';
@@ -51,20 +50,20 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
           children: [
             Text(
               dmail.title,
-              style: context.textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Row(
               children: [
                 Text(
                   'Sender: ',
-                  style: context.textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
                   fromUser?.name ?? 'Anon',
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: fromUser?.level.toColor(context),
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: fromUser?.level.toColor(context),
+                      ),
                 ),
               ],
             ),
@@ -72,19 +71,19 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               children: [
                 Text(
                   'Receiver: ',
-                  style: context.textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
                   toUser?.name ?? 'Anon',
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: toUser?.level.toColor(context),
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: toUser?.level.toColor(context),
+                      ),
                 ),
               ],
             ),
             Text(
                 'Date: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
-                style: context.textTheme.titleMedium),
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             Dtext.parse(
               parseDtext(dmail.body),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -12,12 +13,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/functional.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/foundation/toast.dart';
 import '../posts/post/danbooru_post.dart';
 import '../router.dart';
@@ -41,10 +37,10 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'favorite_groups.add_to_group_dialog_title',
-          style: context.textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleLarge,
         ).tr(),
       ),
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -71,9 +67,9 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
               visualDensity: VisualDensity.compact,
               title: Text(
                 'favorite_groups.add_to'.tr().toUpperCase(),
-                style: context.theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
               ),
               trailing: FilledButton(
                 style: FilledButton.styleFrom(
@@ -184,7 +180,7 @@ class _FavoriteGroupList extends ConsumerWidget {
                               ),
                         ),
                       );
-                      context.navigator.pop(true);
+                      Navigator.of(context).pop(true);
                     },
                   );
             },

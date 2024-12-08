@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/generic_no_data_box.dart';
 import '../edit/sheet_utils.dart';
@@ -130,12 +129,12 @@ class _ExampleContainer extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
                   title,
-                  style: context.textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               Card(
                 margin: const EdgeInsets.all(8),
-                color: context.colorScheme.surface,
+                color: Theme.of(context).colorScheme.surface,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 16),

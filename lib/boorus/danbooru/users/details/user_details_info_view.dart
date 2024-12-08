@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../user/user.dart';
 
 class UserDetailsInfoView extends ConsumerWidget {
@@ -61,7 +61,7 @@ class UserDetailsSectionCard extends StatelessWidget {
         vertical: 12,
       ),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLow,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -209,7 +209,7 @@ class _StatsButton extends StatelessWidget {
         ),
         Text(
           title,
-          style: TextStyle(color: context.colorScheme.hintColor),
+          style: TextStyle(color: Theme.of(context).colorScheme.hintColor),
         ),
       ],
     );

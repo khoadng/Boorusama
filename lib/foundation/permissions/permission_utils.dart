@@ -1,8 +1,8 @@
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import '../android.dart';
 import '../device_info.dart';
 import '../platform.dart';
 

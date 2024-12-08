@@ -1,10 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../comment_data.dart';
 
 class ReplyHeader extends StatelessWidget {
@@ -28,7 +30,7 @@ class ReplyHeader extends StatelessWidget {
             '${'comment.list.reply_to'.tr()} ',
             softWrap: true,
             style: TextStyle(
-              color: context.colorScheme.hintColor,
+              color: Theme.of(context).colorScheme.hintColor,
             ),
           ),
           Text(

@@ -1,12 +1,14 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/path.dart';
 import '../urls/sanitizer.dart';
 import 'generator.dart';

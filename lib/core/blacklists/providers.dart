@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'blacklisted_tag.dart';
 

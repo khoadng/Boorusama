@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/comments/comment_vote.dart';
@@ -11,8 +12,6 @@ import 'package:boorusama/core/comments/vote_event.dart';
 import 'package:boorusama/core/comments/youtube_preview_box.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import '../../votes/comment_votes_notifier.dart';
 import '../../votes/danbooru_comment_vote.dart';
 import '../comment_data.dart';
@@ -59,7 +58,7 @@ class CommentItem extends ConsumerWidget {
             child: Text(
               '${'comment.list.last_updated'.tr()}: ${comment.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               style: TextStyle(
-                color: context.colorScheme.hintColor,
+                color: Theme.of(context).colorScheme.hintColor,
                 fontStyle: FontStyle.italic,
                 fontSize: 12,
               ),

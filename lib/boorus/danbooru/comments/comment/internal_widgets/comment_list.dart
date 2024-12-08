@@ -1,9 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/comments/vote_event.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../votes/danbooru_comment_vote.dart';
 import '../comment_data.dart';

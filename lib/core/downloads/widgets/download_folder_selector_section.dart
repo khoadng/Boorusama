@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/picker.dart';
@@ -65,11 +65,11 @@ class _DownloadFolderSelectorSectionState
         ),
         const SizedBox(height: 4),
         Material(
-          color: context.colorScheme.surfaceContainer,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
-              color: context.colorScheme.outlineVariant,
+              color: Theme.of(context).colorScheme.outlineVariant,
               width: 1.5,
             ),
           ),
@@ -93,8 +93,13 @@ class _DownloadFolderSelectorSectionState
                             widget.hint ??
                                 DownloadTranslations.downloadSelectFolder.tr(),
                             overflow: TextOverflow.fade,
-                            style: context.textTheme.titleMedium!
-                                .copyWith(color: context.colorScheme.hintColor),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .hintColor),
                           ),
                   ),
                 ),

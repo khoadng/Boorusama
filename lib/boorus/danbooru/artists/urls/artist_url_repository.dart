@@ -1,5 +1,7 @@
+// Package imports:
+import 'package:booru_clients/danbooru.dart';
+
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'artist_parser.dart';
 import 'artist_url.dart';
 

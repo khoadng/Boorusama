@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -12,8 +13,6 @@ import 'package:boorusama/core/home/home_navigation_tile.dart';
 import 'package:boorusama/core/home/home_page_scaffold.dart';
 import 'package:boorusama/core/home/side_menu_tile.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'moebooru_popular_page.dart';
 import 'moebooru_popular_recent_page.dart';
@@ -40,7 +39,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             fill: 1,
           ),
           title: const Text('Popular'),
-          onTap: () => context.navigator.push(
+          onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => Scaffold(
                 appBar: AppBar(
@@ -59,7 +58,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             fill: 1,
           ),
           title: const Text('Hot'),
-          onTap: () => context.navigator.push(
+          onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => Scaffold(
                 appBar: AppBar(

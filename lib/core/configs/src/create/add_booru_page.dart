@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/functional.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../booru_config.dart';
 import '../edit_booru_config_id.dart';
 import '../validator/booru_url_error.dart';
@@ -164,11 +162,13 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
             children: [
               Text(
                 'booru.add_a_booru_site'.tr(),
-                style: context.textTheme.headlineSmall!
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
                     .copyWith(fontWeight: FontWeight.w900),
               ),
               IconButton(
-                onPressed: context.navigator.pop,
+                onPressed: Navigator.of(context).pop,
                 icon: const Icon(Symbols.close),
               ),
             ],
@@ -224,9 +224,9 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                   valueListenable: inputText,
                   builder: (_, input, __) => Text(
                     e.message(input),
-                    style: context.theme.textTheme.bodyLarge!.copyWith(
-                      color: context.colorScheme.error,
-                    ),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                   ),
                 )),
             (uri) => const SizedBox.shrink(),

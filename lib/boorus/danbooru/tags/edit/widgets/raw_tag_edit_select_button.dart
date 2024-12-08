@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 class RawTagEditSelectButton extends StatelessWidget {
   const RawTagEditSelectButton({
@@ -21,13 +20,13 @@ class RawTagEditSelectButton extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
-        backgroundColor: context.colorScheme.surfaceContainerHighest,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       onPressed: onPressed,
       child: Text(
         title,
         style: TextStyle(
-          color: context.colorScheme.onSurfaceVariant,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );

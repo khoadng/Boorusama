@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'colors.dart';
 import 'extended_color_scheme.dart';
@@ -173,7 +172,7 @@ class AppTheme {
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.light,
         dividerTheme: DividerThemeData(
-          color: colorScheme.outlineVariant.applyOpacity(0.25),
+          color: colorScheme.outlineVariant.withAlpha(60),
           endIndent: 0,
           indent: 0,
         ),
@@ -304,9 +303,9 @@ class AppTheme {
             (states) {
               if (states.contains(WidgetState.disabled)) {
                 if (states.contains(WidgetState.selected)) {
-                  return colorScheme.surface.applyOpacity(1.0);
+                  return colorScheme.surface.withAlpha(255);
                 }
-                return colorScheme.onSurface.applyOpacity(0.38);
+                return colorScheme.onSurface.withAlpha(100);
               }
               if (states.contains(WidgetState.selected)) {
                 // Workaround for when primaryContainer is not provided
@@ -343,7 +342,7 @@ class AppTheme {
             fontSize: 14,
           ),
           unselectedLabelStyle: TextStyle(
-            color: colorScheme.onSurface.applyOpacity(0.5),
+            color: colorScheme.onSurface.withAlpha(127),
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),

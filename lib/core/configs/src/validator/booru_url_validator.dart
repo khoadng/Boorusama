@@ -1,5 +1,7 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/foundation/functional.dart';
 import 'booru_url_error.dart';
 
 // Returns a Uri for the given URL, or an BooruUrlError if the URL is invalid.

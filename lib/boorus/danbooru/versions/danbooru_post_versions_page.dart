@@ -9,7 +9,6 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../posts/post/danbooru_post.dart';
 import 'providers.dart';
@@ -100,17 +99,17 @@ class _DanbooruPostVersionsPageState
       ),
       extendBodyBehindAppBar: true,
       body: Theme(
-        data: context.theme.copyWith(
-          focusColor: context.colorScheme.primary,
+        data: Theme.of(context).copyWith(
+          focusColor: Theme.of(context).colorScheme.primary,
         ),
         child: MultiSplitViewTheme(
           data: MultiSplitViewThemeData(
             dividerThickness: 24,
             dividerPainter: DividerPainters.grooved1(
-              color: context.colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
               thickness: 4,
               size: 75,
-              highlightedColor: context.colorScheme.primary,
+              highlightedColor: Theme.of(context).colorScheme.primary,
             ),
           ),
           child: MultiSplitView(

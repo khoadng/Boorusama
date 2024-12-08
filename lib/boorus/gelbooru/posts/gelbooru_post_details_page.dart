@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -15,9 +17,7 @@ import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/tags/groups/item.dart';
 import 'package:boorusama/core/tags/groups/providers.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
   (ref) => <int, List<String>>{},

@@ -1,8 +1,8 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'artist.dart';
 
 abstract class DanbooruArtistRepository {

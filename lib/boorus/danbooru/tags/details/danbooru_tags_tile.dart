@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import '../../posts/details/danbooru_post_details_page.dart';
 import '../../posts/post/danbooru_post.dart';
@@ -44,10 +43,10 @@ class DanbooruTagsTile extends ConsumerWidget {
         ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
 
     return Theme(
-      data: context.theme.copyWith(
-        listTileTheme: context.theme.listTileTheme.copyWith(
-          visualDensity: VisualDensity.compact,
-        ),
+      data: Theme.of(context).copyWith(
+        listTileTheme: Theme.of(context).listTileTheme.copyWith(
+              visualDensity: VisualDensity.compact,
+            ),
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(
@@ -66,13 +65,14 @@ class DanbooruTagsTile extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   shape: const CircleBorder(),
-                  backgroundColor: context.colorScheme.surfaceContainerHighest,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () => ref.danbooruEdit(post),
                 child: Icon(
                   Symbols.edit,
                   size: 16,
-                  color: context.colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fill: 1,
                 ),
               ),

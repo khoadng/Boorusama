@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-import 'package:boorusama/core/theme.dart';
-
 class SideMenuTile extends StatelessWidget {
   const SideMenuTile({
     super.key,
@@ -26,7 +23,7 @@ class SideMenuTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: DefaultTextStyle(
-          style: context.textTheme.titleSmall ?? const TextStyle(),
+          style: Theme.of(context).textTheme.titleSmall ?? const TextStyle(),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 12,

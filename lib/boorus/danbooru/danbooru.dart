@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -22,15 +24,11 @@ import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/posts/statistics.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/tags/metatag/extractor.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
 import 'artists/artist/artist_page.dart';

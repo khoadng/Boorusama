@@ -1,9 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class RemoveBooruConfigAlertDialog extends StatelessWidget {
@@ -49,7 +50,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
             const SizedBox(height: 20),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: context.colorScheme.error,
+                backgroundColor: Theme.of(context).colorScheme.error,
                 shadowColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -62,7 +63,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
                 child: Text(
                   'generic.action.delete'.tr(),
                   style: TextStyle(
-                    color: context.colorScheme.onError,
+                    color: Theme.of(context).colorScheme.onError,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

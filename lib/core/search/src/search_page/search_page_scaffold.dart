@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -16,7 +17,6 @@ import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import '../histories/providers.dart';
 import '../selected_tags/selected_tag_controller.dart';
 import '../suggestions/suggestions_notifier.dart';

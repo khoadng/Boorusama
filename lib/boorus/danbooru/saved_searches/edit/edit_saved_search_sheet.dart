@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -13,10 +14,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
@@ -142,7 +140,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: Container(
         margin: EdgeInsets.only(
           left: 12,
@@ -156,7 +154,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
               padding: const EdgeInsets.only(top: 24, bottom: 8),
               child: Text(
                 widget.title ?? 'saved_search.add_saved_search'.tr(),
-                style: context.textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
             const SizedBox(
@@ -191,7 +189,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                             );
                         },
                         onSubmitted: (context, text, _) {
-                          context.navigator.pop();
+                          Navigator.of(context).pop();
 
                           queryTextController.text =
                               '${queryTextController.text} $text';
@@ -225,12 +223,12 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
               margin: const EdgeInsets.all(8),
               child: Text(
                 'saved_search.saved_search_labels_description'.tr(),
-                style: context.textTheme.titleSmall?.copyWith(
-                  color: context.colorScheme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.italic,
-                ),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.hintColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                    ),
               ),
             ),
             Container(
@@ -240,15 +238,15 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                 children: [
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      foregroundColor: context.colorScheme.onSurface,
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                       backgroundColor:
-                          context.colorScheme.surfaceContainerHighest,
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
                     onPressed: () {
-                      context.navigator.pop();
+                      Navigator.of(context).pop();
                     },
                     child: const Text('generic.action.cancel').tr(),
                   ),
@@ -256,7 +254,8 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                     valueListenable: queryHasText,
                     builder: (context, enable, _) => FilledButton(
                       style: FilledButton.styleFrom(
-                        foregroundColor: context.colorScheme.onPrimary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
@@ -267,7 +266,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                                 queryTextController.text,
                                 labelTextController.text,
                               );
-                              context.navigator.pop();
+                              Navigator.of(context).pop();
                             }
                           : null,
                       child: const Text('generic.action.ok').tr(),

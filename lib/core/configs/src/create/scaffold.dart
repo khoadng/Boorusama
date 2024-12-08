@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
@@ -10,7 +11,6 @@ import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
@@ -154,11 +154,15 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                           children: [
                             Text(
                               'Not sure? Leave it as it is, you can change it later.',
-                              style: context.textTheme.titleSmall?.copyWith(
-                                color: context.colorScheme.hintColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.hintColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                             ),
                           ],
                         ),
@@ -263,7 +267,7 @@ class SelectedBooruChip extends StatelessWidget {
           (source) => source.uri.host,
           () => url,
         ),
-        style: context.textTheme.titleLarge,
+        style: Theme.of(context).textTheme.titleLarge,
         maxLines: 1,
         softWrap: false,
         overflow: TextOverflow.ellipsis,

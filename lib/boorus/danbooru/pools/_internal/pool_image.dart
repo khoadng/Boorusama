@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import '../pool/danbooru_pool.dart';
 import 'pool_covers_notifier.dart';
 
@@ -41,7 +40,7 @@ class PoolImage extends ConsumerWidget {
                   child: Container(
                     width: constraints.maxWidth,
                     decoration: BoxDecoration(
-                      color: context.colorScheme.surfaceContainerLow,
+                      color: Theme.of(context).colorScheme.surfaceContainerLow,
                       borderRadius:
                           BorderRadius.all(Radius.circular(imageBorderRadius)),
                     ),
@@ -55,7 +54,7 @@ class PoolImage extends ConsumerWidget {
               child: Container(
                 width: constraints.maxWidth,
                 decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerLow,
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
                   borderRadius:
                       BorderRadius.all(Radius.circular(imageBorderRadius)),
                 ),

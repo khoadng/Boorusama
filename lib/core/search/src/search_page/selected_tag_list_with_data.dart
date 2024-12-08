@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import '../queries/providers.dart';
 import '../selected_tags/selected_tag_controller.dart';
@@ -26,7 +25,7 @@ class SelectedTagListWithData extends ConsumerWidget {
     final tagComposer = ref.watch(currentTagQueryComposerProvider);
 
     return ColoredBox(
-        color: context.colorScheme.surface,
+        color: Theme.of(context).colorScheme.surface,
         child: ValueListenableBuilder(
           valueListenable: controller,
           builder: (context, tags, child) {

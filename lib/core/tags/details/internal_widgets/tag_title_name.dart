@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-import 'package:boorusama/core/theme.dart';
-
 class TagTitleName extends StatelessWidget {
   const TagTitleName({
     super.key,
@@ -19,9 +16,9 @@ class TagTitleName extends StatelessWidget {
       child: Text(
         tagName.replaceAll('_', ' '),
         textAlign: TextAlign.center,
-        style: context.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w900,
-        ),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w900,
+            ),
       ),
     );
   }

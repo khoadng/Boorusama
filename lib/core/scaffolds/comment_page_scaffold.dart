@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/comments/comment.dart';
@@ -10,10 +11,8 @@ import 'package:boorusama/core/comments/comment_header.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/i18n.dart';
 
 typedef CommentFetcher = Future<List<Comment>> Function(int postId);
 
@@ -103,7 +102,7 @@ class _CommentItem extends StatelessWidget {
           authorName: comment.creatorName == null
               ? comment.creatorId?.toString() ?? 'Anon'
               : comment.creatorName!,
-          authorTitleColor: context.colorScheme.primary,
+          authorTitleColor: Theme.of(context).colorScheme.primary,
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),

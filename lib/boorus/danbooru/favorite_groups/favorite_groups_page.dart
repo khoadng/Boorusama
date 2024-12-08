@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -11,9 +12,6 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../router.dart';
 import 'danbooru_favorite_group.dart';
 import 'favorite_group_previews_notifier.dart';
@@ -129,14 +127,14 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
             actions: [
               TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: context.colorScheme.onSurface,
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
                 ),
-                onPressed: () => context.navigator.pop(),
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('generic.action.cancel').tr(),
               ),
               FilledButton(
                 onPressed: () {
-                  context.navigator.pop();
+                  Navigator.of(context).pop();
                   ref
                       .read(danbooruFavoriteGroupsProvider(config).notifier)
                       .delete(group: favGroup);

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,9 +14,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
@@ -186,7 +185,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
         final page = _findInitialPage(initial);
 
         if (page != null) {
-          context.navigator.push(
+          Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,7 +269,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
                     leading: FaIcon(
                       entry.icon,
                     ),
-                    onTap: () => context.navigator.push(
+                    onTap: () => Navigator.of(context).push(
                       CupertinoPageRoute(
                         builder: (_) => SettingsPageScope(
                           options: options,
@@ -416,7 +415,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           leading: const FaIcon(
             FontAwesomeIcons.solidNoteSticky,
           ),
-          onTap: () => context.navigator.push(
+          onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => const ChangelogPage(),
             ),
@@ -427,7 +426,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           leading: const FaIcon(
             FontAwesomeIcons.bug,
           ),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
+          onTap: () => Navigator.of(context).push(CupertinoPageRoute(
             builder: (_) => SettingsPageScope(
               options: options,
               child: const DebugLogsPage(),
@@ -455,7 +454,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
             Symbols.language,
             size: 24,
           ),
-          onTap: () => context.navigator.push(
+          onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => const HelpUseTranslatePage(),
             ),
@@ -536,11 +535,11 @@ class SettingTile extends StatelessWidget {
       ),
       child: Material(
         color: selected == true
-            ? context.colorScheme.primaryContainer
+            ? Theme.of(context).colorScheme.primaryContainer
             : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          hoverColor: context.theme.hoverColor.applyOpacity(0.1),
+          hoverColor: Theme.of(context).hoverColor.applyOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(
@@ -577,7 +576,7 @@ class SettingTile extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           color: selected == true
-                              ? context.colorScheme.onPrimaryContainer
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
                               : null,
                         ),
                       ),
@@ -586,7 +585,7 @@ class SettingTile extends StatelessWidget {
                           subtitle!,
                           style: TextStyle(
                             fontSize: 14,
-                            color: context.colorScheme.hintColor,
+                            color: Theme.of(context).colorScheme.hintColor,
                           ),
                         ),
                       ],
@@ -664,8 +663,10 @@ class _SettingsSection extends StatelessWidget {
       ),
       child: Text(
         label.toUpperCase(),
-        style: context.textTheme.titleSmall!
-            .copyWith(color: context.colorScheme.hintColor),
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall
+            ?.copyWith(color: Theme.of(context).colorScheme.hintColor),
       ),
     );
   }

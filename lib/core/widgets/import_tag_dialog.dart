@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 //FIXME: don't reuse translation keys with favorites tags
@@ -40,7 +38,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
   @override
   Widget build(BuildContext context) {
     return BooruDialog(
-      color: context.colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(
@@ -57,7 +55,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
               Center(
                 child: Text(
                   'favorite_tags.import'.tr(),
-                  style: context.textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               const SizedBox(
@@ -80,7 +78,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                 builder: (context, value, child) => FilledButton(
                   onPressed: value.text.isNotEmpty
                       ? () {
-                          context.navigator.pop();
+                          Navigator.of(context).pop();
                           widget.onImport(value.text, ref);
                         }
                       : null,
@@ -89,7 +87,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
               ),
               SizedBox(height: widget.padding ?? 0),
               FilledButton(
-                onPressed: () => context.navigator.pop(),
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('favorite_tags.cancel').tr(),
               ),
             ],

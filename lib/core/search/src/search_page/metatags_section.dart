@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/metatag/metatag.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/router.dart';
 import 'widgets/add_tag_button.dart';
@@ -78,7 +77,7 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
 
   Widget _buildChip(String tag, bool editMode) {
     final colors = context.generateChipColors(
-      context.colorScheme.primary,
+      Theme.of(context).colorScheme.primary,
       ref.watch(settingsProvider),
     );
 

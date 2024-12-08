@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 const kSpecialLabelKeyForAll = '____all____';
@@ -29,7 +28,7 @@ class FavoriteTagLabelSelectorField extends StatelessWidget {
             maxWidth: 160,
           ),
           child: OptionSingleSearchableField(
-            backgroundColor: context.colorScheme.surface,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             sheetTitle: 'Select',
             optionValueBuilder: (option) =>
                 option == kSpecialLabelKeyForAll ? '<All>' : option,

@@ -1,9 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
+// Package imports:
+import 'package:foundation/foundation.dart';
 
 class ExploreSection extends StatelessWidget {
   const ExploreSection({
@@ -25,7 +24,9 @@ class ExploreSection extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 4),
           title: Text(
             title,
-            style: context.textTheme.titleLarge!
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: onPressed != null
@@ -33,7 +34,7 @@ class ExploreSection extends StatelessWidget {
                   onPressed: onPressed,
                   child: Text(
                     'explore.see_more',
-                    style: context.textTheme.labelLarge,
+                    style: Theme.of(context).textTheme.labelLarge,
                   ).tr(),
                 )
               : null,

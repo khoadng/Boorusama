@@ -1,8 +1,6 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:equatable/equatable.dart';
-
-// Project imports:
-import 'package:boorusama/clients/danbooru/types/types.dart';
 
 class DanbooruReportDataPoint extends Equatable {
   const DanbooruReportDataPoint({

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class OptionTagsArenaController extends ChangeNotifier {
@@ -71,9 +70,9 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
           children: [
             Text(
               widget.title.toUpperCase(),
-              style: context.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
             if (widget.editable)
               ValueListenableBuilder(
@@ -86,16 +85,18 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
                       minimumSize: const Size(32, 32),
                       shape: const CircleBorder(),
                       backgroundColor: editMode
-                          ? context.colorScheme.primary
-                          : context.colorScheme.surfaceContainerHighest,
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                     ),
                     onPressed: () => controller.toggleEditMode(),
                     child: Icon(
                       editMode ? Symbols.check : Symbols.edit,
                       size: 16,
                       color: editMode
-                          ? context.colorScheme.onPrimary
-                          : context.colorScheme.onSurfaceVariant,
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                       fill: 1,
                     ),
                   );

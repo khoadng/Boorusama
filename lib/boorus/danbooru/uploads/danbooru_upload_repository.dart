@@ -1,11 +1,11 @@
 // Package imports:
 
+// Package imports:
+import 'package:booru_clients/danbooru.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/uploads/danbooru_upload.dart';
 import 'package:boorusama/boorus/danbooru/users/user/user.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client_uploads.dart';
-import 'package:boorusama/clients/danbooru/types/types.dart';
 
 class DanbooruUploadRepository {
   const DanbooruUploadRepository({

@@ -147,7 +147,7 @@ class _DanbooruForumPostsPageState
                 ),
                 border: Border(
                   left: BorderSide(
-                    color: context.colorScheme.hintColor,
+                    color: Theme.of(context).colorScheme.hintColor,
                     width: 3,
                   ),
                 ),

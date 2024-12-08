@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/functional.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import '../votes/comment_votes_notifier.dart';
 import 'comment_data.dart';

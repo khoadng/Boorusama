@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/tags/edit/tag_edit_view_controller.dart';
-import 'package:boorusama/core/theme.dart';
 import 'tag_edit_notifier.dart';
 
 class TagEditContainer extends ConsumerWidget {
@@ -36,7 +35,7 @@ class TagEditContainer extends ConsumerWidget {
 
     return Container(
       height: height,
-      color: context.colorScheme.surfaceContainerLow,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
       child: Column(
         children: [
           _buildAppSheetAppbar(ref, context, title),
@@ -68,7 +67,7 @@ class TagEditContainer extends ConsumerWidget {
           padding: const EdgeInsets.only(right: 4, top: 8, bottom: 4),
           child: Material(
             shape: const CircleBorder(),
-            color: context.colorScheme.surfaceContainerHighest,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Container(
               padding: const EdgeInsets.all(4),
               child: InkWell(
@@ -93,7 +92,7 @@ class TagEditContainer extends ConsumerWidget {
           padding: const EdgeInsets.only(right: 16, top: 8, bottom: 4),
           child: Material(
             shape: const CircleBorder(),
-            color: context.colorScheme.surfaceContainerHighest,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Container(
               padding: const EdgeInsets.all(4),
               child: InkWell(

@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/comments/vote_event.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'comment_vote.dart';
 
 class CommentVoteSection extends StatelessWidget {
@@ -47,7 +47,7 @@ class CommentVoteSection extends StatelessWidget {
             Symbols.arrow_upward_alt,
             color: voteState == CommentVoteState.upvoted
                 ? context.colors.upvoteColor
-                : context.iconTheme.color,
+                : Theme.of(context).iconTheme.color,
             size: 24,
           ),
         ),
@@ -71,7 +71,7 @@ class CommentVoteSection extends StatelessWidget {
             Symbols.arrow_downward_alt,
             color: voteState == CommentVoteState.downvoted
                 ? context.colors.downvoteColor
-                : context.iconTheme.color,
+                : Theme.of(context).iconTheme.color,
             size: 24,
           ),
         ),

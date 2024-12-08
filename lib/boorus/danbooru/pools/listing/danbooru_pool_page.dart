@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../_internal/pool_page_sliver_grid.dart';
 import '../_internal/providers.dart';
 import '../pool/danbooru_pool.dart';
@@ -42,7 +41,7 @@ class _PostList extends ConsumerWidget {
           slivers: [
             SliverAppBar(
               titleSpacing: 0,
-              backgroundColor: context.colorScheme.surface,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               title: const Text('pool.pool_gallery').tr(),
               actions: const [
                 PoolSearchButton(),
@@ -50,7 +49,7 @@ class _PostList extends ConsumerWidget {
             ),
             SliverPinnedHeader(
               child: ColoredBox(
-                color: context.colorScheme.surface,
+                color: Theme.of(context).colorScheme.surface,
                 child: DefaultTabController(
                   initialIndex:
                       ref.watch(danbooruSelectedPoolCategoryProvider) ==

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -39,11 +38,11 @@ class BooruSelectorItem extends StatelessWidget {
           message: config.name,
           triggerMode: TooltipTriggerMode.manual,
           decoration: BoxDecoration(
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(8),
           ),
           textStyle: TextStyle(
-            color: context.colorScheme.onSurface,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w600,
           ),
           child: child,
@@ -74,7 +73,7 @@ class BooruSelectorItem extends StatelessWidget {
               left: 4,
             ),
       child: InkWell(
-        hoverColor: context.theme.hoverColor.applyOpacity(0.1),
+        hoverColor: Theme.of(context).hoverColor.applyOpacity(0.1),
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -97,7 +96,7 @@ class BooruSelectorItem extends StatelessWidget {
                     border: Border(
                       top: BorderSide(
                         color: selected
-                            ? context.colorScheme.primary
+                            ? Theme.of(context).colorScheme.primary
                             : Colors.transparent,
                         width: 4,
                       ),
@@ -119,7 +118,7 @@ class BooruSelectorItem extends StatelessWidget {
                     border: Border(
                       top: BorderSide(
                         color: selected
-                            ? context.colorScheme.primary
+                            ? Theme.of(context).colorScheme.primary
                             : Colors.transparent,
                         width: 48,
                       ),

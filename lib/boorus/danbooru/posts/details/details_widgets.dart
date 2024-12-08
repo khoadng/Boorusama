@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -12,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/pools/widgets/pool_tiles.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import '../../tags/details/danbooru_tags_tile.dart';
 import '../post/danbooru_post.dart';
 import 'danbooru_post_details_page.dart';

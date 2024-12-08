@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/functional.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
 
 class CreateBooruApiKeyField extends StatefulWidget {

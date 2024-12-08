@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/changelogs/what_news.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class ChangelogDialog extends StatelessWidget {
@@ -54,14 +53,19 @@ class ChangelogDialog extends StatelessWidget {
                           children: [
                             Text(
                               'app_update.whats_new',
-                              style: context.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ).tr(),
                             const SizedBox(width: 8),
                             CompactChip(
-                              backgroundColor: context.colorScheme.primary,
-                              textColor: context.colorScheme.onPrimary,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              textColor:
+                                  Theme.of(context).colorScheme.onPrimary,
                               label: version.toString(),
                             ),
                           ],
@@ -99,7 +103,7 @@ class ChangelogDialog extends StatelessWidget {
                             child: Text(
                               '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
                               style: TextStyle(
-                                color: context.colorScheme.hintColor,
+                                color: Theme.of(context).colorScheme.hintColor,
                                 fontStyle: FontStyle.italic,
                                 fontSize: 12,
                               ),

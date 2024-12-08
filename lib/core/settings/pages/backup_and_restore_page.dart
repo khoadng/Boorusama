@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -17,10 +18,8 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart' as p;
 import 'package:boorusama/foundation/picker.dart';
@@ -87,7 +86,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                       '+${configs.length - first5Configs.length}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: context.colorScheme.onSurface,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
                       ),
@@ -399,17 +398,17 @@ class BackupRestoreTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainer,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: context.colorScheme.surface,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             child: Icon(
               leadingIcon,
-              color: context.colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
               fill: 1,
             ),
           ),
@@ -431,7 +430,7 @@ class BackupRestoreTile extends StatelessWidget {
                     subtitle!,
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
-                      color: context.colorScheme.hintColor,
+                      color: Theme.of(context).colorScheme.hintColor,
                     ),
                   ),
                 if (extra != null) ...extra!,
@@ -482,7 +481,7 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
             const SizedBox(height: 20),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: context.colorScheme.errorContainer,
+                backgroundColor: Theme.of(context).colorScheme.errorContainer,
                 shadowColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -494,7 +493,7 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
                 child: Text(
                   'Sure',
                   style: TextStyle(
-                    color: context.colorScheme.onErrorContainer,
+                    color: Theme.of(context).colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import '../posts/post/danbooru_post.dart';

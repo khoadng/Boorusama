@@ -8,12 +8,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/functional.dart' as fp;
 import 'package:boorusama/foundation/media_scanner.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -53,7 +53,7 @@ class BackgroundDownloader implements DownloadService {
     bool? skipIfExists,
     Map<String, String>? headers,
   }) =>
-      fp.TaskEither.Do(
+      TaskEither.Do(
         ($) async {
           final downloadDirTask = await tryGetDownloadDirectory().run();
           final downloadDir = downloadDirTask.fold((l) => null, (r) => r);
@@ -89,7 +89,7 @@ class BackgroundDownloader implements DownloadService {
     bool? skipIfExists,
     Map<String, String>? headers,
   }) =>
-      fp.TaskEither.Do(
+      TaskEither.Do(
         ($) async {
           final task = DownloadTask(
             url: url,

@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
@@ -42,13 +41,15 @@ class YoutubePreviewBox extends StatelessWidget {
                   children: [
                     Text(
                       data.siteName,
-                      style: context.textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     TextButton(
                       onPressed: () => launchExternalUrl(uri),
                       child: Text(
                         data.title,
-                        style: context.textTheme.titleMedium!
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
                             .copyWith(color: Colors.blue),
                       ),
                     ),

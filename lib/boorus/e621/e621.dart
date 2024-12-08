@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/e621.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/configs/configs.dart';
-import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';

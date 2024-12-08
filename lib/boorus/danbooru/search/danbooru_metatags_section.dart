@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/search/metatag_widgets.dart';
 import 'package:boorusama/core/tags/metatag/providers.dart';

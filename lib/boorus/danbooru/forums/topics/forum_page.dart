@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
@@ -10,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/forums/forum_topic.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../../users/creator/creators_notifier.dart';
 import 'forum_card.dart';
 import 'forum_topic.dart';

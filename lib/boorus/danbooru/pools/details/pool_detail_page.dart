@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,13 +16,9 @@ import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/html_utils.dart';
@@ -77,7 +75,7 @@ class PoolDetailPage extends ConsumerWidget {
             child: ListTile(
               title: Text(
                 pool.name.replaceAll('_', ' '),
-                style: context.theme.textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(
                 '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',

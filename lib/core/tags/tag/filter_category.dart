@@ -1,5 +1,5 @@
-// Project imports:
-import 'package:boorusama/foundation/functional.dart';
+// Package imports:
+import 'package:foundation/foundation.dart';
 
 enum TagFilterCategory {
   newest,

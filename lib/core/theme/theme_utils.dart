@@ -6,17 +6,9 @@ import 'colors.dart';
 import 'extended_color_scheme.dart';
 
 extension ThemeX on BuildContext {
-  ThemeData get theme => Theme.of(this);
-  TextTheme get textTheme => theme.textTheme;
-  IconThemeData get iconTheme => theme.iconTheme;
-  ColorScheme get colorScheme => theme.colorScheme;
-
-  Brightness get brightness => theme.brightness;
-  Brightness get onBrightness =>
-      brightness == Brightness.light ? Brightness.dark : Brightness.light;
-
-  bool get isDark => brightness == Brightness.dark;
-  bool get isLight => !isDark;
+  Brightness get onBrightness => Theme.of(this).brightness == Brightness.light
+      ? Brightness.dark
+      : Brightness.light;
 
   BoorusamaColors get colors => Theme.of(this).extension<BoorusamaColors>()!;
   ExtendedColorScheme get extendedColorScheme =>

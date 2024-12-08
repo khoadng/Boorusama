@@ -51,7 +51,7 @@ class BookmarkSearchBar extends ConsumerWidget {
         ),
         itemHeight: kPreferredLayout.isMobile ? 42 : 40,
         suggestionsDecoration: SuggestionDecoration(
-          color: context.colorScheme.surfaceContainerHigh,
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(8),
         ),
         searchInputDecoration: SearchInputDecoration(

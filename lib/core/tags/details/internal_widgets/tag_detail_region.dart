@@ -9,8 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 
 class TagDetailsRegion extends ConsumerWidget {
@@ -28,13 +26,13 @@ class TagDetailsRegion extends ConsumerWidget {
     return !context.isLargeScreen
         ? builder(context)
         : Material(
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 4),
                 SizedBox(
-                  width: max(context.screenWidth * 0.25, 350),
+                  width: max(MediaQuery.sizeOf(context).width * 0.25, 350),
                   child: SingleChildScrollView(
                     child: SafeArea(
                       left: false,

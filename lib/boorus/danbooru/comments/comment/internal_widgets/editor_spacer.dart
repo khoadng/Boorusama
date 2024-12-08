@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 // Project imports:
 
@@ -17,7 +16,7 @@ class EditorSpacer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12),
       width: double.infinity,
       height: 1,
-      color: context.theme.dividerColor,
+      color: Theme.of(context).dividerColor,
     );
   }
 }

@@ -1,9 +1,9 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/http/providers.dart';

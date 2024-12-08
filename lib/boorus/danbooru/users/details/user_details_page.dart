@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../user/providers.dart';
@@ -99,7 +98,7 @@ class UserDetailsPage extends ConsumerWidget {
 
                 return DecoratedBox(
                   decoration: BoxDecoration(
-                    color: context.colorScheme.surface,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: const BorderRadius.all(Radius.circular(8)),
                   ),
                   child: CustomScrollView(
@@ -180,8 +179,10 @@ class UserDetailsActionButtons extends ConsumerWidget {
           if (ref.watch(isDevEnvironmentProvider))
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: context.colorScheme.secondaryContainer,
-                foregroundColor: context.colorScheme.onSecondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
+                foregroundColor:
+                    Theme.of(context).colorScheme.onSecondaryContainer,
               ),
               child: const Text('My Uploads'),
               onPressed: () => goToMyUploadsPage(context),
@@ -189,8 +190,9 @@ class UserDetailsActionButtons extends ConsumerWidget {
           const SizedBox(width: 8),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: context.colorScheme.secondaryContainer,
-              foregroundColor: context.colorScheme.onSecondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              foregroundColor:
+                  Theme.of(context).colorScheme.onSecondaryContainer,
             ),
             child: const Text('profile.messages').tr(),
             onPressed: () => goToDmailPage(context),

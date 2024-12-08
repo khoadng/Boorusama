@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/backups/backward_import_alert_dialog.dart';
 import 'package:boorusama/core/backups/data_io_handler.dart';
 import 'package:boorusama/core/backups/providers.dart';
-import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/package_info.dart';
@@ -43,22 +42,6 @@ final settingsProvider = Provider<Settings>(
   name: 'settingsProvider',
   dependencies: [settingsNotifierProvider],
 );
-
-final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
-  final listing = ref.watch(settingsProvider.select((value) => value.listing));
-
-  // check if user has set custom settings
-  final listingConfigs =
-      ref.watch(currentBooruConfigProvider.select((value) => value.listing));
-
-  // if user has set it and it's enabled, return it
-  if (listingConfigs != null && listingConfigs.enable) {
-    return listingConfigs.settings;
-  }
-
-  // otherwise, return the global settings
-  return listing;
-});
 
 class SettingsNotifier extends Notifier<Settings> {
   SettingsNotifier(this.initialSettings);

@@ -2,14 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../search_history.dart';
 
@@ -43,9 +41,9 @@ class SearchHistorySection extends StatelessWidget {
                   children: [
                     Text(
                       'search.history.history'.tr().toUpperCase(),
-                      style: context.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                     ),
                     if (!Screen.of(context).size.isLarge)
                       if (onFullHistoryRequested != null)
@@ -111,8 +109,8 @@ class SearchHistoryQueryWidget extends StatelessWidget {
                       horizontal: 8,
                     ),
                     backgroundColor: reverseScheme == true
-                        ? context.colorScheme.surface
-                        : context.colorScheme.surfaceContainerHighest,
+                        ? Theme.of(context).colorScheme.surface
+                        : Theme.of(context).colorScheme.surfaceContainerHighest,
                   ),
                 ),
               )

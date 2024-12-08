@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/sankaku.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -12,9 +13,9 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
 import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
-import 'package:boorusama/clients/sankaku/sankaku_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -27,7 +28,7 @@ import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/groups/item.dart';
 import 'package:boorusama/core/tags/tag/display.dart';

@@ -1,10 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../../users/level/user_level.dart';
 
 class ForumPostHeader extends StatelessWidget {
@@ -44,7 +46,7 @@ class ForumPostHeader extends StatelessWidget {
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
           style: TextStyle(
-            color: context.colorScheme.hintColor,
+            color: Theme.of(context).colorScheme.hintColor,
             fontSize: 12,
           ),
         ),

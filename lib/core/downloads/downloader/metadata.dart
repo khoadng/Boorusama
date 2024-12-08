@@ -3,9 +3,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/functional.dart';
+import 'package:foundation/foundation.dart';
 
 class DownloaderMetadata extends Equatable {
   const DownloaderMetadata({

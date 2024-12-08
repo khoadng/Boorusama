@@ -9,8 +9,7 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/tags/metatag/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import '../posts/listing/default_danbooru_image_grid_item.dart';
 import '../posts/post/providers.dart';
 import '../tags/related/related_tag_section.dart';
@@ -43,7 +42,7 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
             TextStyle(
           fontWeight: FontWeight.w800,
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       },
       trendingBuilder: (context, controller) => TrendingSection(

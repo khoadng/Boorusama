@@ -17,9 +17,9 @@ class Quote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         border: Border.all(
-          color: context.colorScheme.hintColor,
+          color: Theme.of(context).colorScheme.hintColor,
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6),

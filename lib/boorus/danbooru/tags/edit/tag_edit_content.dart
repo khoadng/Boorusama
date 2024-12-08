@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_ai_view.dart';
 import 'tag_edit_container.dart';
 import 'tag_edit_favorite_view.dart';

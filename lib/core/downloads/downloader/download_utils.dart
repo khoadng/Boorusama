@@ -1,8 +1,9 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
@@ -17,7 +18,6 @@ import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
@@ -222,8 +222,8 @@ void showDownloadStartToast(BuildContext context, {String? message}) {
       align: Alignment.bottomCenter,
     ),
     textPadding: const EdgeInsets.all(12),
-    textStyle: TextStyle(color: context.colorScheme.surface),
-    backgroundColor: context.colorScheme.onSurface,
+    textStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
+    backgroundColor: Theme.of(context).colorScheme.onSurface,
   );
 }
 

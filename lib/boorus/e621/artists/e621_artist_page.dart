@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/artists/artists.dart';
@@ -12,7 +13,6 @@ import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/tags/details/widgets/tag_details_page_scaffold.dart';
 import 'package:boorusama/core/tags/details/widgets/tag_other_names.dart';
 import 'package:boorusama/core/tags/tag/filter_category.dart';
-import 'package:boorusama/foundation/functional.dart';
 
 class E621ArtistPage extends ConsumerStatefulWidget {
   const E621ArtistPage({

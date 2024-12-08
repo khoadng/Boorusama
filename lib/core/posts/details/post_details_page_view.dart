@@ -18,6 +18,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'auto_slide_mixin.dart';
 
 const _kDefaultCooldownDuration = Duration(milliseconds: 750);
 const _kFullSheetSize = 0.95;

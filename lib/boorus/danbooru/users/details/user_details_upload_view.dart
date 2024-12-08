@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -13,10 +14,9 @@ import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../tags/related/danbooru_related_tag.dart';
 import '../user/user.dart';
@@ -77,10 +77,12 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                               Expanded(
                                 child: Text(
                                   '${data.sumBy((e) => e.postCount).toString()} uploads',
-                                  style:
-                                      context.textTheme.titleMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                 ),
                               ),
                               const UploadDateRangeSelectorButton(),
@@ -120,9 +122,9 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       '{0}',
                       _kTopCopyrigthTags.toString(),
                     ),
-                    style: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   ref
@@ -163,8 +165,8 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
             (e) => BooruChip(
               visualDensity: VisualDensity.compact,
               label: ConstrainedBox(
-                  constraints:
-                      BoxConstraints(maxWidth: context.screenWidth * 0.8),
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.sizeOf(context).width * 0.8),
                   child: Text(
                     e,
                     style: const TextStyle(color: Colors.transparent),
@@ -189,15 +191,15 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                 tag: e.tag,
               ),
               label: ConstrainedBox(
-                  constraints:
-                      BoxConstraints(maxWidth: context.screenWidth * 0.8),
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.sizeOf(context).width * 0.8),
                   child: RichText(
                     overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                       text: e.tag.replaceAll('_', ' '),
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: context.isDark
+                        color: Theme.of(context).brightness.isDark
                             ? ref.watch(
                                 tagColorProvider(TagCategory.copyright().name))
                             : Colors.white,
@@ -205,11 +207,12 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       children: [
                         TextSpan(
                           text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: context.isLight
-                                ? Colors.white.applyOpacity(0.85)
-                                : null,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).brightness.isLight
+                                        ? Colors.white.applyOpacity(0.85)
+                                        : null,
+                                  ),
                         ),
                       ],
                     ),

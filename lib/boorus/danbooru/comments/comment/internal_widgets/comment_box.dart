@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -10,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../comment_data.dart';
 import '../comments_notifier.dart';
 import 'reply_header.dart';
@@ -65,7 +65,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: context.colorScheme.outlineVariant,
+              color: Theme.of(context).colorScheme.outlineVariant,
             ),
           ),
         ),
@@ -84,7 +84,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
               controller: textEditingController,
               decoration: InputDecoration(
                 hintStyle: TextStyle(
-                  color: context.colorScheme.hintColor,
+                  color: Theme.of(context).colorScheme.hintColor,
                 ),
                 hintText: 'comment.create.hint'.tr(),
                 suffixIcon: IconButton(

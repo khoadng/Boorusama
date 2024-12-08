@@ -2,12 +2,12 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/utils/utils.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../types.dart';

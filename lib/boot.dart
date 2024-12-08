@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart';
@@ -16,6 +17,7 @@ import 'package:stack_trace/stack_trace.dart';
 import 'package:boorusama/boorus/danbooru/tags/user_metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -52,7 +54,6 @@ import 'core/bookmarks/providers.dart';
 import 'core/cache/providers.dart';
 import 'core/downloads/notifications.dart';
 import 'core/search/boot.dart';
-import 'foundation/i18n.dart';
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import '../data/settings_providers.dart';
@@ -186,7 +186,7 @@ class _ImageListingSettingsSectionState
               ? Text(
                   'settings.image_grid.image_quality.high_quality_notice',
                   style: TextStyle(
-                    color: context.colorScheme.hintColor,
+                    color: Theme.of(context).colorScheme.hintColor,
                   ),
                 ).tr()
               : null,
@@ -220,7 +220,7 @@ class _ImageListingSettingsSectionState
           subtitle: Text(
             'settings.performance.posts_per_page_explain',
             style: TextStyle(
-              color: context.colorScheme.hintColor,
+              color: Theme.of(context).colorScheme.hintColor,
             ),
           ).tr(),
           selectedOption: settings.postsPerPage,

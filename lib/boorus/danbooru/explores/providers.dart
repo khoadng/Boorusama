@@ -15,6 +15,7 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import '../posts/post/danbooru_post.dart';
 import 'explore_repository.dart';
 

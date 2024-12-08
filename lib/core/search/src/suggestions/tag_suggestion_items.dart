@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -13,7 +13,6 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/html.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
@@ -43,7 +42,7 @@ class TagSuggestionItems extends ConsumerWidget {
     final tagInfo = ref.watch(tagInfoProvider);
 
     return Material(
-      color: backgroundColor ?? context.colorScheme.surface,
+      color: backgroundColor ?? Theme.of(context).colorScheme.surface,
       elevation: elevation ?? 4,
       borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
       child: ListView.builder(
@@ -121,7 +120,7 @@ class TagSuggestionItem extends StatelessWidget {
                 child: Text(
                   NumberFormat.compact().format(tag.postCount),
                   style: TextStyle(
-                    color: context.colorScheme.hintColor,
+                    color: Theme.of(context).colorScheme.hintColor,
                   ),
                 ),
               ),

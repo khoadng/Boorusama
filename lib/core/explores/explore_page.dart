@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder_default.dart';
@@ -12,11 +13,11 @@ import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/images/explicit_block_overlay.dart';
 import 'package:boorusama/core/images/utils.dart';
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../videos/video_play_duration_icon.dart';
 
 class ExplorePage extends ConsumerWidget {
   const ExplorePage({
@@ -211,9 +212,10 @@ class ExploreList extends ConsumerWidget {
                       bottom: 1,
                       child: Text(
                         '${index + 1}',
-                        style: context.textTheme.displayMedium?.copyWith(
-                          color: Colors.white,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.displayMedium?.copyWith(
+                                  color: Colors.white,
+                                ),
                       ),
                     ),
                   ],

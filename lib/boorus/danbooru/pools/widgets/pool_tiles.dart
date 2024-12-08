@@ -7,8 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import '../pool/danbooru_pool.dart';
 
 class PoolTiles extends StatelessWidget {
@@ -22,7 +21,7 @@ class PoolTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.colorScheme.surfaceContainerHighest,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Column(
         children: [
           ...pools.mapIndexed(
@@ -35,7 +34,7 @@ class PoolTiles extends StatelessWidget {
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,
-                style: context.textTheme.titleSmall,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
               trailing: const Icon(
                 Symbols.keyboard_arrow_right,

@@ -10,9 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../booru_config.dart';
@@ -80,8 +78,10 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Include these tags in every search',
                   style: TextStyle(
-                    color:
-                        context.theme.colorScheme.onSurface.applyOpacity(0.8),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .applyOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -106,8 +106,10 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Exclude these tags in every search',
                   style: TextStyle(
-                    color:
-                        context.theme.colorScheme.onSurface.applyOpacity(0.8),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .applyOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -170,14 +172,14 @@ class BooruConfigSearchView extends ConsumerWidget {
       children: [
         ...tags.map(
           (e) => Chip(
-            backgroundColor: context.theme.colorScheme.secondaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             label: exclude
                 ? Text(e.substring(1).replaceAll('_', ' '))
                 : Text(e.replaceAll('_', ' ')),
             deleteIcon: Icon(
               Symbols.close,
               size: 16,
-              color: context.theme.colorScheme.error,
+              color: Theme.of(context).colorScheme.error,
             ),
             onDeleted: () => _removeTag(ref, e),
           ),
@@ -191,7 +193,7 @@ class BooruConfigSearchView extends ConsumerWidget {
               ref: ref,
               initialConfig: config,
               onSubmitted: (context, text, _) {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 _addTag(ref, text, exclude: exclude);
               },
               onSelected: (tag, _) {
@@ -285,10 +287,10 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: context.theme.colorScheme.surfaceContainer.applyOpacity(0.6),
+        color: Theme.of(context).colorScheme.surfaceContainer.applyOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: context.theme.colorScheme.outlineVariant.applyOpacity(0.6),
+          color: Theme.of(context).colorScheme.outlineVariant.applyOpacity(0.6),
           width: 0.5,
         ),
       ),
@@ -298,7 +300,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
           Text(
             'Preview',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: context.theme.colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
           ),
           const SizedBox(height: 8),
@@ -313,7 +315,9 @@ class _EffectiveTagPreview extends ConsumerWidget {
                   label: Text(
                     '<any search query>',
                     style: TextStyle(
-                      color: context.theme.colorScheme.onSurfaceVariant
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurfaceVariant
                           .applyOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
@@ -333,22 +337,24 @@ class _EffectiveTagPreview extends ConsumerWidget {
                           TextSpan(
                             text: '—',
                             style: TextStyle(
-                              color: context.theme.colorScheme.error,
+                              color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         TextSpan(
                           text: e.startsWith('-') ? e.substring(1) : e,
                           style: TextStyle(
-                            color:
-                                context.theme.colorScheme.onSecondaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSecondaryContainer,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  backgroundColor: context.theme.colorScheme.secondaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),

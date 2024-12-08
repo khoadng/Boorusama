@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/related_tags/related_tag_chip.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'danbooru_related_tag.dart';
 
 class RelatedTagHeader extends ConsumerStatefulWidget {
@@ -67,10 +67,11 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
               ),
               child: FilledButton(
                 style: FilledButton.styleFrom(
-                  foregroundColor: context.iconTheme.color,
-                  backgroundColor: context.colorScheme.surfaceContainerHighest,
+                  foregroundColor: Theme.of(context).iconTheme.color,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
                   side: BorderSide(
-                    color: context.colorScheme.hintColor,
+                    color: Theme.of(context).colorScheme.hintColor,
                   ),
                 ),
                 onPressed: () => goToRelatedTagsPage(

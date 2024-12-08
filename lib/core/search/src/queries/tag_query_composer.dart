@@ -1,10 +1,12 @@
 // Dart imports:
 import 'dart:convert';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/foundation/functional.dart';
+import 'package:boorusama/core/posts/rating.dart';
 
 abstract class TagQueryComposer {
   List<String> compose(List<String> tags);

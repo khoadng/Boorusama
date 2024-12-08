@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/posts/posts.dart';
@@ -12,9 +13,7 @@ import 'package:boorusama/core/datetimes/time_scale_toggle_switch.dart';
 import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/functional.dart';
 
 class E621PopularPage extends ConsumerStatefulWidget {
   const E621PopularPage({
@@ -47,7 +46,9 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
             builder: (context, controller) => Column(
               children: [
                 Container(
-                  color: context.theme.bottomNavigationBarTheme.backgroundColor,
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .backgroundColor,
                   child: ValueListenableBuilder<DateTime>(
                     valueListenable: selectedDateNotifier,
                     builder: (context, d, __) => ValueListenableBuilder(

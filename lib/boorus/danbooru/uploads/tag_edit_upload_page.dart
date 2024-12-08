@@ -2,15 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart' hide TagCategory;
 import 'package:collection/collection.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/artists/urls/artist_url_chips.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/converter.dart';
 import 'package:boorusama/boorus/danbooru/sources/providers.dart';
-import 'package:boorusama/clients/danbooru/types/source_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
@@ -24,14 +26,11 @@ import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../posts/post/danbooru_post.dart';
 import '../posts/post/providers.dart';
@@ -159,16 +158,18 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                 textColor: Colors.white,
                                 label: 'Pixel-Perfect Duplicate',
                                 onTap: () {},
-                                backgroundColor:
-                                    context.colorScheme.errorContainer,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .errorContainer,
                               )
                             else
                               CompactChip(
                                 textColor: Colors.white,
                                 label: 'Duplicate',
                                 onTap: () {},
-                                backgroundColor:
-                                    context.colorScheme.errorContainer,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .errorContainer,
                               ),
                           ],
                         )
@@ -278,16 +279,20 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                 padding: const EdgeInsets.all(4),
                                 child: Text(
                                   _buildDetails(post),
-                                  style: context.textTheme.bodySmall,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                               // xx% similar
                               Text(
                                 '${similar.toInt()}% Similar',
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.hintColor,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .hintColor,
+                                    ),
                               ),
                             ],
                           );
@@ -297,7 +302,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                         child: Center(
                           child: Text(
                             'No similar images found',
-                            style: context.textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
                       );
@@ -320,9 +325,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               border: Border.all(
-                color: context.colorScheme.onSecondaryContainer,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
               ),
-              color: context.colorScheme.secondaryContainer,
+              color: Theme.of(context).colorScheme.secondaryContainer,
             ),
             child: ref.watch(danbooruSourceProvider(widget.post.pageUrl)).when(
                   data: (source) => Column(
@@ -525,10 +530,10 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     SourceDto source,
   ) {
     return Theme(
-      data: context.theme.copyWith(
-        listTileTheme: context.theme.listTileTheme.copyWith(
-          visualDensity: const ShrinkVisualDensity(),
-        ),
+      data: Theme.of(context).copyWith(
+        listTileTheme: Theme.of(context).listTileTheme.copyWith(
+              visualDensity: const ShrinkVisualDensity(),
+            ),
         dividerColor: Colors.transparent,
       ),
       child: CustomScrollView(
@@ -982,8 +987,8 @@ class TagSuggestionsPortalFollower extends ConsumerWidget {
             constraints: const BoxConstraints(
               maxHeight: 200,
             ),
-            width: context.screenWidth,
-            color: context.colorScheme.secondaryContainer,
+            width: MediaQuery.sizeOf(context).width,
+            color: Theme.of(context).colorScheme.secondaryContainer,
             child: TagSuggestionItems(
               dense: true,
               tags: tags,

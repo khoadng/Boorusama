@@ -1,13 +1,13 @@
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';
 
 final gelbooruPostRepoProvider =

@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class ForumCard extends ConsumerWidget {

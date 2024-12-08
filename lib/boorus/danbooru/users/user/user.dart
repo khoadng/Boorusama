@@ -1,9 +1,9 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/users/user.dart';
 import '../../favorites/favorite.dart';
 import '../level/user_level.dart';

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
 import '../save_search/saved_search.dart';
@@ -22,7 +20,7 @@ void goToSavedSearchCreatePage(
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: context.colorScheme.surfaceContainer,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       builder: (_) => CreateSavedSearchSheet(
         initialValue: initialValue,
       ),
@@ -39,8 +37,8 @@ void goToSavedSearchCreatePage(
       pageBuilder: (context, _, __) {
         return Dialog(
           child: Container(
-            width: context.screenWidth * 0.8,
-            height: context.screenHeight * 0.8,
+            width: MediaQuery.sizeOf(context).width * 0.8,
+            height: MediaQuery.sizeOf(context).height * 0.8,
             margin: const EdgeInsets.symmetric(
               vertical: 12,
               horizontal: 16,
@@ -69,7 +67,7 @@ void goToSavedSearchPatchPage(
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: context.colorScheme.surfaceContainer,
+    backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
     builder: (_) => EditSavedSearchSheet(
       savedSearch: savedSearch,
     ),

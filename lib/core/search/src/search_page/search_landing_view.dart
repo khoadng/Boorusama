@@ -7,8 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import '../histories/providers.dart';
 import '../histories/search_history.dart';
 import '../histories/widgets/full_history_view.dart';
@@ -149,7 +147,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                           onClear: () => _onHistoryCleared(),
                           onRemove: (value) => _onHistoryRemoved(value),
                           onTap: (value) {
-                            context.navigator.pop();
+                            Navigator.of(context).pop();
                             _onHistoryTap(value, ref);
                           },
                         );
@@ -217,7 +215,7 @@ class QueryActionsSection extends StatelessWidget {
                 children: [
                   // Text(
                   //   'Actions'.toUpperCase(),
-                  //   style: context.textTheme.titleSmall?.copyWith(
+                  //   style: Theme.of(context).titleSmall?.copyWith(
                   //     fontWeight: FontWeight.w700,
                   //   ),
                   // ),
@@ -227,7 +225,7 @@ class QueryActionsSection extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 4, right: 8),
                       visualDensity: VisualDensity.compact,
                       backgroundColor:
-                          context.colorScheme.surfaceContainerHighest,
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
                     ),
                     onPressed: () {
                       showDialog(
@@ -248,13 +246,14 @@ class QueryActionsSection extends StatelessWidget {
                       children: [
                         Icon(
                           Symbols.add,
-                          color: context.colorScheme.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fill: 1,
                         ),
                         Text(
                           'Raw query',
                           style: TextStyle(
-                            color: context.colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],

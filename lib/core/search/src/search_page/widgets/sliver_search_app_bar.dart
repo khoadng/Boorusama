@@ -8,7 +8,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/history_providers.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
 import '../../selected_tags/selected_tag_controller.dart';
@@ -54,7 +53,7 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       toolbarHeight: kToolbarHeight * 1.2,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       title: FocusScope(
         node: focusScope,
         child: SearchAppBar(

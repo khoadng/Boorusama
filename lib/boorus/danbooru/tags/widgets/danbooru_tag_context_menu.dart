@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/blacklist/blacklisted_tags_notifier.dart';
@@ -11,7 +12,6 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../../blacklist/providers.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {

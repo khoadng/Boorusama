@@ -24,7 +24,6 @@ import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
@@ -34,7 +33,7 @@ void goToHomePage(
   BuildContext context, {
   bool replace = false,
 }) {
-  context.navigator.popUntil((route) => route.isFirst);
+  Navigator.of(context).popUntil((route) => route.isFirst);
 }
 
 void goToOriginalImagePage(BuildContext context, Post post) {
@@ -319,7 +318,7 @@ void goToQuickSearchPage(
             onSubmitted: onSubmitted,
             backButton: IconButton(
               splashRadius: 16,
-              onPressed: () => context.navigator.pop(),
+              onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Symbols.arrow_back),
             ),
             ensureValidTag: ensureValidTag,

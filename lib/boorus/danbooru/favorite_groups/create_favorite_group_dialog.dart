@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../users/level/user_level.dart';
@@ -65,7 +63,7 @@ class _EditFavoriteGroupDialogState
     final config = ref.watchConfigSearch;
 
     return BooruDialog(
-      color: context.colorScheme.surfaceContainer,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       child: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.symmetric(
@@ -82,7 +80,7 @@ class _EditFavoriteGroupDialogState
               Center(
                 child: Text(
                   widget.title,
-                  style: context.textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               const SizedBox(
@@ -92,9 +90,9 @@ class _EditFavoriteGroupDialogState
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
                   'favorite_groups.group_name'.tr().toUpperCase(),
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
               ),
               BooruTextField(
@@ -112,9 +110,9 @@ class _EditFavoriteGroupDialogState
               if (widget.enableManualDataInput)
                 Text(
                   'favorite_groups.all_posts'.tr().toUpperCase(),
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
               if (widget.enableManualDataInput)
                 const SizedBox(
@@ -147,9 +145,10 @@ class _EditFavoriteGroupDialogState
                   spacing: 4,
                   children: [
                     TextButton(
-                      onPressed: () => context.navigator.pop(),
+                      onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
-                        foregroundColor: context.colorScheme.onSurface,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onSurface,
                       ),
                       child: const Text('favorite_groups.create_group_cancel')
                           .tr(),
@@ -159,7 +158,7 @@ class _EditFavoriteGroupDialogState
                       builder: (context, value, child) => FilledButton(
                         onPressed: nameController.text.isNotEmpty
                             ? () {
-                                context.navigator.pop();
+                                Navigator.of(context).pop();
                                 if (widget.initialData == null) {
                                   ref
                                       .read(

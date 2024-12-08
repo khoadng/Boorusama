@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../data/booru_config_data.dart';
 import 'providers.dart';
@@ -165,11 +165,11 @@ class BooruConfigGesturesView extends ConsumerWidget {
           const SizedBox(height: 32),
           Text(
             'Override the default gestures for this profile, select "None" to keep the original behavior.',
-            style: ref.context.textTheme.titleSmall?.copyWith(
-              color: ref.context.colorScheme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
           ),
         ],
       ),
@@ -192,7 +192,7 @@ class BooruConfigSettingsHeader extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
           fontWeight: FontWeight.w500,
         ),
       ),

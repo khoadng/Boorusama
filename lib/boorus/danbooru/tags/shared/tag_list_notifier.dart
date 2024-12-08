@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
@@ -7,7 +8,6 @@ import 'package:boorusama/boorus/danbooru/posts/post/converter.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/posts/rating.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/loggers.dart';
 
 final danbooruTagListProvider = NotifierProviderFamily<

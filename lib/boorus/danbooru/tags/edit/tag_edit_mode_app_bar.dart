@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 class TagEditModeAppBar extends StatelessWidget {
   const TagEditModeAppBar({
@@ -37,7 +36,7 @@ class TagEditModeAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 4, top: 8, bottom: 4),
           child: Material(
             shape: const CircleBorder(),
-            color: context.colorScheme.surfaceContainerHighest,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Container(
               padding: const EdgeInsets.all(4),
               child: InkWell(
@@ -57,7 +56,7 @@ class TagEditModeAppBar extends StatelessWidget {
           padding: const EdgeInsets.only(right: 16, top: 8, bottom: 4),
           child: Material(
             shape: const CircleBorder(),
-            color: context.colorScheme.surfaceContainerHighest,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: Container(
               padding: const EdgeInsets.all(4),
               child: InkWell(

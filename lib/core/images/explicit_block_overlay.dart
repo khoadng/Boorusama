@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 
 class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
   const ExplicitContentBlockOverlay({
@@ -84,7 +83,7 @@ class _ExplicitContentBlockOverlayState
       builder: (_, block, __) => block
           ? Positioned.fill(
               child: Container(
-                color: context.colorScheme.surfaceContainerLow,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
               ),
             )
           : const SizedBox.shrink(),

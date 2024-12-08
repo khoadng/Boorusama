@@ -1,11 +1,11 @@
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
+import 'package:foundation/foundation.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/clients/gelbooru/types/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'gelbooru_post.dart';
 
 GelbooruPost gelbooruPostDtoToGelbooruPostNoMetadata(PostDto dto) =>

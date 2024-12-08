@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/categories/store.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';

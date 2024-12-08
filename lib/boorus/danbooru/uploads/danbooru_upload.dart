@@ -1,10 +1,10 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/uploads/danbooru_upload_post.dart';
-import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import '../posts/post/converter.dart';

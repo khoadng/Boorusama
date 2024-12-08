@@ -2,17 +2,16 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client_artists.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import '../artist/artist.dart';
 import '../artist/providers.dart';
 import '../urls/artist_url_chips.dart';
@@ -139,7 +138,7 @@ class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
     final artist = widget.artist;
 
     return Card(
-      color: context.colorScheme.surface,
+      color: Theme.of(context).colorScheme.surface,
       child: InkWell(
         onTap: () {
           widget.focusScopeNode.unfocus();
@@ -157,7 +156,7 @@ class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
               iconPlacement: ExpandablePanelIconPlacement.right,
               headerAlignment: ExpandablePanelHeaderAlignment.center,
               tapBodyToCollapse: false,
-              iconColor: context.theme.iconTheme.color,
+              iconColor: Theme.of(context).iconTheme.color,
             ),
             header: Row(
               children: [
@@ -165,15 +164,16 @@ class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
                 Flexible(
                   child: Text(
                     artist.name.replaceAll('_', ' '),
-                    style: context.textTheme.titleLarge?.copyWith(
-                      color: ref.watch(tagColorProvider('artist')),
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: ref.watch(tagColorProvider('artist')),
+                        ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Chip(
                   padding: const EdgeInsets.all(2),
-                  backgroundColor: context.colorScheme.secondaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
                   visualDensity: const ShrinkVisualDensity(),
                   label: Text(artist.postCount.toString()),
                 ),
@@ -235,7 +235,7 @@ class _TagOtherNames extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Chip(
-              backgroundColor: context.colorScheme.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
               padding: const EdgeInsets.all(4),
               labelPadding: const EdgeInsets.all(2),
               visualDensity: VisualDensity.compact,

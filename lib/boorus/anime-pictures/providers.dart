@@ -1,9 +1,8 @@
 // Package imports:
+import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
-import 'package:boorusama/clients/anime-pictures/types/types.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/downloads/urls.dart';
@@ -11,7 +10,7 @@ import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'anime_pictures.dart';
 

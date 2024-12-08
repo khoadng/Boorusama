@@ -1,7 +1,9 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/foundation/crypto.dart';
-import 'package:boorusama/foundation/functional.dart';
 
 String hashBooruPasswordSHA1({
   required String url,

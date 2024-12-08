@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:foundation/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 class NotificationError {

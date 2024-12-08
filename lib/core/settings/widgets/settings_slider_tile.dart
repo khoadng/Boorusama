@@ -1,8 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-import 'package:boorusama/foundation/i18n.dart';
+// Package imports:
+import 'package:foundation/foundation.dart';
 
 class SettingsSliderTile extends StatelessWidget {
   const SettingsSliderTile({

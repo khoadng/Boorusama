@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/i18n.dart';
 import '../data/settings_providers.dart';
 import '../types.dart';
 import '../widgets/settings_page_scaffold.dart';

@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';

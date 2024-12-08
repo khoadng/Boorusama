@@ -1,5 +1,7 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/dart.dart';
 import 'filter_operator.dart';
 
 String sanitizeQuery(String query) {

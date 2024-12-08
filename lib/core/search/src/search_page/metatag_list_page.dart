@@ -2,12 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/metatag/metatag.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class MetatagListPage extends StatelessWidget {
@@ -28,7 +27,7 @@ class MetatagListPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: context.navigator.pop,
+            onPressed: Navigator.of(context).pop,
             icon: const Icon(Symbols.close),
           ),
         ],
@@ -48,7 +47,7 @@ class MetatagListPage extends StatelessWidget {
 
                 return ListTile(
                   onTap: () {
-                    context.navigator.pop();
+                    Navigator.of(context).pop();
                     onSelected(tag);
                   },
                   title: Text(tag.name),

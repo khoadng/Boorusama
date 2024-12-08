@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =
@@ -74,8 +73,9 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                           selected: selected,
                           showCheckmark: false,
                           visualDensity: VisualDensity.compact,
-                          selectedColor: context.colorScheme.primary,
-                          backgroundColor: context.colorScheme.surface,
+                          selectedColor: Theme.of(context).colorScheme.primary,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
                           onSelected: (value) => value
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),
@@ -83,8 +83,8 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                             tag.name.replaceAll('_', ' '),
                             style: TextStyle(
                               color: selected
-                                  ? context.colorScheme.onPrimary
-                                  : context.colorScheme.onSurface,
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         );

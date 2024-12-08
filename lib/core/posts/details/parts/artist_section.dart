@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -10,9 +11,9 @@ import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/comments/comment_parser.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import '../../sources/source.dart';
+import 'source_link.dart';
 
 enum TranlationState {
   original,

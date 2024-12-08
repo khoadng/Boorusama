@@ -3,11 +3,10 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/functional.dart';
+import 'package:boorusama/core/theme/theme_mode.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'types.dart';
 

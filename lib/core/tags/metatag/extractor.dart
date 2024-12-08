@@ -1,6 +1,8 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/search/filter.dart';
-import 'package:boorusama/dart.dart';
 import 'metatag.dart';
 
 class MetatagExtractor {

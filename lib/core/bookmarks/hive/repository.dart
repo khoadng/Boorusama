@@ -1,10 +1,10 @@
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/foundation/functional.dart';
 import '../bookmark.dart';
 import '../bookmark_convert.dart';
 import 'object.dart';

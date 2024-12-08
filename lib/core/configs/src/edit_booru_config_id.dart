@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/booru_type.dart';
 import 'booru_config.dart';
 
 class EditBooruConfigId extends Equatable {

@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -40,7 +39,7 @@ class LanguagePage extends ConsumerWidget {
             final e = supportedLanguages[index].name;
 
             return RadioListTile(
-              activeColor: context.colorScheme.primary,
+              activeColor: Theme.of(context).colorScheme.primary,
               groupValue: settings.language,
               value: e,
               title: Text(e),

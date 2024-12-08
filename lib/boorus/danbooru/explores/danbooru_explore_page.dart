@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/explores/explore_category.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/explores/explore_page.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'explore_hot_page.dart';
 import 'explore_most_viewed_page.dart';
 import 'explore_popular_page.dart';

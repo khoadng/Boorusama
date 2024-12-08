@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -16,8 +17,6 @@ import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/functional.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import '../_shared/saved_searches_notifier.dart';
 import '../save_search/saved_search.dart';
@@ -179,7 +178,7 @@ class _SavedSearchList extends ConsumerWidget {
           visualDensity: VisualDensity.compact,
           side: BorderSide(
             width: 0.5,
-            color: context.colorScheme.hintColor,
+            color: Theme.of(context).colorScheme.hintColor,
           ),
           label: Text(
             text.fold(

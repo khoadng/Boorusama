@@ -1,5 +1,3 @@
-export 'package:boorusama/foundation/i18n.dart';
-
 class DownloadTranslations {
   const DownloadTranslations._();
 

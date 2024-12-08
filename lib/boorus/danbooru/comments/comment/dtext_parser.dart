@@ -1,6 +1,8 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/core/comments/utils.dart';
-import 'package:boorusama/dart.dart';
 
 String parseDtext(String text) => text.pipe([
       bold,

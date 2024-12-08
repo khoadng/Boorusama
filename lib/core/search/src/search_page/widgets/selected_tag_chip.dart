@@ -6,8 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tag/colors.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import '../../queries/filter_operator.dart';
 import '../../selected_tags/tag_search_item.dart';
 import '../selected_tag_edit_dialog.dart';
@@ -53,10 +52,10 @@ class SelectedTagChip extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        backgroundColor: context.colorScheme.secondaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         deleteIcon: Icon(
           Symbols.close,
-          color: context.colorScheme.error,
+          color: Theme.of(context).colorScheme.error,
           size: 18,
           weight: 600,
         ),
@@ -72,7 +71,7 @@ class SelectedTagChip extends StatelessWidget {
                 TextSpan(
                   text: 'RAW   ',
                   style: TextStyle(
-                    color: context.brightness == Brightness.light
+                    color: Theme.of(context).brightness == Brightness.light
                         ? TagColors.dark().character
                         : TagColors.light().character,
                     fontWeight: FontWeight.w800,
@@ -88,7 +87,7 @@ class SelectedTagChip extends StatelessWidget {
                     FilterOperator.or => '⁓',
                   },
                   style: TextStyle(
-                    color: context.brightness == Brightness.light
+                    color: Theme.of(context).brightness == Brightness.light
                         ? TagColors.dark().copyright
                         : TagColors.light().copyright,
                   ),
@@ -97,7 +96,7 @@ class SelectedTagChip extends StatelessWidget {
                 TextSpan(
                   text: '${tagSearchItem.metatag}: ',
                   style: TextStyle(
-                    color: context.brightness == Brightness.light
+                    color: Theme.of(context).brightness == Brightness.light
                         ? TagColors.dark().meta
                         : TagColors.light().meta,
                     fontWeight: FontWeight.w700,
@@ -110,7 +109,7 @@ class SelectedTagChip extends StatelessWidget {
                     ? tagSearchItem.tag
                     : tagSearchItem.tag.replaceAll('_', ' '),
                 style: TextStyle(
-                  color: context.colorScheme.onSecondaryContainer,
+                  color: Theme.of(context).colorScheme.onSecondaryContainer,
                 ),
               ),
               const TextSpan(

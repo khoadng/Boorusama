@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../tag/display.dart';
 import '../tag/providers.dart';
 import '../tag/tag.dart';
+import 'filterable_scope.dart';
 
 final selectedViewTagQueryProvider =
     StateProvider.autoDispose<String>((ref) => '');
@@ -73,7 +73,7 @@ class ShowTagListPage extends ConsumerWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: context.navigator.pop,
+            onPressed: Navigator.of(context).pop,
             icon: const Icon(Symbols.close),
           ),
         ],

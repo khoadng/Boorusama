@@ -12,7 +12,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import '../../tags/shared/tag_list_notifier.dart';
 import '../../users/user/providers.dart';
 import '../votes/post_votes_notifier.dart';

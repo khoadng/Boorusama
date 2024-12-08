@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/generic_no_data_box.dart';
 import '../_shared/saved_searches_notifier.dart';
@@ -82,10 +82,13 @@ class _SuccessView extends ConsumerWidget {
                         'saved_search.saved_search_counter'
                             .plural(savedSearches.length)
                             .toUpperCase(),
-                        style: context.textTheme.titleMedium?.copyWith(
-                          color: context.colorScheme.hintColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.hintColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ],
                   ),

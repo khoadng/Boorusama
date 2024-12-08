@@ -1,15 +1,17 @@
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/functional.dart';
+import 'package:boorusama/core/posts/rating.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/platform.dart';
+import '../../boorus/booru.dart';
+import '../../boorus/booru_factory.dart';
+import '../../boorus/booru_type.dart';
 import 'data/booru_config_data.dart';
 import 'rating_parser.dart';
 import 'types.dart';

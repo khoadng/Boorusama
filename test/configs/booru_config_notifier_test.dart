@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -14,7 +15,6 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/src/booru_config_converter.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import '../riverpod_test_utils.dart';
 

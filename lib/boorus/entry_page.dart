@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -20,7 +21,6 @@ import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -180,14 +180,14 @@ class _Boorus extends ConsumerWidget {
           children: [
             Text(
               'Current selected profile is invalid',
-              style: context.textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             if (availableConfigs.isNotEmpty == true)
               Text(
                 'Select a profile from the list below to continue',
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.colorScheme.hintColor,
-                ),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.hintColor,
+                    ),
               ),
             const SizedBox(height: 16),
             Expanded(

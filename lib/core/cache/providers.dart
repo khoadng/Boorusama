@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/caching.dart';
+import 'cache_notifier.dart';
 
 final miscDataBoxProvider = Provider<Box<String>>(
   (ref) {

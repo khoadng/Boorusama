@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search_bar.dart';
 import 'package:boorusama/core/tags/tag/colors.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../_internal/pool_page_sliver_grid.dart';
 import '../_internal/providers.dart';
 import '../pool/danbooru_pool.dart';
@@ -112,7 +111,7 @@ class _SuggestionView extends ConsumerWidget {
                           trailing: Text(
                             NumberFormat.compact().format(pool.postCount),
                             style: TextStyle(
-                              color: context.colorScheme.hintColor,
+                              color: Theme.of(context).colorScheme.hintColor,
                             ),
                           ),
                           onTap: () {
@@ -149,7 +148,7 @@ class _SearchBar extends ConsumerWidget {
     return BooruSearchBar(
       leading: IconButton(
         splashRadius: 16,
-        onPressed: () => context.navigator.pop(),
+        onPressed: () => Navigator.of(context).pop(),
         icon: const Icon(
           Symbols.arrow_back,
         ),

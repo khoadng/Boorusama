@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../post.dart';
@@ -55,10 +55,10 @@ class SourceSection extends StatelessWidget {
           ),
           child: Text(
             title ?? 'post.detail.source_label'.tr(),
-            style: context.textTheme.titleLarge?.copyWith(
-              color: context.colorScheme.hintColor,
-              fontSize: 16,
-            ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 16,
+                ),
           ),
         ),
         Padding(
@@ -70,7 +70,8 @@ class SourceSection extends StatelessWidget {
               onTap: () => launchExternalUrlString(source.url),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(color: context.colorScheme.hintColor),
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.hintColor),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Padding(

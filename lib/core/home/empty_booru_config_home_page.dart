@@ -30,7 +30,7 @@ class _EmptyBooruConfigHomePageState
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarBrightness: context.brightness,
+        statusBarBrightness: Theme.of(context).brightness,
         statusBarIconBrightness: context.onBrightness,
       ),
       child: Scaffold(
@@ -50,13 +50,13 @@ class _EmptyBooruConfigHomePageState
                   children: [
                     Text(
                       'No profiles available',
-                      style: context.textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Text(
                       'Add a profile to continue',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        color: context.colorScheme.hintColor,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.hintColor,
+                          ),
                     ),
                     const SizedBox(height: 16),
                     FilledButton(

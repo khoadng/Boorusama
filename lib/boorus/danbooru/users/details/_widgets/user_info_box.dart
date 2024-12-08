@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../../user/user.dart';
 
 class UserInfoBox extends ConsumerWidget {
@@ -36,17 +35,17 @@ class UserInfoBox extends ConsumerWidget {
             children: [
               Text(
                 user.name.replaceAll('_', ' '),
-                style: context.textTheme.titleLarge?.copyWith(
-                  color: context.isLight
-                      ? user.level.toColor(context)
-                      : colors?.foregroundColor,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Theme.of(context).brightness.isLight
+                          ? user.level.toColor(context)
+                          : colors?.foregroundColor,
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
               Text(
                 DateFormat('yyyy-MM-dd').format(user.joinedDate),
                 style: TextStyle(
-                  color: context.colorScheme.hintColor,
+                  color: Theme.of(context).colorScheme.hintColor,
                 ),
               ),
             ],

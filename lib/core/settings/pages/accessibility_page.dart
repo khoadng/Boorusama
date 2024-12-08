@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/widgets/settings_tile.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
 
@@ -49,7 +49,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           subtitle: Text(
             'settings.accessibility.swipeAreaToOpenSidebarDescription',
             style: TextStyle(
-              color: context.colorScheme.hintColor,
+              color: Theme.of(context).colorScheme.hintColor,
             ),
           ).tr(),
           selectedOption: settings.swipeAreaToOpenSidebarPercentage,

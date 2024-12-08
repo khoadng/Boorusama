@@ -2,10 +2,10 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/functional.dart';
 import '../settings.dart';
 import 'settings_repository.dart';
 

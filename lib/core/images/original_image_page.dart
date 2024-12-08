@@ -12,7 +12,6 @@ import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -57,7 +56,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     showSystemStatus();
 
     if (mounted && !didPop) {
-      context.navigator.pop();
+      Navigator.of(context).pop();
     }
   }
 
@@ -66,7 +65,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
-            context.navigator.pop(),
+            Navigator.of(context).pop(),
       },
       child: PopScope(
         canPop: false,

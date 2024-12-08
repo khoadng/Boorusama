@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../_internal/providers.dart';
 import '../pool/danbooru_pool.dart';
@@ -23,7 +22,7 @@ class PoolOptionsHeader extends ConsumerWidget {
     final order = ref.watch(danbooruSelectedPoolOrderProvider);
 
     return Container(
-      color: context.colorScheme.surface,
+      color: Theme.of(context).colorScheme.surface,
       padding: const EdgeInsets.symmetric(
         vertical: 12,
       ),

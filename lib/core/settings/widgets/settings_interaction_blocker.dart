@@ -11,7 +11,7 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../data/providers.dart';
+import '../data/listing_provider.dart';
 
 class SettingsInteractionBlocker extends ConsumerWidget {
   const SettingsInteractionBlocker({
@@ -49,7 +49,7 @@ class SettingsInteractionBlocker extends ConsumerWidget {
                   padding: const EdgeInsets.only(right: 8),
                   child: FaIcon(
                     Icons.info,
-                    color: context.colorScheme.error,
+                    color: Theme.of(context).colorScheme.error,
                     size: 14,
                   ),
                 ),
@@ -86,11 +86,11 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
       block: hasCustomListing,
       description: RichText(
         text: TextSpan(
-          style: context.textTheme.titleSmall?.copyWith(
-            color: context.colorScheme.hintColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
           children: [
             const TextSpan(
               text: 'These settings are overridden by custom listing. Go to ',
@@ -109,7 +109,7 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
                 },
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: context.colorScheme.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const TextSpan(

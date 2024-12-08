@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 class BooruDialog extends StatelessWidget {
   const BooruDialog({
@@ -47,7 +46,7 @@ class BooruDialog extends StatelessWidget {
             ),
           ),
           Material(
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
             shape: RoundedRectangleBorder(
               borderRadius: borderRadius ?? BorderRadius.circular(8),
             ),

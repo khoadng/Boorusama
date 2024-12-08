@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../search_page/widgets/booru_search_bar.dart';
@@ -84,14 +82,14 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
                 actions: [
                   TextButton(
                     style: TextButton.styleFrom(
-                      foregroundColor: context.colorScheme.onSurface,
+                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                     ),
-                    onPressed: () => context.navigator.pop(),
+                    onPressed: () => Navigator.of(context).pop(),
                     child: const Text('generic.action.cancel').tr(),
                   ),
                   FilledButton(
                     onPressed: () {
-                      context.navigator.pop();
+                      Navigator.of(context).pop();
                       widget.onClear();
                     },
                     child: const Text('generic.action.ok').tr(),
@@ -173,7 +171,7 @@ class FullHistoryView extends ConsumerWidget {
                         onPressed: () => onHistoryRemoved(history),
                         icon: Icon(
                           Symbols.close,
-                          color: context.colorScheme.hintColor,
+                          color: Theme.of(context).colorScheme.hintColor,
                         ),
                       ),
                     ),

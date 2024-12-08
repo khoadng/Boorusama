@@ -2,16 +2,16 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/hydrus.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/clients/hydrus/hydrus_client.dart';
-import 'package:boorusama/clients/hydrus/types/types.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
@@ -27,8 +27,7 @@ import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
 import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../booru_builder_default.dart';

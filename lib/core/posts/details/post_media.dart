@@ -9,7 +9,6 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/videos/providers.dart';
 import 'package:boorusama/core/videos/video_player.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -54,7 +53,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                             details.controller.onCurrentPositionChanged,
                         onVisibilityChanged: (value) =>
                             controller.overlay.value = !value,
-                        backgroundColor: context.colorScheme.surface,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
                         onWebmVideoPlayerCreated: (wvpc) => details.controller
                             .onWebmVideoPlayerCreated(wvpc, post.id),
                         sound: ref.isGlobalVideoSoundOn,

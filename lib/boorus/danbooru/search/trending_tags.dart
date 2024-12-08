@@ -43,7 +43,7 @@ class TrendingTags extends ConsumerWidget {
                   label: Text(
                     e.name.keyword.replaceAll('_', ' '),
                     style: TextStyle(
-                      color: context.isDark ? color : null,
+                      color: Theme.of(context).brightness.isDark ? color : null,
                     ),
                   ),
                 ),
@@ -70,7 +70,7 @@ class TrendingTagsPlaceholder extends StatelessWidget {
       children: tags.map((e) {
         return BooruChip(
           chipColors: (
-            backgroundColor: context.colorScheme.surfaceContainerLow,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
             borderColor: Colors.transparent,
             foregroundColor: Colors.transparent,
           ),

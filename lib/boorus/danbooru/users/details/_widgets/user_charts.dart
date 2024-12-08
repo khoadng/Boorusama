@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/time.dart';
 import '../../../reports/danbooru_report_data_point.dart';
 import '../providers.dart';
 import '../upload_date_range_selector_type.dart';
@@ -97,23 +96,24 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) => context.colorScheme.surfaceContainerHighest,
+            getTooltipColor: (_) =>
+                Theme.of(context).colorScheme.surfaceContainerHighest,
             fitInsideHorizontally: true,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final date = data[groupIndex].date;
               return BarTooltipItem(
                   '${date.day}/${date.month}/${date.year}',
-                  context.textTheme.bodySmall?.copyWith(
-                        color: context.theme.textTheme.bodyLarge?.color,
-                      ) ??
+                  Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                          ) ??
                       const TextStyle(),
                   children: [
                     TextSpan(
                       text: '\n${rod.toY.toInt()} posts',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ]);
             },

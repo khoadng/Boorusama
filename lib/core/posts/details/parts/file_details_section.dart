@@ -2,14 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import '../../post.dart';
 import '../../rating.dart';
 import '../inherited_post.dart';
@@ -104,10 +102,10 @@ class FileDetailsSection extends StatelessWidget {
     final ratingText = rating.name.getFirstCharacter().toUpperCase();
 
     return Theme(
-      data: context.theme.copyWith(
-        listTileTheme: context.theme.listTileTheme.copyWith(
-          visualDensity: VisualDensity.compact,
-        ),
+      data: Theme.of(context).copyWith(
+        listTileTheme: Theme.of(context).listTileTheme.copyWith(
+              visualDensity: VisualDensity.compact,
+            ),
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(
@@ -118,7 +116,7 @@ class FileDetailsSection extends StatelessWidget {
         subtitle: Text(
           '$resolutionText$fileFormatText$fileSizeText • $ratingText',
           style: TextStyle(
-            color: context.colorScheme.hintColor,
+            color: Theme.of(context).colorScheme.hintColor,
           ),
         ),
         children: [
@@ -201,16 +199,16 @@ class _FileDetailTile extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       leading: Text(
         title,
-        style: context.textTheme.titleLarge?.copyWith(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
       ),
       trailing: LayoutBuilder(
         builder: (context, constrainst) => Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: context.colorScheme.surfaceContainer,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
           width: constrainst.maxWidth * 0.55,
@@ -236,7 +234,7 @@ class _FileDetailTile extends StatelessWidget {
     return Text(
       valueLabel!,
       style: TextStyle(
-        color: context.colorScheme.onSecondaryContainer,
+        color: Theme.of(context).colorScheme.onSecondaryContainer,
         fontSize: 14,
       ),
     );

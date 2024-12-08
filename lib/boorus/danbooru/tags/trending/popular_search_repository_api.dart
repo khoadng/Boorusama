@@ -1,9 +1,9 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'popular_search_repository.dart';
 import 'search.dart';
 

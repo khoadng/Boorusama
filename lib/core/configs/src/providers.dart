@@ -1,9 +1,9 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'booru_config.dart';
 import 'manage/booru_config_provider.dart';
 

@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/boorus/booru_type.dart';
+import 'package:boorusama/core/settings/data/settings_providers.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import '../booru_config.dart';

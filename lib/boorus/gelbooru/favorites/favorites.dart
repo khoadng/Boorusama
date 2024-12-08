@@ -2,17 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client_favorites.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/functional.dart';
 
 class GelbooruFavoritesPage extends ConsumerWidget {
   const GelbooruFavoritesPage({super.key});

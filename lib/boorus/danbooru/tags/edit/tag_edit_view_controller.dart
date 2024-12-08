@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
 
 class TagEditViewController extends ChangeNotifier {
   TagEditViewController();
@@ -49,7 +48,7 @@ class TagEditViewController extends ChangeNotifier {
       Area(
         id: 'image',
         data: 'image',
-        size: context.screenHeight * 0.5,
+        size: MediaQuery.sizeOf(context).height * 0.5,
         min: 50 + MediaQuery.viewPaddingOf(context).top,
       ),
       Area(

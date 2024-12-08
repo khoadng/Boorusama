@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'comments_notifier.dart';
 import 'internal_widgets/editor_spacer.dart';
 
@@ -60,7 +59,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                     child: Row(
                       children: [
                         IconButton(
-                          onPressed: () => context.navigator.pop(),
+                          onPressed: () => Navigator.of(context).pop(),
                           icon: const Icon(
                             Symbols.close,
                           ),
@@ -70,7 +69,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                         ),
                         IconButton(
                           onPressed: () {
-                            context.navigator.pop();
+                            Navigator.of(context).pop();
                             _handleSave(textEditingController.text, config);
                           },
                           icon: const Icon(Symbols.save),
@@ -105,7 +104,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
   }
 
   void _handleSave(String content, BooruConfigAuth config) {
-    context.focusScope.unfocus();
+    FocusScope.of(context).unfocus();
     ref.read(danbooruCommentsProvider(config).notifier).update(
           postId: widget.postId,
           commentId: widget.commentId,

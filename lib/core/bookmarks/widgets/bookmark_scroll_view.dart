@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -53,7 +53,7 @@ class BookmarkScrollView extends ConsumerWidget {
           pinned: true,
           automaticallyImplyLeading: false,
           titleSpacing: 0,
-          backgroundColor: context.colorScheme.surface,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           title: const BookmarkAppBar(),
         ),
         SliverToBoxAdapter(
@@ -73,7 +73,7 @@ class BookmarkScrollView extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 '${ref.watch(filteredBookmarksProvider).length} bookmarks',
-                style: context.textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
           ),

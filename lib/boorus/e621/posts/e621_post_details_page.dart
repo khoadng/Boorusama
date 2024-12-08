@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/e621/tags/tags.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/tags/groups/item.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/router.dart';

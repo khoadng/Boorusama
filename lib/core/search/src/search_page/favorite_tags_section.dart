@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'constants.dart';
@@ -54,7 +53,7 @@ class FavoriteTagsSection extends ConsumerWidget {
     return [
       ...tags.mapIndexed((index, tag) {
         final colors = ref.context.generateChipColors(
-          ref.context.colorScheme.onSurface,
+          Theme.of(ref.context).colorScheme.onSurface,
           ref.watch(settingsProvider),
         );
 
@@ -111,9 +110,9 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
               children: [
                 Text(
                   title.toUpperCase(),
-                  style: context.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
@@ -122,13 +121,13 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                     minimumSize: const Size(32, 32),
                     shape: const CircleBorder(),
                     backgroundColor:
-                        context.colorScheme.surfaceContainerHighest,
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                   ),
                   onPressed: () => context.push('/favorite_tags'),
                   child: Icon(
                     Symbols.settings,
                     size: 16,
-                    color: context.colorScheme.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fill: 1,
                   ),
                 ),

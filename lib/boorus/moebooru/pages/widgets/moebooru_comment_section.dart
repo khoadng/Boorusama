@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'moebooru_comment_item.dart';
 
 class MoebooruCommentSection extends ConsumerWidget {
@@ -39,10 +39,10 @@ class MoebooruCommentSection extends ConsumerWidget {
                     ),
                     Text(
                       'comment.comments'.tr(),
-                      style: context.textTheme.titleLarge?.copyWith(
-                        color: context.colorScheme.hintColor,
-                        fontSize: 16,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.hintColor,
+                            fontSize: 16,
+                          ),
                     ),
                     ...comments.map((comment) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),

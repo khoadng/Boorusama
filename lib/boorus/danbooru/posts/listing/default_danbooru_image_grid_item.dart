@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -14,8 +15,7 @@ import 'package:boorusama/core/images/explicit_block_overlay.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
@@ -175,13 +175,15 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                                     tag.replaceAll('_', ' '),
                                                     maxLines: 1,
                                                     style: TextStyle(
-                                                      color: context.colorScheme
+                                                      color: Theme.of(context)
+                                                          .colorScheme
                                                           .onErrorContainer,
                                                     ),
                                                   ),
-                                                  backgroundColor: context
-                                                      .colorScheme
-                                                      .errorContainer,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .errorContainer,
                                                   onPressed: () {
                                                     AppClipboard.copyAndToast(
                                                       context,

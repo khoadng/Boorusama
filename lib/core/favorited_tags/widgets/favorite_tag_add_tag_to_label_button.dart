@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/router.dart';
 import '../favorited_tags.dart';
 
@@ -26,7 +25,7 @@ class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
           context,
           ref: ref,
           onSubmitted: (context, text, _) {
-            context.navigator.pop();
+            Navigator.of(context).pop();
             ref.read(favoriteTagsProvider.notifier).add(
               text,
               labels: [

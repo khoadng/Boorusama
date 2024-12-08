@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/widgets/widgets.dart';
 
 class RelatedTagButton extends ConsumerWidget {
   const RelatedTagButton({
@@ -82,24 +81,31 @@ class RelatedTagButton extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
 
-    // return Padding(
-    //   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-    //   child: BooruChip(
-    //     color: backgroundColor,
-    //     leading: SimpleIconButton(
-    //       icon: const Icon(Symbols.add),
-    //       onPressed: onAdd,
-    //     ),
-    //     label: ConstrainedBox(
-    //       constraints: BoxConstraints(maxWidth: context.screenWidth * 0.5),
-    //       child: label,
-    //     ),
-    //     trailing: SimpleIconButton(
-    //       icon: const Icon(Symbols.remove),
-    //       onPressed: onRemove,
-    //     ),
-    //   ),
-    // );
+class SimpleIconButton extends StatelessWidget {
+  const SimpleIconButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    this.backgroundColor,
+  });
+
+  final Widget icon;
+  final VoidCallback onPressed;
+  final Color? backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: backgroundColor ?? Colors.transparent,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: icon,
+      ),
+    );
   }
 }

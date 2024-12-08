@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 
 class TagDetailsSlilverAppBar extends ConsumerWidget {
@@ -21,7 +20,7 @@ class TagDetailsSlilverAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SliverAppBar(
       floating: true,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       actions: [
         IconButton(
           splashRadius: 20,

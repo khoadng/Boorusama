@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 class BooruSegmentedButton<T> extends StatefulWidget {
   const BooruSegmentedButton({
@@ -48,26 +47,26 @@ class _BooruSegmentedButtonState<T> extends State<BooruSegmentedButton<T>> {
                 ? widget.selectedTextStyle ??
                     TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: context.colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     )
                 : widget.unselectedTextStyle ??
                     TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: context.colorScheme.onSurfaceVariant,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
           ),
       },
       height: 32,
       fixedWidth: widget.fixedWidth,
       thumbDecoration: BoxDecoration(
-        color: widget.selectedColor ?? context.colorScheme.primary,
+        color: widget.selectedColor ?? Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
       ),
       innerPadding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: widget.unselectedColor ??
-            context.colorScheme.surfaceContainerHighest,
+            Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       onValueChanged: (v) {
         setState(() {

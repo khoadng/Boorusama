@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -15,7 +16,6 @@ import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import '../../users/user/providers.dart';
 import '../post/danbooru_post.dart';
 

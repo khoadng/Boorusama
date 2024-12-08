@@ -2,13 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/moebooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -18,7 +19,6 @@ import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tag/filter_category.dart';
-import 'package:boorusama/foundation/functional.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
 import 'configs/create_moebooru_config_page.dart';

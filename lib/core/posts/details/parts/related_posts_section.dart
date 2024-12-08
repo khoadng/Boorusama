@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 import 'package:boorusama/widgets/website_logo.dart';
 import '../../common/preview_post_grid.dart';
 import '../../post.dart';
@@ -49,9 +48,9 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
           : null,
       title: Text(
         title ?? 'post.detail.related_posts'.tr(),
-        style: context.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
 

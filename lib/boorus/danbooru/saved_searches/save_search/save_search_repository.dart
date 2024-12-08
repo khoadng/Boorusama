@@ -1,6 +1,7 @@
+// Package imports:
+import 'package:booru_clients/danbooru.dart';
+
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'saved_search.dart';
 
 abstract class SavedSearchRepository {

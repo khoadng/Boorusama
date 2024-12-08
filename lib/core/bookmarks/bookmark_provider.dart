@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/backups/types.dart';
@@ -20,9 +21,7 @@ import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';

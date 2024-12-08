@@ -44,7 +44,7 @@ class CommentHeader extends StatelessWidget {
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
           style: TextStyle(
-            color: context.colorScheme.hintColor,
+            color: Theme.of(context).colorScheme.hintColor,
             fontSize: 12,
           ),
         ),

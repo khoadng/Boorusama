@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/theme.dart';
@@ -80,20 +81,20 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const SizedBox(height: 16),
           Text(
             'Basic Auth',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.colorScheme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             'Provide this information to view your favorites. This only provides read access to your account.',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.colorScheme.hintColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
           ),
           const SizedBox(height: 24),
           GelbooruLoginField(
@@ -106,11 +107,11 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const SizedBox(height: 8),
           RichText(
             text: TextSpan(
-              style: context.textTheme.titleSmall?.copyWith(
-                color: context.colorScheme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.hintColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
               children: [
                 const TextSpan(
                   text: '*Log in to your account on the browser, visit ',
@@ -124,7 +125,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                     },
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const TextSpan(
@@ -161,20 +162,20 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const SizedBox(height: 8),
           Text(
             'Advanced Auth',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.colorScheme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             'Provide this information allows you to edit your favorites. This provides write access to your account. Note that if you change your password, you need to log in again.',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.colorScheme.hintColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
           ),
           passHash == null
               ? _buildLoginButton(context, config: config)
@@ -208,7 +209,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
       margin: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         border: Border.all(
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -224,7 +225,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Row(
             children: [
               RawChip(
-                backgroundColor: context.colorScheme.secondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 onPressed: () {
                   _openBrowser(config);
                 },
@@ -232,7 +234,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               ),
               const SizedBox(width: 8),
               RawChip(
-                backgroundColor: context.colorScheme.secondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
@@ -295,7 +298,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         children: [
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: context.colorScheme.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             ),
             onPressed: () {
               _openBrowser(config);
@@ -303,7 +306,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             child: Text(
               title ?? 'Login with Browser',
               style: TextStyle(
-                color: context.colorScheme.onSecondaryContainer,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
               ),
             ),
           ),

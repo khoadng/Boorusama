@@ -1,5 +1,7 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/foundation/time.dart';
 import 'types.dart';
 
 extension DateTimeX on DateTime {

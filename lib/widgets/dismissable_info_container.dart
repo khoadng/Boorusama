@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/foundation/html.dart';
 
@@ -143,7 +142,7 @@ class _DismissableInfoContainerState
       child: IconButton(
         icon: Icon(
           Symbols.close,
-          color: context.colorScheme.onError,
+          color: Theme.of(context).colorScheme.onError,
         ),
         onPressed: () {
           setState(() {

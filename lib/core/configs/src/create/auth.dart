@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
+import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import '../booru_config.dart';
@@ -37,20 +38,20 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
         const SizedBox(height: 16),
         Text(
           'Cookie Auth',
-          style: context.textTheme.titleSmall?.copyWith(
-            color: context.colorScheme.hintColor,
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
         ),
         const SizedBox(height: 4),
         Text(
           'Provide this information so the app can access more content. Note that if you change your password or something looks wrong after some time, try to login again.',
-          style: context.textTheme.titleSmall?.copyWith(
-            color: context.colorScheme.hintColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
         ),
         passHash == null
             ? _buildLoginButton(ref, context, config: config)
@@ -77,7 +78,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
       margin: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         border: Border.all(
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -93,7 +94,8 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
           Row(
             children: [
               RawChip(
-                backgroundColor: context.colorScheme.secondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 onPressed: () {
                   _openBrowser(ref, context, config);
                 },
@@ -101,7 +103,8 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               RawChip(
-                backgroundColor: context.colorScheme.secondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
@@ -145,7 +148,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
         children: [
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: context.colorScheme.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             ),
             onPressed: () {
               _openBrowser(ref, context, config);
@@ -153,7 +156,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
             child: Text(
               title ?? 'Login with Browser',
               style: TextStyle(
-                color: context.colorScheme.onSecondaryContainer,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
               ),
             ),
           ),

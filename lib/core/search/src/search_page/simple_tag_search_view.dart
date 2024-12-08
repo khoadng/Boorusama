@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../queries/query_utils.dart';
 import '../suggestions/suggestions_notifier.dart';
@@ -128,7 +126,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                                                   isMultiple,
                                                 );
                                                 if (widget.closeOnSelected) {
-                                                  context.navigator.pop();
+                                                  Navigator.of(context).pop();
                                                 }
                                               },
                                             ),
@@ -155,7 +153,8 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: TagSuggestionItems(
                           textColorBuilder: widget.textColorBuilder,
-                          backgroundColor: context.colorScheme.surface,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surface,
                           tags: tags,
                           onItemTap: (tag) {
                             if (isMultiple) {
@@ -166,7 +165,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                               suggestionNotifier.clear();
                             } else {
                               if (widget.closeOnSelected) {
-                                context.navigator.pop();
+                                Navigator.of(context).pop();
                               }
                               widget.onSelected(tag.value, isMultiple);
                             }
@@ -245,8 +244,8 @@ class _AddButton extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? context.colorScheme.onSurface.applyOpacity(0.1)
-            : context.colorScheme.primary,
+            ? Theme.of(context).colorScheme.onSurface.applyOpacity(0.1)
+            : Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           customBorder: RoundedRectangleBorder(
@@ -257,7 +256,7 @@ class _AddButton extends StatelessWidget {
             margin: const EdgeInsets.all(4),
             child: Icon(
               Symbols.add,
-              color: context.colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
         ),

@@ -5,11 +5,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
-import 'package:boorusama/clients/danbooru/types/creator_dto.dart';
 import '../level/user_level.dart';
 
 class Creator extends Equatable {

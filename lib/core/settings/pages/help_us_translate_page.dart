@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 
@@ -27,7 +26,7 @@ class HelpUseTranslatePage extends ConsumerWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () => context.navigator.pop(),
+            onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(
               Symbols.close,
               size: 24,

@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
@@ -53,7 +52,9 @@ class AddUnknownBooruPage extends ConsumerWidget {
                   ),
                   child: Text(
                     'Select a booru engine to continue',
-                    style: context.textTheme.headlineSmall!
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
                         .copyWith(fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -80,7 +81,7 @@ class AddUnknownBooruPage extends ConsumerWidget {
                       if (ref.watch(booruEngineProvider) != BooruType.hydrus)
                         Text(
                           'Advanced options (optional)',
-                          style: context.textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       if (ref.watch(booruEngineProvider) != BooruType.hydrus)
                         const DefaultBooruInstructionText(
@@ -105,7 +106,7 @@ class AddUnknownBooruPage extends ConsumerWidget {
             top: MediaQuery.viewPaddingOf(context).top,
             right: 8,
             child: IconButton(
-              onPressed: context.navigator.pop,
+              onPressed: Navigator.of(context).pop,
               icon: const Icon(Symbols.close),
             ),
           ),
@@ -163,7 +164,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                                   ),
                                 );
 
-                            context.navigator.pop();
+                            Navigator.of(context).pop();
                           }
                         : null,
                     child: value == true
@@ -193,7 +194,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                 ),
           loading: () => CreateBooruSubmitButton(
             fill: true,
-            backgroundColor: context.colorScheme.hintColor,
+            backgroundColor: Theme.of(context).colorScheme.hintColor,
             onSubmit: null,
             child: Center(
               child: SizedBox(
@@ -232,7 +233,7 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
                 contentBuilder: (context) => Text(
                   'It seems like the site is not running on the selected engine. Please try with another one.',
                   style: TextStyle(
-                    color: context.colorScheme.onSurface,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),

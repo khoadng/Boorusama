@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -20,14 +22,13 @@ import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/images/explicit_block_overlay.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/keyboard.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/networking/network_state.dart';
@@ -35,11 +36,13 @@ import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
+import 'conditional_value_listenable_builder.dart';
 import 'general_post_context_menu.dart';
 import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
 import 'post_list_configuration_header.dart';
 import 'sliver_post_grid.dart';
+import 'swipe_to.dart';
 
 typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
   BuildContext context,
@@ -255,7 +258,7 @@ class SliverMasonryGridWarning extends ConsumerWidget {
               contentBuilder: (context) => Text(
                 'Consider switching to the "Standard" layout. "Masonry" is very jumpy for this booru.',
                 style: TextStyle(
-                  color: context.colorScheme.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -428,7 +431,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
         _onWillPop();
       },
       child: ColoredBox(
-        color: context.colorScheme.surface,
+        color: Theme.of(context).colorScheme.surface,
         child: ConditionalParentWidget(
           condition: widget.safeArea,
           conditionalBuilder: (child) => SafeArea(
@@ -588,7 +591,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                               sliver: SliverToBoxAdapter(
                                 child: Center(
                                   child: SpinKitPulse(
-                                    color: context.theme.colorScheme.onSurface,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -667,14 +671,14 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       rightSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: context.colorScheme.hintColor,
+          color: Theme.of(context).colorScheme.hintColor,
         ),
-        backgroundColor: context.colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         label: Row(
           children: [
             Icon(
               Symbols.arrow_back,
-              color: context.theme.colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
               size: 16,
             ),
             const SizedBox(width: 4),
@@ -685,16 +689,16 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       leftSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: context.colorScheme.hintColor,
+          color: Theme.of(context).colorScheme.hintColor,
         ),
-        backgroundColor: context.colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         label: Row(
           children: [
             Text('Page ${page + 1}'),
             const SizedBox(width: 4),
             Icon(
               Symbols.arrow_forward,
-              color: context.theme.colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
               size: 16,
             ),
           ],
@@ -725,7 +729,7 @@ class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
       final NetworkConnectedState s =>
         s.result.isMobile && settings.imageQuality.isHighres
             ? DismissableInfoContainer(
-                mainColor: context.colorScheme.error,
+                mainColor: Theme.of(context).colorScheme.error,
                 content:
                     'Caution: The app is displaying high-resolution images using mobile data.',
               )
@@ -774,7 +778,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
               final miscData = ref.watch(miscDataBoxProvider);
 
               return DismissableInfoContainer(
-                mainColor: context.colorScheme.primary,
+                mainColor: Theme.of(context).colorScheme.primary,
                 content:
                     'The app has stored <b>${Filesize.parse(cacheSize)}</b> worth of images. Would you like to clear it to free up some space?',
                 actions: [

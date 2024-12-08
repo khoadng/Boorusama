@@ -13,7 +13,6 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/router.dart';
@@ -283,16 +282,16 @@ class _TagEditPageInternalState extends ConsumerState<TagEditPageInternal> {
 
   Widget _buildSplit() {
     return Theme(
-      data: context.theme.copyWith(
-        focusColor: context.colorScheme.primary,
+      data: Theme.of(context).copyWith(
+        focusColor: Theme.of(context).colorScheme.primary,
       ),
       child: MultiSplitViewTheme(
         data: MultiSplitViewThemeData(
           dividerPainter: DividerPainters.grooved1(
-            color: context.colorScheme.onSurface,
+            color: Theme.of(context).colorScheme.onSurface,
             thickness: 4,
             size: 75,
-            highlightedColor: context.colorScheme.primary,
+            highlightedColor: Theme.of(context).colorScheme.primary,
           ),
         ),
         child: MultiSplitView(

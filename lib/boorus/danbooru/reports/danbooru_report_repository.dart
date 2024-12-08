@@ -1,7 +1,8 @@
+// Package imports:
+import 'package:booru_clients/danbooru.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/reports/danbooru_report_period.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client_reports.dart';
 import 'danbooru_report_data_point.dart';
 
 abstract class DanbooruReportRepository {

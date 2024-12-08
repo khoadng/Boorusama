@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/blacklists/blacklisted_tag_view_scaffold.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'blacklisted_tags_notifier.dart';
 import 'providers.dart';
 

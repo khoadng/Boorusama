@@ -1,9 +1,8 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'artist_commentary_repository.dart';

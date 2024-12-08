@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 class ExploreSliverAppBar extends StatelessWidget {
   const ExploreSliverAppBar({
@@ -19,8 +18,10 @@ class ExploreSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       title: Text(
         title,
-        style:
-            context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.w700),
       ),
       floating: true,
       leading: onBack != null
@@ -29,7 +30,7 @@ class ExploreSliverAppBar extends StatelessWidget {
               onPressed: onBack,
             )
           : null,
-      backgroundColor: context.colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
     );
   }
 }

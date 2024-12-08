@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/core/theme/theme_utils.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -52,7 +50,7 @@ class FavoriteTagsPage extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
-              context.navigator.push(
+              Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) => const FavoriteTagLabelsPage(),
                 ),
@@ -72,7 +70,7 @@ class FavoriteTagsPage extends ConsumerWidget {
             context,
             ref: ref,
             onSubmitted: (context, text, _) {
-              context.navigator.pop();
+              Navigator.of(context).pop();
               favoritesNotifier.add(
                 text,
                 onDuplicate: (tag) => showErrorToast(
@@ -120,7 +118,8 @@ class FavoriteTagsPage extends ConsumerWidget {
                     onPressed: () {
                       showMaterialModalBottomSheet(
                         context: context,
-                        backgroundColor: context.colorScheme.surfaceContainer,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceContainer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

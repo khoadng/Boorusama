@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
 
 // Project imports:
 
@@ -23,7 +22,7 @@ class SettingsHeader extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
           fontWeight: FontWeight.w500,
         ),
       ),

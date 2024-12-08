@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import '../booru_config.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';
@@ -60,7 +59,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
 
     return Container(
       width: 68,
-      color: context.colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(orderedConfigsProvider).maybeWhen(
@@ -131,7 +130,7 @@ class _BooruSelectorHorizontalState
 
     return Container(
       height: 48,
-      color: context.colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(orderedConfigsProvider).maybeWhen(
@@ -192,7 +191,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
           ContextMenuButtonConfig(
             'generic.action.delete'.tr(),
             labelStyle: TextStyle(
-              color: context.colorScheme.error,
+              color: Theme.of(context).colorScheme.error,
             ),
             onPressed: () {
               showDialog(

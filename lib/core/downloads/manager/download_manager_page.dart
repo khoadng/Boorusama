@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
@@ -12,8 +13,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -98,14 +97,14 @@ class DisabledDownloadManagerPage extends StatelessWidget {
             children: [
               Text(
                 'Download manager is disabled',
-                style: context.textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 4),
               Text(
                 'You are using the legacy downloader. Please enable the new downloader in the settings.',
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: context.colorScheme.hintColor,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.hintColor,
+                    ),
               ),
               const SizedBox(height: 16),
               FilledButton(
@@ -409,7 +408,7 @@ class SimpleDownloadTile extends ConsumerWidget {
       builder: (_) => RawDownloadTile(
         fileName: task.task.filename,
         strikeThrough: task.isCanceled,
-        color: task.isCanceled ? context.colorScheme.hintColor : null,
+        color: task.isCanceled ? Theme.of(context).colorScheme.hintColor : null,
         trailing: switch (task) {
           final TaskStatusUpdate s => switch (s.status) {
               TaskStatus.failed =>
@@ -547,12 +546,12 @@ class _TaskSubtitle extends ConsumerWidget {
       lessStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: context.colorScheme.primary,
+        color: Theme.of(context).colorScheme.primary,
       ),
       moreStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: context.colorScheme.primary,
+        color: Theme.of(context).colorScheme.primary,
       ),
       style: TextStyle(
         color: Theme.of(context).colorScheme.hintColor,

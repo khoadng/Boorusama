@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -11,7 +12,6 @@ import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
-import 'package:boorusama/foundation/functional.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';
 

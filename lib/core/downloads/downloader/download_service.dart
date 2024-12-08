@@ -3,11 +3,11 @@ import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'metadata.dart';
 

@@ -1,5 +1,18 @@
 // Package imports:
+import 'package:booru_clients/anime_pictures.dart';
+import 'package:booru_clients/boorusama.dart';
+import 'package:booru_clients/danbooru.dart';
+import 'package:booru_clients/e621.dart';
+import 'package:booru_clients/gelbooru.dart';
+import 'package:booru_clients/hydrus.dart';
+import 'package:booru_clients/moebooru.dart';
+import 'package:booru_clients/philomena.dart';
+import 'package:booru_clients/sankaku.dart';
+import 'package:booru_clients/shimmie2.dart';
+import 'package:booru_clients/szurubooru.dart';
+import 'package:booru_clients/zerochan.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
@@ -13,20 +26,6 @@ import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_provider.dart'
 import 'package:boorusama/boorus/sankaku/sankaku.dart';
 import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
 import 'package:boorusama/boorus/zerochan/providers.dart';
-import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
-import 'package:boorusama/clients/boorusama/boorusama_client.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/e621/e621_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_v1_client.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
-import 'package:boorusama/clients/hydrus/hydrus_client.dart';
-import 'package:boorusama/clients/moebooru/moebooru_client.dart';
-import 'package:boorusama/clients/philomena/philomena_client.dart';
-import 'package:boorusama/clients/sankaku/sankaku_client.dart';
-import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/boorus.dart';
@@ -40,7 +39,6 @@ import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/store.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'anime-pictures/providers.dart';
 import 'booru_builder_types.dart';

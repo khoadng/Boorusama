@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
@@ -93,7 +92,7 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
                       newConfig: data,
                     );
 
-                context.navigator.pop();
+                Navigator.of(context).pop();
               }
             : null,
         child: const Text('favorite_groups.create').tr(),
@@ -123,7 +122,7 @@ class UpdateBooruConfigButton extends ConsumerWidget {
                       newConfig: data,
                     );
 
-                context.navigator.pop();
+                Navigator.of(context).pop();
               }
             : null,
         child: Text('Save'),
@@ -259,11 +258,11 @@ class DefaultBooruInstructionText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: context.textTheme.titleSmall?.copyWith(
-        color: context.colorScheme.hintColor,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-      ),
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: Theme.of(context).colorScheme.hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
     );
   }
 }
@@ -398,9 +397,10 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
         if (value == BooruConfigRatingFilter.custom) ...[
           Text(
             'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.theme.colorScheme.onSurface.applyOpacity(0.6),
-            ),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.applyOpacity(0.6),
+                ),
           ),
           const SizedBox(height: 8),
           CreateBooruConfigGranularRatingOptions(

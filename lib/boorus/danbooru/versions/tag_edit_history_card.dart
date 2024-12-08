@@ -1,14 +1,16 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
 import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_post_version.dart';
+import 'tag_changed_text.dart';
 
 class TagEditHistoryCard extends StatelessWidget {
   const TagEditHistoryCard({
@@ -32,7 +34,7 @@ class TagEditHistoryCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(),
         borderRadius: BorderRadius.circular(8),
-        color: context.colorScheme.surfaceContainer,
+        color: Theme.of(context).colorScheme.surfaceContainer,
       ),
       child: Row(
         children: [
@@ -81,7 +83,7 @@ class TagEditHistoryCard extends StatelessWidget {
                             locale: context.locale,
                           ),
                           style: TextStyle(
-                            color: context.colorScheme.hintColor,
+                            color: Theme.of(context).colorScheme.hintColor,
                           ),
                         ),
                       ),
@@ -155,7 +157,7 @@ class TagEditHistoryCard extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: context.colorScheme.surface,
+        color: Theme.of(context).colorScheme.surface,
       ),
       child: Text(
         '${version.version}',

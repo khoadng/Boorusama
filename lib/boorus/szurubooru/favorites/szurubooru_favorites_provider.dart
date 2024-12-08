@@ -1,10 +1,10 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/functional.dart';
 import 'favorites.dart';
 
 final szurubooruFavoritesProvider = NotifierProvider.family<

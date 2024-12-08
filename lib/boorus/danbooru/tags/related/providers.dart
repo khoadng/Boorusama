@@ -1,10 +1,10 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/boorus/danbooru/tags/related/related_tag_repository.dart';
-import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';

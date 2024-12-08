@@ -2,15 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/functional.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import '../l10n.dart';
 import '../urls/sanitizer.dart';
 
@@ -76,7 +75,7 @@ class DownloadTileBuilder extends StatelessWidget {
                   () => SizedBox(
                     height: 60,
                     child: Card(
-                      color: context.colorScheme.tertiaryContainer,
+                      color: Theme.of(context).colorScheme.tertiaryContainer,
                       child: const Icon(
                         Symbols.image,
                         color: Colors.white,
@@ -110,7 +109,7 @@ class DownloadTileBuilder extends StatelessWidget {
                           overflow: TextOverflow.fade,
                           softWrap: false,
                           style: TextStyle(
-                            color: context.colorScheme.hintColor,
+                            color: Theme.of(context).colorScheme.hintColor,
                             fontSize: 12,
                           ),
                         ),

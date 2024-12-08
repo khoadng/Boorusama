@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/widgets/navigation_tile.dart';
 import 'home_page_controller.dart';
+import 'navigation_tile.dart';
 
 class HomeNavigationTile extends StatelessWidget {
   const HomeNavigationTile({
@@ -44,11 +43,11 @@ class HomeNavigationTile extends StatelessWidget {
           selectedIcon: Icon(
             selected ? selectedIcon : icon,
             fill: 1,
-            color: selected ? context.colorScheme.onSecondary : null,
+            color: selected ? Theme.of(context).colorScheme.onSecondary : null,
           ),
           icon: Icon(
             icon,
-            color: selected ? context.colorScheme.onSecondary : null,
+            color: selected ? Theme.of(context).colorScheme.onSecondary : null,
           ),
           title: Text(
             title,
@@ -56,7 +55,8 @@ class HomeNavigationTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: selected ? context.colorScheme.onSecondary : null,
+              color:
+                  selected ? Theme.of(context).colorScheme.onSecondary : null,
             ),
           ),
           onTap: (value) =>

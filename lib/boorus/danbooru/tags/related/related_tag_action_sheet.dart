@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_related_tag.dart';
 
@@ -44,7 +43,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: context.navigator.pop,
+            onPressed: Navigator.of(context).pop,
             icon: const Icon(Symbols.close),
           ),
         ],
@@ -64,13 +63,13 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
           trailing: BooruPopupMenuButton(
             onSelected: (value) {
               if (value == 'add') {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 widget.onAdded(tags[index]);
               } else if (value == 'negate') {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 widget.onNegated(tags[index]);
               } else if (value == 'open_wiki') {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 launchWikiPage(
                   booru.url,
                   tags[index].tag,

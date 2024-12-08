@@ -8,7 +8,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
@@ -134,7 +133,10 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
       ),
       itemBuilder: (context, index) => Container(
         decoration: BoxDecoration(
-          color: context.colorScheme.surfaceContainerHigh.applyOpacity(0.5),
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHigh
+              .applyOpacity(0.5),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),

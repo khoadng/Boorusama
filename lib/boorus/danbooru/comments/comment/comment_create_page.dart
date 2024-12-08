@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'comments_notifier.dart';
 import 'internal_widgets/editor_spacer.dart';
 
@@ -57,7 +56,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () => context.navigator.pop(),
+                        onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(
                           Symbols.close,
                         ),
@@ -65,7 +64,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                       const Expanded(child: Center()),
                       IconButton(
                         onPressed: () {
-                          context.navigator.pop();
+                          Navigator.of(context).pop();
                           _handleSend(textEditingController.text, config);
                         },
                         icon: const Icon(Symbols.send),
@@ -98,7 +97,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
   }
 
   void _handleSend(String content, BooruConfigAuth config) {
-    context.focusScope.unfocus();
+    FocusScope.of(context).unfocus();
     ref.read(danbooruCommentsProvider(config).notifier).send(
           postId: widget.postId,
           content: content,

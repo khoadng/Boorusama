@@ -13,7 +13,6 @@ import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/toast.dart';
 
@@ -63,9 +62,9 @@ class DanbooruShowTagListPage extends ConsumerWidget {
         showSuccessToast(
           context,
           'Added',
-          backgroundColor: context.colorScheme.onSurface,
+          backgroundColor: Theme.of(context).colorScheme.onSurface,
           textStyle: TextStyle(
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
           ),
         );
       },

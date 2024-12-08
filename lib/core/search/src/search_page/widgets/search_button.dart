@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme/theme_utils.dart';
 import 'package:boorusama/dart.dart';
 
 class SearchButton extends ConsumerWidget {
@@ -45,8 +44,8 @@ class SearchButton2 extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? context.colorScheme.onSurface.applyOpacity(0.1)
-            : context.colorScheme.primary,
+            ? Theme.of(context).colorScheme.onSurface.applyOpacity(0.1)
+            : Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           customBorder: RoundedRectangleBorder(
@@ -57,7 +56,7 @@ class SearchButton2 extends StatelessWidget {
             margin: const EdgeInsets.all(4),
             child: Icon(
               Symbols.search,
-              color: context.colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
         ),

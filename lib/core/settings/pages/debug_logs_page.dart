@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
@@ -15,8 +16,6 @@ import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/functional.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -158,7 +157,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
               Text(
                 log.dateTime.toString(),
                 style: TextStyle(
-                  color: context.colorScheme.hintColor,
+                  color: Theme.of(context).colorScheme.hintColor,
                 ),
               ),
               Wrap(
@@ -167,7 +166,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     '[${log.serviceName}]: ',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: context.colorScheme.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   ReadMoreText(
@@ -179,10 +178,12 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     style: TextStyle(
                       fontSize: 13,
                       color: switch (log.level) {
-                        LogLevel.info =>
-                          context.colorScheme.onSurface.withAlpha(222),
+                        LogLevel.info => Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withAlpha(222),
                         LogLevel.warning => Colors.yellow.withAlpha(222),
-                        LogLevel.error => context.colorScheme.error,
+                        LogLevel.error => Theme.of(context).colorScheme.error,
                       },
                     ),
                   ),

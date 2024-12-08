@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 
 class ChangelogPage extends ConsumerWidget {
   const ChangelogPage({super.key});
@@ -22,7 +21,7 @@ class ChangelogPage extends ConsumerWidget {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () => context.navigator.pop(),
+            onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(
               Symbols.close,
               size: 24,

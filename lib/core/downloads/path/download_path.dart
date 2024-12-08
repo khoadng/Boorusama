@@ -2,10 +2,10 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 enum DownloadDirectoryError {
