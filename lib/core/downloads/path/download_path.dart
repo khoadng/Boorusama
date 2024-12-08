@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/functional.dart';
 
 enum DownloadDirectoryError {
   directoryNotFound,

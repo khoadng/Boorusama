@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/filesize.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../../post.dart';
 import '../../rating.dart';
 import '../inherited_post.dart';

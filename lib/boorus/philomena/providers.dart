@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/philomena/philomena_post.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/philomena/philomena_client.dart';
 import 'package:boorusama/clients/philomena/types/image_dto.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 final philomenaClientProvider =
     Provider.family<PhilomenaClient, BooruConfigAuth>(

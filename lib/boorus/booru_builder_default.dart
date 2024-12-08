@@ -24,13 +24,14 @@ import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/colors.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'booru_builder.dart';
+import 'booru_builder_types.dart';
 import 'providers.dart';
 
 mixin FavoriteNotSupportedMixin implements BooruBuilder {

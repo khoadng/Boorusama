@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'danbooru_post_version.dart';
 

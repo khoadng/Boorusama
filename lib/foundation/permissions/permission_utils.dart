@@ -2,9 +2,9 @@
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/android.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../android.dart';
+import '../device_info.dart';
+import '../platform.dart';
 
 Future<PermissionStatus> requestMediaPermissions(
   DeviceInfo deviceInfo,

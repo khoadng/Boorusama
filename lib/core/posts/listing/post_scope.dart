@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/bookmarks/bookmark.dart';
-import 'package:boorusama/core/bookmarks/providers.dart';
+import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 import '../post.dart';
 import 'post_grid_controller.dart';
 

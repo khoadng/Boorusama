@@ -8,10 +8,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../groups/item.dart';
 import '../tag/display.dart';

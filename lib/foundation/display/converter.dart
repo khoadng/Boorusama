@@ -1,5 +1,4 @@
 // Project imports:
-import 'package:boorusama/core/settings.dart';
 import 'types.dart';
 
 ScreenSize screenWidthToDisplaySize(double width) => switch (width) {
@@ -15,16 +14,3 @@ int displaySizeToGridCountWeight(ScreenSize size) => switch (size) {
       ScreenSize.large => 3,
       ScreenSize.veryLarge => 4,
     };
-
-int calculateGridCount(double width, GridSize size) {
-  final displaySize = screenWidthToDisplaySize(width);
-  final weight = displaySizeToGridCountWeight(displaySize);
-
-  final count = switch (size) {
-    GridSize.small => 2.5 * weight,
-    GridSize.normal => 1.5 * weight,
-    GridSize.large => 1 * weight,
-  };
-
-  return count.round();
-}

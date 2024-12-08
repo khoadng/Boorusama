@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
+import '../functional.dart';
 
 extension DioResponseX<T> on Response<T> {
   bool get isFailure => statusCode.toOption().fold(

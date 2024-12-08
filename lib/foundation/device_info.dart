@@ -1,9 +1,17 @@
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import 'platform.dart';
+
+final deviceInfoProvider = Provider<DeviceInfo>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'deviceInfoProvider',
+);
 
 class DeviceInfoService {
   const DeviceInfoService({

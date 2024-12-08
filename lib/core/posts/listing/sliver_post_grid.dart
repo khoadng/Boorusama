@@ -13,15 +13,15 @@ import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/images/utils.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
+import 'grid_utils.dart';
 import 'post_grid_controller.dart';
 
 class SliverPostGrid<T extends Post> extends ConsumerWidget {

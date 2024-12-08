@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/boorus/booru_builder_types.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/boorus/szurubooru/post_votes/szurubooru_post_action_toolbar.dart';
@@ -24,6 +25,7 @@ import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../booru_builder_default.dart';
 import 'create_szurubooru_config_page.dart';
 import 'szurubooru_home_page.dart';
 import 'szurubooru_post.dart';

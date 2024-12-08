@@ -7,7 +7,7 @@ import 'package:boorusama/clients/hydrus/hydrus_client.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 class HydrusFavoritesNotifier
     extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>

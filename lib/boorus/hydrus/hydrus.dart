@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/hydrus/hydrus_client.dart';
 import 'package:boorusama/clients/hydrus/types/types.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
@@ -22,6 +21,7 @@ import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/home/home_navigation_tile.dart';
 import 'package:boorusama/core/home/home_page_scaffold.dart';
 import 'package:boorusama/core/home/side_menu_tile.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
@@ -31,6 +31,8 @@ import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 import 'favorites/favorites.dart';
 
 class HydrusPost extends SimplePost {

@@ -1,8 +1,8 @@
 // Dart imports:
 import 'dart:convert';
 
-// Project imports:
-import 'package:boorusama/functional.dart';
+// Package imports:
+import 'package:fpdart/fpdart.dart';
 
 enum JsonDecodeError {
   invalidJsonFormat,

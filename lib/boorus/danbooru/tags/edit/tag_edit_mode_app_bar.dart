@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 
 class TagEditModeAppBar extends StatelessWidget {
   const TagEditModeAppBar({

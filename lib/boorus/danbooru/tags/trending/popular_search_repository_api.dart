@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/foundation/time.dart';
 import 'popular_search_repository.dart';
 import 'search.dart';
 

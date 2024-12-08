@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
+import '../utils/flutter_utils.dart';
+
+// Project imports:
 
 void showSuccessToast(
   BuildContext context,

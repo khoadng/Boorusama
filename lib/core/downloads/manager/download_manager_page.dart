@@ -11,12 +11,12 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/pages.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../downloader/metadata.dart';
 import '../internal_widgets/download_tile.dart';

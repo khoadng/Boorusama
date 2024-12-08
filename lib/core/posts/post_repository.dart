@@ -7,8 +7,8 @@ import 'package:boorusama/core/search/selected_tags.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/functional.dart';
 import 'filter.dart';
 import 'post.dart';
 

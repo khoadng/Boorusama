@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/entry_page.dart';
+import 'package:boorusama/core/applock/applock.dart';
 import 'package:boorusama/core/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/bookmarks/widgets/bookmark_details_page.dart';
 import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
@@ -19,7 +20,6 @@ import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/biometrics/app_lock.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';

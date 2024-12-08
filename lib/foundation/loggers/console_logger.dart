@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
+import '../functional.dart';
 import 'console.dart';
 import 'logger.dart';
 

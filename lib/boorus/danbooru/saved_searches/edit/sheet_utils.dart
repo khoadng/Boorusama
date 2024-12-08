@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import '../save_search/saved_search.dart';
 import 'edit_saved_search_sheet.dart';

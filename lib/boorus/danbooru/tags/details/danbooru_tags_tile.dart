@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import '../../posts/details/danbooru_post_details_page.dart';
 import '../../posts/post/danbooru_post.dart';

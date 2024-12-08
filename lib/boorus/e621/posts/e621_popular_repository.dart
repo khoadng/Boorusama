@@ -6,8 +6,8 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/foundation/caching.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/functional.dart';
 
 abstract interface class E621PopularRepository {
   PostsOrError<E621Post> getPopularPosts(DateTime date, TimeScale timeScale);

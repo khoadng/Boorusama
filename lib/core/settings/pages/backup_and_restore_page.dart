@@ -9,22 +9,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/core/bookmarks/providers.dart';
+import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/bookmarks/widgets/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/android.dart';
 import 'package:boorusama/foundation/clipboard.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart' as p;
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';

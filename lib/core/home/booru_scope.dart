@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/blacklists/blacklisted_tag_page.dart';
 import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
+import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/downloads/bulks.dart';
 import 'package:boorusama/core/downloads/manager.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';

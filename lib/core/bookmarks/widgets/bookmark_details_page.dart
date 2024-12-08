@@ -6,15 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/shares.dart';
 import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../boorus/booru_builder_types.dart';
 import '../bookmark_convert.dart';
-import '../providers.dart';
 import 'providers.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {

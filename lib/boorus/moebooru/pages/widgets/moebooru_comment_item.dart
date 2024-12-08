@@ -9,8 +9,8 @@ import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/core/comments/comment_header.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/theme.dart';
 
 class MoebooruCommentItem extends ConsumerWidget {
   const MoebooruCommentItem({

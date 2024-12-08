@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/cache/providers.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../histories/providers.dart';
 import '../histories/search_history.dart';
 import '../histories/widgets/full_history_view.dart';

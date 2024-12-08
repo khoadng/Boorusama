@@ -8,8 +8,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/theme.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {
   const DismissableInfoContainer({

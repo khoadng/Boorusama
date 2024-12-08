@@ -8,8 +8,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../_internal/pool_page_sliver_grid.dart';
 import '../_internal/providers.dart';
 import '../pool/danbooru_pool.dart';

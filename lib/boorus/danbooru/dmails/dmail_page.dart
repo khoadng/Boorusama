@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../danbooru_provider.dart';
 import '../users/creator/creators_notifier.dart';

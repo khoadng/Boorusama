@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';

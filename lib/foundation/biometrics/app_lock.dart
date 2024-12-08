@@ -10,28 +10,9 @@ import 'package:local_auth/local_auth.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/networking.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../loggers.dart';
+import '../networking.dart';
 import 'biometrics.dart';
-
-class AppLockWithSettings extends ConsumerWidget {
-  const AppLockWithSettings({
-    super.key,
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return AppLock(
-      enable: ref.watch(settingsProvider.select((s) => s.appLockEnabled)),
-      child: child,
-    );
-  }
-}
 
 class AppLock extends ConsumerStatefulWidget {
   const AppLock({
@@ -132,5 +113,53 @@ class _AppLockState extends ConsumerState<AppLock> {
             error: (error, stack) => widget.child,
           ),
     );
+  }
+}
+
+class DelayedRenderWidget extends StatefulWidget {
+  const DelayedRenderWidget({
+    super.key,
+    required this.delay,
+    required this.child,
+    this.placeholder,
+  });
+
+  final Duration delay;
+  final Widget? placeholder;
+  final Widget child;
+
+  @override
+  State<DelayedRenderWidget> createState() => _DelayedRenderWidgetState();
+}
+
+class _DelayedRenderWidgetState extends State<DelayedRenderWidget> {
+  late Timer? _timer;
+  var _shouldRender = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer(
+      widget.delay,
+      () {
+        setState(() {
+          _shouldRender = true;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _shouldRender
+        ? widget.child
+        : widget.placeholder ?? const SizedBox.shrink();
   }
 }

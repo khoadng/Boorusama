@@ -8,13 +8,13 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/nullable_aspect_ratio.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'providers.dart';

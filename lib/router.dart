@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/router.dart';
 import 'boorus/danbooru/router.dart';
 

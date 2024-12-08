@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 class DownloaderMetadata extends Equatable {
   const DownloaderMetadata({

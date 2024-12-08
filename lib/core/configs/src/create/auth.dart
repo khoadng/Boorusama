@@ -6,9 +6,8 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import '../booru_config.dart';
 import 'cookie_access_webview_page.dart';

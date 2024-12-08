@@ -1,8 +1,6 @@
 // Package imports:
+import 'package:fpdart/fpdart.dart';
 import 'package:hive/hive.dart';
-
-// Project imports:
-import 'package:boorusama/functional.dart';
 
 enum BoxError {
   boxClosed,

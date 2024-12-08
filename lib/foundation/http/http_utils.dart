@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/functional.dart';
+import '../error.dart';
+import '../functional.dart';
 
 typedef DataFetcher<T> = Future<T> Function();
 

@@ -1,8 +1,8 @@
 // Dart imports:
 import 'dart:ui';
 
-// Project imports:
-import 'package:boorusama/time.dart';
+// Package imports:
+import 'package:timeago/timeago.dart';
 
 const supportedLocales = [
   Locale('en', 'US'), // English (United States)

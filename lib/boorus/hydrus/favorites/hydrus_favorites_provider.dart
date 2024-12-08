@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/hydrus/hydrus.dart';
 import 'package:boorusama/clients/hydrus/types/types.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'favorites.dart';
 
 final hydrusFavoritesProvider = NotifierProvider.family<HydrusFavoritesNotifier,

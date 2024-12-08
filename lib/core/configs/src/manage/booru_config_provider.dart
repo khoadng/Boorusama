@@ -3,15 +3,19 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/analytics.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
 import '../export_import/export_import_notifer_mixin.dart';
 import 'current_booru_providers.dart';
+
+final booruConfigRepoProvider = Provider<BooruConfigRepository>(
+  (ref) => throw UnimplementedError(),
+);
 
 final booruConfigProvider =
     NotifierProvider<BooruConfigNotifier, List<BooruConfig>>(

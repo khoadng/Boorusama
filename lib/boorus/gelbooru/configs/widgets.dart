@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/create.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/theme.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
   const GelbooruApiKeyField({

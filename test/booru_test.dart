@@ -1,10 +1,10 @@
 // Package imports:
-import 'package:boorusama/core/configs/src/validator/booru_url_error.dart';
-import 'package:boorusama/core/configs/src/validator/booru_url_validator.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/configs/src/validator/booru_url_error.dart';
+import 'package:boorusama/core/configs/src/validator/booru_url_validator.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 void main() {
   group('mapBooruUrlToUri', () {

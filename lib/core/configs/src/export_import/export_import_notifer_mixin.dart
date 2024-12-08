@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/backups/backward_import_alert_dialog.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/version.dart';
 import '../booru_config.dart';
+import '../manage/booru_config_provider.dart';
 import 'booru_config_export_data.dart';
 import 'providers.dart';
 

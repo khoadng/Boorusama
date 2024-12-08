@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/foundation/error.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/functional.dart';
 
 abstract class ForumPost {
   int get id;

@@ -9,7 +9,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/votes.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 import '../../users/user/providers.dart';
 import '../post/danbooru_post.dart';
 import 'post_vote.dart';

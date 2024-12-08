@@ -17,9 +17,11 @@ import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 import 'philomena_post.dart';
 
 class PhilomenaBuilder

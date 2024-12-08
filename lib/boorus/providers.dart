@@ -1,13 +1,7 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
@@ -35,28 +29,21 @@ import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
 import 'package:boorusama/clients/zerochan/zerochan_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/core/bookmarks/bookmark.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/urls.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/store.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/package_info.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'anime-pictures/providers.dart';
+import 'booru_builder_types.dart';
 import 'danbooru/autocompletes/providers.dart';
 import 'danbooru/blacklist/providers.dart';
 import 'danbooru/favorites/favorites_notifier.dart';
@@ -71,13 +58,6 @@ import 'moebooru/feats/autocomplete/autocomplete.dart';
 import 'philomena/providers.dart';
 import 'shimmie2/providers.dart';
 import 'szurubooru/providers.dart';
-
-final booruFactoryProvider =
-    Provider<BooruFactory>((ref) => throw UnimplementedError());
-
-final booruConfigRepoProvider = Provider<BooruConfigRepository>(
-  (ref) => throw UnimplementedError(),
-);
 
 final announcementProvider = FutureProvider<String>((ref) {
   final client = BoorusamaClient();
@@ -166,98 +146,6 @@ final postArtistCharacterRepoProvider =
               BooruType.unknown =>
                 ref.watch(postRepoProvider(config)),
             });
-
-final settingsRepoProvider = Provider<SettingsRepository>(
-  (ref) => throw UnimplementedError(),
-  name: 'settingsRepoProvider',
-);
-
-class DioOptions {
-  DioOptions({
-    required this.cacheDir,
-    required this.baseUrl,
-    required this.userAgent,
-    required this.authConfig,
-    required this.loggerService,
-    required this.booruFactory,
-  });
-  final Directory cacheDir;
-  final String baseUrl;
-  final String userAgent;
-  final BooruConfigAuth authConfig;
-  final Logger loggerService;
-  final BooruFactory booruFactory;
-}
-
-final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
-  final cacheDir = ref.watch(httpCacheDirProvider);
-  final userAgent = ref.watch(userAgentProvider(config.booruType));
-  final loggerService = ref.watch(loggerProvider);
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return newDio(
-    options: DioOptions(
-      cacheDir: cacheDir,
-      baseUrl: config.url,
-      userAgent: userAgent,
-      authConfig: config,
-      loggerService: loggerService,
-      booruFactory: booruFactory,
-    ),
-  );
-});
-
-final httpCacheDirProvider = Provider<Directory>(
-  (ref) => throw UnimplementedError(),
-  name: 'httpCacheDirProvider',
-);
-
-final miscDataBoxProvider = Provider<Box<String>>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'miscDataBoxProvider',
-);
-
-final miscDataProvider = NotifierProvider.autoDispose
-    .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
-
-final userAgentProvider = Provider.family<String, BooruType>(
-  (ref, booruType) {
-    final appVersion = ref.watch(packageInfoProvider).version;
-    final appName = ref.watch(appInfoProvider).appName;
-
-    return switch (booruType) {
-      BooruType.zerochan => '${appName.sentenceCase}/$appVersion - boorusama',
-      _ => '${appName.sentenceCase}/$appVersion',
-    };
-  },
-);
-
-final loggerProvider = Provider<Logger>((ref) => throw UnimplementedError());
-
-final bookmarkRepoProvider = Provider<BookmarkRepository>(
-  (ref) => throw UnimplementedError(),
-  name: 'bookmarkRepoProvider',
-);
-
-final deviceInfoProvider = Provider<DeviceInfo>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'deviceInfoProvider',
-);
-
-final cacheSizeProvider =
-    NotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
-        CacheSizeNotifier.new);
-
-final appInfoProvider = Provider<AppInfo>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'appInfoProvider',
-);
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     (ref, config) => switch (config.booruType) {
@@ -528,25 +416,3 @@ final booruSiteValidatorProvider =
     BooruType.unknown => Future.value(false),
   };
 });
-
-final booruProvider =
-    Provider.autoDispose.family<Booru?, BooruConfigAuth>((ref, config) {
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return config.createBooruFrom(booruFactory);
-});
-
-class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
-  @override
-  String build(String arg) {
-    final miscDataBox = ref.watch(miscDataBoxProvider);
-    return miscDataBox.get(arg) ?? '';
-  }
-
-  Future<void> put(String value) async {
-    final miscDataBox = ref.watch(miscDataBoxProvider);
-    await miscDataBox.put(arg, value);
-
-    state = value;
-  }
-}

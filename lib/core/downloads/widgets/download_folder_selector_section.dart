@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/android.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../l10n.dart';
 import '../path/validator.dart';

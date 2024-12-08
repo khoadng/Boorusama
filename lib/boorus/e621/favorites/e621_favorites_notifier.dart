@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'e621_favorites_provider.dart';
 
 class E621FavoritesNotifier

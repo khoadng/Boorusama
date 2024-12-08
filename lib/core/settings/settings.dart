@@ -5,10 +5,10 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 import 'types.dart';
 
 class Settings extends Equatable {

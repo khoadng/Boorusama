@@ -2,7 +2,7 @@
 import 'package:boorusama/boorus/e621/artists/artists.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/clients/e621/types/types.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 abstract interface class E621ArtistRepository {
   Future<Option<E621Artist>> getArtist(String name);

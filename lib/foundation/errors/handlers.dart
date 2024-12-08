@@ -8,33 +8,32 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings.dart';
 import 'reporter.dart';
 
-void initializeErrorHandlers(Settings settings, ErrorReporter? reporter) {
+void initializeErrorHandlers(bool allowCollectData, ErrorReporter? reporter) {
   if (reporter == null) return;
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
   FlutterError.onError = onUncaughtError(
     reporter,
-    settings,
+    allowCollectData,
   );
 
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
   PlatformDispatcher.instance.onError = onAsyncFlutterUncaughtError(
     reporter,
-    settings,
+    allowCollectData,
   );
 }
 
 FlutterExceptionHandler? onUncaughtError(
   ErrorReporter reporter,
-  Settings settings,
+  bool allowCollectData,
 ) =>
     (details) {
       if (kReleaseMode &&
           reporter.isRemoteErrorReportingSupported &&
-          settings.dataCollectingStatus == DataCollectingStatus.allow) {
+          allowCollectData) {
         // Ignore 304 errors
         if (details.exception is DioException) {
           final exception = details.exception as DioException;
@@ -54,12 +53,12 @@ FlutterExceptionHandler? onUncaughtError(
 
 ErrorCallback? onAsyncFlutterUncaughtError(
   ErrorReporter reporter,
-  Settings settings,
+  bool allowCollectData,
 ) =>
     (error, stack) {
       if (kReleaseMode &&
           reporter.isRemoteErrorReportingSupported &&
-          settings.dataCollectingStatus == DataCollectingStatus.allow) {
+          allowCollectData) {
         // Ignore 304 errors
         if (error is DioException) {
           if (error.response?.statusCode == 304) return true;

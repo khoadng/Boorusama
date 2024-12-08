@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
+import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'user.dart';
 import 'user_repository.dart';

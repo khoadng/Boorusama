@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../bookmark.dart';
-import '../providers.dart';
+import '../bookmark_provider.dart';
 
 enum BookmarkSortType {
   newest,

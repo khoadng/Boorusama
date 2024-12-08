@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/dart.dart';
-
 const kLightWhiteColor = Color.fromARGB(255, 220, 220, 220);
 const kDimWhiteColor = Color.fromARGB(255, 130, 130, 130);
 
@@ -66,18 +62,6 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
           Color.lerp(downvoteColor, other.downvoteColor, t) ?? downvoteColor,
     );
   }
-}
-
-extension DynamicColorX on BuildContext {
-  ChipColors? generateChipColors(
-    Color? color,
-    Settings settings,
-  ) =>
-      generateChipColorsFromColorScheme(
-        color,
-        Theme.of(this).colorScheme,
-        settings.enableDynamicColoring,
-      );
 }
 
 final dynamicColorSupportProvider = Provider<bool>((ref) {

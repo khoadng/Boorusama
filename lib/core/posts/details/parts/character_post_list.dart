@@ -7,7 +7,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 

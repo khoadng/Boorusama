@@ -14,7 +14,7 @@ import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/tags/user_metatags/user_metatag_repository.dart';
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
@@ -22,16 +22,17 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/src/bootstrap.dart';
 import 'package:boorusama/core/downloads/bulks/notifications.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/tags/configs/tag_info_service.dart';
+import 'package:boorusama/core/tracking.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/loggers.dart';
@@ -39,7 +40,6 @@ import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/tracking.dart';
 import 'package:boorusama/foundation/windows.dart' as window;
 import 'app.dart';
 import 'boorus/danbooru/tags/user_metatags/providers.dart';
@@ -48,6 +48,8 @@ import 'core/blacklists/hive/tag_repository.dart';
 import 'core/blacklists/providers.dart';
 import 'core/bookmarks/hive/object.dart';
 import 'core/bookmarks/hive/repository.dart';
+import 'core/bookmarks/providers.dart';
+import 'core/cache/providers.dart';
 import 'core/downloads/notifications.dart';
 import 'core/search/boot.dart';
 import 'foundation/i18n.dart';
@@ -249,7 +251,10 @@ Future<void> boot(BootLogger bootLogger) async {
       await initializeTracking(settings);
 
   bootLogger.l('Initialize error handlers');
-  initializeErrorHandlers(settings, crashlyticsReporter);
+  initializeErrorHandlers(
+    settings.dataCollectingStatus == DataCollectingStatus.allow,
+    crashlyticsReporter,
+  );
 
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();

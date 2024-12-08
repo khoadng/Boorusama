@@ -12,10 +12,10 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../../histories/providers.dart';
 import '../../queries/query_utils.dart';
 import '../../selected_tags/selected_tag_controller.dart';

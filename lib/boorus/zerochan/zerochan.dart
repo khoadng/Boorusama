@@ -17,8 +17,10 @@ import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/tags/groups/item.dart';
 import 'package:boorusama/core/tags/tag/colors.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';
 

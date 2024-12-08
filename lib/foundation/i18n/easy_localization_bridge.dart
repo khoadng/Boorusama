@@ -8,9 +8,9 @@ import 'package:flutter/widgets.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart' as el;
 import 'package:easy_logger/easy_logger.dart';
+import 'package:timeago/timeago.dart';
 
 // Project imports:
-import 'package:boorusama/time.dart';
 import 'locales.dart';
 
 export 'package:easy_localization/easy_localization.dart'

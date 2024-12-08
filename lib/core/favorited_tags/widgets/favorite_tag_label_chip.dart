@@ -7,9 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'favorite_tag_label_details_page.dart';
 
 class FavoriteTagLabelChip extends ConsumerWidget {

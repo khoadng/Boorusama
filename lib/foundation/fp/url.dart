@@ -1,5 +1,5 @@
-// Project imports:
-import 'package:boorusama/functional.dart';
+// Package imports:
+import 'package:fpdart/fpdart.dart';
 
 Option<Uri> tryParseUrl(String? url) => Option.Do(($) {
       if (url == null) return $(none());

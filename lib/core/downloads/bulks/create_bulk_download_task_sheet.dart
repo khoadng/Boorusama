@@ -7,18 +7,18 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/search/history_providers.dart';
 import 'package:boorusama/core/search/history_widgets.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/widgets/settings_tile.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/android.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
 import '../downloader/download_utils.dart';

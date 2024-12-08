@@ -16,6 +16,8 @@ import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 
 class Shimmie2Builder
     with

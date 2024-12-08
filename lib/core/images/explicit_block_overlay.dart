@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 
 class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
   const ExplicitContentBlockOverlay({

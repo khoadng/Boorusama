@@ -1,6 +1,6 @@
 // Project imports:
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'firebase.dart';
 

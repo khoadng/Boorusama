@@ -11,19 +11,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
+import 'package:boorusama/foundation/app_info.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/networking.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/windows.dart';
 import 'package:boorusama/router.dart';
 

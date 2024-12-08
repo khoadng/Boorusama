@@ -12,7 +12,7 @@ import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 class GelbooruFavoritesPage extends ConsumerWidget {
   const GelbooruFavoritesPage({super.key});

@@ -7,7 +7,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/foundation/time.dart';
 
 const kChangelogKey = 'changelog';
 

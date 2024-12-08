@@ -12,11 +12,11 @@ export 'package:fast_immutable_collections/fast_immutable_collections.dart'
     hide Predicate;
 
 // In project exports:
-export 'package:boorusama/utils/fp/file.dart';
-export 'package:boorusama/utils/fp/hive.dart';
-export 'package:boorusama/utils/fp/url.dart';
-export 'package:boorusama/utils/fp/json.dart';
-export 'package:boorusama/utils/fp_utils.dart';
+export 'fp/file.dart';
+export 'fp/hive.dart';
+export 'fp/url.dart';
+export 'fp/json.dart';
+export 'fp/fp_utils.dart';
 
 /// A type alias for the `State` class from the `fpdart` library.
 typedef FpState<S, A> = fpdart.State<S, A>;

@@ -8,15 +8,15 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/configs/widgets.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/lazy_indexed_stack.dart';
 import 'booru_scope.dart';
 import 'home_page_controller.dart';

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:intl/intl.dart';
-
-// Project imports:
-import 'package:boorusama/time.dart';
+import 'package:timeago/timeago.dart';
 
 String formatDurationForMedia(Duration duration) {
   final seconds = duration.inSeconds % 60;

@@ -7,8 +7,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/foundation/time.dart';
 import '../../../reports/danbooru_report_data_point.dart';
 import '../providers.dart';
 import '../upload_date_range_selector_type.dart';

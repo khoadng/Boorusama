@@ -7,7 +7,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'types.dart';
 import 'utils.dart';
 

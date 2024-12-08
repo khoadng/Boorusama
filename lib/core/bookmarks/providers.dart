@@ -2,20 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'bookmark_notifier.dart';
+import 'bookmark.dart';
 
-final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
-  BookmarkNotifier.new,
-  dependencies: [
-    bookmarkRepoProvider,
-    settingsProvider,
-    downloadServiceProvider,
-  ],
+final bookmarkRepoProvider = Provider<BookmarkRepository>(
+  (ref) => throw UnimplementedError(),
+  name: 'bookmarkRepoProvider',
 );
-
-extension BookmarkNotifierX on WidgetRef {
-  BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
-}

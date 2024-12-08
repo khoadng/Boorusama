@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 class RelatedTagButton extends ConsumerWidget {

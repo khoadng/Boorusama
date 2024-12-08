@@ -8,8 +8,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/core/search/history_providers.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import '../../selected_tags/selected_tag_controller.dart';
 import '../search_controller.dart';

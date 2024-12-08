@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme/theme_utils.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/theme/theme_utils.dart';
 
 class SearchButton extends ConsumerWidget {
   const SearchButton({

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/videos/more_options_control_button.dart';
 import 'package:boorusama/core/videos/play_pause_button.dart';
 import 'package:boorusama/core/videos/providers.dart';
 import 'package:boorusama/core/videos/sound_control_button.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
 import 'post_details.dart';

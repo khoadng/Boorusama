@@ -21,6 +21,7 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/downloads/urls.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/sources.dart';
@@ -34,6 +35,8 @@ import 'package:boorusama/core/tags/tag/filter_category.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/router.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 import 'sankaku_post.dart';
 
 part 'sankaku_provider.dart';

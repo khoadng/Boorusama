@@ -12,9 +12,9 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({

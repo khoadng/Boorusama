@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
+import 'package:boorusama/core/cache/providers.dart';
+import 'package:boorusama/core/changelogs/utils.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -15,13 +17,12 @@ import 'package:boorusama/core/downloads/notifications.dart';
 import 'package:boorusama/core/home/empty_booru_config_home_page.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/app_update.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/foundation/toast.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
@@ -38,7 +39,9 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.showChangelogDialogIfNeeded();
+      final miscBox = ref.read(miscDataBoxProvider);
+
+      ref.showChangelogDialogIfNeeded(miscBox);
     });
   }
 

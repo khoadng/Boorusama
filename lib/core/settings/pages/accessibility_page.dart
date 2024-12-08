@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/widgets/settings_tile.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
 

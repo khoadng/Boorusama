@@ -10,22 +10,33 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/backups/types.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/animations.dart';
+import 'package:boorusama/foundation/device_info.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'bookmark.dart';
+import 'providers.dart';
+
+final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
+  BookmarkNotifier.new,
+  dependencies: [
+    bookmarkRepoProvider,
+    settingsProvider,
+    downloadServiceProvider,
+  ],
+);
 
 class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
@@ -336,4 +347,8 @@ extension BookmarkCubitX on BookmarkState {
   Bookmark? getBookmark(Post post, BooruType booru) {
     return bookmarks[post.originalImageUrl];
   }
+}
+
+extension BookmarkNotifierX on WidgetRef {
+  BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
 }

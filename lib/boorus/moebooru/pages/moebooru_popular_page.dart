@@ -11,8 +11,8 @@ import 'package:boorusama/core/datetimes/time_scale_toggle_switch.dart';
 import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/theme.dart';
+import 'package:boorusama/foundation/functional.dart';
 import '../feats/posts/posts.dart';
 
 enum MoebooruPopularType {

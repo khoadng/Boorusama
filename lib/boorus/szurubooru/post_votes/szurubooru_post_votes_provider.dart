@@ -7,7 +7,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/votes.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 import '../favorites/favorites.dart';
 import '../providers.dart';
 import '../szurubooru_post.dart';

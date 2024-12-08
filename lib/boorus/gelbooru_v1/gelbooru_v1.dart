@@ -20,6 +20,7 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/downloads/urls.dart';
+import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
@@ -27,6 +28,8 @@ import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/widgets/info_container.dart';
+import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
 
 part 'providers.dart';
 

@@ -11,10 +11,13 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
+import 'package:boorusama/boorus/booru_builder_default.dart';
+import 'package:boorusama/boorus/booru_builder_types.dart';
+import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/videos/play_pause_button.dart';
 import 'package:boorusama/core/videos/providers.dart';
 import 'package:boorusama/core/videos/sound_control_button.dart';
@@ -22,7 +25,6 @@ import 'package:boorusama/core/videos/video_progress.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';

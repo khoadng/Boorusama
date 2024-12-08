@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/configs/create.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/configs/create.dart';
+import 'package:boorusama/core/theme.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {
   const CreateAnimePicturesConfigPage({

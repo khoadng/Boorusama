@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/gestures.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import '../booru_config.dart';
 
 final currentBooruConfigProvider =

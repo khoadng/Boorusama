@@ -8,10 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/search/search_bar.dart';
 import 'package:boorusama/core/tags/tag/colors.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import '../_internal/pool_page_sliver_grid.dart';
 import '../_internal/providers.dart';
 import '../pool/danbooru_pool.dart';

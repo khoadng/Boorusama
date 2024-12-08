@@ -1,8 +1,8 @@
 // Dart imports:
 import 'dart:io';
 
-// Project imports:
-import 'package:boorusama/functional.dart';
+// Package imports:
+import 'package:fpdart/fpdart.dart';
 
 enum DirectoryError {
   directoryNotFound,

@@ -10,7 +10,7 @@ import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
 import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import '../../../post.dart';
 
 class TagsTile extends ConsumerWidget {

@@ -1,8 +1,8 @@
 // Project imports:
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/foundation/functional.dart';
 import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/functional.dart';
 import 'bookmark.dart';
 import 'hive/object.dart';
 

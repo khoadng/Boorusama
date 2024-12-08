@@ -6,10 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
-import '../bookmark_notifier.dart';
+import '../bookmark_provider.dart';
 
 class AddBookmarksButton extends ConsumerWidget {
   const AddBookmarksButton({

@@ -3,37 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/app_update/what_news.dart';
+import 'package:boorusama/core/changelogs/what_news.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/time.dart';
+import 'package:boorusama/foundation/time.dart';
 import 'package:boorusama/widgets/widgets.dart';
-
-extension ChangelogWidgetRefX on WidgetRef {
-  Future<void> showChangelogDialogIfNeeded() async {
-    final data = await loadLatestChangelogFromAssets();
-    final miscBox = read(miscDataBoxProvider);
-    final shouldShow = shouldShowChangelogDialog(
-      miscBox,
-      data.version,
-    );
-
-    if (shouldShow) {
-      if (!context.mounted) return;
-
-      final _ = await showDialog(
-        context: context,
-        builder: (context) => ChangelogDialog(data: data),
-      );
-
-      await markChangelogAsSeen(data.version, miscBox);
-    }
-  }
-}
 
 class ChangelogDialog extends StatelessWidget {
   const ChangelogDialog({

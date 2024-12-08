@@ -8,10 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../data/settings_providers.dart';
+import '../data/providers.dart';
 
 class SettingsInteractionBlocker extends ConsumerWidget {
   const SettingsInteractionBlocker({

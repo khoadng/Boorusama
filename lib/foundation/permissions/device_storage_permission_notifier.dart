@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../device_info.dart';
+import '../loggers.dart';
+import '../platform.dart';
 import 'permission.dart';
 import 'permission_utils.dart';
 

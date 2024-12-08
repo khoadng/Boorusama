@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/e621/e621.dart';
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/foundation/functional.dart';
 
 final e621FavoritesRepoProvider =
     Provider.family<E621FavoritesRepository, BooruConfigAuth>((ref, config) {
