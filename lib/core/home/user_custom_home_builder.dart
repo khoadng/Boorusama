@@ -7,11 +7,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/foundation/app_info.dart';
 import 'package:boorusama/router.dart';
-import 'home.dart';
+import 'home_page_controller.dart';
 
 class UserCustomHomeBuilder extends ConsumerWidget {
   const UserCustomHomeBuilder({
@@ -92,7 +91,7 @@ class CustomHomeContainer extends ConsumerWidget {
                       appName,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: context.colorScheme.onSurface,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 18,
                         letterSpacing: -1,
                       ),

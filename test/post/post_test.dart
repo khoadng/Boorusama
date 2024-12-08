@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 
 const _videoFormat = [
   'mp4',

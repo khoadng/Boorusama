@@ -4,20 +4,22 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/cache/providers.dart';
+import 'package:boorusama/core/configs/widgets.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/widgets/lazy_indexed_stack.dart';
+import 'booru_scope.dart';
+import 'home_page_controller.dart';
+import 'side_bar_menu.dart';
 
 const double _kDefaultMenuSize = 220;
 
@@ -128,10 +130,10 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             right: false,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: context.colorScheme.surfaceContainerLow,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 border: Border(
                   right: BorderSide(
-                    color: context.colorScheme.hintColor,
+                    color: Theme.of(context).colorScheme.hintColor,
                     width: 0.25,
                   ),
                 ),
@@ -143,9 +145,9 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                     child: LayoutBuilder(
                       builder: (_, constraints) => SingleChildScrollView(
                         child: Theme(
-                          data: context.theme.copyWith(
+                          data: Theme.of(context).copyWith(
                             iconTheme:
-                                context.theme.iconTheme.copyWith(size: 20),
+                                Theme.of(context).iconTheme.copyWith(size: 20),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -178,7 +180,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarBrightness: context.brightness,
+        statusBarBrightness: Theme.of(context).brightness,
         statusBarIconBrightness: context.onBrightness,
       ),
       child: Scaffold(
@@ -205,7 +207,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 initialContent: widget.mobileMenu,
               )
             : null,
-        backgroundColor: context.colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         resizeToAvoidBottomInset: !isDesktop ? false : null,
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         body: MultiSplitViewTheme(
@@ -218,15 +220,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             dividerPainter: isDesktopPlatform()
                 ? DividerPainters.background(
                     animationEnabled: false,
-                    color: context.colorScheme.surface,
-                    highlightedColor: context.colorScheme.primary,
+                    color: Theme.of(context).colorScheme.surface,
+                    highlightedColor: Theme.of(context).colorScheme.primary,
                   )
                 : DividerPainters.grooved1(
                     animationDuration: const Duration(milliseconds: 150),
-                    color: context.colorScheme.onSurface,
+                    color: Theme.of(context).colorScheme.onSurface,
                     thickness: Screen.of(context).size.isLarge ? 6 : 3,
                     size: 75,
-                    highlightedColor: context.colorScheme.primary,
+                    highlightedColor: Theme.of(context).colorScheme.primary,
                   ),
           ),
           child: Column(
@@ -310,7 +312,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
 
 double _calculateDrawerEdgeDragWidth(BuildContext context, int areaPercentage) {
   final minValue = 20 + MediaQuery.paddingOf(context).left;
-  final screenWidth = context.screenWidth;
+  final screenWidth = MediaQuery.sizeOf(context).width;
   final value = (areaPercentage / 100).clamp(0.05, 1);
   final width = screenWidth * value;
 

@@ -1,0 +1,131 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'package:boorusama/core/comments/comment.dart';
+import 'package:boorusama/core/comments/comment_parser.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import '../../users/level/user_level.dart';
+import '../../users/user/providers.dart';
+import '../votes/comment_votes_notifier.dart';
+import 'comment_data.dart';
+import 'danbooru_comment.dart';
+import 'providers.dart';
+
+const youtubeUrl = 'www.youtube.com';
+
+final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
+    Map<int, List<CommentData>?>, BooruConfigAuth>(
+  CommentsNotifier.new,
+  dependencies: [
+    currentBooruConfigProvider,
+  ],
+);
+
+final danbooruCommentProvider =
+    Provider.autoDispose.family<List<CommentData>?, int>((ref, postId) {
+  final config = ref.watchConfigAuth;
+  return ref.watch(danbooruCommentsProvider(config))[postId];
+});
+
+class CommentsNotifier
+    extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfigAuth> {
+  @override
+  Map<int, List<CommentData>?> build(BooruConfigAuth arg) {
+    return {};
+  }
+
+  CommentRepository<DanbooruComment> get repo =>
+      ref.read(danbooruCommentRepoProvider(arg));
+
+  Future<void> load(
+    int postId, {
+    bool force = false,
+  }) async {
+    if (state.containsKey(postId) && !force) return;
+
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+
+    final comments = await repo
+        .getComments(postId)
+        .then(filterDeleted())
+        .then((comments) => comments
+            .map((comment) => CommentData(
+                  id: comment.id,
+                  score: comment.score,
+                  authorName: comment.creator?.name ?? 'User',
+                  authorLevel: comment.creator?.level ?? UserLevel.member,
+                  authorId: comment.creator?.id ?? 0,
+                  body: comment.body,
+                  createdAt: comment.createdAt,
+                  updatedAt: comment.updatedAt,
+                  isSelf: comment.creator?.id == user?.id,
+                  isEdited: comment.isEdited,
+                  uris: RegExp(urlPattern)
+                      .allMatches(comment.body)
+                      .map((match) => Uri.tryParse(
+                          comment.body.substring(match.start, match.end)))
+                      .nonNulls
+                      .where((e) => e.host.contains(youtubeUrl))
+                      .toList(),
+                ))
+            .toList())
+        .then(_sortDescById);
+
+    state = {
+      ...state,
+      postId: comments,
+    };
+
+    // fetch comment votes, no need to wait
+    ref
+        .read(danbooruCommentVotesProvider(arg).notifier)
+        .fetch(comments.map((e) => e.id).toList());
+  }
+
+  Future<void> send({
+    required int postId,
+    required String content,
+    CommentData? replyTo,
+  }) async {
+    await repo.createComment(
+      postId,
+      buildCommentContent(content: content, replyTo: replyTo),
+    );
+    await load(postId, force: true);
+  }
+
+  Future<void> delete({
+    required int postId,
+    required CommentData comment,
+  }) async {
+    await repo.deleteComment(comment.id);
+    await load(postId, force: true);
+  }
+
+  Future<void> update({
+    required int postId,
+    required CommentId commentId,
+    required String content,
+  }) async {
+    await repo.updateComment(commentId, content);
+    await load(postId, force: true);
+  }
+}
+
+List<CommentData> _sortDescById(List<CommentData> comments) =>
+    comments..sort((b, a) => b.id.compareTo(a.id));
+
+String buildCommentContent({
+  required String content,
+  CommentData? replyTo,
+}) {
+  var c = content;
+  if (replyTo != null) {
+    c = '[quote]\n${replyTo.authorName} said:\n\n${replyTo.body}\n[/quote]\n\n$content';
+  }
+
+  return c;
+}

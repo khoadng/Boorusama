@@ -6,21 +6,21 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/images/booru_image.dart';
+import 'package:boorusama/core/images/utils.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
+import 'grid_utils.dart';
 import 'post_grid_controller.dart';
 
 class SliverPostGrid<T extends Post> extends ConsumerWidget {
@@ -112,7 +112,7 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 48, bottom: 16),
                           child: Text(
                             e.httpStatusCode.toString(),
-                            style: context.textTheme.headlineMedium,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ),
                         Builder(
@@ -173,7 +173,7 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
       valueListenable: postController.itemsNotifier,
       builder: (_, data, __) {
         final crossAxisCount = calculateGridCount(
-          constraints?.maxWidth ?? context.screenWidth,
+          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
           size ?? GridSize.normal,
         );
         final imageListType = listType ?? ImageListType.standard;
@@ -243,7 +243,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     return Builder(
       builder: (context) {
         final crossAxisCount = calculateGridCount(
-          constraints?.maxWidth ?? context.screenWidth,
+          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
           gridSize,
         );
 

@@ -8,7 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'post_stats.dart';
 
 class PostStatisticsPage extends StatelessWidget {
@@ -363,11 +362,11 @@ class PostStatsTile extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: context.textTheme.titleLarge?.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: titleColor,
-              ),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: titleColor,
+                  ),
             ),
           ),
           const SizedBox(width: 8),
@@ -378,13 +377,13 @@ class PostStatsTile extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: context.colorScheme.surfaceContainerHigh,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
               borderRadius: const BorderRadius.all(Radius.circular(4)),
             ),
             child: Text(
               value,
               style: TextStyle(
-                color: context.colorScheme.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

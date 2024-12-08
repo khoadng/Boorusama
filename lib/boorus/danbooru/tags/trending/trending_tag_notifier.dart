@@ -5,10 +5,19 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/store.dart';
+import 'package:boorusama/core/tags/configs/providers.dart';
+import 'popular_search_repository.dart';
+import 'search.dart';
+import 'trending_tag_provider.dart';
+
+final trendingTagsProvider = AsyncNotifierProvider.autoDispose
+    .family<TrendingTagNotifier, List<Search>, BooruConfigAuth>(
+  TrendingTagNotifier.new,
+);
 
 class TrendingTagNotifier
     extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfigAuth> {

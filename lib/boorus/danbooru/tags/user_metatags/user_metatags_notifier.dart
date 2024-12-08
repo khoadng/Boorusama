@@ -1,22 +1,17 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 
 // Project imports:
-import 'user_metatags_provider.dart';
+import 'providers.dart';
+import 'user_metatag_repository.dart';
 
-class UserMetatagRepository {
-  UserMetatagRepository({
-    required this.box,
-  });
-
-  final Box<String> box;
-
-  Future<void> put(String tag) => box.put(tag, tag);
-  Future<void> delete(String tag) => box.delete(tag);
-
-  List<String> getAll() => box.values.toList();
-}
+final danbooruUserMetatagsProvider =
+    NotifierProvider<UserMetatagsNotifier, List<String>>(
+  UserMetatagsNotifier.new,
+  dependencies: [
+    danbooruUserMetatagRepoProvider,
+  ],
+);
 
 class UserMetatagsNotifier extends Notifier<List<String>> {
   @override

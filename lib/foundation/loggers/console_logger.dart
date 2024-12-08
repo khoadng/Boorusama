@@ -3,10 +3,9 @@ import 'dart:developer' as developer;
 
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
 import 'console.dart';
 import 'logger.dart';
 

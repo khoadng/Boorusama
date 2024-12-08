@@ -6,8 +6,8 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
+import 'package:boorusama/core/downloads/bulks/bulk_download_page.dart';
 
 const _kDefaultView = 'default';
 

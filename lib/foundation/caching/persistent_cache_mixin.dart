@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/path.dart';
+import '../path.dart';
 
 mixin PersistentCacheMixin {
   Box<String>? _box;

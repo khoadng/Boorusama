@@ -6,8 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/analytics.dart';
+import '../loggers.dart';
 import 'network_state.dart';
 
 const _serviceName = 'Connectivity';
@@ -41,7 +40,6 @@ class NetworkListener extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logger = ref.watch(loggerProvider);
-    final analytics = ref.watch(analyticsProvider);
 
     ref.listen(
       connectivityProvider,
@@ -49,14 +47,8 @@ class NetworkListener extends ConsumerWidget {
         next.when(
           data: (data) {
             if (data.isEmpty || data.contains(ConnectivityResult.none)) {
-              analytics.updateNetworkInfo(
-                const AnalyticsNetworkInfo.disconnected(),
-              );
               logger.logW(_serviceName, 'Network disconnected');
             } else {
-              analytics.updateNetworkInfo(
-                AnalyticsNetworkInfo.connected(data.prettyString),
-              );
               logger.logI(
                 _serviceName,
                 'Connected to ${data.prettyString}',
@@ -64,10 +56,6 @@ class NetworkListener extends ConsumerWidget {
             }
           },
           error: (error, stackTrace) {
-            analytics.updateNetworkInfo(
-              AnalyticsNetworkInfo.error(error.toString()),
-            );
-
             logger.logE(
               _serviceName,
               'Error: $error',

@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/backups/backups.dart';
+import 'package:boorusama/core/backups/data_io_handler.dart';
+import 'package:boorusama/core/backups/providers.dart';
+import 'package:boorusama/foundation/device_info.dart';
 import 'favorited_tags.dart';
 
 final favoriteTagRepoProvider =

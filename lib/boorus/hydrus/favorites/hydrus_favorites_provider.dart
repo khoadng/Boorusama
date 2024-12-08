@@ -1,11 +1,12 @@
 // Package imports:
+import 'package:booru_clients/hydrus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/hydrus/hydrus.dart';
-import 'package:boorusama/clients/hydrus/types/types.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'favorites.dart';
 
 final hydrusFavoritesProvider = NotifierProvider.family<HydrusFavoritesNotifier,

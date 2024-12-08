@@ -7,20 +7,24 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/images/images.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../posts/posts.dart';
-import 'favorite_groups.dart';
+import '../posts/listing/default_danbooru_image_grid_item.dart';
+import '../posts/post/danbooru_post.dart';
+import '../posts/post/providers.dart';
+import 'danbooru_favorite_group.dart';
+import 'danbooru_favorite_group_post_mixin.dart';
+import 'favorite_groups_notifier.dart';
 
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
   const FavoriteGroupDetailsPage({

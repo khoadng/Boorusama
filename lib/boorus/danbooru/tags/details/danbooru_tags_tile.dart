@@ -7,13 +7,14 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/tags/tag/display.dart';
+import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
 import 'package:boorusama/router.dart';
-import '../danbooru_tag_context_menu.dart';
+import '../../posts/details/danbooru_post_details_page.dart';
+import '../../posts/post/danbooru_post.dart';
+import '../shared/tag_list_notifier.dart';
+import '../widgets/danbooru_tag_context_menu.dart';
 
 final danbooruTagTileExpansionStateProvider =
     StateProvider.autoDispose.family<bool, bool>((ref, value) {
@@ -42,10 +43,10 @@ class DanbooruTagsTile extends ConsumerWidget {
         ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
 
     return Theme(
-      data: context.theme.copyWith(
-        listTileTheme: context.theme.listTileTheme.copyWith(
-          visualDensity: VisualDensity.compact,
-        ),
+      data: Theme.of(context).copyWith(
+        listTileTheme: Theme.of(context).listTileTheme.copyWith(
+              visualDensity: VisualDensity.compact,
+            ),
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(
@@ -64,13 +65,14 @@ class DanbooruTagsTile extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   shape: const CircleBorder(),
-                  backgroundColor: context.colorScheme.surfaceContainerHighest,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 onPressed: () => ref.danbooruEdit(post),
                 child: Icon(
                   Symbols.edit,
                   size: 16,
-                  color: context.colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fill: 1,
                 ),
               ),

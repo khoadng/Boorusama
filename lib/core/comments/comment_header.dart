@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
@@ -44,7 +44,7 @@ class CommentHeader extends StatelessWidget {
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
           style: TextStyle(
-            color: context.colorScheme.hintColor,
+            color: Theme.of(context).colorScheme.hintColor,
             fontSize: 12,
           ),
         ),

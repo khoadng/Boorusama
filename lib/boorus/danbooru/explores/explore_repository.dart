@@ -1,21 +1,16 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:collection/collection.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/clients/danbooru/danbooru_client.dart';
-import 'package:boorusama/clients/danbooru/types/types.dart' as danbooru;
-import 'package:boorusama/core/datetimes/datetimes.dart';
+import 'package:boorusama/core/datetimes/types.dart';
 import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
-import 'package:boorusama/functional.dart';
-
-enum ExploreCategory {
-  popular,
-  mostViewed,
-  hot,
-}
+import '../posts/post/converter.dart';
+import '../posts/post/danbooru_post.dart';
+import '../posts/post/providers.dart';
 
 abstract class ExploreRepository {
   DanbooruPostsOrError getPopularPosts(
@@ -43,7 +38,7 @@ class ExploreRepositoryApi implements ExploreRepository {
   });
 
   final PostRepository<DanbooruPost> postRepository;
-  final DanbooruClient client;
+  final danbooru.DanbooruClient client;
   final ImageListingSettings Function() settings;
   final bool Function(DanbooruPost post)? shouldFilter;
   final PostFetchTransformer transformer;

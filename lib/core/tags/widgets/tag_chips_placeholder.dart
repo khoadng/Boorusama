@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/theme/colors.dart';
+
+// Project imports:
 
 class TagChipsPlaceholder extends ConsumerWidget {
   const TagChipsPlaceholder({

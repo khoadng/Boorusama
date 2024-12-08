@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'package:boorusama/core/theme.dart';
 
 class PoolGridItem extends ConsumerWidget {
   const PoolGridItem({

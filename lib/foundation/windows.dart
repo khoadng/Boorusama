@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'app_info.dart';
 import 'platform.dart';
 
 Future<void> initialize() async {
@@ -46,18 +45,20 @@ class AppTitleBar extends ConsumerWidget {
   }
 
   Widget _buildTitleBar(String appName, BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return VirtualWindowFrame(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kWindowCaptionHeight),
           child: isMacOS()
               ? MacosCaption(
-                  backgroundColor: context.colorScheme.surface,
-                  brightness: context.brightness,
+                  backgroundColor: colorScheme.surface,
+                  brightness: colorScheme.brightness,
                 )
               : WindowCaption(
-                  backgroundColor: context.colorScheme.surface,
-                  brightness: context.brightness,
+                  backgroundColor: colorScheme.surface,
+                  brightness: colorScheme.brightness,
                   title: Row(
                     children: [
                       Container(
@@ -77,7 +78,7 @@ class AppTitleBar extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: context.colorScheme.onSurface,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ),
