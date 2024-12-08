@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/bookmarks/widgets/providers.dart';
 import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'grid_size_adjustment_buttons.dart';
 
 class BookmarkGridUpdateButtons extends ConsumerWidget {
   const BookmarkGridUpdateButtons({

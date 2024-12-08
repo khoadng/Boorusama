@@ -6,11 +6,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
+import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/router.dart';
+import 'package:boorusama/utils/flutter_utils.dart';
 import '../../../post.dart';
 import '../../inherited_post.dart';
 
@@ -82,7 +83,7 @@ class BasicTagList extends ConsumerWidget {
                   ),
                   label: ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: context.screenWidth * 0.7,
+                      maxWidth: MediaQuery.sizeOf(context).width * 0.7,
                     ),
                     child: Text(
                       _getTagStringDisplayName(tag),
@@ -102,7 +103,7 @@ class BasicTagList extends ConsumerWidget {
                 ),
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: context.screenWidth * 0.7,
+                    maxWidth: MediaQuery.sizeOf(context).width * 0.7,
                   ),
                   child: Text(
                     _getTagStringDisplayName(tag),

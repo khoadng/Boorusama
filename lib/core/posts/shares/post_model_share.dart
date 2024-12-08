@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../sources/source.dart';
@@ -69,7 +68,7 @@ class PostModalShare extends ConsumerWidget {
                   subtitle: Text(s.uri.toString()),
                   leading: WebsiteLogo(url: s.faviconUrl),
                   onTap: () {
-                    context.navigator.pop();
+                    Navigator.of(context).pop();
                     Share.share(s.uri.toString());
                   },
                 ),
@@ -80,7 +79,7 @@ class PostModalShare extends ConsumerWidget {
               subtitle: Text(booruLink),
               leading: BooruLogo(source: booruLink),
               onTap: () {
-                context.navigator.pop();
+                Navigator.of(context).pop();
                 Share.share(
                   booruLink,
                   subject: booruLink,
@@ -99,7 +98,7 @@ class PostModalShare extends ConsumerWidget {
                             subtitle: const Text(
                                 'Image quality will depend on the current selected booru profile.'),
                             onTap: () {
-                              context.navigator.pop();
+                              Navigator.of(context).pop();
                               Share.shareXFiles(
                                 [file],
                                 subject: file.name,

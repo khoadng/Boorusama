@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'common.dart';
 
 final _defaultExtractor = MetatagExtractor(

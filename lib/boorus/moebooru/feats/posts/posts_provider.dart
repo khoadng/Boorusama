@@ -1,14 +1,17 @@
 // Package imports:
+import 'package:booru_clients/moebooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/boorus/moebooru/moebooru.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/search/query_composer_providers.dart';
+import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/foundation/caching.dart';
 
 final moebooruPostRepoProvider =

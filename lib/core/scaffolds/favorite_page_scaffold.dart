@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
 
 class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
   const FavoritesPageScaffold({
@@ -37,7 +36,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
               floating: true,
               elevation: 0,
               shadowColor: Colors.transparent,
-              backgroundColor: context.colorScheme.surface,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               actions: [
                 if (favQueryBuilder != null)
                   IconButton(

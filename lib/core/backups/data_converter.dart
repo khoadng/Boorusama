@@ -2,10 +2,10 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
 import 'types.dart';
 
 class DataBackupConverter {

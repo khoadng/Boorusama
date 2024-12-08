@@ -1,11 +1,10 @@
 // Package imports:
 import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
-import 'package:intl/intl.dart';
+import 'package:foundation/foundation.dart' hide StringX;
 import 'package:uuid/uuid.dart';
 
 // Project imports:
-import 'package:boorusama/functional.dart';
 import 'token.dart';
 import 'utils.dart';
 

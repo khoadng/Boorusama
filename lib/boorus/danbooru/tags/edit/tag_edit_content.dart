@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/boorus/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
 import 'tag_edit_ai_view.dart';
 import 'tag_edit_container.dart';
 import 'tag_edit_favorite_view.dart';
 import 'tag_edit_notifier.dart';
-import 'tag_edit_page.dart';
+import 'tag_edit_state.dart';
+import 'tag_edit_view_controller.dart';
 import 'tag_edit_wiki_view.dart';
 import 'widgets/raw_tag_edit_select_button.dart';
 import 'widgets/tag_edit_tag_list_section.dart';

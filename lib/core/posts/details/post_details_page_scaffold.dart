@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:video_player/video_player.dart';
@@ -11,15 +12,19 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/boorus/booru_builder_default.dart';
+import 'package:boorusama/boorus/booru_builder_types.dart';
+import 'package:boorusama/core/cache/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/videos/videos.dart';
+import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/videos/play_pause_button.dart';
+import 'package:boorusama/core/videos/providers.dart';
+import 'package:boorusama/core/videos/sound_control_button.dart';
+import 'package:boorusama/core/videos/video_progress.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../post.dart';
@@ -99,7 +104,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
       },
       child: CustomContextMenuOverlay(
-        backgroundColor: context.colorScheme.secondaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         child: VisibilityDetector(
           key: const Key('post_details_page_scaffold'),
           onVisibilityChanged: (info) {
@@ -316,7 +321,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
           ),
           sliver: MultiSliver(
             children: uiBuilder.preview.keys
@@ -327,7 +332,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: context.colorScheme.surface,
+            color: Theme.of(context).colorScheme.surface,
           ),
           sliver: SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom,

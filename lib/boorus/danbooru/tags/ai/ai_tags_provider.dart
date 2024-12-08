@@ -3,11 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import '../tags.dart';
+import 'package:boorusama/core/boorus/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/tags/categories/providers.dart';
+import 'package:boorusama/core/tags/categories/store.dart';
+import 'package:boorusama/core/tags/categories/tag_category.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
+import 'ai_tag.dart';
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
   (ref, postId) async {

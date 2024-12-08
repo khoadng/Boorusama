@@ -2,13 +2,12 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
-import 'package:boorusama/clients/gelbooru/types/types.dart';
-import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/comments/comment.dart';
+import 'package:boorusama/core/configs/config.dart';
 
 abstract interface class GelbooruV2CommentRepository {
   Future<List<Comment>> getComments(int postId);

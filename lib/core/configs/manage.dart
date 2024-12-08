@@ -1,6 +1,6 @@
-export 'manage/booru_config_provider.dart';
-export 'manage/booru_selector.dart';
-export 'manage/booru_selector_item.dart';
-export 'manage/current_booru_providers.dart';
-export 'manage/current_booru_tile.dart';
-export 'manage/remove_booru_alert_dialog.dart';
+library;
+
+export 'src/data/booru_config_data.dart';
+export 'src/export_import/booru_config_export_data.dart';
+export 'src/manage/booru_config_provider.dart';
+export 'src/manage/update_booru_config_scope.dart';

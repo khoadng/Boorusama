@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/explores/explores.dart';
-import 'package:boorusama/boorus/danbooru/posts/posts.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/datetimes/datetimes.dart';
+import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/datetimes/datetime_selector.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
+import '../posts/listing/default_danbooru_image_grid_item.dart';
+import 'explore_sliver_app_bar.dart';
+import 'providers.dart';
 
 class ExploreMostViewedPage extends ConsumerWidget {
   const ExploreMostViewedPage({
@@ -84,7 +84,7 @@ class _MostViewedContent extends ConsumerWidget {
     );
 
     return ColoredBox(
-      color: context.colorScheme.surface,
+      color: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         child: Column(
           children: [
@@ -109,7 +109,7 @@ class _MostViewedContent extends ConsumerWidget {
               ),
             ),
             Container(
-              color: context.theme.bottomNavigationBarTheme.backgroundColor,
+              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
               child: DateTimeSelector(
                 onDateChanged: (date) =>
                     ref.read(dateProvider.notifier).state = date,

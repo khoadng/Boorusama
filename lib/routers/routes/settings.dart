@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/settings/widgets/widgets.dart';
+import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';

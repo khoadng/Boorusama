@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/comments/comment/dtext_parser.dart';
 
 void main() {
   group('[dtext parser test]', () {

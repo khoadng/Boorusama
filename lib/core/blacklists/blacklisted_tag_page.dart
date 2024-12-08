@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/functional.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'blacklisted_tag.dart';
+import 'blacklisted_tag_view_scaffold.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';
 
@@ -51,7 +51,7 @@ class BlacklistedTagPage extends ConsumerWidget {
           onPressed: () {
             showMaterialModalBottomSheet(
               context: context,
-              backgroundColor: context.colorScheme.surfaceContainer,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

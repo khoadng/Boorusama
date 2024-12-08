@@ -7,17 +7,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/manage/booru_selector.dart';
-import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
+import 'package:boorusama/core/configs/widgets.dart';
 import 'package:boorusama/core/premiums/premiums.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import 'package:boorusama/core/settings.dart';
+import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/router.dart';
 import 'side_menu_tile.dart';
 
@@ -43,15 +40,15 @@ class SideBarMenu extends ConsumerWidget {
         settingsProvider.select((value) => value.booruConfigSelectorPosition));
 
     return Container(
-      color: context.colorScheme.surfaceContainerLow,
-      constraints:
-          BoxConstraints.expand(width: min(context.screenWidth * 0.85, 400)),
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      constraints: BoxConstraints.expand(
+          width: min(MediaQuery.sizeOf(context).width * 0.85, 400)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (position == BooruConfigSelectorPosition.side)
             ColoredBox(
-              color: context.colorScheme.surfaceContainerHigh,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
               child: const SafeArea(
                 bottom: false,
                 child: BooruSelector(),
@@ -59,7 +56,7 @@ class SideBarMenu extends ConsumerWidget {
             ),
           Expanded(
             child: ColoredBox(
-              color: context.colorScheme.surfaceContainerLow,
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
@@ -91,7 +88,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: const Text(kPremiumBrandNameFull),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             Navigator.of(context).push(CupertinoPageRoute<void>(
                               builder: (context) => const PremiumPage(),
                             ));
@@ -111,7 +108,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToBookmarkPage(context);
                           },
                         ),
@@ -119,7 +116,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToGlobalBlacklistedTagsPage(context);
                           },
                         ),
@@ -127,7 +124,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.tag),
                           title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToFavoriteTagsPage(context);
                           },
                         ),
@@ -135,7 +132,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.sim_card_download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToBulkDownloadPage(
                               context,
                               null,
@@ -147,7 +144,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.download),
                           title: const Text('Download manager'),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToDownloadManagerPage(context);
                           },
                         ),
@@ -161,7 +158,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToSettingsPage(context, scrollTo: 'support');
                           },
                         ),
@@ -172,7 +169,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
-                            if (popOnSelect) context.navigator.pop();
+                            if (popOnSelect) Navigator.of(context).pop();
                             goToSettingsPage(context);
                           },
                         ),
