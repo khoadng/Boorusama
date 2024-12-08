@@ -8,8 +8,9 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/search/search_bar.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';

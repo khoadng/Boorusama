@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/e621/configs/configs.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/clients/e621/e621_client.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/filename.dart';

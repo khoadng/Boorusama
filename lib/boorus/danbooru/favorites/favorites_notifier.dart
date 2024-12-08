@@ -2,8 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/functional.dart';
 import '../posts/votes/post_votes_notifier.dart';

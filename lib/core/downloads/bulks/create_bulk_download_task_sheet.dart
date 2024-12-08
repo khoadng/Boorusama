@@ -9,7 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/search/history_providers.dart';
 import 'package:boorusama/core/search/history_widgets.dart';
 import 'package:boorusama/core/settings.dart';

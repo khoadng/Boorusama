@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/foundation/html.dart';

@@ -2,7 +2,7 @@
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/clients/moebooru/moebooru_client.dart';
 import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/foundation/http.dart';
 import 'package:boorusama/functional.dart';

@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
 import 'package:boorusama/foundation/theme.dart';

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/datetimes/datetime_selector.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';

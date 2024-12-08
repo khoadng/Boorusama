@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/blacklisted_tags_notifier.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/providers.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
 import 'package:boorusama/core/tags/tag/display.dart';

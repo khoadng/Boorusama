@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'artist.dart';
 import 'artist_repository.dart';
 import 'artist_repository_api.dart';

@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

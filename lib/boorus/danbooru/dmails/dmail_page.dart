@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/time.dart';
 import 'package:boorusama/widgets/widgets.dart';

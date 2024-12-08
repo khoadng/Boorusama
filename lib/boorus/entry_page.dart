@@ -6,8 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/configs/widgets.dart';
 import 'package:boorusama/core/downloads/notifications.dart';
 import 'package:boorusama/core/home/empty_booru_config_home_page.dart';
 import 'package:boorusama/core/settings.dart';

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/redirect.dart';
 import 'package:boorusama/core/downloads/l10n.dart';
 import 'package:boorusama/core/downloads/widgets.dart';
 import 'package:boorusama/core/settings.dart';

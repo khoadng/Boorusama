@@ -9,7 +9,7 @@ import 'package:oktoast/oktoast.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/sources.dart';
 import 'package:boorusama/core/settings/data.dart';
@@ -25,7 +25,6 @@ import 'notifications/providers.dart';
 
 import 'package:background_downloader/background_downloader.dart'
     hide PermissionStatus;
-
 
 const _serviceName = 'Bulk Download Manager';
 

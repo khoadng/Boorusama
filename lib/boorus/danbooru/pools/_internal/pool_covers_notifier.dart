@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts.dart';
 import '../pool/danbooru_pool.dart';
 

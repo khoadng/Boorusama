@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/clients/danbooru/danbooru_client.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'post_vote.dart';
 
 abstract class PostVoteRepository {

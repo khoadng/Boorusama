@@ -12,7 +12,7 @@ import 'package:gal/gal.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/foundation/media_scanner.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/settings.dart';

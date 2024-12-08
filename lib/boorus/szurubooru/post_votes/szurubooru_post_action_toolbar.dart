@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite_post_button.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/shares.dart';

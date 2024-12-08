@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/flutter.dart';

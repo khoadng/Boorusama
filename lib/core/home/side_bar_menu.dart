@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/configs/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,8 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/manage/booru_selector.dart';
-import 'package:boorusama/core/configs/manage/current_booru_tile.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/flutter.dart';

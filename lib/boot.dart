@@ -16,8 +16,10 @@ import 'package:stack_trace/stack_trace.dart';
 import 'package:boorusama/boorus/danbooru/tags/user_metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/src/bootstrap.dart';
 import 'package:boorusama/core/downloads/bulks/notifications.dart';
 import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/settings.dart';
@@ -139,32 +141,20 @@ Future<void> boot(BootLogger bootLogger) async {
     // ignore errors here, maybe it's already trusted
   }
 
-  Box<String> booruConfigBox;
-  bootLogger.l('Initialize booru config box');
-  if (await Hive.boxExists('booru_configs')) {
-    bootLogger.l('Open booru config box');
-    booruConfigBox = await Hive.openBox<String>('booru_configs');
-  } else {
-    bootLogger.l('Create booru config box');
-    booruConfigBox = await Hive.openBox<String>('booru_configs');
-    bootLogger.l('Add default booru config');
-    final id = await booruConfigBox
-        .add(HiveBooruConfigRepository.defaultValue(booruFactory));
+  final booruUserRepo = await createBooruConfigsRepo(
+    logger: bootLogger,
+    booruFactory: booruFactory,
+    onCreateNew: (id) async {
+      final settings =
+          await settingRepository.load().run().then((value) => value.fold(
+                (l) => Settings.defaultSettings,
+                (r) => r,
+              ));
 
-    final settings =
-        await settingRepository.load().run().then((value) => value.fold(
-              (l) => Settings.defaultSettings,
-              (r) => r,
-            ));
-
-    bootLogger.l('Save default booru config');
-    await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
-  }
-
-  bootLogger.l('Total booru config: ${booruConfigBox.length}');
-
-  bootLogger.l('Initialize booru user repository');
-  final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
+      bootLogger.l('Save default booru config');
+      await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
+    },
+  );
 
   bootLogger.l('Load settings');
   final settings =
@@ -175,11 +165,13 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Settings: ${settings.toJson()}');
 
+  // start
   bootLogger.l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
+  //end
 
   Box<String> userMetatagBox;
   bootLogger.l('Initialize user metatag box');

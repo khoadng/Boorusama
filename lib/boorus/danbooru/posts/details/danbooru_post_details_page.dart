@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/posts/_shared/post_creator_preloadable
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/details.dart';

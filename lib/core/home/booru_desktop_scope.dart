@@ -9,7 +9,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/widgets.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/widgets/widgets.dart';

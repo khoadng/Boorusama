@@ -1,4 +1,7 @@
 // Flutter imports:
+
+// Flutter imports:
+import 'package:boorusama/core/configs/create.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,9 +14,9 @@ import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
 import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
 import 'package:boorusama/clients/anime-pictures/types/types.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/create/scaffold.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/downloads/urls.dart';
 import 'package:boorusama/core/posts.dart';

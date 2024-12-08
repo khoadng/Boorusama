@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/boorus/e621/favorites/favorites.dart';
 import 'package:boorusama/boorus/e621/popular/e621_popular_page.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/home/home_navigation_tile.dart';
 import 'package:boorusama/core/home/home_page_scaffold.dart';
 import 'package:boorusama/core/home/side_menu_tile.dart';

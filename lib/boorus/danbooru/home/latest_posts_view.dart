@@ -8,7 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/danbooru/dmails/sliver_unread_mails_banner.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/home/home_page_controller.dart';
 import 'package:boorusama/core/home/home_search_bar.dart';
 import 'package:boorusama/core/posts/count.dart';

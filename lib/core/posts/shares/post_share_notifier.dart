@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/current.dart';
 import '../post.dart';
 import '../sources/source.dart';
 

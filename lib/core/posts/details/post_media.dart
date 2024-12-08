@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
 import 'package:boorusama/core/videos/providers.dart';
 import 'package:boorusama/core/videos/video_player.dart';

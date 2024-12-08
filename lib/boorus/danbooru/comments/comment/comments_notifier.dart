@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/comments/comment.dart';
 import 'package:boorusama/core/comments/comment_parser.dart';
-import 'package:boorusama/core/configs.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import '../../users/level/user_level.dart';
 import '../../users/user/providers.dart';
 import '../votes/comment_votes_notifier.dart';

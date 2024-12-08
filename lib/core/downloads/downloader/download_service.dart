@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/functional.dart';

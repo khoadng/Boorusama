@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
 import 'package:boorusama/clients/gelbooru/gelbooru_client_favorites.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/failsafe.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/functional.dart';

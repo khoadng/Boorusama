@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/tags/edit/widgets/tag_edit_rating_selector_section.dart';
 import 'package:boorusama/boorus/danbooru/tags/shared/tag_list_notifier.dart';
 import 'package:boorusama/boorus/danbooru/users/level/user_level.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts.dart';
 import 'package:boorusama/core/posts/listing.dart';

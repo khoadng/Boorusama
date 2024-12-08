@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/display.dart';

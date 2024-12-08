@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/artists/search/artist_search_page.dart
 import 'package:boorusama/boorus/danbooru/blacklist/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/forums/topics/forum_page.dart';
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/home/home_navigation_tile.dart';
 import 'package:boorusama/core/home/home_page_scaffold.dart';
 import 'package:boorusama/core/home/side_menu_tile.dart';

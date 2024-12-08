@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/clients/danbooru/types/types.dart';
 import 'package:boorusama/core/comments/comment_vote.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'danbooru_comment_vote.dart';
 
 final danbooruCommentVoteRepoProvider = Provider.family<

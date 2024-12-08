@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/providers.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/datetimes/datetime_selector.dart';
 import 'package:boorusama/core/datetimes/time_scale_toggle_switch.dart';
 import 'package:boorusama/core/datetimes/types.dart';

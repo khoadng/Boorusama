@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/danbooru.dart';
 import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite_post_button.dart';
 import 'package:boorusama/core/posts/details.dart';
 import 'package:boorusama/core/posts/shares.dart';

@@ -5,7 +5,8 @@ import 'package:html/parser.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/ref.dart';
 import '../pool/danbooru_pool.dart';
 import 'pool_description_repository.dart';
 
