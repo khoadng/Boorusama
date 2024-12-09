@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/posts/post_repository.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'danbooru_post.dart';
 
 mixin DanbooruPostRepositoryMixin {

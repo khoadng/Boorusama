@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 import 'tag_edit_state.dart';
 
 final tagEditProvider = NotifierProvider<TagEditNotifier, TagEditState>(() {

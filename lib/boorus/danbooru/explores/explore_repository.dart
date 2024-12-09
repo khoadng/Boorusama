@@ -5,7 +5,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/http/http_utils.dart';
 import '../posts/post/converter.dart';

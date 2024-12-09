@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import '../bookmark_provider.dart';
 
 class AddBookmarksButton extends ConsumerWidget {

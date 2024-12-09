@@ -10,7 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/statistics.dart';
+import 'package:boorusama/core/posts/statistics/stats.dart';
+import 'package:boorusama/core/posts/statistics/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import '../_shared/danbooru_creator_preloader.dart';
 import '../_shared/post_creator_preloadable.dart';

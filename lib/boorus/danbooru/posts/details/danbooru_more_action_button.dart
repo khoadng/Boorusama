@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/posts/post.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/settings/pages.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';

@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import '../post/danbooru_post.dart';

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus/booru_type.dart';
-import 'package:boorusama/core/posts/rating.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/gestures.dart';

@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/foundation/caching.dart';
 
 final gelbooruArtistPostRepo =

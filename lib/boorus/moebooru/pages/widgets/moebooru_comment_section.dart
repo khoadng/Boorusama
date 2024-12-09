@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/posts/details.dart';
+import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/theme.dart';
 import 'moebooru_comment_item.dart';
 

@@ -10,9 +10,12 @@ import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite_post_button.dart';
-import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/posts/shares.dart';
-import 'package:boorusama/core/posts/votes.dart';
+import 'package:boorusama/core/posts/details/details.dart';
+import 'package:boorusama/core/posts/details/parts.dart';
+import 'package:boorusama/core/posts/details/widgets.dart';
+import 'package:boorusama/core/posts/shares/widgets.dart';
+import 'package:boorusama/core/posts/votes/vote.dart';
+import 'package:boorusama/core/posts/votes/widgets.dart';
 import 'package:boorusama/router.dart';
 import '../votes/post_votes_notifier.dart';
 

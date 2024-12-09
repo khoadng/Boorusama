@@ -7,8 +7,9 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/details.dart';
+import 'package:boorusama/core/posts/details/details.dart';
+import 'package:boorusama/core/posts/details/parts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/router.dart';
 
 class MoebooruRelatedPostsSection extends ConsumerWidget {

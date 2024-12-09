@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/downloads/widgets.dart';
 import 'package:boorusama/core/filename_generators/filename_generators.dart';
-import 'package:boorusama/core/posts/post.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/clipboard.dart';

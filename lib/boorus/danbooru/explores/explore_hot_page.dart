@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/posts/listing/default_danbooru_image_grid_item.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing.dart';
+import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'explore_sliver_app_bar.dart';
 import 'providers.dart';

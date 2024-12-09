@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/posts/post/post_repository.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import '../posts/post/danbooru_post.dart';
 
 mixin DanbooruFavoriteGroupPostMixin {

@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/favorites/favorite_post_button.dart';
 import 'package:boorusama/core/favorites/quick_favorite_button.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'favorites.dart';
 

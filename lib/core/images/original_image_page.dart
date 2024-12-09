@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/mobile.dart';

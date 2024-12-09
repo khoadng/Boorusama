@@ -8,8 +8,8 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/listing.dart';
+import 'package:boorusama/core/posts/listing/widgets.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
 

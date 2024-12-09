@@ -2,8 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/post/post.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
 
@@ -13,8 +14,7 @@ class GelbooruV2Post extends Equatable
         TranslatedMixin,
         ImageInfoMixin,
         VideoInfoMixin,
-        NoTagDetailsMixin,
-        TagListCheckMixin
+        NoTagDetailsMixin
     implements Post {
   const GelbooruV2Post({
     required this.format,

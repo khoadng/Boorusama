@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing.dart';
+import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
 import '../posts/listing/default_danbooru_image_grid_item.dart';

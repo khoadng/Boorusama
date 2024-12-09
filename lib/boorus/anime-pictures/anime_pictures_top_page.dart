@@ -10,8 +10,8 @@ import 'package:boorusama/boorus/anime-pictures/providers.dart';
 import 'package:boorusama/boorus/danbooru/explores/explore_section.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/explores/explore_page.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/listing.dart';
+import 'package:boorusama/core/posts/listing/widgets.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
 final _eroticOnProvider = StateProvider<bool>((ref) => false);

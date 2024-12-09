@@ -8,7 +8,7 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 
 // Project imports:
 import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/html.dart';
 

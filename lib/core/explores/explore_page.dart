@@ -12,7 +12,7 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/images/explicit_block_overlay.dart';
 import 'package:boorusama/core/images/utils.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';

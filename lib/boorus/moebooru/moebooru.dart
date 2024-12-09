@@ -16,7 +16,7 @@ import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/details.dart';
+import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/tags/tag/filter_category.dart';
 import '../booru_builder_default.dart';

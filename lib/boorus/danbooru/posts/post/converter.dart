@@ -2,8 +2,10 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/post/post.dart';
+import 'package:boorusama/core/posts/post/tags.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 import 'danbooru_post.dart';
 import 'post_variant.dart';
 

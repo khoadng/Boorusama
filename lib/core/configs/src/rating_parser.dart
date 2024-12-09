@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/posts/rating.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 
 Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
   if (granularRatingFilterString == null) return null;

@@ -17,7 +17,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/device_info.dart';

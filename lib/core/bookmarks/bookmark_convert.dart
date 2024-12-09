@@ -2,8 +2,9 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/post/post.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'bookmark.dart';
 import 'hive/object.dart';

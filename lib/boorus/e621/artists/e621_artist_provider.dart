@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 
 final e621ArtistRepoProvider =
     Provider.family<E621ArtistRepository, BooruConfigAuth>((ref, config) {

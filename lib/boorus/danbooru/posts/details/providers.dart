@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/danbooru/pools/pool/danbooru_pool.dart';
 import 'package:boorusama/boorus/danbooru/pools/pool/providers.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import '../post/danbooru_post.dart';
 import '../post/providers.dart';
 

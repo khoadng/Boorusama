@@ -9,7 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/pools/pool_grid_item.dart';
-import 'package:boorusama/core/posts/listing/grid_utils.dart';
+import 'package:boorusama/core/posts/listing/list.dart';
 import 'package:boorusama/core/settings/data/listing_provider.dart';
 import '../pool/danbooru_pool.dart';
 import '../pool/providers.dart';

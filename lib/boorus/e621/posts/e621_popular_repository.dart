@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:boorusama/boorus/e621/posts/posts.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/foundation/http.dart';
 

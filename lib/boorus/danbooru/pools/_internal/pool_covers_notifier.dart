@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/danbooru/posts/post/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import '../pool/danbooru_pool.dart';
 
 final danbooruPoolCoversProvider = NotifierProvider.family<PoolCoversNotifier,

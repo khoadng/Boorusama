@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/option_dropdown_button.dart';

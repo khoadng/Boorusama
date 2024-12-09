@@ -5,7 +5,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
 import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/foundation/http.dart';
 
 class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {

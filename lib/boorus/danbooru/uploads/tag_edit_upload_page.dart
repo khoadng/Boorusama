@@ -17,7 +17,7 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';
 import 'package:boorusama/core/search/suggestions.dart';

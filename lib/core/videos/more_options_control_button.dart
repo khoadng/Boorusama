@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/listing/post_grid_config_icon_button.dart';
 import 'package:boorusama/foundation/display.dart';
+import 'package:boorusama/widgets/mobile_config_tile.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
@@ -67,7 +67,7 @@ class BooruVideoOptionSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
-            MobilePostGridConfigTile(
+            MobileConfigTile(
               value: _buildSpeedText(value),
               title: 'Play back speed',
               onTap: () {

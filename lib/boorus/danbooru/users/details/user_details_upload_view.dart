@@ -9,7 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/users/details/upload_date_range_selector_type.dart';
-import 'package:boorusama/core/posts/details.dart';
+import 'package:boorusama/core/posts/details/parts.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';

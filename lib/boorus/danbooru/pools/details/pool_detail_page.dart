@@ -14,8 +14,9 @@ import 'package:boorusama/boorus/danbooru/posts/listing/default_danbooru_image_g
 import 'package:boorusama/boorus/danbooru/posts/post/danbooru_post.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/listing.dart';
+import 'package:boorusama/core/posts/listing/providers.dart';
+import 'package:boorusama/core/posts/listing/widgets.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/html.dart';

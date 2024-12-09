@@ -8,7 +8,7 @@ import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/search/query_composer_providers.dart';
 import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/foundation/caching/lru_cacher.dart';

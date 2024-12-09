@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';
 import '../booru_config_ref.dart';

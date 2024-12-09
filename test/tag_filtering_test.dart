@@ -5,7 +5,9 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/filter/src/check_tag.dart';
+import 'package:boorusama/core/posts/filter/src/tag_filter_data.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 
 void main() {
   final simpleTestData = {'a', 'b', 'c'}.toTagFilterData();

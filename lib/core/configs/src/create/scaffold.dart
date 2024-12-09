@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';

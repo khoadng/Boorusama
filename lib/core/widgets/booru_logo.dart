@@ -10,7 +10,7 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/images/dio_extended_image.dart';
 import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({

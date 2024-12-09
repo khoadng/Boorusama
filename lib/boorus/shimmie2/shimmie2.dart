@@ -13,9 +13,11 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import 'package:boorusama/core/posts/details/details.dart';
+import 'package:boorusama/core/posts/details/parts.dart';
+import 'package:boorusama/core/posts/details/widgets.dart';
+import 'package:boorusama/core/posts/post/post.dart';
+import 'package:boorusama/core/posts/sources/source.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
 

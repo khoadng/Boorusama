@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import 'tag_how_to_rate_button.dart';
 
