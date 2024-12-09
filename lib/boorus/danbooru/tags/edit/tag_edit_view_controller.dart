@@ -1,12 +1,8 @@
-// Dart imports:
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:multi_split_view/multi_split_view.dart';
-
-// Project imports:
 
 class TagEditViewController extends ChangeNotifier {
   TagEditViewController();

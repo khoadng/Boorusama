@@ -24,13 +24,13 @@ class TagEditContent extends ConsumerWidget {
   const TagEditContent({
     super.key,
     required this.ratingSelector,
-    this.sourceBuilder,
+    this.source,
     required this.scrollController,
   });
 
   final ScrollController scrollController;
   final Widget ratingSelector;
-  final Widget Function()? sourceBuilder;
+  final Widget? source;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,9 +41,9 @@ class TagEditContent extends ConsumerWidget {
           child: ratingSelector,
         ),
         const SliverSizedBox(height: 8),
-        if (sourceBuilder != null)
+        if (source != null)
           SliverToBoxAdapter(
-            child: sourceBuilder!(),
+            child: source,
           ),
         const SliverSizedBox(height: 8),
         const SliverTagEditTagListSection(),

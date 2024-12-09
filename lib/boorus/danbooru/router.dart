@@ -48,7 +48,7 @@ final danbooruCustomRoutes = [
     pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPost>(
       errorScreenMessage: 'Invalid post',
       fullScreen: true,
-      pageBuilder: (context, state, post) => TagEditPage(
+      pageBuilder: (context, state, post) => DanbooruTagEditPage(
         post: post,
       ),
     ),
