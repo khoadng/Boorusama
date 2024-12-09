@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/listing/default_danbooru_image_grid_item.dart';
+import 'package:boorusama/boorus/danbooru/posts/listing/widgets.dart';
 import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/failsafe.dart';

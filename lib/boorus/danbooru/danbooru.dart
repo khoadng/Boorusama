@@ -2,18 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/favorites/favorites_notifier.dart';
+import 'package:boorusama/boorus/danbooru/posts/favorites/widgets.dart';
+import 'package:boorusama/boorus/danbooru/posts/listing/providers.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
@@ -28,9 +27,7 @@ import 'package:boorusama/core/posts/statistics/widgets.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/tags/metatag/providers.dart';
 import 'package:boorusama/core/tags/tag/routes.dart';
-import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import '../booru_builder_default.dart';
@@ -38,19 +35,15 @@ import '../booru_builder_types.dart';
 import 'artists/artist/artist_page.dart';
 import 'comments/comment/comment_page.dart';
 import 'configs/create_danbooru_config_page.dart';
-import 'favorites/danbooru_quick_favorite_button.dart';
-import 'favorites/favorites_page.dart';
 import 'home/danbooru_home_page.dart';
 import 'home/latest_posts_view.dart';
-import 'posts/details/danbooru_post_action_toolbar.dart';
-import 'posts/details/danbooru_post_details_page.dart';
-import 'posts/details/details_widgets.dart';
-import 'posts/listing/danbooru_multi_selection_actions.dart';
-import 'posts/post/danbooru_post.dart';
-import 'posts/post/post_variant.dart';
-import 'posts/statistics/post_statistics_page.dart';
-import 'posts/votes/post_votes_notifier.dart';
-import 'search/danbooru_search_page.dart';
+import 'posts/details/widgets.dart';
+import 'posts/favorites/providers.dart';
+import 'posts/listing/widgets.dart';
+import 'posts/post/post.dart';
+import 'posts/search/widgets.dart';
+import 'posts/statistics/widgets.dart';
+import 'posts/votes/providers.dart';
 import 'tags/details/danbooru_character_page.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
@@ -395,116 +388,4 @@ bool handleDanbooruGestureAction(
   }
 
   return true;
-}
-
-extension DanbooruX on WidgetRef {
-  FavoritesNotifier get danbooruFavorites =>
-      read(danbooruFavoritesProvider(readConfigAuth).notifier);
-
-  void danbooruToggleFavorite(int postId) {
-    _guardLogin(() async {
-      final isFaved = read(danbooruFavoriteProvider(postId));
-      if (isFaved) {
-        await danbooruFavorites.remove(postId);
-        if (context.mounted) {
-          _showSuccessSnackBar(
-            context,
-            'Removed from favorites',
-          );
-        }
-      } else {
-        await danbooruFavorites.add(postId);
-        if (context.mounted) {
-          _showSuccessSnackBar(
-            context,
-            'Added to favorites',
-          );
-        }
-      }
-    });
-  }
-
-  void danbooruRemoveVote(int postId) {
-    _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
-          .removeVote(postId);
-
-      if (context.mounted) {
-        _showSuccessSnackBar(
-          context,
-          'Vote removed',
-        );
-      }
-    });
-  }
-
-  void danbooruUpvote(int postId) {
-    _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
-          .upvote(postId);
-
-      if (context.mounted) {
-        _showSuccessSnackBar(
-          context,
-          'Upvoted',
-        );
-      }
-    });
-  }
-
-  void danbooruDownvote(int postId) {
-    _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
-          .downvote(postId);
-
-      if (context.mounted) {
-        _showSuccessSnackBar(
-          context,
-          'Downvoted',
-        );
-      }
-    });
-  }
-
-  void danbooruEdit(DanbooruPost post) {
-    _guardLogin(() {
-      goToTagEditPage(
-        context,
-        post: post,
-      );
-    });
-  }
-
-  void _showSuccessSnackBar(
-    BuildContext context,
-    String message, {
-    Color? backgroundColor,
-  }) {
-    showSuccessToast(
-      context,
-      message,
-      backgroundColor: backgroundColor,
-      duration: AppDurations.shortToast,
-    );
-  }
-
-  void _guardLogin(void Function() action) {
-    guardLogin(this, action);
-  }
-}
-
-void guardLogin(WidgetRef ref, void Function() action) {
-  if (!ref.readConfigAuth.hasLoginDetails()) {
-    showSimpleSnackBar(
-      context: ref.context,
-      content: const Text(
-        'post.detail.login_required_notice',
-      ).tr(),
-      duration: AppDurations.shortToast,
-    );
-
-    return;
-  }
-
-  action();
 }

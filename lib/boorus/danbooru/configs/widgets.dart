@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/post/post_variant.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
+import '../posts/post/post.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {
   const DanbooruHideDeletedSwitch({

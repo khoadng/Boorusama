@@ -1,0 +1,180 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+// Project imports:
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/failsafe.dart';
+import 'package:boorusama/core/configs/ref.dart';
+import 'package:boorusama/core/images/booru_image.dart';
+import '../../details/routes.dart';
+import '../../favgroups/favgroup.dart';
+import '../../favgroups/routes.dart';
+import '../../favgroups/src/providers/favorite_groups_notifier.dart';
+import 'modal_favorite_group_action.dart';
+import 'post_previews_notifier.dart';
+
+class FavoriteGroupsPage extends ConsumerWidget {
+  const FavoriteGroupsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return BooruConfigAuthFailsafe(
+      child: const FavoriteGroupsPageInternal(),
+    );
+  }
+}
+
+class FavoriteGroupsPageInternal extends ConsumerWidget {
+  const FavoriteGroupsPageInternal({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigSearch;
+    final favoriteGroups = ref.watch(danbooruFavoriteGroupsProvider(config));
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('favorite_groups.favorite_groups').tr(),
+        actions: [
+          IconButton(
+            onPressed: () => goToFavoriteGroupCreatePage(context),
+            icon: const Icon(Symbols.add),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            if (favoriteGroups == null)
+              _buildLoading()
+            else
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final group = favoriteGroups[index];
+
+                    return ListTile(
+                      title: Text(
+                        group.name.replaceAll('_', ' '),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            'favorite_groups.group_item_counter'
+                                .plural(group.totalCount),
+                          ),
+                          if (!group.isPublic)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 4),
+                              child: Text('|'),
+                            ),
+                          if (!group.isPublic)
+                            const Text('favorite_groups.private').tr(),
+                        ],
+                      ),
+                      onTap: () {
+                        goToFavoriteGroupDetailsPage(context, group);
+                      },
+                      leading: _Preview(group: group),
+                      trailing: IconButton(
+                        onPressed: () => _showEditSheet(
+                          context,
+                          ref,
+                          group,
+                          config,
+                        ),
+                        icon: const Icon(Symbols.more_vert),
+                      ),
+                    );
+                  },
+                  childCount: favoriteGroups.length,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEditSheet(
+    BuildContext context,
+    WidgetRef ref,
+    DanbooruFavoriteGroup favGroup,
+    BooruConfigSearch config,
+  ) {
+    showMaterialModalBottomSheet(
+      context: context,
+      builder: (_) => ModalFavoriteGroupAction(
+        onDelete: () => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const Text('favorite_groups.detete_confirmation').tr(),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('generic.action.cancel').tr(),
+              ),
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ref
+                      .read(danbooruFavoriteGroupsProvider(config).notifier)
+                      .delete(group: favGroup);
+                },
+                child: const Text('generic.action.ok').tr(),
+              ),
+            ],
+          ),
+        ),
+        onEdit: () => goToFavoriteGroupEditPage(context, favGroup),
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return const SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.only(top: 24),
+        child: Center(child: CircularProgressIndicator.adaptive()),
+      ),
+    );
+  }
+}
+
+class _Preview extends ConsumerWidget {
+  const _Preview({
+    required this.group,
+  });
+
+  final DanbooruFavoriteGroup group;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final preview = ref
+        .watch(danbooruFavoriteGroupPreviewProvider(group.postIds.firstOrNull));
+
+    return BooruImage(
+      fit: BoxFit.cover,
+      imageUrl: preview,
+    );
+  }
+}

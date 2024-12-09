@@ -7,7 +7,7 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
-import '../posts/post/danbooru_post.dart';
+import '../posts/post/post.dart';
 import '../users/level/user_level.dart';
 import '../users/user/providers.dart';
 import 'blacklisted_tags_notifier.dart';

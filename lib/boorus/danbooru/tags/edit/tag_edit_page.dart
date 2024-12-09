@@ -16,7 +16,7 @@ import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/router.dart';
-import '../../posts/post/danbooru_post.dart';
+import '../../posts/post/post.dart';
 import '../shared/tag_list_notifier.dart';
 import 'providers.dart';
 import 'tag_edit_content.dart';

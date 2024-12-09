@@ -10,7 +10,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../posts/post/danbooru_post.dart';
+import '../posts/post/post.dart';
 import 'providers.dart';
 import 'tag_edit_history_card.dart';
 

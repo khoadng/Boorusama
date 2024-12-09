@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
-import '../../posts/post/danbooru_post.dart';
+import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';
 import '../../reports/danbooru_report_data_point.dart';
 import '../../reports/danbooru_report_period.dart';

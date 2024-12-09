@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/users/user.dart';
-import '../../favorites/favorite.dart';
+import '../../posts/favorites/favorite.dart';
 import '../level/user_level.dart';
 
 class DanbooruUser extends Equatable {

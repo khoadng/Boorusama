@@ -17,7 +17,7 @@ import 'package:boorusama/core/search/selected_tags.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
-import '../posts/listing/default_danbooru_image_grid_item.dart';
+import '../posts/listing/widgets.dart';
 import '../posts/post/providers.dart';
 import 'most_search_tag_list.dart';
 

@@ -1,5 +1,5 @@
 // Project imports:
-import '../post/danbooru_post.dart';
+import '../post/post.dart';
 
 class PostCreatorsPreloadable {
   PostCreatorsPreloadable._(this.userIds);
