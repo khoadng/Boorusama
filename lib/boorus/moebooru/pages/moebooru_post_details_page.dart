@@ -22,8 +22,6 @@ import 'package:boorusama/core/posts/details/providers.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
-import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';

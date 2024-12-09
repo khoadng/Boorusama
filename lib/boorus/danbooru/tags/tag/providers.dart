@@ -7,7 +7,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/store.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(

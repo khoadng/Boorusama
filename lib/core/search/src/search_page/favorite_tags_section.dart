@@ -9,8 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/favorites/favorited.dart';
+import 'package:boorusama/core/tags/favorites/widgets.dart';
 import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';

@@ -15,7 +15,7 @@ import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/bookmarks/widgets/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/core/tags/favorites/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/clipboard.dart';

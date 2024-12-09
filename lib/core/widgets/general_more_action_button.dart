@@ -11,6 +11,7 @@ import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/posts/post/tags.dart';
 import 'package:boorusama/core/settings/pages.dart';
+import 'package:boorusama/core/tags/tag/routes.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
@@ -55,7 +56,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 break;
               case 'show_tag_list':
                 goToShowTaglistPage(
-                  ref,
+                  context,
                   post.extractTags(),
                 );
                 break;

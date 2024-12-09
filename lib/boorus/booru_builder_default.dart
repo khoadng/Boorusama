@@ -29,8 +29,9 @@ import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data/listing_provider.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/colors.dart';
+import 'package:boorusama/core/tags/tag/routes.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/tags/widgets/post_tag_list.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
@@ -154,7 +155,8 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
               state: ref.read(postShareProvider(post)),
             ),
             onToggleBookmark: () => ref.toggleBookmark(post),
-            onViewTags: () => goToShowTaglistPage(ref, post.extractTags()),
+            onViewTags: () =>
+                goToShowTaglistPage(ref.context, post.extractTags()),
             onViewOriginal: () => goToOriginalImagePage(ref.context, post),
             onOpenSource: () => post.source.whenWeb(
               (source) => launchExternalUrlString(source.url),

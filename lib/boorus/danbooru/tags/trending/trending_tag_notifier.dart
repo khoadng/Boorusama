@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'popular_search_repository.dart';
 import 'search.dart';

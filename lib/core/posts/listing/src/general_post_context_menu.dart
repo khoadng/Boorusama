@@ -12,6 +12,7 @@ import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/posts/post/tags.dart';
+import 'package:boorusama/core/tags/tag/routes.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import '../../post/post.dart';
@@ -78,7 +79,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             'View tags',
             onPressed: () {
-              goToShowTaglistPage(ref, post.extractTags());
+              goToShowTaglistPage(context, post.extractTags());
             },
           ),
         if (!booruConfig.hasStrictSFW)

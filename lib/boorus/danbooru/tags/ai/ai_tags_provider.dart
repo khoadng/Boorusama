@@ -7,7 +7,6 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'ai_tag.dart';

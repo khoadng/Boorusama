@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/configs/widgets.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
+import 'package:boorusama/core/tags/favorites/routes.dart';
 import 'package:boorusama/router.dart';
 import 'side_menu_tile.dart';
 

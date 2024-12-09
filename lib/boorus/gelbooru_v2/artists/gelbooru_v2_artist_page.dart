@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
-import 'package:boorusama/core/tags/tag/filter_category.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 
 class GelbooruV2ArtistPage extends ConsumerWidget {
   const GelbooruV2ArtistPage({

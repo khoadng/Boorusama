@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/tags/widgets/danbooru_tag_context_menu
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/widgets/tag_chips_placeholder.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/theme/utils.dart';
 import '../tags/tag/providers.dart';
 import '../tags/trending/search.dart';

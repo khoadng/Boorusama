@@ -9,7 +9,6 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import '../queries/filter_operator.dart';
@@ -74,7 +73,12 @@ class SuggestionsNotifier extends FamilyNotifier<
       () async {
         final data = await autocompleteRepo.getAutocomplete(sanitized);
 
-        await booruTagTypeStore.saveAutocompleteIfNotExist(arg.booruType, data);
+        await booruTagTypeStore.saveIfNotExist(
+          arg.booruType,
+          data,
+          (tag) => tag.value,
+          (tag) => tag.category,
+        );
 
         final filter = filterNsfw(
           data,

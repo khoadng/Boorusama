@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/related_tags/related_tag_chip.dart';
+import 'package:boorusama/core/tags/related/widgets.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'danbooru_related_tag.dart';

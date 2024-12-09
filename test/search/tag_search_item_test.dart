@@ -4,10 +4,10 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/core/search/filter.dart';
 import 'package:boorusama/core/search/tag_edit.dart';
-import 'package:boorusama/core/tags/metatag/extractor.dart';
 import 'package:boorusama/core/tags/metatag/metatag.dart';
+import 'package:boorusama/core/tags/metatag/src/default_extractor.dart';
 
-final _defaultMetatags = MetatagExtractor(
+final _defaultMetatags = DefaultMetatagExtractor(
   metatags: {
     const Metatag.simple(
       name: 'foo',

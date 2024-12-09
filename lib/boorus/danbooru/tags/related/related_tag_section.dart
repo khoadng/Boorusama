@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/widgets/tag_chips_placeholder.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'danbooru_related_tag.dart';
 import 'providers.dart';
 import 'related_tag_header.dart';

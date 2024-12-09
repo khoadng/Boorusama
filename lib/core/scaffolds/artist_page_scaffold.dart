@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/details/widgets/tag_details_page_scaffold.dart';
-import 'package:boorusama/core/tags/tag/filter_category.dart';
+import 'package:boorusama/core/tags/details/widgets.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 
 class ArtistPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const ArtistPageScaffold({

@@ -15,10 +15,10 @@ import 'package:boorusama/core/bookmarks/widgets/bookmark_details_page.dart';
 import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
 import 'package:boorusama/core/configs/redirect.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/original_image_page.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/post/post.dart';
+import 'package:boorusama/core/tags/favorites/routes.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
@@ -234,14 +234,6 @@ class Routes {
             child: OriginalImagePage.post(post),
           );
         },
-      );
-
-  static GoRoute favoriteTags() => GoRoute(
-        path: 'favorite_tags',
-        name: '/favorite_tags',
-        pageBuilder: genericMobilePageBuilder(
-          builder: (context, state) => const FavoriteTagsPage(),
-        ),
       );
 
   static GoRoute globalBlacklistedTags() => GoRoute(

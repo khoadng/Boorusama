@@ -24,7 +24,7 @@ import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/store.dart';
+import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';

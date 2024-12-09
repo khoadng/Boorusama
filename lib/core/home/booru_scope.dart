@@ -13,7 +13,7 @@ import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
 import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/downloads/bulks.dart';
 import 'package:boorusama/core/downloads/manager.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/core/tags/favorites/widgets.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';

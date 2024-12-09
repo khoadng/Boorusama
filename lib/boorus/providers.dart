@@ -39,7 +39,7 @@ import 'package:boorusama/core/posts/count/count.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/store.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'anime-pictures/providers.dart';
 import 'booru_builder_types.dart';

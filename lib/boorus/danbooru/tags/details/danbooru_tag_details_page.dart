@@ -8,8 +8,8 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/tags/details/widgets/tag_details_page_scaffold.dart';
-import 'package:boorusama/core/tags/tag/filter_category.dart';
+import 'package:boorusama/core/tags/details/widgets.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import '../../posts/listing/default_danbooru_image_grid_item.dart';
 import '../../posts/post/providers.dart';
 import 'artist_tag_cloud.dart';

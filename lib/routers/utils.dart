@@ -12,17 +12,13 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/comments/utils.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/downloads/bulks/create_bulk_download_task_sheet.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/listing/providers.dart';
 import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/search/tag_edit.dart';
 import 'package:boorusama/core/search/view_tags.dart';
-import 'package:boorusama/core/tags/metatag/metatag.dart';
-import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import 'package:boorusama/core/tags/favorites/providers.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -180,23 +176,6 @@ void goToBlacklistedTagsSearchPage(
   );
 }
 
-void goToMetatagsPage(
-  BuildContext context, {
-  required List<Metatag> metatags,
-  required void Function(Metatag tag) onSelected,
-}) {
-  showAdaptiveBottomSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.metatags,
-    ),
-    builder: (context) => MetatagListPage(
-      metatags: metatags,
-      onSelected: onSelected,
-    ),
-  );
-}
-
 Future<Object?> goToFavoriteTagImportPage(
   BuildContext context,
 ) {
@@ -225,19 +204,6 @@ void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
         aspectRatio: post.aspectRatio,
         imageUrl: post.sampleImageUrl,
       ),
-    ),
-  );
-}
-
-Future<bool?> goToShowTaglistPage(
-  WidgetRef ref,
-  List<Tag> tags,
-) {
-  return showAdaptiveSheet(
-    navigatorKey.currentContext ?? ref.context,
-    expand: true,
-    builder: (context) => DefaultShowTagListPage(
-      tags: tags,
     ),
   );
 }
@@ -390,14 +356,6 @@ void goToDownloadManagerPage(
   context.push(
     Uri(
       path: '/download_manager',
-    ).toString(),
-  );
-}
-
-void goToFavoriteTagsPage(BuildContext context) {
-  context.push(
-    Uri(
-      path: '/favorite_tags',
     ).toString(),
   );
 }

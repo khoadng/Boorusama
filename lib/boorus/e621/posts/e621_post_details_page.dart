@@ -13,7 +13,6 @@ import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
 import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/router.dart';
 

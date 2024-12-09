@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
+import 'package:boorusama/core/tags/favorites/favorited.dart';
+import 'package:boorusama/core/tags/favorites/widgets.dart';
 import 'package:boorusama/foundation/platform.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =

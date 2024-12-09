@@ -27,7 +27,6 @@ import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/scaffolds/scaffolds.dart';
 import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/router.dart';

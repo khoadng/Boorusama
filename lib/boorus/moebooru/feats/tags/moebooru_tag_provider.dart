@@ -7,7 +7,6 @@ import 'package:boorusama/boorus/moebooru/feats/autocomplete/moebooru_autocomple
 import 'package:boorusama/boorus/moebooru/feats/tags/moebooru_tag_repository.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/tags/tag/display.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 
 final moebooruTagRepoProvider =

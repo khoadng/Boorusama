@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:boorusama/boorus/danbooru/blacklist/blacklisted_tags_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import '../../blacklist/providers.dart';

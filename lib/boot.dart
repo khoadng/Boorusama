@@ -23,13 +23,11 @@ import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/src/bootstrap.dart';
 import 'package:boorusama/core/downloads/bulks/notifications.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
 import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/tags/configs/tag_info_service.dart';
 import 'package:boorusama/core/tracking.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/dart.dart';
@@ -54,6 +52,7 @@ import 'core/bookmarks/providers.dart';
 import 'core/cache/providers.dart';
 import 'core/downloads/notifications.dart';
 import 'core/search/boot.dart';
+import 'core/tags/favorites/providers.dart';
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =
@@ -99,8 +98,6 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Register bookmark adapter');
   Hive.registerAdapter(BookmarkHiveObjectAdapter());
-  bootLogger.l('Register favorite tag adapter');
-  Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
 
   if (isDesktopPlatform() || isIOS()) {
     fvp.registerWith(
@@ -168,13 +165,11 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Settings: ${settings.toJson()}');
 
-  // start
   bootLogger.l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
-  //end
 
   Box<String> userMetatagBox;
   bootLogger.l('Initialize user metatag box');
@@ -201,11 +196,8 @@ Future<void> boot(BootLogger bootLogger) async {
     logger: bootLogger,
   );
 
-  bootLogger.l('Initialize favorite tag repository');
-  final favoriteTagsBox =
-      await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
-  final favoriteTagsRepo = FavoriteTagRepositoryHive(
-    favoriteTagsBox,
+  final favoriteTagsRepoOverride = await createFavoriteTagOverride(
+    bootLogger: bootLogger,
   );
 
   bootLogger.l('Initialize global blacklisted tag repository');
@@ -233,9 +225,9 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Initialize package info');
   final packageInfo = await PackageInfo.fromPlatform();
 
-  bootLogger.l('Initialize tag info');
-  final tagInfo =
-      await TagInfoService.create().then((value) => value.getInfo());
+  final tagInfoOverride = await createTagInfoOverride(
+    bootLogger: bootLogger,
+  );
 
   bootLogger.l('Initialize device info');
   final deviceInfo =
@@ -290,10 +282,10 @@ Future<void> boot(BootLogger bootLogger) async {
         builder: (context, config, configs) => BooruLocalization(
           child: ProviderScope(
             overrides: [
-              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
+              favoriteTagsRepoOverride,
               searchHistoryRepoOverride,
               booruFactoryProvider.overrideWithValue(booruFactory),
-              tagInfoProvider.overrideWithValue(tagInfo),
+              tagInfoOverride,
               settingsRepoProvider.overrideWithValue(settingRepository),
               settingsNotifierProvider
                   .overrideWith(() => SettingsNotifier(settings)),

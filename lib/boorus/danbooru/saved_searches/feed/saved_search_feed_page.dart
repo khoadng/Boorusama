@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/router.dart';

@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/widgets/general_tag_context_menu.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';

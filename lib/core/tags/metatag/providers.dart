@@ -1,11 +1,4 @@
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+library;
 
-// Project imports:
-import '../configs/providers.dart';
-import 'metatag.dart';
-
-final metatagsProvider = Provider<Set<Metatag>>(
-  (ref) => ref.watch(tagInfoProvider).metatags,
-  dependencies: [tagInfoProvider],
-);
+export 'src/providers.dart';
+export 'src/default_extractor.dart';

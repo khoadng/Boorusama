@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/html.dart';
 

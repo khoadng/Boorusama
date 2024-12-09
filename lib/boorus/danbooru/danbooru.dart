@@ -26,7 +26,8 @@ import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/posts/statistics/stats.dart';
 import 'package:boorusama/core/posts/statistics/widgets.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/tags/metatag/providers.dart';
+import 'package:boorusama/core/tags/tag/routes.dart';
 import 'package:boorusama/foundation/animations.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -197,7 +198,7 @@ class DanbooruBuilder
             onToggleBookmark: () => ref.toggleBookmark(post),
             onViewTags: () => castOrNull<DanbooruPost>(post).toOption().fold(
                   () => goToShowTaglistPage(
-                    ref,
+                    ref.context,
                     post.extractTags(),
                   ),
                   (post) => goToDanbooruShowTaglistPage(
@@ -306,7 +307,7 @@ class DanbooruBuilder
 
   @override
   MetatagExtractorBuilder get metatagExtractorBuilder =>
-      (tagInfo) => MetatagExtractor(
+      (tagInfo) => DefaultMetatagExtractor(
             metatags: tagInfo.metatags,
           );
 

@@ -11,7 +11,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import 'package:boorusama/core/cache/providers.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/store.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -22,7 +21,7 @@ final tagHighlightingCacheProvider =
 
   if (dirPath == null) return 0;
 
-  final path = await BooruTagTypeStore.getBoxPath(dirPath);
+  final path = await ref.watch(booruTagTypeStorePathProvider(dirPath).future);
   final file = File(path);
 
   if (!file.existsSync()) return 0;

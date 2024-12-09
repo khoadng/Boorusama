@@ -15,8 +15,7 @@ import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
 import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
-import 'package:boorusama/core/tags/tag/display.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/router.dart';
 
 final gelbooruV2PostDetailsArtistMapProvider = StateProvider.autoDispose(

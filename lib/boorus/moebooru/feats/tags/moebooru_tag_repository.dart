@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/store.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'tag_summary.dart';
 import 'tag_summary_repository.dart';

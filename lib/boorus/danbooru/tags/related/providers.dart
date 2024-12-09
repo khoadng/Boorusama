@@ -9,7 +9,6 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'danbooru_related_tag.dart';
@@ -139,7 +138,7 @@ DanbooruRelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) =>
           : [],
     );
 
-extension BooruTagTypeStoreX on BooruTagTypeStore {
+extension BooruTagTypeStoreX on TagTypeStore {
   Future<void> saveRelatedTagIfNotExist(
     BooruType booruType,
     DanbooruRelatedTag related,

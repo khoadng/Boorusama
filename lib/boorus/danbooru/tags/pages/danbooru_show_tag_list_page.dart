@@ -9,10 +9,9 @@ import 'package:boorusama/boorus/danbooru/blacklist/blacklisted_tags_notifier.da
 import 'package:boorusama/boorus/danbooru/blacklist/providers.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/tags/pages/show_tag_list_page.dart';
-import 'package:boorusama/core/tags/tag/display.dart';
+import 'package:boorusama/core/tags/favorites/providers.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
+import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/toast.dart';
 

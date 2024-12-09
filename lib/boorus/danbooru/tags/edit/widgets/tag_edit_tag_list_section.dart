@@ -14,7 +14,6 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/search/search_bar.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/store.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';

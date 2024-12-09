@@ -9,8 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/metatag/metatag.dart';
+import 'package:boorusama/core/tags/metatag/routes.dart';
 import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/router.dart';
 import 'widgets/add_tag_button.dart';
 import 'widgets/option_tags_arena.dart';
 

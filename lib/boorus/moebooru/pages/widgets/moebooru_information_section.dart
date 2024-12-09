@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
+import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/router.dart';
 import '../moebooru_post_details_page.dart';
 

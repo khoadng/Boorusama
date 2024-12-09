@@ -13,8 +13,8 @@ import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/tags/configs/tag_info.dart';
-import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/tags/configs/configs.dart';
+import 'package:boorusama/core/tags/metatag/metatag.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,

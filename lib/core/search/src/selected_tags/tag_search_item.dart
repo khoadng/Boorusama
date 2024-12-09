@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/metatag/extractor.dart';
+import 'package:boorusama/core/tags/metatag/metatag.dart';
 import '../queries/filter_operator.dart';
 
 class TagSearchItem extends Equatable {
