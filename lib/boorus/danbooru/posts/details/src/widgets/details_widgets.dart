@@ -7,7 +7,6 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/artists/commentaries/providers.dart';
 import 'package:boorusama/boorus/danbooru/comments/comment/providers.dart';
 import 'package:boorusama/boorus/danbooru/posts/details/src/widgets/danbooru_file_details.dart';
 import 'package:boorusama/boorus/danbooru/posts/details/src/widgets/danbooru_related_posts_section.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/core/artists/artists.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
 import 'package:boorusama/router.dart';
+import '../../../../artists/commentaries/providers.dart';
 import '../../../pools/pool/widgets.dart';
 import '../../../post/post.dart';
 import '../danbooru_post_details_page.dart';

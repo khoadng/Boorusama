@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import '../comments/comment/dtext_parser.dart';
+import '../dtext/dtext.dart';
 import '../users/creator/creators_notifier.dart';
 import 'dmail.dart';
 

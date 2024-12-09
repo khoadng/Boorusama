@@ -8,10 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
-import 'artists/search/artist_search_page.dart';
-import 'blacklist/blacklisted_tags_page.dart';
-import 'comments/comment/comment_create_page.dart';
-import 'comments/comment/comment_update_page.dart';
+import 'artists/search/routes.dart';
+import 'blacklist/routes.dart';
+import 'comments/comment/routes.dart';
 import 'dmails/dmail.dart';
 import 'dmails/dmail_page.dart';
 import 'forums/posts/forum_posts_page.dart';
@@ -43,14 +42,7 @@ final danbooruCustomRoutes = [
     ),
   ),
   danbooruExploreHotRoutes,
-  GoRoute(
-    path: '/internal/danbooru/settings/blacklist',
-    pageBuilder: (context, state) => CupertinoPage(
-      key: state.pageKey,
-      name: state.name,
-      child: const DanbooruBlacklistedTagsPage(),
-    ),
-  ),
+  danbooruBlacklistRoutes,
   GoRoute(
     path: '/internal/danbooru/posts/:id/editor',
     pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPost>(
@@ -61,40 +53,7 @@ final danbooruCustomRoutes = [
       ),
     ),
   ),
-  GoRoute(
-    path: '/internal/danbooru/posts/:id/comments/editor',
-    pageBuilder: (context, state) => CupertinoPage(
-      key: state.pageKey,
-      name: state.name,
-      child: Builder(
-        builder: (context) {
-          final postId = int.tryParse(state.pathParameters['id'] ?? '');
-          final text = state.uri.queryParameters['text'];
-          final commentId =
-              int.tryParse(state.uri.queryParameters['comment_id'] ?? '');
-
-          if (postId == null) {
-            return const InvalidPage(
-              message: 'Invalid post ID',
-            );
-          }
-
-          if (commentId != null && text != null) {
-            return CommentUpdatePage(
-              postId: postId,
-              commentId: commentId,
-              initialContent: text,
-            );
-          } else {
-            return CommentCreatePage(
-              postId: postId,
-              initialContent: text,
-            );
-          }
-        },
-      ),
-    ),
-  ),
+  danbooruCommentRoutes,
   GoRoute(
     path: '/internal/danbooru/posts/:id/favoriter',
     pageBuilder: (context, state) => CupertinoPage(
@@ -160,14 +119,7 @@ final danbooruDirectRoutes = [
       child: const DanbooruDmailPage(),
     ),
   ),
-  GoRoute(
-    path: '/danbooru/artists',
-    pageBuilder: (context, state) => CupertinoPage(
-      key: state.pageKey,
-      name: state.name,
-      child: const DanbooruArtistSearchPage(),
-    ),
-  ),
+  danbooruArtistRoutes,
   GoRoute(
     path: '/danbooru/forum_topics',
     pageBuilder: (context, state) => CupertinoPage(

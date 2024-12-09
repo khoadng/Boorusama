@@ -10,7 +10,6 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/artists/urls/artist_url_chips.dart';
 import 'package:boorusama/boorus/danbooru/sources/providers.dart';
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/config.dart';
@@ -31,6 +30,7 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../../../artists/urls/widgets.dart';
 import '../../../../tags/edit/providers.dart';
 import '../../../../tags/edit/tag_edit_favorite_view.dart';
 import '../../../../tags/edit/tag_edit_state.dart';
