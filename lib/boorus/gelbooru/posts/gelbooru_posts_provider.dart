@@ -3,12 +3,12 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/search/query_composer_providers.dart';
+import '../../../core/settings/data/listing_provider.dart';
+import '../../../foundation/caching/lru_cacher.dart';
+import '../gelbooru.dart';
 
 final gelbooruPostRepoProvider =
     Provider.family<PostRepository<GelbooruPost>, BooruConfigSearch>(
@@ -48,14 +48,18 @@ extension GelbooruClientX on GelbooruClient {
         tags: tags,
         page: page,
         limit: limit,
-      ).then((value) => value.posts
-          .map((e) => gelbooruPostDtoToGelbooruPost(
+      ).then(
+        (value) => value.posts
+            .map(
+              (e) => gelbooruPostDtoToGelbooruPost(
                 e,
                 PostMetadata(
                   page: page,
                   search: tags.join(' '),
                 ),
-              ))
-          .toList()
-          .toResult(total: value.count));
+              ),
+            )
+            .toList()
+            .toResult(total: value.count),
+      );
 }

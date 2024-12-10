@@ -80,24 +80,25 @@ class _AppLockState extends ConsumerState<AppLock> {
             data: (canUse) {
               if (canUse && !unlocked) {
                 return Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Please authenticate to use the app',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    IconButton(
-                      onPressed: () => _authenticate(localAuth),
-                      icon: Icon(
-                        Symbols.fingerprint,
-                        size: 72,
-                        color: Theme.of(context).colorScheme.primary,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Please authenticate to use the app',
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-                    )
-                  ],
-                ));
+                      const SizedBox(height: 16),
+                      IconButton(
+                        onPressed: () => _authenticate(localAuth),
+                        icon: Icon(
+                          Symbols.fingerprint,
+                          size: 72,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               }
 
               return widget.child;

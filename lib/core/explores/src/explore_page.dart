@@ -6,17 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder_default.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/images/explicit_block_overlay.dart';
-import 'package:boorusama/core/images/utils.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../boorus/booru_builder_default.dart';
+import '../../../boorus/providers.dart';
+import '../../../dart.dart';
+import '../../../foundation/display.dart';
+import '../../../router.dart';
+import '../../../widgets/widgets.dart';
+import '../../configs/ref.dart';
+import '../../images/booru_image.dart';
+import '../../images/explicit_block_overlay.dart';
+import '../../images/utils.dart';
+import '../../posts/post/post.dart';
 import '../../videos/video_play_duration_icon.dart';
 
 class ExplorePage extends ConsumerWidget {
@@ -146,8 +146,10 @@ class ExploreList extends ConsumerWidget {
     return ref.watch(blacklistTagsProvider(config)).when(
           data: (blacklistedTags) {
             final filteredPosts = posts
-                .where((post) =>
-                    !blacklistedTags.any((tag) => post.tags.contains(tag)))
+                .where(
+                  (post) =>
+                      !blacklistedTags.any((tag) => post.tags.contains(tag)),
+                )
                 .toList();
 
             return filteredPosts.isNotEmpty

@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/http/dio_options.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/package_info.dart';
+import '../../foundation/app_info.dart';
+import '../../foundation/loggers.dart';
+import '../../foundation/package_info.dart';
+import '../boorus.dart';
+import '../boorus/providers.dart';
+import '../configs/config.dart';
 import 'dio.dart';
+import 'dio_options.dart';
 
 final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);

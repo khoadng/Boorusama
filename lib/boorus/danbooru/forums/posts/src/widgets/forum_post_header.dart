@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
+import '../../../../../../core/theme.dart';
 import '../../../../users/user/providers.dart';
 import '../../../../users/user/user.dart';
 

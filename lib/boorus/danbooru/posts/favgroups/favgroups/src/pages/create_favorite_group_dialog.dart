@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/widgets/widgets.dart';
+import '../../../../../../../foundation/toast.dart';
+import '../../../../../../../widgets/widgets.dart';
 import '../providers/favorite_groups_notifier.dart';
 import '../types/danbooru_favorite_group.dart';
 import '../wigdets/privacy_toggle.dart';
@@ -161,8 +161,9 @@ class _EditFavoriteGroupDialogState
                                 if (widget.initialData == null) {
                                   ref
                                       .read(
-                                          danbooruFavoriteGroupsProvider(config)
-                                              .notifier)
+                                        danbooruFavoriteGroupsProvider(config)
+                                            .notifier,
+                                      )
                                       .create(
                                         initialIds: textController.text,
                                         name: value.text,
@@ -176,8 +177,9 @@ class _EditFavoriteGroupDialogState
                                 } else {
                                   ref
                                       .read(
-                                          danbooruFavoriteGroupsProvider(config)
-                                              .notifier)
+                                        danbooruFavoriteGroupsProvider(config)
+                                            .notifier,
+                                      )
                                       .edit(
                                         group: widget.initialData!,
                                         name: value.text,

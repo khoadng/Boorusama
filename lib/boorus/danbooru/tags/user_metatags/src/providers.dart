@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../../../foundation/loggers.dart';
 import 'user_metatag_repository.dart';
 
 final danbooruUserMetatagRepoProvider = Provider<UserMetatagRepository>((ref) {

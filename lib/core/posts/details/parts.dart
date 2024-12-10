@@ -1,5 +1,3 @@
-library;
-
 export 'src/parts/source_section.dart';
 export 'src/parts/artist_post_list.dart';
 export 'src/parts/related_posts_section.dart';

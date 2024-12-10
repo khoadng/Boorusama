@@ -5,11 +5,11 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/http/dio_options.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
+import '../../foundation/http.dart';
+import '../../foundation/platform.dart';
+import '../../router.dart';
+import '../boorus.dart';
+import 'dio_options.dart';
 
 Dio newDio({required DioOptions options}) {
   final booruConfig = options.authConfig;
@@ -27,13 +27,15 @@ Dio newDio({required DioOptions options}) {
 
   final context = navigatorKey.currentContext;
 
-  final dio = Dio(BaseOptions(
-    // This is a hack to clean the url, if there are more sites that need this we should refactor this into something more generic
-    baseUrl: _cleanUrl(apiUrl),
-    headers: {
-      AppHttpHeaders.userAgentHeader: userAgent,
-    },
-  ));
+  final dio = Dio(
+    BaseOptions(
+      // This is a hack to clean the url, if there are more sites that need this we should refactor this into something more generic
+      baseUrl: _cleanUrl(apiUrl),
+      headers: {
+        AppHttpHeaders.userAgentHeader: userAgent,
+      },
+    ),
+  );
 
   // NativeAdapter only does something on Android and iOS/MacOS
   if (isAndroid() || isIOS() || isMacOS()) {

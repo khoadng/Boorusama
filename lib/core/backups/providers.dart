@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/package_info.dart';
+import '../../foundation/package_info.dart';
 import 'data_converter.dart';
 
 final defaultBackupConverterProvider =

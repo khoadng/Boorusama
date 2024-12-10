@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/foundation/video.dart';
+import '../../../../foundation/video.dart';
 
 mixin MediaInfoMixin {
   String get format;

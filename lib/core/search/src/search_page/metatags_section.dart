@@ -7,10 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/metatag/metatag.dart';
-import 'package:boorusama/core/tags/metatag/routes.dart';
-import 'package:boorusama/core/theme/utils.dart';
+import '../../../settings/data.dart';
+import '../../../tags/metatag/metatag.dart';
+import '../../../tags/metatag/routes.dart';
+import '../../../theme/utils.dart';
 import 'widgets/add_tag_button.dart';
 import 'widgets/option_tags_arena.dart';
 

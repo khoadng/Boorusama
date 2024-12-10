@@ -7,10 +7,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../foundation/platform.dart';
+import '../analytics.dart';
+import '../configs/config.dart';
+import '../settings.dart';
 
 class FirebaseAnalyticsImpl implements AnalyticsInterface {
   FirebaseAnalyticsImpl({

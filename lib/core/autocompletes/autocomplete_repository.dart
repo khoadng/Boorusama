@@ -8,8 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/foundation/debugs/print.dart';
+import '../../foundation/caching.dart';
+import '../../foundation/debugs/print.dart';
 import 'autocompletes.dart';
 
 abstract class AutocompleteRepository {

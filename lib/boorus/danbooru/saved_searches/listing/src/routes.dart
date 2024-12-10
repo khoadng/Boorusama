@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../router.dart';
 import 'pages/saved_search_page.dart';
 
 final danbooruSavedSearchRoutes = GoRoute(

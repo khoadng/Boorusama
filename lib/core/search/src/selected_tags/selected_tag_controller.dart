@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/tags/configs/configs.dart';
-import 'package:boorusama/core/tags/metatag/metatag.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../tags/configs/configs.dart';
+import '../../../tags/metatag/metatag.dart';
 import '../histories/search_history.dart';
 import '../queries/filter_operator.dart';
 import 'tag_search_item.dart';

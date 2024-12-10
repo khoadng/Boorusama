@@ -150,16 +150,18 @@ class _CloudflareChallengeSolverPageState
     controller.loadRequest(Uri.parse(widget.url));
     controller.setJavaScriptMode(JavaScriptMode.unrestricted);
 
-    controller.setNavigationDelegate(NavigationDelegate(
-      onPageFinished: (url) async {
-        final cookies = await cookieManager.getCookies(urlWithoutQuery);
+    controller.setNavigationDelegate(
+      NavigationDelegate(
+        onPageFinished: (url) async {
+          final cookies = await cookieManager.getCookies(urlWithoutQuery);
 
-        if (cookies.isNotEmpty) {
-          widget.onCfClearance(cookies);
-          return;
-        }
-      },
-    ));
+          if (cookies.isNotEmpty) {
+            widget.onCfClearance(cookies);
+            return;
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -172,7 +174,8 @@ class _CloudflareChallengeSolverPageState
       body: Column(
         children: [
           _buildBanner(
-              'Please stay on this screen and wait until the challenge is solved'),
+            'Please stay on this screen and wait until the challenge is solved',
+          ),
           Expanded(
             child: WebViewWidget(
               controller: controller,

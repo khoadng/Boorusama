@@ -15,17 +15,21 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
   final DanbooruClient client;
 
   @override
-  Future<DanbooruArtist> getArtist(String name,
-      {CancelToken? cancelToken}) async {
+  Future<DanbooruArtist> getArtist(
+    String name, {
+    CancelToken? cancelToken,
+  }) async {
     try {
       return client
           .getFirstMatchingArtist(
             name: name,
             cancelToken: cancelToken,
           )
-          .then((artist) => artist == null
-              ? DanbooruArtist.empty()
-              : artistDtoToArtist(artist));
+          .then(
+            (artist) => artist == null
+                ? DanbooruArtist.empty()
+                : artistDtoToArtist(artist),
+          );
     } on DioException catch (e, stackTrace) {
       if (e.type == DioExceptionType.cancel) {
         // Cancel token triggered, skip this request
@@ -60,14 +64,15 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
   }) =>
       client
           .getArtists(
-              name: name,
-              url: url,
-              isDeleted: isDeleted,
-              isBanned: isBanned,
-              hasTag: hasTag,
-              includeTag: includeTag,
-              order: order,
-              cancelToken: cancelToken,
-              page: page)
+            name: name,
+            url: url,
+            isDeleted: isDeleted,
+            isBanned: isBanned,
+            hasTag: hasTag,
+            includeTag: includeTag,
+            order: order,
+            cancelToken: cancelToken,
+            page: page,
+          )
           .then((value) => value.map((e) => artistDtoToArtist(e)).toList());
 }

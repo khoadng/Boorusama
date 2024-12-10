@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/html.dart';
+import '../../router.dart';
+import '../../widgets/widgets.dart';
 
 class BlacklistedTagsViewScaffold extends ConsumerWidget {
   const BlacklistedTagsViewScaffold({

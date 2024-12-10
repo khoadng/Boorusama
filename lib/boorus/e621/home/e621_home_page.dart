@@ -8,14 +8,14 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/popular/e621_popular_page.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/home/home_navigation_tile.dart';
+import '../../../core/home/home_page_scaffold.dart';
+import '../../../core/home/side_menu_tile.dart';
+import '../../../core/widgets/widgets.dart';
+import '../../../router.dart';
+import '../favorites/favorites.dart';
+import '../popular/e621_popular_page.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
@@ -36,12 +36,16 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
         SideMenuTile(
           icon: const Icon(Symbols.explore),
           title: const Text('Popular'),
-          onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+          onTap: () => Navigator.of(context).push(
+            CupertinoPageRoute(
               builder: (_) => Scaffold(
-                    appBar: AppBar(),
-                    body: const CustomContextMenuOverlay(
-                        child: E621PopularPage()),
-                  ))),
+                appBar: AppBar(),
+                body: const CustomContextMenuOverlay(
+                  child: E621PopularPage(),
+                ),
+              ),
+            ),
+          ),
         ),
         if (config.hasLoginDetails()) ...[
           SideMenuTile(
@@ -49,7 +53,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             title: Text('profile.favorites'.tr()),
             onTap: () => goToFavoritesPage(context),
           ),
-        ]
+        ],
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(

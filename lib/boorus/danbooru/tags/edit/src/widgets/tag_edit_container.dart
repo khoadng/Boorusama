@@ -48,7 +48,10 @@ class TagEditContainer extends ConsumerWidget {
   }
 
   Widget _buildAppSheetAppbar(
-      WidgetRef ref, BuildContext context, String title) {
+    WidgetRef ref,
+    BuildContext context,
+    String title,
+  ) {
     final notifier = ref.watch(tagEditProvider.notifier);
     final viewExpanded =
         ref.watch(tagEditProvider.select((value) => value.viewExpanded));

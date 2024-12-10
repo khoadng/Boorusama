@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../router.dart';
 import '../types/dmail.dart';
 
 void goToDmailPage(BuildContext context) {

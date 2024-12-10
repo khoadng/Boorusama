@@ -11,13 +11,13 @@ import 'package:equatable/equatable.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/mobile.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/mobile.dart';
+import '../../../../foundation/platform.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../settings.dart';
+import '../../../theme.dart';
+import '../../../widgets/widgets.dart';
 import 'auto_slide_mixin.dart';
 
 const _kDefaultCooldownDuration = Duration(milliseconds: 750);
@@ -792,7 +792,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 alignment: Alignment.centerRight,
                 controller: _controller,
                 visibleWhen: (page) => page < widget.itemCount - 1,
-                icon: Icon(Symbols.arrow_forward),
+                icon: const Icon(Symbols.arrow_forward),
                 onPressed: !cooldown
                     ? () => _controller.nextPage(duration: Duration.zero)
                     : null,
@@ -804,7 +804,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 alignment: Alignment.centerLeft,
                 controller: _controller,
                 visibleWhen: (page) => page > 0,
-                icon: Icon(Symbols.arrow_back),
+                icon: const Icon(Symbols.arrow_back),
                 onPressed: !cooldown
                     ? () => _controller.previousPage(duration: Duration.zero)
                     : null,
@@ -909,10 +909,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final animation = Tween(
       begin: startOffset,
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: animController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: animController,
+        curve: Curves.easeOut,
+      ),
+    );
 
     animation.addListener(() {
       if (mounted) {
@@ -1173,7 +1175,7 @@ class HideUIOverlayTransition extends StatelessWidget {
               valueListenable: controller.displacement,
               builder: (context, dis, _) => Transform.translate(
                 offset: skipTransition && dis > _kMinSlideDistance
-                    ? Offset(0, _kLargeOffset)
+                    ? const Offset(0, _kLargeOffset)
                     : slideDown
                         ? Offset(0, dis * 0.5)
                         : Offset(0, -dis * 0.5),

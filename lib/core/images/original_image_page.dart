@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/mobile.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../dart.dart';
+import '../../foundation/display.dart';
+import '../../foundation/mobile.dart';
+import '../../widgets/widgets.dart';
+import '../configs/ref.dart';
+import '../http/providers.dart';
+import '../posts/post/post.dart';
+import 'dio_extended_image.dart';
 import 'providers.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {

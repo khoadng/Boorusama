@@ -1,5 +1,4 @@
 class Token {
-
   Token({
     required this.success,
     required this.tokenType,
@@ -40,7 +39,6 @@ class Token {
 }
 
 class CurrentUser {
-
   CurrentUser({
     required this.id,
     required this.name,

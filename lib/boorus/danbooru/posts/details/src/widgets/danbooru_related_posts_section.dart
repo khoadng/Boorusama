@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../core/posts/details/parts.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../router.dart';
 import '../../../post/post.dart';
 
 class DanbooruRelatedPostsSection extends ConsumerWidget {

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/dart.dart';
+import '../core/settings/data.dart';
+import '../core/theme/utils.dart';
+import '../dart.dart';
 
 class BooruChip extends ConsumerWidget {
   const BooruChip({

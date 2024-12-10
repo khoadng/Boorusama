@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/filename_generators/filename_generators.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/settings.dart';
+import '../../configs/config.dart';
+import '../../filename_generators/filename_generators.dart';
+import '../../posts/post/post.dart';
+import '../../settings.dart';
 import 'token_options.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {

@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/tags/details/widgets.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/posts/listing/widgets.dart';
+import '../../../../../core/tags/details/widgets.dart';
+import '../../../../../core/tags/tag/tag.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/providers.dart';
 import 'artist_tag_cloud.dart';

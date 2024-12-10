@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../../../../../../core/images/booru_image.dart';
+import '../../../../../../core/settings/data/listing_provider.dart';
 import '../../pool/pool.dart';
 import '../providers/pool_covers_notifier.dart';
 
@@ -21,8 +21,9 @@ class PoolImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cover = ref.watch(danbooruPoolCoverProvider(pool.id));
-    final imageBorderRadius = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageBorderRadius));
+    final imageBorderRadius = ref.watch(
+      imageListingSettingsProvider.select((value) => value.imageBorderRadius),
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) => cover != null

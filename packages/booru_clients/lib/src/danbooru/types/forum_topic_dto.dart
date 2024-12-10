@@ -1,5 +1,4 @@
 class ForumTopicDto {
-
   ForumTopicDto({
     this.id,
     this.creatorId,

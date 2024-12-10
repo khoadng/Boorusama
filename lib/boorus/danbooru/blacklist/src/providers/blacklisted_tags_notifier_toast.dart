@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklisted_tag.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../../../../../core/blacklists/blacklisted_tag.dart';
+import '../../../../../foundation/toast.dart';
 import 'blacklisted_tags_notifier.dart';
 
 extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {

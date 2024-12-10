@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/dart.dart';
+import '../../../../dart.dart';
+import '../../post/post.dart';
 import '../../rating/rating.dart';
 import '../../sources/source.dart';
 

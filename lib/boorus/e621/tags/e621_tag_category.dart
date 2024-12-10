@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/tags/categories/tag_category.dart';
+import '../../../core/tags/categories/tag_category.dart';
 
 TagCategory intToE621TagCategory(int? value) => switch (value) {
       0 => e621GeneralTagCategory,

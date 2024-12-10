@@ -11,10 +11,10 @@ import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../../../../../../../core/configs/config.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../foundation/animations.dart';
+import '../../../../../../../foundation/toast.dart';
 import '../../../../post/post.dart';
 import '../../favgroup.dart';
 import '../providers/favorite_groups_filterable_notifier.dart';
@@ -68,11 +68,14 @@ class AddToFavgroupList extends ConsumerWidget {
             title: Text(
               group.name.replaceAll('_', ' '),
             ),
-            subtitle: Text(group.updatedAt
-                .fuzzify(locale: Localizations.localeOf(context))),
-            trailing: Text('favorite_groups.group_item_counter'.plural(
-              group.postIds.length,
-            )),
+            subtitle: Text(
+              group.updatedAt.fuzzify(locale: Localizations.localeOf(context)),
+            ),
+            trailing: Text(
+              'favorite_groups.group_item_counter'.plural(
+                group.postIds.length,
+              ),
+            ),
             onTap: () {
               ref
                   .read(danbooruFavoriteGroupsProvider(config).notifier)

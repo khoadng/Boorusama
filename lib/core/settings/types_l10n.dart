@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/theme.dart';
+import '../theme.dart';
 import 'types.dart';
 
 extension PageModeTranslated on PageMode {

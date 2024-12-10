@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../widgets/widgets.dart';
 import '../favorite_tags_sort_type.dart';
 
 class FavoriteTagConfigSheet extends StatelessWidget {

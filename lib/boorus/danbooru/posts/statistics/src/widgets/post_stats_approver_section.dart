@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/statistics/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../../../../../core/posts/statistics/widgets.dart';
+import '../../../../../../dart.dart';
+import '../../../../../../foundation/display.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../post_stats.dart';
@@ -40,8 +40,11 @@ class PostStatsApproverSection extends ConsumerWidget {
                 data: {
                   for (final approver in stats.approvers.topN().entries)
                     ref
-                            .watch(danbooruCreatorProvider(
-                                int.tryParse(approver.key)))
+                            .watch(
+                              danbooruCreatorProvider(
+                                int.tryParse(approver.key),
+                              ),
+                            )
                             ?.name ??
                         approver.key: approver.value,
                 },

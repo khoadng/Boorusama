@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/router.dart';
+import '../../../../foundation/display.dart';
+import '../../../../router.dart';
 import 'pages/show_tag_list_page.dart';
 import 'tag.dart';
 

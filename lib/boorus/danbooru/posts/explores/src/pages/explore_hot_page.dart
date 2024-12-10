@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/listing/widgets.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../listing/widgets.dart';
 import '../providers.dart';
 import '../widgets/explore_sliver_app_bar.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
+import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../histories/providers.dart';
 import '../selected_tags/selected_tag_controller.dart';
 import '../suggestions/suggestions_notifier.dart';

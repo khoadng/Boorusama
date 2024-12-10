@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/utils.dart';
+import '../../../../core/comments/utils.dart';
 
 String parseDtext(String text) => text.pipe([
       bold,

@@ -6,12 +6,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../../boorus/booru_builder.dart';
+import '../../../foundation/display.dart';
+import '../../boorus.dart';
+import '../../configs/ref.dart';
+import '../../tags/categories/providers.dart';
+import '../../theme.dart';
 import '../bookmark.dart';
 import '../bookmark_provider.dart';
 
@@ -36,21 +36,25 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
       // No filtering needed, just sort all bookmarks
       ? bookmarks.entries.map((e) => e.value)
       : bookmarks.entries
-          .where((entry) =>
-              // URL filter
-              (selectedBooruUrl == null ||
-                  entry.value.sourceUrl.contains(selectedBooruUrl)) &&
-              // Tags filter
-              (tagsList.isEmpty ||
-                  tagsList.every((tag) => entry.value.tags.contains(tag))))
+          .where(
+            (entry) =>
+                // URL filter
+                (selectedBooruUrl == null ||
+                    entry.value.sourceUrl.contains(selectedBooruUrl)) &&
+                // Tags filter
+                (tagsList.isEmpty ||
+                    tagsList.every((tag) => entry.value.tags.contains(tag))),
+          )
           .map((e) => e.value);
 
   // Sort filtered results
   return filtered
-      .sorted((a, b) => switch (sortType) {
-            BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
-            BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt)
-          })
+      .sorted(
+        (a, b) => switch (sortType) {
+          BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
+          BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt)
+        },
+      )
       .toList();
 });
 final bookmarkEditProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -70,9 +74,10 @@ final booruTypeCountProvider =
   final bookmarks = ref.watch(bookmarkProvider).bookmarks;
 
   return bookmarks.entries.fold(
-      0,
-      (count, entry) =>
-          intToBooruType(entry.value.booruId) == booruType ? count + 1 : count);
+    0,
+    (count, entry) =>
+        intToBooruType(entry.value.booruId) == booruType ? count + 1 : count,
+  );
 });
 
 final bookmarkTagColorProvider =
@@ -124,23 +129,27 @@ final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
 final selectedBooruUrlProvider = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
-final selectRowCountProvider = StateProvider.autoDispose
-    .family<int, ScreenSize>((ref, size) => switch (size) {
-          ScreenSize.small => 2,
-          ScreenSize.medium => 4,
-          ScreenSize.large => 5,
-          ScreenSize.veryLarge => 6,
-        });
+final selectRowCountProvider =
+    StateProvider.autoDispose.family<int, ScreenSize>(
+  (ref, size) => switch (size) {
+    ScreenSize.small => 2,
+    ScreenSize.medium => 4,
+    ScreenSize.large => 5,
+    ScreenSize.veryLarge => 6,
+  },
+);
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(
-        (ref) => BookmarkSortType.newest);
+  (ref) => BookmarkSortType.newest,
+);
 
 final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
-    (ref) => [...BooruType.values, null]
-        .sorted((a, b) => a?.stringify().compareTo(b?.stringify() ?? '') ?? 0)
-        .where((e) => ref.watch(booruTypeCountProvider(e)) > 0)
-        .toList());
+  (ref) => [...BooruType.values, null]
+      .sorted((a, b) => a?.stringify().compareTo(b?.stringify() ?? '') ?? 0)
+      .where((e) => ref.watch(booruTypeCountProvider(e)) > 0)
+      .toList(),
+);
 
 final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
   return ref.watch(bookmarkProvider).bookmarks.values.fold(

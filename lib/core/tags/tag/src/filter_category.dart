@@ -7,7 +7,8 @@ enum TagFilterCategory {
 }
 
 typedef TagFilterCategoryStringBuilder = Option<String> Function(
-    TagFilterCategory category);
+  TagFilterCategory category,
+);
 
 String queryFromTagFilterCategory({
   required TagFilterCategory category,

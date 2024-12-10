@@ -7,10 +7,10 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/core/artists/artists.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../core/artists/artists.dart';
+import '../../../../../../core/posts/details/details.dart';
+import '../../../../../../core/posts/details/parts.dart';
+import '../../../../../../router.dart';
 import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
 import '../../../pools/pool/widgets.dart';
@@ -124,24 +124,25 @@ class DanbooruArtistPostsSection extends ConsumerWidget {
     return MultiSliver(
       children: post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => SliverArtistPostList(
-                    tag: tag,
-                    child: ref
-                        .watch(danbooruPostDetailsArtistProvider(tag))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
+              .map(
+                (tag) => SliverArtistPostList(
+                  tag: tag,
+                  child: ref
+                      .watch(danbooruPostDetailsArtistProvider(tag))
+                      .maybeWhen(
+                        data: (data) => SliverPreviewPostGrid(
+                          posts: data,
+                          onTap: (postIdx) => goToPostDetailsPageFromPosts(
+                            context: context,
                             posts: data,
-                            onTap: (postIdx) => goToPostDetailsPageFromPosts(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
-                            ),
-                            imageUrl: (item) => item.url360x360,
+                            initialIndex: postIdx,
                           ),
-                          orElse: () =>
-                              const SliverPreviewPostGridPlaceholder(),
+                          imageUrl: (item) => item.url360x360,
                         ),
-                  ))
+                        orElse: () => const SliverPreviewPostGridPlaceholder(),
+                      ),
+                ),
+              )
               .toList()
           : [],
     );

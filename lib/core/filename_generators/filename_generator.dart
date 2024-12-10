@@ -20,23 +20,25 @@ String generateFileName(
   // filter null metadata
   final meta = {
     for (final entry in metadata.entries)
-      if (entry.value != null) entry.key: entry.value
+      if (entry.value != null) entry.key: entry.value,
   };
 
   final data = tokens
-      .map((e) => applyTokenOptions(
-            meta[e.token.name] ?? '',
-            TokenContext(
-              token: e.token,
-              config: cfg,
-              options: filterDuplicatedOptions([
-                ...parseTokenOptions(cfg.globalOptionToken, e.token.name, cfg),
-                ...e.options,
-              ]),
-            ),
-            clock: clock,
-            uuid: uuid,
-          ))
+      .map(
+        (e) => applyTokenOptions(
+          meta[e.token.name] ?? '',
+          TokenContext(
+            token: e.token,
+            config: cfg,
+            options: filterDuplicatedOptions([
+              ...parseTokenOptions(cfg.globalOptionToken, e.token.name, cfg),
+              ...e.options,
+            ]),
+          ),
+          clock: clock,
+          uuid: uuid,
+        ),
+      )
       .toList();
 
   final fileName = fillArrayInString(cfg.tokenRegex, format, data);
@@ -51,10 +53,12 @@ String applyTokenOptions(
   required Uuid uuid,
 }) =>
     context.options
-        .where((o) =>
-            context.config.tokenDefinitions.containsKey(context.token.name) &&
-            context.config.tokenDefinitions[context.token.name]!
-                .contains(o.name))
+        .where(
+          (o) =>
+              context.config.tokenDefinitions.containsKey(context.token.name) &&
+              context.config.tokenDefinitions[context.token.name]!
+                  .contains(o.name),
+        )
         .fold(
           data,
           (data, option) => getTokenOptionHandler(

@@ -126,7 +126,8 @@ class PostGestureConfig extends Equatable {
       return const PostGestureConfig.undefined();
     }
     return PostGestureConfig.fromJson(
-        jsonDecode(jsonString) as Map<String, dynamic>);
+      jsonDecode(jsonString) as Map<String, dynamic>,
+    );
   }
   final GestureConfig? preview;
   final GestureConfig? fullview;

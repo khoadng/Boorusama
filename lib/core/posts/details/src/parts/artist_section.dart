@@ -7,11 +7,11 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/artists/artists.dart';
-import 'package:boorusama/core/comments/comment_parser.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../../foundation/html.dart';
+import '../../../../../foundation/url_launcher.dart';
+import '../../../../artists/artists.dart';
+import '../../../../comments/comment_parser.dart';
+import '../../../../widgets/widgets.dart';
 import '../../../sources/source.dart';
 import 'source_link.dart';
 
@@ -161,7 +161,7 @@ class _Link extends StatelessWidget {
                       value: TranlationState.original,
                       child: const Text('post.detail.show_original').tr(),
                     ),
-                }
+                },
               ],
             )
           : const SizedBox.shrink(),

@@ -7,9 +7,9 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../boorus/providers.dart';
+import '../posts/post/post.dart';
+import '../theme.dart';
 
 class QuickFavoriteButton extends ConsumerWidget {
   const QuickFavoriteButton({

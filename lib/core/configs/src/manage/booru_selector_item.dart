@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/display.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 
 class BooruSelectorItem extends StatelessWidget {

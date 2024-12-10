@@ -8,11 +8,11 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../core/configs/failsafe.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/posts/listing/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../../../router.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
 import 'favorite.dart';

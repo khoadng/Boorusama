@@ -9,10 +9,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/generic_no_data_box.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../router.dart';
+import '../../../../../../widgets/generic_no_data_box.dart';
 import '../../../saved_search/providers.dart';
 import '../../../saved_search/routes.dart';
 import '../../../saved_search/saved_search.dart';

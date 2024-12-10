@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import '../../../../../dart.dart';
 import '../../post/post.dart';
 
 class DanbooruPostStats extends Equatable {

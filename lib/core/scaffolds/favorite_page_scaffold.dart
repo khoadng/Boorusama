@@ -8,10 +8,10 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../router.dart';
+import '../posts/listing/widgets.dart';
+import '../posts/post/post.dart';
+import '../widgets/widgets.dart';
 
 class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
   const FavoritesPageScaffold({

@@ -37,7 +37,7 @@ class TagCloud extends StatelessWidget {
               ratio: size.aspectRatio,
             ),
             children: [
-              for (var i = 0; i < itemCount; i++) itemBuilder(context, i)
+              for (var i = 0; i < itemCount; i++) itemBuilder(context, i),
             ],
           ),
         ),

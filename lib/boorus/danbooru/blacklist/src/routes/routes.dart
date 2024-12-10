@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../router.dart';
 import '../blacklisted_tags_page.dart';
 
 final danbooruBlacklistRoutes = GoRoute(

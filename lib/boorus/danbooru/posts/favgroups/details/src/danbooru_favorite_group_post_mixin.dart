@@ -5,9 +5,9 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../../../../../core/posts/post/post.dart';
 import '../../../post/post.dart';
+import '../../../post/providers.dart';
 
 mixin DanbooruFavoriteGroupPostMixin {
   PostRepository<DanbooruPost> get postRepository;
@@ -30,13 +30,12 @@ mixin DanbooruFavoriteGroupPostMixin {
     final ids = queue.skip(skip).take(limit).toList();
 
     // Get posts from repository
-    final r = await postRepository
-        .getPostsFromIds(ids)
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[].toResult(),
-              (r) => r,
-            ));
+    final r = await postRepository.getPostsFromIds(ids).run().then(
+          (value) => value.fold(
+            (l) => <DanbooruPost>[].toResult(),
+            (r) => r,
+          ),
+        );
 
     // Create order map for sorting
     final orderMap = <int, int>{};

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/boorus/booru_type.dart';
+import '../../../boorus/booru_type.dart';
 import '../../tag/tag.dart';
 import 'tag_type_store.dart';
 

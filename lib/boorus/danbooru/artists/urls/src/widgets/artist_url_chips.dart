@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/posts/sources/source.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../../../widgets/widgets.dart';
 
 class DanbooruArtistUrlChips extends StatelessWidget {
   const DanbooruArtistUrlChips({

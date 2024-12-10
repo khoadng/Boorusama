@@ -6,9 +6,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../widgets/widgets.dart';
 import '../search_history.dart';
 
 class SearchHistorySection extends StatelessWidget {
@@ -69,7 +69,8 @@ class SearchHistorySection extends StatelessWidget {
                               date: item.createdAt,
                               child: Text(
                                 item.createdAt.fuzzify(
-                                    locale: Localizations.localeOf(context)),
+                                  locale: Localizations.localeOf(context),
+                                ),
                               ),
                             )
                           : null,

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../foundation/loggers.dart';
 import 'booru_config.dart';
 import 'booru_config_ref.dart';
 import 'manage/booru_config_provider.dart';

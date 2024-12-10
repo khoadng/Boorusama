@@ -102,20 +102,21 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final date = data[groupIndex].date;
               return BarTooltipItem(
-                  '${date.day}/${date.month}/${date.year}',
-                  Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ) ??
-                      const TextStyle(),
-                  children: [
-                    TextSpan(
-                      text: '\n${rod.toY.toInt()} posts',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ]);
+                '${date.day}/${date.month}/${date.year}',
+                Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ) ??
+                    const TextStyle(),
+                children: [
+                  TextSpan(
+                    text: '\n${rod.toY.toInt()} posts',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+              );
             },
           ),
         ),
@@ -123,37 +124,40 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
           topTitles: const AxisTitles(),
           rightTitles: const AxisTitles(),
           bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-            reservedSize: 30,
-            showTitles: true,
-            getTitlesWidget: (value, meta) => SideTitleWidget(
-              axisSide: meta.axisSide,
-              child: Text(
-                titles[value.toInt()]!,
+            sideTitles: SideTitles(
+              reservedSize: 30,
+              showTitles: true,
+              getTitlesWidget: (value, meta) => SideTitleWidget(
+                axisSide: meta.axisSide,
+                child: Text(
+                  titles[value.toInt()]!,
+                ),
               ),
             ),
-          )),
+          ),
         ),
         barGroups: data
-            .mapIndexed((idx, e) => BarChartGroupData(
-                  x: idx,
-                  barRods: [
-                    BarChartRodData(
-                      width: switch (dateRange) {
-                        UploadDateRangeSelectorType.last7Days => 28,
-                        UploadDateRangeSelectorType.last30Days => 8,
-                        UploadDateRangeSelectorType.last3Months => 2.5,
-                        UploadDateRangeSelectorType.last6Months => 1.25,
-                        UploadDateRangeSelectorType.lastYear => 0.75,
-                      },
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(1),
-                        topRight: Radius.circular(1),
-                      ),
-                      toY: e.postCount.toDouble(),
-                    )
-                  ],
-                ))
+            .mapIndexed(
+              (idx, e) => BarChartGroupData(
+                x: idx,
+                barRods: [
+                  BarChartRodData(
+                    width: switch (dateRange) {
+                      UploadDateRangeSelectorType.last7Days => 28,
+                      UploadDateRangeSelectorType.last30Days => 8,
+                      UploadDateRangeSelectorType.last3Months => 2.5,
+                      UploadDateRangeSelectorType.last6Months => 1.25,
+                      UploadDateRangeSelectorType.lastYear => 0.75,
+                    },
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(1),
+                      topRight: Radius.circular(1),
+                    ),
+                    toY: e.postCount.toDouble(),
+                  ),
+                ],
+              ),
+            )
             .toList(),
       ),
     );

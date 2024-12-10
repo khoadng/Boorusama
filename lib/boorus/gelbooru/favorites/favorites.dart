@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorites/favorite.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/failsafe.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/favorites/favorite.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../gelbooru.dart';
 
 class GelbooruFavoritesPage extends ConsumerWidget {
   const GelbooruFavoritesPage({super.key});
@@ -46,7 +46,8 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
       favQueryBuilder: () => query,
       fetcher: (page) => TaskEither.Do(($) async {
         final r = await $(
-            ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page));
+          ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page),
+        );
 
         // all posts from this page are already favorited by the user
         ref
@@ -79,12 +80,14 @@ class GelbooruFavoritesNotifier
             gelbooruClientProvider(arg),
           )
           .addFavorite(postId: postId)
-          .then((value) => switch (value) {
-                GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
-                GelbooruFavoriteStatus.alreadyFavorited =>
-                  AddFavoriteStatus.alreadyExists,
-                _ => AddFavoriteStatus.failure,
-              });
+          .then(
+            (value) => switch (value) {
+              GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
+              GelbooruFavoriteStatus.alreadyFavorited =>
+                AddFavoriteStatus.alreadyExists,
+              _ => AddFavoriteStatus.failure,
+            },
+          );
 
   @override
   Future<bool> Function(int postId) get favoriteRemover => (postId) => ref

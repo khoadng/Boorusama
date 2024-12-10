@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../configs/ref.dart';
 import 'tag_type_store.dart';
 import 'tag_type_store_impl.dart';
 

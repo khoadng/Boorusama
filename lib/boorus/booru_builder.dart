@@ -2,22 +2,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v1/gelbooru_v1.dart';
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/boorus/sankaku/sankaku.dart';
-import 'package:boorusama/boorus/zerochan/zerochan.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/downloads/filename.dart';
+import '../core/boorus.dart';
+import '../core/downloads/filename.dart';
 import 'anime-pictures/anime_pictures.dart';
 import 'booru_builder_types.dart';
+import 'danbooru/danbooru.dart';
+import 'e621/e621.dart';
+import 'gelbooru/gelbooru.dart';
+import 'gelbooru_v1/gelbooru_v1.dart';
 import 'gelbooru_v2/gelbooru_v2.dart';
 import 'hydrus/hydrus.dart';
+import 'moebooru/moebooru.dart';
 import 'philomena/philomena.dart';
+import 'sankaku/sankaku.dart';
 import 'shimmie2/shimmie2.dart';
 import 'szurubooru/szurubooru.dart';
+import 'zerochan/zerochan.dart';
 
 export 'booru_builder_extensions.dart';
 

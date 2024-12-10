@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import '../../../widgets/option_dropdown_button.dart';
 
 class SettingsTile<T> extends StatelessWidget {
   const SettingsTile({
@@ -40,10 +40,12 @@ class SettingsTile<T> extends StatelessWidget {
           if (newValue != null) onChanged(newValue);
         },
         items: items
-            .map<DropdownMenuItem<T>>((value) => DropdownMenuItem<T>(
-                  value: value,
-                  child: optionBuilder(value),
-                ))
+            .map<DropdownMenuItem<T>>(
+              (value) => DropdownMenuItem<T>(
+                value: value,
+                child: optionBuilder(value),
+              ),
+            )
             .toList(),
       ),
     );

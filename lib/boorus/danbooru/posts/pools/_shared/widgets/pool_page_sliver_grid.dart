@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/pools/pool_grid_item.dart';
-import 'package:boorusama/core/posts/listing/list.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/pools/pool_grid_item.dart';
+import '../../../../../../core/posts/listing/list.dart';
+import '../../../../../../core/settings/data/listing_provider.dart';
 import '../../details/providers.dart';
 import '../../pool/pool.dart';
 import '../../pool/providers.dart';
@@ -122,13 +122,17 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
   @override
   Widget build(BuildContext context) {
     final imageGridSpacing = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
+      imageListingSettingsProvider.select((value) => value.imageGridSpacing),
+    );
     final imageGridPadding = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridPadding));
+      imageListingSettingsProvider.select((value) => value.imageGridPadding),
+    );
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));
-    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
-            .select((value) => value.imageGridAspectRatio)) -
+    final imageGridAspectRatio = ref.watch(
+          imageListingSettingsProvider
+              .select((value) => value.imageGridAspectRatio),
+        ) -
         _kLabelOffset;
 
     final crossAxisCount = calculateGridCount(

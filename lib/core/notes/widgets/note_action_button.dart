@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/widgets/circular_icon_button.dart';
+import '../../../widgets/circular_icon_button.dart';
+import '../../posts/post/post.dart';
 
 class NoteActionButton extends StatelessWidget {
   const NoteActionButton({
@@ -31,7 +31,7 @@ class NoteActionButton extends StatelessWidget {
 
     if (showDownload) {
       return CircularIconButton(
-        icon: FaIcon(
+        icon: const FaIcon(
           Symbols.translate,
           size: 22,
         ),

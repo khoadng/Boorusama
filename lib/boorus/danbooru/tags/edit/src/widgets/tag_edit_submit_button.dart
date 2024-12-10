@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../router.dart';
 import '../../../_shared/tag_list_notifier.dart';
 import '../providers/providers.dart';
 import '../providers/tag_edit_notifier.dart';

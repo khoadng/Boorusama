@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../foundation/html.dart';
+import '../../foundation/url_launcher.dart';
+import '../theme.dart';
 
 class Quote extends StatelessWidget {
   const Quote({super.key, required this.text});

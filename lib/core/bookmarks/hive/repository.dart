@@ -3,8 +3,8 @@ import 'package:foundation/foundation.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
+import '../../posts/post/post.dart';
+import '../../posts/sources/source.dart';
 import '../bookmark.dart';
 import '../bookmark_convert.dart';
 import 'object.dart';
@@ -52,9 +52,12 @@ class BookmarkHiveRepository implements BookmarkRepository {
 
   @override
   BookmarksOrError getAllBookmarks() => TaskEither.fromEither(
-          tryGetBoxValues(_box).mapLeft(mapBoxErrorToBookmarkGetError))
-      .flatMap((objects) =>
-          TaskEither.fromEither(tryMapBookmarkHiveObjectsToBookmarks(objects)));
+        tryGetBoxValues(_box).mapLeft(mapBoxErrorToBookmarkGetError),
+      ).flatMap(
+        (objects) => TaskEither.fromEither(
+          tryMapBookmarkHiveObjectsToBookmarks(objects),
+        ),
+      );
 
   @override
   Future<List<Bookmark>> addBookmarks(

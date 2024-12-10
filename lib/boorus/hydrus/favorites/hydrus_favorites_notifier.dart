@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/hydrus/hydrus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorites/favorite.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/favorites/favorite.dart';
+import '../hydrus.dart';
 
 class HydrusFavoritesNotifier
     extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>

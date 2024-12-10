@@ -16,7 +16,7 @@ void main() {
       'extension': 'png',
       'artist': 'namu',
       'copyright': 'sword:art/online',
-      'character': 'lea:fa'
+      'character': 'lea:fa',
     };
     const String format =
         '{id}_{artist}_{copyright}_{character}_{md5}.{extension}';
@@ -26,9 +26,11 @@ void main() {
 
     // Assert
     expect(
-        filename,
-        equals(
-            '123_namu_sword_art_online_lea_fa_f7deda9c6934179779f63910d5e8d2dc.png'));
+      filename,
+      equals(
+        '123_namu_sword_art_online_lea_fa_f7deda9c6934179779f63910d5e8d2dc.png',
+      ),
+    );
   });
 
   test('generateFileName replaces tokens correctly when missing data', () {
@@ -37,7 +39,7 @@ void main() {
       'md5': 'f7deda9c6934179779f63910d5e8d2dc',
       'extension': 'png',
       'copyright': 'sword art online',
-      'character': 'leafa'
+      'character': 'leafa',
     };
     const String format = '{artist}_{copyright}_{character}_{md5}.{extension}';
 
@@ -45,8 +47,10 @@ void main() {
     final String filename = generateFileName(metadata, format);
 
     // Assert
-    expect(filename,
-        equals('_sword art online_leafa_f7deda9c6934179779f63910d5e8d2dc.png'));
+    expect(
+      filename,
+      equals('_sword art online_leafa_f7deda9c6934179779f63910d5e8d2dc.png'),
+    );
   });
 
   test('generateFileName keeps invalid filename characters', () {
@@ -56,7 +60,7 @@ void main() {
       'extension': 'png',
       'artist': 'namu',
       'copyright': 'sword:art/online',
-      'character': 'leafa'
+      'character': 'leafa',
     };
     const String format =
         '{artist}_{copyright:unsafe}_{character}_{md5}.{extension}';
@@ -66,9 +70,11 @@ void main() {
 
     // Assert
     expect(
-        filename,
-        equals(
-            'namu_sword:art/online_leafa_f7deda9c6934179779f63910d5e8d2dc.png'));
+      filename,
+      equals(
+        'namu_sword:art/online_leafa_f7deda9c6934179779f63910d5e8d2dc.png',
+      ),
+    );
   });
 
   test('generateFileName applies maxlength option', () {
@@ -78,7 +84,7 @@ void main() {
       'extension': 'png',
       'artist': 'namu',
       'copyright': 'sword art online',
-      'character': 'leafa'
+      'character': 'leafa',
     };
     const String format =
         '{artist}_{copyright}_{character}_{md5:maxlength=8}.{extension}';
@@ -97,7 +103,7 @@ void main() {
       'extension': 'png',
       'artist': 'artist_1 artist_2',
       'copyright': 'foo_1 bar_2',
-      'character': 'character_1 character_2'
+      'character': 'character_1 character_2',
     };
     const String format =
         '{artist:delimiter=~} {copyright:delimiter= } {character:delimiter=comma ,case=upper} {md5}.{extension}';
@@ -107,9 +113,11 @@ void main() {
 
     // Assert
     expect(
-        filename,
-        equals(
-            'artist_1~artist_2 foo_1 bar_2 CHARACTER_1, CHARACTER_2 f7deda9c6934179779f63910d5e8d2dc.png'));
+      filename,
+      equals(
+        'artist_1~artist_2 foo_1 bar_2 CHARACTER_1, CHARACTER_2 f7deda9c6934179779f63910d5e8d2dc.png',
+      ),
+    );
   });
 
   test('generateFileName ignores unknown options', () {
@@ -119,7 +127,7 @@ void main() {
       'extension': 'png',
       'artist': 'namu',
       'copyright': 'sword art online',
-      'character': 'leafa'
+      'character': 'leafa',
     };
     const String format =
         '{artist}_{copyright}_{character}_{md5:foo=8}.{extension}';
@@ -129,9 +137,11 @@ void main() {
 
     // Assert
     expect(
-        filename,
-        equals(
-            'namu_sword art online_leafa_f7deda9c6934179779f63910d5e8d2dc.png'));
+      filename,
+      equals(
+        'namu_sword art online_leafa_f7deda9c6934179779f63910d5e8d2dc.png',
+      ),
+    );
   });
 
   test('generateFileName ignores unknown data', () {
@@ -142,7 +152,7 @@ void main() {
       'foo': 'bar',
       'artist': 'namu',
       'copyright': 'sword art online',
-      'character': 'leafa'
+      'character': 'leafa',
     };
     const String format =
         '{artist}_{copyright}_{character}_{md5:foo=8}.{extension}';
@@ -152,9 +162,11 @@ void main() {
 
     // Assert
     expect(
-        filename,
-        equals(
-            'namu_sword art online_leafa_f7deda9c6934179779f63910d5e8d2dc.png'));
+      filename,
+      equals(
+        'namu_sword art online_leafa_f7deda9c6934179779f63910d5e8d2dc.png',
+      ),
+    );
   });
 
   test('generateFileName with date option', () {
@@ -422,7 +434,9 @@ void main() {
 
     // Assert
     expect(
-        filename, equals('bar by foo (11111111-1111-1111-1111-111111111111)'));
+      filename,
+      equals('bar by foo (11111111-1111-1111-1111-111111111111)'),
+    );
   });
 
   test('generateFileName with search option', () {
@@ -450,8 +464,12 @@ class MockUuid implements Uuid {
   String v1({Map<String, dynamic>? options, V1Options? config}) =>
       '11111111-1111-1111-1111-111111111111';
   @override
-  List<int> v1buffer(List<int> buffer,
-          {Map<String, dynamic>? options, V1Options? config, int offset = 0}) =>
+  List<int> v1buffer(
+    List<int> buffer, {
+    Map<String, dynamic>? options,
+    V1Options? config,
+    int offset = 0,
+  }) =>
       [];
   @override
   UuidValue v1obj({Map<String, dynamic>? options, V1Options? config}) =>
@@ -460,23 +478,41 @@ class MockUuid implements Uuid {
   String v4({Map<String, dynamic>? options, V4Options? config}) =>
       '44444444-4444-4444-4444-444444444444';
   @override
-  List<int> v4buffer(List<int> buffer,
-          {Map<String, dynamic>? options, V4Options? config, int offset = 0}) =>
+  List<int> v4buffer(
+    List<int> buffer, {
+    Map<String, dynamic>? options,
+    V4Options? config,
+    int offset = 0,
+  }) =>
       [];
   @override
   UuidValue v4obj({Map<String, dynamic>? options, V4Options? config}) =>
       Namespace.dns.uuidValue;
   @override
-  String v5(String? namespace, String? name,
-          {Map<String, dynamic>? options, V5Options? config}) =>
+  String v5(
+    String? namespace,
+    String? name, {
+    Map<String, dynamic>? options,
+    V5Options? config,
+  }) =>
       '55555555-5555-5555-5555-555555555555';
   @override
-  List<int> v5buffer(String? namespace, String? name, List<int>? buffer,
-          {Map<String, dynamic>? options, V5Options? config, int offset = 0}) =>
+  List<int> v5buffer(
+    String? namespace,
+    String? name,
+    List<int>? buffer, {
+    Map<String, dynamic>? options,
+    V5Options? config,
+    int offset = 0,
+  }) =>
       [];
   @override
-  UuidValue v5obj(String? namespace, String? name,
-          {Map<String, dynamic>? options, V5Options? config}) =>
+  UuidValue v5obj(
+    String? namespace,
+    String? name, {
+    Map<String, dynamic>? options,
+    V5Options? config,
+  }) =>
       Namespace.dns.uuidValue;
   @override
   String v6({V6Options? config}) => '66666666-6666-6666-6666-666666666666';
@@ -505,8 +541,11 @@ class MockUuid implements Uuid {
       '88888888-8888-8888-8888-888888888888';
 
   @override
-  List<int> v8gbuffer(List<int> buffer,
-          {V8GenericOptions? config, int offset = 0}) =>
+  List<int> v8gbuffer(
+    List<int> buffer, {
+    V8GenericOptions? config,
+    int offset = 0,
+  }) =>
       [];
 
   @override

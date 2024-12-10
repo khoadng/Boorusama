@@ -8,16 +8,16 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/count/widgets.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../boorus.dart';
+import '../../../configs/ref.dart';
+import '../../../posts/count/widgets.dart';
+import '../../../posts/listing/providers.dart';
+import '../../../posts/listing/widgets.dart';
+import '../../../posts/post/post.dart';
+import '../../../settings/data.dart';
+import '../../../tags/configs/providers.dart';
+import '../../../widgets/widgets.dart';
 import '../histories/providers.dart';
 import '../selected_tags/selected_tag_controller.dart';
 import '../suggestions/suggestions_notifier.dart';

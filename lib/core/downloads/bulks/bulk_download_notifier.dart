@@ -7,18 +7,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/filter/filter.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/permissions.dart';
+import '../../../boorus/booru_builder.dart';
+import '../../../boorus/providers.dart';
+import '../../../dart.dart';
+import '../../../foundation/device_info.dart';
+import '../../../foundation/http.dart';
+import '../../../foundation/loggers.dart';
+import '../../../foundation/permissions.dart';
+import '../../configs/ref.dart';
+import '../../posts/filter/filter.dart';
+import '../../posts/post/post.dart';
+import '../../posts/sources/source.dart';
+import '../../settings/data.dart';
 import '../downloader/metadata.dart';
 import '../downloader/providers.dart';
 import '../manager/download_task.dart';
@@ -35,7 +35,8 @@ const _perPage = 200;
 
 final bulkdownloadProvider =
     NotifierProvider<BulkDownloadNotifier, List<BulkDownloadTask>>(
-        BulkDownloadNotifier.new);
+  BulkDownloadNotifier.new,
+);
 
 class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
   @override
@@ -90,8 +91,10 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       return;
     }
 
-    logger.logI(_serviceName,
-        'Download requested for "${task.tags}" at "${task.storagePath}" with permission status: $permission');
+    logger.logI(
+      _serviceName,
+      'Download requested for "${task.tags}" at "${task.storagePath}" with permission status: $permission',
+    );
 
     //TODO: ask permission here, set some state to notify user
     if (permission != PermissionStatus.granted) {
@@ -187,7 +190,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
         final notifQueue = ref.read(bulkDownloadNotificationQueueProvider);
         notifQueue[task.id] = false;
         ref.read(bulkDownloadNotificationQueueProvider.notifier).state = {
-          ...notifQueue
+          ...notifQueue,
         };
       }
 

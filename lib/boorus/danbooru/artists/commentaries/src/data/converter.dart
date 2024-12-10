@@ -4,7 +4,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import 'package:boorusama/core/artists/artists.dart';
+import '../../../../../../core/artists/artists.dart';
 
 ArtistCommentary artistCommentaryDtoToArtistCommentary(
   ArtistCommentaryDto? d,

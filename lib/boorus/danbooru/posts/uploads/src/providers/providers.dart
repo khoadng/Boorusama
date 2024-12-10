@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../danbooru_provider.dart';
 import 'danbooru_upload_repository.dart';
 
 final danbooruUploadRepoProvider =

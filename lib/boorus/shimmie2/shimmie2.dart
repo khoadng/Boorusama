@@ -5,21 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/shimmie2/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/parts.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/sources/source.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
+import 'providers.dart';
 
 class Shimmie2Builder
     with

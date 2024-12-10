@@ -8,14 +8,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/backward_import_alert_dialog.dart';
-import 'package:boorusama/core/backups/data_io_handler.dart';
-import 'package:boorusama/core/backups/providers.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/version.dart';
+import '../../../foundation/device_info.dart';
+import '../../../foundation/loggers.dart';
+import '../../../foundation/package_info.dart';
+import '../../../foundation/toast.dart';
+import '../../../foundation/version.dart';
+import '../../backups/backward_import_alert_dialog.dart';
+import '../../backups/data_io_handler.dart';
+import '../../backups/providers.dart';
 import '../settings.dart';
 import 'providers.dart';
 import 'settings_io_handler.dart';
@@ -73,7 +73,9 @@ class SettingsNotifier extends Notifier<Settings> {
 
         if (cs != ns) {
           ref.read(loggerProvider).logI(
-              'Settings', 'Settings updated: ${cs.runtimeType} $cs -> $ns');
+                'Settings',
+                'Settings updated: ${cs.runtimeType} $cs -> $ns',
+              );
         }
       }
       state = settings;

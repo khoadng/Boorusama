@@ -6,7 +6,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data/settings_providers.dart';
+import '../settings/data/settings_providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
 import 'theme_mode.dart';

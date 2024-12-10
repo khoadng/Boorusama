@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../../../../../../../core/configs/config.dart';
 import '../../../favgroups/favgroup.dart';
 import '../../../favgroups/routes.dart';
 import '../pages/favorite_group_delete_confirmation_dialog.dart';

@@ -1,14 +1,16 @@
 // Project imports:
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../tags/categories/tag_category.dart';
+import '../../../tags/tag/tag.dart';
 import 'post.dart';
 
 extension PostTagX on Post {
   List<Tag> extractTags() => tags
-      .map((e) => Tag.noCount(
-            name: e,
-            category: TagCategory.general(),
-          ))
+      .map(
+        (e) => Tag.noCount(
+          name: e,
+          category: TagCategory.general(),
+        ),
+      )
       .toList();
 }
 

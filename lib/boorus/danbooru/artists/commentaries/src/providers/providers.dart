@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/artists/artists.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../core/artists/artists.dart';
+import '../../../../../../core/configs/ref.dart';
 import '../data/providers.dart';
 
 final danbooruArtistCommentaryProvider =

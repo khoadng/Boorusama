@@ -122,10 +122,12 @@ void main() {
         [0, -1],
         [5, -10],
       ]
-          .map((e) => DanbooruPost.empty().copyWith(
-                upScore: e.first,
-                downScore: e[1],
-              ))
+          .map(
+            (e) => DanbooruPost.empty().copyWith(
+              upScore: e.first,
+              downScore: e[1],
+            ),
+          )
           .toList();
 
       expect(posts.every((post) => post.hasVoter), isTrue);
@@ -135,10 +137,12 @@ void main() {
       final posts = [
         [0, 0],
       ]
-          .map((e) => DanbooruPost.empty().copyWith(
-                upScore: e.first,
-                downScore: e[1],
-              ))
+          .map(
+            (e) => DanbooruPost.empty().copyWith(
+              upScore: e.first,
+              downScore: e[1],
+            ),
+          )
           .toList();
 
       expect(posts.every((post) => post.hasVoter), isFalse);
@@ -166,9 +170,11 @@ void main() {
   group('favorite test', () {
     test('have favorites', () {
       final posts = [1, 2, 3]
-          .map((e) => DanbooruPost.empty().copyWith(
-                favCount: e,
-              ))
+          .map(
+            (e) => DanbooruPost.empty().copyWith(
+              favCount: e,
+            ),
+          )
           .toList();
 
       expect(posts.every((post) => post.hasFavorite), isTrue);
@@ -176,9 +182,11 @@ void main() {
 
     test("doesn't have favorites", () {
       final posts = [-1, 0]
-          .map((e) => DanbooruPost.empty().copyWith(
-                favCount: e,
-              ))
+          .map(
+            (e) => DanbooruPost.empty().copyWith(
+              favCount: e,
+            ),
+          )
           .toList();
 
       expect(posts.every((post) => post.hasFavorite), isFalse);
@@ -200,10 +208,12 @@ void main() {
         [true, null],
         [false, 0],
       ]
-          .map((e) => DanbooruPost.empty().copyWith(
-                hasChildren: e.first as bool,
-                parentId: e[1] as int?,
-              ))
+          .map(
+            (e) => DanbooruPost.empty().copyWith(
+              hasChildren: e.first as bool,
+              parentId: e[1] as int?,
+            ),
+          )
           .toList();
 
       expect(posts.every((post) => post.hasParentOrChildren), isTrue);

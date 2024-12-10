@@ -115,7 +115,8 @@ ProviderContainer createBooruConfigContainer({
   return createContainer(
     overrides: [
       booruConfigRepoProvider.overrideWith(
-          (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository()),
+        (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository(),
+      ),
       settingsRepoProvider.overrideWithValue(settingsRepository),
       settingsNotifierProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../core/posts/post/post.dart';
 
 class ZerochanPost extends SimplePost {
   ZerochanPost({

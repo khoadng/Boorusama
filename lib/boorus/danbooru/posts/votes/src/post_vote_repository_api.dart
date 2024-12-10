@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../../../../../core/configs/config.dart';
 import 'post_vote.dart';
 import 'post_vote_repository.dart';
 

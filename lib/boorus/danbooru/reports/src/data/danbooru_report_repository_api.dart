@@ -33,7 +33,9 @@ class DanbooruReportRepositoryApi implements DanbooruReportRepository {
             from: from,
             to: to,
           )
-          .then((value) => value
-              .map(danbooruReportDataPointDtoToDanbooruReportDataPoint)
-              .toList());
+          .then(
+            (value) => value
+                .map(danbooruReportDataPointDtoToDanbooruReportDataPoint)
+                .toList(),
+          );
 }

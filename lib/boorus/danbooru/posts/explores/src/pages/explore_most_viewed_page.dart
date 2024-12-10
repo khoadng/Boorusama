@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/datetimes/datetime_selector.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/datetimes/datetime_selector.dart';
+import '../../../../../../core/posts/listing/providers.dart';
+import '../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../dart.dart';
 import '../../../listing/widgets.dart';
 import '../../../post/post.dart';
 import '../providers.dart';

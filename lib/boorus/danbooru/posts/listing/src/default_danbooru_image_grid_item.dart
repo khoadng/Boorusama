@@ -7,21 +7,21 @@ import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/booru_builder_default.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/images/explicit_block_overlay.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/images/booru_image.dart';
+import '../../../../../core/images/explicit_block_overlay.dart';
+import '../../../../../core/posts/listing/providers.dart';
+import '../../../../../core/posts/listing/widgets.dart';
+import '../../../../../core/posts/sources/source.dart';
+import '../../../../../core/settings.dart';
+import '../../../../../core/settings/data/listing_provider.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../../foundation/gestures.dart';
+import '../../../../../foundation/url_launcher.dart';
+import '../../../../../router.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../booru_builder.dart';
+import '../../../../booru_builder_default.dart';
 import '../../post/post.dart';
 import 'danbooru_post_context_menu.dart';
 
@@ -148,7 +148,8 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                             child: switch (post.source) {
                                               final WebSource source =>
                                                 WebsiteLogo(
-                                                    url: source.faviconUrl),
+                                                  url: source.faviconUrl,
+                                                ),
                                               _ => const SizedBox.shrink(),
                                             },
                                           ),
@@ -165,7 +166,8 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                       if (artistTags.isNotEmpty)
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 8),
+                                            horizontal: 8,
+                                          ),
                                           child: Wrap(
                                             children: [
                                               for (final tag in artistTags)

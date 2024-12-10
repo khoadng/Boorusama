@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/categories/tag_category.dart';
+import '../../../../../core/tags/categories/tag_category.dart';
 import 'danbooru_related_tag.dart';
 
 List<DanbooruRelatedTagItem> generateDummyTags(int count) => [

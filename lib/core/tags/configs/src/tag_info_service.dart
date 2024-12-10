@@ -28,10 +28,12 @@ class TagInfoService {
 
       return TagInfoService(
         metatags: metatags
-            .map((t) => Metatag.simple(
-                  name: t,
-                  isFree: freeMetatags.contains(t),
-                ))
+            .map(
+              (t) => Metatag.simple(
+                name: t,
+                isFree: freeMetatags.contains(t),
+              ),
+            )
             .toSet(),
         defaultBlacklistedTags: {...defaultBlacklistedTags},
         r18Tags: r18Tags,

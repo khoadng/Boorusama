@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/bulks.dart';
-import 'package:boorusama/core/downloads/manager.dart';
-import 'package:boorusama/router.dart';
+import '../../core/downloads/bulks.dart';
+import '../../core/downloads/manager.dart';
+import '../../router.dart';
 
 GoRoute downloadManager() => GoRoute(
       path: 'download_manager',

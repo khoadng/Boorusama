@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
+import '../../core/boorus.dart';
+import '../../core/boorus/providers.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {
   const CreateAnimePicturesConfigPage({
@@ -28,7 +28,7 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
     return CreateBooruConfigScaffold(
       backgroundColor: backgroundColor,
       initialTab: initialTab,
-      authTab: AnimePicturesAuthView(),
+      authTab: const AnimePicturesAuthView(),
       footer: editId.isNew
           ? Container(
               padding: const EdgeInsets.symmetric(
@@ -37,7 +37,7 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
               ),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),

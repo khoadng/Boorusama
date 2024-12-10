@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../router.dart';
 import 'booru_config_ref.dart';
 import 'providers.dart';
 

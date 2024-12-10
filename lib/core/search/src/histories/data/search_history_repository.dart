@@ -38,10 +38,12 @@ class SearchHistoryRepositoryHive implements SearchHistoryRepository {
 
       if (db.containsKey(query)) {
         final history = hiveObjectToSearchHistory(db.get(query)!);
-        final historyObj = searchHistoryToHiveObject(history.copyWith(
-          searchCount: history.searchCount + 1,
-          createdAt: DateTime.now(),
-        ));
+        final historyObj = searchHistoryToHiveObject(
+          history.copyWith(
+            searchCount: history.searchCount + 1,
+            createdAt: DateTime.now(),
+          ),
+        );
         await db.put(query, historyObj);
       } else {
         final history = SearchHistory.now(query, queryType);

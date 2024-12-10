@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../dart.dart';
+import '../../foundation/display.dart';
 
 class CustomContextMenuOverlay extends StatelessWidget {
   const CustomContextMenuOverlay({

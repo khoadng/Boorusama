@@ -11,8 +11,9 @@ bool isWebSource(String? url) {
 
   // Check for a valid URL format
   final pattern = RegExp(
-      r'^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(:[0-9]+)?([/?].*)?$',
-      caseSensitive: false);
+    r'^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(:[0-9]+)?([/?].*)?$',
+    caseSensitive: false,
+  );
   if (!pattern.hasMatch(url)) {
     return false;
   }

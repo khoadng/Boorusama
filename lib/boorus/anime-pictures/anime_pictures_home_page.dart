@@ -8,13 +8,13 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../core/configs/ref.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/widgets/widgets.dart';
+import '../../router.dart';
+import '../booru_builder.dart';
 import 'anime_pictures.dart';
 import 'anime_pictures_top_page.dart';
 
@@ -92,7 +92,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
         if (favoritePageBuilder != null && config.passHash != null)
           const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
-          )
+          ),
       ],
     );
   }

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../../router.dart';
 import '../../../pool/pool.dart';
 
 void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {

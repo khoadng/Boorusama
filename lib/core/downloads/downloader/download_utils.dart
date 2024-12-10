@@ -7,23 +7,23 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/permissions.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
+import '../../../boorus/booru_builder.dart';
+import '../../../boorus/providers.dart';
+import '../../../foundation/http.dart';
+import '../../../foundation/loggers.dart';
+import '../../../foundation/permissions.dart';
+import '../../../foundation/platform.dart';
+import '../../../foundation/toast.dart';
+import '../../../router.dart';
+import '../../boorus.dart';
+import '../../configs/config.dart';
+import '../../configs/ref.dart';
+import '../../http/providers.dart';
+import '../../images/providers.dart';
+import '../../posts/post/post.dart';
+import '../../posts/sources/source.dart';
+import '../../settings.dart';
+import '../../settings/data.dart';
 import '../l10n.dart';
 import '../urls/download_url.dart';
 import 'download_service.dart';
@@ -206,8 +206,10 @@ Future<void> _download(
         if (isGranted) {
           download();
         } else {
-          logger.logI('Single Download',
-              'Storage permission request denied, aborting...');
+          logger.logI(
+            'Single Download',
+            'Storage permission request denied, aborting...',
+          );
         }
       },
     );

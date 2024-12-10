@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/widgets/settings_tile.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../settings.dart';
+import '../../theme.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
+import '../widgets/settings_tile.dart';
 
 class AccessibilityPage extends ConsumerStatefulWidget {
   const AccessibilityPage({
@@ -32,8 +32,8 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
       children: [
         SwitchListTile(
           title: const Text(
-                  'settings.accessibility.reverseBooruConfigSelectorScrollDirection')
-              .tr(),
+            'settings.accessibility.reverseBooruConfigSelectorScrollDirection',
+          ).tr(),
           value: settings.reverseBooruConfigSelectorScrollDirection,
           onChanged: (value) => notifer.updateSettings(
             settings.copyWith(
@@ -56,7 +56,8 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           items: getSwipeAreaPossibleValue(),
           onChanged: (newValue) {
             notifer.updateSettings(
-                settings.copyWith(swipeAreaToOpenSidebarPercentage: newValue));
+              settings.copyWith(swipeAreaToOpenSidebarPercentage: newValue),
+            );
           },
           optionBuilder: (value) => Text(
             '$value%',
@@ -65,7 +66,8 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
         SwitchListTile(
           title: const Text('Reduce animations'),
           subtitle: const Text(
-              'Some features may not work as expected when this is enabled.'),
+            'Some features may not work as expected when this is enabled.',
+          ),
           value: settings.reduceAnimations,
           onChanged: (value) => notifer.updateSettings(
             settings.copyWith(

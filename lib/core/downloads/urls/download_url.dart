@@ -3,8 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/settings.dart';
+import '../../posts/post/post.dart';
+import '../../settings.dart';
 
 class DownloadUrlData extends Equatable {
   const DownloadUrlData({
@@ -43,7 +43,7 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
     final urls = [
       post.originalImageUrl,
       post.sampleImageUrl,
-      post.thumbnailImageUrl
+      post.thumbnailImageUrl,
     ];
 
     final url = switch (quality) {

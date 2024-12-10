@@ -10,9 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/videos/video_play_duration_icon.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../core/theme.dart';
+import '../core/videos/video_play_duration_icon.dart';
+import 'widgets.dart';
 
 class AutoScrollOptions {
   const AutoScrollOptions({

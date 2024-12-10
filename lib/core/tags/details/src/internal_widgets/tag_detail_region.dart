@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
+import '../../../../../foundation/display.dart';
 
 class TagDetailsRegion extends ConsumerWidget {
   const TagDetailsRegion({

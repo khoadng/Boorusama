@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/path.dart';
+import '../foundation/path.dart';
 
 class DirectorySizeInfo {
   DirectorySizeInfo({

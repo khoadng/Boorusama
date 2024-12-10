@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/biometrics/app_lock.dart';
+import '../../foundation/biometrics/app_lock.dart';
+import '../settings/data.dart';
 
 class AppLockWithSettings extends ConsumerWidget {
   const AppLockWithSettings({

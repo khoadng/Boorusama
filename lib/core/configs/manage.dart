@@ -1,5 +1,3 @@
-library;
-
 export 'src/data/booru_config_data.dart';
 export 'src/export_import/booru_config_export_data.dart';
 export 'src/manage/booru_config_provider.dart';

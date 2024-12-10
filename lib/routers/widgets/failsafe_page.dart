@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/display.dart';
+import '../../widgets/widgets.dart';
 
 class UnimplementedPage extends StatelessWidget {
   const UnimplementedPage({super.key});

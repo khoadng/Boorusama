@@ -8,15 +8,15 @@ import 'package:foundation/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/app.dart';
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/configs/widgets.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../app.dart';
+import '../../foundation/display.dart';
+import '../../foundation/platform.dart';
+import '../cache/providers.dart';
+import '../configs/widgets.dart';
+import '../settings.dart';
+import '../settings/data.dart';
+import '../theme.dart';
+import '../widgets/widgets.dart';
 import 'booru_scope.dart';
 import 'home_page_controller.dart';
 import 'side_bar_menu.dart';
@@ -170,9 +170,12 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
         : const SizedBox();
 
     final booruConfigSelectorPosition = ref.watch(
-        settingsProvider.select((value) => value.booruConfigSelectorPosition));
-    final swipeArea = ref.watch(settingsProvider
-        .select((value) => value.swipeAreaToOpenSidebarPercentage));
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
+    final swipeArea = ref.watch(
+      settingsProvider
+          .select((value) => value.swipeAreaToOpenSidebarPercentage),
+    );
     final hideLabel = ref
         .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 
@@ -236,37 +239,38 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
               const NetworkUnavailableIndicatorWithState(),
               Expanded(
                 child: MultiSplitView(
-                    controller: splitController,
-                    onDividerDoubleTap: (divider) {
-                      setState(() {
-                        final width = menuWidth.value;
+                  controller: splitController,
+                  onDividerDoubleTap: (divider) {
+                    setState(() {
+                      final width = menuWidth.value;
 
-                        if (width == kMinSideBarWidth) {
-                          _setDefaultSplit();
-                        } else if (width <= _kDefaultMenuSize) {
-                          _setMinSplit();
-                        } else {
-                          _setDefaultSplit();
+                      if (width == kMinSideBarWidth) {
+                        _setDefaultSplit();
+                      } else if (width <= _kDefaultMenuSize) {
+                        _setMinSplit();
+                      } else {
+                        _setDefaultSplit();
+                      }
+                    });
+                  },
+                  builder: (context, area) => isDesktop
+                      ? switch (area.data) {
+                          'menu' => LayoutBuilder(
+                              builder: (_, c) {
+                                // no need to set state here, just a quick hack to get the current width of the menu
+                                menuWidth.value = c.maxWidth;
+
+                                return menu;
+                              },
+                            ),
+                          'content' => content,
+                          _ => const SizedBox(),
                         }
-                      });
-                    },
-                    builder: (context, area) => isDesktop
-                        ? switch (area.data) {
-                            'menu' => LayoutBuilder(
-                                builder: (_, c) {
-                                  // no need to set state here, just a quick hack to get the current width of the menu
-                                  menuWidth.value = c.maxWidth;
-
-                                  return menu;
-                                },
-                              ),
-                            'content' => content,
-                            _ => const SizedBox(),
-                          }
-                        : switch (area.data) {
-                            'content' => content,
-                            _ => const SizedBox(),
-                          }),
+                      : switch (area.data) {
+                          'content' => content,
+                          _ => const SizedBox(),
+                        },
+                ),
               ),
             ],
           ),

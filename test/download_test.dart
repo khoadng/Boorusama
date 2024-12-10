@@ -110,7 +110,9 @@ void main() {
 
     test('subdirectory of public folders', () {
       expect(
-          isPublicDirectories('/storage/emulated/10/Download/Documents'), true);
+        isPublicDirectories('/storage/emulated/10/Download/Documents'),
+        true,
+      );
     });
   });
 }

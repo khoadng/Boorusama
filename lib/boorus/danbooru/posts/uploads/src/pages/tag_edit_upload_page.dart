@@ -10,26 +10,26 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/sources/providers.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/search/suggestions.dart';
-import 'package:boorusama/core/search/suggestions_widgets.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/autocompletes/autocompletes.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/images/booru_image.dart';
+import '../../../../../../core/posts/rating/rating.dart';
+import '../../../../../../core/posts/sources/source.dart';
+import '../../../../../../core/search/suggestions.dart';
+import '../../../../../../core/search/suggestions_widgets.dart';
+import '../../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/animations.dart';
+import '../../../../../../foundation/toast.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../../../router.dart';
+import '../../../../../../utils/flutter_utils.dart';
+import '../../../../../../widgets/widgets.dart';
 import '../../../../artists/urls/widgets.dart';
+import '../../../../sources/providers.dart';
 import '../../../../tags/edit/providers.dart';
 import '../../../../tags/edit/widgets.dart';
 import '../../../post/post.dart';
@@ -135,13 +135,16 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
               .maybeWhen(
                 data: (results) {
                   final posts = results
-                      .map((e) => e.post != null
-                          ? postDtoToPostNoMetadata(e.post!)
-                          : null)
+                      .map(
+                        (e) => e.post != null
+                            ? postDtoToPostNoMetadata(e.post!)
+                            : null,
+                      )
                       .nonNulls
                       .toList();
                   final pixelPerfectDup = posts.firstWhereOrNull(
-                      (e) => e.pixelHash == widget.post.pixelHash);
+                    (e) => e.pixelHash == widget.post.pixelHash,
+                  );
 
                   return pixelPerfectDup != null || results.isNotEmpty
                       ? Wrap(
@@ -370,9 +373,11 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                 IconButton(
                                   onPressed: () {
                                     ref
-                                        .read(danbooruSourceProvider(
-                                                widget.post.pageUrl)
-                                            .notifier)
+                                        .read(
+                                          danbooruSourceProvider(
+                                            widget.post.pageUrl,
+                                          ).notifier,
+                                        )
                                         .fetch();
                                   },
                                   icon: const Icon(Icons.refresh),
@@ -561,17 +566,21 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
   ) {
     final translatedTags = [
       if (source.artists != null)
-        ...source.artists!.map((e) => (
-              name: e.name,
-              count: null,
-              category: TagCategory.artist(),
-            )),
+        ...source.artists!.map(
+          (e) => (
+            name: e.name,
+            count: null,
+            category: TagCategory.artist(),
+          ),
+        ),
       if (source.translatedTags != null)
-        ...source.translatedTags!.where((e) => e.name != null).map((e) => (
-              name: e.name!,
-              count: e.postCount,
-              category: TagCategory.fromLegacyId(e.category ?? 0),
-            ))
+        ...source.translatedTags!.where((e) => e.name != null).map(
+              (e) => (
+                name: e.name!,
+                count: e.postCount,
+                category: TagCategory.fromLegacyId(e.category ?? 0),
+              ),
+            ),
     ];
 
     return translatedTags.isNotEmpty

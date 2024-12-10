@@ -9,9 +9,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../dart.dart';
+import '../../../../../widgets/widgets.dart';
 import '../../../danbooru_provider.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
@@ -43,8 +43,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
         title: const Text('Messages'),
         actions: [
           IconButton(
-              icon: const Icon(Symbols.refresh),
-              onPressed: () => ref.invalidate(dmailProvider)),
+            icon: const Icon(Symbols.refresh),
+            onPressed: () => ref.invalidate(dmailProvider),
+          ),
         ],
       ),
       body: Column(
@@ -53,16 +54,20 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
             child: OptionDropDownButton(
-                alignment: AlignmentDirectional.centerStart,
-                value: _selectedFolder,
-                onChanged: (value) => setState(
-                    () => _selectedFolder = value ?? DmailFolderType.all),
-                items: DmailFolderType.values
-                    .map((e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(e.name.sentenceCase),
-                        ))
-                    .toList()),
+              alignment: AlignmentDirectional.centerStart,
+              value: _selectedFolder,
+              onChanged: (value) => setState(
+                () => _selectedFolder = value ?? DmailFolderType.all,
+              ),
+              items: DmailFolderType.values
+                  .map(
+                    (e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e.name.sentenceCase),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
           ref.watch(dmailProvider).when(
                 data: (dmails) => dmails.isNotEmpty
@@ -76,59 +81,63 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                             final color = userColor.fromLevel(fromUser?.level);
 
                             return ListTile(
-                                minVerticalPadding: 0,
-                                visualDensity: VisualDensity.compact,
-                                trailing: DateTooltip(
-                                  date: dmail.createdAt,
-                                  child: Text(
-                                    dmail.createdAt.fuzzify(
-                                        locale:
-                                            Localizations.localeOf(context)),
+                              minVerticalPadding: 0,
+                              visualDensity: VisualDensity.compact,
+                              trailing: DateTooltip(
+                                date: dmail.createdAt,
+                                child: Text(
+                                  dmail.createdAt.fuzzify(
+                                    locale: Localizations.localeOf(context),
                                   ),
                                 ),
-                                title: Text(
-                                  fromUser?.name ?? '...',
-                                  style: dmail.isRead
-                                      ? TextStyle(
-                                          color: color.applyOpacity(0.7),
-                                        )
-                                      : TextStyle(
-                                          color: color,
-                                          fontWeight: FontWeight.w900,
-                                        ),
-                                ),
-                                subtitle: Text(
-                                  dmail.title,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: dmail.isRead
-                                      ? null
-                                      : const TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                        ),
-                                ),
-                                onTap: () {
-                                  if (!dmail.isRead) {
-                                    client.markDmailAsRead(id: dmail.id).then(
-                                        (value) =>
-                                            ref.invalidate(dmailProvider));
-                                  }
-
-                                  //FIXME: use router instead
-                                  Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) =>
-                                          DanbooruDmailDetailsPage(
-                                        dmail: dmail,
-                                        onDmailUnread: (context, dmail) {
-                                          client
-                                              .markDmailAsUnread(id: dmail.id)
-                                              .then((value) => ref
-                                                  .invalidate(dmailProvider));
-                                        },
+                              ),
+                              title: Text(
+                                fromUser?.name ?? '...',
+                                style: dmail.isRead
+                                    ? TextStyle(
+                                        color: color.applyOpacity(0.7),
+                                      )
+                                    : TextStyle(
+                                        color: color,
+                                        fontWeight: FontWeight.w900,
                                       ),
+                              ),
+                              subtitle: Text(
+                                dmail.title,
+                                overflow: TextOverflow.ellipsis,
+                                style: dmail.isRead
+                                    ? null
+                                    : const TextStyle(
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                              ),
+                              onTap: () {
+                                if (!dmail.isRead) {
+                                  client.markDmailAsRead(id: dmail.id).then(
+                                        (value) =>
+                                            ref.invalidate(dmailProvider),
+                                      );
+                                }
+
+                                //FIXME: use router instead
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        DanbooruDmailDetailsPage(
+                                      dmail: dmail,
+                                      onDmailUnread: (context, dmail) {
+                                        client
+                                            .markDmailAsUnread(id: dmail.id)
+                                            .then(
+                                              (value) =>
+                                                  ref.invalidate(dmailProvider),
+                                            );
+                                      },
                                     ),
-                                  );
-                                });
+                                  ),
+                                );
+                              },
+                            );
                           },
                         ),
                       )

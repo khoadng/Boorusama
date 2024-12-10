@@ -4,8 +4,8 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../../../../../core/datetimes/types.dart';
+import '../../../../../../core/posts/post/post.dart';
 import '../../../post/post.dart';
 import '../types/explore_repository.dart';
 
@@ -51,12 +51,12 @@ class ExploreRepositoryCacher implements ExploreRepository {
       return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
-    return repository
-        .getPopularPosts(date, page, scale, limit: limit)
-        .flatMap((r) => TaskEither(() async {
-              _cache[name] = (DateTime.now(), r.posts);
-              return Either.of(r);
-            }));
+    return repository.getPopularPosts(date, page, scale, limit: limit).flatMap(
+          (r) => TaskEither(() async {
+            _cache[name] = (DateTime.now(), r.posts);
+            return Either.of(r);
+          }),
+        );
   }
 
   @override
@@ -68,12 +68,12 @@ class ExploreRepositoryCacher implements ExploreRepository {
       return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
-    return repository
-        .getMostViewedPosts(date)
-        .flatMap((r) => TaskEither(() async {
-              _cache[name] = (DateTime.now(), r.posts);
-              return Either.of(r);
-            }));
+    return repository.getMostViewedPosts(date).flatMap(
+          (r) => TaskEither(() async {
+            _cache[name] = (DateTime.now(), r.posts);
+            return Either.of(r);
+          }),
+        );
   }
 
   @override
@@ -87,11 +87,11 @@ class ExploreRepositoryCacher implements ExploreRepository {
       return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
-    return repository
-        .getHotPosts(page, limit: limit)
-        .flatMap((r) => TaskEither(() async {
-              _cache[name] = (DateTime.now(), r.posts);
-              return Either.of(r);
-            }));
+    return repository.getHotPosts(page, limit: limit).flatMap(
+          (r) => TaskEither(() async {
+            _cache[name] = (DateTime.now(), r.posts);
+            return Either.of(r);
+          }),
+        );
   }
 }

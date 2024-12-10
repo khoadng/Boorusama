@@ -8,16 +8,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/settings/pages.dart';
-import 'package:boorusama/core/settings/widgets.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/mobile_config_tile.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../foundation/animations.dart';
+import '../../../../foundation/display.dart';
+import '../../../../widgets/mobile_config_tile.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../settings.dart';
+import '../../../settings/data.dart';
+import '../../../settings/data/listing_provider.dart';
+import '../../../settings/pages.dart';
+import '../../../settings/widgets.dart';
 import '../../post/post.dart';
 import 'post_grid_controller.dart';
 
@@ -35,11 +35,13 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));
     final imageListType = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageListType));
+      imageListingSettingsProvider.select((value) => value.imageListType),
+    );
     final pageMode = ref
         .watch(imageListingSettingsProvider.select((value) => value.pageMode));
     final imageQuality = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageQuality));
+      imageListingSettingsProvider.select((value) => value.imageQuality),
+    );
 
     return InkWell(
       customBorder: const CircleBorder(),
@@ -314,13 +316,15 @@ class OptionActionSheet<T> extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...options.map((e) => ListTile(
-                  title: Text(optionName(e)),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    onChanged(e);
-                  },
-                )),
+            ...options.map(
+              (e) => ListTile(
+                title: Text(optionName(e)),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onChanged(e);
+                },
+              ),
+            ),
             SizedBox(
               height: MediaQuery.viewPaddingOf(context).bottom,
             ),

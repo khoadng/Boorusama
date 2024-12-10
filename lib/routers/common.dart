@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/routers/routers.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../foundation/display.dart';
+import '../widgets/widgets.dart';
+import 'routers.dart';
 
 GoRouterPageBuilder genericMobilePageBuilder({
   required Widget Function(BuildContext context, GoRouterState state) builder,

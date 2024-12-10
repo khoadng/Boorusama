@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../core/boorus.dart';
+import '../../../../../core/boorus/providers.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../router.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_state.dart';
 import 'tag_edit_view_controller.dart';

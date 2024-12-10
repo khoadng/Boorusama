@@ -3,15 +3,15 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/search/query_composer_providers.dart';
+import '../../../core/settings/data/listing_provider.dart';
+import '../../../foundation/caching/lru_cacher.dart';
+import '../../providers.dart';
+import '../gelbooru_v2.dart';
+import 'posts_v2.dart';
 
 final gelbooruV2PostRepoProvider =
     Provider.family<PostRepository<GelbooruV2Post>, BooruConfigSearch>(
@@ -64,13 +64,15 @@ extension GelbooruV2ClientX on GelbooruV2Client {
     );
 
     return posts
-        .map((e) => gelbooruV2PostDtoToGelbooruPost(
-              e,
-              PostMetadata(
-                page: page,
-                search: tags.join(' '),
-              ),
-            ))
+        .map(
+          (e) => gelbooruV2PostDtoToGelbooruPost(
+            e,
+            PostMetadata(
+              page: page,
+              search: tags.join(' '),
+            ),
+          ),
+        )
         .toList()
         .toResult();
   }

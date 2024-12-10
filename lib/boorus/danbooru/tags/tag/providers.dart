@@ -2,13 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/tags/categories/providers.dart';
+import '../../../../core/tags/categories/tag_category.dart';
+import '../../../../core/tags/tag/providers.dart';
+import '../../../../core/tags/tag/tag.dart';
+import '../../danbooru_provider.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -25,11 +25,13 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
         );
 
         return data
-            .map((d) => Tag(
-                  name: d.name ?? '',
-                  category: TagCategory.fromLegacyId(d.category ?? 0),
-                  postCount: d.postCount ?? 0,
-                ))
+            .map(
+              (d) => Tag(
+                name: d.name ?? '',
+                category: TagCategory.fromLegacyId(d.category ?? 0),
+                postCount: d.postCount ?? 0,
+              ),
+            )
             .toList();
       },
     );

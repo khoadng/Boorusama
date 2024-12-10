@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
+import '../../../settings/data.dart';
 import '../../post/post.dart';
 import 'inherited_post.dart';
 import 'post_details.dart';

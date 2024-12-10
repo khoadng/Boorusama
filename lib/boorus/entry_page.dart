@@ -6,24 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/changelogs/utils.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/configs/widgets.dart';
-import 'package:boorusama/core/downloads/notifications.dart';
-import 'package:boorusama/core/home/empty_booru_config_home_page.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/permissions.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../core/cache/providers.dart';
+import '../core/changelogs/utils.dart';
+import '../core/configs/config.dart';
+import '../core/configs/current.dart';
+import '../core/configs/manage.dart';
+import '../core/configs/ref.dart';
+import '../core/configs/widgets.dart';
+import '../core/downloads/notifications.dart';
+import '../core/home/empty_booru_config_home_page.dart';
+import '../core/settings.dart';
+import '../core/settings/data.dart';
+import '../core/theme.dart';
+import '../core/widgets/widgets.dart';
+import '../foundation/display.dart';
+import '../foundation/permissions.dart';
+import '../foundation/platform.dart';
+import '../foundation/toast.dart';
+import 'booru_builder.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
@@ -134,7 +134,8 @@ class _SidebarSettingsListener extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pos = ref.watch(
-        settingsProvider.select((value) => value.booruConfigSelectorPosition));
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
     final hideLabel = ref
         .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 

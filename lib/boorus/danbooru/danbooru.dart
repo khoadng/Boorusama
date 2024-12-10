@@ -6,27 +6,27 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/shares/providers.dart';
-import 'package:boorusama/core/posts/shares/widgets.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/posts/statistics/stats.dart';
-import 'package:boorusama/core/posts/statistics/widgets.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/tags/metatag/providers.dart';
-import 'package:boorusama/core/tags/tag/routes.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/downloader.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/listing/widgets.dart';
+import '../../core/posts/post/tags.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/shares/providers.dart';
+import '../../core/posts/shares/widgets.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/posts/statistics/stats.dart';
+import '../../core/posts/statistics/widgets.dart';
+import '../../core/settings.dart';
+import '../../core/tags/metatag/providers.dart';
+import '../../core/tags/tag/routes.dart';
+import '../../foundation/gestures.dart';
+import '../../foundation/url_launcher.dart';
+import '../../router.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
 import 'artists/artist/widgets.dart';
@@ -115,7 +115,7 @@ class DanbooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder => (context) => DanbooruHomePage();
+  HomePageBuilder get homePageBuilder => (context) => const DanbooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (

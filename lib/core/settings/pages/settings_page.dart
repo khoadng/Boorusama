@@ -10,15 +10,15 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../boorus/booru_builder.dart';
+import '../../../dart.dart';
+import '../../../foundation/app_info.dart';
+import '../../../foundation/scrolling.dart';
+import '../../../foundation/url_launcher.dart';
+import '../../../router.dart';
+import '../../../widgets/widgets.dart';
+import '../../configs/ref.dart';
+import '../../theme.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
 import 'about_page.dart';
@@ -196,7 +196,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
                       child: page,
                     ),
                   ),
-                  WidthThresholdPopper(
+                  const WidthThresholdPopper(
                     targetWidth: _kThresholdWidth,
                   ),
                 ],
@@ -354,7 +354,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                   }),
                 ),
               const SettingsPageOtherSection(),
-              _Divider(),
+              const _Divider(),
               const _Footer(),
             ],
           ),
@@ -367,7 +367,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
             context: context,
             removeLeft: true,
             child: ConstrainedBox(
-              constraints: BoxConstraints(
+              constraints: const BoxConstraints(
                 maxWidth: 600,
               ),
               child: entries[_selectedEntry].content,
@@ -426,12 +426,14 @@ class SettingsPageOtherSection extends ConsumerWidget {
           leading: const FaIcon(
             FontAwesomeIcons.bug,
           ),
-          onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-            builder: (_) => SettingsPageScope(
-              options: options,
-              child: const DebugLogsPage(),
+          onTap: () => Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (_) => SettingsPageScope(
+                options: options,
+                child: const DebugLogsPage(),
+              ),
             ),
-          )),
+          ),
         ),
         SettingTile(
           title: 'settings.information'.tr(),

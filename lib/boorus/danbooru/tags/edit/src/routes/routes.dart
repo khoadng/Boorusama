@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../router.dart';
 import '../../../../posts/post/post.dart';
 import '../tag_edit_page.dart';
 

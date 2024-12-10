@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/widgets.dart';
-import 'package:boorusama/core/theme/utils.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/settings/data.dart';
+import '../../../../core/tags/tag/providers.dart';
+import '../../../../core/tags/tag/widgets.dart';
+import '../../../../core/theme/utils.dart';
 import '../../tags/tag/providers.dart';
 import '../../tags/tag/widgets.dart';
 import '../../tags/trending/providers.dart';

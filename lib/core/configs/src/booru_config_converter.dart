@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/gestures.dart';
+import '../../../foundation/gestures.dart';
+import '../../settings.dart';
 import 'booru_config.dart';
 import 'data/booru_config_data.dart';
 import 'rating_parser.dart';

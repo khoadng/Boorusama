@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../router.dart';
 import '../../posts/post/post.dart';
 import 'danbooru_post_versions_page.dart';
 

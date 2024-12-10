@@ -1,5 +1,4 @@
 class PostDto {
-
   PostDto({
     this.id,
     this.width,

@@ -2,7 +2,6 @@
 import 'types.dart';
 
 class IqdbResultDto {
-
   IqdbResultDto({
     required this.hash,
     required this.postId,

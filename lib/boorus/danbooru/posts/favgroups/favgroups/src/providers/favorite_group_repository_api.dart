@@ -29,7 +29,8 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
             limit: _favGroupLimit,
           )
           .then(
-              (groups) => groups.map(favoriteGroupDtoToFavoriteGroup).toList());
+            (groups) => groups.map(favoriteGroupDtoToFavoriteGroup).toList(),
+          );
 
   @override
   Future<bool> createFavoriteGroup({

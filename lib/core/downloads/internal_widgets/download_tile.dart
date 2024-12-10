@@ -6,10 +6,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import '../../../utils/flutter_utils.dart';
+import '../../images/booru_image.dart';
+import '../../theme.dart';
+import '../../widgets/widgets.dart';
 import '../l10n.dart';
 import '../urls/sanitizer.dart';
 

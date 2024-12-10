@@ -6,14 +6,14 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/booru_builder_types.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../boorus/booru_builder_types.dart';
+import '../../../boorus.dart';
+import '../../../configs/config.dart';
+import '../../../configs/current.dart';
+import '../../../configs/ref.dart';
+import '../../../settings/data.dart';
+import '../../../theme.dart';
 import 'tag_repository.dart';
 import 'tag_repository_impl.dart';
 

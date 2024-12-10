@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../foundation/display.dart';
+import '../foundation/platform.dart';
 
 class OptionSearchableSheet<T extends Object> extends StatefulWidget {
   const OptionSearchableSheet({
@@ -132,32 +132,31 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
       child: InkWell(
         onTap: onTap ??
             () {
-              showAdaptiveBottomSheet(context,
-                  builder: (context) => OptionSearchableSheet<T>(
-                        title: sheetTitle,
-                        items: items,
-                        scrollController: ModalScrollController.of(context),
-                        onFilter: (query) => items.where((element) {
-                          final value =
-                              optionSheetValueBuilder?.call(element) ??
-                                  optionValueBuilder(element);
+              showAdaptiveBottomSheet(
+                context,
+                builder: (context) => OptionSearchableSheet<T>(
+                  title: sheetTitle,
+                  items: items,
+                  scrollController: ModalScrollController.of(context),
+                  onFilter: (query) => items.where((element) {
+                    final value = optionSheetValueBuilder?.call(element) ??
+                        optionValueBuilder(element);
 
-                          return value
-                              .toLowerCase()
-                              .contains(query.toLowerCase());
-                        }).toList(),
-                        itemBuilder: (context, option) => ListTile(
-                          minVerticalPadding: 4,
-                          title: Text(
-                            optionSheetValueBuilder?.call(option) ??
-                                optionValueBuilder(option),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            onSelect(option);
-                          },
-                        ),
-                      ));
+                    return value.toLowerCase().contains(query.toLowerCase());
+                  }).toList(),
+                  itemBuilder: (context, option) => ListTile(
+                    minVerticalPadding: 4,
+                    title: Text(
+                      optionSheetValueBuilder?.call(option) ??
+                          optionValueBuilder(option),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      onSelect(option);
+                    },
+                  ),
+                ),
+              );
             },
         child: Container(
           padding: EdgeInsets.symmetric(

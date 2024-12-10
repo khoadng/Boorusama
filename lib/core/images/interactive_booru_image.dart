@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../widgets/widgets.dart';
+import '../configs/ref.dart';
+import '../http/providers.dart';
 import 'booru_image.dart';
+import 'dio_extended_image.dart';
 import 'providers.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {

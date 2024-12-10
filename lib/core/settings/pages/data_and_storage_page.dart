@@ -9,8 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
+import '../../cache/providers.dart';
+import '../../tags/categories/providers.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -55,10 +55,12 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
 
             return ListTile(
               title: const Text('Image only cache'),
-              subtitle: Text('settings.performance.cache_size_info'
-                  .tr()
-                  .replaceAll('{0}', Filesize.parse(imageCacheSize.size))
-                  .replaceAll('{1}', imageCacheSize.fileCount.toString())),
+              subtitle: Text(
+                'settings.performance.cache_size_info'
+                    .tr()
+                    .replaceAll('{0}', Filesize.parse(imageCacheSize.size))
+                    .replaceAll('{1}', imageCacheSize.fileCount.toString()),
+              ),
               trailing: FilledButton(
                 onPressed: () =>
                     ref.read(cacheSizeProvider.notifier).clearAppImageCache(),

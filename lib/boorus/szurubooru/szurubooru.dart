@@ -5,28 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/booru_builder_types.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/szurubooru/post_votes/szurubooru_post_action_toolbar.dart';
-import 'package:boorusama/boorus/szurubooru/providers.dart';
-import 'package:boorusama/core/comments/comment.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/comments/comment.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/failsafe.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/search_ui.dart';
+import '../../foundation/html.dart';
+import '../../widgets/widgets.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
+import '../booru_builder_types.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
 import 'create_szurubooru_config_page.dart';
+import 'post_votes/szurubooru_post_action_toolbar.dart';
+import 'providers.dart';
 import 'szurubooru_home_page.dart';
 import 'szurubooru_post.dart';
 import 'szurubooru_post_details_page.dart';
@@ -190,17 +190,19 @@ class SzurubooruCommentPage extends ConsumerWidget {
       useAppBar: useAppBar,
       fetcher: (id) => client.getComments(postId: postId).then(
             (value) => value
-                .map((e) => SimpleComment(
-                      id: e.id ?? 0,
-                      body: e.text ?? '',
-                      createdAt: e.creationTime != null
-                          ? DateTime.parse(e.creationTime!)
-                          : DateTime(1),
-                      updatedAt: e.lastEditTime != null
-                          ? DateTime.parse(e.lastEditTime!)
-                          : DateTime(1),
-                      creatorName: e.user?.name ?? '',
-                    ))
+                .map(
+                  (e) => SimpleComment(
+                    id: e.id ?? 0,
+                    body: e.text ?? '',
+                    createdAt: e.creationTime != null
+                        ? DateTime.parse(e.creationTime!)
+                        : DateTime(1),
+                    updatedAt: e.lastEditTime != null
+                        ? DateTime.parse(e.lastEditTime!)
+                        : DateTime(1),
+                    creatorName: e.user?.name ?? '',
+                  ),
+                )
                 .toList(),
           ),
     );
@@ -236,8 +238,9 @@ class SzurubooruFavoritesPageInternal extends ConsumerWidget {
     final query = 'fav:${config.auth.login?.replaceAll(' ', '_')}';
 
     return FavoritesPageScaffold(
-        favQueryBuilder: () => query,
-        fetcher: (page) =>
-            ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page));
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page),
+    );
   }
 }

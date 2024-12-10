@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment.dart';
-import 'package:boorusama/core/comments/comment_header.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/html.dart';
+import '../../foundation/html.dart';
+import '../comments/comment.dart';
+import '../comments/comment_header.dart';
+import '../configs/config.dart';
+import '../configs/ref.dart';
+import '../dtext/dtext.dart';
+import '../widgets/widgets.dart';
 
 typedef CommentFetcher = Future<List<Comment>> Function(int postId);
 
@@ -70,7 +70,9 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: widget.commentItemBuilder != null
                           ? widget.commentItemBuilder!(
-                              context, comments![index])
+                              context,
+                              comments![index],
+                            )
                           : _CommentItem(
                               comment: comments![index],
                               config: config,
@@ -111,7 +113,7 @@ class _CommentItem extends StatelessWidget {
             comment.body,
             booruUrl: config.url,
           ),
-        )
+        ),
       ],
     );
   }

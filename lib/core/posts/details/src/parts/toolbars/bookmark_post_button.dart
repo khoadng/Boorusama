@@ -7,9 +7,9 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../../bookmarks/bookmark_provider.dart';
+import '../../../../../configs/ref.dart';
+import '../../../../../theme.dart';
 import '../../../../post/post.dart';
 
 class BookmarkPostButton extends ConsumerWidget {

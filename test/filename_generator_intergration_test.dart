@@ -25,9 +25,11 @@ void main() {
 
     // Assert
     expect(
-        filename,
-        equals(
-            '[01.01.2020 12:00] FOOBAR BAR from copy/right drawn by foo_(123) - f7deda (007).png'));
+      filename,
+      equals(
+        '[01.01.2020 12:00] FOOBAR BAR from copy/right drawn by foo_(123) - f7deda (007).png',
+      ),
+    );
   });
 
   test('generateFileName multiple files', () {
@@ -65,11 +67,12 @@ void main() {
 
     // Assert
     expect(
-        filenames,
-        equals([
-          '[01.01.2020 12:00] CHARACTER3 CHARACTER1 drawn by artist1 - md51 (0).png',
-          '[01.01.2020 12:00] CHARACTER2 drawn by artist2 - md52 (1).jpg',
-          '[01.01.2020 12:00] CHARACTER2 CHARACTER1 drawn by artist3 - md53 (2).gif',
-        ]));
+      filenames,
+      equals([
+        '[01.01.2020 12:00] CHARACTER3 CHARACTER1 drawn by artist1 - md51 (0).png',
+        '[01.01.2020 12:00] CHARACTER2 drawn by artist2 - md52 (1).jpg',
+        '[01.01.2020 12:00] CHARACTER2 CHARACTER1 drawn by artist3 - md53 (2).gif',
+      ]),
+    );
   });
 }

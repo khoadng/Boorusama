@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../core/tags/tag/tag.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/theme/utils.dart';
+import '../../../../../../dart.dart';
+import '../../../../../../foundation/platform.dart';
+import '../../../../../../widgets/widgets.dart';
 import '../../../related/providers.dart';
 
 class TagEditWikiView extends ConsumerStatefulWidget {

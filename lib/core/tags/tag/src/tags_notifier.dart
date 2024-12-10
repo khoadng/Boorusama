@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
+import '../../../../boorus/providers.dart';
+import '../../../configs/config.dart';
+import '../../../configs/current.dart';
 import '../../categories/providers.dart';
 import 'tag.dart';
 import 'tag_group_item.dart';

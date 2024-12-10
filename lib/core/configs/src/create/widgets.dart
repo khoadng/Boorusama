@@ -6,9 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import '../../../../widgets/option_dropdown_button.dart';
+import '../../../posts/post/post.dart';
+import '../../../widgets/widgets.dart';
 
 class CreateBooruApiKeyField extends StatefulWidget {
   const CreateBooruApiKeyField({
@@ -224,10 +224,12 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
         onChanged: (value) => onChanged(value),
         items: items
             .append('Auto')
-            .map((e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(e.sentenceCase),
-                ))
+            .map(
+              (e) => DropdownMenuItem(
+                value: e,
+                child: Text(e.sentenceCase),
+              ),
+            )
             .toList(),
       ),
     );

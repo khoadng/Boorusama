@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/posts/post/post.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/posts/rating/rating.dart';
+import '../../../../foundation/loggers.dart';
+import '../../danbooru_provider.dart';
+import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';
 
 final danbooruTagListProvider = NotifierProviderFamily<
@@ -44,13 +44,14 @@ class DanbooruTagListNotifier
         .then(postDtoToPostNoMetadata);
 
     ref.read(loggerProvider).logI(
-        'Tag Edit',
-        [
-          if (addedTags != null && addedTags.isNotEmpty) 'Added: $addedTags',
-          if (removedTags != null && removedTags.isNotEmpty)
-            'Removed: $removedTags',
-          if (rating != null) 'Rating changed: ${rating.name}',
-        ].join(', '));
+          'Tag Edit',
+          [
+            if (addedTags != null && addedTags.isNotEmpty) 'Added: $addedTags',
+            if (removedTags != null && removedTags.isNotEmpty)
+              'Removed: $removedTags',
+            if (rating != null) 'Rating changed: ${rating.name}',
+          ].join(', '),
+        );
 
     state = state.add(postId, post);
   }

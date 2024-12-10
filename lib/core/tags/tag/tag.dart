@@ -1,5 +1,3 @@
-library;
-
 export 'src/tag.dart';
 export 'src/tag_repository.dart';
 export 'src/tag_display.dart';

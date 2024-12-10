@@ -10,10 +10,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../router.dart';
+import '../../../settings/data.dart';
 import '../booru_config.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';
@@ -226,8 +226,10 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
     ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
   }
 
-  bool get reverseScroll => ref.watch(settingsProvider
-      .select((value) => value.reverseBooruConfigSelectorScrollDirection));
+  bool get reverseScroll => ref.watch(
+        settingsProvider
+            .select((value) => value.reverseBooruConfigSelectorScrollDirection),
+      );
 
   bool get hideLabel =>
       ref.watch(settingsProvider.select((value) => value.hideBooruConfigLabel));

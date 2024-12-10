@@ -6,9 +6,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../foundation/url_launcher.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../../../sources/source.dart';
 import '../inherited_post.dart';
@@ -71,7 +71,8 @@ class SourceSection extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(
-                      color: Theme.of(context).colorScheme.hintColor),
+                    color: Theme.of(context).colorScheme.hintColor,
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Padding(
@@ -91,7 +92,7 @@ class SourceSection extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const Icon(Symbols.arrow_outward)
+                      const Icon(Symbols.arrow_outward),
                     ],
                   ),
                 ),

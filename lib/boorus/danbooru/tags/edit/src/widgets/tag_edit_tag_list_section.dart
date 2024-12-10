@@ -7,17 +7,17 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/current.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/search/search_bar.dart';
+import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/tags/categories/providers.dart';
+import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../dart.dart';
+import '../../../../../../widgets/widgets.dart';
+import '../../../../../providers.dart';
 import '../providers/tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';
 
@@ -277,10 +277,11 @@ class TagEditFilterHeader extends ConsumerWidget {
                         ),
                         FilledButton(
                           style: FilledButton.styleFrom(
-                              visualDensity: VisualDensity.compact,
-                              shape: const CircleBorder(),
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary),
+                            visualDensity: VisualDensity.compact,
+                            shape: const CircleBorder(),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
                           onPressed: () {
                             ref
                                 .read(tagEditTagFilterModeProvider.notifier)

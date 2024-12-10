@@ -4,9 +4,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../../../../../../core/configs/config.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/posts/post/post.dart';
 import '../../../../post/post.dart';
 import '../../../../post/providers.dart';
 
@@ -41,10 +41,12 @@ class FavoriteGroupPreviewsNotifier
         .watch(danbooruPostRepoProvider(arg))
         .getPostsFromIds(postIdsToFetch.toList())
         .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[].toResult(),
-              (r) => r,
-            ));
+        .then(
+          (value) => value.fold(
+            (l) => <DanbooruPost>[].toResult(),
+            (r) => r,
+          ),
+        );
 
     final map = {for (final p in r.posts) p.id: p.thumbnailImageUrl};
 

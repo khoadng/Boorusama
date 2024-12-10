@@ -11,20 +11,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/types.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/permissions.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../../foundation/animations.dart';
+import '../../foundation/device_info.dart';
+import '../../foundation/http.dart';
+import '../../foundation/path.dart';
+import '../../foundation/permissions.dart';
+import '../../foundation/toast.dart';
+import '../backups/types.dart';
+import '../boorus.dart';
+import '../configs/config.dart';
+import '../downloads/downloader.dart';
+import '../http/providers.dart';
+import '../images/providers.dart';
+import '../posts/post/post.dart';
+import '../settings/data.dart';
 import 'bookmark.dart';
 import 'providers.dart';
 
@@ -41,7 +41,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
   BookmarkState build() {
     getAllBookmarks();
-    return BookmarkState(bookmarks: const IMap.empty());
+    return const BookmarkState(bookmarks: IMap.empty());
   }
 
   BookmarkRepository get bookmarkRepository => ref.read(bookmarkRepoProvider);
@@ -97,7 +97,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           await bookmarkRepository.addBookmark(booruId, booruUrl, post);
       onSuccess?.call();
       state = state.copyWith(
-          bookmarks: state.bookmarks.add(bookmark.originalUrl, bookmark));
+        bookmarks: state.bookmarks.add(bookmark.originalUrl, bookmark),
+      );
     } catch (e) {
       onError?.call();
     }
@@ -189,8 +190,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             .map((bookmark) => Bookmark.fromJson(bookmark))
             .toList()
             // remove duplicates
-            .where((bookmark) =>
-                !state.bookmarks.containsKey(bookmark.originalUrl))
+            .where(
+              (bookmark) => !state.bookmarks.containsKey(bookmark.originalUrl),
+            )
             .toList();
 
         await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
@@ -224,24 +226,27 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   ) async {
     final settings = ref.read(settingsProvider);
     final tasks = bookmarks
-        .map((bookmark) =>
-            ref.read(downloadServiceProvider(config.auth)).downloadWithSettings(
-              settings,
-              config: config,
-              url: bookmark.originalUrl,
-              metadata: DownloaderMetadata(
-                thumbnailUrl: bookmark.thumbnailUrl,
-                fileSize: null,
-                siteUrl: bookmark.sourceUrl,
-                group: null,
-              ),
-              filename: bookmark.md5 + extension(bookmark.originalUrl),
-              headers: {
-                AppHttpHeaders.userAgentHeader:
-                    ref.read(userAgentProvider(config.auth.booruType)),
-                ...ref.read(extraHttpHeaderProvider(config.auth)),
-              },
-            ).run())
+        .map(
+          (bookmark) => ref
+              .read(downloadServiceProvider(config.auth))
+              .downloadWithSettings(
+            settings,
+            config: config,
+            url: bookmark.originalUrl,
+            metadata: DownloaderMetadata(
+              thumbnailUrl: bookmark.thumbnailUrl,
+              fileSize: null,
+              siteUrl: bookmark.sourceUrl,
+              group: null,
+            ),
+            filename: bookmark.md5 + extension(bookmark.originalUrl),
+            headers: {
+              AppHttpHeaders.userAgentHeader:
+                  ref.read(userAgentProvider(config.auth.booruType)),
+              ...ref.read(extraHttpHeaderProvider(config.auth)),
+            },
+          ).run(),
+        )
         .toList();
     await Future.wait(tasks);
   }
@@ -308,8 +313,10 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     BuildContext context,
   ) async {
     await getAllBookmarks(
-      onError: (error) => showErrorToast(context,
-          'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString())),
+      onError: (error) => showErrorToast(
+        context,
+        'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString()),
+      ),
     );
   }
 }

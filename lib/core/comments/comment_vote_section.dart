@@ -6,9 +6,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/vote_event.dart';
-import 'package:boorusama/core/theme.dart';
+import '../theme.dart';
 import 'comment_vote.dart';
+import 'vote_event.dart';
 
 class CommentVoteSection extends StatelessWidget {
   const CommentVoteSection({

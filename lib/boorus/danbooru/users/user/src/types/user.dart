@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/users/user.dart';
+import '../../../../../../core/users/user.dart';
 import 'user_level.dart';
 
 String getDanbooruProfileUrl(String url) =>

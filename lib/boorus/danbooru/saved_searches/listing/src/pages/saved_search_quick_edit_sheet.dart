@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../core/configs/ref.dart';
 import '../../../saved_search/providers.dart';
 import '../../../saved_search/routes.dart';
 import '../../../saved_search/saved_search.dart';

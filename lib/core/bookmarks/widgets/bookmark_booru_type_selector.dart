@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
 import 'providers.dart';
 
 class BookmarkBooruSourceUrlSelector extends ConsumerWidget {

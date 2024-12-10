@@ -5,8 +5,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/ref.dart';
 import '../data/providers.dart';
 import '../types/artist.dart';
 

@@ -3,16 +3,16 @@ import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/downloads/urls.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/query_composer_providers.dart';
+import '../../core/settings/data/listing_provider.dart';
+import '../../core/tags/categories/tag_category.dart';
 import 'anime_pictures.dart';
 
 final animePicturesClientProvider =
@@ -43,13 +43,15 @@ final animePicturesPostRepoProvider =
         );
 
         return posts
-            .map((e) => dtoToAnimePicturesPost(
-                  e,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => dtoToAnimePicturesPost(
+                e,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },

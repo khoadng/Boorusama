@@ -10,16 +10,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/search/history_providers.dart';
-import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/core/search/selected_tags.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/app_update.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../../boorus/booru_builder.dart';
+import '../../foundation/app_update.dart';
+import '../../foundation/display.dart';
+import '../../foundation/url_launcher.dart';
+import '../../router.dart';
+import '../search/history_providers.dart';
+import '../search/search_bar.dart';
+import '../search/selected_tags.dart';
+import '../tags/configs/providers.dart';
+import '../theme.dart';
 import 'home_page_controller.dart';
 
 class HomeSearchBar extends ConsumerWidget {
@@ -101,7 +101,9 @@ class HomeSearchBar extends ConsumerWidget {
                               Flexible(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 4),
+                                    vertical: 8,
+                                    horizontal: 4,
+                                  ),
                                   child: SingleChildScrollView(
                                     child: Row(
                                       children: [

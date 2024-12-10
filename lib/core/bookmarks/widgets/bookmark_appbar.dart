@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
+import '../../configs/ref.dart';
+import '../bookmark_provider.dart';
 import 'providers.dart';
 
 class BookmarkAppBar extends ConsumerWidget {
@@ -54,7 +54,8 @@ class BookmarkAppBar extends ConsumerWidget {
               if (hasBookmarks) 'edit': const Text('Edit'),
               if (hasBookmarks)
                 'download_all': Text(
-                    'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks'),
+                  'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks',
+                ),
             },
           ),
       ],

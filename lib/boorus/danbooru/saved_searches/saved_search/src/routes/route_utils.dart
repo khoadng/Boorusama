@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../foundation/display.dart';
+import '../../../../../../router.dart';
 import '../pages/edit_saved_search_sheet.dart';
 import '../types/saved_search.dart';
 

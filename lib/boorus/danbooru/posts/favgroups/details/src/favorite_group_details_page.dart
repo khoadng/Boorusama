@@ -11,15 +11,15 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/images/booru_image.dart';
+import '../../../../../../core/posts/listing/providers.dart';
+import '../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../router.dart';
+import '../../../../../../widgets/widgets.dart';
 import '../../../listing/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
@@ -72,7 +72,7 @@ class _FavoriteGroupDetailsPageState
                 actions: [
                   _buildSearchButton(),
                   _buildDownloadButton(),
-                  _buildEditButton(controller, config)
+                  _buildEditButton(controller, config),
                 ],
                 floating: true,
                 snap: true,
@@ -185,12 +185,14 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
   late final List<DanbooruPost> posts = widget.posts;
 
   void _onReorder(int oldIndex, int newIndex) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
+    var newIdx = newIndex;
+
+    if (newIdx > oldIndex) {
+      newIdx -= 1;
     }
 
     final post = posts.removeAt(oldIndex);
-    posts.insert(newIndex, post);
+    posts.insert(newIdx, post);
     setState(() {});
   }
 
@@ -211,8 +213,8 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
       ),
       body: SafeArea(
         child: ReorderableListView.builder(
-          header: Padding(
-            padding: const EdgeInsets.all(8.0),
+          header: const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text(
               'Long press and drag to reorder',
             ),

@@ -7,25 +7,32 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/html.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/html.dart';
+import '../../posts/post/post.dart';
+import '../notes.dart';
 
-List<Widget> noteOverlayBuilderDelegate(BoxConstraints constraints, Post post,
-        NotesControllerState noteState) =>
+List<Widget> noteOverlayBuilderDelegate(
+  BoxConstraints constraints,
+  Post post,
+  NotesControllerState noteState,
+) =>
     [
       if (noteState.enableNotes)
         ...noteState.notes
-            .map((e) => e.adjustNoteCoordFor(
-                  post,
-                  widthConstraint: constraints.maxWidth,
-                  heightConstraint: constraints.maxHeight,
-                ))
-            .map((e) => PostNote(
-                  coordinate: e.coordinate,
-                  content: e.content,
-                )),
+            .map(
+              (e) => e.adjustNoteCoordFor(
+                post,
+                widthConstraint: constraints.maxWidth,
+                heightConstraint: constraints.maxHeight,
+              ),
+            )
+            .map(
+              (e) => PostNote(
+                coordinate: e.coordinate,
+                content: e.content,
+              ),
+            ),
     ];
 
 class NoteStyle extends Equatable {
@@ -269,7 +276,7 @@ class _NoteContainerMobile extends StatelessWidget {
         visible: visible,
         portalFollower: Container(
           padding: const EdgeInsets.all(4),
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: 200,
             maxHeight: 300,
           ),

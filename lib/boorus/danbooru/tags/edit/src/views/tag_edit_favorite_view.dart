@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/tags/favorites/favorited.dart';
-import 'package:boorusama/core/tags/favorites/widgets.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../../../../../core/cache/providers.dart';
+import '../../../../../../core/tags/favorites/favorited.dart';
+import '../../../../../../core/tags/favorites/widgets.dart';
+import '../../../../../../foundation/platform.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =
     'tag_edit_favorite_view_selected_label';

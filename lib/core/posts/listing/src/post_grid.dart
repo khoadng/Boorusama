@@ -13,28 +13,28 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/booru_builder_default.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/images/explicit_block_overlay.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/keyboard.dart';
-import 'package:boorusama/foundation/networking/network_provider.dart';
-import 'package:boorusama/foundation/networking/network_state.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../boorus/booru_builder_default.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/animations.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/gestures.dart';
+import '../../../../foundation/keyboard.dart';
+import '../../../../foundation/networking/network_provider.dart';
+import '../../../../foundation/networking/network_state.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../router.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../boorus.dart';
+import '../../../cache/providers.dart';
+import '../../../configs/ref.dart';
+import '../../../images/booru_image.dart';
+import '../../../images/explicit_block_overlay.dart';
+import '../../../settings.dart';
+import '../../../settings/data.dart';
+import '../../../settings/data/listing_provider.dart';
+import '../../../theme.dart';
+import '../../../widgets/widgets.dart';
 import '../../post/post.dart';
 import 'conditional_value_listenable_builder.dart';
 import 'general_post_context_menu.dart';
@@ -166,11 +166,13 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
                     onExpansionChanged: (value) => expanded.value = value,
                     hasBlacklist: hasBlacklist,
                     tags: activeFilters.keys
-                        .map((e) => (
-                              name: e,
-                              count: tagCounts[e]?.length ?? 0,
-                              active: activeFilters[e] ?? false,
-                            ))
+                        .map(
+                          (e) => (
+                            name: e,
+                            count: tagCounts[e]?.length ?? 0,
+                            active: activeFilters[e] ?? false,
+                          ),
+                        )
                         .where((e) => e.count > 0)
                         .toList(),
                     trailing: axis == Axis.horizontal
@@ -203,22 +205,26 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
 
     final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
-    settingsNotifier.updateWith((s) => s.copyWith(
-          listing: s.listing.copyWith(
-            showPostListConfigHeader: false,
-          ),
-        ));
+    settingsNotifier.updateWith(
+      (s) => s.copyWith(
+        listing: s.listing.copyWith(
+          showPostListConfigHeader: false,
+        ),
+      ),
+    );
     showSimpleSnackBar(
       duration: AppDurations.extraLongToast,
       context: context,
       content: const Text('You can always show this header again in Settings.'),
       action: SnackBarAction(
         label: 'Undo',
-        onPressed: () => settingsNotifier.updateWith((s) => s.copyWith(
-              listing: s.listing.copyWith(
-                showPostListConfigHeader: true,
-              ),
-            )),
+        onPressed: () => settingsNotifier.updateWith(
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(
+              showPostListConfigHeader: true,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -248,7 +254,8 @@ class SliverMasonryGridWarning extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final type = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageListType));
+      imageListingSettingsProvider.select((value) => value.imageListType),
+    );
     final booruType = ref.watchConfigAuth.booruType;
 
     return type == ImageListType.masonry && booruType.masonryLayoutUnsupported
@@ -529,10 +536,12 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                       controller: _autoScrollController,
                       slivers: [
                         if (widget.sliverHeaders != null)
-                          ...widget.sliverHeaders!.map((e) => SliverOffstage(
-                                offstage: multiSelect,
-                                sliver: e,
-                              )),
+                          ...widget.sliverHeaders!.map(
+                            (e) => SliverOffstage(
+                              offstage: multiSelect,
+                              sliver: e,
+                            ),
+                          ),
                         if (settings.showPostListConfigHeader)
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,

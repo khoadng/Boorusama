@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/related/widgets.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../../core/tags/related/widgets.dart';
+import '../../../../../core/tags/tag/providers.dart';
+import '../../../../../core/theme.dart';
 import 'danbooru_related_tag.dart';
 import 'route_utils.dart';
 

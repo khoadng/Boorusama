@@ -7,10 +7,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/theme/utils.dart';
+import '../../../../../../widgets/widgets.dart';
 
 class ForumCard extends ConsumerWidget {
   const ForumCard({
@@ -67,13 +67,14 @@ class ForumCard extends ConsumerWidget {
                     ),
                   const SizedBox(width: 4),
                   Expanded(
-                      child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
               const SizedBox(height: 4),
@@ -94,7 +95,7 @@ class ForumCard extends ConsumerWidget {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

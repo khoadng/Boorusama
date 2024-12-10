@@ -2,8 +2,8 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/data_io_handler.dart';
-import 'package:boorusama/core/backups/types.dart';
+import '../../backups/data_io_handler.dart';
+import '../../backups/types.dart';
 import '../settings.dart';
 
 class SettingsIOHandler {
@@ -31,10 +31,12 @@ class SettingsIOHandler {
         ($) async {
           final data = await $(handler.import(path: from));
 
-          final transformed = await $(Either.tryCatch(
-            () => Settings.fromJson(data.data.first),
-            (e, st) => const ImportInvalidJsonField(),
-          ).toTaskEither());
+          final transformed = await $(
+            Either.tryCatch(
+              () => Settings.fromJson(data.data.first),
+              (e, st) => const ImportInvalidJsonField(),
+            ).toTaskEither(),
+          );
 
           return SettingsExportData(
             data: transformed,

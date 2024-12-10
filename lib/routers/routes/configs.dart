@@ -7,13 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../boorus/booru_builder.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../foundation/display.dart';
+import '../../router.dart';
+import '../../widgets/widgets.dart';
 
 class BoorusRoutes {
   BoorusRoutes._();
@@ -79,7 +79,8 @@ class BoorusRoutes {
                   appBar: AppBar(),
                   body: const Center(
                     child: Text(
-                        'Not implemented, maybe forgot to add the builder implementation?'),
+                      'Not implemented, maybe forgot to add the builder implementation?',
+                    ),
                   ),
                 );
 

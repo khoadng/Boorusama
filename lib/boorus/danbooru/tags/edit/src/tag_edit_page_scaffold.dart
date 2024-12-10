@@ -10,11 +10,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/interactive_booru_image.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../core/images/interactive_booru_image.dart';
+import '../../../../../core/settings/data.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/scrolling.dart';
+import '../../../../../router.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
 import 'tag_edit_view_controller.dart';

@@ -8,8 +8,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../core/theme.dart';
+import 'widgets.dart';
 
 sealed class OptionSelectorItem {
   const OptionSelectorItem();
@@ -165,36 +165,36 @@ class _ChoiceOptionSelectorListState<T>
                   onPressed: () {
                     final items = options.whereType<OptionType<T>>().toList();
                     showBarModalBottomSheet(
-                        context: context,
-                        duration: const Duration(milliseconds: 300),
-                        builder: (context) => OptionSearchableSheet(
-                              title: widget.sheetTitle,
-                              items: items,
-                              scrollController:
-                                  ModalScrollController.of(context),
-                              onFilter: (query) => items.where((e) {
-                                final value = widget.optionLabelBuilder(e.data);
+                      context: context,
+                      duration: const Duration(milliseconds: 300),
+                      builder: (context) => OptionSearchableSheet(
+                        title: widget.sheetTitle,
+                        items: items,
+                        scrollController: ModalScrollController.of(context),
+                        onFilter: (query) => items.where((e) {
+                          final value = widget.optionLabelBuilder(e.data);
 
-                                return value
-                                    .toLowerCase()
-                                    .contains(query.toLowerCase());
-                              }).toList(),
-                              itemBuilder: (context, option) => ListTile(
-                                minVerticalPadding: 4,
-                                title: Text(
-                                  widget.optionLabelBuilder(option.data),
-                                ),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  final valueIndex = options.indexOf(option);
-                                  _onSelect(
-                                    option.data,
-                                    valueIndex,
-                                    options.length,
-                                  );
-                                },
-                              ),
-                            ));
+                          return value
+                              .toLowerCase()
+                              .contains(query.toLowerCase());
+                        }).toList(),
+                        itemBuilder: (context, option) => ListTile(
+                          minVerticalPadding: 4,
+                          title: Text(
+                            widget.optionLabelBuilder(option.data),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            final valueIndex = options.indexOf(option);
+                            _onSelect(
+                              option.data,
+                              valueIndex,
+                              options.length,
+                            );
+                          },
+                        ),
+                      ),
+                    );
                   },
                   icon: widget.icon ?? const Icon(Symbols.tune),
                 ),

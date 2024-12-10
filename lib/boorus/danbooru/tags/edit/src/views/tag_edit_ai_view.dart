@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/theme/utils.dart';
+import '../../../../../../dart.dart';
+import '../../../../../../foundation/platform.dart';
+import '../../../../../../widgets/widgets.dart';
 import '../../../ai/providers.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {

@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../../core/tags/tag/tag.dart';
 
 class AITag extends Equatable {
   const AITag({

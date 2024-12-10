@@ -50,8 +50,10 @@ class LoggingInterceptor extends Interceptor {
     final serverRuntime = response.headers.value('x-runtime');
     final serverRuntimeText = _parseServerRuntime(serverRuntime);
 
-    logger.logI('Network',
-        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText');
+    logger.logI(
+      'Network',
+      'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText',
+    );
     super.onResponse(response, handler);
   }
 
@@ -70,8 +72,10 @@ class LoggingInterceptor extends Interceptor {
     final durationText = _parseRequestDuration(duration);
 
     if (response != null) {
-      logger.logI('Network',
-          'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText');
+      logger.logI(
+        'Network',
+        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText',
+      );
     } else {
       logger.logE('Network', 'Completed with error: ${err.message}');
     }

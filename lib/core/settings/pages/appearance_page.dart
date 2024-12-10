@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
+import '../../../foundation/platform.dart';
+import '../../../router.dart';
+import '../../theme.dart';
 import '../data/settings_providers.dart';
 import '../settings.dart';
 import '../types.dart';
@@ -88,7 +88,8 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               value: settings.enableDynamicColoring,
               onChanged: dynamicColorSupported
                   ? (value) => notifier.updateSettings(
-                      settings.copyWith(enableDynamicColoring: value))
+                        settings.copyWith(enableDynamicColoring: value),
+                      )
                   : null,
             );
           },
@@ -226,9 +227,11 @@ class _ImageListingSettingsSectionState
           selectedOption: settings.postsPerPage,
           items: getPostsPerPagePossibleValue(),
           onChanged: (newValue) {
-            _onUpdate(settings.copyWith(
-              postsPerPage: newValue,
-            ));
+            _onUpdate(
+              settings.copyWith(
+                postsPerPage: newValue,
+              ),
+            );
           },
           optionBuilder: (value) => Text(
             value.toString(),
@@ -244,17 +247,22 @@ class _ImageListingSettingsSectionState
           title: const Text('settings.appearance.show_post_list_config_header')
               .tr(),
           value: settings.showPostListConfigHeader,
-          onChanged: (value) => _onUpdate(settings.copyWith(
-            showPostListConfigHeader: value,
-          )),
+          onChanged: (value) => _onUpdate(
+            settings.copyWith(
+              showPostListConfigHeader: value,
+            ),
+          ),
         ),
         SwitchListTile(
           title: const Text('Blur explicit content').tr(),
           value: settings.blurExplicitMedia,
-          onChanged: (value) => _onUpdate(settings.copyWith(
+          onChanged: (value) => _onUpdate(
+            settings.copyWith(
               mediaBlurCondition: value
                   ? MediaBlurCondition.explicitOnly
-                  : MediaBlurCondition.none)),
+                  : MediaBlurCondition.none,
+            ),
+          ),
         ),
         const SizedBox(height: 4),
         _buildSpacingSlider(settings),
@@ -365,7 +373,8 @@ class LayoutSection extends ConsumerWidget {
           selectedOption: settings.booruConfigSelectorPosition,
           items: const [...BooruConfigSelectorPosition.values],
           onChanged: (value) => notifier.updateSettings(
-              settings.copyWith(booruConfigSelectorPosition: value)),
+            settings.copyWith(booruConfigSelectorPosition: value),
+          ),
           optionBuilder: (value) => Text(value.localize()),
         ),
         SettingsTile(
@@ -373,7 +382,8 @@ class LayoutSection extends ConsumerWidget {
           selectedOption: settings.booruConfigLabelVisibility,
           items: const [...BooruConfigLabelVisibility.values],
           onChanged: (value) => notifier.updateSettings(
-              settings.copyWith(booruConfigLabelVisibility: value)),
+            settings.copyWith(booruConfigLabelVisibility: value),
+          ),
           optionBuilder: (value) => Text(value.localize()),
         ),
       ],

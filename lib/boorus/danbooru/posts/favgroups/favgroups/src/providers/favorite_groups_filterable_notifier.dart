@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../../../../../../../core/configs/config.dart';
 import '../../favgroup.dart';
 import 'favorite_groups_notifier.dart';
 

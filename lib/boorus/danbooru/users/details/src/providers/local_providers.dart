@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../../reports/providers.dart';
@@ -39,7 +39,8 @@ final danbooruUserUploadsProvider =
 
 final selectedUploadDateRangeSelectorTypeProvider =
     StateProvider.autoDispose<UploadDateRangeSelectorType>(
-        (ref) => UploadDateRangeSelectorType.last30Days);
+  (ref) => UploadDateRangeSelectorType.last30Days,
+);
 
 final userDataProvider = FutureProvider.autoDispose
     .family<List<DanbooruReportDataPoint>, DanbooruReportDataParams>(

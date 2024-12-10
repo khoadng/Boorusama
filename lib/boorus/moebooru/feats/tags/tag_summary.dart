@@ -1,5 +1,4 @@
 class TagSummary {
-
   TagSummary({
     required this.category,
     required this.name,

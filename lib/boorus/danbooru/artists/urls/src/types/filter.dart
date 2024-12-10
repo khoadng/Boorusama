@@ -12,10 +12,12 @@ extension DanbooruArtistUrlIterableX on Iterable<DanbooruArtistUrl> {
     return where((e) => e.isActive).toList();
   }
 
-  Iterable<DanbooruArtistUrl> filterDuplicates() => where((e) =>
-      !e.url.contains(_pixivStacc) &&
-      !e.url.contains(_pawooAccount) &&
-      !e.url.contains(_misskeyAccount) &&
-      !e.url.contains(_bskyProfile) &&
-      !e.url.contains(_twitterIntent)).toList();
+  Iterable<DanbooruArtistUrl> filterDuplicates() => where(
+        (e) =>
+            !e.url.contains(_pixivStacc) &&
+            !e.url.contains(_pawooAccount) &&
+            !e.url.contains(_misskeyAccount) &&
+            !e.url.contains(_bskyProfile) &&
+            !e.url.contains(_twitterIntent),
+      ).toList();
 }

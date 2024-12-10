@@ -13,7 +13,7 @@ Future<void> initialize() async {
   await windowManager.ensureInitialized();
 
   windowManager.waitUntilReadyToShow(
-    WindowOptions(
+    const WindowOptions(
       size: Size(1000, 700),
       minimumSize: Size(350, 350),
       center: true,

@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../boorus.dart';
+import '../../../configs/config.dart';
+import '../../../configs/ref.dart';
 import 'tag_query_composer.dart';
 
 final tagQueryComposerProvider =

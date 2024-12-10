@@ -3,7 +3,7 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../../../../../core/configs/config.dart';
 import '../../../danbooru_provider.dart';
 import '../../../users/creator/providers.dart';
 import '../types/dmail.dart';

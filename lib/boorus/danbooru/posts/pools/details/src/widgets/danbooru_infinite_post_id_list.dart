@@ -9,12 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/posts/listing/providers.dart';
+import '../../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../../core/posts/post/post.dart';
 import '../../../../../../../core/settings/data/listing_provider.dart';
+import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../listing/widgets.dart';
 import '../../../../post/post.dart';
 import '../../../../post/providers.dart';
@@ -56,7 +56,8 @@ class _DanbooruInfinitePostIdListState
   @override
   Widget build(BuildContext context) {
     final perPage = ref.watch(
-        imageListingSettingsProvider.select((value) => value.postsPerPage));
+      imageListingSettingsProvider.select((value) => value.postsPerPage),
+    );
     final repo = ref.watch(danbooruPostRepoProvider(ref.watchConfigSearch));
 
     return CustomContextMenuOverlay(

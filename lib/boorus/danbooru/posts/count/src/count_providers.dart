@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts/count/count.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/posts/count/count.dart';
+import '../../../danbooru.dart';
+import '../../../danbooru_provider.dart';
 
 final danbooruPostCountRepoProvider =
     Provider.family<PostCountRepository, BooruConfigSearch>((ref, config) {

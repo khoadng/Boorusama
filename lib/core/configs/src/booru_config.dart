@@ -4,14 +4,14 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../../boorus/danbooru/danbooru.dart';
+import '../../../foundation/gestures.dart';
+import '../../../foundation/platform.dart';
 import '../../boorus/booru.dart';
 import '../../boorus/booru_factory.dart';
 import '../../boorus/booru_type.dart';
+import '../../posts/rating/rating.dart';
+import '../../settings/settings.dart';
 import 'data/booru_config_data.dart';
 import 'rating_parser.dart';
 import 'types.dart';
@@ -76,7 +76,8 @@ class BooruConfig extends Equatable {
       postGestures: json['postGestures'] == null
           ? null
           : PostGestureConfig.fromJson(
-              json['postGestures'] as Map<String, dynamic>),
+              json['postGestures'] as Map<String, dynamic>,
+            ),
       defaultPreviewImageButtonAction:
           json['defaultPreviewImageButtonAction'] as String?,
       listing: json['listing'] == null
@@ -109,6 +110,7 @@ class BooruConfig extends Equatable {
     alwaysIncludeTags: null,
   );
 
+  // ignore: prefer_constructors_over_static_methods
   static BooruConfig defaultConfig({
     required BooruType booruType,
     required String url,

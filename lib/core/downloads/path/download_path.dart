@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../../../foundation/platform.dart';
 
 enum DownloadDirectoryError {
   directoryNotFound,
@@ -25,7 +25,8 @@ TaskEither<DownloadDirectoryError, Directory> tryGetDownloadDirectory() =>
             : TaskEither.left(DownloadDirectoryError.unImplementedPlatform);
 
 TaskEither<DownloadDirectoryError, Directory> tryGetCustomDownloadDirectory(
-        String path) =>
+  String path,
+) =>
     isWeb()
         ? TaskEither.left(DownloadDirectoryError.webPlatformNotSupported)
         : tryGetDirectory(path)
@@ -70,16 +71,20 @@ TaskEither<DirectoryError, Directory> _tryGetWindowsDirectory(String path) =>
     TaskEither.tryCatch(
       () async => getDownloadsDirectory(),
       (error, stackTrace) => DirectoryError.unknownError,
-    ).flatMap((dir) => dir.toOption().fold(
-          () => TaskEither.left(DirectoryError.directoryNotFound),
-          (dir) => TaskEither.right(dir),
-        ));
+    ).flatMap(
+      (dir) => dir.toOption().fold(
+            () => TaskEither.left(DirectoryError.directoryNotFound),
+            (dir) => TaskEither.right(dir),
+          ),
+    );
 
 TaskEither<DirectoryError, Directory> _tryGetLinuxDownloadDirectory() =>
     TaskEither.tryCatch(
       () async => getDownloadsDirectory(),
       (error, stackTrace) => DirectoryError.unknownError,
-    ).flatMap((dir) => dir.toOption().fold(
-          () => TaskEither.left(DirectoryError.directoryNotFound),
-          (dir) => TaskEither.right(dir),
-        ));
+    ).flatMap(
+      (dir) => dir.toOption().fold(
+            () => TaskEither.left(DirectoryError.directoryNotFound),
+            (dir) => TaskEither.right(dir),
+          ),
+    );

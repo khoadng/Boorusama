@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
+import '../../../../../../core/theme.dart';
 import '../../../user/user.dart';
 import '../widgets/user_details_section_card.dart';
 

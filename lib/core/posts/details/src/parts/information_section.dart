@@ -7,15 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/widgets.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../boorus/booru_builder.dart';
+import '../../../../../foundation/url_launcher.dart';
+import '../../../../../router.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../settings/data.dart';
+import '../../../../tags/categories/tag_category.dart';
+import '../../../../tags/tag/providers.dart';
+import '../../../../tags/tag/widgets.dart';
+import '../../../../theme/utils.dart';
 import '../../../post/post.dart';
 import '../../../sources/source.dart';
 import '../inherited_post.dart';
@@ -132,7 +132,8 @@ class InformationSection extends ConsumerWidget {
                           updateInterval: const Duration(minutes: 1),
                           builder: (context, _) => Text(
                             createdAt.fuzzify(
-                                locale: Localizations.localeOf(context)),
+                              locale: Localizations.localeOf(context),
+                            ),
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: Theme.of(context)
@@ -144,7 +145,7 @@ class InformationSection extends ConsumerWidget {
                         ),
                       ),
                   ],
-                )
+                ),
               ],
             ),
           ),

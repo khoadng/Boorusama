@@ -4,10 +4,10 @@ import 'package:collection/collection.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/http/http_utils.dart';
+import '../../../../../../core/datetimes/types.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/settings.dart';
+import '../../../../../../foundation/http/http_utils.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
 import '../types/explore_repository.dart';
@@ -43,9 +43,11 @@ class ExploreRepositoryApi implements ExploreRepository {
     DateTime date,
   ) =>
       TaskEither.Do(($) async {
-        final dtos = await $(tryFetchRemoteData(
-          fetcher: () => client.getMostViewedPosts(date: date),
-        ));
+        final dtos = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getMostViewedPosts(date: date),
+          ),
+        );
 
         final data = dtos.map(postDtoToPostNoMetadata).toList();
 
@@ -63,18 +65,20 @@ class ExploreRepositoryApi implements ExploreRepository {
     int? limit,
   }) =>
       TaskEither.Do(($) async {
-        final dtos = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPosts(
-            date: date,
-            scale: switch (scale) {
-              TimeScale.day => danbooru.TimeScale.day,
-              TimeScale.week => danbooru.TimeScale.week,
-              TimeScale.month => danbooru.TimeScale.month,
-            },
-            page: page,
-            limit: limit ?? settings().postsPerPage,
+        final dtos = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPosts(
+              date: date,
+              scale: switch (scale) {
+                TimeScale.day => danbooru.TimeScale.day,
+                TimeScale.week => danbooru.TimeScale.week,
+                TimeScale.month => danbooru.TimeScale.month,
+              },
+              page: page,
+              limit: limit ?? settings().postsPerPage,
+            ),
           ),
-        ));
+        );
 
         final data = dtos.map(postDtoToPostNoMetadata).toList();
 

@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/toast.dart';
+import '../../../../foundation/toast.dart';
 import 'favorite_tag.dart';
 import 'providers.dart';
 

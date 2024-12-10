@@ -6,17 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/shares/widgets.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
 import '../../../boorus/booru_builder_types.dart';
+import '../../configs/ref.dart';
+import '../../downloads/downloader.dart';
+import '../../posts/details/details.dart';
+import '../../posts/details/parts.dart';
+import '../../posts/details/widgets.dart';
+import '../../posts/shares/widgets.dart';
+import '../../posts/sources/source.dart';
+import '../../widgets/widgets.dart';
 import '../bookmark_convert.dart';
+import '../bookmark_provider.dart';
 import 'providers.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {

@@ -24,13 +24,16 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
       return _cache[key]!;
     }
     try {
-      final result =
-          await client.getPopularSearchByDate(date: date).then((value) => value
-              .map((e) => Search(
+      final result = await client.getPopularSearchByDate(date: date).then(
+            (value) => value
+                .map(
+                  (e) => Search(
                     hitCount: e.hitCount,
                     keyword: e.keyword,
-                  ))
-              .toList());
+                  ),
+                )
+                .toList(),
+          );
       _cache[key] = result;
       return result;
     } on DioException catch (e, stackTrace) {

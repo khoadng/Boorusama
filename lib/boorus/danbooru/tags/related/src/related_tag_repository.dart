@@ -4,8 +4,8 @@
 import 'dart:convert';
 
 // Project imports:
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/foundation/caching.dart';
+import '../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../foundation/caching.dart';
 import 'danbooru_related_tag.dart';
 
 abstract class RelatedTagRepository {

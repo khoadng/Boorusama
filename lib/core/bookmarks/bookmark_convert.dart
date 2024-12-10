@@ -2,10 +2,10 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../foundation/path.dart';
+import '../posts/post/post.dart';
+import '../posts/rating/rating.dart';
+import '../posts/sources/source.dart';
 import 'bookmark.dart';
 import 'hive/object.dart';
 
@@ -21,22 +21,24 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
 ) =>
     Either.tryCatch(
       () => hiveObjects
-          .map((hiveObject) => Bookmark(
-                id: hiveObject.key,
-                booruId: hiveObject.booruId!,
-                createdAt: hiveObject.createdAt!,
-                updatedAt: hiveObject.updatedAt!,
-                thumbnailUrl: hiveObject.thumbnailUrl!,
-                sampleUrl: hiveObject.sampleUrl!,
-                originalUrl: hiveObject.originalUrl!,
-                sourceUrl: hiveObject.sourceUrl!,
-                width: hiveObject.width!,
-                height: hiveObject.height!,
-                md5: hiveObject.md5!,
-                tags: hiveObject.tags?.toSet() ?? {},
-                realSourceUrl: hiveObject.realSourceUrl,
-                format: hiveObject.format,
-              ))
+          .map(
+            (hiveObject) => Bookmark(
+              id: hiveObject.key,
+              booruId: hiveObject.booruId!,
+              createdAt: hiveObject.createdAt!,
+              updatedAt: hiveObject.updatedAt!,
+              thumbnailUrl: hiveObject.thumbnailUrl!,
+              sampleUrl: hiveObject.sampleUrl!,
+              originalUrl: hiveObject.originalUrl!,
+              sourceUrl: hiveObject.sourceUrl!,
+              width: hiveObject.width!,
+              height: hiveObject.height!,
+              md5: hiveObject.md5!,
+              tags: hiveObject.tags?.toSet() ?? {},
+              realSourceUrl: hiveObject.realSourceUrl,
+              format: hiveObject.format,
+            ),
+          )
           .toList(),
       (o, s) {
         return BookmarkGetError.nullField;

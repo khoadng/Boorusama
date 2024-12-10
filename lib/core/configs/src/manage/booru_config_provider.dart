@@ -3,9 +3,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../analytics.dart';
+import '../../../settings/data.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
@@ -157,7 +157,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     } catch (e) {
       _logError('Failed to update config: $oldConfigId');
       onFailure?.call(
-          'Something went wrong while updating your profile. Please try again');
+        'Something went wrong while updating your profile. Please try again',
+      );
     }
   }
 
@@ -172,7 +173,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       if (config == null) {
         onFailure?.call(
-            'Unable to add profile. Please check your inputs and try again');
+          'Unable to add profile. Please check your inputs and try again',
+        );
 
         return;
       }
@@ -192,7 +194,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       }
     } catch (e) {
       onFailure?.call(
-          'Something went wrong while adding your profile. Please try again');
+        'Something went wrong while adding your profile. Please try again',
+      );
     }
   }
 

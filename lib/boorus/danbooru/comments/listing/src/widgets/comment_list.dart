@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/vote_event.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/comments/vote_event.dart';
+import '../../../../../../widgets/widgets.dart';
 import '../../../comment/comment.dart';
 import '../../../votes/vote.dart';
 import 'comment_item.dart';

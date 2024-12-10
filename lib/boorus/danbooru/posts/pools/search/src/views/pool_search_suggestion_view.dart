@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tag/colors.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/debounce_mixin.dart';
+import '../../../../../../../core/tags/tag/colors.dart';
+import '../../../../../../../core/theme.dart';
+import '../../../../../../../foundation/debounce_mixin.dart';
 import '../../../pool/pool.dart';
 import '../providers.dart';
 

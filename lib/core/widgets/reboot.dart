@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../configs/config.dart';
 
 class Reboot extends StatefulWidget {
   const Reboot({

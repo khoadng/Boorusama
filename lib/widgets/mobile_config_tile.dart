@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
+import '../core/theme.dart';
 
 class MobileConfigTile extends StatelessWidget {
   const MobileConfigTile({

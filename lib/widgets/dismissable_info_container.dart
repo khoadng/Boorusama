@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/foundation/html.dart';
+import '../core/settings/data.dart';
+import '../core/theme/utils.dart';
+import '../foundation/html.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {
   const DismissableInfoContainer({

@@ -12,15 +12,15 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../../../../core/boorus.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/home/home_navigation_tile.dart';
+import '../../../../core/home/home_page_scaffold.dart';
+import '../../../../core/home/side_menu_tile.dart';
+import '../../../../core/theme.dart';
+import '../../../../foundation/platform.dart';
+import '../../../../foundation/url_launcher.dart';
+import '../../../../router.dart';
 import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';
 import '../../blacklist/routes.dart';
@@ -80,33 +80,36 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
 
     if (uri != null && isHttp) {
-      Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Upload to $booruName'),
-            content: Text(
-                'Are you sure you want to upload to $booruName?\n\n$text \n\nYou need to be logged in the browser to upload.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
+      Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Upload to $booruName'),
+              content: Text(
+                'Are you sure you want to upload to $booruName?\n\n$text \n\nYou need to be logged in the browser to upload.',
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
 
-                  final encodedUri = Uri.encodeFull(uri.toString());
-                  final url = '${booruUrl}uploads/new?url=$encodedUri';
-                  launchExternalUrlString(url);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      ));
+                    final encodedUri = Uri.encodeFull(uri.toString());
+                    final url = '${booruUrl}uploads/new?url=$encodedUri';
+                    launchExternalUrlString(url);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        ),
+      );
     }
   }
 
@@ -217,7 +220,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               goToBlacklistedTagPage(context);
             },
           ),
-        ]
+        ],
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         HomeNavigationTile(

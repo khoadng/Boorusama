@@ -11,12 +11,12 @@ import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/pages.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../foundation/http.dart';
+import '../../../foundation/platform.dart';
+import '../../../foundation/toast.dart';
+import '../../../widgets/widgets.dart';
+import '../../settings/pages.dart';
+import '../../theme.dart';
 import '../downloader/metadata.dart';
 import '../internal_widgets/download_tile.dart';
 import '../l10n.dart';
@@ -34,24 +34,26 @@ final downloadGroupProvider = Provider<String>(
   name: 'downloadGroupProvider',
 );
 
-final downloadFilteredProvider =
-    Provider.family<List<TaskUpdate>, String?>((ref, initialFilter) {
-  final filter = ref.watch(downloadFilterProvider(initialFilter));
-  final group = ref.watch(downloadGroupProvider);
-  final state = ref.watch(downloadTasksProvider);
+final downloadFilteredProvider = Provider.family<List<TaskUpdate>, String?>(
+  (ref, initialFilter) {
+    final filter = ref.watch(downloadFilterProvider(initialFilter));
+    final group = ref.watch(downloadGroupProvider);
+    final state = ref.watch(downloadTasksProvider);
 
-  return switch (filter) {
-    DownloadFilter.all => state.all(group),
-    DownloadFilter.pending => state.pending(group),
-    DownloadFilter.paused => state.paused(group),
-    DownloadFilter.inProgress => state.inProgress(group),
-    DownloadFilter.completed => state.completed(group),
-    DownloadFilter.failed => state.failed(group),
-    DownloadFilter.canceled => state.canceled(group),
-  };
-}, dependencies: [
-  downloadGroupProvider,
-]);
+    return switch (filter) {
+      DownloadFilter.all => state.all(group),
+      DownloadFilter.pending => state.pending(group),
+      DownloadFilter.paused => state.paused(group),
+      DownloadFilter.inProgress => state.inProgress(group),
+      DownloadFilter.completed => state.completed(group),
+      DownloadFilter.failed => state.failed(group),
+      DownloadFilter.canceled => state.canceled(group),
+    };
+  },
+  dependencies: [
+    downloadGroupProvider,
+  ],
+);
 
 class DownloadManagerGatewayPage extends ConsumerWidget {
   const DownloadManagerGatewayPage({
@@ -200,9 +202,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                       onFailed: () {
                         showSimpleSnackBar(
                           context: context,
-                          content:
-                              Text(DownloadTranslations.downloadNothingToClear)
-                                  .tr(),
+                          content: const Text(
+                            DownloadTranslations.downloadNothingToClear,
+                          ).tr(),
                           duration: const Duration(seconds: 1),
                         );
                       },

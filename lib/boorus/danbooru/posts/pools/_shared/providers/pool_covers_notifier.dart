@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/post/post.dart';
-import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../post/post.dart';
+import '../../../post/providers.dart';
 import '../../pool/pool.dart';
 
 final danbooruPoolCoversProvider = NotifierProvider.family<PoolCoversNotifier,
@@ -52,13 +52,13 @@ class PoolCoversNotifier
       for (final pool in poolsToFetch) pool.postIds.last: pool.id,
     };
 
-    final r = await postRepo
-        .getPostsFromIds(postPoolMap.keys.toList())
-        .run()
-        .then((value) => value.fold(
-              (l) => <DanbooruPost>[].toResult(),
-              (r) => r,
-            ));
+    final r =
+        await postRepo.getPostsFromIds(postPoolMap.keys.toList()).run().then(
+              (value) => value.fold(
+                (l) => <DanbooruPost>[].toResult(),
+                (r) => r,
+              ),
+            );
 
     final postMap = <int, DanbooruPost>{
       for (final post in r.posts) post.id: post,

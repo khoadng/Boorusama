@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/current.dart';
+import '../../../boorus/providers.dart';
+import '../../../configs/current.dart';
 import '../../post/post.dart';
 import 'post_share_state.dart';
 

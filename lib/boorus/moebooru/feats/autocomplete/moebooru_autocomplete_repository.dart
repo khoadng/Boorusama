@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import '../../../../core/autocompletes/autocompletes.dart';
+import '../tags/tags.dart';
 import 'converter.dart';
 
 class MoebooruAutocompleteRepository implements AutocompleteRepository {
@@ -23,9 +23,9 @@ class MoebooruAutocompleteRepository implements AutocompleteRepository {
       await initialize();
     }
     final matchingAutocompleteData = _autocompleteDataList.where(
-        (autocompleteData) => autocompleteData.value
-            .toLowerCase()
-            .startsWith(query.toLowerCase()));
+      (autocompleteData) =>
+          autocompleteData.value.toLowerCase().startsWith(query.toLowerCase()),
+    );
     return matchingAutocompleteData.take(20).toList();
   }
 }

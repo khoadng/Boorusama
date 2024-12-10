@@ -7,12 +7,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../dart.dart';
+import '../../../../../router.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../images/booru_image.dart';
 import '../../../post/post.dart';
+import '../../../post/tags.dart';
 
 class SliverArtistPostList extends ConsumerWidget {
   const SliverArtistPostList({

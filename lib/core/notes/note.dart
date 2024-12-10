@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
+import '../posts/post/post.dart';
 
 class Note extends Equatable {
   const Note({

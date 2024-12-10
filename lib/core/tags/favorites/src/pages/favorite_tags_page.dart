@@ -10,10 +10,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../foundation/toast.dart';
+import '../../../../../router.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../search/search_bar.dart';
 import '../favorite_tag.dart';
 import '../favorite_tags_notifier.dart';
 import '../local_providers.dart';
@@ -116,8 +116,9 @@ class FavoriteTagsPage extends ConsumerWidget {
                         builder: (context) => FavoriteTagConfigSheet(
                           onSorted: (value) {
                             ref
-                                .read(selectedFavoriteTagsSortTypeProvider
-                                    .notifier)
+                                .read(
+                                  selectedFavoriteTagsSortTypeProvider.notifier,
+                                )
                                 .state = value;
                           },
                         ),

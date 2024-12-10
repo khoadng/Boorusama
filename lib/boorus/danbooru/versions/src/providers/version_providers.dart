@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../core/configs/ref.dart';
 import '../data/providers.dart';
 import '../types/danbooru_post_version.dart';
 

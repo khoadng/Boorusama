@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../theme.dart';
 
 class SimplePostStatsTile extends StatelessWidget {
   const SimplePostStatsTile({

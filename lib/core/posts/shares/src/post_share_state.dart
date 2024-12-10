@@ -4,22 +4,20 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/sources/source.dart';
+import '../../sources/source.dart';
 
 class PostShareState extends Equatable {
   const PostShareState({
     required this.booruLink,
     required this.sourceLink,
   });
+
+  PostShareState.initial()
+      : booruLink = '',
+        sourceLink = PostSource.none();
+
   final String booruLink;
   final PostSource sourceLink;
-
-  static PostShareState initial() {
-    return PostShareState(
-      booruLink: '',
-      sourceLink: PostSource.none(),
-    );
-  }
 
   PostShareState copyWith({
     String? booruLink,

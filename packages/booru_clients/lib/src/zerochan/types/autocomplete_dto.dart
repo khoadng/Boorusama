@@ -1,5 +1,4 @@
 class AutocompleteDto {
-
   AutocompleteDto({
     this.value,
     this.alias,

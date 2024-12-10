@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
+import '../../../../../dart.dart';
+import '../../../../widgets/widgets.dart';
 
 class BooruSearchBar extends StatefulWidget {
   const BooruSearchBar({

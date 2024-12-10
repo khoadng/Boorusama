@@ -137,11 +137,13 @@ final class Danbooru extends Booru {
       final aiTagSupport = item['ai-tag'];
       final censoredTagsBanned = item['censored-tags-banned'];
 
-      sites.add((
-        url: url,
-        aiTagSupport: aiTagSupport,
-        censoredTagsBanned: censoredTagsBanned,
-      ));
+      sites.add(
+        (
+          url: url,
+          aiTagSupport: aiTagSupport,
+          censoredTagsBanned: censoredTagsBanned,
+        ),
+      );
     }
 
     return Danbooru(
@@ -208,10 +210,12 @@ class GelbooruV2 extends Booru {
       final url = item['url'] as String;
       final apiUrl = item['api-url'];
 
-      sites.add((
-        url: url,
-        apiUrl: apiUrl,
-      ));
+      sites.add(
+        (
+          url: url,
+          apiUrl: apiUrl,
+        ),
+      );
     }
 
     return GelbooruV2(
@@ -289,13 +293,15 @@ final class Moebooru extends Booru {
       final favoriteSupport = item['favorite-support'] as bool?;
       final overrideProtocol = item['protocol'];
 
-      sites.add((
-        url: url,
-        salt: salt,
-        favoriteSupport: favoriteSupport,
-        overrideProtocol:
-            overrideProtocol != null ? parseProtocol(overrideProtocol) : null,
-      ));
+      sites.add(
+        (
+          url: url,
+          salt: salt,
+          favoriteSupport: favoriteSupport,
+          overrideProtocol:
+              overrideProtocol != null ? parseProtocol(overrideProtocol) : null,
+        ),
+      );
     }
 
     return Moebooru(

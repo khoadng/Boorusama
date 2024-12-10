@@ -8,9 +8,9 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/widgets/website_logo.dart';
+import '../../../../../widgets/website_logo.dart';
+import '../../../../images/booru_image.dart';
+import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../../../sources/source.dart';
 import '../widgets/preview_post_grid.dart';
@@ -154,7 +154,7 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
               onTap: onTap,
             ),
           ],
-        )
+        ),
       ]),
     );
   }

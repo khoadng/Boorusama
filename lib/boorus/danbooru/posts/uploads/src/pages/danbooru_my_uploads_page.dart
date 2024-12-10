@@ -10,17 +10,17 @@ import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/configs/failsafe.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/listing/providers.dart';
+import '../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/posts/sources/source.dart';
+import '../../../../../../core/settings.dart';
+import '../../../../../../core/settings/data/listing_provider.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../dart.dart';
+import '../../../../../../widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
 import '../providers/providers.dart';
@@ -207,16 +207,17 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
         },
       ),
       builder: (context, controller) => LayoutBuilder(
-          builder: (context, constraints) =>
-              ref.watch(danbooruUploadHideMapProvider).maybeWhen(
-                    data: (data) => _buildGrid(
-                      controller,
-                      settings,
-                      constraints,
-                      data,
-                    ),
-                    orElse: () => const SizedBox.shrink(),
-                  )),
+        builder: (context, constraints) =>
+            ref.watch(danbooruUploadHideMapProvider).maybeWhen(
+                  data: (data) => _buildGrid(
+                    controller,
+                    settings,
+                    constraints,
+                    data,
+                  ),
+                  orElse: () => const SizedBox.shrink(),
+                ),
+      ),
     );
   }
 

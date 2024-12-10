@@ -9,7 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import '../dart.dart';
 
 class WebmVideoController {
   WebmVideoController({
@@ -17,7 +17,8 @@ class WebmVideoController {
     String? userAgent,
   }) {
     _webViewController = WebViewController.fromPlatformCreationParams(
-        const PlatformWebViewControllerCreationParams())
+      const PlatformWebViewControllerCreationParams(),
+    )
       ..setUserAgent(userAgent)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.black);
@@ -64,7 +65,8 @@ class WebmVideoController {
     if (_duration != null) return _duration!;
 
     final duration = await _webViewController.runJavaScriptReturningResult(
-        'document.getElementById("video").duration;');
+      'document.getElementById("video").duration;',
+    );
     _duration = duration.toDoubleOrNull();
     return _duration;
   }
@@ -72,7 +74,8 @@ class WebmVideoController {
   // get current video time
   Future<double> getCurrentTime() async {
     final currentTime = await _webViewController.runJavaScriptReturningResult(
-        'document.getElementById("video").currentTime;');
+      'document.getElementById("video").currentTime;',
+    );
     return currentTime.toDoubleOrNull() ?? 0;
   }
 
@@ -92,7 +95,8 @@ class WebmVideoController {
 
   Future<void> seek(double seconds) async {
     await _webViewController.runJavaScript(
-        'document.getElementById("video").currentTime = $seconds;');
+      'document.getElementById("video").currentTime = $seconds;',
+    );
   }
 
   Future<void> mute(bool isMuted) async {
@@ -102,12 +106,14 @@ class WebmVideoController {
 
   Future<void> setPlaybackSpeed(double speed) async {
     await _webViewController.runJavaScript(
-        'document.getElementById("video").playbackRate = $speed;');
+      'document.getElementById("video").playbackRate = $speed;',
+    );
   }
 
   Future<void> setAutoplay(bool autoplay) async {
     await _webViewController.runJavaScript(
-        'document.getElementById("video").autoplay = $autoplay;');
+      'document.getElementById("video").autoplay = $autoplay;',
+    );
   }
 
   Future<void> setLoop(bool loop) async {
@@ -209,11 +215,13 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
   @override
   void initState() {
     super.initState();
-    webmVideoController.load(urlToHtml(
-      widget.url,
-      backgroundColor: widget.backgroundColor ?? Colors.black,
-      muted: !widget.sound,
-    ));
+    webmVideoController.load(
+      urlToHtml(
+        widget.url,
+        backgroundColor: widget.backgroundColor ?? Colors.black,
+        muted: !widget.sound,
+      ),
+    );
     widget.onWebmVideoPlayerCreated?.call(webmVideoController);
   }
 

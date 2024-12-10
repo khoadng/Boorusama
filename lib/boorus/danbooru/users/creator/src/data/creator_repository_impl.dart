@@ -45,13 +45,17 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
               idsNotInCached.map((e) => int.tryParse(e)).nonNulls.toList(),
               cancelToken: cancelToken,
             )
-            .then((value) => value
-                .map((u) => Creator(
+            .then(
+              (value) => value
+                  .map(
+                    (u) => Creator(
                       id: u.id,
                       name: u.name,
                       level: u.level,
-                    ))
-                .toList());
+                    ),
+                  )
+                  .toList(),
+            );
       } catch (e) {
         // handle the exception
       }

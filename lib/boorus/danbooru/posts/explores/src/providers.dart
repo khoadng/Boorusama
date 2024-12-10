@@ -4,20 +4,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
-import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../../../../../core/blacklists/providers.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/current.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/datetimes/types.dart';
+import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/rating/rating.dart';
+import '../../../../../core/settings/data.dart';
+import '../../../../../core/settings/data/listing_provider.dart';
+import '../../../../booru_builder.dart';
+import '../../../danbooru.dart';
+import '../../../danbooru_provider.dart';
 import '../../post/post.dart';
+import '../../post/providers.dart';
 import 'data/explore_repository_cacher.dart';
 import 'data/explore_repository_impl.dart';
 import 'types/explore_repository.dart';
@@ -30,15 +30,18 @@ typedef ScaleAndTime = ({
 final timeScaleProvider = StateProvider<TimeScale>((ref) => TimeScale.day);
 final dateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
-final timeAndDateProvider = Provider<ScaleAndTime>((ref) {
-  final timeScale = ref.watch(timeScaleProvider);
-  final date = ref.watch(dateProvider);
+final timeAndDateProvider = Provider<ScaleAndTime>(
+  (ref) {
+    final timeScale = ref.watch(timeScaleProvider);
+    final date = ref.watch(dateProvider);
 
-  return (scale: timeScale, date: date);
-}, dependencies: [
-  timeScaleProvider,
-  dateProvider,
-]);
+    return (scale: timeScale, date: date);
+  },
+  dependencies: [
+    timeScaleProvider,
+    dateProvider,
+  ],
+);
 
 final danbooruExploreRepoProvider =
     Provider.family<ExploreRepository, BooruConfigSearch>(
@@ -83,10 +86,12 @@ final danbooruMostViewedTodayProvider =
       .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getMostViewedPosts(DateTime.now());
 
-  return repo.run().then((value) => value.fold(
-        (l) => <DanbooruPost>[].toResult(),
-        (r) => r,
-      ));
+  return repo.run().then(
+        (value) => value.fold(
+          (l) => <DanbooruPost>[].toResult(),
+          (r) => r,
+        ),
+      );
 });
 
 final danbooruPopularTodayProvider =
@@ -95,10 +100,12 @@ final danbooruPopularTodayProvider =
       .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getPopularPosts(DateTime.now(), 1, TimeScale.day);
 
-  return repo.run().then((value) => value.fold(
-        (l) => <DanbooruPost>[].toResult(),
-        (r) => r,
-      ));
+  return repo.run().then(
+        (value) => value.fold(
+          (l) => <DanbooruPost>[].toResult(),
+          (r) => r,
+        ),
+      );
 });
 
 final danbooruHotTodayProvider =
@@ -107,8 +114,10 @@ final danbooruHotTodayProvider =
       .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getHotPosts(1);
 
-  return repo.run().then((value) => value.fold(
-        (l) => <DanbooruPost>[].toResult(),
-        (r) => r,
-      ));
+  return repo.run().then(
+        (value) => value.fold(
+          (l) => <DanbooruPost>[].toResult(),
+          (r) => r,
+        ),
+      );
 });

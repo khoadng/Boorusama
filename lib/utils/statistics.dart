@@ -2,7 +2,6 @@
 import 'dart:math';
 
 class StatisticalSummary {
-
   StatisticalSummary({
     required this.mean,
     required this.median,

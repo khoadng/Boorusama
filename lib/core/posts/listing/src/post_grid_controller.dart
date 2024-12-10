@@ -6,10 +6,10 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/filter/filter.dart';
-import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/error.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/error.dart';
+import '../../../settings/types.dart';
+import '../../filter/filter.dart';
 import '../../post/post.dart';
 
 const _kFirstPage = 1;
@@ -19,7 +19,8 @@ typedef ItemFetcher<T extends Post> = Future<PostResult<T>> Function(int page);
 typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
 
 typedef PostGridFetcher<T extends Post> = PostsOrErrorCore<T> Function(
-    int page);
+  int page,
+);
 
 extension TagCountX on Map<String, Set<int>> {
   int get totalNonDuplicatesPostCount => values.expand((e) => e).toSet().length;

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/downloader.dart';
+import '../../../../../downloads/downloader.dart';
 import '../../../../post/post.dart';
 
 class DownloadPostButton extends ConsumerWidget {

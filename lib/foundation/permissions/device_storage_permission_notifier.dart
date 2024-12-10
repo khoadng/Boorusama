@@ -76,10 +76,12 @@ class DeviceStoragePermissionNotifier
     final status = await requestMediaPermissions(deviceInfo);
     logger.logI('Permission', 'Storage permission status: $status');
 
-    state = AsyncData(state.value!.copyWith(
-      storagePermission: status,
-      isNotificationRead: false,
-    ));
+    state = AsyncData(
+      state.value!.copyWith(
+        storagePermission: status,
+        isNotificationRead: false,
+      ),
+    );
 
     onDone?.call(status == PermissionStatus.granted);
   }

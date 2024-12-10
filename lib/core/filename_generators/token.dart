@@ -113,7 +113,7 @@ class TokenizerConfigs {
         'index': [
           '_unique_counter',
           'pad_left',
-        ]
+        ],
       },
       standaloneTokens: {
         'uuid': 'version=4',
@@ -166,9 +166,11 @@ class TokenizerConfigs {
   List<String>? tokenOptionsOf(String token) => tokenDefinitions[token]
       // Ignore internal token options
       ?.where((e) => !e.startsWith('_'))
-      .map((e) => namespacedTokens.contains(token) && e.contains(':')
-          ? e.substring(e.indexOf(':') + 1)
-          : e)
+      .map(
+        (e) => namespacedTokens.contains(token) && e.contains(':')
+            ? e.substring(e.indexOf(':') + 1)
+            : e,
+      )
       .toList();
 
   TokenOptionDocs? tokenOptionDocsOf(String? token, String tokenOption) {

@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/configs/create.dart';
+import '../../../../core/theme.dart';
+import '../../../../foundation/gestures.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../users/user/user.dart';
 import 'hide_deleted_switch.dart';
 
@@ -79,8 +79,8 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
           _ => describeDefaultGestureAction(action),
         },
       ),
-      imageViewerTab: BooruConfigViewerView(
-        postDetailsResolution: const DanbooruImageDetailsQualityProvider(),
+      imageViewerTab: const BooruConfigViewerView(
+        postDetailsResolution: DanbooruImageDetailsQualityProvider(),
       ),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,

@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../posts/posts.dart';
 
 class GelbooruArtistPage extends ConsumerWidget {
   const GelbooruArtistPage({

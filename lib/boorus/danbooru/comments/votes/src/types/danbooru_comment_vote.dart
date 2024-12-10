@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment_vote.dart';
+import '../../../../../../core/comments/comment_vote.dart';
 import '../../../../users/user/user.dart';
 import '../../../comment/comment.dart';
 

@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment.dart';
+import '../../../../../../core/comments/comment.dart';
 import '../../../../users/user/user.dart';
 
 typedef CommentId = int;

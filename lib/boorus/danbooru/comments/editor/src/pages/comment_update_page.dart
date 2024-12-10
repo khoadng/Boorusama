@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../comment/providers.dart';
 import '../widgets/editor_spacer.dart';
 

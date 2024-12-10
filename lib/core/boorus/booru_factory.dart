@@ -6,6 +6,13 @@ import 'booru.dart';
 import 'booru_type.dart';
 
 class BooruFactory {
+  factory BooruFactory.from(
+    List<Booru> boorus,
+  ) {
+    return BooruFactory._(
+      boorus: boorus,
+    );
+  }
   const BooruFactory._({
     required this.boorus,
   });
@@ -25,14 +32,6 @@ class BooruFactory {
         'anime-pictures' => AnimePictures.from(name, data),
         _ => throw Exception('Unknown booru: $name'),
       };
-
-  factory BooruFactory.from(
-    List<Booru> boorus,
-  ) {
-    return BooruFactory._(
-      boorus: boorus,
-    );
-  }
 
   final List<Booru> boorus;
 

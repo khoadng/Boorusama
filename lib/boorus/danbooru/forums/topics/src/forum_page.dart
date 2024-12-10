@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/forums/forum_topic.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/forums/forum_topic.dart';
 import '../../../users/creator/providers.dart';
 import 'data/providers.dart';
 import 'types/forum_topic.dart';

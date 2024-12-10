@@ -64,10 +64,16 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   }
 }
 
-final dynamicColorSupportProvider = Provider<bool>((ref) {
-  throw UnimplementedError();
-}, name: 'dynamicColorSupportProvider');
+final dynamicColorSupportProvider = Provider<bool>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'dynamicColorSupportProvider',
+);
 
-final colorSchemeProvider = Provider<ColorScheme>((ref) {
-  throw UnimplementedError();
-}, name: 'colorSchemeProvider');
+final colorSchemeProvider = Provider<ColorScheme>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'colorSchemeProvider',
+);

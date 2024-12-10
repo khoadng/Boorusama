@@ -6,15 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/home/home_page_controller.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/tags/configs/configs.dart';
-import 'package:boorusama/core/tags/metatag/metatag.dart';
+import '../core/configs/config.dart';
+import '../core/home/home_page_controller.dart';
+import '../core/notes/notes.dart';
+import '../core/posts/details/details.dart';
+import '../core/posts/post/post.dart';
+import '../core/posts/rating/rating.dart';
+import '../core/settings.dart';
+import '../core/tags/configs/configs.dart';
+import '../core/tags/metatag/metatag.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,

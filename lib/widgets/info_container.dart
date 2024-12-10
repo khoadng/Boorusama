@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import '../dart.dart';
 
 class InfoContainer extends StatelessWidget {
   const InfoContainer({

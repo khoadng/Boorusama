@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/hydrus/hydrus.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorites/favorite_post_button.dart';
-import 'package:boorusama/core/favorites/quick_favorite_button.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/favorites/favorite_post_button.dart';
+import '../../../core/favorites/quick_favorite_button.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../../providers.dart';
+import '../hydrus.dart';
 import 'favorites.dart';
 
 class HydrusFavoritesPage extends ConsumerWidget {

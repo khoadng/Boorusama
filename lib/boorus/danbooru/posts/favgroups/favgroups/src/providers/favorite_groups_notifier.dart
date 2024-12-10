@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
+import '../../../../../../../core/configs/config.dart';
+import '../../../../../../../core/configs/current.dart';
 import '../../../../../users/user/providers.dart';
 import '../../../../../users/user/user.dart';
 import '../../../listing/providers.dart';
@@ -160,9 +160,11 @@ class FavoriteGroupsNotifier
     );
 
     if (success) {
-      onSuccess?.call(group.copyWith(
-        postIds: items,
-      ));
+      onSuccess?.call(
+        group.copyWith(
+          postIds: items,
+        ),
+      );
       refresh();
     } else {
       onFailure?.call('Failed to add posts to favgroup', false);

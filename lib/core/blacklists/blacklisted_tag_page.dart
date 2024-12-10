@@ -8,11 +8,11 @@ import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/toast.dart';
+import '../../widgets/widgets.dart';
 import 'blacklisted_tag.dart';
 import 'blacklisted_tag_view_scaffold.dart';
+import 'providers.dart';
 
 const kFavoriteTagsSelectedLabelKey = 'favorite_tags_selected_label';
 

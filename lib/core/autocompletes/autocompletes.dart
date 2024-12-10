@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/metatag/metatag.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../tags/metatag/metatag.dart';
+import '../tags/tag/providers.dart';
+import '../tags/tag/tag.dart';
 import '../users/providers.dart';
 import '../users/user.dart';
 
@@ -146,10 +146,12 @@ List<String> filterNsfwRawTagString(
 
   return shouldFilter
       ? tags
-          .where((e) => isSfwTag(
-                value: e,
-                nsfwTags: nsfwTags,
-              ))
+          .where(
+            (e) => isSfwTag(
+              value: e,
+              nsfwTags: nsfwTags,
+            ),
+          )
           .toList()
       : tags;
 }
@@ -161,11 +163,13 @@ IList<AutocompleteData> filterNsfw(
 }) {
   return shouldFilter
       ? data
-          .where((e) => isSfwTag(
-                value: e.value,
-                antecedent: e.antecedent,
-                nsfwTags: nsfwTags,
-              ))
+          .where(
+            (e) => isSfwTag(
+              value: e.value,
+              antecedent: e.antecedent,
+              nsfwTags: nsfwTags,
+            ),
+          )
           .toList()
           .lock
       : data.lock;

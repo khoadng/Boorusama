@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../router.dart';
+import '../../../widgets/widgets.dart';
+import '../../configs/ref.dart';
+import '../../theme.dart';
 import '../data/listing_provider.dart';
 
 class SettingsInteractionBlocker extends ConsumerWidget {

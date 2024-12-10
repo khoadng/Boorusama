@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../../router.dart';
 import '../pool_search_page.dart';
 
 final danbooruPoolSearchRoutes = GoRoute(

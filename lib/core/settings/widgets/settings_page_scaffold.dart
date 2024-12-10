@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
 
 class SettingsPageScaffold extends StatelessWidget {
   const SettingsPageScaffold({

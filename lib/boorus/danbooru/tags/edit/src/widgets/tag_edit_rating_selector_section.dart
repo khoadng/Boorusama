@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/rating/rating.dart';
+import '../../../../../../widgets/widgets.dart';
 import 'tag_how_to_rate_button.dart';
 
 class TagEditRatingSelectorSection extends ConsumerWidget {

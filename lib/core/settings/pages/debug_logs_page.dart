@@ -11,15 +11,15 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/path.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../foundation/animations.dart';
+import '../../../foundation/clipboard.dart';
+import '../../../foundation/loggers.dart';
+import '../../../foundation/scrolling.dart';
+import '../../../foundation/toast.dart';
+import '../../../widgets/widgets.dart';
+import '../../downloads/path.dart';
+import '../../theme.dart';
+import '../../widgets/widgets.dart';
 import '../data/settings_providers.dart';
 
 final debugLogsProvider = Provider<List<LogData>>((ref) {
@@ -115,26 +115,29 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
     BuildContext context,
     List<LogData> logs,
   ) async =>
-      tryGetDownloadDirectory().run().then((value) => value.fold(
-            (error) => showErrorToast(context, error.name),
-            (directory) async {
-              final file = File('${directory.path}/boorusama_logs.txt');
-              final buffer = StringBuffer();
-              for (final log in logs) {
-                buffer.write(
-                    '[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
-              }
-              await file.writeAsString(buffer.toString());
+      tryGetDownloadDirectory().run().then(
+            (value) => value.fold(
+              (error) => showErrorToast(context, error.name),
+              (directory) async {
+                final file = File('${directory.path}/boorusama_logs.txt');
+                final buffer = StringBuffer();
+                for (final log in logs) {
+                  buffer.write(
+                    '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
+                  );
+                }
+                await file.writeAsString(buffer.toString());
 
-              if (context.mounted) {
-                showSuccessToast(
-                  context,
-                  'Logs written to ${file.path}',
-                  duration: AppDurations.longToast,
-                );
-              }
-            },
-          ));
+                if (context.mounted) {
+                  showSuccessToast(
+                    context,
+                    'Logs written to ${file.path}',
+                    duration: AppDurations.longToast,
+                  );
+                }
+              },
+            ),
+          );
 
   Widget _buildBody(List<LogData> logs) {
     return ListView.builder(

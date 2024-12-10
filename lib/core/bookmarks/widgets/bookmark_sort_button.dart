@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/widgets/providers.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
+import 'providers.dart';
 
 class BookmarkSortButton extends ConsumerWidget {
   const BookmarkSortButton({

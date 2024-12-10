@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/redirect.dart';
-import 'package:boorusama/core/downloads/l10n.dart';
-import 'package:boorusama/core/downloads/widgets.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/router.dart';
+import '../../../foundation/device_info.dart';
+import '../../../router.dart';
+import '../../configs/redirect.dart';
+import '../../downloads/l10n.dart';
+import '../../downloads/widgets.dart';
+import '../../settings.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/settings_tile.dart';
@@ -59,11 +59,13 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
           trailing: Switch(
             value: settings.skipDownloadIfExists,
             onChanged: (value) async {
-              await notifer.updateSettings(settings.copyWith(
-                downloadFileExistedBehavior: value
-                    ? DownloadFileExistedBehavior.skip
-                    : DownloadFileExistedBehavior.appDecide,
-              ));
+              await notifer.updateSettings(
+                settings.copyWith(
+                  downloadFileExistedBehavior: value
+                      ? DownloadFileExistedBehavior.skip
+                      : DownloadFileExistedBehavior.appDecide,
+                ),
+              );
             },
           ),
         ),

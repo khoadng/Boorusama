@@ -2,7 +2,6 @@
 import 'package:xml/xml.dart';
 
 class PostDto {
-
   PostDto({
     this.id,
     this.md5,

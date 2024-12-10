@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/foundation/debounce_mixin.dart';
+import '../../../../boorus/providers.dart';
+import '../../../../foundation/debounce_mixin.dart';
+import '../../../autocompletes/autocompletes.dart';
+import '../../../configs/config.dart';
+import '../../../configs/current.dart';
+import '../../../configs/ref.dart';
+import '../../../tags/categories/providers.dart';
+import '../../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';
 

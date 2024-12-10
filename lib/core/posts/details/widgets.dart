@@ -1,5 +1,3 @@
-library;
-
 export 'src/post_details_page_view.dart';
 export 'src/post_details_page_scaffold.dart';
 export 'src/post_details_scope.dart';

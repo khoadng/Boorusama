@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/search_bar.dart';
+import '../../../../../../../core/search/search_bar.dart';
 import '../providers.dart';
 
 class PoolSearchBar extends ConsumerWidget {

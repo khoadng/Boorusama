@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../foundation/image.dart';
+import '../../foundation/video.dart';
 
 class PhilomenaPost extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin

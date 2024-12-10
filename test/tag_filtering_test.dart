@@ -164,7 +164,9 @@ void main() {
       test('positive 1', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              {'a', 'b', 'q', 'w'}.toTagFilterData(), 'a b -c -d'),
+            {'a', 'b', 'q', 'w'}.toTagFilterData(),
+            'a b -c -d',
+          ),
           true,
         );
       });
@@ -172,7 +174,9 @@ void main() {
       test('negative 1', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              {'a', 'b', 'c', 'd'}.toTagFilterData(), 'a b -c -d'),
+            {'a', 'b', 'c', 'd'}.toTagFilterData(),
+            'a b -c -d',
+          ),
           false,
         );
       });
@@ -187,7 +191,9 @@ void main() {
       test('negative 3', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              {'a', 'b', 'd'}.toTagFilterData(), 'a b -c -d'),
+            {'a', 'b', 'd'}.toTagFilterData(),
+            'a b -c -d',
+          ),
           false,
         );
       });
@@ -195,7 +201,9 @@ void main() {
       test('negative 4', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              {'q', 'w', 'e', 'r'}.toTagFilterData(), 'a b -c -d'),
+            {'q', 'w', 'e', 'r'}.toTagFilterData(),
+            'a b -c -d',
+          ),
           false,
         );
       });
@@ -212,7 +220,9 @@ void main() {
       test('positive 2 ', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              {'a', 'b', 'd'}.toTagFilterData(), 'a ~b ~d'),
+            {'a', 'b', 'd'}.toTagFilterData(),
+            'a ~b ~d',
+          ),
           true,
         );
       });
@@ -243,12 +253,13 @@ void main() {
       test('positive 1 (rating)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-              ),
-              'a rating:explicit'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+            ),
+            'a rating:explicit',
+          ),
           true,
         );
       });
@@ -256,12 +267,13 @@ void main() {
       test('positive 2 (score)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: -10,
-              ),
-              'a score:<-5'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: -10,
+            ),
+            'a score:<-5',
+          ),
           true,
         );
       });
@@ -269,13 +281,14 @@ void main() {
       test('positive 3 (downvotes)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: -10,
-                downvotes: 10,
-              ),
-              'a downvotes:>5'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: -10,
+              downvotes: 10,
+            ),
+            'a downvotes:>5',
+          ),
           true,
         );
       });
@@ -283,12 +296,13 @@ void main() {
       test('negative 1 (rating)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-              ),
-              'a rating:general'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+            ),
+            'a rating:general',
+          ),
           false,
         );
       });
@@ -296,12 +310,13 @@ void main() {
       test('negative 2 (score)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: -1,
-              ),
-              'a score:<-5'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: -1,
+            ),
+            'a score:<-5',
+          ),
           false,
         );
       });
@@ -309,13 +324,14 @@ void main() {
       test('negative 3 (downvotes)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: -10,
-                downvotes: 10,
-              ),
-              'a downvotes:>15'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: -10,
+              downvotes: 10,
+            ),
+            'a downvotes:>15',
+          ),
           false,
         );
       });
@@ -323,13 +339,14 @@ void main() {
       test('negative 4 (downvotes null)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: -10,
-                downvotes: null,
-              ),
-              'a downvotes:<5'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: -10,
+              downvotes: null,
+            ),
+            'a downvotes:<5',
+          ),
           false,
         );
       });
@@ -337,13 +354,14 @@ void main() {
       test('positive (uploaderid)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                uploaderId: 123,
-              ),
-              'a uploaderid:123'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              uploaderId: 123,
+            ),
+            'a uploaderid:123',
+          ),
           true,
         );
       });
@@ -351,13 +369,14 @@ void main() {
       test('negative (uploaderid)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                uploaderId: 123,
-              ),
-              'a uploaderid:321'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              uploaderId: 123,
+            ),
+            'a uploaderid:321',
+          ),
           false,
         );
       });
@@ -365,13 +384,14 @@ void main() {
       test('positive (source exact match)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                source: 'https://example.com',
-              ),
-              'a source:https://example.com'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              source: 'https://example.com',
+            ),
+            'a source:https://example.com',
+          ),
           true,
         );
       });
@@ -379,13 +399,14 @@ void main() {
       test('negative (source exact match)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                source: 'https://example.com',
-              ),
-              'd source:https://example.com'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              source: 'https://example.com',
+            ),
+            'd source:https://example.com',
+          ),
           false,
         );
       });
@@ -393,13 +414,14 @@ void main() {
       test('positive (source start match)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                source: 'https://example.com/abc',
-              ),
-              'a source:https://example.com*'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              source: 'https://example.com/abc',
+            ),
+            'a source:https://example.com*',
+          ),
           true,
         );
       });
@@ -407,13 +429,14 @@ void main() {
       test('positive (source end match)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                source: 'https://example.com/abc',
-              ),
-              'a source:*example.com/abc'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              source: 'https://example.com/abc',
+            ),
+            'a source:*example.com/abc',
+          ),
           true,
         );
       });
@@ -421,13 +444,14 @@ void main() {
       test('positive (source middle match)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                tags: {'a', 'b', 'c'},
-                rating: Rating.explicit,
-                score: 0,
-                source: 'https://example.com/abc',
-              ),
-              'a source:*example.com*'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              source: 'https://example.com/abc',
+            ),
+            'a source:*example.com*',
+          ),
           true,
         );
       });
@@ -437,9 +461,13 @@ void main() {
       test('positive 1 (rating)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                  tags: {'a', 'b', 'c'}, rating: Rating.explicit, score: 0),
-              'a -rating:general'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+            ),
+            'a -rating:general',
+          ),
           true,
         );
       });
@@ -447,9 +475,13 @@ void main() {
       test('positive 2 (score + rating)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                  tags: {'a', 'b', 'c'}, rating: Rating.general, score: -10),
-              'a score:<-5 -rating:explicit'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.general,
+              score: -10,
+            ),
+            'a score:<-5 -rating:explicit',
+          ),
           true,
         );
       });
@@ -457,9 +489,13 @@ void main() {
       test('negative 1 (rating)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                  tags: {'a', 'b', 'c'}, rating: Rating.general, score: 0),
-              'a -rating:general'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.general,
+              score: 0,
+            ),
+            'a -rating:general',
+          ),
           false,
         );
       });
@@ -467,9 +503,13 @@ void main() {
       test('negative 2 (score + rating)', () {
         expect(
           checkIfTagsContainsRawTagExpression(
-              TagFilterData(
-                  tags: {'a', 'b', 'c'}, rating: Rating.explicit, score: -100),
-              'a score:<-5 -rating:explicit'),
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: -100,
+            ),
+            'a score:<-5 -rating:explicit',
+          ),
           false,
         );
       });
@@ -496,7 +536,8 @@ void main() {
         [
           AutocompleteData.fromJson(const {'value': 'a_b', 'label': 'a_b'}),
           AutocompleteData.fromJson(
-              const {'value': 'xyz', 'label': 'xyz', 'antecedent': 'a_b'}),
+            const {'value': 'xyz', 'label': 'xyz', 'antecedent': 'a_b'},
+          ),
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
         {'a_b'},
@@ -527,9 +568,11 @@ void main() {
       final result = filterNsfw(
         [
           AutocompleteData.fromJson(
-              const {'value': 'foo', 'label': 'foo', 'antecedent': 'a_b'}),
+            const {'value': 'foo', 'label': 'foo', 'antecedent': 'a_b'},
+          ),
           AutocompleteData.fromJson(
-              const {'value': 'foo', 'label': 'foo', 'antecedent': 'b_(a)'}),
+            const {'value': 'foo', 'label': 'foo', 'antecedent': 'b_(a)'},
+          ),
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
         {'a'},

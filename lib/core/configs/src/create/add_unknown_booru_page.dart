@@ -8,10 +8,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../boorus/providers.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../boorus.dart';
+import '../../../theme.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
 import '../manage/booru_config_provider.dart';
@@ -137,8 +137,10 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final editId = ref.watch(editBooruConfigIdProvider);
     final config = ref.watch(initialBooruConfigProvider);
-    final auth = ref.watch(editBooruConfigProvider(editId)
-        .select((value) => AuthConfigData.fromConfig(value)));
+    final auth = ref.watch(
+      editBooruConfigProvider(editId)
+          .select((value) => AuthConfigData.fromConfig(value)),
+    );
     final configName = ref
         .watch(editBooruConfigProvider(editId).select((value) => value.name));
     final url = ref.watch(_siteUrlProvider(config));
@@ -196,7 +198,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
             fill: true,
             backgroundColor: Theme.of(context).colorScheme.hintColor,
             onSubmit: null,
-            child: Center(
+            child: const Center(
               child: SizedBox(
                 height: 12,
                 width: 12,
@@ -289,15 +291,19 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
             ref.read(booruEngineProvider.notifier).state = value;
           },
           items: BooruType.values
-              .where((e) =>
-                  e != BooruType.unknown &&
-                  e != BooruType.gelbooru &&
-                  e != BooruType.animePictures)
+              .where(
+                (e) =>
+                    e != BooruType.unknown &&
+                    e != BooruType.gelbooru &&
+                    e != BooruType.animePictures,
+              )
               .sorted((a, b) => a.stringify().compareTo(b.stringify()))
-              .map((value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(value.stringify()),
-                  ))
+              .map(
+                (value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(value.stringify()),
+                ),
+              )
               .toList(),
         ),
       ),

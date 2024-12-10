@@ -2,9 +2,9 @@
 import 'dart:io';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../foundation/loggers.dart';
+import '../boorus.dart';
+import '../configs/config.dart';
 
 class DioOptions {
   DioOptions({

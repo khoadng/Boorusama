@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/core/tags/favorites/providers.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../../router.dart';
+import '../../../../blacklists/providers.dart';
+import '../../../favorites/providers.dart';
 
 class GeneralTagContextMenu extends ConsumerWidget
     with TagContextMenuButtonConfigMixin {

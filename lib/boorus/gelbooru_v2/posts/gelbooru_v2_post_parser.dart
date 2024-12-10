@@ -3,17 +3,19 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/tags.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
 import 'gelbooru_v2_post.dart';
 
 GelbooruV2Post gelbooruV2PostDtoToGelbooruPostNoMetadata(PostV2Dto dto) =>
     gelbooruV2PostDtoToGelbooruPost(dto, null);
 
 GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
-    PostV2Dto dto, PostMetadata? metadata) {
+  PostV2Dto dto,
+  PostMetadata? metadata,
+) {
   return GelbooruV2Post(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',

@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
 import '../routes/route_utils.dart';
@@ -131,8 +131,9 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                             : () {
                                 widget.isEditing.value = false;
                                 ref
-                                    .read(danbooruCommentsProvider(config)
-                                        .notifier)
+                                    .read(
+                                      danbooruCommentsProvider(config).notifier,
+                                    )
                                     .send(
                                       postId: widget.postId,
                                       content: value.text,

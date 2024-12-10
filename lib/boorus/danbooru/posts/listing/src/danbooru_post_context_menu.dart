@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../core/bookmarks/bookmark_provider.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/downloads/downloader.dart';
+import '../../../../../core/posts/post/post.dart';
+import '../../../../../foundation/url_launcher.dart';
+import '../../../../../router.dart';
 import '../../../tags/tag/routes.dart';
 import '../../../versions/routes.dart';
 import '../../favgroups/favgroups/routes.dart';

@@ -9,12 +9,12 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/utils/html_utils.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/html.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../../../router.dart';
+import '../../../../../../utils/html_utils.dart';
 import '../../pool/pool.dart';
 import 'providers/providers.dart';
 import 'types/query_utils.dart';

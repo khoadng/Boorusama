@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/count/widgets.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/tags/metatag/providers.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/posts/count/widgets.dart';
+import '../../../../../core/search/search_ui.dart';
+import '../../../../../core/tags/metatag/providers.dart';
+import '../../../../../utils/flutter_utils.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
 import 'widgets/danbooru_metatags_section.dart';
@@ -58,8 +58,13 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
               .setTextAndCollapseSelection('$value:');
         },
       ),
-      itemBuilder: (context, index, multiSelectController, scrollController,
-              postController) =>
+      itemBuilder: (
+        context,
+        index,
+        multiSelectController,
+        scrollController,
+        postController,
+      ) =>
           DefaultDanbooruImageGridItem(
         index: index,
         multiSelectController: multiSelectController,

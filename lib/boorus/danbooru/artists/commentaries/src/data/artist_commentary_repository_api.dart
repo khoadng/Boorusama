@@ -3,8 +3,8 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/artists/artists.dart';
-import 'package:boorusama/foundation/caching.dart';
+import '../../../../../../core/artists/artists.dart';
+import '../../../../../../foundation/caching.dart';
 import '../types/artist_commentary_repository.dart';
 import 'converter.dart';
 

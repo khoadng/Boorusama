@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/configs/create.dart';
+import '../../../../core/configs/manage.dart';
 import '../../posts/post/post.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {
@@ -18,10 +18,12 @@ class DanbooruHideDeletedSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hideDeleted = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
-      (value) =>
-          value.deletedItemBehaviorTyped == BooruConfigDeletedItemBehavior.hide,
-    ));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
+        (value) =>
+            value.deletedItemBehaviorTyped ==
+            BooruConfigDeletedItemBehavior.hide,
+      ),
+    );
 
     return CreateBooruHideDeletedSwitch(
       value: hideDeleted,
@@ -41,8 +43,9 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bannedVis = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.bannedPostVisibilityTyped));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.bannedPostVisibilityTyped),
+    );
 
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
@@ -64,8 +67,9 @@ class DanbooruImageDetailsQualityProvider extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageDetailsQuality = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.imageDetaisQuality));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.imageDetaisQuality),
+    );
 
     return CreateBooruImageDetailsResolutionOptionTile(
       value: imageDetailsQuality,

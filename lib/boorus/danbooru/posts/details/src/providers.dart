@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/posts/post/post.dart';
+import '../../../../providers.dart';
 import '../../pools/pool/pool.dart';
 import '../../pools/pool/providers.dart';
 import '../../post/post.dart';

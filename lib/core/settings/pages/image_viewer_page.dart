@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/redirect.dart';
-import 'package:boorusama/router.dart';
+import '../../../router.dart';
+import '../../configs/redirect.dart';
 import '../data/settings_providers.dart';
 import '../types.dart';
 import '../types_l10n.dart';
@@ -43,7 +43,8 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => notifer.updateSettings(
-                  settings.copyWith(postDetailsOverlayInitialState: value)),
+                settings.copyWith(postDetailsOverlayInitialState: value),
+              ),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
             const Divider(thickness: 1),
@@ -59,12 +60,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SettingsTile(
               title: const Text('Slideshow interval'),
               subtitle: const Text(
-                  'Value less than 1 second will automatically skip transition'),
+                'Value less than 1 second will automatically skip transition',
+              ),
               selectedOption: settings.slideshowInterval,
               items: getSlideShowIntervalPossibleValue(),
               onChanged: (newValue) {
                 notifer.updateSettings(
-                    settings.copyWith(slideshowInterval: newValue));
+                  settings.copyWith(slideshowInterval: newValue),
+                );
               },
               optionBuilder: (value) => Text(
                 '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec',

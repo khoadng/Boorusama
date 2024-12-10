@@ -7,11 +7,11 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/listing/widgets.dart';
-import 'package:boorusama/boorus/danbooru/posts/post/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../posts/listing/widgets.dart';
+import '../../../../posts/post/providers.dart';
 import '../../../saved_search/routes.dart';
 import '../../../saved_search/saved_search.dart';
 import '../widgets/saved_search_context_menu.dart';

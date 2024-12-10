@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/dtext/dtext.dart';
+import '../../../../../foundation/url_launcher.dart';
 import '../../../dtext/dtext.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
@@ -36,11 +36,12 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
         actions: [
           // Mark as unread
           IconButton(
-              icon: const Icon(Symbols.mark_email_unread),
-              onPressed: () {
-                onDmailUnread(context, dmail);
-                Navigator.pop(context);
-              }),
+            icon: const Icon(Symbols.mark_email_unread),
+            onPressed: () {
+              onDmailUnread(context, dmail);
+              Navigator.pop(context);
+            },
+          ),
         ],
       ),
       body: Padding(
@@ -84,8 +85,9 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               ],
             ),
             Text(
-                'Date: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
-                style: Theme.of(context).textTheme.titleMedium),
+              'Date: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
             Dtext.parse(
               parseDtext(dmail.body),

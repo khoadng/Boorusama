@@ -7,12 +7,12 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/display.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../autocompletes/autocompletes.dart';
+import '../../../configs/config.dart';
+import '../../../configs/ref.dart';
 import '../queries/query_utils.dart';
 import '../suggestions/suggestions_notifier.dart';
 import '../suggestions/tag_suggestion_items.dart';
@@ -116,7 +116,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                                   valueListenable: textEditingController,
                                   builder: (context, query, child) =>
                                       query.text.isEmpty
-                                          ? _AddButton(
+                                          ? const _AddButton(
                                               onTap: null,
                                             )
                                           : _AddButton(

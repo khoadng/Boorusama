@@ -246,10 +246,12 @@ TokenOptionHandler getTokenOptionHandler(
             (SortAttribute.name, SortOptionValue.desc) =>
               [...data.split(' ')..sort((a, b) => b.compareTo(a))].join(' '),
             (SortAttribute.length, SortOptionValue.asc) => [
-                ...data.split(' ')..sort((a, b) => a.length.compareTo(b.length))
+                ...data.split(' ')
+                  ..sort((a, b) => a.length.compareTo(b.length)),
               ].join(' '),
             (SortAttribute.length, SortOptionValue.desc) => [
-                ...data.split(' ')..sort((a, b) => b.length.compareTo(a.length))
+                ...data.split(' ')
+                  ..sort((a, b) => b.length.compareTo(a.length)),
               ].join(' '),
             _ => data,
           },

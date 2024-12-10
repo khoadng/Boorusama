@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../../router.dart';
 import '../../../pool/pool.dart';
 import '../pool_detail_page.dart';
 

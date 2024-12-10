@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/bookmarks/bookmark.dart';
-import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../../../../boorus/providers.dart';
+import '../../../bookmarks/bookmark.dart';
+import '../../../bookmarks/bookmark_provider.dart';
+import '../../../configs/ref.dart';
+import '../../../settings/data.dart';
+import '../../../settings/data/listing_provider.dart';
+import '../../post/post.dart';
 import 'post_grid_controller.dart';
 
 class PostScope<T extends Post> extends ConsumerStatefulWidget {

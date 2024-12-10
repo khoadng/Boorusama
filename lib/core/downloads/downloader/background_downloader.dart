@@ -12,12 +12,12 @@ import 'package:foundation/foundation.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/media_scanner.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
+import '../../../foundation/media_scanner.dart';
+import '../../../foundation/path.dart';
+import '../../../foundation/platform.dart';
+import '../../../router.dart';
+import '../../boorus.dart';
+import '../../configs/ref.dart';
 import '../l10n.dart';
 import '../manager/download_tasks_notifier.dart';
 import '../path/download_path.dart';
@@ -225,7 +225,8 @@ class _BackgroundDownloaderScopeState
 
     FileDownloader()
         .registerCallbacks(
-            taskNotificationTapCallback: myNotificationTapCallback)
+          taskNotificationTapCallback: myNotificationTapCallback,
+        )
         .configureNotificationForGroup(
           FileDownloader.defaultGroup,
           running: const TaskNotification(

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/widgets/generic_no_data_box.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../../../widgets/generic_no_data_box.dart';
 import '../../../saved_search/routes.dart';
 import '../../../saved_search/saved_search.dart';
 

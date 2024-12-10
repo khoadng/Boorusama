@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/interactive_booru_image.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../core/images/interactive_booru_image.dart';
+import '../../../../widgets/widgets.dart';
 import '../../posts/post/post.dart';
 import '../../users/details/routes.dart';
 import 'providers/version_providers.dart';

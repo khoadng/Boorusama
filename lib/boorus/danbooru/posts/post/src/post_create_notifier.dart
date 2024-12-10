@@ -5,15 +5,16 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/posts/rating/rating.dart';
+import '../../../danbooru_provider.dart';
 import 'converter.dart';
 import 'danbooru_post.dart';
 
 final danbooruPostCreateProvider = AsyncNotifierProvider.autoDispose
     .family<DanbooruPostCreateNotifier, DanbooruPost?, BooruConfigAuth>(
-        DanbooruPostCreateNotifier.new);
+  DanbooruPostCreateNotifier.new,
+);
 
 class DanbooruPostCreateNotifier
     extends AutoDisposeFamilyAsyncNotifier<DanbooruPost?, BooruConfigAuth> {

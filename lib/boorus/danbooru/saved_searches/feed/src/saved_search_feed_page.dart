@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../../core/configs/failsafe.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../saved_search/providers.dart';
 import 'views/saved_search_feed_content_view.dart';
 import 'views/saved_search_landing_view.dart';

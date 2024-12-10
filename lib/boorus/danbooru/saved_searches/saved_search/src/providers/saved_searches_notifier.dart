@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/dart.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../dart.dart';
 import '../types/saved_search.dart';
 import '../types/saved_search_repository.dart';
 import 'local_providers.dart';
@@ -41,10 +41,12 @@ class SavedSearchesNotifier
     if (savedSearch == null) {
       onFailure?.call();
     } else {
-      state = AsyncData(_sort([
-        ...state.value ?? [],
-        savedSearch,
-      ]));
+      state = AsyncData(
+        _sort([
+          ...state.value ?? [],
+          savedSearch,
+        ]),
+      );
 
       onCreated?.call(savedSearch);
     }

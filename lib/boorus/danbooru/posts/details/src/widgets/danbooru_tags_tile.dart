@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/listing/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/tags/tag/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/tags/tag/tag.dart';
+import '../../../../../../core/tags/tag/widgets.dart';
+import '../../../../../../router.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../tags/tag/widgets.dart';
+import '../../../listing/providers.dart';
 import '../../../post/post.dart';
 import '../local_providers.dart';
 
@@ -53,8 +53,9 @@ class DanbooruTagsTile extends ConsumerWidget {
         initiallyExpanded: initialExpanded,
         onExpansionChanged: (value) {
           ref
-              .read(danbooruTagTileExpansionStateProvider(initialExpanded)
-                  .notifier)
+              .read(
+                danbooruTagTileExpansionStateProvider(initialExpanded).notifier,
+              )
               .state = value;
         },
         title: Row(

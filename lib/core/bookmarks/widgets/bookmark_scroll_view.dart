@@ -11,14 +11,14 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/url_launcher.dart';
+import '../../../router.dart';
+import '../../../widgets/widgets.dart';
+import '../../configs/ref.dart';
+import '../../images/booru_image.dart';
+import '../../settings/data/listing_provider.dart';
+import '../../widgets/widgets.dart';
 import '../bookmark.dart';
 import '../bookmark_provider.dart';
 import 'bookmark_appbar.dart';
@@ -104,12 +104,16 @@ class SliverBookmarkGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final spacing = ref.watch(imageListingSettingsProvider.select(
-      (value) => value.imageGridSpacing,
-    ));
-    final padding = ref.watch(imageListingSettingsProvider.select(
-      (value) => value.imageGridPadding,
-    ));
+    final spacing = ref.watch(
+      imageListingSettingsProvider.select(
+        (value) => value.imageGridSpacing,
+      ),
+    );
+    final padding = ref.watch(
+      imageListingSettingsProvider.select(
+        (value) => value.imageGridPadding,
+      ),
+    );
     final hasBookmarks = ref.watch(hasBookmarkProvider);
     final bookmarks = ref.watch(filteredBookmarksProvider);
 
@@ -153,9 +157,11 @@ class SliverBookmarkGrid extends ConsumerWidget {
     int index,
   ) {
     final edit = ref.watch(bookmarkEditProvider);
-    final borderRadius = ref.watch(imageListingSettingsProvider.select(
-      (value) => value.imageBorderRadius,
-    ));
+    final borderRadius = ref.watch(
+      imageListingSettingsProvider.select(
+        (value) => value.imageBorderRadius,
+      ),
+    );
     final context = ref.context;
     final config = ref.watchConfigAuth;
 

@@ -7,23 +7,23 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/comments/utils.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/downloads/bulks/create_bulk_download_task_sheet.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/listing/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/search/tag_edit.dart';
-import 'package:boorusama/core/search/view_tags.dart';
-import 'package:boorusama/core/tags/favorites/providers.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../boorus/booru_builder.dart';
+import '../core/autocompletes/autocompletes.dart';
+import '../core/comments/utils.dart';
+import '../core/configs/config.dart';
+import '../core/downloads/bulks/create_bulk_download_task_sheet.dart';
+import '../core/images/booru_image.dart';
+import '../core/posts/details/details.dart';
+import '../core/posts/listing/providers.dart';
+import '../core/posts/post/post.dart';
+import '../core/search/tag_edit.dart';
+import '../core/search/view_tags.dart';
+import '../core/tags/favorites/providers.dart';
+import '../core/widgets/widgets.dart';
+import '../foundation/display.dart';
+import '../foundation/toast.dart';
+import '../router.dart';
+import '../widgets/widgets.dart';
 
 void goToHomePage(
   BuildContext context, {

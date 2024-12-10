@@ -3,13 +3,13 @@ import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../../../core/boorus.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/tags/categories/providers.dart';
+import '../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../core/tags/tag/tag.dart';
+import '../../../danbooru_provider.dart';
 import 'danbooru_related_tag.dart';
 import 'related_tag_repository.dart';
 
@@ -83,12 +83,14 @@ final danbooruRelatedTagsProvider = FutureProvider.family<List<Tag>, String>(
     final related = await repo.getRelatedTag(tag, limit: 30);
 
     final tags = related.tags
-        .map((e) =>
-            Tag(name: e.tag, category: e.category, postCount: e.postCount))
+        .map(
+          (e) => Tag(name: e.tag, category: e.category, postCount: e.postCount),
+        )
         .toList();
 
     tags.sort(
-        (a, b) => (a.category.order ?? 0).compareTo(b.category.order ?? 0));
+      (a, b) => (a.category.order ?? 0).compareTo(b.category.order ?? 0),
+    );
 
     return tags;
   },
@@ -116,24 +118,28 @@ DanbooruRelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) =>
     DanbooruRelatedTag(
       query: dto.query ?? '',
       wikiPageTags: dto.wikiPageTags
-              ?.map((e) => Tag(
-                    name: e.name ?? '',
-                    category: TagCategory.fromLegacyId(e.category),
-                    postCount: e.postCount ?? 0,
-                  ))
+              ?.map(
+                (e) => Tag(
+                  name: e.name ?? '',
+                  category: TagCategory.fromLegacyId(e.category),
+                  postCount: e.postCount ?? 0,
+                ),
+              )
               .toList() ??
           [],
       tags: dto.relatedTags != null
           ? dto.relatedTags!
-              .map((e) => DanbooruRelatedTagItem(
-                    tag: e.tag?.name ?? '',
-                    category: TagCategory.fromLegacyId(e.tag?.category),
-                    jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
-                    cosineSimilarity: e.cosineSimilarity ?? 0.0,
-                    overlapCoefficient: e.overlapCoefficient ?? 0.0,
-                    frequency: e.frequency ?? 0,
-                    postCount: e.tag?.postCount ?? 0,
-                  ))
+              .map(
+                (e) => DanbooruRelatedTagItem(
+                  tag: e.tag?.name ?? '',
+                  category: TagCategory.fromLegacyId(e.tag?.category),
+                  jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
+                  cosineSimilarity: e.cosineSimilarity ?? 0.0,
+                  overlapCoefficient: e.overlapCoefficient ?? 0.0,
+                  frequency: e.frequency ?? 0,
+                  postCount: e.tag?.postCount ?? 0,
+                ),
+              )
               .toList()
           : [],
     );

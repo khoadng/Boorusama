@@ -6,12 +6,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import '../../../../../../router.dart';
+import '../../../../../../utils/flutter_utils.dart';
+import '../../../../../settings/data.dart';
+import '../../../../../tags/categories/providers.dart';
+import '../../../../../tags/tag/providers.dart';
+import '../../../../../theme/utils.dart';
 import '../../../../post/post.dart';
 import '../../inherited_post.dart';
 

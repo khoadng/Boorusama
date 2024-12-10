@@ -10,17 +10,17 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/errors.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/images/utils.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../boorus/danbooru/errors.dart';
+import '../../../../foundation/error.dart';
+import '../../../../foundation/gestures.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../images/booru_image.dart';
+import '../../../images/utils.dart';
+import '../../../settings.dart';
+import '../../../settings/data/listing_provider.dart';
+import '../../../widgets/widgets.dart';
 import '../../post/post.dart';
+import '../../post/tags.dart';
 import 'grid_utils.dart';
 import 'post_grid_controller.dart';
 
@@ -39,15 +39,20 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageGridPadding = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridPadding));
+      imageListingSettingsProvider.select((value) => value.imageGridPadding),
+    );
     final imageListType = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageListType));
+      imageListingSettingsProvider.select((value) => value.imageListType),
+    );
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));
     final imageGridSpacing = ref.watch(
-        imageListingSettingsProvider.select((value) => value.imageGridSpacing));
-    final imageGridAspectRatio = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageGridAspectRatio));
+      imageListingSettingsProvider.select((value) => value.imageGridSpacing),
+    );
+    final imageGridAspectRatio = ref.watch(
+      imageListingSettingsProvider
+          .select((value) => value.imageGridAspectRatio),
+    );
 
     return SliverRawPostGrid(
       constraints: constraints,
@@ -120,7 +125,8 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                           builder: (context) {
                             try {
                               final data = wrapIntoJsonToCodeBlock(
-                                  prettyPrintJson(e.message));
+                                prettyPrintJson(e.message),
+                              );
 
                               return MarkdownBody(
                                 data: data,
@@ -239,7 +245,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridSpacing = spacing ?? 4;
     final imageBorderRadius = borderRadius ?? BorderRadius.zero;
     final imageGridAspectRatio = aspectRatio ?? 1;
-    final postsPerPage = 20;
+    const postsPerPage = 20;
 
     return Builder(
       builder: (context) {
@@ -315,10 +321,12 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageBorderRadius = ref.watch(imageListingSettingsProvider
-        .select((value) => value.imageBorderRadius));
+    final imageBorderRadius = ref.watch(
+      imageListingSettingsProvider.select((value) => value.imageBorderRadius),
+    );
     final showScoresInGrid = ref.watch(
-        imageListingSettingsProvider.select((value) => value.showScoresInGrid));
+      imageListingSettingsProvider.select((value) => value.showScoresInGrid),
+    );
 
     final overlay = blockOverlay;
 

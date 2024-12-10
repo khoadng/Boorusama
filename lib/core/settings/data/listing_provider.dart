@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/current.dart';
+import '../../configs/current.dart';
 import '../settings.dart';
 import 'settings_providers.dart';
 

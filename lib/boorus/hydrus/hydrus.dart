@@ -9,32 +9,32 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/parts.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/query_composer_providers.dart';
+import '../../core/search/search_ui.dart';
+import '../../core/settings/data/listing_provider.dart';
+import '../../router.dart';
+import '../../widgets/widgets.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
 import 'favorites/favorites.dart';
 
 class HydrusPost extends SimplePost {
@@ -102,36 +102,38 @@ final hydrusPostRepoProvider =
       );
 
       final data = files.files
-          .map((e) => HydrusPost(
-                id: e.fileId ?? 0,
-                thumbnailImageUrl: e.thumbnailUrl,
-                sampleImageUrl: e.imageUrl,
-                originalImageUrl: e.imageUrl,
-                tags: e.allTags,
-                rating: Rating.general,
-                hasComment: false,
-                isTranslated: false,
-                hasParentOrChildren: false,
-                source: PostSource.from(e.firstSource),
-                score: 0,
-                duration: e.duration?.toDouble() ?? 0,
-                fileSize: e.size ?? 0,
-                format: e.ext ?? '',
-                hasSound: e.hasAudio,
-                height: e.height?.toDouble() ?? 0,
-                md5: e.hash ?? '',
-                videoThumbnailUrl: e.thumbnailUrl,
-                videoUrl: e.imageUrl,
-                width: e.width?.toDouble() ?? 0,
-                uploaderId: null,
-                uploaderName: null,
-                createdAt: null,
-                metadata: PostMetadata(
-                  page: page,
-                  search: tags.join(' '),
-                ),
-                ownFavorite: e.faved,
-              ))
+          .map(
+            (e) => HydrusPost(
+              id: e.fileId ?? 0,
+              thumbnailImageUrl: e.thumbnailUrl,
+              sampleImageUrl: e.imageUrl,
+              originalImageUrl: e.imageUrl,
+              tags: e.allTags,
+              rating: Rating.general,
+              hasComment: false,
+              isTranslated: false,
+              hasParentOrChildren: false,
+              source: PostSource.from(e.firstSource),
+              score: 0,
+              duration: e.duration?.toDouble() ?? 0,
+              fileSize: e.size ?? 0,
+              format: e.ext ?? '',
+              hasSound: e.hasAudio,
+              height: e.height?.toDouble() ?? 0,
+              md5: e.hash ?? '',
+              videoThumbnailUrl: e.thumbnailUrl,
+              videoUrl: e.imageUrl,
+              width: e.width?.toDouble() ?? 0,
+              uploaderId: null,
+              uploaderName: null,
+              createdAt: null,
+              metadata: PostMetadata(
+                page: page,
+                search: tags.join(' '),
+              ),
+              ownFavorite: e.faved,
+            ),
+          )
           .toList()
           .toResult(
             total: files.count,

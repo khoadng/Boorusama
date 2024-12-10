@@ -3,14 +3,14 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/rating/rating.dart';
+import '../../../../../core/posts/sources/source.dart';
+import '../../../../../core/settings.dart';
+import '../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../core/tags/tag/tag.dart';
+import '../../../../../foundation/image.dart';
+import '../../../../../foundation/video.dart';
 import 'post_variant.dart';
 
 typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
@@ -213,38 +213,48 @@ extension PostX on DanbooruPost {
     final tags = <Tag>[];
 
     for (final t in artistTags) {
-      tags.add(Tag.noCount(
-        name: t,
-        category: TagCategory.artist(),
-      ));
+      tags.add(
+        Tag.noCount(
+          name: t,
+          category: TagCategory.artist(),
+        ),
+      );
     }
 
     for (final t in copyrightTags) {
-      tags.add(Tag.noCount(
-        name: t,
-        category: TagCategory.copyright(),
-      ));
+      tags.add(
+        Tag.noCount(
+          name: t,
+          category: TagCategory.copyright(),
+        ),
+      );
     }
 
     for (final t in characterTags) {
-      tags.add(Tag.noCount(
-        name: t,
-        category: TagCategory.character(),
-      ));
+      tags.add(
+        Tag.noCount(
+          name: t,
+          category: TagCategory.character(),
+        ),
+      );
     }
 
     for (final t in metaTags) {
-      tags.add(Tag.noCount(
-        name: t,
-        category: TagCategory.meta(),
-      ));
+      tags.add(
+        Tag.noCount(
+          name: t,
+          category: TagCategory.meta(),
+        ),
+      );
     }
 
     for (final t in generalTags) {
-      tags.add(Tag.noCount(
-        name: t,
-        category: TagCategory.general(),
-      ));
+      tags.add(
+        Tag.noCount(
+          name: t,
+          category: TagCategory.general(),
+        ),
+      );
     }
 
     return tags;

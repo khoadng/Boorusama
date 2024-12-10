@@ -6,37 +6,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/favorites/quick_favorite_button.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/shares/providers.dart';
-import 'package:boorusama/core/posts/shares/widgets.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/posts/statistics/stats.dart';
-import 'package:boorusama/core/posts/statistics/widgets.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/colors.dart';
-import 'package:boorusama/core/tags/tag/routes.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/tags/tag/widgets.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../core/configs/config.dart';
+import '../core/configs/ref.dart';
+import '../core/downloads/downloader.dart';
+import '../core/favorites/quick_favorite_button.dart';
+import '../core/home/home_page_scaffold.dart';
+import '../core/posts/details/details.dart';
+import '../core/posts/details/parts.dart';
+import '../core/posts/details/widgets.dart';
+import '../core/posts/listing/widgets.dart';
+import '../core/posts/post/post.dart';
+import '../core/posts/post/tags.dart';
+import '../core/posts/rating/rating.dart';
+import '../core/posts/shares/providers.dart';
+import '../core/posts/shares/widgets.dart';
+import '../core/posts/sources/source.dart';
+import '../core/posts/statistics/stats.dart';
+import '../core/posts/statistics/widgets.dart';
+import '../core/scaffolds/scaffolds.dart';
+import '../core/search/search_ui.dart';
+import '../core/settings.dart';
+import '../core/settings/data/listing_provider.dart';
+import '../core/tags/categories/tag_category.dart';
+import '../core/tags/tag/colors.dart';
+import '../core/tags/tag/routes.dart';
+import '../core/tags/tag/tag.dart';
+import '../core/tags/tag/widgets.dart';
+import '../core/theme.dart';
+import '../foundation/display.dart';
+import '../foundation/gestures.dart';
+import '../foundation/url_launcher.dart';
+import '../router.dart';
 import 'booru_builder.dart';
 import 'booru_builder_types.dart';
 import 'providers.dart';
@@ -109,24 +109,23 @@ mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
       (imageQuality, post, config) => post.isGif
           ? post.sampleImageUrl
           : config.imageDetaisQuality.toOption().fold(
-              () => switch (imageQuality) {
-                    ImageQuality.low => post.thumbnailImageUrl,
-                    ImageQuality.original => post.isVideo
-                        ? post.videoThumbnailUrl
-                        : post.originalImageUrl,
-                    _ => post.isVideo
-                        ? post.videoThumbnailUrl
-                        : post.sampleImageUrl,
-                  },
-              (quality) => switch (stringToGeneralPostQualityType(quality)) {
-                    GeneralPostQualityType.preview => post.thumbnailImageUrl,
-                    GeneralPostQualityType.sample => post.isVideo
-                        ? post.videoThumbnailUrl
-                        : post.sampleImageUrl,
-                    GeneralPostQualityType.original => post.isVideo
-                        ? post.videoThumbnailUrl
-                        : post.originalImageUrl,
-                  });
+                () => switch (imageQuality) {
+                  ImageQuality.low => post.thumbnailImageUrl,
+                  ImageQuality.original => post.isVideo
+                      ? post.videoThumbnailUrl
+                      : post.originalImageUrl,
+                  _ =>
+                    post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
+                },
+                (quality) => switch (stringToGeneralPostQualityType(quality)) {
+                  GeneralPostQualityType.preview => post.thumbnailImageUrl,
+                  GeneralPostQualityType.sample =>
+                    post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
+                  GeneralPostQualityType.original => post.isVideo
+                      ? post.videoThumbnailUrl
+                      : post.originalImageUrl,
+                },
+              );
 }
 
 mixin DefaultPostStatisticsPageBuilderMixin on BooruBuilder {

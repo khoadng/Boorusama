@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/router.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/parts.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../router.dart';
 import 'szurubooru_post.dart';
 
 class SzurubooruTagListSection extends ConsumerWidget {

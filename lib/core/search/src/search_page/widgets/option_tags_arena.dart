@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../../../../../foundation/platform.dart';
 
 class OptionTagsArenaController extends ChangeNotifier {
   final ValueNotifier<bool> editMode = ValueNotifier(false);

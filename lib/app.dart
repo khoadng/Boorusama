@@ -12,19 +12,19 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/networking.dart';
-import 'package:boorusama/foundation/picker.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/scrolling.dart';
-import 'package:boorusama/foundation/windows.dart';
-import 'package:boorusama/router.dart';
+import 'core/analytics.dart';
+import 'core/settings/data.dart';
 import 'core/theme/theme_buider.dart';
+import 'foundation/animations.dart';
+import 'foundation/app_info.dart';
+import 'foundation/device_info.dart';
+import 'foundation/error.dart';
+import 'foundation/networking.dart';
+import 'foundation/picker.dart';
+import 'foundation/platform.dart';
+import 'foundation/scrolling.dart';
+import 'foundation/windows.dart';
+import 'router.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
@@ -168,9 +168,10 @@ class AppFailedToInitialize extends ConsumerWidget {
                               ),
                             ),
                             subtitle: Text(
-                                deviceInfo.iosDeviceInfo!.data[key].toString()),
-                          )
-                      ]
+                              deviceInfo.iosDeviceInfo!.data[key].toString(),
+                            ),
+                          ),
+                      ],
                     ],
                   ),
                 ),

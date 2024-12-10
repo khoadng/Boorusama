@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../router.dart';
 import '../../favgroups/favgroup.dart';
 import 'favorite_group_details_page.dart';
 

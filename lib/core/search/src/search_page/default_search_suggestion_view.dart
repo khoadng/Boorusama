@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import '../../../autocompletes/autocompletes.dart';
 import '../selected_tags/selected_tag_controller.dart';
 import '../suggestions/suggestions_notifier.dart';
 import '../suggestions/tag_suggestion_items.dart';

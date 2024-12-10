@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../../../foundation/display.dart';
+import '../../../settings.dart';
 
 int calculateGridCount(double width, GridSize size) {
   final displaySize = screenWidthToDisplaySize(width);

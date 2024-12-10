@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../foundation/display.dart';
+import 'widgets.dart';
 
 class BooruPopupMenuButton<T> extends StatelessWidget {
   const BooruPopupMenuButton({

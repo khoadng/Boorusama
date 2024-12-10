@@ -13,10 +13,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/utils/stream/text_editing_controller_utils.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../router.dart';
+import '../../../../../../utils/stream/text_editing_controller_utils.dart';
 import '../types/saved_search.dart';
 
 class SavedSearchSheet extends ConsumerStatefulWidget {

@@ -3,10 +3,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/history.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/device_info.dart';
+import '../../../foundation/device_info.dart';
+import '../../search/history.dart';
+import '../../settings.dart';
+import '../../settings/data.dart';
 import '../manager/download_task.dart';
 import '../manager/download_tasks_notifier.dart';
 import 'bulk_download_notifier.dart';

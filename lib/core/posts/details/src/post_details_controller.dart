@@ -9,9 +9,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/core/videos/video_progress.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../foundation/platform.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../videos/video_progress.dart';
 import '../../post/post.dart';
 
 class PostDetailsController<T extends Post> extends ChangeNotifier {
@@ -77,8 +77,9 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     if (posts[currentPage.value].videoUrl != url) return;
 
     _videoProgress.value = VideoProgress(
-        Duration(milliseconds: (total * 1000).toInt()),
-        Duration(milliseconds: (current * 1000).toInt()));
+      Duration(milliseconds: (total * 1000).toInt()),
+      Duration(milliseconds: (current * 1000).toInt()),
+    );
   }
 
   void onVideoSeekTo(Duration position, int id, bool isWebm) {

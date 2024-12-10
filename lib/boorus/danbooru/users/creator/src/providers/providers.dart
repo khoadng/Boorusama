@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../foundation/loggers.dart';
 
 final danbooruCreatorHiveBoxProvider = Provider<Box>((ref) {
   throw UnimplementedError();

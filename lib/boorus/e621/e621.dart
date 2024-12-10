@@ -6,20 +6,20 @@ import 'package:booru_clients/e621.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/e621/configs/configs.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/details/parts.dart';
+import '../../core/posts/details/widgets.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
+import 'configs/configs.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
 import 'posts/posts.dart';
@@ -49,14 +49,16 @@ final e621AutocompleteRepoProvider =
       final dtos = await client.getAutocomplete(query: query);
 
       return dtos
-          .map((e) => AutocompleteData(
-                type: AutocompleteData.tag,
-                label: e.name?.replaceAll('_', ' ') ?? '',
-                value: e.name ?? '',
-                category: intToE621TagCategory(e.category).name,
-                postCount: e.postCount,
-                antecedent: e.antecedentName,
-              ))
+          .map(
+            (e) => AutocompleteData(
+              type: AutocompleteData.tag,
+              label: e.name?.replaceAll('_', ' ') ?? '',
+              value: e.name ?? '',
+              category: intToE621TagCategory(e.category).name,
+              postCount: e.postCount,
+              antecedent: e.antecedentName,
+            ),
+          )
           .toList();
     },
   );

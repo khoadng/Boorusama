@@ -3,10 +3,10 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
+import '../../../../../../core/cache/providers.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/http/providers.dart';
+import '../../../../../../core/tags/configs/providers.dart';
 import '../../../../danbooru_provider.dart';
 import '../data/user_repository_api.dart';
 import '../types/user.dart';
@@ -38,12 +38,11 @@ final danbooruCurrentUserProvider =
     final dio = ref.watch(dioProvider(config));
 
     final data = await DanbooruClient(
-            dio: dio,
-            baseUrl: config.url,
-            apiKey: config.apiKey,
-            login: config.login)
-        .getProfile()
-        .then((value) => value.data['id']);
+      dio: dio,
+      baseUrl: config.url,
+      apiKey: config.apiKey,
+      login: config.login,
+    ).getProfile().then((value) => value.data['id']);
 
     id = switch (data) {
       final int i => i,

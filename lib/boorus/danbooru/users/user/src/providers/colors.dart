@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/users/user.dart';
+import '../../../../../../core/theme.dart';
+import '../../../../../../core/users/user.dart';
 import '../types/user.dart';
 import '../types/user_level.dart';
 
@@ -34,13 +34,12 @@ int getUserHexColor(UserLevel level) => switch (level) {
     };
 
 class DanbooruUserColor implements UserColor {
+  factory DanbooruUserColor.of(BuildContext context) =>
+      DanbooruUserColor._(context: context);
   const DanbooruUserColor._({required this.context});
 
   @override
   final BuildContext context;
-
-  factory DanbooruUserColor.of(BuildContext context) =>
-      DanbooruUserColor._(context: context);
 
   static Color _color(BuildContext context, UserLevel? level) {
     final lvl = level ?? UserLevel.member;

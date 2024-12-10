@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklisted_tag_view_scaffold.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/import_export_tag_button.dart';
+import '../../../../core/blacklists/blacklisted_tag_view_scaffold.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/widgets/import_export_tag_button.dart';
 import 'providers/blacklisted_tags_notifier.dart';
 import 'providers/blacklisted_tags_notifier_toast.dart';
 

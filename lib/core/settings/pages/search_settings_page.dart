@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/redirect.dart';
+import '../../configs/redirect.dart';
 import '../data/settings_providers.dart';
 import '../types.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -35,25 +35,29 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
             activeColor: Theme.of(context).colorScheme.primary,
             value: settings.autoFocusSearchBar,
             onChanged: (value) {
-              notifer.updateSettings(settings.copyWith(
-                autoFocusSearchBar: value,
-              ));
+              notifer.updateSettings(
+                settings.copyWith(
+                  autoFocusSearchBar: value,
+                ),
+              );
             },
           ),
         ),
         ListTile(
           title: const Text(
-                  'settings.search.hide_bookmarked_posts_from_search_results')
-              .tr(),
+            'settings.search.hide_bookmarked_posts_from_search_results',
+          ).tr(),
           trailing: Switch(
             activeColor: Theme.of(context).colorScheme.primary,
             value: settings.shouldFilterBookmarks,
             onChanged: (value) {
-              notifer.updateSettings(settings.copyWith(
-                bookmarkFilterType: value
-                    ? BookmarkFilterType.hideAll
-                    : BookmarkFilterType.none,
-              ));
+              notifer.updateSettings(
+                settings.copyWith(
+                  bookmarkFilterType: value
+                      ? BookmarkFilterType.hideAll
+                      : BookmarkFilterType.none,
+                ),
+              );
             },
           ),
         ),

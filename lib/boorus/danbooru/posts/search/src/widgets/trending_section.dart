@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/tags/tag/providers.dart';
 import '../local_providers.dart';
 import 'trending_tags.dart';
 

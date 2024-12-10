@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment.dart';
-import 'package:boorusama/core/comments/comment_parser.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../core/comments/comment.dart';
+import '../../../../../../core/comments/comment_parser.dart';
+import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/current.dart';
+import '../../../../../../core/configs/ref.dart';
 import '../../../../users/user/providers.dart';
 import '../../../../users/user/user.dart';
 import '../../../votes/providers.dart';
@@ -50,8 +50,10 @@ class CommentsNotifier
     final comments = await repo
         .getComments(postId)
         .then(filterDeleted())
-        .then((comments) => comments
-            .map((comment) => CommentData(
+        .then(
+          (comments) => comments
+              .map(
+                (comment) => CommentData(
                   id: comment.id,
                   score: comment.score,
                   authorName: comment.creator?.name ?? 'User',
@@ -64,13 +66,18 @@ class CommentsNotifier
                   isEdited: comment.isEdited,
                   uris: RegExp(urlPattern)
                       .allMatches(comment.body)
-                      .map((match) => Uri.tryParse(
-                          comment.body.substring(match.start, match.end)))
+                      .map(
+                        (match) => Uri.tryParse(
+                          comment.body.substring(match.start, match.end),
+                        ),
+                      )
                       .nonNulls
                       .where((e) => e.host.contains(youtubeUrl))
                       .toList(),
-                ))
-            .toList())
+                ),
+              )
+              .toList(),
+        )
         .then(_sortDescById);
 
     state = {

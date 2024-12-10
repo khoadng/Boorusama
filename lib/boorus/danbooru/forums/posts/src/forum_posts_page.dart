@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/forums/forum_post.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/dtext/dtext.dart';
+import '../../../../../core/forums/forum_post.dart';
+import '../../../../../core/theme.dart';
+import '../../../../../foundation/html.dart';
+import '../../../../../foundation/url_launcher.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/details/routes.dart';
 import '../../../users/user/user.dart';
@@ -157,7 +157,7 @@ class _DanbooruForumPostsPageState
             DanbooruForumVoteChips(
               votes: post.votes,
             ),
-          ]
+          ],
         ],
       ),
     );

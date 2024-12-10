@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/videos/more_options_control_button.dart';
-import 'package:boorusama/core/videos/play_pause_button.dart';
-import 'package:boorusama/core/videos/providers.dart';
-import 'package:boorusama/core/videos/sound_control_button.dart';
-import 'package:boorusama/core/videos/video_progress_bar.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../../../../dart.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../theme.dart';
+import '../../../../videos/more_options_control_button.dart';
+import '../../../../videos/play_pause_button.dart';
+import '../../../../videos/providers.dart';
+import '../../../../videos/sound_control_button.dart';
+import '../../../../videos/video_progress_bar.dart';
 import '../../../post/post.dart';
 import '../post_details_controller.dart';
 
@@ -44,7 +44,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           speed,
         ),
       ),
-      const SizedBox(width: 8)
+      const SizedBox(width: 8),
     ];
 
     final isLarge = context.isLargeScreen;

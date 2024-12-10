@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment_vote.dart';
-import 'package:boorusama/core/comments/comment_vote_section.dart';
-import 'package:boorusama/core/comments/vote_event.dart';
-import 'package:boorusama/core/comments/youtube_preview_box.dart';
-import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../../../core/comments/comment_vote.dart';
+import '../../../../../../core/comments/comment_vote_section.dart';
+import '../../../../../../core/comments/vote_event.dart';
+import '../../../../../../core/comments/youtube_preview_box.dart';
+import '../../../../../../core/dtext/dtext.dart';
+import '../../../../../../core/theme.dart';
 import '../../../../dtext/dtext.dart';
 import '../../../comment/comment.dart';
 import '../../../votes/providers.dart';

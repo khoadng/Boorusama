@@ -9,8 +9,8 @@ import 'package:foundation/widgets.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../../../widgets/widgets.dart';
 import '../../artist/artist.dart';
 import 'widgets/artist_search_list.dart';
 
@@ -113,10 +113,12 @@ class _DanbooruArtistSearchPageState
                 pagingController.refresh();
               },
               items: ArtistOrder.values
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e.name.titleCase),
-                      ))
+                  .map(
+                    (e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(e.name.titleCase),
+                    ),
+                  )
                   .toList(),
             );
           },

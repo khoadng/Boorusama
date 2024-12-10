@@ -7,7 +7,8 @@ import 'download_task.dart';
 
 final downloadTasksProvider =
     NotifierProvider<DownloadTasksNotifier, DownloadTaskState>(
-        DownloadTasksNotifier.new);
+  DownloadTasksNotifier.new,
+);
 
 class DownloadTasksNotifier extends Notifier<DownloadTaskState> {
   @override

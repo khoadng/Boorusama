@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/details/widgets.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../posts/listing/widgets.dart';
+import '../posts/post/post.dart';
+import '../tags/details/widgets.dart';
+import '../tags/tag/tag.dart';
 
 class ArtistPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const ArtistPageScaffold({
@@ -19,7 +19,9 @@ class ArtistPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final String artistName;
   final PostsOrErrorCore<T> Function(
-      int page, TagFilterCategory selectedCategory) fetcher;
+    int page,
+    TagFilterCategory selectedCategory,
+  ) fetcher;
 
   @override
   ConsumerState<ArtistPageScaffold<T>> createState() =>

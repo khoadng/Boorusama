@@ -9,9 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../foundation/path.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../widgets/widgets.dart';
 import '../../sources/source.dart';
 
 final _cachedImageFileProvider =
@@ -96,7 +96,8 @@ class PostModalShare extends ConsumerWidget {
                               fill: 1,
                             ),
                             subtitle: const Text(
-                                'Image quality will depend on the current selected booru profile.'),
+                              'Image quality will depend on the current selected booru profile.',
+                            ),
                             onTap: () {
                               Navigator.of(context).pop();
                               Share.shareXFiles(

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../foundation/loggers.dart';
 import '../settings.dart';
 import 'settings_repository.dart';
 

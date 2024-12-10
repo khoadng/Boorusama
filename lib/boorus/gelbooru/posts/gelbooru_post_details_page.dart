@@ -9,15 +9,15 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
-import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/parts.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/tags/tag/providers.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../../../router.dart';
+import '../artists/artists.dart';
+import 'posts.dart';
 
 final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
   (ref) => <int, List<String>>{},
@@ -142,25 +142,27 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                 () => const [],
                 (tags) => tags.isNotEmpty
                     ? tags
-                        .map((tag) => SliverArtistPostList(
-                              tag: tag,
-                              child: ref
-                                  .watch(gelbooruArtistPostsProvider(tag))
-                                  .maybeWhen(
-                                    data: (data) => SliverPreviewPostGrid(
+                        .map(
+                          (tag) => SliverArtistPostList(
+                            tag: tag,
+                            child: ref
+                                .watch(gelbooruArtistPostsProvider(tag))
+                                .maybeWhen(
+                                  data: (data) => SliverPreviewPostGrid(
+                                    posts: data,
+                                    onTap: (postIdx) =>
+                                        goToPostDetailsPageFromPosts(
+                                      context: context,
                                       posts: data,
-                                      onTap: (postIdx) =>
-                                          goToPostDetailsPageFromPosts(
-                                        context: context,
-                                        posts: data,
-                                        initialIndex: postIdx,
-                                      ),
-                                      imageUrl: (item) => item.sampleImageUrl,
+                                      initialIndex: postIdx,
                                     ),
-                                    orElse: () =>
-                                        const SliverPreviewPostGridPlaceholder(),
+                                    imageUrl: (item) => item.sampleImageUrl,
                                   ),
-                            ))
+                                  orElse: () =>
+                                      const SliverPreviewPostGridPlaceholder(),
+                                ),
+                          ),
+                        )
                         .toList()
                     : [],
               ),

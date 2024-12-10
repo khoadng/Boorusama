@@ -6,10 +6,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/clipboard.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../theme.dart';
 import '../../../post/post.dart';
+import '../../../rating/rating.dart';
 import '../inherited_post.dart';
 
 class DefaultInheritedFileDetailsSection<T extends Post>
@@ -121,24 +121,25 @@ class FileDetailsSection extends StatelessWidget {
         ),
         children: [
           _FileDetailTile(
-              title: 'ID',
-              valueLabel: post.id.toString(),
-              valueTrailing: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  child: const Icon(
-                    Symbols.content_copy,
-                    size: 18,
-                  ),
-                  onTap: () {
-                    AppClipboard.copyWithDefaultToast(
-                      context,
-                      post.id.toString(),
-                    );
-                  },
+            title: 'ID',
+            valueLabel: post.id.toString(),
+            valueTrailing: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                child: const Icon(
+                  Symbols.content_copy,
+                  size: 18,
                 ),
-              )),
+                onTap: () {
+                  AppClipboard.copyWithDefaultToast(
+                    context,
+                    post.id.toString(),
+                  );
+                },
+              ),
+            ),
+          ),
           _FileDetailTile(
             title: 'post.detail.rating'.tr(),
             valueLabel: rating.name.pascalCase,
@@ -172,8 +173,8 @@ class FileDetailsSection extends StatelessWidget {
               _FileDetailTile(
                 title: detail.key,
                 value: detail.value,
-              )
-          ]
+              ),
+          ],
         ],
       ),
     );

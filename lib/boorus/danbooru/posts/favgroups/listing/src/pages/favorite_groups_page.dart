@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
+import '../../../../../../../core/configs/failsafe.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/images/booru_image.dart';
 import '../../../details/routes.dart';
 import '../../../favgroups/favgroup.dart';
 import '../../../favgroups/providers.dart';
@@ -22,8 +22,8 @@ class FavoriteGroupsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BooruConfigAuthFailsafe(
-      child: const FavoriteGroupsPageInternal(),
+    return const BooruConfigAuthFailsafe(
+      child: FavoriteGroupsPageInternal(),
     );
   }
 }

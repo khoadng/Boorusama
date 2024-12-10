@@ -8,36 +8,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
-import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/downloads/urls.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/router.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/boorus.dart';
+import '../../core/boorus/providers.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/parts.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/scaffolds/artist_page_scaffold.dart';
+import '../../core/search/query_composer_providers.dart';
+import '../../core/settings/data/listing_provider.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../foundation/caching.dart';
+import '../../router.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
+import '../danbooru/danbooru.dart';
+import '../providers.dart';
+import 'create_sankaku_config_page.dart';
+import 'sankaku_home_page.dart';
 import 'sankaku_post.dart';
 
 part 'sankaku_provider.dart';
@@ -173,25 +173,29 @@ class SankakuArtistPostsSection extends ConsumerWidget {
     return MultiSliver(
       children: post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => SliverArtistPostList(
-                    tag: tag,
-                    child: ref
-                        .watch(sankakuArtistPostsProvider(
-                            post.artistTags.firstOrNull))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPageFromPosts(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
-                            ),
-                            imageUrl: (item) => item.sampleImageUrl,
-                          ),
-                          orElse: () =>
-                              const SliverPreviewPostGridPlaceholder(),
+              .map(
+                (tag) => SliverArtistPostList(
+                  tag: tag,
+                  child: ref
+                      .watch(
+                        sankakuArtistPostsProvider(
+                          post.artistTags.firstOrNull,
                         ),
-                  ))
+                      )
+                      .maybeWhen(
+                        data: (data) => SliverPreviewPostGrid(
+                          posts: data,
+                          onTap: (postIdx) => goToPostDetailsPageFromPosts(
+                            context: context,
+                            posts: data,
+                            initialIndex: postIdx,
+                          ),
+                          imageUrl: (item) => item.sampleImageUrl,
+                        ),
+                        orElse: () => const SliverPreviewPostGridPlaceholder(),
+                      ),
+                ),
+              )
               .toList()
           : [],
     );

@@ -4,8 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
+import '../../../../../../core/posts/rating/rating.dart';
+import '../../../../../../core/posts/sources/source.dart';
 import '../../../../users/user/user.dart';
 import '../../../post/providers.dart';
 import 'danbooru_upload_post.dart';

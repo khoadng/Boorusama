@@ -7,12 +7,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../dart.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../configs/ref.dart';
+import '../../../../settings/data.dart';
+import '../../../../theme.dart';
+import '../../../../theme/utils.dart';
 import '../tag.dart';
 import '../tag_display.dart';
 import '../tag_group_item.dart';
@@ -42,14 +42,18 @@ class PostTagList extends StatelessWidget {
     final widgets = <Widget>[];
     for (final g in tags!) {
       widgets
-        ..add(_TagBlockTitle(
-          title: g.groupName,
-          isFirstBlock: g.groupName == tags!.first.groupName,
-        ))
-        ..add(_buildTags(
-          context,
-          g.tags,
-        ));
+        ..add(
+          _TagBlockTitle(
+            title: g.groupName,
+            isFirstBlock: g.groupName == tags!.first.groupName,
+          ),
+        )
+        ..add(
+          _buildTags(
+            context,
+            g.tags,
+          ),
+        );
     }
 
     return Column(

@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/search/metatag_widgets.dart';
-import 'package:boorusama/core/tags/metatag/providers.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../../../../core/boorus.dart';
+import '../../../../../../core/boorus/providers.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/search/metatag_widgets.dart';
+import '../../../../../../core/tags/metatag/providers.dart';
+import '../../../../../../foundation/url_launcher.dart';
 import '../../../../tags/user_metatags/providers.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {

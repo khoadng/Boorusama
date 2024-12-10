@@ -15,7 +15,8 @@ final searchHistoryRepoProvider =
 
 final searchHistoryProvider =
     AsyncNotifierProvider<SearchHistoryNotifier, SearchHistoryState>(
-        SearchHistoryNotifier.new);
+  SearchHistoryNotifier.new,
+);
 
 class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
   @override
@@ -75,9 +76,11 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     final histories = await ref
         .read(searchHistoryRepoProvider)
         .addHistory(history, queryType: queryType);
-    state = AsyncData(currentState.copyWith(
-      histories: _sortByDateDesc(histories),
-    ));
+    state = AsyncData(
+      currentState.copyWith(
+        histories: _sortByDateDesc(histories),
+      ),
+    );
 
     filterHistories(currentState.currentQuery);
   }
@@ -90,9 +93,11 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     final histories =
         await ref.read(searchHistoryRepoProvider).removeHistory(history);
 
-    state = AsyncData(currentState.copyWith(
-      histories: _sortByDateDesc(histories),
-    ));
+    state = AsyncData(
+      currentState.copyWith(
+        histories: _sortByDateDesc(histories),
+      ),
+    );
 
     filterHistories(currentState.currentQuery);
   }
@@ -104,10 +109,12 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     final filteredHistories =
         currentState.histories.where((e) => e.query.contains(pattern)).toList();
-    state = AsyncData(currentState.copyWith(
-      currentQuery: pattern,
-      filteredHistories: _sortByDateDesc(filteredHistories),
-    ));
+    state = AsyncData(
+      currentState.copyWith(
+        currentQuery: pattern,
+        filteredHistories: _sortByDateDesc(filteredHistories),
+      ),
+    );
   }
 
   void resetFilter() {

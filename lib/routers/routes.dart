@@ -7,22 +7,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/entry_page.dart';
-import 'package:boorusama/core/applock/applock.dart';
-import 'package:boorusama/core/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/bookmarks/widgets/bookmark_details_page.dart';
-import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
-import 'package:boorusama/core/configs/redirect.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/images/original_image_page.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/favorites/routes.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/rating/rating.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../boorus/booru_builder.dart';
+import '../boorus/entry_page.dart';
+import '../core/applock/applock.dart';
+import '../core/blacklists/blacklisted_tag_page.dart';
+import '../core/bookmarks/widgets/bookmark_details_page.dart';
+import '../core/bookmarks/widgets/bookmark_page.dart';
+import '../core/configs/redirect.dart';
+import '../core/downloads/downloader.dart';
+import '../core/images/original_image_page.dart';
+import '../core/posts/details/details.dart';
+import '../core/posts/post/post.dart';
+import '../core/tags/favorites/routes.dart';
+import '../core/widgets/widgets.dart';
+import '../foundation/rating/rating.dart';
+import '../router.dart';
+import '../widgets/widgets.dart';
 
 ///
 /// When navigate to a page, must query the booru builders first to get the correct builder.

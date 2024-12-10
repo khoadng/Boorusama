@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/search/search_bar.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/images/booru_image.dart';
+import '../../../../../../../core/search/search_bar.dart';
 import '../../../../post/post.dart';
 import '../providers/favorite_groups_filterable_notifier.dart';
 import '../routes/route_utils.dart';
@@ -81,7 +81,8 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
             child: BooruSearchBar(
               onChanged: (value) => ref
                   .read(
-                      danbooruFavoriteGroupFilterableProvider(config).notifier)
+                    danbooruFavoriteGroupFilterableProvider(config).notifier,
+                  )
                   .filter(value),
             ),
           ),

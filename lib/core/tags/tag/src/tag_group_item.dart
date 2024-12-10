@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import '../../../../dart.dart';
 import '../../categories/tag_category.dart';
 import 'tag.dart';
 import 'tag_display.dart';
@@ -41,12 +41,14 @@ List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
   final group = tags
       .groupBy((e) => e.category)
       .entries
-      .map((e) => TagGroupItem(
-            category: e.key.id,
-            groupName: e.key.name.sentenceCase,
-            tags: e.value,
-            order: e.key.order ?? 99999,
-          ))
+      .map(
+        (e) => TagGroupItem(
+          category: e.key.id,
+          groupName: e.key.name.sentenceCase,
+          tags: e.value,
+          order: e.key.order ?? 99999,
+        ),
+      )
       .toList()
     ..sort((a, b) => a.order.compareTo(b.order));
   return group;

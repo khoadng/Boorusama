@@ -11,22 +11,22 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/booru_builder_default.dart';
-import 'package:boorusama/boorus/booru_builder_types.dart';
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/videos/play_pause_button.dart';
-import 'package:boorusama/core/videos/providers.dart';
-import 'package:boorusama/core/videos/sound_control_button.dart';
-import 'package:boorusama/core/videos/video_progress.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../boorus/booru_builder_default.dart';
+import '../../../../boorus/booru_builder_types.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/gestures.dart';
+import '../../../../router.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../cache/providers.dart';
+import '../../../configs/ref.dart';
+import '../../../notes/notes.dart';
+import '../../../settings/data.dart';
+import '../../../videos/play_pause_button.dart';
+import '../../../videos/providers.dart';
+import '../../../videos/sound_control_button.dart';
+import '../../../videos/video_progress.dart';
+import '../../../widgets/widgets.dart';
 import '../../post/post.dart';
 import '../../shares/providers.dart';
 import 'post_details_controller.dart';
@@ -146,11 +146,12 @@ class _PostDetailPageScaffoldState<T extends Post>
               .updateInformation(posts[page]);
         },
         sheetStateStorage: SheetStateStorageBuilder(
-            save: (expanded) => ref
-                .read(miscDataProvider(kShowInfoStateCacheKey).notifier)
-                .put(expanded.toString()),
-            load: () async =>
-                ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true'),
+          save: (expanded) => ref
+              .read(miscDataProvider(kShowInfoStateCacheKey).notifier)
+              .put(expanded.toString()),
+          load: () async =>
+              ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true',
+        ),
         slideshowOptions: SlideshowOptions(
           duration: settings.slideshowDuration,
           direction: settings.slideshowDirection,
@@ -481,13 +482,18 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   }
 
   void onCurrentPositionChanged(
-      double current, double total, String url, int page) {
+    double current,
+    double total,
+    String url,
+    int page,
+  ) {
     // check if the current video is the same as the one being played
     if (posts[page].videoUrl != url) return;
 
     _videoProgress.value = VideoProgress(
-        Duration(milliseconds: (total * 1000).toInt()),
-        Duration(milliseconds: (current * 1000).toInt()));
+      Duration(milliseconds: (total * 1000).toInt()),
+      Duration(milliseconds: (current * 1000).toInt()),
+    );
   }
 
   void onVideoSeekTo(Duration position, int page) {

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create.dart';
+import '../../core/configs/create.dart';
 import 'philomena_post.dart';
 
 class CreatePhilomenaConfigPage extends StatelessWidget {
@@ -66,9 +66,11 @@ class PhilomenaImageDetailsQualityProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageDetailsQuality = ref.watch(editBooruConfigProvider(
-      ref.watch(editBooruConfigIdProvider),
-    ).select((value) => value.imageDetaisQuality));
+    final imageDetailsQuality = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.imageDetaisQuality),
+    );
 
     return CreateBooruImageDetailsResolutionOptionTile(
       value: imageDetailsQuality,

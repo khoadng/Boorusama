@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../dart.dart';
+import '../../../../widgets/option_dropdown_button.dart';
+import '../../../posts/rating/rating.dart';
+import '../../../theme.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
 import '../manage/booru_config_provider.dart';
@@ -27,9 +27,11 @@ class DefaultImageDetailsQualityTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruGeneralPostDetailsResolutionOptionTile(
-      value: ref.watch(editBooruConfigProvider(
-        ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.imageDetaisQuality)),
+      value: ref.watch(
+        editBooruConfigProvider(
+          ref.watch(editBooruConfigIdProvider),
+        ).select((value) => value.imageDetaisQuality),
+      ),
       onChanged: (value) => ref.editNotifier.updateImageDetailsQuality(value),
     );
   }
@@ -125,7 +127,7 @@ class UpdateBooruConfigButton extends ConsumerWidget {
                 Navigator.of(context).pop();
               }
             : null,
-        child: Text('Save'),
+        child: const Text('Save'),
       ),
     );
   }
@@ -145,12 +147,16 @@ class DefaultBooruRatingOptionsTile extends ConsumerWidget {
 
     return CreateBooruRatingOptionsTile(
       config: config,
-      initialGranularRatingFilters: ref.watch(editBooruConfigProvider(
-        ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.granularRatingFilterTyped)),
-      value: ref.watch(editBooruConfigProvider(
-        ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.ratingFilterTyped)),
+      initialGranularRatingFilters: ref.watch(
+        editBooruConfigProvider(
+          ref.watch(editBooruConfigIdProvider),
+        ).select((value) => value.granularRatingFilterTyped),
+      ),
+      value: ref.watch(
+        editBooruConfigProvider(
+          ref.watch(editBooruConfigIdProvider),
+        ).select((value) => value.ratingFilterTyped),
+      ),
       onChanged: (value) =>
           value != null ? ref.editNotifier.updateRatingFilter(value) : null,
       onGranularRatingFiltersChanged: (value) =>
@@ -208,9 +214,11 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apiKey = ref.watch(editBooruConfigProvider(
-      ref.watch(editBooruConfigIdProvider),
-    ).select((value) => value.apiKey));
+    final apiKey = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.apiKey),
+    );
 
     return CreateBooruApiKeyField(
       text: apiKey,
@@ -233,9 +241,11 @@ class DefaultBooruLoginField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final login = ref.watch(editBooruConfigProvider(
-      ref.watch(editBooruConfigIdProvider),
-    ).select((value) => value.login));
+    final login = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.login),
+    );
 
     return CreateBooruLoginField(
       text: login,
@@ -387,10 +397,12 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
               }
             },
             items: BooruConfigRatingFilter.values
-                .map((value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value.getFilterRatingTerm()),
-                    ))
+                .map(
+                  (value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value.getFilterRatingTerm()),
+                  ),
+                )
                 .toList(),
           ),
         ),

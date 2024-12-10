@@ -4,17 +4,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
+import '../../../core/search/query_composer_providers.dart';
+import '../../../core/settings/data/listing_provider.dart';
+import '../../../foundation/path.dart';
+import '../e621.dart';
+import '../favorites/favorites.dart';
+import 'posts.dart';
 
 final e621PostRepoProvider =
     Provider.family<PostRepository<E621Post>, BooruConfigSearch>((ref, config) {
@@ -29,15 +29,19 @@ final e621PostRepoProvider =
             tags: tags,
             limit: limit,
           )
-          .then((value) => value
-              .map((e) => postDtoToPost(
+          .then(
+            (value) => value
+                .map(
+                  (e) => postDtoToPost(
                     e,
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
                     ),
-                  ))
-              .toList());
+                  ),
+                )
+                .toList(),
+          );
 
       ref.read(e621FavoritesProvider(config.auth).notifier).preload(data);
 

@@ -8,9 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../foundation/error.dart';
+import '../../foundation/package_info.dart';
+import '../../foundation/platform.dart';
 
 class FirebaseCrashlyticsReporter implements ErrorReporter {
   @override
@@ -38,7 +38,9 @@ class FirebaseCrashlyticsReporter implements ErrorReporter {
         .setCustomKey('time-zone-name', DateTime.now().timeZoneName);
 
     await FirebaseCrashlytics.instance.setCustomKey(
-        'time-zone-offset', DateTime.now().timeZoneOffset.inHours);
+      'time-zone-offset',
+      DateTime.now().timeZoneOffset.inHours,
+    );
 
     await FirebaseCrashlytics.instance
         .setCustomKey('environment', kEnvironment);

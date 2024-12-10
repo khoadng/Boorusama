@@ -7,13 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/tags/metatag/metatag.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/html.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../foundation/html.dart';
+import '../../../autocompletes/autocompletes.dart';
+import '../../../configs/ref.dart';
+import '../../../tags/configs/providers.dart';
+import '../../../tags/metatag/metatag.dart';
+import '../../../theme.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({

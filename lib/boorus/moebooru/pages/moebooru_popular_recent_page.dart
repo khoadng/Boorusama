@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/posts/post/post.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/listing/widgets.dart';
+import '../../../core/posts/post/post.dart';
 import '../feats/posts/posts.dart';
 import 'widgets/period_toggle_switch.dart';
 

@@ -10,13 +10,13 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import '../../../foundation/clipboard.dart';
+import '../../../router.dart';
+import '../../../utils/flutter_utils.dart';
+import '../../configs/ref.dart';
+import '../../images/booru_image.dart';
+import '../../theme.dart';
+import '../../widgets/widgets.dart';
 import '../l10n.dart';
 import 'bulk_download_notifier.dart';
 import 'bulk_download_task.dart';
@@ -249,8 +249,9 @@ class _InfoText extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(_currentDownloadTaskIdProvider);
-    final fileSize = ref.watch(_currentDownloadTaskProvider(id)
-        .select((e) => e.estimatedDownloadSize));
+    final fileSize = ref.watch(
+      _currentDownloadTaskProvider(id).select((e) => e.estimatedDownloadSize),
+    );
     final mixedMedia =
         ref.watch(_currentDownloadTaskProvider(id).select((e) => e.mixedMedia));
     final totalItems =
@@ -291,8 +292,8 @@ class _InfoText extends ConsumerWidget {
             DownloadTranslations.bulkDownloadCreatedStatus.tr(),
           BulkDownloadTaskStatus.queue =>
             DownloadTranslations.bulkDownloadInProgressStatus(
-                    pageProgress?.completed)
-                .tr(),
+              pageProgress?.completed,
+            ).tr(),
           BulkDownloadTaskStatus.error => error ?? 'Error',
           _ => infoText,
         },
@@ -321,11 +322,11 @@ class _Subtitle extends ConsumerWidget {
 
     return !isCompleted && status == BulkDownloadTaskStatus.inProgress ||
             status == BulkDownloadTaskStatus.queue
-        ? Column(
+        ? const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _ProgressBar(),
-              const _FailedCount(),
+              _ProgressBar(),
+              _FailedCount(),
             ],
           )
         : ReadMoreText(
@@ -364,8 +365,8 @@ class _ProgressBar extends ConsumerWidget {
     );
 
     return status == BulkDownloadTaskStatus.queue
-        ? Padding(
-            padding: const EdgeInsets.only(
+        ? const Padding(
+            padding: EdgeInsets.only(
               top: 10,
               right: 40,
               left: 4,

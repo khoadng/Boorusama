@@ -8,10 +8,10 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/display.dart';
+import '../../../../utils/flutter_utils.dart';
+import '../../../theme.dart';
 
 typedef HiddenData = ({
   String name,
@@ -102,7 +102,7 @@ class _PostListConfigurationHeaderState
                     !expanded
                         ? const Icon(Symbols.keyboard_arrow_right)
                         : const Icon(Symbols.keyboard_arrow_down),
-                    const Spacer()
+                    const Spacer(),
                   ],
                 ),
                 controlAffinity: ListTileControlAffinity.leading,
@@ -116,7 +116,7 @@ class _PostListConfigurationHeaderState
                   setState(() {
                     expanded = value;
                     widget.onExpansionChanged?.call(value);
-                  })
+                  }),
                 },
                 title: LayoutBuilder(
                   builder: (context, constraints) {

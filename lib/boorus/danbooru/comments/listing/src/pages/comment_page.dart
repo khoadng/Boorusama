@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../dart.dart';
+import '../../../../../../router.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
 import '../../../votes/providers.dart';
@@ -127,15 +127,18 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                               .delete(postId: widget.postId, comment: comment),
                           onUpvote: (comment) => ref
                               .read(
-                                  danbooruCommentVotesProvider(config).notifier)
+                                danbooruCommentVotesProvider(config).notifier,
+                              )
                               .guardUpvote(ref, comment.id),
                           onDownvote: (comment) => ref
                               .read(
-                                  danbooruCommentVotesProvider(config).notifier)
+                                danbooruCommentVotesProvider(config).notifier,
+                              )
                               .guardDownvote(ref, comment.id),
                           onClearVote: (comment, commentVote) => ref
                               .read(
-                                  danbooruCommentVotesProvider(config).notifier)
+                                danbooruCommentVotesProvider(config).notifier,
+                              )
                               .guardUnvote(ref, commentVote),
                         ),
                       ),

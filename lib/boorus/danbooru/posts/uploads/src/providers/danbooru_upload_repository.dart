@@ -4,7 +4,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/user/user.dart';
+import '../../../../users/user/user.dart';
 import '../types/danbooru_upload.dart';
 
 class DanbooruUploadRepository {

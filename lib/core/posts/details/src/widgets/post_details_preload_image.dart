@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/providers.dart';
+import '../../../../configs/ref.dart';
+import '../../../../http/providers.dart';
+import '../../../../images/dio_extended_image.dart';
+import '../../../../images/providers.dart';
 
 class PostDetailsPreloadImage extends ConsumerWidget {
   const PostDetailsPreloadImage({

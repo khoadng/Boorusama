@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../autocompletes/autocompletes.dart';
+import '../../../configs/ref.dart';
+import '../../../widgets/widgets.dart';
 import '../queries/query_utils.dart';
 import '../selected_tags/tag_search_item.dart';
 import '../suggestions/suggestions_notifier.dart';
@@ -71,8 +71,9 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
                 showSuggestions.value = true;
 
                 ref
-                    .read(suggestionsNotifierProvider(ref.readConfigAuth)
-                        .notifier)
+                    .read(
+                      suggestionsNotifierProvider(ref.readConfigAuth).notifier,
+                    )
                     .getSuggestions(query);
               },
               decoration: InputDecoration(

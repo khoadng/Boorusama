@@ -14,43 +14,43 @@ import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/bulks/notifications.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/tracking.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/mobile.dart';
-import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/windows.dart' as window;
 import 'app.dart';
 import 'boorus/danbooru/tags/user_metatags/providers.dart';
 import 'boorus/danbooru/users/creator/providers.dart';
+import 'core/analytics.dart';
 import 'core/blacklists/hive/tag_repository.dart';
 import 'core/blacklists/providers.dart';
 import 'core/bookmarks/hive/object.dart';
 import 'core/bookmarks/hive/repository.dart';
 import 'core/bookmarks/providers.dart';
+import 'core/boorus.dart';
+import 'core/boorus/providers.dart';
 import 'core/cache/providers.dart';
+import 'core/configs/config.dart';
+import 'core/configs/current.dart';
+import 'core/configs/manage.dart';
+import 'core/downloads/bulks/notifications.dart';
 import 'core/downloads/notifications.dart';
+import 'core/http/providers.dart';
 import 'core/search/boot.dart';
+import 'core/settings.dart';
+import 'core/settings/data.dart';
+import 'core/tags/categories/providers.dart';
+import 'core/tags/configs/providers.dart';
 import 'core/tags/favorites/providers.dart';
+import 'core/tracking.dart';
+import 'core/widgets/widgets.dart';
+import 'dart.dart';
+import 'foundation/app_info.dart';
+import 'foundation/device_info.dart';
+import 'foundation/error.dart';
+import 'foundation/http.dart';
+import 'foundation/loggers.dart';
+import 'foundation/mobile.dart';
+import 'foundation/package_info.dart';
+import 'foundation/path.dart';
+import 'foundation/platform.dart';
+import 'foundation/windows.dart' as window;
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =
@@ -143,11 +143,12 @@ Future<void> boot(BootLogger bootLogger) async {
     logger: bootLogger,
     booruFactory: booruFactory,
     onCreateNew: (id) async {
-      final settings =
-          await settingRepository.load().run().then((value) => value.fold(
-                (l) => Settings.defaultSettings,
-                (r) => r,
-              ));
+      final settings = await settingRepository.load().run().then(
+            (value) => value.fold(
+              (l) => Settings.defaultSettings,
+              (r) => r,
+            ),
+          );
 
       bootLogger.l('Save default booru config');
       await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
@@ -155,11 +156,12 @@ Future<void> boot(BootLogger bootLogger) async {
   );
 
   bootLogger.l('Load settings');
-  final settings =
-      await settingRepository.load().run().then((value) => value.fold(
-            (l) => Settings.defaultSettings,
-            (r) => r,
-          ));
+  final settings = await settingRepository.load().run().then(
+        (value) => value.fold(
+          (l) => Settings.defaultSettings,
+          (r) => r,
+        ),
+      );
 
   bootLogger.l('Settings: ${settings.toJson()}');
 
@@ -251,8 +253,10 @@ Future<void> boot(BootLogger bootLogger) async {
   // Prepare for Android 15
   showSystemStatus();
 
-  logger.logI('Start up',
-      'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
+  logger.logI(
+    'Start up',
+    'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
+  );
   stopwatch.stop();
 
   void run() {
@@ -271,9 +275,11 @@ Future<void> boot(BootLogger bootLogger) async {
               settingsNotifierProvider
                   .overrideWith(() => SettingsNotifier(settings)),
               booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              booruConfigProvider.overrideWith(() => BooruConfigNotifier(
-                    initialConfigs: configs,
-                  )),
+              booruConfigProvider.overrideWith(
+                () => BooruConfigNotifier(
+                  initialConfigs: configs,
+                ),
+              ),
               initialSettingsBooruConfigProvider.overrideWithValue(config),
               globalBlacklistedTagRepoProvider
                   .overrideWithValue(globalBlacklistedTags),

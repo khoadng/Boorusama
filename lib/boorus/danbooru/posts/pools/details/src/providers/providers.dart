@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../../core/configs/config.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../danbooru_provider.dart';
 import '../../../pool/pool.dart';
 import '../types/pool_description_repository.dart';
 import 'pool_description_repository_builder.dart';

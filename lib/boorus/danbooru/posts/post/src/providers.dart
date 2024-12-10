@@ -5,11 +5,11 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/search/query_composer_providers.dart';
+import '../../../../../core/settings/data/listing_provider.dart';
+import '../../../danbooru_provider.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../users/user/providers.dart';
 import '../../favorites/providers.dart';
@@ -31,15 +31,19 @@ final danbooruPostRepoProvider =
             tags: tags,
             limit: limit,
           )
-          .then((value) => value
-              .map((e) => postDtoToPost(
+          .then(
+            (value) => value
+                .map(
+                  (e) => postDtoToPost(
                     e,
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
                     ),
-                  ))
-              .toList());
+                  ),
+                )
+                .toList(),
+          );
 
       return transformPosts(ref, posts.toResult(), config);
     },
@@ -48,7 +52,8 @@ final danbooruPostRepoProvider =
 });
 
 typedef PostFetchTransformer = Future<PostResult<DanbooruPost>> Function(
-    PostResult<DanbooruPost> posts);
+  PostResult<DanbooruPost> posts,
+);
 
 Future<PostResult<DanbooruPost>> transformPosts(
   Ref ref,

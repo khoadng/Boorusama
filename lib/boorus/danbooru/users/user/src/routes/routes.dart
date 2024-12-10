@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../router.dart';
 import '../pages/danbooru_favoriter_list_page.dart';
 import '../pages/danbooru_voter_list_page.dart';
 

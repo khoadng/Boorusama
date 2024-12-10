@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment_vote.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../core/comments/comment_vote.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/current.dart';
+import '../../../../../core/configs/ref.dart';
 import '../../comment/comment.dart';
 import 'data/providers.dart';
 import 'types/danbooru_comment_vote.dart';

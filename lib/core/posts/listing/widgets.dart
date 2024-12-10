@@ -1,5 +1,3 @@
-library;
-
 export 'src/default_multi_selection_actions.dart';
 export 'src/general_post_context_menu.dart';
 export 'src/post_grid.dart';

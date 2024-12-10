@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/comments/comments.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../core/posts/details/details.dart';
+import '../../../../core/theme.dart';
+import '../../feats/comments/comments.dart';
+import '../../feats/posts/posts.dart';
 import 'moebooru_comment_item.dart';
 
 class MoebooruCommentSection extends ConsumerWidget {
@@ -44,10 +44,12 @@ class MoebooruCommentSection extends ConsumerWidget {
                             fontSize: 16,
                           ),
                     ),
-                    ...comments.map((comment) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: MoebooruCommentItem(comment: comment),
-                        ))
+                    ...comments.map(
+                      (comment) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: MoebooruCommentItem(comment: comment),
+                      ),
+                    ),
                   ],
                 ),
               ),

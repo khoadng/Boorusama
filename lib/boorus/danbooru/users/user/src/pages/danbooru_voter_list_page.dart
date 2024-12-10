@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/theme.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/theme.dart';
 import '../../../../posts/votes/providers.dart';
 import '../../providers.dart';
 import 'user_list_page.dart';
@@ -32,8 +32,8 @@ class DanbooruVoterListPage extends ConsumerWidget {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              child: const Text('Voters'),
+            const Flexible(
+              child: Text('Voters'),
             ),
             const SizedBox(width: 4),
             Tooltip(

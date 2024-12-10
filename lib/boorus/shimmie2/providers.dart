@@ -3,15 +3,15 @@ import 'package:booru_clients/shimmie2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/query_composer_providers.dart';
+import '../../core/settings/data/listing_provider.dart';
+import '../../foundation/path.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
@@ -39,35 +39,37 @@ final shimmie2PostRepoProvider =
         );
 
         return posts
-            .map((e) => Shimmie2Post(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: e.previewUrl ?? '',
-                  sampleImageUrl: e.fileUrl ?? '',
-                  originalImageUrl: e.fileUrl ?? '',
-                  tags: e.tags?.toSet() ?? {},
-                  rating: mapStringToRating(e.rating),
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.from(e.source),
-                  score: e.score ?? 0,
-                  duration: 0,
-                  fileSize: 0,
-                  format: extension(e.fileName ?? ''),
-                  hasSound: null,
-                  height: e.height?.toDouble() ?? 0,
-                  md5: e.md5 ?? '',
-                  videoThumbnailUrl: e.previewUrl ?? '',
-                  videoUrl: e.fileUrl ?? '',
-                  width: e.width?.toDouble() ?? 0,
-                  createdAt: e.date,
-                  uploaderId: null,
-                  uploaderName: e.author,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => Shimmie2Post(
+                id: e.id ?? 0,
+                thumbnailImageUrl: e.previewUrl ?? '',
+                sampleImageUrl: e.fileUrl ?? '',
+                originalImageUrl: e.fileUrl ?? '',
+                tags: e.tags?.toSet() ?? {},
+                rating: mapStringToRating(e.rating),
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.from(e.source),
+                score: e.score ?? 0,
+                duration: 0,
+                fileSize: 0,
+                format: extension(e.fileName ?? ''),
+                hasSound: null,
+                height: e.height?.toDouble() ?? 0,
+                md5: e.md5 ?? '',
+                videoThumbnailUrl: e.previewUrl ?? '',
+                videoUrl: e.fileUrl ?? '',
+                width: e.width?.toDouble() ?? 0,
+                createdAt: e.date,
+                uploaderId: null,
+                uploaderName: e.author,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -88,11 +90,13 @@ final shimmie2AutocompleteRepoProvider =
         final tags = await client.getAutocomplete(query: query);
 
         return tags
-            .map((e) => AutocompleteData(
-                  label: e.value?.toLowerCase().replaceAll('_', ' ') ?? '???',
-                  value: e.value?.toLowerCase() ?? '???',
-                  postCount: e.count,
-                ))
+            .map(
+              (e) => AutocompleteData(
+                label: e.value?.toLowerCase().replaceAll('_', ' ') ?? '???',
+                value: e.value?.toLowerCase() ?? '???',
+                postCount: e.count,
+              ),
+            )
             .toList();
       },
     );

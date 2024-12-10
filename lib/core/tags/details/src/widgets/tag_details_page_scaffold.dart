@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../posts/post/post.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../tag/tag.dart';
 import '../internal_widgets/category_toggle_switch.dart';
 import '../internal_widgets/tag_detail_region.dart';
 import '../internal_widgets/tag_details_sliver_app_bar.dart';

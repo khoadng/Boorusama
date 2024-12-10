@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../foundation/image.dart';
+import '../../foundation/path.dart';
+import '../../foundation/video.dart';
+import '../posts/post/post.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   const Bookmark({

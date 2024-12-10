@@ -42,12 +42,14 @@ mixin DoubleLayerCacheMixin<TData> {
         keys.where((key) => !cachedData.any((d) => getKey(d) == key)).toList();
 
     _debugPrint(
-        'Reaching out to persistent storage for ${notInMemKeys.length} $debugObjectName');
+      'Reaching out to persistent storage for ${notInMemKeys.length} $debugObjectName',
+    );
 
     final persistentData = await _checkPersistentStorage(notInMemKeys);
 
     _debugPrint(
-        'Found ${persistentData.length} $debugObjectName in persistent storage');
+      'Found ${persistentData.length} $debugObjectName in persistent storage',
+    );
 
     final notInPersistentKeys = notInMemKeys
         .where((key) => !persistentData.any((d) => getKey(d) == key))
@@ -57,7 +59,8 @@ mixin DoubleLayerCacheMixin<TData> {
 
     if (notInPersistentKeys.isNotEmpty) {
       _debugPrint(
-          'Reaching out to the $debugFetcherName for ${notInPersistentKeys.length} $debugObjectName');
+        'Reaching out to the $debugFetcherName for ${notInPersistentKeys.length} $debugObjectName',
+      );
 
       freshData = await fetcher(notInPersistentKeys);
     }
@@ -76,10 +79,12 @@ mixin DoubleLayerCacheMixin<TData> {
     }
 
     _debugPrint(
-        'Stored $debugPersistentDataCount $debugObjectName in persistent storage and $debugTempDataCount $debugObjectName in temp storage');
+      'Stored $debugPersistentDataCount $debugObjectName in persistent storage and $debugTempDataCount $debugObjectName in temp storage',
+    );
 
     _debugPrint(
-        'Returning ${cachedData.length} short-lived $debugObjectName, ${persistentData.length} long-lived $debugObjectName and ${freshData.length} fresh $debugObjectName');
+      'Returning ${cachedData.length} short-lived $debugObjectName, ${persistentData.length} long-lived $debugObjectName and ${freshData.length} fresh $debugObjectName',
+    );
 
     return [...cachedData, ...persistentData, ...freshData];
   }

@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../../users/user/providers.dart';
 import '../../../../../users/user/user.dart';
 

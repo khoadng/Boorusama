@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../../../dart.dart';
+import '../../../../foundation/display.dart';
 import 'post_stats.dart';
 import 'post_stats_display.dart';
 
@@ -28,131 +28,132 @@ class PostStatisticsPage extends StatelessWidget {
     final stats = generalStats();
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Stats for nerds'),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'General',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
+      appBar: AppBar(
+        title: const Text('Stats for nerds'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'General',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
                 ),
-                PostStatsTile(
-                  title: 'Total posts',
-                  value: totalPosts().toString(),
-                ),
-                const Divider(),
-                PostStatsSectionTitle(
-                  title: 'Score',
-                  onMore: () {
-                    showAppModalBarBottomSheet(
-                      context: context,
-                      builder: (context) => StatisticalSummaryDetailsPage(
-                        title: 'Score',
-                        stats: stats.scores,
-                      ),
-                    );
-                  },
-                ),
-                PostStatsTile(
-                  title: 'Average',
-                  value:
-                      '${stats.scores.mean.toStringAsFixed(1)} ± ${stats.scores.standardDeviation.toStringAsFixed(1)}',
-                ),
-                const Divider(),
-                const Text(
-                  'Rating',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (stats.generalRatingPercentage > 0)
-                  PostStatsTile(
-                    title: 'General',
-                    value: stats.generalRatingPercentageDisplay,
-                  ),
-                if (stats.sensitiveRatingPercentage > 0)
-                  PostStatsTile(
-                    title: 'Sensitive',
-                    value: stats.sensitiveRatingPercentageDisplay,
-                  ),
-                if (stats.questionableRatingPercentage > 0)
-                  PostStatsTile(
-                    title: 'Questionable',
-                    value: stats.questionableRatingPercentageDisplay,
-                  ),
-                if (stats.explicitRatingPercentage > 0)
-                  PostStatsTile(
-                    title: 'Explicit',
-                    value: stats.explicitRatingPercentageDisplay,
-                  ),
-                const Divider(),
-                PostStatsSectionTitle(
-                  title: 'Source',
-                  onMore: () {
-                    showAppModalBarBottomSheet(
-                      context: context,
-                      builder: (context) => StatisticsFromMapPage(
-                        title: 'Source',
-                        total: totalPosts(),
-                        data: stats.domains.topN(),
-                      ),
-                    );
-                  },
-                ),
-                ...stats.domains.topN(5).entries.map(
-                      (e) => PostStatsTile(
-                        title: e.key,
-                        value: e.value.toString(),
-                      ),
+              ),
+              PostStatsTile(
+                title: 'Total posts',
+                value: totalPosts().toString(),
+              ),
+              const Divider(),
+              PostStatsSectionTitle(
+                title: 'Score',
+                onMore: () {
+                  showAppModalBarBottomSheet(
+                    context: context,
+                    builder: (context) => StatisticalSummaryDetailsPage(
+                      title: 'Score',
+                      stats: stats.scores,
                     ),
-                const Divider(),
-                const Text(
-                  'Media type',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  );
+                },
+              ),
+              PostStatsTile(
+                title: 'Average',
+                value:
+                    '${stats.scores.mean.toStringAsFixed(1)} ± ${stats.scores.standardDeviation.toStringAsFixed(1)}',
+              ),
+              const Divider(),
+              const Text(
+                'Rating',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
                 ),
-                ...stats.mediaTypes.entries
-                    .sorted((a, b) => b.value.compareTo(a.value))
-                    .map(
-                      (e) => PostStatsTile(
-                        title: e.key,
-                        value: e.value.toString(),
-                      ),
-                    ),
-                const Divider(),
-                PostStatsSectionTitle(
-                  title: 'Tags',
-                  onMore: () {
-                    showAppModalBarBottomSheet(
-                      context: context,
-                      builder: (context) => StatisticalSummaryDetailsPage(
-                        title: 'Tags',
-                        stats: stats.tags,
-                      ),
-                    );
-                  },
-                ),
+              ),
+              if (stats.generalRatingPercentage > 0)
                 PostStatsTile(
-                  title: 'Average',
-                  value:
-                      '${stats.tags.mean.toStringAsFixed(1)} ± ${stats.tags.standardDeviation.toStringAsFixed(1)}',
+                  title: 'General',
+                  value: stats.generalRatingPercentageDisplay,
                 ),
-                if (customStats != null) ...customStats!,
-              ],
-            ),
+              if (stats.sensitiveRatingPercentage > 0)
+                PostStatsTile(
+                  title: 'Sensitive',
+                  value: stats.sensitiveRatingPercentageDisplay,
+                ),
+              if (stats.questionableRatingPercentage > 0)
+                PostStatsTile(
+                  title: 'Questionable',
+                  value: stats.questionableRatingPercentageDisplay,
+                ),
+              if (stats.explicitRatingPercentage > 0)
+                PostStatsTile(
+                  title: 'Explicit',
+                  value: stats.explicitRatingPercentageDisplay,
+                ),
+              const Divider(),
+              PostStatsSectionTitle(
+                title: 'Source',
+                onMore: () {
+                  showAppModalBarBottomSheet(
+                    context: context,
+                    builder: (context) => StatisticsFromMapPage(
+                      title: 'Source',
+                      total: totalPosts(),
+                      data: stats.domains.topN(),
+                    ),
+                  );
+                },
+              ),
+              ...stats.domains.topN(5).entries.map(
+                    (e) => PostStatsTile(
+                      title: e.key,
+                      value: e.value.toString(),
+                    ),
+                  ),
+              const Divider(),
+              const Text(
+                'Media type',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              ...stats.mediaTypes.entries
+                  .sorted((a, b) => b.value.compareTo(a.value))
+                  .map(
+                    (e) => PostStatsTile(
+                      title: e.key,
+                      value: e.value.toString(),
+                    ),
+                  ),
+              const Divider(),
+              PostStatsSectionTitle(
+                title: 'Tags',
+                onMore: () {
+                  showAppModalBarBottomSheet(
+                    context: context,
+                    builder: (context) => StatisticalSummaryDetailsPage(
+                      title: 'Tags',
+                      stats: stats.tags,
+                    ),
+                  );
+                },
+              ),
+              PostStatsTile(
+                title: 'Average',
+                value:
+                    '${stats.tags.mean.toStringAsFixed(1)} ± ${stats.tags.standardDeviation.toStringAsFixed(1)}',
+              ),
+              if (customStats != null) ...customStats!,
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 

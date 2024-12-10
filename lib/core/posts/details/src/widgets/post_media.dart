@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/interactive_booru_image.dart';
-import 'package:boorusama/core/videos/providers.dart';
-import 'package:boorusama/core/videos/video_player.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/path.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../configs/config.dart';
+import '../../../../configs/current.dart';
+import '../../../../http/providers.dart';
+import '../../../../images/interactive_booru_image.dart';
+import '../../../../videos/providers.dart';
+import '../../../../videos/video_player.dart';
 import '../../../post/post.dart';
 import '../post_details.dart';
 import '../post_details_page_view.dart';
@@ -40,7 +40,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
     final booruType = ref.watch(
-        currentBooruConfigProvider.select((value) => value.auth.booruType));
+      currentBooruConfigProvider.select((value) => value.auth.booruType),
+    );
 
     return post.isVideo
         ? Stack(
@@ -85,7 +86,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                       controller: details.controller,
                     ),
                   ),
-                )
+                ),
             ],
           )
         : InteractiveBooruImage(

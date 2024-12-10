@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
+import '../core/theme.dart';
 
 class CircularIconButton extends StatelessWidget {
   const CircularIconButton({

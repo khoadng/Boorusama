@@ -14,9 +14,11 @@ class DanbooruPostVersionRepository {
   Future<List<DanbooruPostVersion>> getPostVersions({
     required int id,
   }) =>
-      client.getPostVersions(id: id).then((value) => value
-          .map(
-            (e) => convertDtoToPostVersion(e, id),
-          )
-          .toList());
+      client.getPostVersions(id: id).then(
+            (value) => value
+                .map(
+                  (e) => convertDtoToPostVersion(e, id),
+                )
+                .toList(),
+          );
 }

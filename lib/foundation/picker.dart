@@ -15,14 +15,15 @@ Future<void> pickDirectoryPathToastOnError({
   void Function()? onCanceled,
 }) =>
     pickDirectoryPath(
-        onPick: onPick,
-        onCanceled: onCanceled,
-        onError: (e) {
-          showErrorToast(
-            context,
-            e.toString(),
-          );
-        });
+      onPick: onPick,
+      onCanceled: onCanceled,
+      onError: (e) {
+        showErrorToast(
+          context,
+          e.toString(),
+        );
+      },
+    );
 
 Future<void> pickSingleFilePathToastOnError({
   required BuildContext context,

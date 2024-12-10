@@ -10,10 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../autocompletes/autocompletes.dart';
+import '../../../../configs/ref.dart';
 import '../../histories/providers.dart';
 import '../../queries/query_utils.dart';
 import '../../selected_tags/selected_tag_controller.dart';

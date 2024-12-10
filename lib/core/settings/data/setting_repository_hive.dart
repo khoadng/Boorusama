@@ -20,9 +20,11 @@ class SettingsRepositoryHive implements SettingsRepository {
   @override
   SettingsOrError load() => _openDb()
       .flatMap((db) => TaskEither.fromEither(_getSettingsJson(db)))
-      .flatMap((jsonString) => TaskEither.fromEither(
-            _decodeSettingsJson(jsonString),
-          ));
+      .flatMap(
+        (jsonString) => TaskEither.fromEither(
+          _decodeSettingsJson(jsonString),
+        ),
+      );
 
   TaskEither<SettingsLoadError, dynamic> _openDb() => TaskEither.tryCatch(
         () => _db,
@@ -37,10 +39,12 @@ class SettingsRepositoryHive implements SettingsRepository {
   }
 
   Either<SettingsLoadError, Settings> _decodeSettingsJson(String jsonString) =>
-      _tryDecodeJson(jsonString).flatMap((decodedJson) => Either.tryCatch(
-            () => Settings.fromJson(decodedJson),
-            (e, s) => SettingsLoadError.failedToMapJsonToSettings,
-          ));
+      _tryDecodeJson(jsonString).flatMap(
+        (decodedJson) => Either.tryCatch(
+          () => Settings.fromJson(decodedJson),
+          (e, s) => SettingsLoadError.failedToMapJsonToSettings,
+        ),
+      );
 
   Either<SettingsLoadError, dynamic> _tryDecodeJson(String jsonString) =>
       tryDecodeJson(jsonString).fold(

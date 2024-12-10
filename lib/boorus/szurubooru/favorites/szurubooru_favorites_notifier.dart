@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/szurubooru/providers.dart';
-import 'package:boorusama/boorus/szurubooru/szurubooru_post.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorites/favorite.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/favorites/favorite.dart';
 import '../post_votes/post_votes.dart';
+import '../providers.dart';
+import '../szurubooru_post.dart';
 
 class SzurubooruFavoritesNotifier
     extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>

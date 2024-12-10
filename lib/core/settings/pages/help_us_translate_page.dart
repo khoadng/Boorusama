@@ -7,10 +7,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../../../foundation/app_info.dart';
+import '../../../foundation/url_launcher.dart';
+import '../../images/dio_extended_image.dart';
+import '../../images/providers.dart';
 
 class HelpUseTranslatePage extends ConsumerWidget {
   const HelpUseTranslatePage({

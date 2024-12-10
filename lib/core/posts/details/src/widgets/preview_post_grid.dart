@@ -5,10 +5,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/widgets/image_grid_item.dart';
+import '../../../../../widgets/image_grid_item.dart';
+import '../../../../images/booru_image.dart';
 import '../../../post/post.dart';
+import '../../../post/tags.dart';
 
 class PreviewPostList<T extends Post> extends StatelessWidget {
   const PreviewPostList({
@@ -48,21 +48,22 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: ImageGridItem(
-                    isGif: post.isGif,
-                    isAI: post.isAI,
-                    isAnimated: post.isAnimated,
-                    isTranslated: post.isTranslated,
-                    onTap: () => onTap(index),
-                    image: imageBuilder != null
-                        ? imageBuilder!(post)
-                        : BooruImage(
-                            width: width ?? max(constraints.maxWidth / 6, 120),
-                            forceFill: true,
-                            aspectRatio: 0.6,
-                            imageUrl: imageUrl(post),
-                            placeholderUrl: post.thumbnailImageUrl,
-                            fit: BoxFit.cover,
-                          )),
+                  isGif: post.isGif,
+                  isAI: post.isAI,
+                  isAnimated: post.isAnimated,
+                  isTranslated: post.isTranslated,
+                  onTap: () => onTap(index),
+                  image: imageBuilder != null
+                      ? imageBuilder!(post)
+                      : BooruImage(
+                          width: width ?? max(constraints.maxWidth / 6, 120),
+                          forceFill: true,
+                          aspectRatio: 0.6,
+                          imageUrl: imageUrl(post),
+                          placeholderUrl: post.thumbnailImageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                ),
               );
             },
           ),

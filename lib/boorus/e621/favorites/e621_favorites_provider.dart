@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/favorites/favorites.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../e621.dart';
+import 'favorites.dart';
 
 final e621FavoritesRepoProvider =
     Provider.family<E621FavoritesRepository, BooruConfigAuth>((ref, config) {

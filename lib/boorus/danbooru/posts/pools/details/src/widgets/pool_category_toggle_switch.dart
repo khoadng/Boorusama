@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../../../widgets/widgets.dart';
 import '../../../pool/pool.dart';
 
 class PoolCategoryToggleSwitch extends StatelessWidget {

@@ -18,7 +18,9 @@ extension CommentVotesNotifierX on CommentVotesNotifier {
       );
 
   Future<void> guardUnvote(
-          WidgetRef ref, DanbooruCommentVote? commentVote) async =>
+    WidgetRef ref,
+    DanbooruCommentVote? commentVote,
+  ) async =>
       guardLogin(
         ref,
         () async => unvote(commentVote),

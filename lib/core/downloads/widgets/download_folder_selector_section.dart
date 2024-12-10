@@ -6,12 +6,12 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/picker.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../foundation/device_info.dart';
+import '../../../foundation/html.dart';
+import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
+import '../../../widgets/widgets.dart';
+import '../../theme.dart';
 import '../l10n.dart';
 import '../path/validator.dart';
 
@@ -97,9 +97,9 @@ class _DownloadFolderSelectorSectionState
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .hintColor),
+                                  color:
+                                      Theme.of(context).colorScheme.hintColor,
+                                ),
                           ),
                   ),
                 ),

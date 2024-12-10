@@ -5,13 +5,13 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../../../../../core/configs/config.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/trending/providers.dart';
 import '../../../tags/trending/trending.dart';
 import 'trending_tag.dart';
 
-final _kTrendingTagCount = 15;
+const _kTrendingTagCount = 15;
 
 final top15TrendingTagsProvider = FutureProvider.autoDispose
     .family<List<TrendingTag>, BooruConfigAuth>((ref, config) async {
@@ -22,10 +22,12 @@ final top15TrendingTagsProvider = FutureProvider.autoDispose
   for (final tag in tags.take(_kTrendingTagCount)) {
     final cat =
         await ref.watch(danbooruTagCategoryProvider(tag.keyword).future);
-    trendingTags.add(TrendingTag(
-      name: tag,
-      category: cat,
-    ));
+    trendingTags.add(
+      TrendingTag(
+        name: tag,
+        category: cat,
+      ),
+    );
   }
 
   return trendingTags;
@@ -34,8 +36,8 @@ final top15TrendingTagsProvider = FutureProvider.autoDispose
 final top15PlaceholderTagsProvider = Provider<List<TrendingTag>>((ref) {
   final tags = <TrendingTag>[];
   final rnd = Random();
-  final minChar = 6;
-  final maxChar = 20;
+  const minChar = 6;
+  const maxChar = 20;
 
   for (var i = 0; i < _kTrendingTagCount; i++) {
     final sb = StringBuffer();
@@ -44,9 +46,11 @@ final top15PlaceholderTagsProvider = Provider<List<TrendingTag>>((ref) {
       sb.write('a');
     }
 
-    tags.add(TrendingTag(
-      name: Search(keyword: sb.toString(), hitCount: 1),
-    ));
+    tags.add(
+      TrendingTag(
+        name: Search(keyword: sb.toString(), hitCount: 1),
+      ),
+    );
   }
 
   return tags;

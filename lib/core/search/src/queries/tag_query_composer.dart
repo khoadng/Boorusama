@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
+import '../../../configs/config.dart';
+import '../../../posts/rating/rating.dart';
 
 abstract class TagQueryComposer {
   List<String> compose(List<String> tags);
@@ -82,9 +82,11 @@ class LegacyTagQueryComposer implements TagQueryComposer {
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
               () => [],
               (ratings) => [
-                ...ratings.map((e) => '-rating:${e.toFullString(
-                      legacy: true,
-                    )}'),
+                ...ratings.map(
+                  (e) => '-rating:${e.toFullString(
+                    legacy: true,
+                  )}',
+                ),
               ],
             ),
     },
@@ -189,9 +191,11 @@ class GelbooruV2TagQueryComposer implements TagQueryComposer {
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
               () => <String>[],
               (ratings) => [
-                ...ratings.map((e) => '-rating:${e.toFullString(
-                      legacy: true,
-                    )}'),
+                ...ratings.map(
+                  (e) => '-rating:${e.toFullString(
+                    legacy: true,
+                  )}',
+                ),
               ],
             ),
     },

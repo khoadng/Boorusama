@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/caching.dart';
+import '../../../../foundation/caching.dart';
 import 'tag.dart';
 import 'tag_display.dart';
 import 'tag_repository.dart';

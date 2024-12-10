@@ -1,7 +1,7 @@
 // Package imports:
 
 // Project imports:
-import 'package:boorusama/core/datetimes/types.dart';
+import '../../../../../../core/datetimes/types.dart';
 import '../../../post/post.dart';
 
 abstract class ExploreRepository {

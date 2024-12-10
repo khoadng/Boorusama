@@ -1,8 +1,8 @@
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/error.dart';
+import '../foundation/error.dart';
+import 'analytics.dart';
 import 'firebase.dart';
+import 'settings.dart';
 
 Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
     initializeTracking(Settings settings) =>

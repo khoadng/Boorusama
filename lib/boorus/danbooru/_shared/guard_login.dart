@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../../../core/configs/ref.dart';
+import '../../../foundation/animations.dart';
+import '../../../foundation/toast.dart';
 
 void guardLogin(WidgetRef ref, void Function() action) {
   if (!ref.readConfigAuth.hasLoginDetails()) {

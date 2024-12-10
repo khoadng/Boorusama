@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../core/configs/ref.dart';
 import '../../pool/pool.dart';
 import '../../pool/providers.dart';
 
@@ -16,7 +16,8 @@ enum PoolSearchMode {
 
 final danbooruPoolSearchModeProvider =
     StateProvider.autoDispose<PoolSearchMode>(
-        (ref) => PoolSearchMode.suggestion);
+  (ref) => PoolSearchMode.suggestion,
+);
 
 final poolSuggestionsProvider = FutureProvider.autoDispose
     .family<List<DanbooruPool>, String>((ref, query) async {

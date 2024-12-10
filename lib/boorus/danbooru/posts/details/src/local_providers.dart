@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/categories/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/tags/categories/providers.dart';
+import '../../../../../core/tags/tag/tag.dart';
+import '../../../../providers.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../post/post.dart';
 

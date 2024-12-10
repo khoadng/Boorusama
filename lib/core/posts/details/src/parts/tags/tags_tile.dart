@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/post/post.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/tags/tag/widgets.dart';
+import '../../../../../tags/tag/tag.dart';
+import '../../../../../tags/tag/widgets.dart';
+import '../../../../post/post.dart';
 
 class TagsTile extends ConsumerWidget {
   const TagsTile({

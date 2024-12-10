@@ -7,8 +7,10 @@ class ShadowGradientOverlay extends StatelessWidget {
     required this.alignment,
     required this.colors,
     this.height,
-  }) : assert(alignment == Alignment.bottomCenter ||
-            alignment == Alignment.topCenter);
+  }) : assert(
+          alignment == Alignment.bottomCenter ||
+              alignment == Alignment.topCenter,
+        );
 
   final List<Color> colors;
   final Alignment alignment;

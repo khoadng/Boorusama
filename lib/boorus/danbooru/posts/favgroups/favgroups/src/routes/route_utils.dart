@@ -6,8 +6,8 @@ import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../../../../../../../foundation/animations.dart';
+import '../../../../../../../foundation/display.dart';
 import '../../../../post/post.dart';
 import '../pages/add_to_favorite_group_page.dart';
 import '../pages/create_favorite_group_dialog.dart';

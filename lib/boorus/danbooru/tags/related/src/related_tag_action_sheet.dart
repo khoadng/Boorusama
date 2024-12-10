@@ -8,10 +8,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/wikis/launcher.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/tags/tag/providers.dart';
+import '../../../../../core/wikis/launcher.dart';
+import '../../../../../widgets/widgets.dart';
 import 'danbooru_related_tag.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {

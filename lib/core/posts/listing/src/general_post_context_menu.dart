@@ -7,15 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/posts/post/tags.dart';
-import 'package:boorusama/core/tags/tag/routes.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../../../../boorus/booru_builder.dart';
+import '../../../../foundation/url_launcher.dart';
+import '../../../../router.dart';
+import '../../../bookmarks/bookmark_provider.dart';
+import '../../../configs/ref.dart';
+import '../../../downloads/downloader.dart';
+import '../../../tags/tag/routes.dart';
 import '../../post/post.dart';
+import '../../post/tags.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({

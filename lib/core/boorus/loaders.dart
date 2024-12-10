@@ -6,7 +6,7 @@ import 'package:http/http.dart';
 import 'package:yaml/yaml.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers.dart';
+import '../../foundation/loggers.dart';
 import 'booru.dart';
 import 'booru_factory.dart';
 
@@ -47,13 +47,17 @@ Future<List<Booru>> loadBoorusFromGithub(
 
       return loadBoorus(data);
     } else {
-      logger.logE('BooruLoader',
-          'Failed to load boorus from Github with status code ${response.statusCode}, fallback to assets');
+      logger.logE(
+        'BooruLoader',
+        'Failed to load boorus from Github with status code ${response.statusCode}, fallback to assets',
+      );
       return loadBoorusFromAssets();
     }
   } catch (e) {
-    logger.logE('BooruLoader',
-        'Failed to load boorus from Github with error $e, fallback to assets');
+    logger.logE(
+      'BooruLoader',
+      'Failed to load boorus from Github with error $e, fallback to assets',
+    );
     return loadBoorusFromAssets();
   }
 }

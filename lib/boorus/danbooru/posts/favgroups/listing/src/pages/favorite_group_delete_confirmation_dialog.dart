@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../../../../core/configs/ref.dart';
 import '../../../favgroups/favgroup.dart';
 import '../../../favgroups/providers.dart';
 

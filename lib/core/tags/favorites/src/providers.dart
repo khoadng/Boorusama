@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/data_io_handler.dart';
-import 'package:boorusama/core/backups/providers.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../../foundation/device_info.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../backups/data_io_handler.dart';
+import '../../../backups/providers.dart';
 import 'data/favorite_tag_hive_object.dart';
 import 'data/favorite_tag_repository_hive.dart';
 import 'favorite_tag.dart';

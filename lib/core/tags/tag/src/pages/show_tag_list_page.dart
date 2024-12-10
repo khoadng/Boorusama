@@ -7,11 +7,11 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/providers.dart';
-import 'package:boorusama/core/search/search_bar.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../../router.dart';
+import '../../../../../widgets/widgets.dart';
+import '../../../../blacklists/providers.dart';
+import '../../../../search/search_bar.dart';
 import '../../../favorites/providers.dart';
 import '../tag.dart';
 import '../tag_display.dart';

@@ -3,12 +3,12 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/query_composer.dart';
-import 'package:boorusama/core/search/selected_tags.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/http.dart';
+import '../../../../foundation/caching.dart';
+import '../../../../foundation/error.dart';
+import '../../../../foundation/http.dart';
+import '../../../search/query_composer.dart';
+import '../../../search/selected_tags.dart';
+import '../../../settings.dart';
 import '../../filter/filter.dart';
 import 'post.dart';
 
@@ -109,9 +109,11 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
 
         final tags2 = tagComposer.compose(newTags);
 
-        return $(tryFetchRemoteData(
-          fetcher: () => fetch(tags2, page, limit: lim),
-        ));
+        return $(
+          tryFetchRemoteData(
+            fetcher: () => fetch(tags2, page, limit: lim),
+          ),
+        );
       });
 
   @override
@@ -126,10 +128,12 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
 
               lim ??= await getSettings().then((value) => value.postsPerPage);
 
-              return $(tryFetchRemoteData(
-                fetcher: () =>
-                    fetchFromController!(controller, page, limit: lim),
-              ));
+              return $(
+                tryFetchRemoteData(
+                  fetcher: () =>
+                      fetchFromController!(controller, page, limit: lim),
+                ),
+              );
             })
           : getPosts(
               controller.rawTagsString,
@@ -148,10 +152,12 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
         tags,
         page,
         limit: limit,
-      ).run().then((value) => value.fold(
-            (l) => PostResult.empty(),
-            (r) => r,
-          ));
+      ).run().then(
+            (value) => value.fold(
+              (l) => PostResult.empty(),
+              (r) => r,
+            ),
+          );
 
   Future<List<T>> getPostsFromTagsWithBlacklist({
     required String tags,
@@ -260,7 +266,9 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
 
   @override
   PostsOrError<T> getPostsFromController(
-          SelectedTagController controller, int page,
-          {int? limit}) =>
+    SelectedTagController controller,
+    int page, {
+    int? limit,
+  }) =>
       repository.getPostsFromController(controller, page, limit: limit);
 }

@@ -8,13 +8,13 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/core/tags/favorites/favorited.dart';
-import 'package:boorusama/core/tags/favorites/widgets.dart';
-import 'package:boorusama/core/theme/utils.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
+import '../../../../foundation/platform.dart';
+import '../../../../router.dart';
+import '../../../cache/providers.dart';
+import '../../../settings/data.dart';
+import '../../../tags/favorites/favorited.dart';
+import '../../../tags/favorites/widgets.dart';
+import '../../../theme/utils.dart';
 import 'constants.dart';
 
 class FavoriteTagsSection extends ConsumerWidget {

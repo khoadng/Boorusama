@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/favorites/providers.dart';
-import 'package:boorusama/boorus/danbooru/posts/post/post.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorites/favorite_post_button.dart';
-import 'package:boorusama/core/posts/details/details.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/shares/widgets.dart';
-import 'package:boorusama/core/posts/votes/vote.dart';
-import 'package:boorusama/core/posts/votes/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/favorites/favorite_post_button.dart';
+import '../../../../../../core/posts/details/details.dart';
+import '../../../../../../core/posts/details/parts.dart';
+import '../../../../../../core/posts/details/widgets.dart';
+import '../../../../../../core/posts/shares/widgets.dart';
+import '../../../../../../core/posts/votes/vote.dart';
+import '../../../../../../core/posts/votes/widgets.dart';
+import '../../../../../../router.dart';
+import '../../../favorites/providers.dart';
+import '../../../post/post.dart';
 import '../../../votes/providers.dart';
 
 class DanbooruInheritedPostActionToolbar extends StatelessWidget {

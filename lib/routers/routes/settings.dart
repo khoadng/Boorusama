@@ -1,8 +1,8 @@
 // Project imports:
-import 'package:boorusama/core/settings/pages.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/settings/pages.dart';
+import '../../foundation/display.dart';
+import '../../router.dart';
+import '../../widgets/widgets.dart';
 
 GoRoute settings() => GoRoute(
       path: 'settings',

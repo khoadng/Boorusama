@@ -6,9 +6,9 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/utils/flutter_utils.dart';
+import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../router.dart';
+import '../../../../../../utils/flutter_utils.dart';
 import '../../../artist/artist.dart';
 import '../../../urls/widgets.dart';
 

@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/votes/providers.dart';
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/current.dart';
+import '../../../../../core/configs/ref.dart';
+import '../../../../../core/posts/votes/providers.dart';
 import '../../../_shared/guard_login.dart';
 import '../../../users/user/providers.dart';
 import '../../post/post.dart';

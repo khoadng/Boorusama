@@ -2,10 +2,10 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/data_converter.dart';
-import 'package:boorusama/core/backups/data_io_handler.dart';
-import 'package:boorusama/core/backups/types.dart';
-import 'package:boorusama/foundation/clipboard.dart';
+import '../../../../foundation/clipboard.dart';
+import '../../../backups/data_converter.dart';
+import '../../../backups/data_io_handler.dart';
+import '../../../backups/types.dart';
 import '../booru_config.dart';
 import 'booru_config_export_data.dart';
 
@@ -63,10 +63,12 @@ class BooruConfigIOHandler {
       TaskEither.Do(($) async {
         final data = await $(handler.import(path: from));
 
-        final transformed = await $(Either.tryCatch(
-          () => data.data.map((e) => BooruConfig.fromJson(e)).toList(),
-          (o, s) => const ImportInvalidJsonField(),
-        ).toTaskEither());
+        final transformed = await $(
+          Either.tryCatch(
+            () => data.data.map((e) => BooruConfig.fromJson(e)).toList(),
+            (o, s) => const ImportInvalidJsonField(),
+          ).toTaskEither(),
+        );
 
         return BooruConfigExportData(
           data: transformed,

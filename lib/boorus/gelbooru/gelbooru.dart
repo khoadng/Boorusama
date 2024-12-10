@@ -6,32 +6,32 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/gelbooru/home/home.dart';
-import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
-import 'package:boorusama/core/posts/details/widgets.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/details/parts.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/search/search_ui.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';
+import '../danbooru/danbooru.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
+import 'favorites/favorites.dart';
+import 'home/home.dart';
 import 'posts/gelbooru_post_details_page.dart';
+import 'posts/posts.dart';
 
 export 'posts/posts.dart';
 
@@ -68,11 +68,13 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
         );
 
         return data
-            .map((e) => Tag(
-                  name: e.name ?? '',
-                  category: TagCategory.fromLegacyId(e.type),
-                  postCount: e.count ?? 0,
-                ))
+            .map(
+              (e) => Tag(
+                name: e.name ?? '',
+                category: TagCategory.fromLegacyId(e.type),
+                postCount: e.count ?? 0,
+              ),
+            )
             .toList();
       },
     );

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/rating/rating.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../posts/rating/rating.dart';
+import '../settings/data/listing_provider.dart';
 
 class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
   const ExplicitContentBlockOverlay({
@@ -38,8 +38,9 @@ class _ExplicitContentBlockOverlayState
 
   @override
   Widget build(BuildContext context) {
-    final enable = ref.watch(imageListingSettingsProvider
-        .select((value) => value.blurExplicitMedia));
+    final enable = ref.watch(
+      imageListingSettingsProvider.select((value) => value.blurExplicitMedia),
+    );
 
     return Stack(
       children: [

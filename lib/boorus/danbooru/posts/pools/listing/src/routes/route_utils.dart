@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/router.dart';
+import '../../../../../../../router.dart';
 
 void goToPoolPage(BuildContext context) {
   context.push(

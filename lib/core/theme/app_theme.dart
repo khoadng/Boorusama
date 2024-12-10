@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
+import '../../foundation/display.dart';
 import 'colors.dart';
 import 'extended_color_scheme.dart';
 import 'grayscale_shades.dart';
@@ -177,7 +177,7 @@ class AppTheme {
           indent: 0,
         ),
         extensions: [
-          BoorusamaColors(
+          const BoorusamaColors(
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
@@ -191,12 +191,12 @@ class AppTheme {
   }) =>
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.dark,
-        dividerTheme: DividerThemeData(
+        dividerTheme: const DividerThemeData(
           endIndent: 0,
           indent: 0,
         ),
         extensions: [
-          BoorusamaColors(
+          const BoorusamaColors(
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
@@ -232,7 +232,7 @@ class AppTheme {
         dialogTheme: DialogTheme(
           surfaceTintColor: Colors.transparent,
           backgroundColor: colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),

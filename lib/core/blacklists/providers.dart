@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/toast.dart';
+import '../../foundation/toast.dart';
 import 'blacklisted_tag.dart';
 
 final globalBlacklistedTagRepoProvider =
@@ -130,7 +130,9 @@ extension GlobalBlacklistedTagsNotifierX on GlobalBlacklistedTagsNotifier {
   }
 
   Future<void> addTagStringWithToast(
-      BuildContext context, String tagString) async {
+    BuildContext context,
+    String tagString,
+  ) async {
     await addTagString(
       tagString,
       onSuccess: (tags) =>
@@ -140,7 +142,9 @@ extension GlobalBlacklistedTagsNotifierX on GlobalBlacklistedTagsNotifier {
   }
 
   Future<void> removeTagWithToast(
-      BuildContext context, BlacklistedTag tag) async {
+    BuildContext context,
+    BlacklistedTag tag,
+  ) async {
     await removeTag(
       tag,
       onSuccess: () => showSuccessToast(context, 'Tag removed'),

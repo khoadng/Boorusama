@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/user/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/details/parts.dart';
+import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/details/parts.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/details/routes.dart';
+import '../../../../users/user/providers.dart';
 import '../../../post/post.dart';
 
 class DanbooruFileDetails extends ConsumerWidget {

@@ -28,11 +28,13 @@ class PrivacyPage extends ConsumerWidget {
           trailing: Switch(
             value: settings.dataCollectingStatus == DataCollectingStatus.allow,
             onChanged: (value) {
-              notifer.updateSettings(settings.copyWith(
-                dataCollectingStatus: value
-                    ? DataCollectingStatus.allow
-                    : DataCollectingStatus.prohibit,
-              ));
+              notifer.updateSettings(
+                settings.copyWith(
+                  dataCollectingStatus: value
+                      ? DataCollectingStatus.allow
+                      : DataCollectingStatus.prohibit,
+                ),
+              );
             },
           ),
         ),
@@ -44,9 +46,11 @@ class PrivacyPage extends ConsumerWidget {
           trailing: Switch(
             value: settings.enableIncognitoModeForKeyboard,
             onChanged: (value) {
-              notifer.updateSettings(settings.copyWith(
-                enableIncognitoModeForKeyboard: value,
-              ));
+              notifer.updateSettings(
+                settings.copyWith(
+                  enableIncognitoModeForKeyboard: value,
+                ),
+              );
             },
           ),
         ),

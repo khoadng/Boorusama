@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/pages.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../foundation/gestures.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../settings.dart';
+import '../../../settings/pages.dart';
 import '../data/booru_config_data.dart';
 import 'providers.dart';
 
@@ -24,7 +24,7 @@ class DefaultBooruConfigListingView extends ConsumerWidget {
   const DefaultBooruConfigListingView({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BooruConfigListingView(
+    return const BooruConfigListingView(
       postPreviewQuickActionButtonActions: kDefaultPreviewImageButtonAction,
       describePostPreviewQuickAction: null,
     );
@@ -44,8 +44,9 @@ class BooruConfigListingView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final listing = ref.watch(
-            editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-                .select((value) => value.listingTyped)) ??
+          editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+              .select((value) => value.listingTyped),
+        ) ??
         ListingConfigs.undefined();
     final enable = listing.enable;
     final settings = listing.settings;
@@ -70,18 +71,24 @@ class BooruConfigListingView extends ConsumerWidget {
               ),
               trailing: OptionDropDownButton(
                 alignment: AlignmentDirectional.centerStart,
-                value: ref.watch(editBooruConfigProvider(
-                        ref.watch(editBooruConfigIdProvider))
-                    .select((value) => value.defaultPreviewImageButtonAction)),
+                value: ref.watch(
+                  editBooruConfigProvider(
+                    ref.watch(editBooruConfigIdProvider),
+                  ).select((value) => value.defaultPreviewImageButtonAction),
+                ),
                 onChanged: (value) => ref.editNotifier
                     .updateDefaultPreviewImageButtonAction(value),
                 items: postPreviewQuickActionButtonActions
-                    .map((value) => DropdownMenuItem(
-                          value: value,
-                          child: Text(describePostPreviewQuickAction != null
+                    .map(
+                      (value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(
+                          describePostPreviewQuickAction != null
                               ? describePostPreviewQuickAction!(value)
-                              : describeImagePreviewQuickAction(value)),
-                        ))
+                              : describeImagePreviewQuickAction(value),
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
             ),
