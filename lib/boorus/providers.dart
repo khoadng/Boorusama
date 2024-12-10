@@ -1,6 +1,5 @@
 // Package imports:
 import 'package:booru_clients/anime_pictures.dart';
-import 'package:booru_clients/boorusama.dart';
 import 'package:booru_clients/danbooru.dart';
 import 'package:booru_clients/e621.dart';
 import 'package:booru_clients/gelbooru.dart';
@@ -100,11 +99,6 @@ final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function()>>(
     BooruType.animePictures: () => AnimePicturesBuilder(),
   },
 );
-
-final announcementProvider = FutureProvider<String>((ref) {
-  final client = BoorusamaClient();
-  return client.getAnnouncement();
-});
 
 final postRepoProvider = Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) => switch (config.booruType) {
