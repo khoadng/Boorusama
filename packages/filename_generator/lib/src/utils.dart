@@ -1,3 +1,5 @@
+import 'package:fpdart/fpdart.dart' as fpdart;
+
 extension StringX on String {
   String capitalize() {
     if (isEmpty) return this;
@@ -27,4 +29,11 @@ List<String> cleanAndRemoveDuplicates(List<String> input) {
   }
 
   return cleaned;
+}
+
+extension FpdartOnNullable<T> on T? {
+  fpdart.Option<T> toOption() => fpdart.Option.fromNullable(this);
+
+  fpdart.Either<L, T> toEither<L>(L Function() onNull) =>
+      fpdart.Either.fromNullable(this, onNull);
 }

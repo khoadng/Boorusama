@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:clock/clock.dart';
 import 'package:equatable/equatable.dart';
-import 'package:foundation/foundation.dart' hide StringX;
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 // Project imports:

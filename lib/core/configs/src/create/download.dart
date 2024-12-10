@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:expandable/expandable.dart';
+import 'package:filename_generator/filename_generator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -18,7 +19,6 @@ import '../../../../foundation/toast.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../downloads/filename.dart';
 import '../../../downloads/widgets.dart';
-import '../../../filename_generators/filename_generators.dart';
 import '../../../posts/post/post.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';

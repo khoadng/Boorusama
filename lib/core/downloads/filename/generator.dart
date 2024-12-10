@@ -1,9 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:filename_generator/filename_generator.dart';
+
 // Project imports:
 import '../../configs/config.dart';
-import '../../filename_generators/filename_generators.dart';
 import '../../posts/post/post.dart';
 import '../../settings.dart';
 import 'token_options.dart';

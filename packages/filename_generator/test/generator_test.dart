@@ -1,11 +1,9 @@
 // Package imports:
 import 'package:clock/clock.dart';
+import 'package:filename_generator/src/generator.dart';
 import 'package:test/test.dart';
 import 'package:uuid/data.dart';
 import 'package:uuid/uuid.dart';
-
-// Project imports:
-import 'package:boorusama/core/filename_generators/filename_generators.dart';
 
 void main() {
   test('generateFileName replaces tokens correctly', () {

@@ -13,11 +13,12 @@ dependencies:
     path: packages/foundation
   booru_clients:
     path: packages/booru_clients
+  filename_generator:
+    path: packages/filename_generator
 
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
   background_downloader: ^8.8.0
-  clock: ^1.1.1
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
   context_menus:
@@ -97,7 +98,6 @@ dependencies:
   stack_trace: ^1.11.0
   timeago: ^3.7.0
   url_launcher: ^6.3.1
-  uuid: ^4.5.1
   version: ^3.0.2
   video_player: ^2.9.2
   visibility_detector: ^0.4.0+2
