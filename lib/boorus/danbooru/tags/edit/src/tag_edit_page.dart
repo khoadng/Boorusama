@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/edit/tag_edit_page_scaffold.dart';
 import 'package:boorusama/core/configs/ref.dart';
-import '../../posts/post/post.dart';
-import '../shared/tag_list_notifier.dart';
-import 'providers.dart';
+import '../../../posts/post/post.dart';
+import '../../_shared/tag_list_notifier.dart';
+import 'providers/providers.dart';
+import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
-import 'tag_edit_notifier.dart';
+import 'tag_edit_page_scaffold.dart';
 import 'widgets/tag_edit_rating_selector_section.dart';
 import 'widgets/tag_edit_submit_button.dart';
 

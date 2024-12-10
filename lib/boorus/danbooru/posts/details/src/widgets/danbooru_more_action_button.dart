@@ -15,6 +15,7 @@ import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../../../tags/tag/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';
 import '../../../post/post.dart';
 

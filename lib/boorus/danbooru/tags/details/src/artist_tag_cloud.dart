@@ -10,9 +10,9 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/related/widgets.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/router.dart';
-import '../related/danbooru_related_tag.dart';
-import '../related/providers.dart';
-import '../widgets/danbooru_tag_context_menu.dart';
+import '../../related/providers.dart';
+import '../../related/related.dart';
+import '../../tag/widgets.dart';
 import 'tag_cloud.dart';
 
 const _kTagCloudTotal = 30;

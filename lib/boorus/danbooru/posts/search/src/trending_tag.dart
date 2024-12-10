@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/core/tags/categories/tag_category.dart';
-import '../../../tags/trending/search.dart';
+import '../../../tags/trending/trending.dart';
 
 class TrendingTag extends Equatable {
   const TrendingTag({

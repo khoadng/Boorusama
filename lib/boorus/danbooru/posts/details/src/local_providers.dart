@@ -6,7 +6,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/categories/providers.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import '../../../tags/shared/tag_list_notifier.dart';
+import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../post/post.dart';
 
 final danbooruTagGroupsProvider = FutureProvider.autoDispose

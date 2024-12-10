@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/tags/related/widgets.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'danbooru_related_tag.dart';
+import 'route_utils.dart';
 
 class RelatedTagHeader extends ConsumerStatefulWidget {
   const RelatedTagHeader({

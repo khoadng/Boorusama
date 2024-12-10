@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
 import '../../../../router.dart';
-import '../../../../tags/shared/tag_list_notifier.dart';
+import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../users/creator/creator.dart';
 import '../../../../users/creator/creators_notifier.dart';
 import '../../../post/post.dart';

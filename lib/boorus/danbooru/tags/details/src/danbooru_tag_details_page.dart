@@ -10,8 +10,8 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/tags/details/widgets.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import '../../posts/listing/widgets.dart';
-import '../../posts/post/providers.dart';
+import '../../../posts/listing/widgets.dart';
+import '../../../posts/post/providers.dart';
 import 'artist_tag_cloud.dart';
 
 class DanbooruTagDetailsPage extends ConsumerStatefulWidget {

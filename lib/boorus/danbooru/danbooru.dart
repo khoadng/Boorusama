@@ -7,9 +7,6 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/posts/favorites/widgets.dart';
-import 'package:boorusama/boorus/danbooru/posts/listing/providers.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/create.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -39,12 +36,15 @@ import 'home/danbooru_home_page.dart';
 import 'home/latest_posts_view.dart';
 import 'posts/details/widgets.dart';
 import 'posts/favorites/providers.dart';
+import 'posts/favorites/widgets.dart';
+import 'posts/listing/providers.dart';
 import 'posts/listing/widgets.dart';
 import 'posts/post/post.dart';
 import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
 import 'posts/votes/providers.dart';
-import 'tags/details/danbooru_character_page.dart';
+import 'tags/details/widgets.dart';
+import 'tags/tag/routes.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
 

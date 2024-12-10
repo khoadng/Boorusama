@@ -30,7 +30,7 @@ import '../posts/favgroups/listing/widgets.dart';
 import '../posts/pools/listing/widgets.dart';
 import '../router.dart';
 import '../saved_searches/feed/saved_search_feed_page.dart';
-import '../tags/trending/trending_tag_notifier.dart';
+import '../tags/trending/providers.dart';
 import '../users/details/user_details_page.dart';
 import '../users/user/providers.dart';
 

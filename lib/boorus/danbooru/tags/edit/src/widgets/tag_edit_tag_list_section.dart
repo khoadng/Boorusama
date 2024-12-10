@@ -18,7 +18,7 @@ import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../tag_edit_notifier.dart';
+import '../providers/tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';
 
 final tagEditFilteredListProvider =

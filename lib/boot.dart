@@ -14,7 +14,6 @@ import 'package:hive/hive.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/user_metatags/user_metatag_repository.dart';
 import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/boorus/providers.dart';
@@ -171,26 +170,9 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  Box<String> userMetatagBox;
-  bootLogger.l('Initialize user metatag box');
-  if (await Hive.boxExists('user_metatags')) {
-    bootLogger.l('Open user metatag box');
-    userMetatagBox = await Hive.openBox<String>('user_metatags');
-  } else {
-    bootLogger.l('Create user metatag box');
-    userMetatagBox = await Hive.openBox<String>('user_metatags');
-    for (final e in [
-      'age',
-      'rating',
-      'order',
-      'score',
-      'id',
-      'user',
-    ]) {
-      await userMetatagBox.put(e, e);
-    }
-  }
-  final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
+  final userMetatagRepoOverride = await createUserMetatagRepoOverride(
+    bootLogger: bootLogger,
+  );
 
   final searchHistoryRepoOverride = await createSearchHistoryRepoOverride(
     logger: bootLogger,
@@ -304,8 +286,7 @@ Future<void> boot(BootLogger bootLogger) async {
               bulkDownloadNotificationProvider
                   .overrideWithValue(bulkDownloadNotifications),
               deviceInfoProvider.overrideWithValue(deviceInfo),
-              danbooruUserMetatagRepoProvider
-                  .overrideWithValue(userMetatagRepo),
+              userMetatagRepoOverride,
               packageInfoProvider.overrideWithValue(packageInfo),
               appInfoProvider.overrideWithValue(appInfo),
               appLoggerProvider.overrideWithValue(appLogger),

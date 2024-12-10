@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/widgets/danbooru_tag_context_menu.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/theme/utils.dart';
 import '../tags/tag/providers.dart';
-import '../tags/trending/search.dart';
-import '../tags/trending/trending_tag_notifier.dart';
+import '../tags/tag/widgets.dart';
+import '../tags/trending/providers.dart';
+import '../tags/trending/trending.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({

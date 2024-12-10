@@ -17,7 +17,6 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/images/booru_image.dart';
 import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/posts/sources/source.dart';
-import 'package:boorusama/core/scaffolds/tag_edit_scaffold.dart';
 import 'package:boorusama/core/search/suggestions.dart';
 import 'package:boorusama/core/search/suggestions_widgets.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
@@ -32,14 +31,12 @@ import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../../../artists/urls/widgets.dart';
 import '../../../../tags/edit/providers.dart';
-import '../../../../tags/edit/tag_edit_favorite_view.dart';
-import '../../../../tags/edit/tag_edit_state.dart';
-import '../../../../tags/edit/tag_edit_wiki_view.dart';
-import '../../../../tags/edit/widgets/tag_how_to_rate_button.dart';
+import '../../../../tags/edit/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
 import '../danbooru_upload_post.dart';
 import '../providers.dart';
+import 'tag_edit_scaffold.dart';
 
 final selectTagEditUploadModeProvider =
     StateProvider.autoDispose<TagEditExpandMode?>((ref) => null);

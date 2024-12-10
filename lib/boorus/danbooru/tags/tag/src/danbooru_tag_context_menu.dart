@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
+import '../../../router.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/clipboard.dart';
-import '../../blacklist/providers.dart';
+import '../../../blacklist/providers.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {
   const DanbooruTagContextMenu({

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/blacklist/providers.dart';
+import '../../../blacklist/providers.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/favorites/providers.dart';

@@ -14,6 +14,7 @@ import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
+import '../../../tags/tag/routes.dart';
 import '../../favgroups/favgroups/routes.dart';
 import '../../post/post.dart';
 import 'providers.dart';

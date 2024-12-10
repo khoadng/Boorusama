@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/router.dart';
 import 'artists/search/routes.dart';
 import 'blacklist/routes.dart';
@@ -23,10 +21,7 @@ import 'posts/post/post.dart';
 import 'posts/uploads/routes.dart';
 import 'saved_searches/feed/saved_search_feed_page.dart';
 import 'saved_searches/listing/saved_search_page.dart';
-import 'tags/edit/tag_edit_page.dart';
-import 'tags/pages/danbooru_show_tag_list_page.dart';
-import 'tags/related/danbooru_related_tag.dart';
-import 'tags/related/related_tag_action_sheet.dart';
+import 'tags/edit/routes.dart';
 import 'users/details/user_details_page.dart';
 import 'users/pages/user_list_page.dart';
 import 'versions/danbooru_post_versions_page.dart';
@@ -43,16 +38,7 @@ final danbooruCustomRoutes = [
   ),
   danbooruExploreHotRoutes,
   danbooruBlacklistRoutes,
-  GoRoute(
-    path: '/internal/danbooru/posts/:id/editor',
-    pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPost>(
-      errorScreenMessage: 'Invalid post',
-      fullScreen: true,
-      pageBuilder: (context, state, post) => DanbooruTagEditPage(
-        post: post,
-      ),
-    ),
-  ),
+  danbooruTagEditRoutes,
   danbooruCommentRoutes,
   GoRoute(
     path: '/internal/danbooru/posts/:id/favoriter',
@@ -432,25 +418,6 @@ void goToPoolSearchPage(BuildContext context, WidgetRef ref) {
   );
 }
 
-void goToRelatedTagsPage(
-  BuildContext context, {
-  required DanbooruRelatedTag relatedTag,
-  required void Function(DanbooruRelatedTagItem tag) onAdded,
-  required void Function(DanbooruRelatedTagItem tag) onNegated,
-}) {
-  showAdaptiveSheet(
-    context,
-    settings: const RouteSettings(
-      name: RouterPageConstant.relatedTags,
-    ),
-    builder: (context) => RelatedTagActionSheet(
-      relatedTag: relatedTag,
-      onAdded: onAdded,
-      onNegated: onNegated,
-    ),
-  );
-}
-
 void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
   context.push(
     Uri(
@@ -490,19 +457,6 @@ void goToFavoriteGroupPage(BuildContext context) {
         'favorite_groups',
       ],
     ).toString(),
-  );
-}
-
-Future<bool?> goToDanbooruShowTaglistPage(
-  WidgetRef ref,
-  List<Tag> tags,
-) {
-  return showAdaptiveSheet(
-    navigatorKey.currentContext ?? ref.context,
-    expand: true,
-    builder: (context) => DanbooruShowTagListPage(
-      tags: tags,
-    ),
   );
 }
 

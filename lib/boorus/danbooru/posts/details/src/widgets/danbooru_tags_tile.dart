@@ -11,8 +11,8 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/router.dart';
-import '../../../../tags/shared/tag_list_notifier.dart';
-import '../../../../tags/widgets/danbooru_tag_context_menu.dart';
+import '../../../../tags/_shared/tag_list_notifier.dart';
+import '../../../../tags/tag/widgets.dart';
 import '../../../post/post.dart';
 import '../local_providers.dart';
 

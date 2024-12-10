@@ -10,8 +10,8 @@ import '../../posts/post/providers.dart';
 import '../../reports/danbooru_report_data_point.dart';
 import '../../reports/danbooru_report_period.dart';
 import '../../reports/providers.dart';
-import '../../tags/related/danbooru_related_tag.dart';
 import '../../tags/related/providers.dart';
+import '../../tags/related/related.dart';
 import 'danbooru_report_data_params.dart';
 import 'upload_date_range_selector_type.dart';
 

@@ -12,7 +12,7 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/search/metatag_widgets.dart';
 import 'package:boorusama/core/tags/metatag/providers.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import '../../../../tags/user_metatags/user_metatags_notifier.dart';
+import '../../../../tags/user_metatags/providers.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {
   const DanbooruMetatagsSection({

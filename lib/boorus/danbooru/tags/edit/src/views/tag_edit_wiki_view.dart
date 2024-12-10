@@ -14,7 +14,7 @@ import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../related/providers.dart';
+import '../../../related/providers.dart';
 
 class TagEditWikiView extends ConsumerStatefulWidget {
   const TagEditWikiView({

@@ -12,7 +12,7 @@ import 'package:boorusama/core/theme/utils.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../ai/ai_tags_provider.dart';
+import '../../../ai/providers.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {
   const TagEditAITagView({

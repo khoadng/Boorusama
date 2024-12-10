@@ -10,10 +10,10 @@ import 'package:boorusama/core/posts/count/widgets.dart';
 import 'package:boorusama/core/search/search_ui.dart';
 import 'package:boorusama/core/tags/metatag/providers.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
-import '../../../tags/related/related_tag_section.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
 import 'widgets/danbooru_metatags_section.dart';
+import 'widgets/related_tag_section.dart';
 import 'widgets/trending_section.dart';
 
 class DanbooruSearchPage extends ConsumerStatefulWidget {

@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import '../../../tags/tag/providers.dart';
-import '../../../tags/trending/search.dart';
-import '../../../tags/trending/trending_tag_notifier.dart';
+import '../../../tags/trending/providers.dart';
+import '../../../tags/trending/trending.dart';
 import 'trending_tag.dart';
 
 final _kTrendingTagCount = 15;

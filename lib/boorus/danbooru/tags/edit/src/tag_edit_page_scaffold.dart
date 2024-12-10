@@ -15,8 +15,8 @@ import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/scrolling.dart';
 import 'package:boorusama/router.dart';
+import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
-import 'tag_edit_notifier.dart';
 import 'tag_edit_view_controller.dart';
 
 class TagEditPageScaffold extends ConsumerStatefulWidget {

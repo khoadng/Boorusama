@@ -1,9 +1,4 @@
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+library;
 
-// Project imports:
-import 'user_metatag_repository.dart';
-
-final danbooruUserMetatagRepoProvider = Provider<UserMetatagRepository>((ref) {
-  throw UnimplementedError();
-});
+export 'src/providers.dart';
+export 'src/user_metatags_notifier.dart';

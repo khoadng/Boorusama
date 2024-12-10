@@ -10,14 +10,14 @@ import 'package:boorusama/core/boorus.dart';
 import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/router.dart';
-import 'tag_edit_ai_view.dart';
-import 'tag_edit_container.dart';
-import 'tag_edit_favorite_view.dart';
-import 'tag_edit_notifier.dart';
+import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_state.dart';
 import 'tag_edit_view_controller.dart';
-import 'tag_edit_wiki_view.dart';
+import 'views/tag_edit_ai_view.dart';
+import 'views/tag_edit_favorite_view.dart';
+import 'views/tag_edit_wiki_view.dart';
 import 'widgets/raw_tag_edit_select_button.dart';
+import 'widgets/tag_edit_container.dart';
 import 'widgets/tag_edit_tag_list_section.dart';
 
 class TagEditContent extends ConsumerWidget {

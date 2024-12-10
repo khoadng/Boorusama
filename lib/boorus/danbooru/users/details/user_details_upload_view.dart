@@ -7,8 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/post/post.dart';
-import 'package:boorusama/boorus/danbooru/users/details/upload_date_range_selector_type.dart';
+import '../../posts/post/post.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
 import 'package:boorusama/core/tags/categories/tag_category.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
@@ -18,11 +17,12 @@ import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/utils/flutter_utils.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../../tags/related/danbooru_related_tag.dart';
+import '../../tags/related/related.dart';
 import '../user/user.dart';
 import '_widgets/user_charts.dart';
 import 'danbooru_report_data_params.dart';
 import 'providers.dart';
+import 'upload_date_range_selector_type.dart';
 
 const _kTopCopyrigthTags = 5;
 
