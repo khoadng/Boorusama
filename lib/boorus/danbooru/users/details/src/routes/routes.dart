@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../pages/danbooru_profile_page.dart';
 import '../pages/user_details_page.dart';
 

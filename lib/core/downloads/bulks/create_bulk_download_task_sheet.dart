@@ -8,13 +8,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../router.dart';
 import '../../boorus.dart';
 import '../../configs/ref.dart';
 import '../../foundation/picker.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
 import '../../info/device_info.dart';
+import '../../router.dart';
 import '../../search/history_providers.dart';
 import '../../search/history_widgets.dart';
 import '../../settings.dart';

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../app.dart';
-import '../../../../router.dart';
+import '../../../app.dart';
 import '../../../posts/sources/source.dart';
+import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';

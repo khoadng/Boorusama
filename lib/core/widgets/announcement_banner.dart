@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../boorus/providers.dart';
-import '../../widgets/widgets.dart';
+import 'dismissable_info_container.dart';
 
 class SliverAppAnnouncementBanner extends StatelessWidget {
   const SliverAppAnnouncementBanner({

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/tags/details/widgets.dart';
-import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../core/widgets/custom_context_menu_overlay.dart';
 import '../../../../tags/details/widgets.dart';
 import '../../../urls/widgets.dart';
 import '../providers/artist_notifier.dart';

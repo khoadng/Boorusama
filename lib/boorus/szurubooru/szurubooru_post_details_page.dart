@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/parts.dart';
+import '../../core/router.dart';
 import '../../core/tags/tag/tag.dart';
-import '../../router.dart';
 import 'szurubooru_post.dart';
 
 class SzurubooruTagListSection extends ConsumerWidget {

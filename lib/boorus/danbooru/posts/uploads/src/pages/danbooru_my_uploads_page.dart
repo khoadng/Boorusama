@@ -19,7 +19,6 @@ import '../../../../../../core/posts/sources/source.dart';
 import '../../../../../../core/settings.dart';
 import '../../../../../../core/settings/data/listing_provider.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../../widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
 import '../providers/providers.dart';

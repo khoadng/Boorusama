@@ -11,12 +11,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../boorus/booru_builder.dart';
-import '../../../router.dart';
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../configs/ref.dart';
 import '../../foundation/scrolling.dart';
 import '../../foundation/url_launcher.dart';
 import '../../info/app_info.dart';
+import '../../router.dart';
 import '../../theme.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';

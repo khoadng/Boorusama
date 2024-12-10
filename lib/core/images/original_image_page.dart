@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../widgets/widgets.dart';
+import '../../core/widgets/widgets.dart';
 import '../configs/ref.dart';
 import '../foundation/display.dart';
 import '../foundation/mobile.dart';

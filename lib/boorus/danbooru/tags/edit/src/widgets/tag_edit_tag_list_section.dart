@@ -16,7 +16,7 @@ import '../../../../../../core/tags/categories/providers.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/utils/color_utils.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../providers.dart';
 import '../providers/tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';

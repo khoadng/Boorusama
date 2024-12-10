@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/booru_builder.dart';
-import '../../../../widgets/option_dropdown_button.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../theme.dart';
+import '../../../widgets/option_dropdown_button.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
 import '../manage/booru_config_provider.dart';

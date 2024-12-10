@@ -9,8 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../router.dart';
-import '../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../router.dart';
 import '../../../search/query_composer_providers.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';

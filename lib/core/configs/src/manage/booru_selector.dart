@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import '../../../../router.dart';
 import '../../../foundation/toast.dart';
+import '../../../router.dart';
 import '../../../settings/data.dart';
 import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';

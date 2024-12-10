@@ -23,7 +23,7 @@ import '../../core/posts/sources/source.dart';
 import '../../core/search/query_composer_providers.dart';
 import '../../core/search/search_ui.dart';
 import '../../core/settings/data/listing_provider.dart';
-import '../../widgets/info_container.dart';
+import '../../core/widgets/info_container.dart';
 import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';

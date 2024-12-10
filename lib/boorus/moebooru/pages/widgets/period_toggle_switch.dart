@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../feats/posts/posts.dart';
 
 class PeriodToggleSwitch extends StatelessWidget {

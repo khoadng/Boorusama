@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../../../../posts/post/post.dart';
 import '../tag_edit_page.dart';
 

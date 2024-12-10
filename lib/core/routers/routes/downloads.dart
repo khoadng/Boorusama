@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/downloads/bulks.dart';
-import '../../core/downloads/manager.dart';
+import '../../downloads/bulks.dart';
+import '../../downloads/manager.dart';
 import '../../router.dart';
 
 GoRoute downloadManager() => GoRoute(

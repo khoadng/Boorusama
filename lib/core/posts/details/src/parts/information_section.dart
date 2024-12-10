@@ -8,9 +8,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../boorus/booru_builder.dart';
-import '../../../../../router.dart';
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../foundation/url_launcher.dart';
+import '../../../../router.dart';
 import '../../../../settings/data.dart';
 import '../../../../tags/categories/tag_category.dart';
 import '../../../../tags/tag/providers.dart';

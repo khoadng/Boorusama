@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../widgets/option_dropdown_button.dart';
+import '../../widgets/option_dropdown_button.dart';
 
 class SettingsTile<T> extends StatelessWidget {
   const SettingsTile({

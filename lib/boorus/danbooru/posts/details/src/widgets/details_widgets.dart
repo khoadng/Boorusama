@@ -10,7 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../../../core/artists/artists.dart';
 import '../../../../../../core/posts/details/details.dart';
 import '../../../../../../core/posts/details/parts.dart';
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
 import '../../../pools/pool/widgets.dart';

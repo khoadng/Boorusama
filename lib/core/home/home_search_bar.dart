@@ -11,11 +11,11 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../boorus/booru_builder.dart';
-import '../../router.dart';
 import '../app_update/providers.dart';
 import '../app_update/types.dart';
 import '../foundation/display.dart';
 import '../foundation/url_launcher.dart';
+import '../router.dart';
 import '../search/history_providers.dart';
 import '../search/search_bar.dart';
 import '../search/selected_tags.dart';

@@ -7,7 +7,7 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../data/providers.dart';
 import '../routes/route_utils.dart';
 

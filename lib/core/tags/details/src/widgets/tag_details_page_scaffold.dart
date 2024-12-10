@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../posts/post/post.dart';
-import '../../../../widgets/widgets.dart';
 import '../../../tag/tag.dart';
 import '../internal_widgets/category_toggle_switch.dart';
 import '../internal_widgets/tag_detail_region.dart';

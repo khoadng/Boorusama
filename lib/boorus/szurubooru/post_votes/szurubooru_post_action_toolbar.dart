@@ -13,7 +13,7 @@ import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/shares/widgets.dart';
 import '../../../core/posts/votes/vote.dart';
 import '../../../core/posts/votes/widgets.dart';
-import '../../../router.dart';
+import '../../../core/router.dart';
 import '../favorites/favorites.dart';
 import '../szurubooru_post.dart';
 import 'post_votes.dart';

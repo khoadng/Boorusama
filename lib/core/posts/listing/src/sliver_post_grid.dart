@@ -10,15 +10,14 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../boorus/danbooru/errors.dart';
-import '../../../../widgets/widgets.dart';
 import '../../../configs/config.dart';
 import '../../../foundation/error.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
 import '../../../settings.dart';
 import '../../../settings/data/listing_provider.dart';
-import '../../../widgets/widgets.dart';
 import '../../post/post.dart';
 import '../../post/tags.dart';
 import 'grid_utils.dart';

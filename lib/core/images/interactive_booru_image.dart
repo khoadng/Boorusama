@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../widgets/widgets.dart';
+import '../../core/widgets/widgets.dart';
 import '../configs/ref.dart';
 import '../http/providers.dart';
 import 'booru_image.dart';

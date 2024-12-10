@@ -1,7 +1,7 @@
 // Project imports:
-import '../../core/foundation/display.dart';
-import '../../core/settings/pages.dart';
+import '../../foundation/display.dart';
 import '../../router.dart';
+import '../../settings/pages.dart';
 import '../../widgets/widgets.dart';
 
 GoRoute settings() => GoRoute(

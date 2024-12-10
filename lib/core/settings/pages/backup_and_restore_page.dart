@@ -10,8 +10,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../router.dart';
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../blacklists/providers.dart';
 import '../../bookmarks/bookmark_provider.dart';
 import '../../bookmarks/widgets/providers.dart';
@@ -24,9 +23,9 @@ import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
 import '../../info/device_info.dart';
 import '../../info/package_info.dart';
+import '../../router.dart';
 import '../../tags/favorites/providers.dart';
 import '../../theme.dart';
-import '../../widgets/widgets.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
 

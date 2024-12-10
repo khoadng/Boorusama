@@ -7,22 +7,21 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../boorus/booru_builder.dart';
-import '../core/autocompletes/autocompletes.dart';
-import '../core/comments/utils.dart';
-import '../core/configs/config.dart';
-import '../core/downloads/bulks/create_bulk_download_task_sheet.dart';
-import '../core/foundation/display.dart';
-import '../core/foundation/toast.dart';
-import '../core/images/booru_image.dart';
-import '../core/posts/details/details.dart';
-import '../core/posts/listing/providers.dart';
-import '../core/posts/post/post.dart';
-import '../core/search/tag_edit.dart';
-import '../core/search/view_tags.dart';
-import '../core/tags/favorites/providers.dart';
-import '../core/widgets/widgets.dart';
+import '../../boorus/booru_builder.dart';
+import '../autocompletes/autocompletes.dart';
+import '../comments/utils.dart';
+import '../configs/config.dart';
+import '../downloads/bulks/create_bulk_download_task_sheet.dart';
+import '../foundation/display.dart';
+import '../foundation/toast.dart';
+import '../images/booru_image.dart';
+import '../posts/details/details.dart';
+import '../posts/listing/providers.dart';
+import '../posts/post/post.dart';
 import '../router.dart';
+import '../search/tag_edit.dart';
+import '../search/view_tags.dart';
+import '../tags/favorites/providers.dart';
 import '../widgets/widgets.dart';
 
 void goToHomePage(

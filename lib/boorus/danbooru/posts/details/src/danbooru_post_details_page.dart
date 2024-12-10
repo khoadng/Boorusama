@@ -9,7 +9,7 @@ import '../../../../../core/notes/notes.dart';
 import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/details/parts.dart';
 import '../../../../../core/posts/details/widgets.dart';
-import '../../../../../router.dart';
+import '../../../../../core/router.dart';
 import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';

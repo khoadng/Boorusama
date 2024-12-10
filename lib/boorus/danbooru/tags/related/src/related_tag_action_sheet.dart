@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/tag/providers.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/wikis/launcher.dart';
-import '../../../../../widgets/widgets.dart';
 import 'danbooru_related_tag.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {

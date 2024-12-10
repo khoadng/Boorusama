@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 
 const kSpecialLabelKeyForAll = '____all____';
 

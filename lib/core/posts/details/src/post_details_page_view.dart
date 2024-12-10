@@ -11,7 +11,6 @@ import 'package:equatable/equatable.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../widgets/widgets.dart';
 import '../../../foundation/display.dart';
 import '../../../foundation/mobile.dart';
 import '../../../foundation/platform.dart';

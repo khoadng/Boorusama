@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 
 void goToForumPage(BuildContext context) {
   context.push(

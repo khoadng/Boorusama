@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../foundation/html.dart';
 import '../../foundation/picker.dart';
 import '../../foundation/platform.dart';

@@ -11,7 +11,7 @@ import '../../core/configs/ref.dart';
 import '../../core/home/home_navigation_tile.dart';
 import '../../core/home/home_page_scaffold.dart';
 import '../../core/home/side_menu_tile.dart';
-import '../../router.dart';
+import '../../core/router.dart';
 import 'szurubooru.dart';
 
 class SzurubooruHomePage extends ConsumerWidget {

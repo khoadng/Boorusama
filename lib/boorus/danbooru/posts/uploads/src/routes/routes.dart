@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../pages/danbooru_my_uploads_page.dart';
 import '../pages/tag_edit_upload_page.dart';
 import '../types/danbooru_upload_post.dart';

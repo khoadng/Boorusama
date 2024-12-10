@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import '../../../../../router.dart';
+import '../../../../../core/router.dart';
 import '../pages/dmail_page.dart';
 
 final danbooruDmailRoutes = GoRoute(

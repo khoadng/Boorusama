@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../router.dart';
+import '../router.dart';
 import '../theme.dart';
 import 'side_bar_menu.dart';
 

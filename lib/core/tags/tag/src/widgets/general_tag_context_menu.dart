@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../router.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../foundation/clipboard.dart';
+import '../../../../router.dart';
 import '../../../favorites/providers.dart';
 
 class GeneralTagContextMenu extends ConsumerWidget

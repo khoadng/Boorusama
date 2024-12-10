@@ -13,7 +13,7 @@ import '../../../../../../core/posts/details/widgets.dart';
 import '../../../../../../core/posts/shares/widgets.dart';
 import '../../../../../../core/posts/votes/vote.dart';
 import '../../../../../../core/posts/votes/widgets.dart';
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../../../favorites/providers.dart';
 import '../../../post/post.dart';
 import '../../../votes/providers.dart';

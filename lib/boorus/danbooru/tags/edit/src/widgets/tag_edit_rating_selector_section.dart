@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/rating/rating.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import 'tag_how_to_rate_button.dart';
 
 class TagEditRatingSelectorSection extends ConsumerWidget {

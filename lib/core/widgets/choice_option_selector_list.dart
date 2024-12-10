@@ -8,8 +8,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../core/theme.dart';
-import 'widgets.dart';
+import '../theme.dart';
+import 'booru_chip.dart';
+import 'option_searchable_sheet.dart';
 
 sealed class OptionSelectorItem {
   const OptionSelectorItem();

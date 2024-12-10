@@ -9,9 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import '../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../foundation/path.dart';
-import '../../../widgets/widgets.dart';
 import '../../sources/source.dart';
 
 final _cachedImageFileProvider =

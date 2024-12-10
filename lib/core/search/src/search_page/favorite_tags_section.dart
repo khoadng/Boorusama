@@ -8,9 +8,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../router.dart';
 import '../../../cache/providers.dart';
 import '../../../foundation/platform.dart';
+import '../../../router.dart';
 import '../../../settings/data.dart';
 import '../../../tags/favorites/favorited.dart';
 import '../../../tags/favorites/widgets.dart';

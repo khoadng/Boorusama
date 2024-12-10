@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import '../../../../../../../router.dart';
+import '../../../../../../../core/router.dart';
 import '../../../details/routes.dart';
 import '../pages/favorite_groups_page.dart';
 

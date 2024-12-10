@@ -9,7 +9,6 @@ import 'package:oktoast/oktoast.dart';
 // Project imports:
 import '../../../boorus/booru_builder.dart';
 import '../../../boorus/providers.dart';
-import '../../../router.dart';
 import '../../boorus.dart';
 import '../../configs/config.dart';
 import '../../configs/ref.dart';
@@ -22,6 +21,7 @@ import '../../http/providers.dart';
 import '../../images/providers.dart';
 import '../../posts/post/post.dart';
 import '../../posts/sources/source.dart';
+import '../../router.dart';
 import '../../settings.dart';
 import '../../settings/data.dart';
 import '../l10n.dart';

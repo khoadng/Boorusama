@@ -9,7 +9,7 @@ import 'package:foundation/widgets.dart';
 import '../../../../../core/boorus.dart';
 import '../../../../../core/boorus/providers.dart';
 import '../../../../../core/configs/ref.dart';
-import '../../../../../router.dart';
+import '../../../../../core/router.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_state.dart';
 import 'tag_edit_view_controller.dart';

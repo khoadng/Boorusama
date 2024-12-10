@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import '../../../../../../../router.dart';
+import '../../../../../../../core/router.dart';
 
 void goToPoolSearchPage(BuildContext context) {
   context.push(

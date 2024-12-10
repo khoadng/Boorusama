@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../router.dart';
+import '../../../router.dart';
 import 'pages/favorite_tags_page.dart';
 
 GoRoute favoriteTags() => GoRoute(

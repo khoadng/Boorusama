@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../boorus/booru_builder.dart';
-import '../../core/configs/config.dart';
-import '../../core/configs/create.dart';
-import '../../core/configs/manage.dart';
-import '../../core/foundation/display.dart';
+import '../../../boorus/booru_builder.dart';
+import '../../configs/config.dart';
+import '../../configs/create.dart';
+import '../../configs/manage.dart';
+import '../../foundation/display.dart';
 import '../../router.dart';
 import '../../widgets/widgets.dart';
 

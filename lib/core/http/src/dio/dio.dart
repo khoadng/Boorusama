@@ -5,10 +5,10 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
-import '../../../../router.dart';
 import '../../../boorus.dart';
 import '../../../foundation/http.dart';
 import '../../../foundation/platform.dart';
+import '../../../router.dart';
 import 'dio_options.dart';
 
 Dio newDio({required DioOptions options}) {

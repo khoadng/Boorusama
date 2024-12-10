@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../providers/local_providers.dart';
 import '../types/upload_date_range_selector_type.dart';
 

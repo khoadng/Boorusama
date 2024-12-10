@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../types/danbooru_upload_post.dart';
 
 void goToTagEditUploadPage(

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../app.dart';
+import '../app.dart';
 import 'home_page_controller.dart';
 import 'navigation_tile.dart';
 

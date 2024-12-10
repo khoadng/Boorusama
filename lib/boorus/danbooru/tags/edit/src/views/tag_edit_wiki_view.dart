@@ -12,7 +12,7 @@ import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../related/providers.dart';
 
 class TagEditWikiView extends ConsumerStatefulWidget {

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'boot.dart';
+import 'core/boot.dart';
 import 'core/foundation/loggers.dart';
 
 void main() async {

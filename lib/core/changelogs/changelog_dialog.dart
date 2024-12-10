@@ -6,7 +6,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../widgets/widgets.dart';
+import '../../core/widgets/widgets.dart';
 import '../theme.dart';
 import 'what_news.dart';
 

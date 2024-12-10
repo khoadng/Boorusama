@@ -7,9 +7,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../../router.dart';
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../images/booru_image.dart';
+import '../../../../router.dart';
 import '../../../post/post.dart';
 import '../../../post/tags.dart';
 

@@ -9,7 +9,7 @@ import 'package:foundation/widgets.dart';
 import '../../../../core/posts/details/details.dart';
 import '../../../../core/posts/details/parts.dart';
 import '../../../../core/posts/post/post.dart';
-import '../../../../router.dart';
+import '../../../../core/router.dart';
 import '../../feats/posts/posts.dart';
 
 class MoebooruRelatedPostsSection extends ConsumerWidget {

@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../../router.dart';
+import '../../../../../../../core/router.dart';
 import '../pool_search_page.dart';
 
 final danbooruPoolSearchRoutes = GoRoute(

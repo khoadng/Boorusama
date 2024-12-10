@@ -9,12 +9,12 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/posts/details/parts.dart';
+import '../../../../../../core/router.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/utils/flutter_utils.dart';
-import '../../../../../../router.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../tags/related/related.dart';
 import '../../../user/user.dart';

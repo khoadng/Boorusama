@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';

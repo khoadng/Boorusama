@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
-import '../../../../../../widgets/generic_no_data_box.dart';
+import '../../../../../../core/widgets/generic_no_data_box.dart';
 import '../../../saved_search/routes.dart';
 import '../../../saved_search/saved_search.dart';
 

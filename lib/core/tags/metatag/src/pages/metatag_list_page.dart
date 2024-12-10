@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../metatag.dart';
 
 class MetatagListPage extends StatelessWidget {

@@ -10,8 +10,8 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../router.dart';
 import '../configs/widgets.dart';
+import '../router.dart';
 import '../settings.dart';
 import '../settings/data.dart';
 import '../tags/favorites/routes.dart';

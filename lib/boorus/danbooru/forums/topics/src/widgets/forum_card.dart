@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../../core/settings/data.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 
 class ForumCard extends ConsumerWidget {
   const ForumCard({

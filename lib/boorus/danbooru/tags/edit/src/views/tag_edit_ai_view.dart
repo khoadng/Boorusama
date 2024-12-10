@@ -10,7 +10,7 @@ import '../../../../../../core/settings/data.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../ai/providers.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {

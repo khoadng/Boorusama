@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import '../../../router.dart';
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../configs/ref.dart';
+import '../../router.dart';
 import '../../theme.dart';
 import '../data/listing_provider.dart';
 

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'boorus/danbooru/router.dart';
-import 'core/analytics.dart';
+import '../boorus/danbooru/router.dart';
+import 'analytics.dart';
 import 'router.dart';
 
-export 'package:boorusama/routers/routers.dart';
+export 'package:boorusama/core/routers/routers.dart';
 
 export 'package:go_router/go_router.dart';
 

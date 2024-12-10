@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../../../topics/topic.dart';
 import '../forum_posts_page.dart';
 

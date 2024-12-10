@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../router.dart';
+import '../../../../router.dart';
 import '../favorite_tags_notifier.dart';
 
 class FavoriteTagAddTagToLabelButton extends ConsumerWidget {

@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/comments/vote_event.dart';
-import '../../../../../../widgets/widgets.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../comment/comment.dart';
 import '../../../votes/vote.dart';
 import 'comment_item.dart';

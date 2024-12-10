@@ -11,7 +11,7 @@ import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../foundation/http.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';

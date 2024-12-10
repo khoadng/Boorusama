@@ -2,9 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../foundation/display.dart';
-import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 
 class BooruSelectorItem extends StatelessWidget {

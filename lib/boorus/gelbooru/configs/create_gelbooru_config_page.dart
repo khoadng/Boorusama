@@ -14,7 +14,7 @@ import '../../../core/configs/create.dart';
 import '../../../core/foundation/toast.dart';
 import '../../../core/foundation/url_launcher.dart';
 import '../../../core/theme.dart';
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../gelbooru.dart';
 import 'widgets.dart';
 

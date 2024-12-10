@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../../router.dart';
+import '../../../../../../../core/router.dart';
 import '../../../pool/pool.dart';
 import '../pool_detail_page.dart';
 

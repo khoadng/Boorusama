@@ -8,9 +8,8 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../tags/tag/widgets.dart';
-import '../../../../widgets/widgets.dart';
 import '../../selected_tags/tag_search_item.dart';
 import 'selected_tag_chip.dart';
 

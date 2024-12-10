@@ -8,9 +8,9 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../router.dart';
 import '../posts/listing/widgets.dart';
 import '../posts/post/post.dart';
+import '../router.dart';
 import '../widgets/widgets.dart';
 
 class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {

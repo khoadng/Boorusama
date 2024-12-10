@@ -10,9 +10,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../core/theme.dart';
-import '../core/videos/video_play_duration_icon.dart';
-import 'widgets.dart';
+import '../theme.dart';
+import '../videos/video_play_duration_icon.dart';
+import 'conditional_parent_widget.dart';
+import 'image_overlay_icon.dart';
 
 class AutoScrollOptions {
   const AutoScrollOptions({

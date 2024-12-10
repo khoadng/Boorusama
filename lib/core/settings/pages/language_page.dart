@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';
 

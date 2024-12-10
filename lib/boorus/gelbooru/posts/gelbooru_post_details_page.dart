@@ -13,9 +13,9 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/parts.dart';
 import '../../../core/posts/post/post.dart';
+import '../../../core/router.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
-import '../../../router.dart';
 import '../artists/artists.dart';
 import 'posts.dart';
 

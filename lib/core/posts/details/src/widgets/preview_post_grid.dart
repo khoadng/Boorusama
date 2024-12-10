@@ -5,8 +5,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../widgets/image_grid_item.dart';
 import '../../../../images/booru_image.dart';
+import '../../../../widgets/image_grid_item.dart';
 import '../../../post/post.dart';
 import '../../../post/tags.dart';
 

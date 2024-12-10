@@ -8,11 +8,11 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/booru_builder.dart';
-import '../../../../router.dart';
 import '../../../bookmarks/bookmark_provider.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/url_launcher.dart';
+import '../../../router.dart';
 import '../../../tags/tag/routes.dart';
 import '../../post/post.dart';
 import '../../post/tags.dart';

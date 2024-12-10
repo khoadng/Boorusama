@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/display.dart';
 import '../../../../core/home/home_page_controller.dart';
@@ -14,7 +15,6 @@ import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/selected_tags.dart';
 import '../../../../core/tags/configs/providers.dart';
-import '../../../../core/widgets/widgets.dart';
 import '../../../booru_builder.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';

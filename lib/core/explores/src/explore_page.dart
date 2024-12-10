@@ -8,14 +8,14 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../boorus/booru_builder_default.dart';
 import '../../../boorus/providers.dart';
-import '../../../router.dart';
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../configs/ref.dart';
 import '../../foundation/display.dart';
 import '../../images/booru_image.dart';
 import '../../images/explicit_block_overlay.dart';
 import '../../images/utils.dart';
 import '../../posts/post/post.dart';
+import '../../router.dart';
 import '../../videos/video_play_duration_icon.dart';
 
 class ExplorePage extends ConsumerWidget {

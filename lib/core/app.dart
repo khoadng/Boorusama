@@ -12,19 +12,19 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'core/analytics.dart';
-import 'core/foundation/animations.dart';
-import 'core/foundation/error.dart';
-import 'core/foundation/networking.dart';
-import 'core/foundation/picker.dart';
-import 'core/foundation/platform.dart';
-import 'core/foundation/scrolling.dart';
-import 'core/foundation/windows.dart';
-import 'core/info/app_info.dart';
-import 'core/info/device_info.dart';
-import 'core/settings/data.dart';
-import 'core/theme/theme_buider.dart';
+import 'analytics.dart';
+import 'foundation/animations.dart';
+import 'foundation/error.dart';
+import 'foundation/networking.dart';
+import 'foundation/picker.dart';
+import 'foundation/platform.dart';
+import 'foundation/scrolling.dart';
+import 'foundation/windows.dart';
+import 'info/app_info.dart';
+import 'info/device_info.dart';
 import 'router.dart';
+import 'settings/data.dart';
+import 'theme/theme_buider.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../core/router.dart';
 import '../../../../../core/theme.dart';
-import '../../../../../router.dart';
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../users/user/providers.dart';
 import '../types/danbooru_post_version.dart';
 import 'tag_changed_text.dart';

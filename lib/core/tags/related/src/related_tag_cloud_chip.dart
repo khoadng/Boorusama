@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../widgets/booru_chip.dart';
+import '../../../widgets/booru_chip.dart';
 
 class RelatedTagCloudChip extends ConsumerWidget {
   const RelatedTagCloudChip({

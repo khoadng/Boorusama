@@ -7,8 +7,8 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../../router.dart';
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../../router.dart';
 import '../../../../tags/tag/providers.dart';
 
 class SliverCharacterPostList extends ConsumerWidget {

@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../boorus/booru_builder.dart';
-import '../../../../widgets/widgets.dart';
 import '../../../downloads/filename.dart';
 import '../../../downloads/widgets.dart';
 import '../../../foundation/clipboard.dart';
@@ -21,7 +21,6 @@ import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
 import '../../../posts/post/post.dart';
 import '../../../theme.dart';
-import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import 'providers.dart';
 

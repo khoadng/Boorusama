@@ -8,13 +8,13 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../router.dart';
 import '../blacklists/blacklisted_tag_page.dart';
 import '../bookmarks/widgets/bookmark_page.dart';
 import '../cache/providers.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
+import '../router.dart';
 import '../tags/favorites/widgets.dart';
 import '../widgets/widgets.dart';
 import 'booru_desktop_scope.dart';

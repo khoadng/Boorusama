@@ -8,9 +8,9 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../widgets/website_logo.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../theme.dart';
+import '../../../../widgets/website_logo.dart';
 import '../../../post/post.dart';
 import '../../../sources/source.dart';
 import '../widgets/preview_post_grid.dart';

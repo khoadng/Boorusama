@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../router.dart';
+import '../../../../../../core/router.dart';
 import '../../../_shared/tag_list_notifier.dart';
 import '../providers/providers.dart';
 import '../providers/tag_edit_notifier.dart';

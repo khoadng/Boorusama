@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../router.dart';
 import '../../foundation/toast.dart';
+import '../../router.dart';
 import '../bulks/bulk_download_notifier.dart';
 import '../bulks/bulk_download_task.dart';
 import '../bulks/notifications/providers.dart';

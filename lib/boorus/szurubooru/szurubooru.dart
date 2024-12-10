@@ -18,7 +18,7 @@ import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/search_ui.dart';
-import '../../widgets/widgets.dart';
+import '../../core/widgets/widgets.dart';
 import '../booru_builder.dart';
 import '../booru_builder_default.dart';
 import '../booru_builder_types.dart';

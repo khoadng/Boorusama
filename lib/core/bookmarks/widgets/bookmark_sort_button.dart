@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import 'providers.dart';
 
 class BookmarkSortButton extends ConsumerWidget {

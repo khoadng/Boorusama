@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../widgets/widgets.dart';
+import '../../core/widgets/widgets.dart';
 import '../foundation/toast.dart';
 import 'blacklisted_tag.dart';
 import 'blacklisted_tag_view_scaffold.dart';

@@ -12,7 +12,7 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/downloads/downloader.dart';
 import '../../../../../core/foundation/url_launcher.dart';
 import '../../../../../core/posts/post/post.dart';
-import '../../../../../router.dart';
+import '../../../../../core/router.dart';
 import '../../../tags/tag/routes.dart';
 import '../../../versions/routes.dart';
 import '../../favgroups/favgroups/routes.dart';

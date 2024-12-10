@@ -7,7 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/data.dart';
 import '../../../../theme.dart';

@@ -7,9 +7,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/router.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
-import '../../../../../../router.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';

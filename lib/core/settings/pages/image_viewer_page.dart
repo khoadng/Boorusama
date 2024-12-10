@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../router.dart';
 import '../../configs/redirect.dart';
+import '../../router.dart';
 import '../data/settings_providers.dart';
 import '../types.dart';
 import '../types_l10n.dart';

@@ -9,7 +9,6 @@ import 'package:foundation/foundation.dart';
 import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/foundation/toast.dart';
 import '../../../../../../../core/widgets/widgets.dart';
-import '../../../../../../../widgets/widgets.dart';
 import '../providers/favorite_groups_notifier.dart';
 import '../types/danbooru_favorite_group.dart';
 import '../wigdets/privacy_toggle.dart';

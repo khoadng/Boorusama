@@ -13,10 +13,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../boorus/booru_builder.dart';
 import '../../../../boorus/booru_builder_default.dart';
-import '../../../../router.dart';
-import '../../../../widgets/widgets.dart';
 import '../../../boorus.dart';
 import '../../../cache/providers.dart';
 import '../../../configs/config.dart';
@@ -29,12 +28,12 @@ import '../../../foundation/networking/network_state.dart';
 import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/explicit_block_overlay.dart';
+import '../../../router.dart';
 import '../../../settings.dart';
 import '../../../settings/data.dart';
 import '../../../settings/data/listing_provider.dart';
 import '../../../theme.dart';
 import '../../../utils/file_utils.dart';
-import '../../../widgets/widgets.dart';
 import '../../post/post.dart';
 import 'conditional_value_listenable_builder.dart';
 import 'general_post_context_menu.dart';

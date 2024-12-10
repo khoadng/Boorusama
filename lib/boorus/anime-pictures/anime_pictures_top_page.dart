@@ -10,7 +10,7 @@ import '../../core/configs/ref.dart';
 import '../../core/explores/widgets.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/post.dart';
-import '../../widgets/widgets.dart';
+import '../../core/widgets/booru_segmented_button.dart';
 import 'providers.dart';
 
 final _eroticOnProvider = StateProvider<bool>((ref) => false);

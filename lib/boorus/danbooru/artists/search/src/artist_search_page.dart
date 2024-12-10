@@ -10,7 +10,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../../widgets/widgets.dart';
 import '../../artist/artist.dart';
 import 'widgets/artist_search_list.dart';
 

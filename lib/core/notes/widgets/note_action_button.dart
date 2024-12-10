@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../widgets/circular_icon_button.dart';
 import '../../posts/post/post.dart';
+import '../../widgets/circular_icon_button.dart';
 
 class NoteActionButton extends StatelessWidget {
   const NoteActionButton({

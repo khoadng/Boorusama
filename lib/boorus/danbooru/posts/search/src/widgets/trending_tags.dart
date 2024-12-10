@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../widgets/booru_chip.dart';
+import '../../../../../../core/widgets/booru_chip.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../trending_tag.dart';
 

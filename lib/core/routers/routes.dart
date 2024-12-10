@@ -7,21 +7,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../boorus/booru_builder.dart';
-import '../boorus/entry_page.dart';
-import '../core/app_rating/app_rating.dart';
-import '../core/applock/applock.dart';
-import '../core/blacklists/blacklisted_tag_page.dart';
-import '../core/bookmarks/widgets/bookmark_details_page.dart';
-import '../core/bookmarks/widgets/bookmark_page.dart';
-import '../core/configs/redirect.dart';
-import '../core/downloads/downloader.dart';
-import '../core/images/original_image_page.dart';
-import '../core/posts/details/details.dart';
-import '../core/posts/post/post.dart';
-import '../core/tags/favorites/routes.dart';
-import '../core/widgets/widgets.dart';
+import '../../boorus/booru_builder.dart';
+import '../../boorus/entry_page.dart';
+import '../app_rating/app_rating.dart';
+import '../applock/applock.dart';
+import '../blacklists/blacklisted_tag_page.dart';
+import '../bookmarks/widgets/bookmark_details_page.dart';
+import '../bookmarks/widgets/bookmark_page.dart';
+import '../configs/redirect.dart';
+import '../downloads/downloader.dart';
+import '../images/original_image_page.dart';
+import '../posts/details/details.dart';
+import '../posts/post/post.dart';
 import '../router.dart';
+import '../tags/favorites/routes.dart';
 import '../widgets/widgets.dart';
 
 ///
