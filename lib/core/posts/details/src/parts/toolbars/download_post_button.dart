@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/downloads/downloader.dart';
-import '../../../../post/src/post.dart';
+import '../../../../post/post.dart';
 
 class DownloadPostButton extends ConsumerWidget {
   const DownloadPostButton({

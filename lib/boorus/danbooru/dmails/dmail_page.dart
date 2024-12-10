@@ -9,12 +9,12 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../danbooru_provider.dart';
-import '../users/creator/creators_notifier.dart';
+import '../users/creator/providers.dart';
+import '../users/user/providers.dart';
 import 'dmail_details_page.dart';
 import 'providers.dart';
 
@@ -37,6 +37,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
     final dmailProvider = danbooruDmailsProvider((config, _selectedFolder));
     final dmailAsync = ref.watch(dmailProvider);
     final client = ref.watch(danbooruClientProvider(config));
+    final userColor = DanbooruUserColor.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,6 +74,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                         final dmail = dmails[index];
                         final fromUser =
                             ref.watch(danbooruCreatorProvider(dmail.fromId));
+                        final color = userColor.fromLevel(fromUser?.level);
 
                         return ListTile(
                             minVerticalPadding: 0,
@@ -88,12 +90,10 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                               fromUser?.name ?? '...',
                               style: dmail.isRead
                                   ? TextStyle(
-                                      color: fromUser?.level
-                                          .toColor(context)
-                                          .applyOpacity(0.7),
+                                      color: color.applyOpacity(0.7),
                                     )
                                   : TextStyle(
-                                      color: fromUser?.level.toColor(context),
+                                      color: color,
                                       fontWeight: FontWeight.w900,
                                     ),
                             ),

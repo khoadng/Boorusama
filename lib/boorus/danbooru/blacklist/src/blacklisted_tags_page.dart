@@ -9,8 +9,8 @@ import 'package:foundation/foundation.dart';
 import 'package:boorusama/core/blacklists/blacklisted_tag_view_scaffold.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/widgets/import_export_tag_button.dart';
-import 'blacklisted_tags_notifier.dart';
-import 'blacklisted_tags_notifier_toast.dart';
+import 'providers/blacklisted_tags_notifier.dart';
+import 'providers/blacklisted_tags_notifier_toast.dart';
 
 class DanbooruBlacklistedTagsPage extends ConsumerWidget {
   const DanbooruBlacklistedTagsPage({

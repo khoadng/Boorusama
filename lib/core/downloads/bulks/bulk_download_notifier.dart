@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/filter/filter.dart';
-import 'package:boorusama/core/posts/filter/src/tag_expression.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/posts/sources/source.dart';
 import 'package:boorusama/core/settings/data.dart';

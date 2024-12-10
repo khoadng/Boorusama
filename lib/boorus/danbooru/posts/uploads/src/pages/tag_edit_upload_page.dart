@@ -34,8 +34,8 @@ import '../../../../tags/edit/providers.dart';
 import '../../../../tags/edit/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
-import '../danbooru_upload_post.dart';
-import '../providers.dart';
+import '../providers/providers.dart';
+import '../types/danbooru_upload_post.dart';
 import 'tag_edit_scaffold.dart';
 
 final selectTagEditUploadModeProvider =

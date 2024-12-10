@@ -8,10 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
-import '../../_shared/pool_page_sliver_grid.dart';
-import '../../_shared/providers.dart';
+import '../../_shared/providers/providers.dart';
+import '../../_shared/widgets/pool_page_sliver_grid.dart';
 import '../../pool/pool.dart';
+import '../../search/routes.dart';
 import 'pool_options_header.dart';
 
 class DanbooruPoolPage extends StatelessWidget {
@@ -103,7 +103,7 @@ class PoolSearchButton extends ConsumerWidget {
     return IconButton(
       splashRadius: 24,
       onPressed: () {
-        goToPoolSearchPage(context, ref);
+        goToPoolSearchPage(context);
       },
       icon: const Icon(Symbols.search),
     );

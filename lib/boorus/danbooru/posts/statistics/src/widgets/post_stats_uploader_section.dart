@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
 import 'package:boorusama/core/posts/statistics/widgets.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
-import '../../../../users/creator/creators_notifier.dart';
+import '../../../../users/creator/providers.dart';
+import '../../../../users/user/providers.dart';
 import '../post_stats.dart';
 
 class PostStatsUploaderSection extends ConsumerWidget {
@@ -40,7 +40,8 @@ class PostStatsUploaderSection extends ConsumerWidget {
             return PostStatsTile(
               title: creator?.name ?? e.key,
               value: '${e.value} (${percent.toStringAsFixed(1)}%)',
-              titleColor: creator.getColor(context),
+              titleColor:
+                  DanbooruUserColor.of(context).fromLevel(creator?.level),
             );
           },
         ),

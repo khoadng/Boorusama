@@ -8,10 +8,11 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
+import 'package:boorusama/boorus/danbooru/users/user/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/forums/forum_topic.dart';
-import '../../users/creator/creators_notifier.dart';
+import '../../users/creator/providers.dart';
+import '../../users/details/routes.dart';
 import 'forum_card.dart';
 import 'forum_topic.dart';
 import 'providers.dart';
@@ -106,7 +107,7 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
       responseCount: topic.responseCount,
       createdAt: topic.createdAt,
       creatorName: creatorName,
-      creatorColor: creator.getColor(context),
+      creatorColor: DanbooruUserColor.of(context).fromLevel(creator?.level),
       onCreatorTap: () => goToUserDetailsPage(
         context,
         uid: topic.creatorId,

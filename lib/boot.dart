@@ -20,7 +20,6 @@ import 'package:boorusama/core/boorus/providers.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/src/bootstrap.dart';
 import 'package:boorusama/core/downloads/bulks/notifications.dart';
 import 'package:boorusama/core/http/providers.dart';
 import 'package:boorusama/core/settings.dart';
@@ -198,10 +197,10 @@ Future<void> boot(BootLogger bootLogger) async {
     path: tempPath.path,
   );
 
-  bootLogger.l('Initialize danbooru creator box');
-  final danbooruCreatorBox = await Hive.openBox(
-    '${Uri.encodeComponent(initialConfig?.url ?? 'danbooru')}_creators_v1',
-    path: tempPath.path,
+  final danbooruCreatorBoxOverride = await createCreatorBoxOverride(
+    initialConfig: initialConfig,
+    tempPath: tempPath,
+    bootLogger: bootLogger,
   );
 
   bootLogger.l('Initialize package info');
@@ -291,8 +290,7 @@ Future<void> boot(BootLogger bootLogger) async {
               appInfoProvider.overrideWithValue(appInfo),
               appLoggerProvider.overrideWithValue(appLogger),
               supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-              danbooruCreatorHiveBoxProvider
-                  .overrideWithValue(danbooruCreatorBox),
+              danbooruCreatorBoxOverride,
               miscDataBoxProvider.overrideWithValue(miscDataBox),
               booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
               if (firebaseAnalytics != null)

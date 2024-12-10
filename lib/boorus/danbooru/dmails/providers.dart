@@ -3,9 +3,9 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
 import 'package:boorusama/core/configs/config.dart';
-import '../users/creator/creators_notifier.dart';
+import '../danbooru_provider.dart';
+import '../users/creator/providers.dart';
 import 'dmail.dart';
 
 final danbooruDmailsProvider = FutureProvider.autoDispose

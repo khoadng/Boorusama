@@ -14,8 +14,8 @@ import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
-import '../../../users/level/user_level.dart';
 import '../../../users/user/providers.dart';
+import '../../../users/user/user.dart';
 import '../../favgroups/favgroups/routes.dart';
 import '../../post/post.dart';
 
@@ -58,7 +58,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
         if (ref.watch(isDevEnvironmentProvider))
           if (config.hasLoginDetails())
             ref.watch(danbooruCurrentUserProvider(config)).when(
-                  data: (user) => user?.level.isUnres == true
+                  data: (user) => DanbooruUserLevel.of(user?.level).isUnres
                       ? ValueListenableBuilder(
                           valueListenable: controller.selectedItemsNotifier,
                           builder: (context, selectedPosts, child) {

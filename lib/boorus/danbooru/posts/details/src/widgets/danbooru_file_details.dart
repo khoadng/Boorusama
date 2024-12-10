@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/users/user/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
-import '../../../../router.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
-import '../../../../users/creator/creator.dart';
-import '../../../../users/creator/creators_notifier.dart';
+import '../../../../users/creator/providers.dart';
+import '../../../../users/details/routes.dart';
 import '../../../post/post.dart';
 
 class DanbooruFileDetails extends ConsumerWidget {
@@ -29,6 +29,7 @@ class DanbooruFileDetails extends ConsumerWidget {
         ref.watch(danbooruTagListProvider(ref.watchConfigAuth))[post.id];
     final uploader = ref.watch(danbooruCreatorProvider(post.uploaderId));
     final approver = ref.watch(danbooruCreatorProvider(post.approverId));
+    final userColor = DanbooruUserColor.of(context);
 
     return FileDetailsSection(
       post: post,
@@ -56,7 +57,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: uploader.getColor(context),
+                          color: userColor.fromLevel(uploader.level),
                           fontSize: 14,
                         ),
                       ),
@@ -79,7 +80,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                     approver.name.replaceAll('_', ' '),
                     maxLines: 1,
                     style: TextStyle(
-                      color: uploader.getColor(context),
+                      color: userColor.fromLevel(approver.level),
                       fontSize: 14,
                     ),
                   ),

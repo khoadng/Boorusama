@@ -10,7 +10,6 @@ import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs/failsafe.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/listing/providers.dart';
@@ -24,10 +23,10 @@ import 'package:boorusama/dart.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
-import '../danbooru_upload.dart';
-import '../danbooru_upload_post.dart';
-import '../providers.dart';
-import '../route_utils.dart';
+import '../providers/providers.dart';
+import '../routes/route_utils.dart';
+import '../types/danbooru_upload.dart';
+import '../types/danbooru_upload_post.dart';
 
 enum UploadTabType {
   posted,
@@ -441,6 +440,8 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   }
 
   Widget _buildUploaderChip(BuildContext context, DanbooruUploadPost post) {
+    final theme = Theme.of(context);
+
     return Positioned(
       bottom: 4,
       right: 4,
@@ -450,7 +451,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 2,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.applyOpacity(0.8),
+          color: theme.colorScheme.surface.applyOpacity(0.8),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Builder(
@@ -462,14 +463,14 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                       children: [
                         TextSpan(
                           text: 'By ',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: theme.textTheme.bodySmall,
                         ),
                         TextSpan(
                           text: uploader.name,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: uploader.level.toColor(context),
-                                  ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: DanbooruUserColor.of(context)
+                                .fromUser(uploader),
+                          ),
                         ),
                       ],
                     ),

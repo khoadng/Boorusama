@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/posts/listing/providers.dart';
-import '../../post/src/post.dart';
+import '../../post/post.dart';
 import 'post_count_provider.dart';
 import 'result_counter.dart';
 

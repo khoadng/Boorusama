@@ -4,7 +4,6 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../users/level/user_level.dart';
 import '../../../users/user/user.dart';
 
 class CommentData extends Equatable {

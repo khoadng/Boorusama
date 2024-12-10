@@ -18,8 +18,9 @@ import 'package:boorusama/core/posts/rating/rating.dart';
 import 'package:boorusama/core/settings/data.dart';
 import 'package:boorusama/core/settings/data/listing_provider.dart';
 import '../../post/post.dart';
-import 'explore_repository.dart';
-import 'explore_repository_impl.dart';
+import 'data/explore_repository_cacher.dart';
+import 'data/explore_repository_impl.dart';
+import 'types/explore_repository.dart';
 
 typedef ScaleAndTime = ({
   TimeScale scale,

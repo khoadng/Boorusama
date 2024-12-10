@@ -3,7 +3,7 @@ import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
 import '../users/creator/creator.dart';
-import '../users/level/user_level.dart';
+import '../users/user/user.dart';
 import 'danbooru_post_version.dart';
 
 class DanbooruPostVersionRepository {

@@ -7,10 +7,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/images/interactive_booru_image.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../posts/post/post.dart';
+import '../users/details/routes.dart';
 import 'providers.dart';
 import 'tag_edit_history_card.dart';
 

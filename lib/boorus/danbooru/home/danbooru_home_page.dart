@@ -24,14 +24,20 @@ import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
+import '../artists/search/routes.dart';
 import '../artists/search/widgets.dart';
+import '../blacklist/routes.dart';
+import '../posts/explores/routes.dart';
 import '../posts/explores/widgets.dart';
+import '../posts/favgroups/listing/routes.dart';
 import '../posts/favgroups/listing/widgets.dart';
+import '../posts/pools/listing/routes.dart';
 import '../posts/pools/listing/widgets.dart';
 import '../router.dart';
 import '../saved_searches/feed/saved_search_feed_page.dart';
 import '../tags/trending/providers.dart';
-import '../users/details/user_details_page.dart';
+import '../users/details/routes.dart';
+import '../users/details/widgets.dart';
 import '../users/user/providers.dart';
 
 class DanbooruHomePage extends ConsumerStatefulWidget {
@@ -150,7 +156,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           ),
           title: const Text('Pools'),
           onTap: () {
-            goToPoolPage(context, ref);
+            goToPoolPage(context);
           },
         ),
         SideMenuTile(

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/comments/comment_header.dart';
-import '../../../../users/level/colors.dart';
+import '../../../../users/details/routes.dart';
+import '../../../../users/user/providers.dart';
 import '../comment_data.dart';
 
 class DanbooruCommentHeader extends ConsumerWidget {
@@ -22,7 +22,8 @@ class DanbooruCommentHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CommentHeader(
       authorName: comment.authorName,
-      authorTitleColor: Color(getUserHexColor(comment.authorLevel)),
+      authorTitleColor:
+          DanbooruUserColor.of(context).fromLevel(comment.authorLevel),
       createdAt: comment.createdAt,
       onTap: () => goToUserDetailsPage(
         context,

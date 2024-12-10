@@ -10,10 +10,9 @@ import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../../../../../users/level/user_level.dart';
-import '../../../../../users/user/providers.dart';
-import '../danbooru_favorite_group.dart';
 import '../providers/favorite_groups_notifier.dart';
+import '../types/danbooru_favorite_group.dart';
+import '../wigdets/privacy_toggle.dart';
 
 class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
   const EditFavoriteGroupDialog({
@@ -203,42 +202,6 @@ class _EditFavoriteGroupDialogState
           ),
         ),
       ),
-    );
-  }
-}
-
-class PrivacyToggle extends ConsumerWidget {
-  const PrivacyToggle({
-    super.key,
-    required this.isPrivate,
-    required this.onChanged,
-  });
-
-  final bool isPrivate;
-  final void Function(bool value) onChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-    final currentUser = ref.watch(danbooruCurrentUserProvider(config));
-
-    return BooruAnimatedCrossFade(
-      firstChild: const SizedBox.shrink(),
-      secondChild: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-        title: const Text('favorite_groups.is_private_group_option').tr(),
-        trailing: Switch(
-          value: isPrivate,
-          onChanged: onChanged,
-        ),
-      ),
-      crossFadeState: currentUser.maybeWhen(
-        data: (user) => user != null && isBooruGoldPlusAccount(user.level)
-            ? CrossFadeState.showSecond
-            : CrossFadeState.showFirst,
-        orElse: () => CrossFadeState.showFirst,
-      ),
-      duration: const Duration(milliseconds: 150),
     );
   }
 }

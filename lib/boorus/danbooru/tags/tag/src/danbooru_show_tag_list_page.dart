@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../blacklist/providers.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/tags/favorites/providers.dart';
@@ -13,6 +12,7 @@ import 'package:boorusama/core/tags/tag/tag.dart';
 import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/toast.dart';
+import '../../../blacklist/providers.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {
   const DanbooruShowTagListPage({

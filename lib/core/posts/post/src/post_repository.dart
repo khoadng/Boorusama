@@ -9,7 +9,7 @@ import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/foundation/caching.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/foundation/http.dart';
-import '../../filter/src/filter.dart';
+import '../../filter/filter.dart';
 import 'post.dart';
 
 abstract class PostRepository<T extends Post> {

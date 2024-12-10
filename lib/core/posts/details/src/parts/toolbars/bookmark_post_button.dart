@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/bookmarks/bookmark_provider.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/theme.dart';
-import '../../../../post/src/post.dart';
+import '../../../../post/post.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
   const BookmarkPostButton({

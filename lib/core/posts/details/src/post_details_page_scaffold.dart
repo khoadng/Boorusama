@@ -27,7 +27,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../../post/src/post.dart';
+import '../../post/post.dart';
 import '../../shares/providers.dart';
 import 'post_details_controller.dart';
 import 'post_details_page_view.dart';

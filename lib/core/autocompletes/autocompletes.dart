@@ -10,8 +10,8 @@ import 'package:foundation/foundation.dart';
 import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'package:boorusama/core/tags/tag/providers.dart';
 import 'package:boorusama/core/tags/tag/tag.dart';
-import '../../boorus/danbooru/users/level/colors.dart';
-import '../../boorus/danbooru/users/level/user_level.dart';
+import '../users/providers.dart';
+import '../users/user.dart';
 
 export 'autocomplete_repository.dart';
 
@@ -174,12 +174,15 @@ IList<AutocompleteData> filterNsfw(
 Color? generateAutocompleteTagColor(
   WidgetRef ref,
   BuildContext context,
-  AutocompleteData tag,
-) {
+  AutocompleteData tag, {
+  UserColor? userColor,
+}) {
   if (tag.hasCategory) {
     return ref.watch(tagColorProvider(tag.category!));
   } else if (tag.hasUserLevel) {
-    return Color(getUserHexColor(stringToUserLevel(tag.level)));
+    return userColor != null
+        ? userColor.fromString(tag.label)
+        : DefaultUserColor.of(context).fromString(tag.label);
   }
 
   return null;

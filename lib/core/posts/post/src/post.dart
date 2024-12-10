@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/foundation/image.dart';
 import 'package:boorusama/foundation/video.dart';
-import '../../rating/src/rating.dart';
+import '../../rating/rating.dart';
 import '../../sources/source.dart';
 import 'media_info_mixin.dart';
 

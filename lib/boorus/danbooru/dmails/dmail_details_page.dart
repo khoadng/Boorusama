@@ -7,12 +7,12 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import '../dtext/dtext.dart';
-import '../users/creator/creators_notifier.dart';
+import '../users/creator/providers.dart';
+import '../users/user/providers.dart';
 import 'dmail.dart';
 
 class DanbooruDmailDetailsPage extends ConsumerWidget {
@@ -62,7 +62,8 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                 Text(
                   fromUser?.name ?? 'Anon',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: fromUser?.level.toColor(context),
+                        color: DanbooruUserColor.of(context)
+                            .fromLevel(fromUser?.level),
                       ),
                 ),
               ],
@@ -76,7 +77,8 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                 Text(
                   toUser?.name ?? 'Anon',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: toUser?.level.toColor(context),
+                        color: DanbooruUserColor.of(context)
+                            .fromLevel(toUser?.level),
                       ),
                 ),
               ],

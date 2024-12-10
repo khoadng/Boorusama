@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/core/explores/widgets.dart';
-import '../explore_category.dart';
+import '../types/explore_category.dart';
 import 'danbooru_explore_page.dart';
 import 'explore_hot_page.dart';
 import 'explore_most_viewed_page.dart';

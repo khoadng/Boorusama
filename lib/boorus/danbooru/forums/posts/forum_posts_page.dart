@@ -9,16 +9,16 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/dtext/dtext.dart';
 import 'package:boorusama/core/forums/forum_post.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/foundation/html.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import '../../users/creator/creators_notifier.dart';
-import '../../users/level/user_level.dart';
+import '../../users/creator/providers.dart';
+import '../../users/details/routes.dart';
+import '../../users/user/providers.dart';
+import '../../users/user/user.dart';
 import '../topics/forum_topic.dart';
 import 'forum_post.dart';
 import 'forum_post_header.dart';
@@ -206,7 +206,7 @@ class _VoteChips extends ConsumerWidget {
           label: Text(
             creator?.name.replaceAll('_', ' ') ?? 'User',
             style: TextStyle(
-              color: creator?.level.toColor(context),
+              color: DanbooruUserColor.of(context).fromLevel(creator?.level),
               fontWeight: FontWeight.w500,
             ),
           ),

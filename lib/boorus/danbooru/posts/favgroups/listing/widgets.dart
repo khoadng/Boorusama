@@ -1,3 +1,3 @@
 library;
 
-export 'src/favorite_groups_page.dart';
+export 'src/pages/favorite_groups_page.dart';

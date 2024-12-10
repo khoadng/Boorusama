@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/widgets/widgets.dart';
-import '../../_shared/providers.dart';
+import '../../_shared/providers/providers.dart';
 import '../../pool/pool.dart';
 import 'pool_order_l10n.dart';
 

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/theme.dart';
-import '../../users/level/user_level.dart';
+import '../../users/user/providers.dart';
+import '../../users/user/user.dart';
 
 class ForumPostHeader extends StatelessWidget {
   const ForumPostHeader({
@@ -34,7 +34,7 @@ class ForumPostHeader extends StatelessWidget {
           child: Text(
             authorName.replaceAll('_', ' '),
             style: TextStyle(
-              color: authorLevel?.toColor(context),
+              color: DanbooruUserColor.of(context).fromLevel(authorLevel),
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/notes/notes.dart';
 import 'package:boorusama/core/posts/details/details.dart';
 import 'package:boorusama/core/posts/details/parts.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/router.dart';
+import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';

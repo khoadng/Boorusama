@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/creator/creator.dart';
 import 'package:boorusama/core/theme.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../users/user/providers.dart';
 import 'danbooru_post_version.dart';
 import 'tag_changed_text.dart';
 
@@ -145,7 +145,8 @@ class TagEditHistoryCard extends StatelessWidget {
           version.updater.name.replaceAll('_', ' '),
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: version.updater.getColor(context),
+            color:
+                DanbooruUserColor.of(context).fromLevel(version.updater.level),
           ),
         ),
       ),

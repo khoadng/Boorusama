@@ -24,7 +24,7 @@ import '../../../listing/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
 import '../../favgroups/favgroup.dart';
-import '../../favgroups/src/providers/favorite_groups_notifier.dart';
+import '../../favgroups/providers.dart';
 import 'danbooru_favorite_group_post_mixin.dart';
 
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {

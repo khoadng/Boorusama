@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/users/level/colors.dart';
 import 'package:boorusama/core/theme.dart';
+import '../../../../users/user/providers.dart';
 import '../comment_data.dart';
 
 class ReplyHeader extends StatelessWidget {
@@ -37,7 +37,8 @@ class ReplyHeader extends StatelessWidget {
             '@${comment.authorName}',
             softWrap: true,
             style: TextStyle(
-              color: comment.authorLevel.toColor(context),
+              color:
+                  DanbooruUserColor.of(context).fromLevel(comment.authorLevel),
             ),
           ),
         ],

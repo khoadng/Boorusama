@@ -1,4 +1,4 @@
 library;
 
-export 'src/blacklisted_tags_notifier.dart';
-export 'src/blacklisted_tags_notifier_toast.dart';
+export 'src/providers/blacklisted_tags_notifier.dart';
+export 'src/providers/blacklisted_tags_notifier_toast.dart';

@@ -1,5 +1,4 @@
 library;
 
-export 'src/providers.dart';
-export 'src/query_utils.dart';
-export 'src/routes_utils.dart';
+export 'src/types/query_utils.dart';
+export 'src/routes/routes_utils.dart';

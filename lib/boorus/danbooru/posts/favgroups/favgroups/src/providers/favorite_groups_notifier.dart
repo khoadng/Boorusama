@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
-import '../../../../../users/level/user_level.dart';
 import '../../../../../users/user/providers.dart';
-import '../../../listing/src/post_previews_notifier.dart';
+import '../../../../../users/user/user.dart';
+import '../../../listing/providers.dart';
 import '../../favgroup.dart';
-import '../update_order.dart';
+import '../types/update_order.dart';
 import 'local_providers.dart';
 
 final danbooruFavoriteGroupsProvider = NotifierProvider.family<

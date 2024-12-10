@@ -12,7 +12,7 @@ import 'package:video_player/video_player.dart';
 import 'package:boorusama/core/videos/video_progress.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/widgets/widgets.dart';
-import '../../post/src/post.dart';
+import '../../post/post.dart';
 
 class PostDetailsController<T extends Post> extends ChangeNotifier {
   PostDetailsController({

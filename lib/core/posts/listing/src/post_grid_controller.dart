@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/filter/filter.dart';
-import 'package:boorusama/core/posts/filter/src/tag_expression.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/error.dart';

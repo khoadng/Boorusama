@@ -1,5 +1,5 @@
 // Project imports:
-import '../../post/src/post.dart';
+import '../../post/post.dart';
 import '../../sources/source.dart';
 import 'check_tag.dart';
 import 'tag_expression.dart';
