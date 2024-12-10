@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/blacklisted_tag.dart';
-import '../../../../../foundation/toast.dart';
+import '../../../../../core/foundation/toast.dart';
 import 'blacklisted_tags_notifier.dart';
 
 extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {

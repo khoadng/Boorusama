@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../boorus/booru_builder.dart';
 import '../boorus/entry_page.dart';
+import '../core/app_rating/app_rating.dart';
 import '../core/applock/applock.dart';
 import '../core/blacklists/blacklisted_tag_page.dart';
 import '../core/bookmarks/widgets/bookmark_details_page.dart';
@@ -20,7 +21,6 @@ import '../core/posts/details/details.dart';
 import '../core/posts/post/post.dart';
 import '../core/tags/favorites/routes.dart';
 import '../core/widgets/widgets.dart';
-import '../foundation/rating/rating.dart';
 import '../router.dart';
 import '../widgets/widgets.dart';
 

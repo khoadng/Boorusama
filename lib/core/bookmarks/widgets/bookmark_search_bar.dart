@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:searchfield/searchfield.dart';
 
 // Project imports:
-import '../../../foundation/display.dart';
-import '../../../foundation/html.dart';
+import '../../foundation/display.dart';
+import '../../foundation/html.dart';
 import '../../theme.dart';
 import 'providers.dart';
 

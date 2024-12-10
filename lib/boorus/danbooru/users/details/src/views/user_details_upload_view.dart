@@ -7,14 +7,13 @@ import 'package:foundation/foundation.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/posts/details/parts.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../dart.dart';
-import '../../../../../../foundation/platform.dart';
+import '../../../../../../core/utils/flutter_utils.dart';
 import '../../../../../../router.dart';
-import '../../../../../../utils/flutter_utils.dart';
 import '../../../../../../widgets/widgets.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../tags/related/related.dart';
@@ -219,7 +218,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                         text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).brightness.isLight
-                                  ? Colors.white.applyOpacity(0.85)
+                                  ? Colors.white.withOpacity(0.85)
                                   : null,
                             ),
                       ),

@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../dart.dart';
-import '../../../../foundation/display.dart';
+import '../../../foundation/display.dart';
+import '../../../utils/statistics.dart';
 import 'post_stats.dart';
 import 'post_stats_display.dart';
 

@@ -9,10 +9,10 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import '../../app.dart';
-import '../../foundation/display.dart';
-import '../../foundation/platform.dart';
 import '../cache/providers.dart';
 import '../configs/widgets.dart';
+import '../foundation/display.dart';
+import '../foundation/platform.dart';
 import '../settings.dart';
 import '../settings/data.dart';
 import '../theme.dart';

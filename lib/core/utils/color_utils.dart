@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import '../core/theme.dart';
+import '../theme.dart';
 
 typedef ChipColors = ({
   Color foregroundColor,
@@ -71,7 +71,7 @@ extension ColorX on Color {
 
   String get hexWithoutAlpha => ColorUtils.colorToHex(this);
 
-  Color applyOpacity(final double opacity) {
+  Color withOpacity(final double opacity) {
     return withOpacity(opacity);
   }
 }

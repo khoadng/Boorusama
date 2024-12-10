@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/caching.dart';
-import '../../../../foundation/error.dart';
-import '../../../../foundation/http.dart';
+import '../../../foundation/caching.dart';
+import '../../../foundation/error.dart';
+import '../../../foundation/http.dart';
 import '../../../search/query_composer.dart';
 import '../../../search/selected_tags.dart';
 import '../../../settings.dart';

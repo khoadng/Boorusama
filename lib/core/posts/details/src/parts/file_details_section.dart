@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/clipboard.dart';
+import '../../../../foundation/clipboard.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../../../rating/rating.dart';

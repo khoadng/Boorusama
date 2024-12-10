@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../loggers.dart';
-import '../path.dart';
+import '../../../foundation/loggers.dart';
+import '../../../foundation/path.dart';
 import 'dio_response.dart';
 
 const _kImageExtensions = {

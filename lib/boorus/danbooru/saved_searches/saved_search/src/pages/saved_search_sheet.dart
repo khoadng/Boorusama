@@ -14,9 +14,9 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import '../../../../../../core/theme.dart';
+import '../../../../../../core/utils/stream/text_editing_controller_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../router.dart';
-import '../../../../../../utils/stream/text_editing_controller_utils.dart';
 import '../types/saved_search.dart';
 
 class SavedSearchSheet extends ConsumerStatefulWidget {

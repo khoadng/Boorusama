@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/platform.dart';
+import '../foundation/platform.dart';
 
 class NetworkUnavailableIndicator extends StatelessWidget {
   const NetworkUnavailableIndicator({

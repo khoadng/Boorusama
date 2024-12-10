@@ -10,12 +10,12 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import '../../../foundation/clipboard.dart';
 import '../../../router.dart';
-import '../../../utils/flutter_utils.dart';
 import '../../configs/ref.dart';
+import '../../foundation/clipboard.dart';
 import '../../images/booru_image.dart';
 import '../../theme.dart';
+import '../../utils/flutter_utils.dart';
 import '../../widgets/widgets.dart';
 import '../l10n.dart';
 import 'bulk_download_notifier.dart';

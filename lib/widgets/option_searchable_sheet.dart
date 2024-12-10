@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../foundation/display.dart';
-import '../foundation/platform.dart';
+import '../core/foundation/display.dart';
+import '../core/foundation/platform.dart';
 
 class OptionSearchableSheet<T extends Object> extends StatefulWidget {
   const OptionSearchableSheet({

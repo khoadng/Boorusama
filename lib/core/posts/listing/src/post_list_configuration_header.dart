@@ -8,10 +8,10 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../dart.dart';
-import '../../../../foundation/display.dart';
-import '../../../../utils/flutter_utils.dart';
+import '../../../foundation/display.dart';
 import '../../../theme.dart';
+import '../../../utils/flutter_utils.dart';
+import '../../../utils/int_utils.dart';
 
 typedef HiddenData = ({
   String name,

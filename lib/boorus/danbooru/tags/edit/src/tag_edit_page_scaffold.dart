@@ -10,10 +10,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
+import '../../../../../core/foundation/display.dart';
+import '../../../../../core/foundation/scrolling.dart';
 import '../../../../../core/images/interactive_booru_image.dart';
 import '../../../../../core/settings/data.dart';
-import '../../../../../foundation/display.dart';
-import '../../../../../foundation/scrolling.dart';
 import '../../../../../router.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
+import '../../../foundation/loggers.dart';
 import 'data/search_history_hive_object.dart';
 import 'data/search_history_repository.dart';
 import 'providers.dart';

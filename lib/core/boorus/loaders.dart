@@ -6,7 +6,7 @@ import 'package:http/http.dart';
 import 'package:yaml/yaml.dart';
 
 // Project imports:
-import '../../foundation/loggers.dart';
+import '../foundation/loggers.dart';
 import 'booru.dart';
 import 'booru_factory.dart';
 

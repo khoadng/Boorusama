@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../../dart.dart';
 import '../../../../../router.dart';
 import '../../../../../widgets/widgets.dart';
 import '../../../../images/booru_image.dart';
@@ -137,7 +136,7 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
           color: Theme.of(context)
               .colorScheme
               .surfaceContainerHigh
-              .applyOpacity(0.5),
+              .withOpacity(0.5),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),

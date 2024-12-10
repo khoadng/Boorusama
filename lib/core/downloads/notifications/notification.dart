@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
+import '../../foundation/platform.dart';
 
 class NotificationError {
   NotificationError(this.message);

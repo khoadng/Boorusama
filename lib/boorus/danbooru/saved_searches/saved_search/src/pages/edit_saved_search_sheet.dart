@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../foundation/animations.dart';
-import '../../../../../../foundation/toast.dart';
+import '../../../../../../core/foundation/animations.dart';
+import '../../../../../../core/foundation/toast.dart';
 import '../providers/saved_searches_notifier.dart';
 import '../types/saved_search.dart';
 import 'saved_search_sheet.dart';

@@ -2,8 +2,8 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../../foundation/loggers.dart';
 import '../../boorus.dart';
+import '../../foundation/loggers.dart';
 import 'booru_config.dart';
 import 'data/booru_config_repository_hive.dart';
 

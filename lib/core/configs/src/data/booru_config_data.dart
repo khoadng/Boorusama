@@ -2,10 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../dart.dart';
 import '../../../boorus/booru_type.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
+import '../../../utils/int_utils.dart';
 import '../gestures.dart';
 import '../rating_parser.dart';
 import '../types.dart';

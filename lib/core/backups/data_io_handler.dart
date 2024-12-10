@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/device_info.dart';
-import '../../foundation/path.dart';
-import '../../foundation/permissions.dart';
+import '../foundation/path.dart';
+import '../foundation/permissions.dart';
+import '../info/device_info.dart';
 import 'data_converter.dart';
 import 'types.dart';
 

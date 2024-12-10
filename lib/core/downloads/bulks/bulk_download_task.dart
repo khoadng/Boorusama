@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
+import '../../foundation/platform.dart';
 import '../../settings.dart';
 import '../path/validator.dart';
 

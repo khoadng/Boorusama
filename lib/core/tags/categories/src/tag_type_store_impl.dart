@@ -2,9 +2,9 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../../../foundation/path.dart';
-import '../../../../foundation/platform.dart';
 import '../../../boorus.dart';
+import '../../../foundation/path.dart';
+import '../../../foundation/platform.dart';
 import 'tag_type_store.dart';
 
 /// This class is a kitchen sink for all sites, use as last resort

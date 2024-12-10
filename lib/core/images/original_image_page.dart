@@ -7,11 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../dart.dart';
-import '../../foundation/display.dart';
-import '../../foundation/mobile.dart';
 import '../../widgets/widgets.dart';
 import '../configs/ref.dart';
+import '../foundation/display.dart';
+import '../foundation/mobile.dart';
 import '../http/providers.dart';
 import '../posts/post/post.dart';
 import 'dio_extended_image.dart';
@@ -171,7 +170,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                       alignment: Alignment.topCenter,
                       colors: <Color>[
                         const Color.fromARGB(60, 0, 0, 0),
-                        Colors.black12.applyOpacity(0),
+                        Colors.black12.withOpacity(0),
                       ],
                     )
                   : null,

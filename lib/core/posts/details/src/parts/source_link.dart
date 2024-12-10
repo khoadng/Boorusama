@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../foundation/clipboard.dart';
-import '../../../../../foundation/url_launcher.dart';
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/url_launcher.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({

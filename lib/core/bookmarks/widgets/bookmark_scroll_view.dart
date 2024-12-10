@@ -11,11 +11,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../foundation/display.dart';
-import '../../../foundation/url_launcher.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../../configs/ref.dart';
+import '../../foundation/display.dart';
+import '../../foundation/url_launcher.dart';
 import '../../images/booru_image.dart';
 import '../../settings/data/listing_provider.dart';
 import '../../widgets/widgets.dart';

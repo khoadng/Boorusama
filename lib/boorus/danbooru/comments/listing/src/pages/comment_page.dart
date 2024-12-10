@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../dart.dart';
+import '../../../../../../core/utils/duration_utils.dart';
 import '../../../../../../router.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';

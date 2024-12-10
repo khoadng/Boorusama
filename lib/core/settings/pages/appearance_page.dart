@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
 import '../../../router.dart';
+import '../../foundation/platform.dart';
 import '../../theme.dart';
 import '../data/settings_providers.dart';
 import '../settings.dart';

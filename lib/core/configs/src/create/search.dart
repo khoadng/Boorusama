@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../dart.dart';
 import '../../../../router.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../search/query_composer_providers.dart';
@@ -82,7 +81,7 @@ class BooruConfigSearchView extends ConsumerWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .applyOpacity(0.8),
+                        .withOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -110,7 +109,7 @@ class BooruConfigSearchView extends ConsumerWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .applyOpacity(0.8),
+                        .withOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -290,10 +289,10 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer.applyOpacity(0.6),
+        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.applyOpacity(0.6),
+          color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.6),
           width: 0.5,
         ),
       ),
@@ -321,7 +320,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurfaceVariant
-                          .applyOpacity(0.6),
+                          .withOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

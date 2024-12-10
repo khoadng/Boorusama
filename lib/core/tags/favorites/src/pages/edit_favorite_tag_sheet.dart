@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import '../../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../../theme.dart';
+import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../../widgets/widgets.dart';
 import '../favorite_tag.dart';
 

@@ -12,12 +12,12 @@ import 'package:foundation/foundation.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
-import '../../../foundation/media_scanner.dart';
-import '../../../foundation/path.dart';
-import '../../../foundation/platform.dart';
 import '../../../router.dart';
 import '../../boorus.dart';
 import '../../configs/ref.dart';
+import '../../foundation/media_scanner.dart';
+import '../../foundation/path.dart';
+import '../../foundation/platform.dart';
 import '../l10n.dart';
 import '../manager/download_tasks_notifier.dart';
 import '../path/download_path.dart';

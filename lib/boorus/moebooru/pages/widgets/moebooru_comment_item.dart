@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/comments/comment_header.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/dtext/dtext.dart';
-import '../../../../foundation/html.dart';
+import '../../../../core/foundation/html.dart';
 import '../../feats/comments/comments.dart';
 
 class MoebooruCommentItem extends ConsumerWidget {

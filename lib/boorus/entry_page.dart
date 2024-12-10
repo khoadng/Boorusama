@@ -14,15 +14,15 @@ import '../core/configs/manage.dart';
 import '../core/configs/ref.dart';
 import '../core/configs/widgets.dart';
 import '../core/downloads/notifications.dart';
+import '../core/foundation/display.dart';
+import '../core/foundation/permissions.dart';
+import '../core/foundation/platform.dart';
+import '../core/foundation/toast.dart';
 import '../core/home/empty_booru_config_home_page.dart';
 import '../core/settings.dart';
 import '../core/settings/data.dart';
 import '../core/theme.dart';
 import '../core/widgets/widgets.dart';
-import '../foundation/display.dart';
-import '../foundation/permissions.dart';
-import '../foundation/platform.dart';
-import '../foundation/toast.dart';
 import 'booru_builder.dart';
 
 class EntryPage extends ConsumerStatefulWidget {

@@ -10,13 +10,6 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/device_info.dart';
-import '../../../foundation/package_info.dart';
-import '../../../foundation/path.dart' as p;
-import '../../../foundation/picker.dart';
-import '../../../foundation/platform.dart';
-import '../../../foundation/toast.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../../blacklists/providers.dart';
@@ -24,6 +17,13 @@ import '../../bookmarks/bookmark_provider.dart';
 import '../../bookmarks/widgets/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/manage.dart';
+import '../../foundation/clipboard.dart';
+import '../../foundation/path.dart' as p;
+import '../../foundation/picker.dart';
+import '../../foundation/platform.dart';
+import '../../foundation/toast.dart';
+import '../../info/device_info.dart';
+import '../../info/package_info.dart';
 import '../../tags/favorites/providers.dart';
 import '../../theme.dart';
 import '../../widgets/widgets.dart';

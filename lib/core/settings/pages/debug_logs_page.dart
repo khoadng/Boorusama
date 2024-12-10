@@ -11,13 +11,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import '../../../foundation/animations.dart';
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/loggers.dart';
-import '../../../foundation/scrolling.dart';
-import '../../../foundation/toast.dart';
 import '../../../widgets/widgets.dart';
 import '../../downloads/path.dart';
+import '../../foundation/animations.dart';
+import '../../foundation/clipboard.dart';
+import '../../foundation/loggers.dart';
+import '../../foundation/scrolling.dart';
+import '../../foundation/toast.dart';
 import '../../theme.dart';
 import '../../widgets/widgets.dart';
 import '../data/settings_providers.dart';

@@ -7,10 +7,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/html.dart';
-import '../../../../../foundation/url_launcher.dart';
 import '../../../../artists/artists.dart';
 import '../../../../comments/comment_parser.dart';
+import '../../../../foundation/html.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../sources/source.dart';
 import 'source_link.dart';

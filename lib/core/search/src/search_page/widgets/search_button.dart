@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-// Project imports:
-import '../../../../../dart.dart';
-
 class SearchButton extends ConsumerWidget {
   const SearchButton({
     super.key,
@@ -44,7 +41,7 @@ class SearchButton2 extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? Theme.of(context).colorScheme.onSurface.applyOpacity(0.1)
+            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
             : Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(

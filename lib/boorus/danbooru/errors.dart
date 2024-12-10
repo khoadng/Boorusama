@@ -1,5 +1,5 @@
 // Project imports:
-import '../../foundation/error.dart';
+import '../../core/foundation/error.dart';
 
 String translateBooruError(BooruError error) => switch (error) {
       final AppError e => switch (e.type) {

@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/html.dart';
 import '../comments/comment.dart';
 import '../comments/comment_header.dart';
 import '../configs/config.dart';
 import '../configs/ref.dart';
 import '../dtext/dtext.dart';
+import '../foundation/html.dart';
 import '../widgets/widgets.dart';
 
 typedef CommentFetcher = Future<List<Comment>> Function(int postId);

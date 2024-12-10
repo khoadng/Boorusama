@@ -9,10 +9,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../boorus/booru_builder.dart';
-import '../../../../foundation/animations.dart';
-import '../../../../foundation/display.dart';
 import '../../../../widgets/mobile_config_tile.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../foundation/animations.dart';
+import '../../../foundation/display.dart';
 import '../../../settings.dart';
 import '../../../settings/data.dart';
 import '../../../settings/data/listing_provider.dart';

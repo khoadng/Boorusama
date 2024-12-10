@@ -6,8 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/path.dart';
 import '../../configs/config.dart';
+import '../../foundation/path.dart';
 import '../../settings.dart';
 import 'metadata.dart';
 

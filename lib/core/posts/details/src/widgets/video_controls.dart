@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../dart.dart';
-import '../../../../../foundation/display.dart';
+import '../../../../foundation/display.dart';
 import '../../../../theme.dart';
 import '../../../../videos/more_options_control_button.dart';
 import '../../../../videos/play_pause_button.dart';
@@ -56,7 +55,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           child: IgnorePointer(
             child: Container(
               decoration: BoxDecoration(
-                color: surfaceColor.applyOpacity(0.8),
+                color: surfaceColor.withOpacity(0.8),
               ),
             ),
           ),
@@ -133,7 +132,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                                 backgroundColor: Theme.of(context)
                                     .colorScheme
                                     .hintColor
-                                    .applyOpacity(0.2),
+                                    .withOpacity(0.2),
                                 playedColor:
                                     Theme.of(context).colorScheme.primary,
                                 bufferedColor:

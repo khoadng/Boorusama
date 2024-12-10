@@ -11,10 +11,10 @@ import 'package:equatable/equatable.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
-import '../../../../foundation/mobile.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/mobile.dart';
+import '../../../foundation/platform.dart';
 import '../../../settings.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';

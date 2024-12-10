@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import '../../dart.dart';
 import '../images/booru_image.dart';
+import '../utils/duration_utils.dart';
 
 //TODO: implement caching video
 class BooruVideo extends StatefulWidget {

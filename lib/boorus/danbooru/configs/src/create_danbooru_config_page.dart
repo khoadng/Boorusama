@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../core/configs/config.dart';
 import '../../../../core/configs/create.dart';
+import '../../../../core/foundation/url_launcher.dart';
 import '../../../../core/theme.dart';
-import '../../../../foundation/url_launcher.dart';
 import '../../users/user/user.dart';
 import 'hide_deleted_switch.dart';
 

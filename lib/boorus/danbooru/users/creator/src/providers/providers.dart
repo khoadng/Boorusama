@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config.dart';
-import '../../../../../../foundation/loggers.dart';
+import '../../../../../../core/foundation/loggers.dart';
 
 final danbooruCreatorHiveBoxProvider = Provider<Box>((ref) {
   throw UnimplementedError();

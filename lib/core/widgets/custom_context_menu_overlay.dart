@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 
 // Project imports:
-import '../../dart.dart';
-import '../../foundation/display.dart';
+import '../foundation/display.dart';
 
 class CustomContextMenuOverlay extends StatelessWidget {
   const CustomContextMenuOverlay({
@@ -84,7 +83,7 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                             : Theme.of(context)
                                 .colorScheme
                                 .onSurfaceVariant
-                                .applyOpacity(0.75),
+                                .withOpacity(0.75),
                       ),
                 ),
         ),

@@ -5,13 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/configs/config.dart';
+import '../../core/foundation/path.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/query_composer_providers.dart';
 import '../../core/settings/data/listing_provider.dart';
-import '../../foundation/path.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {

@@ -7,7 +7,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../dart.dart';
 import '../../../../../widgets/widgets.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/data.dart';
@@ -143,8 +142,8 @@ class PostTagListChip extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 11,
                         color: Theme.of(context).brightness.isLight
-                            ? Colors.white.applyOpacity(0.85)
-                            : Colors.grey.applyOpacity(0.85),
+                            ? Colors.white.withOpacity(0.85)
+                            : Colors.grey.withOpacity(0.85),
                       ),
                 ),
             ],

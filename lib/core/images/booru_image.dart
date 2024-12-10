@@ -8,9 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../dart.dart';
-import '../../foundation/http.dart';
 import '../configs/ref.dart';
+import '../foundation/http.dart';
 import '../http/providers.dart';
 import 'dio_extended_image.dart';
 import 'providers.dart';
@@ -251,10 +250,8 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHigh
-            .applyOpacity(0.5),
+        color:
+            Theme.of(context).colorScheme.surfaceContainerHigh.withOpacity(0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(

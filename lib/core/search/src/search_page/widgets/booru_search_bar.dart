@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../dart.dart';
 import '../../../../widgets/widgets.dart';
 
 class BooruSearchBar extends StatefulWidget {
@@ -118,7 +117,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurfaceVariant
-                        .applyOpacity(0.5),
+                        .withOpacity(0.5),
                   ),
                 ),
                 autofocus: widget.autofocus,

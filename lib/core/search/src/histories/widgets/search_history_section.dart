@@ -6,9 +6,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
-import '../../../../../foundation/platform.dart';
 import '../../../../../widgets/widgets.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/platform.dart';
 import '../search_history.dart';
 
 class SearchHistorySection extends StatelessWidget {

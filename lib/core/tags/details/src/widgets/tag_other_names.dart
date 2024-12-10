@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../foundation/clipboard.dart';
-import '../../../../../foundation/display.dart';
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/display.dart';
 import '../../../../theme.dart';
 import '../../../tag/widgets.dart';
 

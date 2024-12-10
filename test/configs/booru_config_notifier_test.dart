@@ -13,9 +13,9 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/src/booru_config_converter.dart';
+import 'package:boorusama/core/foundation/loggers.dart';
 import 'package:boorusama/core/settings.dart';
 import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/loggers.dart';
 import '../riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {

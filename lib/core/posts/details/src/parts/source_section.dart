@@ -6,8 +6,8 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/url_launcher.dart';
 import '../../../../../widgets/widgets.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../../../sources/source.dart';

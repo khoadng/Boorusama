@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
 // Project imports:
-import '../platform.dart';
+import '../../foundation/platform.dart';
 
 class RateMyAppScope extends StatelessWidget {
   const RateMyAppScope({

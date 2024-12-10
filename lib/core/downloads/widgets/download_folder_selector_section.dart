@@ -6,11 +6,11 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../foundation/device_info.dart';
-import '../../../foundation/html.dart';
-import '../../../foundation/picker.dart';
-import '../../../foundation/platform.dart';
 import '../../../widgets/widgets.dart';
+import '../../foundation/html.dart';
+import '../../foundation/picker.dart';
+import '../../foundation/platform.dart';
+import '../../info/device_info.dart';
 import '../../theme.dart';
 import '../l10n.dart';
 import '../path/validator.dart';

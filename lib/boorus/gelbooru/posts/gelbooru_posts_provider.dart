@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
+import '../../../core/foundation/caching/lru_cacher.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/search/query_composer_providers.dart';
 import '../../../core/settings/data/listing_provider.dart';
-import '../../../foundation/caching/lru_cacher.dart';
 import '../gelbooru.dart';
 
 final gelbooruPostRepoProvider =

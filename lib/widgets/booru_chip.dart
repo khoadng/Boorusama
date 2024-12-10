@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../core/settings/data.dart';
 import '../core/theme/utils.dart';
-import '../dart.dart';
+import '../core/utils/color_utils.dart';
 
 class BooruChip extends ConsumerWidget {
   const BooruChip({

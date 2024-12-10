@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
+import '../../foundation/platform.dart';
 
 enum DownloadDirectoryError {
   directoryNotFound,

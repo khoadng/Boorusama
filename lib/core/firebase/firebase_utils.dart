@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // Project imports:
-import '../../foundation/error.dart';
-import '../../foundation/platform.dart';
 import '../analytics.dart';
+import '../foundation/error.dart';
+import '../foundation/platform.dart';
 import '../settings.dart';
 import 'firebase_analytics.dart';
 import 'firebase_crashlytics.dart';

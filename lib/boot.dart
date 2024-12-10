@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
@@ -31,7 +32,17 @@ import 'core/configs/current.dart';
 import 'core/configs/manage.dart';
 import 'core/downloads/bulks/notifications.dart';
 import 'core/downloads/notifications.dart';
+import 'core/foundation/error.dart';
+import 'core/foundation/http.dart';
+import 'core/foundation/loggers.dart';
+import 'core/foundation/mobile.dart';
+import 'core/foundation/path.dart';
+import 'core/foundation/platform.dart';
+import 'core/foundation/windows.dart' as window;
 import 'core/http/providers.dart';
+import 'core/info/app_info.dart';
+import 'core/info/device_info.dart';
+import 'core/info/package_info.dart';
 import 'core/search/boot.dart';
 import 'core/settings.dart';
 import 'core/settings/data.dart';
@@ -39,18 +50,8 @@ import 'core/tags/categories/providers.dart';
 import 'core/tags/configs/providers.dart';
 import 'core/tags/favorites/providers.dart';
 import 'core/tracking.dart';
+import 'core/utils/file_utils.dart';
 import 'core/widgets/widgets.dart';
-import 'dart.dart';
-import 'foundation/app_info.dart';
-import 'foundation/device_info.dart';
-import 'foundation/error.dart';
-import 'foundation/http.dart';
-import 'foundation/loggers.dart';
-import 'foundation/mobile.dart';
-import 'foundation/package_info.dart';
-import 'foundation/path.dart';
-import 'foundation/platform.dart';
-import 'foundation/windows.dart' as window;
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =

@@ -9,8 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import '../../../../foundation/platform.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../foundation/platform.dart';
 import '../../../videos/video_progress.dart';
 import '../../post/post.dart';
 

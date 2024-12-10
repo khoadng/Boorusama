@@ -7,12 +7,11 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../dart.dart';
-import '../../../../foundation/display.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
+import '../../../foundation/display.dart';
 import '../queries/query_utils.dart';
 import '../suggestions/suggestions_notifier.dart';
 import '../suggestions/tag_suggestion_items.dart';
@@ -244,7 +243,7 @@ class _AddButton extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? Theme.of(context).colorScheme.onSurface.applyOpacity(0.1)
+            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
             : Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(

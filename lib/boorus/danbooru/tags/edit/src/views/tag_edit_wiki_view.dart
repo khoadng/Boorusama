@@ -6,13 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/settings/data.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
-import '../../../../../../dart.dart';
-import '../../../../../../foundation/platform.dart';
 import '../../../../../../widgets/widgets.dart';
 import '../../../related/providers.dart';
 
@@ -176,7 +175,7 @@ class _RelatedTagChips extends ConsumerWidget {
                           color: Theme.of(context).brightness.isLight
                               ? !selected
                                   ? null
-                                  : Colors.white.applyOpacity(0.85)
+                                  : Colors.white.withOpacity(0.85)
                               : Theme.of(context).colorScheme.hintColor,
                         ),
                   ),

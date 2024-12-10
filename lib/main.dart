@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'boot.dart';
-import 'foundation/loggers.dart';
+import 'core/foundation/loggers.dart';
 
 void main() async {
   final bootLogger = BootLogger();

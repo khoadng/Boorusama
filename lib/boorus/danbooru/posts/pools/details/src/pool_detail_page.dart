@@ -10,11 +10,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/foundation/html.dart';
+import '../../../../../../core/foundation/url_launcher.dart';
+import '../../../../../../core/utils/html_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../../foundation/html.dart';
-import '../../../../../../foundation/url_launcher.dart';
 import '../../../../../../router.dart';
-import '../../../../../../utils/html_utils.dart';
 import '../../pool/pool.dart';
 import 'providers/providers.dart';
 import 'types/query_utils.dart';

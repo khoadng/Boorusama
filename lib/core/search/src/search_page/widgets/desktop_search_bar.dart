@@ -10,10 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
-import '../../../../../foundation/platform.dart';
 import '../../../../autocompletes/autocompletes.dart';
 import '../../../../configs/ref.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/platform.dart';
 import '../../histories/providers.dart';
 import '../../queries/query_utils.dart';
 import '../../selected_tags/selected_tag_controller.dart';

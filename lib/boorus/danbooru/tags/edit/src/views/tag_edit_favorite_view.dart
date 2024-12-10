@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/cache/providers.dart';
+import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/tags/favorites/favorited.dart';
 import '../../../../../../core/tags/favorites/widgets.dart';
-import '../../../../../../foundation/platform.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =
     'tag_edit_favorite_view_selected_label';

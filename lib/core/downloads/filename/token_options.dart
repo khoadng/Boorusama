@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../dart.dart';
+import '../../utils/number_utils.dart';
 
 class DownloadFilenameTokenOptions extends Equatable {
   const DownloadFilenameTokenOptions({

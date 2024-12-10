@@ -11,7 +11,7 @@ import '../../boorus/booru_builder.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
-import '../../foundation/display.dart';
+import '../../core/foundation/display.dart';
 import '../../router.dart';
 import '../../widgets/widgets.dart';
 

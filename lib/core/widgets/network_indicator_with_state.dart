@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/networking.dart';
 import '../../widgets/widgets.dart';
+import '../foundation/networking.dart';
 import 'widgets.dart';
 
 class NetworkUnavailableIndicatorWithState extends ConsumerWidget {

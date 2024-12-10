@@ -7,7 +7,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/booru_builder.dart';
-import '../../../../dart.dart';
 import '../../../../widgets/option_dropdown_button.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../theme.dart';
@@ -411,7 +410,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
             'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color:
-                      Theme.of(context).colorScheme.onSurface.applyOpacity(0.6),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                 ),
           ),
           const SizedBox(height: 8),

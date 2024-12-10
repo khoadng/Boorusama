@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Project imports:
-import '../../../../foundation/platform.dart';
+import '../../../foundation/platform.dart';
 
 class BulkDownloadNotifications {
   BulkDownloadNotifications._(

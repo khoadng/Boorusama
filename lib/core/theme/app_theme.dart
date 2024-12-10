@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
+import '../foundation/display.dart';
 import 'colors.dart';
 import 'extended_color_scheme.dart';
 import 'grayscale_shades.dart';

@@ -2,10 +2,10 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/clipboard.dart';
 import '../../../backups/data_converter.dart';
 import '../../../backups/data_io_handler.dart';
 import '../../../backups/types.dart';
+import '../../../foundation/clipboard.dart';
 import '../booru_config.dart';
 import 'booru_config_export_data.dart';
 

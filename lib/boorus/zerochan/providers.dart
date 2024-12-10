@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/ref.dart';
+import '../../core/foundation/loggers.dart';
+import '../../core/foundation/path.dart' as path;
 import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
@@ -14,8 +16,6 @@ import '../../core/search/query_composer_providers.dart';
 import '../../core/settings/data/listing_provider.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/tag.dart';
-import '../../foundation/loggers.dart';
-import '../../foundation/path.dart' as path;
 import 'zerochan_post.dart';
 
 final zerochanClientProvider =

@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../core/utils/flutter_utils.dart';
 import '../../../../../../router.dart';
-import '../../../../../../utils/flutter_utils.dart';
 import '../../../artist/artist.dart';
 import '../../../urls/widgets.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../foundation/display.dart';
+import '../../../../../../core/foundation/display.dart';
 
 class TagEditTagTile extends StatefulWidget {
   const TagEditTagTile({

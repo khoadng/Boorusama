@@ -4,11 +4,11 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/providers.dart';
-import '../../../../foundation/debounce_mixin.dart';
 import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../../configs/ref.dart';
+import '../../../foundation/debounce_mixin.dart';
 import '../../../tags/categories/providers.dart';
 import '../../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';

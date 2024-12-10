@@ -1,5 +1,5 @@
 // Project imports:
-import '../../foundation/caching.dart';
+import '../foundation/caching.dart';
 
 enum CommentVoteState {
   unvote,

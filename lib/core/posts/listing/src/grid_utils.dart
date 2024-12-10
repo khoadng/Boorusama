@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../foundation/display.dart';
+import '../../../foundation/display.dart';
 import '../../../settings.dart';
 
 int calculateGridCount(double width, GridSize size) {

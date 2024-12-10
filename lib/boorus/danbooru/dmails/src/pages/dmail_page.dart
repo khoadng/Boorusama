@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
-import '../../../../../dart.dart';
 import '../../../../../widgets/widgets.dart';
 import '../../../danbooru_provider.dart';
 import '../../../users/creator/providers.dart';
@@ -95,7 +94,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                 fromUser?.name ?? '...',
                                 style: dmail.isRead
                                     ? TextStyle(
-                                        color: color.applyOpacity(0.7),
+                                        color: color.withOpacity(0.7),
                                       )
                                     : TextStyle(
                                         color: color,

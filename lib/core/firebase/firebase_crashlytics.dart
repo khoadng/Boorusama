@@ -8,9 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
-import '../../foundation/error.dart';
-import '../../foundation/package_info.dart';
-import '../../foundation/platform.dart';
+import '../foundation/error.dart';
+import '../foundation/platform.dart';
+import '../info/package_info.dart';
 
 class FirebaseCrashlyticsReporter implements ErrorReporter {
   @override

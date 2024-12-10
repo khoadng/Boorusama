@@ -2,8 +2,8 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/error.dart';
-import '../../foundation/http.dart';
+import '../foundation/error.dart';
+import '../foundation/http.dart';
 
 abstract class ForumTopic {
   int get id;

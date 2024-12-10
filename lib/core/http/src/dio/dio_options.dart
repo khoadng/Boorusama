@@ -2,9 +2,9 @@
 import 'dart:io';
 
 // Project imports:
-import '../../foundation/loggers.dart';
-import '../boorus.dart';
-import '../configs/config.dart';
+import '../../../boorus.dart';
+import '../../../configs/config.dart';
+import '../../../foundation/loggers.dart';
 
 class DioOptions {
   DioOptions({

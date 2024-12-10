@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../package_info.dart';
-import '../platform.dart';
+import '../../foundation/platform.dart';
+import '../../info/package_info.dart';
 import 'app_update_checker.dart';
 import 'play_store_update_checker.dart';
 

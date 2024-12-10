@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../core/configs/create.dart';
-import '../../../foundation/clipboard.dart';
+import '../../../core/foundation/clipboard.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
   const GelbooruApiKeyField({

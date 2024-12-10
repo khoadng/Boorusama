@@ -10,8 +10,8 @@ import 'package:local_auth/local_auth.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../loggers.dart';
-import '../networking.dart';
+import '../../foundation/loggers.dart';
+import '../../foundation/networking.dart';
 import 'biometrics.dart';
 
 class AppLock extends ConsumerStatefulWidget {

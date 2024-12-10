@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/posts/statistics/widgets.dart';
 import '../../../../../../core/tags/tag/providers.dart';
-import '../../../../../../dart.dart';
-import '../../../../../../foundation/display.dart';
+import '../../../../../../core/utils/statistics.dart';
 import '../post_stats.dart';
 
 class PostStatsCharacterSection extends ConsumerWidget {

@@ -1,5 +1,6 @@
 // Project imports:
-import '../../../../dart.dart';
+import '../../../utils/collection_utils.dart';
+import '../../../utils/statistics.dart';
 import '../../post/post.dart';
 import '../../rating/rating.dart';
 import '../../sources/source.dart';

@@ -3,7 +3,7 @@ import 'package:booru_clients/moebooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../../foundation/http/request_deduplicator_mixin.dart';
+import '../../../../core/foundation/http.dart';
 import 'tag_summary.dart';
 import 'tag_summary_repository.dart';
 import 'tag_summary_repository_file.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/utils/color_utils.dart';
+import 'package:boorusama/core/utils/color_utils.dart';
 
 void main() {
   group(

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
-import '../../../../../foundation/path.dart';
-import '../../../../../foundation/platform.dart';
 import '../../../../../widgets/widgets.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/current.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/path.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/interactive_booru_image.dart';
 import '../../../../videos/providers.dart';

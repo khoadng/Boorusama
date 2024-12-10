@@ -12,6 +12,8 @@ import '../core/autocompletes/autocompletes.dart';
 import '../core/comments/utils.dart';
 import '../core/configs/config.dart';
 import '../core/downloads/bulks/create_bulk_download_task_sheet.dart';
+import '../core/foundation/display.dart';
+import '../core/foundation/toast.dart';
 import '../core/images/booru_image.dart';
 import '../core/posts/details/details.dart';
 import '../core/posts/listing/providers.dart';
@@ -20,8 +22,6 @@ import '../core/search/tag_edit.dart';
 import '../core/search/view_tags.dart';
 import '../core/tags/favorites/providers.dart';
 import '../core/widgets/widgets.dart';
-import '../foundation/display.dart';
-import '../foundation/toast.dart';
 import '../router.dart';
 import '../widgets/widgets.dart';
 

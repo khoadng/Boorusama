@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
-import '../../foundation/widgets/side_sheet.dart';
+import '../foundation/display.dart';
+import '../foundation/widgets/side_sheet.dart';
 
 Future<T?> showCommentPage<T>(
   BuildContext context, {

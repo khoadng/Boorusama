@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/foundation/toast.dart';
 import '../../../../../../../core/widgets/widgets.dart';
-import '../../../../../../../foundation/toast.dart';
 import '../../../../../../../widgets/widgets.dart';
 import '../providers/favorite_groups_notifier.dart';
 import '../types/danbooru_favorite_group.dart';

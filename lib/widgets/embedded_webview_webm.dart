@@ -9,7 +9,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
-import '../dart.dart';
+import '../core/utils/color_utils.dart';
+import '../core/utils/object_utils.dart';
 
 class WebmVideoController {
   WebmVideoController({

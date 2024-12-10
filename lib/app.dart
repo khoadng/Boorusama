@@ -13,17 +13,17 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import 'core/analytics.dart';
+import 'core/foundation/animations.dart';
+import 'core/foundation/error.dart';
+import 'core/foundation/networking.dart';
+import 'core/foundation/picker.dart';
+import 'core/foundation/platform.dart';
+import 'core/foundation/scrolling.dart';
+import 'core/foundation/windows.dart';
+import 'core/info/app_info.dart';
+import 'core/info/device_info.dart';
 import 'core/settings/data.dart';
 import 'core/theme/theme_buider.dart';
-import 'foundation/animations.dart';
-import 'foundation/app_info.dart';
-import 'foundation/device_info.dart';
-import 'foundation/error.dart';
-import 'foundation/networking.dart';
-import 'foundation/picker.dart';
-import 'foundation/platform.dart';
-import 'foundation/scrolling.dart';
-import 'foundation/windows.dart';
 import 'router.dart';
 
 const kMinSideBarWidth = 62.0;

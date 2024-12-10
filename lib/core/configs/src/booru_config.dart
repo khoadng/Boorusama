@@ -5,10 +5,10 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../boorus/danbooru/danbooru.dart';
-import '../../../foundation/platform.dart';
 import '../../boorus/booru.dart';
 import '../../boorus/booru_factory.dart';
 import '../../boorus/booru_type.dart';
+import '../../foundation/platform.dart';
 import '../../posts/rating/rating.dart';
 import '../../settings/settings.dart';
 import 'data/booru_config_data.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
+import '../../../../../core/foundation/display.dart';
 import '../../../../../router.dart';
 import 'danbooru_related_tag.dart';
 import 'related_tag_action_sheet.dart';

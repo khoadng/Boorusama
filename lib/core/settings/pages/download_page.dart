@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/device_info.dart';
 import '../../../router.dart';
 import '../../configs/redirect.dart';
 import '../../downloads/l10n.dart';
 import '../../downloads/widgets.dart';
+import '../../info/device_info.dart';
 import '../../settings.dart';
 import '../data/settings_providers.dart';
 import '../widgets/settings_page_scaffold.dart';

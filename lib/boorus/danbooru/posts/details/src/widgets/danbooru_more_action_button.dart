@@ -8,10 +8,10 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/downloads/downloader.dart';
+import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/settings/pages.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../foundation/url_launcher.dart';
 import '../../../../../../router.dart';
 import '../../../../../../widgets/widgets.dart';
 import '../../../../tags/tag/routes.dart';

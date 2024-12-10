@@ -7,9 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/html.dart';
 import '../../router.dart';
 import '../../widgets/widgets.dart';
+import '../foundation/html.dart';
 
 class BlacklistedTagsViewScaffold extends ConsumerWidget {
   const BlacklistedTagsViewScaffold({

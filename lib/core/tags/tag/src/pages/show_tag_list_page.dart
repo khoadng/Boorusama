@@ -7,10 +7,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/clipboard.dart';
 import '../../../../../router.dart';
 import '../../../../../widgets/widgets.dart';
 import '../../../../blacklists/providers.dart';
+import '../../../../foundation/clipboard.dart';
 import '../../../../search/search_bar.dart';
 import '../../../favorites/providers.dart';
 import '../tag.dart';

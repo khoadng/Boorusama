@@ -11,14 +11,14 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../boorus/booru_builder.dart';
-import '../../../../foundation/clipboard.dart';
-import '../../../../foundation/device_info.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/toast.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../downloads/filename.dart';
 import '../../../downloads/widgets.dart';
+import '../../../foundation/clipboard.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/platform.dart';
+import '../../../foundation/toast.dart';
+import '../../../info/device_info.dart';
 import '../../../posts/post/post.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';

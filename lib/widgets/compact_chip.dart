@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-import '../dart.dart';
-
 class CompactChip extends StatelessWidget {
   const CompactChip({
     super.key,
@@ -95,13 +92,13 @@ class _FilledButtonDefaultOverlay extends WidgetStateProperty<Color?> {
   @override
   Color? resolve(Set<WidgetState> states) {
     if (states.contains(WidgetState.pressed)) {
-      return overlay.applyOpacity(0.12);
+      return overlay.withOpacity(0.12);
     }
     if (states.contains(WidgetState.hovered)) {
-      return overlay.applyOpacity(0.08);
+      return overlay.withOpacity(0.08);
     }
     if (states.contains(WidgetState.focused)) {
-      return overlay.applyOpacity(0.12);
+      return overlay.withOpacity(0.12);
     }
     return null;
   }

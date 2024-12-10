@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../boorus/booru_builder.dart';
-import '../../../foundation/display.dart';
 import '../../boorus.dart';
 import '../../configs/ref.dart';
+import '../../foundation/display.dart';
 import '../../tags/categories/providers.dart';
 import '../../theme.dart';
 import '../bookmark.dart';

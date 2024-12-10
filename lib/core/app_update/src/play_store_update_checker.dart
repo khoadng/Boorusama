@@ -2,10 +2,10 @@
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../package_info.dart';
 import 'app_update_checker.dart';
 
 class PlayStoreUpdateChecker implements AppUpdateChecker {

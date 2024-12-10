@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/app_info.dart';
-import '../../../foundation/package_info.dart';
+import '../../info/app_info.dart';
+import '../../info/package_info.dart';
 
 class AboutPage extends ConsumerWidget {
   const AboutPage({

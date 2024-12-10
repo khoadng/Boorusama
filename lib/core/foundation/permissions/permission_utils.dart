@@ -3,7 +3,7 @@ import 'package:foundation/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
-import '../device_info.dart';
+import '../../info/device_info.dart';
 import '../platform.dart';
 
 Future<PermissionStatus> requestMediaPermissions(

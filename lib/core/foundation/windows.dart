@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 
 // Project imports:
-import 'app_info.dart';
+import '../info/app_info.dart';
 import 'platform.dart';
 
 Future<void> initialize() async {

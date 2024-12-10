@@ -11,10 +11,10 @@ import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../foundation/http.dart';
-import '../../../foundation/platform.dart';
-import '../../../foundation/toast.dart';
 import '../../../widgets/widgets.dart';
+import '../../foundation/http.dart';
+import '../../foundation/platform.dart';
+import '../../foundation/toast.dart';
 import '../../settings/pages.dart';
 import '../../theme.dart';
 import '../downloader/metadata.dart';

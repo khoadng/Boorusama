@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../../../foundation/package_info.dart';
-import '../../../../foundation/version.dart';
 import '../../../backups/backward_import_alert_dialog.dart';
+import '../../../foundation/version.dart';
+import '../../../info/package_info.dart';
 import '../booru_config.dart';
 import '../manage/booru_config_provider.dart';
 import 'booru_config_export_data.dart';

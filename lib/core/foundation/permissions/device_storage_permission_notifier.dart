@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../device_info.dart';
+import '../../info/device_info.dart';
 import '../loggers.dart';
 import '../platform.dart';
 import 'permission.dart';

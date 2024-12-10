@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/path.dart';
+import '../foundation/path.dart';
 import '../posts/post/post.dart';
 import '../posts/rating/rating.dart';
 import '../posts/sources/source.dart';

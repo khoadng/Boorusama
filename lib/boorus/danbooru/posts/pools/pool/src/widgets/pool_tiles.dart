@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../../utils/flutter_utils.dart';
+import '../../../../../../../core/utils/flutter_utils.dart';
 import '../../../details/providers.dart';
 import '../danbooru_pool.dart';
 

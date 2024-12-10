@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/clipboard.dart';
-import '../../foundation/display.dart';
 import '../../widgets/widgets.dart';
+import '../foundation/clipboard.dart';
+import '../foundation/display.dart';
 import 'import_tag_dialog.dart';
 
 const _kHint =

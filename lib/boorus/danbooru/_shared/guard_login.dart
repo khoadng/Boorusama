@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../core/configs/ref.dart';
-import '../../../foundation/animations.dart';
-import '../../../foundation/toast.dart';
+import '../../../core/foundation/animations.dart';
+import '../../../core/foundation/toast.dart';
 
 void guardLogin(WidgetRef ref, void Function() action) {
   if (!ref.readConfigAuth.hasLoginDetails()) {

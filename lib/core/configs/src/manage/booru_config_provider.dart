@@ -3,8 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
 import '../../../analytics.dart';
+import '../../../foundation/loggers.dart';
 import '../../../settings/data.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';

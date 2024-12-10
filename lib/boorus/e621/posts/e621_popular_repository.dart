@@ -5,9 +5,9 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../core/configs/config.dart';
 import '../../../core/datetimes/types.dart';
+import '../../../core/foundation/caching.dart';
+import '../../../core/foundation/http.dart';
 import '../../../core/posts/post/post.dart';
-import '../../../foundation/caching.dart';
-import '../../../foundation/http.dart';
 import 'posts.dart';
 
 abstract interface class E621PopularRepository {

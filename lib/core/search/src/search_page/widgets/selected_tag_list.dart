@@ -8,7 +8,6 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../dart.dart';
 import '../../../../../widgets/widgets.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../../widgets/widgets.dart';
@@ -115,7 +114,7 @@ class SelectedTagList extends StatelessWidget {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .outline
-                                        .applyOpacity(0.75),
+                                        .withOpacity(0.75),
                                   ),
                                   Text(
                                     otherTagsCount,
@@ -127,7 +126,7 @@ class SelectedTagList extends StatelessWidget {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .outline
-                                              .applyOpacity(0.5),
+                                              .withOpacity(0.5),
                                         ),
                                   ),
                                 ],

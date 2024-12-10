@@ -9,9 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/images/booru_image.dart';
+import '../../../../../core/info/package_info.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/rating/rating.dart';
-import '../../../../../foundation/package_info.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
 import '../../../users/user/providers.dart';

@@ -8,9 +8,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/booru_builder.dart';
-import '../../../../foundation/html.dart';
 import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/ref.dart';
+import '../../../foundation/html.dart';
 import '../../../tags/configs/providers.dart';
 import '../../../tags/metatag/metatag.dart';
 import '../../../theme.dart';

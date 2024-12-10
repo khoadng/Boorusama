@@ -8,8 +8,8 @@ import 'package:foundation/foundation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
 import '../../widgets/widgets.dart';
+import '../foundation/toast.dart';
 import 'blacklisted_tag.dart';
 import 'blacklisted_tag_view_scaffold.dart';
 import 'providers.dart';

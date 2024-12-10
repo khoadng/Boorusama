@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'platform.dart';
+import '../foundation/platform.dart';
 
 final deviceInfoProvider = Provider<DeviceInfo>(
   (ref) {

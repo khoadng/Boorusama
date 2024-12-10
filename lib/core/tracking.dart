@@ -1,7 +1,7 @@
 // Project imports:
-import '../foundation/error.dart';
 import 'analytics.dart';
 import 'firebase.dart';
+import 'foundation/error.dart';
 import 'settings.dart';
 
 Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>

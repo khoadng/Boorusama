@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/device_info.dart';
+import '../../info/device_info.dart';
 import '../../search/history.dart';
 import '../../settings.dart';
 import '../../settings/data.dart';

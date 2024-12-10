@@ -10,10 +10,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../../../foundation/animations.dart';
-import '../../../../../foundation/display.dart';
 import '../../../../../router.dart';
 import '../../../../../widgets/widgets.dart';
+import '../../../../foundation/animations.dart';
+import '../../../../foundation/display.dart';
 import '../../../../theme.dart';
 import '../../search_page/widgets/booru_search_bar.dart';
 import '../providers.dart';

@@ -8,11 +8,10 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../boorus/booru_builder_default.dart';
 import '../../../boorus/providers.dart';
-import '../../../dart.dart';
-import '../../../foundation/display.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../../configs/ref.dart';
+import '../../foundation/display.dart';
 import '../../images/booru_image.dart';
 import '../../images/explicit_block_overlay.dart';
 import '../../images/utils.dart';
@@ -205,7 +204,7 @@ class ExploreList extends ConsumerWidget {
                         alignment: Alignment.bottomCenter,
                         colors: [
                           const Color(0xC2000000),
-                          Colors.black12.applyOpacity(0),
+                          Colors.black12.withOpacity(0),
                         ],
                       ),
                     ),

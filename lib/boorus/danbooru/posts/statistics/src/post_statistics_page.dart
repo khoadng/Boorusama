@@ -10,9 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../core/foundation/display.dart';
 import '../../../../../core/posts/statistics/stats.dart';
 import '../../../../../core/posts/statistics/widgets.dart';
-import '../../../../../foundation/display.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';

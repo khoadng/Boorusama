@@ -8,7 +8,7 @@ import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/url_launcher.dart';
+import '../foundation/url_launcher.dart';
 import '../images/dio_extended_image.dart';
 import '../images/providers.dart';
 

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/configs/config.dart';
+import '../../core/foundation/path.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
@@ -14,8 +15,7 @@ import '../../core/search/query_composer_providers.dart';
 import '../../core/settings/data/listing_provider.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/tag.dart';
-import '../../dart.dart';
-import '../../foundation/path.dart';
+import '../../core/utils/color_utils.dart';
 import 'favorites/favorites.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';

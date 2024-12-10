@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-import '../dart.dart';
-
 class InfoContainer extends StatelessWidget {
   const InfoContainer({
     super.key,
@@ -52,7 +49,7 @@ class WarningContainer extends StatelessWidget {
         color: Theme.of(context).colorScheme.error,
       ),
       titleBackgroundColor:
-          Theme.of(context).colorScheme.error.applyOpacity(0.2),
+          Theme.of(context).colorScheme.error.withOpacity(0.2),
       title: title,
       titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,

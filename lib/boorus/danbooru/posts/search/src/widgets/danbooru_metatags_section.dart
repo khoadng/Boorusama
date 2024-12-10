@@ -9,9 +9,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../core/boorus.dart';
 import '../../../../../../core/boorus/providers.dart';
 import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/metatag_widgets.dart';
 import '../../../../../../core/tags/metatag/providers.dart';
-import '../../../../../../foundation/url_launcher.dart';
 import '../../../../tags/user_metatags/providers.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {

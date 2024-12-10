@@ -14,12 +14,12 @@ import 'package:share_handler/share_handler.dart';
 // Project imports:
 import '../../../../core/boorus.dart';
 import '../../../../core/configs/ref.dart';
+import '../../../../core/foundation/platform.dart';
+import '../../../../core/foundation/url_launcher.dart';
 import '../../../../core/home/home_navigation_tile.dart';
 import '../../../../core/home/home_page_scaffold.dart';
 import '../../../../core/home/side_menu_tile.dart';
 import '../../../../core/theme.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/url_launcher.dart';
 import '../../../../router.dart';
 import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';
