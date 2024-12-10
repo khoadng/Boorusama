@@ -1,511 +1,511 @@
 {
     "generic": {
-        "done": "",
+        "done": "முடிந்தது",
         "errors": {
-            "no_data": "",
-            "unknown": ""
+            "no_data": "தரவு எதுவும் கிடைக்கவில்லை",
+            "unknown": "ஏதோ தவறு நடந்தது"
         },
         "action": {
-            "add": "",
-            "delete": "",
-            "edit": "",
-            "ok": "",
-            "cancel": "",
-            "duplicate": ""
+            "add": "கூட்டு",
+            "delete": "நீக்கு",
+            "edit": "தொகு",
+            "ok": "சரி",
+            "cancel": "ரத்துசெய்",
+            "duplicate": "நகல்"
         },
-        "view": ""
+        "view": "பார்வை"
     },
     "profile": {
-        "favorites": "",
-        "profile": "",
-        "copy_user_id": "",
-        "messages": ""
+        "favorites": "பிடித்தவை",
+        "profile": "சுயவிவரம்",
+        "copy_user_id": "பயனர் ஐடியை நகலெடுக்கவும்",
+        "messages": "செய்திகள்"
     },
     "network": {
-        "unavailable": ""
+        "unavailable": "பிணையம் கிடைக்கவில்லை"
     },
     "tag": {
         "related": {
-            "more": "",
-            "related": "",
-            "add_to_current_search": "",
-            "open_wiki": ""
+            "more": "மேலும்",
+            "related": "தொடர்புடைய",
+            "add_to_current_search": "தற்போதைய தேடலில் சேர்க்கவும்",
+            "open_wiki": "திறந்த விக்கி"
         },
         "explore": {
-            "new": "",
-            "popular": ""
+            "new": "புதிய",
+            "popular": "மக்கள்"
         }
     },
     "post": {
         "detail": {
-            "view": "",
-            "view_in_browser": "",
-            "file_details": "",
-            "size": "",
-            "resolution": "",
-            "rating": "",
-            "file_format": "",
+            "view": "பார்வை",
+            "view_in_browser": "உலாவியில் காண்க",
+            "file_details": "கோப்பு விவரங்கள்",
+            "size": "அளவு",
+            "resolution": "பகுத்தல்",
+            "rating": "செயல்வரம்பு",
+            "file_format": "கோப்பு வடிவம்",
             "share": {
-                "source": "",
-                "booru": "",
-                "image": ""
+                "source": "மூல இணைப்பைப் பகிரவும்",
+                "booru": "பகிர்வு வென் கே",
+                "image": "படத்தைப் பகிரவும்"
             },
-            "copied": "",
-            "show_original": "",
-            "show_translated": "",
-            "login_required_notice": "",
-            "open_wiki": "",
-            "add_to_blacklist": "",
-            "add_to_favorites": "",
-            "copy_and_open_saved_search": "",
+            "copied": "நகலெடுக்கப்பட்டது",
+            "show_original": "அசல் காட்டு",
+            "show_translated": "மொழிபெயர்க்கப்பட்ட காட்சி",
+            "login_required_notice": "இந்த செயலைச் செய்ய நீங்கள் உள்நுழைய வேண்டும்",
+            "open_wiki": "திறந்த விக்கி",
+            "add_to_blacklist": "தடுப்புப்பட்டியலில் சேர்க்கவும்",
+            "add_to_favorites": "பிடித்தவைகளில் சேர்க்கவும்",
+            "copy_and_open_saved_search": "சேமித்த தேடலை நகலெடுத்து திறக்கவும்",
             "score": {
-                "one": "",
-                "other": ""
+                "one": "புள்ளியம்",
+                "other": "பிரிவகம்"
             },
-            "source_label": "",
-            "related_posts": "",
-            "add_to_bookmark": "",
-            "remove_from_bookmark": ""
+            "source_label": "மூலம்",
+            "related_posts": "தொடர்புடைய இடுகைகள்",
+            "add_to_bookmark": "புக்மார்க்கில் சேர்க்கவும்",
+            "remove_from_bookmark": "புக்மார்க்கிலிருந்து அகற்று"
         },
         "action": {
-            "preview": "",
-            "view_comments": "",
-            "add_to_favorite_group": "",
-            "select": ""
+            "preview": "முன்னோட்டம்",
+            "view_comments": "கருத்துகளைக் காண்க",
+            "add_to_favorite_group": "பிடித்த குழுவில் சேர்க்கவும்",
+            "select": "தேர்ந்தெடு"
         },
         "image_fullview": {
-            "view_original": "",
-            "view_resized": ""
+            "view_original": "அசல் காண்க",
+            "view_resized": "மறுஅளவாக்கப்பட்டதைக் காண்க"
         }
     },
     "comment": {
-        "comments": "",
+        "comments": "கருத்துகள்",
         "create": {
-            "hint": "",
-            "loading": "",
-            "error": ""
+            "hint": "கருத்து",
+            "loading": "தயவுசெய்து காத்திருங்கள் ...",
+            "error": "பிழை"
         },
         "list": {
-            "edit": "",
-            "reply": "",
-            "reply_to": "",
-            "delete": "",
-            "noComments": "",
-            "last_updated": "",
-            "send": ""
+            "edit": "தொகு",
+            "reply": "பதில்",
+            "reply_to": "பதிலளித்தல்",
+            "delete": "நீக்கு",
+            "noComments": "எந்தக் கருத்தும் இல்லை",
+            "last_updated": "கடைசியாக புதுப்பிக்கப்பட்டது",
+            "send": "அனுப்பு"
         },
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "கருத்து",
+            "other": "கருத்துகள்"
         }
     },
     "explore": {
-        "latest": "",
-        "popular": "",
-        "hot": "",
-        "most_viewed": "",
-        "see_more": "",
-        "explore": ""
+        "latest": "அண்மைக் கால",
+        "popular": "மக்கள்",
+        "hot": "சூடாக",
+        "most_viewed": "பெரும்பாலானவை பார்க்கப்பட்டன",
+        "see_more": "மேலும் காண்க",
+        "explore": "ஆராயுங்கள்"
     },
     "search": {
         "errors": {
-            "generic": "",
-            "tag_limit": "",
-            "database_timeout": "",
-            "rate_limited": "",
-            "pagination_limit": "",
-            "max_capacity": "",
-            "down": "",
-            "access_denied": "",
-            "forbidden": "",
-            "unknown": ""
+            "generic": "ஏதோ தவறு நடந்தது",
+            "tag_limit": "அதிகபட்ச குறிச்சொல் வரம்பு எட்டப்பட்டது. ஒரே நேரத்தில் கூடுதல் குறிச்சொற்களைத் தேட உங்கள் கணக்கை மேம்படுத்தவும்.",
+            "database_timeout": "உங்கள் தேடல் செயல்படுத்த அதிக நேரம் எடுத்தது மற்றும் ரத்து செய்யப்பட்டது.",
+            "rate_limited": "நீங்கள் விகிதம் மட்டுப்படுத்தப்படுகிறீர்கள். தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்",
+            "pagination_limit": "நீங்கள் மண்பாண்ட வரம்பை அடைந்துவிட்டீர்கள். இதன் பொருள் நீங்கள் மேலும் உருட்ட முடியாது",
+            "max_capacity": "சேவையகம் அதிக சுமைக்கு உட்பட்டது மற்றும் கோரிக்கையை கையாள முடியாது, தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்",
+            "down": "சேவையகம் கீழே உள்ளது. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்",
+            "access_denied": "அணுகல் மறுக்கப்பட்டது",
+            "forbidden": "ஏற்பு தோல்வியடைந்தது",
+            "unknown": "அறியப்படாத சேவையக பிழை, தயவுசெய்து இந்த சிக்கலை டெவலப்பரிடம் புகாரளிக்கவும்"
         },
-        "hint": "",
-        "no_result": "",
-        "search_options": "",
-        "metatags_notice": "",
+        "hint": "தேடல் ...",
+        "no_result": "நாங்கள் தொலைதூரத்தில் தேடினோம், ஆனால் முடிவுகள் எதுவும் கிடைக்கவில்லை.",
+        "search_options": "தேடல் விருப்பங்கள்",
+        "metatags_notice": "குறிச்சொல் தேடல் வரம்புகளுக்கு எதிராக இலவச மெட்டாடாக்ச் கணக்கிடாது",
         "history": {
-            "history": "",
-            "clear": "",
-            "recent": ""
+            "history": "வரலாறு",
+            "clear": "தெளிவான",
+            "recent": "அண்மைக் கால"
         },
-        "trending": "",
-        "remove_all_selected": "",
+        "trending": "டிரெண்டிங்",
+        "remove_all_selected": "தேர்ந்தெடுக்கப்பட்ட அனைத்து குறிச்சொற்களையும் அகற்று",
         "result_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} முடிவு",
+            "other": "}} முடிவுகள்"
         },
-        "no_result_notice": "",
-        "search_in_progress_notice": ""
+        "no_result_notice": "முடிவு இல்லை",
+        "search_in_progress_notice": "தேடுகிறது..."
     },
     "pool": {
-        "pool": "",
-        "pool_gallery": "",
+        "pool": "குளம்",
+        "pool_gallery": "பூல் கேலரி",
         "order": {
-            "recent": "",
-            "new": "",
-            "post_count": "",
-            "name": ""
+            "recent": "அண்மைக் கால",
+            "new": "புதிய",
+            "post_count": "இடுகை எண்ணிக்கை",
+            "name": "பெயர்"
         },
         "category": {
-            "series": "",
-            "collection": ""
+            "series": "தொடர்",
+            "collection": "சேகரிப்பு"
         },
         "search": {
-            "hint": ""
+            "hint": "ஒரு குளத்தைத் தேடுங்கள்"
         },
         "detail": {
-            "last_updated": ""
+            "last_updated": "கடைசியாக புதுப்பிக்கப்பட்டது"
         }
     },
     "settings": {
-        "settings": "",
-        "app_settings": "",
+        "settings": "அமைப்புகள்",
+        "app_settings": "பயன்பாட்டு அமைப்புகள்",
         "appearance": {
-            "appearance": "",
-            "show_scores": "",
-            "show_post_list_config_header": "",
-            "booru_config": "",
-            "booru_config_placement": ""
+            "appearance": "தோற்றம்",
+            "show_scores": "மதிப்பெண்களைக் காட்டு",
+            "show_post_list_config_header": "இடுகைகள் உள்ளமைவு தலைப்பைக் காட்டு",
+            "booru_config": "போரு சுயவிவரம்",
+            "booru_config_placement": "பூரூ சுயவிவர வேலை வாய்ப்பு"
         },
-        "general": "",
+        "general": "பொது",
         "search": {
-            "search": "",
-            "auto_focus_search_bar": "",
-            "hide_bookmarked_posts_from_search_results": ""
+            "search": "தேடல்",
+            "auto_focus_search_bar": "முதலில் திறந்த தேடல் பார்வை இருக்கும்போது ஆட்டோ கவனம் தேடல் பட்டி",
+            "hide_bookmarked_posts_from_search_results": "தேடல் முடிவுகளிலிருந்து புக்மார்க்கு செய்யப்பட்ட இடுகைகளை மறைக்கவும்"
         },
-        "information": "",
-        "changelog": "",
-        "infinite_scroll_warning": "",
+        "information": "தகவல்",
+        "changelog": "மாற்றபதிவு",
+        "infinite_scroll_warning": "நீங்கள் நீண்ட நேரம் உருட்டினால் பயன்பாட்டை செயலிழக்கச் செய்யலாம்",
         "result_layout": {
-            "result_layout": "",
-            "infinite_scroll": "",
-            "pagination": ""
+            "result_layout": "பக்க முறை",
+            "infinite_scroll": "எல்லையற்ற சுருள்",
+            "pagination": "மோகம்"
         },
         "image_list": {
-            "image_list": "",
-            "standard": "",
-            "masonry": ""
+            "image_list": "பட பட்டியல்",
+            "standard": "தரநிலை",
+            "masonry": "கொத்து"
         },
         "image_grid": {
-            "image_grid": "",
+            "image_grid": "பட கட்டம்",
             "grid_size": {
-                "grid_size": "",
-                "small": "",
-                "medium": "",
-                "large": ""
+                "grid_size": "கட்டம் அளவு",
+                "small": "சிறிய",
+                "medium": "சராசரி",
+                "large": "பெரிய"
             },
             "image_quality": {
-                "image_quality": "",
-                "high_quality_notice": "",
-                "high": "",
-                "low": "",
-                "original": "",
-                "automatic": "",
-                "highest": ""
+                "image_quality": "பட தகுதி",
+                "high_quality_notice": "உயர்தர படம் ஏற்ற அதிக நேரம் எடுக்கும்.",
+                "high": "உயர்ந்த",
+                "low": "குறைந்த",
+                "original": "அசல்",
+                "automatic": "தானியங்கி",
+                "highest": "அதிகபட்சம்"
             },
-            "spacing": "",
-            "corner_radius": "",
-            "padding": "",
-            "aspect_ratio": ""
+            "spacing": "இடைவெளி",
+            "corner_radius": "மூலையில் ஆரம்",
+            "padding": "திணிப்பு",
+            "aspect_ratio": "அம்ச விகிதம்"
         },
         "image_viewer": {
-            "image_viewer": "",
-            "full_res_as_default": "",
-            "full_res_notice": "",
-            "slideshow": "",
-            "slideshow_interval": "",
-            "slideshow_mode": "",
+            "image_viewer": "பட பார்வையாளர்",
+            "full_res_as_default": "முழு தெளிவுத்திறனை இயல்புநிலையாகக் காட்டுங்கள்",
+            "full_res_notice": "படத்தின் அளவைப் பொறுத்தது ஏற்றுவதற்கு சிறிது நேரம் ஆகும்",
+            "slideshow": "ச்லைடுசோ",
+            "slideshow_interval": "ச்லைடுசோ இடைவெளி",
+            "slideshow_mode": "ச்லைடுசோ பயன்முறை",
             "slideshow_modes": {
-                "random": "",
-                "forward": "",
-                "backward": ""
+                "random": "சீரற்ற",
+                "forward": "முன்னோக்கி",
+                "backward": "பின்னோக்கு"
             },
-            "slideshow_skip": "",
-            "slideshow_interval_explanation": "",
-            "mute_video": "",
-            "video_section_title": ""
+            "slideshow_skip": "ச்லைடுசோ மாற்றத்தைத் தவிர்க்கவும்",
+            "slideshow_interval_explanation": "1 நொடிக்கு குறைவான மதிப்பு தானாகவே மாற்றத்தைத் தவிர்க்கும்",
+            "mute_video": "முன்னிருப்பாக முடக்கு வீடியோ",
+            "video_section_title": "ஒளிதோற்றம்"
         },
         "image_detail": {
-            "image_detail": ""
+            "image_detail": "பட விவரம்"
         },
         "language": {
-            "language": "",
-            "language_name": ""
+            "language": "மொழி",
+            "language_name": "ஆங்கிலம்"
         },
         "theme": {
-            "theme": "",
-            "dark": "",
-            "light": "",
-            "amoled_dark": "",
-            "dynamic_color": "",
-            "dynamic_color_mobile_description": "",
-            "dynamic_color_desktop_description": "",
-            "dynamic_color_unsupported_description": ""
+            "theme": "கருப்பொருள்",
+            "dark": "இருண்ட",
+            "light": "ஒளி",
+            "amoled_dark": "கருப்பு",
+            "dynamic_color": "மாறும் கருப்பொருள் நிறம்",
+            "dynamic_color_mobile_description": "வால்பேப்பருடன் கருப்பொருள் வண்ணத்தை ஒத்திசைக்கவும்",
+            "dynamic_color_desktop_description": "OS இன் உச்சரிப்பு வண்ணத்துடன் கருப்பொருள் வண்ணத்தை ஒத்திசைக்கவும்",
+            "dynamic_color_unsupported_description": "இந்த சாதனம் மாறும் வண்ணத்தை ஆதரிக்காது."
         },
         "privacy": {
-            "privacy": "",
-            "send_error_data_notice": "",
-            "enable_incognito_keyboard": "",
-            "enable_incognito_keyboard_notice": "",
-            "enable_biometric_lock": "",
-            "enable_biometric_lock_notice": ""
+            "privacy": "தனியுரிமை",
+            "send_error_data_notice": "பிழை உள்நுழைவதற்கு அநாமதேய தரவை அனுப்பவும்",
+            "enable_incognito_keyboard": "மறைநிலை விசைப்பலகை இயக்கவும்",
+            "enable_incognito_keyboard_notice": "ஆண்ட்ராய்டு ஐ மட்டுமே பாதிக்கிறது.",
+            "enable_biometric_lock": "பயோமெட்ரிக் பூட்டை இயக்கவும்",
+            "enable_biometric_lock_notice": "பயோமெட்ரிக்ச் ஆதரவுடன் சாதனங்களில் மட்டுமே வேலை செய்கிறது மற்றும் அமைக்கப்பட்டுள்ளது."
         },
         "performance": {
-            "performance": "",
-            "posts_per_page": "",
-            "posts_per_page_explain": "",
-            "cache_size": "",
-            "clear_cache": "",
-            "cache_size_info": ""
+            "performance": "செயல்திறன்",
+            "posts_per_page": "ஒரு பக்கத்திற்கு இடுகைகள்",
+            "posts_per_page_explain": "ஒரு பக்கத்திற்கு சிறு உருவங்களின் எண்ணிக்கை",
+            "cache_size": "கேச் அளவு",
+            "clear_cache": "தெளிவான",
+            "cache_size_info": "{1} கோப்புகளில் {0}"
         },
         "debug_logs": {
-            "debug_logs": "",
-            "logs_copied": ""
+            "debug_logs": "பிழைத்திருத்த பதிவுகள்",
+            "logs_copied": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்ட பதிவுகள்"
         },
         "download": {
-            "path": "",
-            "select_a_folder": "",
-            "quality": "",
+            "path": "பாதை பதிவிறக்க",
+            "select_a_folder": "ஒரு கோப்புறையைத் தேர்ந்தெடுக்கவும்",
+            "quality": "படத்தின் தரத்தைப் பதிவிறக்கவும்",
             "qualities": {
-                "original": "",
-                "sample": "",
-                "preview": ""
+                "original": "அசல்",
+                "sample": "மாதிரி",
+                "preview": "சிறுபடம்"
             },
-            "title": ""
+            "title": "பதிவிறக்கம்"
         },
-        "help_us_translate": "",
-        "other_settings": "",
+        "help_us_translate": "மொழிபெயர்க்க எங்களுக்கு உதவுங்கள்",
+        "other_settings": "பிற அமைப்புகள்",
         "data_and_storage": {
-            "data_and_storage": "",
-            "clear_cache_on_start_up": ""
+            "data_and_storage": "தரவு மற்றும் சேமிப்பு",
+            "clear_cache_on_start_up": "தொடக்கத்தில் பட கேச் அழிக்கவும்"
         },
         "backup_and_restore": {
-            "backup_and_restore": ""
+            "backup_and_restore": "காப்புப்பிரதி மற்றும் மீட்டமை"
         },
         "image_details": {
-            "image_details": "",
+            "image_details": "பட விவரங்கள்",
             "ui_overlay": {
-                "show": "",
-                "hide": "",
-                "ui_overlay": ""
+                "show": "காட்டு",
+                "hide": "மறை",
+                "ui_overlay": "இடைமுகம் மேலடுக்கு"
             }
         },
         "page_indicator": {
-            "page_indicator": "",
-            "top": "",
-            "bottom": "",
-            "both": ""
+            "page_indicator": "பக்க காட்டி நிலை",
+            "top": "மேலே",
+            "bottom": "கீழே",
+            "both": "இரண்டும்"
         },
         "accessibility": {
-            "accessibility": "",
-            "reverseBooruConfigSelectorScrollDirection": "",
-            "swipeAreaToOpenSidebar": "",
-            "swipeAreaToOpenSidebarDescription": ""
+            "accessibility": "அணுகல்",
+            "reverseBooruConfigSelectorScrollDirection": "பூரூ சுயவிவரங்களின் தலைகீழ் உருள் திசை",
+            "swipeAreaToOpenSidebar": "பக்கப்பட்டியின் ச்வைப்பிங் பகுதி",
+            "swipeAreaToOpenSidebarDescription": "ச்வைப்பைத் தூண்டுவதற்கு பயன்படுத்தக்கூடிய திரையின் இடது பக்கத்தில் உள்ள பரப்பின் அளவு. பெரிய மதிப்புகள் மண்பாண்டம் ச்வைப் சைகை போன்ற அனைத்து கிடைமட்ட சைகைகளையும் தடுக்கும்."
         },
         "booru_settings": {
-            "edit_current_profile": "",
-            "booru_settings": ""
+            "edit_current_profile": "தற்போதைய சுயவிவரத்தைத் திருத்தவும்",
+            "booru_settings": "பூரூ அமைப்புகள்"
         },
-        "contribute": "",
-        "source_code": "",
-        "support": "",
-        "contact_developer": "",
-        "contact_developer_description": "",
-        "feature_request_and_bug_report": "",
-        "feature_request_and_bug_report_description": ""
+        "contribute": "பங்களிப்பு",
+        "source_code": "மூலக் குறியீடு",
+        "support": "உதவி",
+        "contact_developer": "டெவலப்பரை தொடர்பு கொள்ளுங்கள்",
+        "contact_developer_description": "உங்களுக்கு ஏதேனும் சிக்கல்கள் அல்லது பரிந்துரைகள் இருந்தால், இந்த விருப்பத்தின் மூலம் எனக்கு மின்னஞ்சல் அனுப்ப தயங்க",
+        "feature_request_and_bug_report": "அம்ச கோரிக்கை மற்றும் பிழை அறிக்கை",
+        "feature_request_and_bug_report_description": "அறிவிலிமையம் களஞ்சியத்தின் மூலம் அம்சங்களை பரிந்துரைக்கவும் அல்லது பிழைகள் புகாரளிக்கவும்"
     },
     "blacklisted_tags": {
-        "remove": "",
-        "edit": "",
-        "blacklisted_tags": "",
-        "load_error": "",
-        "updated": "",
-        "limitation_notice": "",
-        "failed_to_add": "",
-        "failed_to_remove": "",
-        "blacklisted_header_title": "",
-        "disable_all": "",
-        "reenable_all": ""
+        "remove": "அகற்று",
+        "edit": "தொகு",
+        "blacklisted_tags": "தடுப்புப்பட்டியல் குறிச்சொற்கள்",
+        "load_error": "தடுப்புப்பட்டியல் குறிச்சொற்களை ஏற்றுவதில் தோல்வி",
+        "updated": "தடுப்புப்பட்டியல் குறிச்சொற்கள் புதுப்பிக்கப்பட்டன",
+        "limitation_notice": "மட்டுமே உதவி <b> இல்லை </b> ஆபரேட்டர், <b> அல்லது </b> ஆபரேட்டர், <b> மதிப்பெண் </b> மெட்டாடாக் மற்றும் <b> மதிப்பீடு </b> மெட்டாடாக்\n\n பிற மெட்டாடேக்குகளைப் பயன்படுத்தி தடுப்புப்பட்டியாக்கம் தற்போதைய பதிப்பிற்கு வேலை செய்யாது.",
+        "failed_to_add": "குறிச்சொல்லைச் சேர்க்கத் தவறிவிட்டது",
+        "failed_to_remove": "குறிச்சொல்லை அகற்றுவதில் தோல்வி",
+        "blacklisted_header_title": "தடுப்புப்பட்டியலில்",
+        "disable_all": "அனைத்தையும் முடக்கு",
+        "reenable_all": "அனைத்தையும் மீண்டும் இயக்கவும்"
     },
     "download": {
-        "download": "",
-        "bulk_download": "",
-        "bulk_download_tag_confirmation": "",
-        "bulk_download_save_to_folder": "",
-        "bulk_download_total_count": "",
-        "bulk_download_done_count": "",
-        "bulk_download_done_confirm": "",
-        "bulk_download_cancel": "",
-        "bulk_download_duplicate": "",
-        "bulk_download_invalid_folder_name_error": "",
-        "bulk_download_folder_select_warning": "",
-        "bulk_download_select_a_folder": "",
+        "download": "பதிவிறக்கம்",
+        "bulk_download": "மொத்த பதிவிறக்க",
+        "bulk_download_tag_confirmation": "கீழே உள்ள குறிச்சொற்கள் பதிவிறக்கம் செய்யப்படும்",
+        "bulk_download_save_to_folder": "கோப்புறையில் சேமிக்கவும்",
+        "bulk_download_total_count": "மொத்தம்",
+        "bulk_download_done_count": "முடிந்தது",
+        "bulk_download_done_confirm": "முடிந்தது",
+        "bulk_download_cancel": "ரத்துசெய்",
+        "bulk_download_duplicate": "நகல்",
+        "bulk_download_invalid_folder_name_error": "ஒரு கோப்புறையில் பின்வரும் எழுத்துக்கள் எதுவும் இருக்க முடியாது: ",
+        "bulk_download_folder_select_warning": "ஆண்ட்ராய்டு 11+ க்கு பொது கோப்பகங்களுக்குள் மட்டுமே பயன்பாடு கோப்புகளைப் பதிவிறக்கம் செய்ய முடியும் <b> ({0}) </b>. இப்போது C3d4/download <br> <br> தயவுசெய்து மற்றொரு கோப்பகத்தைத் தேர்வுசெய்க அல்லது புதியதை உருவாக்கவில்லை என்றால் அதை உருவாக்கவும். <br> இந்தச் சாதனத்தின் பதிப்பு <b> {1} </b>.",
+        "bulk_download_select_a_folder": "ஒரு கோப்புறையைத் தேர்ந்தெடுக்கவும்",
         "bulk_download_downloaded_counter": {
-            "one": "",
-            "other": ""
+            "one": "}} படம் பதிவிறக்கம் செய்யப்பட்டது",
+            "other": "{} படங்கள் பதிவிறக்கம் செய்யப்பட்டன"
         },
         "bulk_download_skipped_counter": {
-            "one": "",
-            "other": ""
+            "one": "}} படம் தவிர்க்கப்பட்டது",
+            "other": "}} படங்கள் தவிர்க்கப்பட்டன"
         },
-        "bulk_download_download_more": "",
-        "open_app_settings": "",
-        "storage_permission_explanation": "",
-        "app_restart_request": "",
+        "bulk_download_download_more": "மேலும் பதிவிறக்கவும்",
+        "open_app_settings": "திறந்த அமைப்புகள்",
+        "storage_permission_explanation": "பதிவிறக்க கோப்புகளை சேமிக்க சேமிப்பக இசைவு தேவை.",
+        "app_restart_request": "இந்த மாற்றம் நடைமுறைக்கு வர நீங்கள் பயன்பாட்டை மறுதொடக்கம் செய்ய வேண்டும்",
         "image_counter": {
-            "one": "",
-            "other": ""
+            "one": "பதிவிறக்கம்}} பட",
+            "other": "பதிவிறக்கம் {} படங்கள்"
         },
         "bulk": {
-            "all_done_notification_message": ""
+            "all_done_notification_message": "எல்லா பதிவிறக்கங்களும் செய்யப்படுகின்றன"
         }
     },
     "saved_search": {
-        "saved_search": "",
+        "saved_search": "சேமித்த தேடல்",
         "saved_search_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} தேடல்",
+            "other": "{} தேடல்கள்"
         },
-        "add_saved_search": "",
-        "saved_search_added": "",
-        "empty_saved_search": "",
-        "update_saved_search": "",
-        "saved_search_updated": "",
-        "saved_search_feed": "",
-        "saved_search_help": "",
-        "saved_search_examples": "",
-        "saved_search_try": "",
-        "saved_search_query": "",
-        "saved_search_labels": "",
-        "saved_search_labels_description": ""
+        "add_saved_search": "சேமித்த தேடலைச் சேர்க்கவும்",
+        "saved_search_added": "சேமித்த தேடல் சேர்க்கப்பட்டுள்ளது",
+        "empty_saved_search": "நீங்கள் இதுவரை எந்த தேடலையும் சேர்க்கவில்லை",
+        "update_saved_search": "சேமித்த தேடலைப் புதுப்பிக்கவும்",
+        "saved_search_updated": "சேமித்த தேடல் புதுப்பிக்கப்பட்டுள்ளது",
+        "saved_search_feed": "தீவனம்",
+        "saved_search_help": "அது என்ன?",
+        "saved_search_examples": "எடுத்துக்காட்டுகள்",
+        "saved_search_try": "முயற்சி செய்யுங்கள்",
+        "saved_search_query": "வினவல்",
+        "saved_search_labels": "லேபிள்கள்*",
+        "saved_search_labels_description": "*இந்த தேடலை வகைப்படுத்த உதவும் குறிச்சொற்களின் பட்டியல். விண்வெளி பிரிக்கப்பட்டது."
     },
     "favorites": {
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "பிடித்த",
+            "other": "பிடித்தவை"
         },
-        "favorited": "",
-        "favorite": ""
+        "favorited": "பிடித்து",
+        "favorite": "பிடித்த"
     },
     "favorite_groups": {
-        "favorite_groups": "",
-        "empty_group_notice": "",
-        "create_group": "",
-        "edit_group": "",
-        "add_to_group_dialog_title": "",
-        "add_to": "",
-        "create": "",
-        "private": "",
-        "view_more_popup": "",
-        "items_added_notification_popup": "",
-        "group_name": "",
-        "group_name_hint": "",
-        "all_posts": "",
-        "initial_posts_hint": "",
-        "is_private_group_option": "",
-        "create_group_cancel": "",
-        "create_group_confirm": "",
-        "max_limit_warning": "",
-        "duplicate_items_warning_notification": "",
-        "detete_confirmation": "",
+        "favorite_groups": "பிடித்த குழுக்கள்",
+        "empty_group_notice": "பிடித்த குழுக்கள் இல்லை",
+        "create_group": "குழுவை உருவாக்கவும்",
+        "edit_group": "குழு திருத்து",
+        "add_to_group_dialog_title": "பிடித்த குழுவில் சேர்க்கவும்",
+        "add_to": "சேர்க்கவும்",
+        "create": "உருவாக்கு",
+        "private": "தனிப்பட்ட",
+        "view_more_popup": "பார்வை",
+        "items_added_notification_popup": "{0} இடுகைகள் {1}",
+        "group_name": "குழு பெயர்",
+        "group_name_hint": "புதிய குழு",
+        "all_posts": "இடுகைகள்",
+        "initial_posts_hint": "அடையாள எண்களை உள்ளிடவும், இடைவெளிகளால் பிரிக்கப்பட்டுள்ளது (விரும்பினால்)",
+        "is_private_group_option": "தனியார் குழு",
+        "create_group_cancel": "ரத்துசெய்",
+        "create_group_confirm": "சரி",
+        "max_limit_warning": "உறுப்பினர் 10 பிடித்த குழுக்களை மட்டுமே உருவாக்க முடியும்",
+        "duplicate_items_warning_notification": "நுழைந்த இடுகைகள் ஏற்கனவே குழுவில் உள்ளன",
+        "detete_confirmation": "இந்தப் பிடித்த குழுவை நீக்க விரும்புகிறீர்களா",
         "group_item_counter": {
-            "one": "",
-            "other": ""
+            "one": "}} இடுகை",
+            "other": "{} இடுகைகள்"
         }
     },
     "favorite_tags": {
-        "favorites": "",
-        "import": "",
-        "import_hint": "",
-        "cancel": "",
-        "export": "",
-        "export_notification": "",
-        "favorite_tags": ""
+        "favorites": "பிடித்தவை",
+        "import": "இறக்குமதி",
+        "import_hint": "உங்கள் குறிச்சொல் சரத்தை இங்கே உள்ளிடவும். விண்வெளி பிரிக்கப்பட்டது.",
+        "cancel": "ரத்துசெய்",
+        "export": "ஏற்றுமதி",
+        "export_notification": "குறிச்சொல் சரம் கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது",
+        "favorite_tags": "பிடித்த குறிச்சொற்கள்"
     },
     "rating": {
-        "rate_request": "",
-        "rate": "",
-        "cancel": "",
-        "later": "",
-        "rationale": ""
+        "rate_request": "இந்த பயன்பாட்டை மதிப்பிடுங்கள்",
+        "rate": "விகிதம்",
+        "cancel": "நன்றி இல்லை",
+        "later": "ஒருவேளை பின்னர்",
+        "rationale": "பயன்பாட்டை நீங்கள் விரும்பினால், அதை மதிப்பாய்வு செய்ய உங்கள் நேரத்தை சிறிது எடுத்துக் கொள்ளுங்கள்.\n இது சில வினாடிகளுக்கு மேல் ஆகாது, இது உண்மையில் இந்த திட்டத்திற்கு உதவுகிறது."
     },
     "sideMenu": {
-        "settings": "",
-        "your_bookmarks": "",
-        "your_blacklist": "",
-        "bulk_download": "",
-        "get_support": ""
+        "settings": "அமைப்புகள்",
+        "your_bookmarks": "உங்கள் புக்மார்க்குகள்",
+        "your_blacklist": "உங்கள் தடுப்புப்பட்டியல்",
+        "bulk_download": "மொத்த பதிவிறக்க",
+        "get_support": "ஆதரவை பெறு"
     },
     "dateRange": {
-        "day": "",
-        "week": "",
-        "month": ""
+        "day": "நாள்",
+        "week": "வாரம்",
+        "month": "மாதம்"
     },
     "booru": {
-        "booru_engine_input_label": "",
-        "config_name_label": "",
-        "site_url_label": "",
-        "login_name_label": "",
-        "password_api_key_label": "",
-        "password_hashed_label": "",
-        "password_label": "",
-        "content_filtering_label": "",
-        "hide_deleted_label": "",
-        "config_booru_confirm": "",
-        "add_a_booru_site": "",
-        "next_step": "",
-        "site_url": "",
-        "unsupported_warning": "",
-        "validation_empty_url": "",
-        "validation_invalid_url": "",
-        "validation_invalid_http_url": "",
-        "validation_missing_trailing_slash": "",
-        "validation_redundant_www": "",
-        "validation_contains_spaces": "",
-        "validation_missing_scheme": "",
-        "authentication": "",
-        "download": "",
-        "gestures": "",
-        "misc": ""
+        "booru_engine_input_label": "பூரூ எஞ்சின் (*)",
+        "config_name_label": "சுயவிவர பெயர் (*)",
+        "site_url_label": "தள முகவரி",
+        "login_name_label": "புகுபதிவு",
+        "password_api_key_label": "பநிஇ விசை",
+        "password_hashed_label": "கடவுச்சொல் ஆசெட் (வாசிப்பு)",
+        "password_label": "கடவுச்சொல்",
+        "content_filtering_label": "உள்ளடக்க வடிகட்டுதல்",
+        "hide_deleted_label": "நீக்கப்பட்ட இடுகைகளை மறைக்கவும்",
+        "config_booru_confirm": "சரி",
+        "add_a_booru_site": "புதிய சுயவிவரத்தை உருவாக்கவும்",
+        "next_step": "அடுத்தது",
+        "site_url": "தள முகவரி",
+        "unsupported_warning": "இந்த பூரூ இன்னும் ஆதரிக்கப்படவில்லை.",
+        "validation_empty_url": "முகவரி காலியாக உள்ளது",
+        "validation_invalid_url": "\"{0}\" என்பது சரியான முகவரி அல்ல",
+        "validation_invalid_http_url": "\"{0}\" என்பது ஒரு http அல்லது https முகவரி அல்ல",
+        "validation_missing_trailing_slash": "\"{0}\" ஒரு பின்னடைவு குறைப்பைக் காணவில்லை",
+        "validation_redundant_www": "\"{0}\" தேவையற்ற \"www\"",
+        "validation_contains_spaces": "\"{0}\" இடையே இடைவெளிகளைக் கொண்டுள்ளது",
+        "validation_missing_scheme": "\"{0}\" ஒரு திட்டத்தைக் காணவில்லை (எ.கா. https: //)",
+        "authentication": "ஏற்பு",
+        "download": "பதிவிறக்கம்",
+        "gestures": "சைகைகள்",
+        "misc": "இதர"
     },
     "blacklist": {
         "manage": {
-            "title": "",
-            "empty_blacklist": ""
+            "title": "தடுப்புப்பட்டியல்",
+            "empty_blacklist": "தடுப்புப்பட்டியல் குறிச்சொற்கள் இல்லை"
         }
     },
     "bookmark": {
-        "added": "",
-        "failed_to_add": "",
-        "many_added": "",
-        "failed_to_add_many": "",
-        "removed": "",
-        "updated": "",
-        "failed_to_remove": "",
-        "failed_to_update": "",
-        "failed_to_load": ""
+        "added": "புக்மார்க்கு சேர்க்கப்பட்டது",
+        "failed_to_add": "புக்மார்க்கைச் சேர்க்கத் தவறிவிட்டது",
+        "many_added": "{0} புக்மார்க்குகள் சேர்க்கப்பட்டன",
+        "failed_to_add_many": "புக்மார்க்குகளைச் சேர்க்கத் தவறிவிட்டது",
+        "removed": "புக்மார்க்கு அகற்றப்பட்டது",
+        "updated": "புக்மார்க்கு புதுப்பிக்கப்பட்டது",
+        "failed_to_remove": "புத்தகக்குறியை அகற்றுவதில் தோல்வி",
+        "failed_to_update": "புக்மார்க்கைப் புதுப்பிக்கத் தவறிவிட்டது",
+        "failed_to_load": "புக்மார்க்குகளை ஏற்றுவதில் தோல்வி: {0}"
     },
     "app_update": {
-        "update": "",
-        "later": "",
-        "whats_new": "",
-        "update_available": ""
+        "update": "புதுப்பிப்பு",
+        "later": "பின்னர்",
+        "whats_new": "புதியது என்ன?",
+        "update_available": "புதுப்பிப்பு கிடைக்கிறது"
     },
     "forum": {
-        "forum": ""
+        "forum": "மன்றம்"
     },
     "gestures": {
-        "swipe_down": "",
-        "double_tap": "",
-        "long_press": "",
-        "tap": ""
+        "swipe_down": "கீழே ச்வைப் செய்யவும்",
+        "double_tap": "இரட்டை குழாய்",
+        "long_press": "நீண்ட செய்தித் தாள்",
+        "tap": "தட்டவும்"
     },
     "time": {
         "counters": {
             "second": {
-                "one": "",
-                "other": ""
+                "one": "இரண்டாவது",
+                "other": "நொடிகள்"
             }
         }
     }
