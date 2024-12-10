@@ -12,8 +12,8 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../boorus/danbooru/errors.dart';
 import '../../../../foundation/error.dart';
-import '../../../../foundation/gestures.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../configs/config.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
 import '../../../settings.dart';

@@ -2,11 +2,11 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../foundation/image.dart';
-import '../../../../foundation/video.dart';
 import '../../rating/rating.dart';
 import '../../sources/source.dart';
-import 'media_info_mixin.dart';
+import 'mixins/image_info_mixin.dart';
+import 'mixins/media_info_mixin.dart';
+import 'mixins/video_info_mixin.dart';
 
 class PostMetadata extends Equatable {
   const PostMetadata({

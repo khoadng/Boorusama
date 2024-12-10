@@ -23,7 +23,6 @@ import '../../core/posts/statistics/widgets.dart';
 import '../../core/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
-import '../../foundation/gestures.dart';
 import '../../foundation/url_launcher.dart';
 import '../../router.dart';
 import '../booru_builder.dart';

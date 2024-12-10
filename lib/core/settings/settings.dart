@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/gestures.dart';
+import '../configs/config.dart';
 import '../theme/theme_mode.dart';
 import 'types.dart';
 

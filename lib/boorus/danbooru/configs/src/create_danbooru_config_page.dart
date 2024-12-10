@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/configs/config.dart';
 import '../../../../core/configs/create.dart';
 import '../../../../core/theme.dart';
-import '../../../../foundation/gestures.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../users/user/user.dart';
 import 'hide_deleted_switch.dart';

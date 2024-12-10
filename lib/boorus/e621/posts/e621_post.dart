@@ -6,8 +6,6 @@ import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
 import '../../../core/settings.dart';
-import '../../../foundation/image.dart';
-import '../../../foundation/video.dart';
 
 class E621Post extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin

@@ -1,9 +1,5 @@
-//TODO: handle other kind of video format
-
-// Project imports:
-import 'path.dart';
-
-final _supportVideoFormat = {'mp4', 'webm', 'zip'};
+// Package imports:
+import 'package:path/path.dart';
 
 mixin VideoInfoMixin {
   String get format;
@@ -31,3 +27,6 @@ bool isFormatVideo(String? format) {
   return _supportVideoFormat.contains(format) ||
       supportFormatWithDot.contains(format);
 }
+
+//TODO: handle other kind of video format
+final _supportVideoFormat = {'mp4', 'webm', 'zip'};

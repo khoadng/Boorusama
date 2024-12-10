@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/gestures.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../theme.dart';
 import '../data/booru_config_data.dart';
+import '../gestures.dart';
 import 'providers.dart';
 
 class DefaultBooruConfigGesturesView extends ConsumerWidget {

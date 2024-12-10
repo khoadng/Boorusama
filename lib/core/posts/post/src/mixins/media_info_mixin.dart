@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../foundation/video.dart';
+import 'video_info_mixin.dart';
 
 mixin MediaInfoMixin {
   String get format;

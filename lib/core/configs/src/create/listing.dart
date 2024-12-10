@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/gestures.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../settings.dart';
 import '../../../settings/pages.dart';
 import '../data/booru_config_data.dart';
+import '../gestures.dart';
 import 'providers.dart';
 
 const kDefaultPreviewImageButtonAction = {

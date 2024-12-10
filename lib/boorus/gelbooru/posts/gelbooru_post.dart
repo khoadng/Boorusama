@@ -5,8 +5,6 @@ import 'package:equatable/equatable.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
-import '../../../foundation/image.dart';
-import '../../../foundation/video.dart';
 
 class GelbooruPost extends Equatable
     with

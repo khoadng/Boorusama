@@ -3,13 +3,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/gestures.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
+import '../gestures.dart';
 import '../manage/booru_config_provider.dart';
 import '../types.dart';
 

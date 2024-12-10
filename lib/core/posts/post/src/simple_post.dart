@@ -2,14 +2,14 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../foundation/image.dart';
-import '../../../../foundation/video.dart';
 import '../../rating/rating.dart';
 import '../../sources/source.dart';
-import 'media_info_mixin.dart';
+import 'mixins/image_info_mixin.dart';
+import 'mixins/media_info_mixin.dart';
+import 'mixins/post_mixin.dart';
+import 'mixins/translatable_mixin.dart';
+import 'mixins/video_info_mixin.dart';
 import 'post.dart';
-import 'post_mixin.dart';
-import 'translatable_mixin.dart';
 
 abstract class SimplePost extends Equatable
     with

@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/gestures.dart';
 import 'booru_config.dart';
+import 'gestures.dart';
 import 'manage/current_booru_providers.dart';
 
 extension BooruWidgetRef on WidgetRef {

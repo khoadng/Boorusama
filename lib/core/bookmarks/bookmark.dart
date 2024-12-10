@@ -3,9 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/image.dart';
 import '../../foundation/path.dart';
-import '../../foundation/video.dart';
 import '../posts/post/post.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {

@@ -34,7 +34,6 @@ import '../core/tags/tag/tag.dart';
 import '../core/tags/tag/widgets.dart';
 import '../core/theme.dart';
 import '../foundation/display.dart';
-import '../foundation/gestures.dart';
 import '../foundation/url_launcher.dart';
 import '../router.dart';
 import 'booru_builder.dart';

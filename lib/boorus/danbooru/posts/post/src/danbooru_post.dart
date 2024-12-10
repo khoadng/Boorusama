@@ -9,8 +9,6 @@ import '../../../../../core/posts/sources/source.dart';
 import '../../../../../core/settings.dart';
 import '../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../core/tags/tag/tag.dart';
-import '../../../../../foundation/image.dart';
-import '../../../../../foundation/video.dart';
 import 'post_variant.dart';
 
 typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
