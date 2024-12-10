@@ -8,7 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../../boorus/booru_builder.dart';
+import '../../../../boorus/providers.dart';
 import '../../../boorus.dart';
 import '../../../configs/ref.dart';
 import '../../../posts/count/widgets.dart';

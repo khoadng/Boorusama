@@ -15,7 +15,7 @@ import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/selected_tags.dart';
 import '../../../../core/tags/configs/providers.dart';
-import '../../../booru_builder.dart';
+import '../../../providers.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';
 import '../../posts/post/providers.dart';

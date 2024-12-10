@@ -10,6 +10,9 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -25,9 +28,6 @@ import '../../core/router.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/settings/types.dart';
 import '../../core/tags/tag/tag.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'anime_pictures_home_page.dart';

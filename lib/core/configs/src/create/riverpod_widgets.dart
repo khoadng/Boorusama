@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/booru_builder.dart';
+import '../../../../boorus/providers.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../theme.dart';
 import '../../../widgets/option_dropdown_button.dart';

@@ -13,7 +13,7 @@ import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/settings/data.dart';
 import '../../../../../core/settings/data/listing_provider.dart';
-import '../../../../booru_builder.dart';
+import '../../../../providers.dart';
 import '../../../danbooru.dart';
 import '../../../danbooru_provider.dart';
 import '../../post/post.dart';

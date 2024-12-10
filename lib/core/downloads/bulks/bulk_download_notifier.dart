@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import '../../../boorus/booru_builder.dart';
 import '../../../boorus/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/http.dart';

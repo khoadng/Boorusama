@@ -7,6 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -16,9 +19,6 @@ import '../../core/http/providers.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/tags/tag/tag.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru/gelbooru.dart';
 import 'configs/create_moebooru_config_page.dart';

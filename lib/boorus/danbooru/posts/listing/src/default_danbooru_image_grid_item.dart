@@ -7,6 +7,7 @@ import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../../core/boorus/booru_builder_default.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/foundation/clipboard.dart';
@@ -20,8 +21,7 @@ import '../../../../../core/router.dart';
 import '../../../../../core/settings.dart';
 import '../../../../../core/settings/data/listing_provider.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../booru_builder.dart';
-import '../../../../booru_builder_default.dart';
+import '../../../../providers.dart';
 import '../../post/post.dart';
 import 'danbooru_post_context_menu.dart';
 

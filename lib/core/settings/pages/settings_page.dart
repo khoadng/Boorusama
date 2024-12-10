@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import '../../../boorus/booru_builder.dart';
+import '../../../boorus/providers.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../configs/ref.dart';
 import '../../foundation/scrolling.dart';

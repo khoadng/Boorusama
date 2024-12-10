@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../boorus/booru_builder.dart';
 import '../../boorus/entry_page.dart';
+import '../../boorus/providers.dart';
 import '../app_rating/app_rating.dart';
 import '../applock/applock.dart';
 import '../blacklists/blacklisted_tag_page.dart';

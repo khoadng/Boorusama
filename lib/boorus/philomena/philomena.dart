@@ -7,6 +7,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../core/artists/artists.dart';
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -17,9 +20,6 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/theme.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'create_philomena_config_page.dart';

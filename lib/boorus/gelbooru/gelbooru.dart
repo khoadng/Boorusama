@@ -7,6 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -21,9 +24,6 @@ import '../../core/search/search_ui.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';

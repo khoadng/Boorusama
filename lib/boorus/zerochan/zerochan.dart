@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -18,9 +21,6 @@ import '../../core/router.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
 import '../../core/theme.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';

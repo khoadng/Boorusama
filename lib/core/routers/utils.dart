@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../boorus/booru_builder.dart';
+import '../../boorus/providers.dart';
 import '../autocompletes/autocompletes.dart';
 import '../comments/utils.dart';
 import '../configs/config.dart';

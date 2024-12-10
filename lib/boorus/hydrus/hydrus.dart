@@ -10,6 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -30,9 +33,6 @@ import '../../core/search/query_composer_providers.dart';
 import '../../core/search/search_ui.dart';
 import '../../core/settings/data/listing_provider.dart';
 import '../../core/widgets/widgets.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'favorites/favorites.dart';

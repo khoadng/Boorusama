@@ -18,6 +18,8 @@ import 'package:foundation/foundation.dart';
 import '../core/autocompletes/autocompletes.dart';
 import '../core/blacklists/providers.dart';
 import '../core/boorus.dart';
+import '../core/boorus/booru_builder.dart';
+import '../core/boorus/booru_builder_types.dart';
 import '../core/configs/config.dart';
 import '../core/configs/ref.dart';
 import '../core/downloads/urls.dart';
@@ -30,10 +32,11 @@ import '../core/posts/post/post.dart';
 import '../core/posts/post/providers.dart';
 import '../core/tags/tag/providers.dart';
 import '../core/tags/tag/tag.dart';
+import 'anime-pictures/anime_pictures.dart';
 import 'anime-pictures/providers.dart';
-import 'booru_builder_types.dart';
 import 'danbooru/autocompletes/providers.dart';
 import 'danbooru/blacklist/providers.dart';
+import 'danbooru/danbooru.dart';
 import 'danbooru/notes/providers.dart';
 import 'danbooru/posts/count/providers.dart';
 import 'danbooru/posts/favorites/providers.dart';
@@ -52,12 +55,51 @@ import 'hydrus/hydrus.dart';
 import 'moebooru/feats/autocomplete/autocomplete.dart';
 import 'moebooru/feats/posts/posts.dart';
 import 'moebooru/feats/tags/moebooru_tag_provider.dart';
+import 'moebooru/moebooru.dart';
+import 'philomena/philomena.dart';
 import 'philomena/providers.dart';
 import 'sankaku/sankaku.dart';
 import 'shimmie2/providers.dart';
+import 'shimmie2/shimmie2.dart';
 import 'szurubooru/favorites/favorites.dart';
 import 'szurubooru/providers.dart';
+import 'szurubooru/szurubooru.dart';
 import 'zerochan/providers.dart';
+import 'zerochan/zerochan.dart';
+
+/// A provider that provides a map of [BooruType] to [BooruBuilder] functions
+/// that can be used to build a Booru instances.
+///
+/// The [BooruType] enum represents different types of boorus that can be built.
+///
+/// Example usage:
+/// ```
+/// final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function()>>((ref) =>
+///   {
+///     BooruType.zerochan: () => ZerochanBuilder(),
+///     // ...
+///   }
+/// );
+/// ```
+/// Note that the [BooruBuilder] functions are not called until they are used and they won't be called again
+/// Each local instance of [BooruBuilder] will be cached and reused until the app is restarted.
+final booruBuildersProvider = Provider<Map<BooruType, BooruBuilder Function()>>(
+  (ref) => {
+    BooruType.zerochan: () => ZerochanBuilder(),
+    BooruType.moebooru: () => MoebooruBuilder(),
+    BooruType.gelbooru: () => GelbooruBuilder(),
+    BooruType.gelbooruV2: () => GelbooruV2Builder(),
+    BooruType.e621: () => E621Builder(),
+    BooruType.danbooru: () => DanbooruBuilder(),
+    BooruType.gelbooruV1: () => GelbooruV1Builder(),
+    BooruType.sankaku: () => SankakuBuilder(),
+    BooruType.philomena: () => PhilomenaBuilder(),
+    BooruType.shimmie2: () => Shimmie2Builder(),
+    BooruType.szurubooru: () => SzurubooruBuilder(),
+    BooruType.hydrus: () => HydrusBuilder(),
+    BooruType.animePictures: () => AnimePicturesBuilder(),
+  },
+);
 
 final announcementProvider = FutureProvider<String>((ref) {
   final client = BoorusamaClient();
@@ -422,4 +464,47 @@ final booruSiteValidatorProvider =
       ).getPosts().then((value) => true),
     BooruType.unknown => Future.value(false),
   };
+});
+
+extension BooruBuilderFeatureCheck on BooruBuilder {
+  bool get isArtistSupported => artistPageBuilder != null;
+}
+
+extension BooruRef on Ref {
+  BooruBuilder? readBooruBuilder(BooruConfigAuth? config) {
+    if (config == null) return null;
+
+    final booruBuilders = read(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc() : null;
+  }
+}
+
+extension BooruWidgetRef on WidgetRef {
+  BooruBuilder? readBooruBuilder(BooruConfigAuth? config) {
+    if (config == null) return null;
+
+    final booruBuilders = read(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc() : null;
+  }
+
+  BooruBuilder? watchBooruBuilder(BooruConfigAuth? config) {
+    if (config == null) return null;
+
+    final booruBuilders = watch(booruBuildersProvider);
+    final booruBuilderFunc = booruBuilders[config.booruType];
+
+    return booruBuilderFunc != null ? booruBuilderFunc() : null;
+  }
+}
+
+final currentBooruBuilderProvider = Provider<BooruBuilder?>((ref) {
+  final config = ref.watchConfigAuth;
+  final booruBuilders = ref.watch(booruBuildersProvider);
+  final booruBuilderFunc = booruBuilders[config.booruType];
+
+  return booruBuilderFunc != null ? booruBuilderFunc() : null;
 });

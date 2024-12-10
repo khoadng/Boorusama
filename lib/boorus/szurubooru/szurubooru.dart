@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -19,9 +22,6 @@ import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/search_ui.dart';
 import '../../core/widgets/widgets.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'create_szurubooru_config_page.dart';

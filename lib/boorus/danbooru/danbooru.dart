@@ -6,6 +6,9 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../core/boorus/booru_builder.dart';
+import '../../core/boorus/booru_builder_default.dart';
+import '../../core/boorus/booru_builder_types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -25,9 +28,6 @@ import '../../core/router.dart';
 import '../../core/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
-import '../booru_builder.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
 import 'artists/artist/widgets.dart';
 import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';

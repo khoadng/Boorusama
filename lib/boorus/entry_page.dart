@@ -23,7 +23,7 @@ import '../core/settings.dart';
 import '../core/settings/data.dart';
 import '../core/theme.dart';
 import '../core/widgets/widgets.dart';
-import 'booru_builder.dart';
+import 'providers.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({

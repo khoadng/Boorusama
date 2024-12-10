@@ -6,9 +6,10 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/booru_builder.dart';
-import '../../../../boorus/booru_builder_types.dart';
+import '../../../../boorus/providers.dart';
 import '../../../boorus.dart';
+import '../../../boorus/booru_builder.dart';
+import '../../../boorus/booru_builder_types.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../../configs/ref.dart';
