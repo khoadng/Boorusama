@@ -7,8 +7,8 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import '../../comment/comment.dart';
-import 'danbooru_comment_vote.dart';
-import 'local_providers.dart';
+import 'data/providers.dart';
+import 'types/danbooru_comment_vote.dart';
 
 final danbooruCommentVotesProvider = NotifierProvider.family<
     CommentVotesNotifier, Map<CommentId, DanbooruCommentVote>, BooruConfigAuth>(

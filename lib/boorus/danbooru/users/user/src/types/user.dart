@@ -5,6 +5,9 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/core/users/user.dart';
 import 'user_level.dart';
 
+String getDanbooruProfileUrl(String url) =>
+    url.endsWith('/') ? '${url}profile' : '$url/profile';
+
 class DanbooruUser extends Equatable {
   const DanbooruUser({
     required this.id,

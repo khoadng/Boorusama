@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../reports/danbooru_report_data_point.dart';
+import '../../../../reports/report.dart';
 import '../providers/local_providers.dart';
 import '../types/upload_date_range_selector_type.dart';
 

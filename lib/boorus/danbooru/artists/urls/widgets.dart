@@ -1,3 +1,3 @@
 library;
 
-export 'src/artist_url_chips.dart';
+export 'src/widgets/artist_url_chips.dart';

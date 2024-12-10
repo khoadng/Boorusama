@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/configs/ref.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/posts/post/post.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/widgets/widgets.dart';
 import '../../../../tags/tag/routes.dart';
+import '../../../../versions/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';
 import '../../../post/post.dart';
 

@@ -1,3 +1,3 @@
 library;
 
-export 'src/artist_page.dart';
+export 'src/pages/artist_page.dart';

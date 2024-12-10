@@ -1,4 +1,4 @@
 library;
 
-export 'src/comments_notifier.dart';
-export 'src/providers.dart';
+export 'src/providers/comments_notifier.dart';
+export 'src/providers/providers.dart';

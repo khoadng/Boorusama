@@ -1,3 +1,3 @@
 library;
 
-export 'src/danbooru_comment_vote.dart';
+export 'src/types/danbooru_comment_vote.dart';

@@ -1,4 +1,4 @@
 library;
 
-export 'src/artist_providers.dart';
-export 'src/providers.dart';
+export 'src/providers/artist_notifier.dart';
+export 'src/data/providers.dart';

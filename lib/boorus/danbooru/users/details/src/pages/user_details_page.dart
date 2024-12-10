@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../../../dmails/routes.dart';
 import '../../../../posts/uploads/routes.dart';
 import '../../../user/providers.dart';
 import '../views/user_details_info_view.dart';

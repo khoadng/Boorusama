@@ -1,3 +1,3 @@
 library;
 
-export 'src/providers.dart';
+export 'src/providers/providers.dart';

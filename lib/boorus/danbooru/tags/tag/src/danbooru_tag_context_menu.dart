@@ -11,7 +11,7 @@ import 'package:boorusama/core/tags/tag/widgets.dart';
 import 'package:boorusama/core/wikis/launcher.dart';
 import 'package:boorusama/foundation/clipboard.dart';
 import '../../../blacklist/providers.dart';
-import '../../../router.dart';
+import '../../../saved_searches/saved_search/routes.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {
   const DanbooruTagContextMenu({
