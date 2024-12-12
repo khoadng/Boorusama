@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/theme/utils.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/details/routes.dart';
 import '../../../../users/user/providers.dart';
@@ -24,18 +27,32 @@ class DanbooruForumCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
-    final creatorName = creator?.name ?? '...';
-
     return ForumCard(
       title: topic.title,
       responseCount: topic.responseCount,
       createdAt: topic.createdAt,
-      creatorName: creatorName,
-      creatorColor: DanbooruUserColor.of(context).fromLevel(creator?.level),
-      onCreatorTap: () => goToUserDetailsPage(
-        context,
-        uid: topic.creatorId,
+      creatorInfo: Builder(
+        builder: (context) {
+          final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
+          final creatorColor =
+              DanbooruUserColor.of(context).fromLevel(creator?.level);
+          final creatorName = creator?.name ?? '...';
+
+          final colors = context.generateChipColors(
+            creatorColor,
+            ref.watch(settingsProvider),
+          );
+
+          return CompactChip(
+            label: creatorName.replaceAll('_', ' '),
+            backgroundColor: colors?.backgroundColor,
+            textColor: colors?.foregroundColor,
+            onTap: () => goToUserDetailsPage(
+              context,
+              uid: topic.creatorId,
+            ),
+          );
+        },
       ),
       onTap: () => goToForumPostsPage(
         context,

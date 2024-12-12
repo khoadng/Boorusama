@@ -9,14 +9,13 @@ import '../types/creator_repository.dart';
 import 'providers.dart';
 
 final danbooruCreatorRepoProvider =
-    Provider.family<CreatorRepository, BooruConfigAuth>(
-  (ref, config) {
+    FutureProvider.family<CreatorRepository, BooruConfigAuth>(
+  (ref, config) async {
+    final box = await ref.watch(danbooruCreatorHiveBoxProvider(config).future);
+
     return CreatorRepositoryFromUserRepo(
       ref.watch(danbooruUserRepoProvider(config)),
-      ref.watch(danbooruCreatorHiveBoxProvider),
+      box,
     );
   },
-  dependencies: [
-    danbooruCreatorHiveBoxProvider,
-  ],
 );

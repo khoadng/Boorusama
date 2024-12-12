@@ -27,39 +27,47 @@ class DanbooruForumVoteChips extends ConsumerWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: votes.map((e) {
-        final creator = ref.watch(danbooruCreatorProvider(e.creatorId));
+      children: votes
+          .map(
+            (e) => ForumVoteChip(
+              icon: switch (e.type) {
+                DanbooruForumPostVoteType.upvote => Icon(
+                    Symbols.arrow_upward,
+                    color: _iconColor(e.type),
+                  ),
+                DanbooruForumPostVoteType.downvote => Icon(
+                    Symbols.arrow_downward,
+                    color: _iconColor(e.type),
+                  ),
+                DanbooruForumPostVoteType.unsure => Container(
+                    margin: const EdgeInsets.all(4),
+                    child: FaIcon(
+                      FontAwesomeIcons.faceMeh,
+                      size: 16,
+                      color: _iconColor(e.type),
+                    ),
+                  ),
+              },
+              color: _color(e.type),
+              borderColor: _borderColor(e.type),
+              label: Builder(
+                builder: (context) {
+                  final creator =
+                      ref.watch(danbooruCreatorProvider(e.creatorId));
 
-        return ForumVoteChip(
-          icon: switch (e.type) {
-            DanbooruForumPostVoteType.upvote => Icon(
-                Symbols.arrow_upward,
-                color: _iconColor(e.type),
+                  return Text(
+                    creator?.name.replaceAll('_', ' ') ?? 'User',
+                    style: TextStyle(
+                      color: DanbooruUserColor.of(context)
+                          .fromLevel(creator?.level),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  );
+                },
               ),
-            DanbooruForumPostVoteType.downvote => Icon(
-                Symbols.arrow_downward,
-                color: _iconColor(e.type),
-              ),
-            DanbooruForumPostVoteType.unsure => Container(
-                margin: const EdgeInsets.all(4),
-                child: FaIcon(
-                  FontAwesomeIcons.faceMeh,
-                  size: 16,
-                  color: _iconColor(e.type),
-                ),
-              ),
-          },
-          color: _color(e.type),
-          borderColor: _borderColor(e.type),
-          label: Text(
-            creator?.name.replaceAll('_', ' ') ?? 'User',
-            style: TextStyle(
-              color: DanbooruUserColor.of(context).fromLevel(creator?.level),
-              fontWeight: FontWeight.w500,
             ),
-          ),
-        );
-      }).toList(),
+          )
+          .toList(),
     );
   }
 }

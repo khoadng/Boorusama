@@ -108,23 +108,30 @@ class _DanbooruForumPostsPageState
 
   Widget _buildPost(DanbooruForumPost post) {
     final config = ref.watchConfigAuth;
-    final creator = ref.watch(danbooruCreatorProvider(post.creatorId));
-    final creatorName = creator?.name ?? '...';
-    final creatorLevel = creator?.level ?? UserLevel.member;
 
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ForumPostHeader(
-            authorName: creatorName,
-            createdAt: post.createdAt,
-            authorLevel: creatorLevel,
-            onTap: () => goToUserDetailsPage(
-              context,
-              uid: post.creatorId,
-            ),
+          Builder(
+            builder: (context) {
+              final creator =
+                  ref.watch(danbooruCreatorProvider(post.creatorId));
+
+              final creatorName = creator?.name ?? '...';
+              final creatorLevel = creator?.level ?? UserLevel.member;
+
+              return ForumPostHeader(
+                authorName: creatorName,
+                createdAt: post.createdAt,
+                authorLevel: creatorLevel,
+                onTap: () => goToUserDetailsPage(
+                  context,
+                  uid: post.creatorId,
+                ),
+              );
+            },
           ),
           AppHtml(
             onLinkTap: !config.hasStrictSFW

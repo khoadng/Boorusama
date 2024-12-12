@@ -11,6 +11,7 @@ import '../../../../../../core/utils/statistics.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../post_stats.dart';
+import 'creator_statistic_sheet.dart';
 
 class PostStatsUploaderSection extends ConsumerWidget {
   const PostStatsUploaderSection({
@@ -37,9 +38,11 @@ class PostStatsUploaderSection extends ConsumerWidget {
             final percent = (e.value / totalPosts) * 100;
             final creator =
                 ref.watch(danbooruCreatorProvider(int.tryParse(e.key)));
+
+            final valueText = '${e.value} (${percent.toStringAsFixed(1)}%)';
             return PostStatsTile(
               title: creator?.name ?? e.key,
-              value: '${e.value} (${percent.toStringAsFixed(1)}%)',
+              value: valueText,
               titleColor:
                   DanbooruUserColor.of(context).fromLevel(creator?.level),
             );
@@ -52,17 +55,10 @@ class PostStatsUploaderSection extends ConsumerWidget {
   void _onMore(WidgetRef ref, BuildContext context) {
     showAppModalBarBottomSheet(
       context: context,
-      builder: (context) => StatisticsFromMapPage(
+      builder: (context) => CreatorStatisticSheet(
         title: 'Uploader',
-        total: totalPosts,
-        titleFormatter: (value) => value.replaceAll('_', ' '),
-        data: {
-          for (final uploader in stats.uploaders.topN().entries)
-            ref
-                    .watch(danbooruCreatorProvider(int.tryParse(uploader.key)))
-                    ?.name ??
-                uploader.key: uploader.value,
-        },
+        totalPosts: totalPosts,
+        stats: stats.uploaders,
       ),
     );
   }

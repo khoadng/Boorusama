@@ -75,9 +75,6 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                           itemCount: dmails.length,
                           itemBuilder: (context, index) {
                             final dmail = dmails[index];
-                            final fromUser = ref
-                                .watch(danbooruCreatorProvider(dmail.fromId));
-                            final color = userColor.fromLevel(fromUser?.level);
 
                             return ListTile(
                               minVerticalPadding: 0,
@@ -90,16 +87,27 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                   ),
                                 ),
                               ),
-                              title: Text(
-                                fromUser?.name ?? '...',
-                                style: dmail.isRead
-                                    ? TextStyle(
-                                        color: color.withOpacity(0.7),
-                                      )
-                                    : TextStyle(
-                                        color: color,
-                                        fontWeight: FontWeight.w900,
-                                      ),
+                              title: Builder(
+                                builder: (context) {
+                                  final fromUser = ref.watch(
+                                    danbooruCreatorProvider(dmail.fromId),
+                                  );
+
+                                  final color =
+                                      userColor.fromLevel(fromUser?.level);
+
+                                  return Text(
+                                    fromUser?.name ?? '...',
+                                    style: dmail.isRead
+                                        ? TextStyle(
+                                            color: color.withOpacity(0.7),
+                                          )
+                                        : TextStyle(
+                                            color: color,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                  );
+                                },
                               ),
                               subtitle: Text(
                                 dmail.title,

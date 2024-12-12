@@ -7,9 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/settings/data.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/theme/utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
 
 class ForumCard extends ConsumerWidget {
@@ -18,12 +16,10 @@ class ForumCard extends ConsumerWidget {
     required this.title,
     required this.responseCount,
     required this.createdAt,
-    required this.creatorName,
-    required this.creatorColor,
     this.isSticky = false,
     this.isLocked = false,
     this.onTap,
-    this.onCreatorTap,
+    required this.creatorInfo,
   });
 
   final bool isSticky;
@@ -31,18 +27,11 @@ class ForumCard extends ConsumerWidget {
   final int responseCount;
   final String title;
   final DateTime createdAt;
-  final String creatorName;
-  final Color creatorColor;
+  final Widget creatorInfo;
   final VoidCallback? onTap;
-  final VoidCallback? onCreatorTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.generateChipColors(
-      creatorColor,
-      ref.watch(settingsProvider),
-    );
-
     return Card(
       child: InkWell(
         onTap: onTap,
@@ -80,12 +69,7 @@ class ForumCard extends ConsumerWidget {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  CompactChip(
-                    label: creatorName.replaceAll('_', ' '),
-                    backgroundColor: colors?.backgroundColor,
-                    textColor: colors?.foregroundColor,
-                    onTap: onCreatorTap,
-                  ),
+                  creatorInfo,
                   const SizedBox(width: 8),
                   Text('Replies: $responseCount | '),
                   Expanded(

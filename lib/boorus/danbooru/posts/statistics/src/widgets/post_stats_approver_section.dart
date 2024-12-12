@@ -11,6 +11,7 @@ import '../../../../../../core/utils/statistics.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../post_stats.dart';
+import 'creator_statistic_sheet.dart';
 
 class PostStatsApproverSection extends ConsumerWidget {
   const PostStatsApproverSection({
@@ -33,21 +34,10 @@ class PostStatsApproverSection extends ConsumerWidget {
           onMore: () {
             showAppModalBarBottomSheet(
               context: context,
-              builder: (context) => StatisticsFromMapPage(
+              builder: (context) => CreatorStatisticSheet(
+                totalPosts: totalPosts,
+                stats: stats.approvers,
                 title: 'Approver',
-                total: totalPosts,
-                titleFormatter: (value) => value.replaceAll('_', ' '),
-                data: {
-                  for (final approver in stats.approvers.topN().entries)
-                    ref
-                            .watch(
-                              danbooruCreatorProvider(
-                                int.tryParse(approver.key),
-                              ),
-                            )
-                            ?.name ??
-                        approver.key: approver.value,
-                },
               ),
             );
           },
@@ -55,12 +45,14 @@ class PostStatsApproverSection extends ConsumerWidget {
         ...stats.approvers.topN(5).entries.map(
           (e) {
             final percent = (e.value / totalPosts) * 100;
+            final valueText = '${e.value} (${percent.toStringAsFixed(1)}%)';
+
             final creator =
                 ref.watch(danbooruCreatorProvider(int.tryParse(e.key)));
 
             return PostStatsTile(
               title: creator?.name ?? e.key,
-              value: '${e.value} (${percent.toStringAsFixed(1)}%)',
+              value: valueText,
               titleColor:
                   DanbooruUserColor.of(context).fromLevel(creator?.level),
             );

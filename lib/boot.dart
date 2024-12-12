@@ -15,7 +15,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'boorus/danbooru/users/creator/providers.dart';
 import 'core/analytics.dart';
 import 'core/app.dart';
 import 'core/blacklists/hive/tag_repository.dart';
@@ -195,12 +194,6 @@ Future<void> boot(BootLogger bootLogger) async {
     path: tempPath.path,
   );
 
-  final danbooruCreatorBoxOverride = await createCreatorBoxOverride(
-    initialConfig: initialConfig,
-    tempPath: tempPath,
-    bootLogger: bootLogger,
-  );
-
   bootLogger.l('Initialize package info');
   final packageInfo = await PackageInfo.fromPlatform();
 
@@ -291,7 +284,6 @@ Future<void> boot(BootLogger bootLogger) async {
               appInfoProvider.overrideWithValue(appInfo),
               appLoggerProvider.overrideWithValue(appLogger),
               supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-              danbooruCreatorBoxOverride,
               miscDataBoxProvider.overrideWithValue(miscDataBox),
               booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
               if (firebaseAnalytics != null)
