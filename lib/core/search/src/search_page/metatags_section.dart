@@ -27,7 +27,7 @@ class MetatagsSection extends ConsumerStatefulWidget {
 
   final ValueChanged<String>? onOptionTap;
   final List<Metatag> metatags;
-  final List<String> Function() userMetatags;
+  final List<String>? userMetatags;
   final void Function()? onHelpRequest;
   final Future<void> Function(String tag) onUserMetatagDeleted;
   final Future<void> Function(Metatag tag) onUserMetatagAdded;
@@ -47,6 +47,8 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final userMetatags = widget.userMetatags;
+
     return OptionTagsArena(
       controller: controller,
       title: 'Metatags',
@@ -60,12 +62,13 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
             )
           : const SizedBox.shrink(),
       children: [
-        ...widget.userMetatags().map(
-              (tag) => ValueListenableBuilder(
-                valueListenable: controller.editMode,
-                builder: (context, editMode, _) => _buildChip(tag, editMode),
-              ),
+        if (userMetatags != null)
+          ...userMetatags.map(
+            (tag) => ValueListenableBuilder(
+              valueListenable: controller.editMode,
+              builder: (context, editMode, _) => _buildChip(tag, editMode),
             ),
+          ),
         ValueListenableBuilder(
           valueListenable: controller.editMode,
           builder: (context, editMode, _) =>

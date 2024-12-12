@@ -15,7 +15,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'boorus/danbooru/tags/user_metatags/providers.dart';
 import 'boorus/danbooru/users/creator/providers.dart';
 import 'core/analytics.dart';
 import 'core/app.dart';
@@ -172,10 +171,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  final userMetatagRepoOverride = await createUserMetatagRepoOverride(
-    bootLogger: bootLogger,
-  );
-
   final searchHistoryRepoOverride = await createSearchHistoryRepoOverride(
     logger: bootLogger,
   );
@@ -292,7 +287,6 @@ Future<void> boot(BootLogger bootLogger) async {
               bulkDownloadNotificationProvider
                   .overrideWithValue(bulkDownloadNotifications),
               deviceInfoProvider.overrideWithValue(deviceInfo),
-              userMetatagRepoOverride,
               packageInfoProvider.overrideWithValue(packageInfo),
               appInfoProvider.overrideWithValue(appInfo),
               appLoggerProvider.overrideWithValue(appLogger),

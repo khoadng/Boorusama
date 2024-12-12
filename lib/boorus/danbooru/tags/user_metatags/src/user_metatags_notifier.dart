@@ -6,28 +6,35 @@ import 'providers.dart';
 import 'user_metatag_repository.dart';
 
 final danbooruUserMetatagsProvider =
-    NotifierProvider<UserMetatagsNotifier, List<String>>(
+    AsyncNotifierProvider<UserMetatagsNotifier, List<String>>(
   UserMetatagsNotifier.new,
   dependencies: [
     danbooruUserMetatagRepoProvider,
   ],
 );
 
-class UserMetatagsNotifier extends Notifier<List<String>> {
+class UserMetatagsNotifier extends AsyncNotifier<List<String>> {
   @override
-  List<String> build() {
+  Future<List<String>> build() async {
+    final repo = await repoFuture;
     return repo.getAll();
   }
 
-  UserMetatagRepository get repo => ref.watch(danbooruUserMetatagRepoProvider);
+  Future<UserMetatagRepository> get repoFuture =>
+      ref.watch(danbooruUserMetatagRepoProvider.future);
 
   Future<void> add(String tag) async {
+    final repo = await repoFuture;
     await repo.put(tag);
-    state = repo.getAll();
+    final tags = repo.getAll();
+
+    state = AsyncValue.data(tags);
   }
 
   Future<void> delete(String tag) async {
+    final repo = await repoFuture;
     await repo.delete(tag);
-    state = repo.getAll();
+    final tags = repo.getAll();
+    state = AsyncValue.data(tags);
   }
 }

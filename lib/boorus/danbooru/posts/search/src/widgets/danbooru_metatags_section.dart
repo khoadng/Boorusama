@@ -26,7 +26,6 @@ class DanbooruMetatagsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final booru = booruConfig.createBooruFrom(ref.watch(booruFactoryProvider));
-    final userMetatags = ref.watch(danbooruUserMetatagsProvider);
     final metatags = ref.watch(metatagsProvider);
     final cheatSheet = booru?.cheetsheet(booruConfig.url);
     final notifier = ref.watch(danbooruUserMetatagsProvider.notifier);
@@ -34,7 +33,10 @@ class DanbooruMetatagsSection extends ConsumerWidget {
     return MetatagsSection(
       onOptionTap: onOptionTap,
       metatags: metatags.toList(),
-      userMetatags: () => userMetatags,
+      userMetatags: ref.watch(danbooruUserMetatagsProvider).maybeWhen(
+            data: (tags) => tags,
+            orElse: () => null,
+          ),
       onHelpRequest: cheatSheet != null && !booruConfig.hasStrictSFW
           ? () {
               launchExternalUrl(
