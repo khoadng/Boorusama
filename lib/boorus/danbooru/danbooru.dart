@@ -14,6 +14,7 @@ import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
 import '../../core/boorus/booru_builder_types.dart';
 import '../../core/boorus/booru_engine.dart';
+import '../../core/boorus/providers.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
@@ -446,7 +447,11 @@ class DanbooruRepository implements BooruRepository {
 
   @override
   BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
-    return DanbooruBlacklistTagRepository(ref, config);
+    return DanbooruBlacklistTagRepository(
+      ref,
+      config,
+      booruFactory: ref.watch(booruFactoryProvider),
+    );
   }
 
   @override
