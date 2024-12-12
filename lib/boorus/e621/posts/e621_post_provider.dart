@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
+import '../../../core/favorites/providers.dart';
 import '../../../core/foundation/path.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
@@ -13,7 +14,6 @@ import '../../../core/posts/sources/source.dart';
 import '../../../core/search/query_composer_providers.dart';
 import '../../../core/settings/data/listing_provider.dart';
 import '../e621.dart';
-import '../favorites/favorites.dart';
 import 'posts.dart';
 
 final e621PostRepoProvider =
@@ -43,7 +43,7 @@ final e621PostRepoProvider =
                 .toList(),
           );
 
-      ref.read(e621FavoritesProvider(config.auth).notifier).preload(data);
+      ref.read(favoritesProvider(config.auth).notifier).preload(data);
 
       return data.toResult();
     },

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/favorites/favorite_post_button.dart';
+import '../../../../../../core/favorites/providers.dart';
 import '../../../../../../core/posts/details/details.dart';
 import '../../../../../../core/posts/details/parts.dart';
 import '../../../../../../core/posts/details/widgets.dart';
@@ -14,7 +15,6 @@ import '../../../../../../core/posts/shares/widgets.dart';
 import '../../../../../../core/posts/votes/vote.dart';
 import '../../../../../../core/posts/votes/widgets.dart';
 import '../../../../../../core/router.dart';
-import '../../../favorites/providers.dart';
 import '../../../post/post.dart';
 import '../../../votes/providers.dart';
 
@@ -42,9 +42,10 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(danbooruFavoriteProvider(post.id));
+    final isFaved = ref.watch(favoriteProvider(post.id));
     final postVote = ref.watch(danbooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
+    final notifier = ref.watch(favoritesProvider(config).notifier);
 
     return SliverToBoxAdapter(
       child: PostActionToolbar(
@@ -53,8 +54,8 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
             FavoritePostButton(
               isFaved: isFaved,
               isAuthorized: config.hasLoginDetails(),
-              addFavorite: () => ref.danbooruFavorites.add(post.id),
-              removeFavorite: () => ref.danbooruFavorites.remove(post.id),
+              addFavorite: () => notifier.add(post.id),
+              removeFavorite: () => notifier.remove(post.id),
             ),
           if (config.hasLoginDetails())
             UpvotePostButton(

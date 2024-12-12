@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../boorus/providers.dart';
 import '../../../../../configs/ref.dart';
 import '../../../../../favorites/favorite_post_button.dart';
+import '../../../../../favorites/providers.dart';
 import '../../../../../router.dart';
 import '../../../../post/post.dart';
 import '../../../../shares/widgets.dart';
@@ -95,17 +96,15 @@ class DefaultPostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final isFaved = ref.watch(favoriteProvider(post.id));
-    final favoriteAdder = ref.watch(addFavoriteProvider);
-    final favoriteRemover = ref.watch(removeFavoriteProvider);
+    final notifier = ref.watch(favoritesProvider(config).notifier);
+    final canFavorite = ref.watch(canFavoriteProvider(config));
 
     return SimplePostActionToolbar(
       post: post,
       isFaved: isFaved,
       isAuthorized: config.hasLoginDetails(),
-      addFavorite:
-          favoriteAdder != null ? () => favoriteAdder(post.id, ref) : null,
-      removeFavorite:
-          favoriteRemover != null ? () => favoriteRemover(post.id, ref) : null,
+      addFavorite: canFavorite ? () => notifier.add(post.id) : null,
+      removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,
     );
   }
 }

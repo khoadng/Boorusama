@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
+import '../../../../../core/favorites/providers.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/search/query_composer_providers.dart';
 import '../../../../../core/settings/data/listing_provider.dart';
 import '../../../danbooru_provider.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../users/user/providers.dart';
-import '../../favorites/providers.dart';
 import '../../votes/providers.dart';
 import 'converter.dart';
 import 'danbooru_post.dart';
@@ -70,9 +70,7 @@ Future<PostResult<DanbooruPost>> transformPosts(
   if (user != null) {
     final ids = posts.map((e) => e.id).toList();
 
-    ref
-        .read(danbooruFavoritesProvider(config.auth).notifier)
-        .checkFavorites(ids);
+    ref.read(favoritesProvider(config.auth).notifier).checkFavorites(ids);
     ref.read(danbooruPostVotesProvider(config.auth).notifier).getVotes(posts);
     ref.read(danbooruTagListProvider(config.auth).notifier).removeTags(ids);
   }

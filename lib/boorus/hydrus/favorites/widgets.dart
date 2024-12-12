@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/ref.dart';
 import '../../../core/favorites/favorite_post_button.dart';
+import '../../../core/favorites/providers.dart';
 import '../../../core/favorites/quick_favorite_button.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/scaffolds/scaffolds.dart';
-import '../../providers.dart';
 import '../hydrus.dart';
 import 'favorites.dart';
 
@@ -67,8 +67,8 @@ class HydrusFavoritePostButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(hydrusFavoriteProvider(post.id));
-    final favNotifier = ref.watch(hydrusFavoritesProvider(config).notifier);
+    final isFaved = ref.watch(favoriteProvider(post.id));
+    final favNotifier = ref.watch(favoritesProvider(config).notifier);
 
     return FavoritePostButton(
       isFaved: isFaved,
@@ -90,23 +90,21 @@ class HydrusQuickFavoriteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final favoriteAdder = ref.watch(addFavoriteProvider);
-    final favoriteRemover = ref.watch(removeFavoriteProvider);
+    final notifier = ref.watch(favoritesProvider(config).notifier);
 
     return ref.watch(hydrusCanFavoriteProvider(config)).when(
-          data: (canFavorite) =>
-              canFavorite && favoriteAdder != null && favoriteRemover != null
-                  ? QuickFavoriteButton(
-                      isFaved: ref.watch(hydrusFavoriteProvider(post.id)),
-                      onFavToggle: (isFaved) async {
-                        if (isFaved) {
-                          await favoriteAdder(post.id, ref);
-                        } else {
-                          await favoriteRemover(post.id, ref);
-                        }
-                      },
-                    )
-                  : const SizedBox.shrink(),
+          data: (canFavorite) => canFavorite
+              ? QuickFavoriteButton(
+                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  onFavToggle: (isFaved) async {
+                    if (isFaved) {
+                      await notifier.add(post.id);
+                    } else {
+                      await notifier.remove(post.id);
+                    }
+                  },
+                )
+              : const SizedBox.shrink(),
           loading: () => const SizedBox.shrink(),
           error: (error, _) => const SizedBox.shrink(),
         );

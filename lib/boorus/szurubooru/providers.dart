@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/configs/config.dart';
+import '../../core/favorites/favorite.dart';
+import '../../core/favorites/providers.dart';
 import '../../core/foundation/path.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
@@ -16,7 +18,6 @@ import '../../core/settings/data/listing_provider.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/tag.dart';
 import '../../core/utils/color_utils.dart';
-import 'favorites/favorites.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
@@ -110,9 +111,7 @@ final szurubooruPostRepoProvider =
             )
             .toList();
 
-        ref
-            .read(szurubooruFavoritesProvider(config.auth).notifier)
-            .preload(data);
+        ref.read(favoritesProvider(config.auth).notifier).preload(data);
         ref
             .read(szurubooruPostVotesProvider(config.auth).notifier)
             .getVotes(data);
@@ -182,3 +181,37 @@ final szurubooruTagCategoriesProvider =
         .toList();
   },
 );
+
+class SzurubooruFavoriteRepository extends FavoriteRepository<SzurubooruPost> {
+  SzurubooruFavoriteRepository(this.ref, this.config);
+
+  final Ref ref;
+  final BooruConfigAuth config;
+
+  SzurubooruClient get client => ref.read(szurubooruClientProvider(config));
+
+  @override
+  bool canFavorite() => config.hasLoginDetails();
+
+  @override
+  Future<AddFavoriteStatus> addToFavorites(int postId) async {
+    try {
+      await client.addToFavorites(postId: postId);
+
+      await ref
+          .read(szurubooruPostVotesProvider(config).notifier)
+          .upvote(postId, localOnly: true);
+
+      return AddFavoriteStatus.success;
+    } catch (e) {
+      return AddFavoriteStatus.failure;
+    }
+  }
+
+  @override
+  Future<bool> removeFromFavorites(int postId) async =>
+      client.removeFromFavorites(postId: postId).then((value) => true);
+
+  @override
+  bool isPostFavorited(SzurubooruPost post) => post.ownFavorite;
+}

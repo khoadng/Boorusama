@@ -18,6 +18,7 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
+import '../../core/favorites/providers.dart';
 import '../../core/home/home_navigation_tile.dart';
 import '../../core/home/home_page_scaffold.dart';
 import '../../core/home/side_menu_tile.dart';
@@ -139,9 +140,7 @@ final hydrusPostRepoProvider =
             total: files.count,
           );
 
-      ref
-          .read(hydrusFavoritesProvider(config.auth).notifier)
-          .preload(data.posts);
+      ref.read(favoritesProvider(config.auth).notifier).preload(data.posts);
 
       return data;
     }

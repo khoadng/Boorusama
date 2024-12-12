@@ -14,6 +14,7 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/downloader.dart';
 import '../../core/downloads/filename.dart';
+import '../../core/favorites/providers.dart';
 import '../../core/foundation/url_launcher.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/listing/widgets.dart';
@@ -33,7 +34,6 @@ import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
 import 'home/widgets.dart';
 import 'posts/details/widgets.dart';
-import 'posts/favorites/providers.dart';
 import 'posts/favorites/widgets.dart';
 import 'posts/listing/providers.dart';
 import 'posts/listing/widgets.dart';
@@ -199,7 +199,7 @@ class DanbooruBuilder
               (source) => launchExternalUrlString(source.url),
               () => false,
             ),
-            onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
+            onToggleFavorite: () => ref.toggleFavorite(post.id),
             onUpvote: () => ref.danbooruUpvote(post.id),
             onDownvote: () => ref.danbooruDownvote(post.id),
             onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(

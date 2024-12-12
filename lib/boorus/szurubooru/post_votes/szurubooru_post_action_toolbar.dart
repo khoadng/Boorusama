@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/ref.dart';
 import '../../../core/favorites/favorite_post_button.dart';
+import '../../../core/favorites/providers.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/parts.dart';
 import '../../../core/posts/details/widgets.dart';
@@ -14,7 +15,6 @@ import '../../../core/posts/shares/widgets.dart';
 import '../../../core/posts/votes/vote.dart';
 import '../../../core/posts/votes/widgets.dart';
 import '../../../core/router.dart';
-import '../favorites/favorites.dart';
 import '../szurubooru_post.dart';
 import 'post_votes.dart';
 
@@ -28,11 +28,11 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     final post = InheritedPost.of<SzurubooruPost>(context);
 
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(szurubooruFavoriteProvider(post.id));
+    final isFaved = ref.watch(favoriteProvider(post.id));
     final postVote = ref.watch(szurubooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
 
-    final favNotifier = ref.watch(szurubooruFavoritesProvider(config).notifier);
+    final favNotifier = ref.watch(favoritesProvider(config).notifier);
     final voteNotifier =
         ref.watch(szurubooruPostVotesProvider(config).notifier);
 

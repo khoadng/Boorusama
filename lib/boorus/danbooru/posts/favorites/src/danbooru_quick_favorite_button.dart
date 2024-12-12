@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
+import '../../../../../core/favorites/providers.dart';
 import '../../../../../core/favorites/quick_favorite_button.dart';
 import '../../post/post.dart';
-import 'favorites_notifier.dart';
 
 class DanbooruQuickFavoriteButton extends ConsumerWidget {
   const DanbooruQuickFavoriteButton({
@@ -22,10 +22,9 @@ class DanbooruQuickFavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier =
-        ref.watch(danbooruFavoritesProvider(ref.watchConfigAuth).notifier);
+    final notifier = ref.watch(favoritesProvider(ref.watchConfigAuth).notifier);
     final isFaved =
-        post.isBanned ? false : ref.watch(danbooruFavoriteProvider(post.id));
+        post.isBanned ? false : ref.watch(favoriteProvider(post.id));
 
     return QuickFavoriteButton(
       isFaved: isFaved,

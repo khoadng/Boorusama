@@ -7,9 +7,10 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../boorus/providers.dart';
+import '../configs/ref.dart';
 import '../posts/post/post.dart';
 import '../theme.dart';
+import 'favorites_notifier.dart';
 
 class QuickFavoriteButton extends ConsumerWidget {
   const QuickFavoriteButton({
@@ -65,18 +66,18 @@ class DefaultQuickFavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favoriteAdder = ref.watch(addFavoriteProvider);
-    final favoriteRemover = ref.watch(removeFavoriteProvider);
-    final canFavorite = favoriteAdder != null && favoriteRemover != null;
+    final config = ref.watchConfigAuth;
+    final notifier = ref.watch(favoritesProvider(config).notifier);
+    final canFavorite = ref.watch(canFavoriteProvider(config));
 
     return canFavorite
         ? QuickFavoriteButton(
             isFaved: ref.watch(favoriteProvider(post.id)),
             onFavToggle: (isFaved) async {
               if (isFaved) {
-                await favoriteAdder(post.id, ref);
+                await notifier.add(post.id);
               } else {
-                await favoriteRemover(post.id, ref);
+                await notifier.remove(post.id);
               }
             },
           )

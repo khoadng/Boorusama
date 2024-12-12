@@ -18,12 +18,10 @@ import '../core/autocompletes/autocompletes.dart';
 import '../core/blacklists/providers.dart';
 import '../core/boorus.dart';
 import '../core/boorus/booru_builder.dart';
-import '../core/boorus/booru_builder_types.dart';
 import '../core/configs/config.dart';
 import '../core/configs/ref.dart';
 import '../core/downloads/urls.dart';
-import '../core/favorites/favorite.dart';
-import '../core/foundation/toast.dart';
+import '../core/favorites/providers.dart';
 import '../core/http/providers.dart';
 import '../core/notes/notes.dart';
 import '../core/posts/count/count.dart';
@@ -42,7 +40,7 @@ import 'danbooru/posts/favorites/providers.dart';
 import 'danbooru/posts/post/providers.dart';
 import 'danbooru/tags/tag/providers.dart';
 import 'e621/e621.dart';
-import 'e621/favorites/favorites.dart';
+import 'e621/favorites/favorite_repository_impl.dart';
 import 'e621/posts/posts.dart';
 import 'gelbooru/favorites/favorites.dart';
 import 'gelbooru/gelbooru.dart';
@@ -60,7 +58,6 @@ import 'philomena/providers.dart';
 import 'sankaku/sankaku.dart';
 import 'shimmie2/providers.dart';
 import 'shimmie2/shimmie2.dart';
-import 'szurubooru/favorites/favorites.dart';
 import 'szurubooru/providers.dart';
 import 'szurubooru/szurubooru.dart';
 import 'zerochan/providers.dart';
@@ -225,132 +222,24 @@ final postCountRepoProvider =
   },
 );
 
-final favoriteProvider = Provider.autoDispose.family<bool, int>(
-  (ref, postId) => switch (ref.watchConfigAuth.booruType) {
-    BooruType.danbooru => ref.watch(danbooruFavoriteProvider(postId)),
-    BooruType.e621 => ref.watch(e621FavoriteProvider(postId)),
-    BooruType.szurubooru => ref.watch(szurubooruFavoriteProvider(postId)),
-    BooruType.hydrus => ref.watch(hydrusFavoriteProvider(postId)),
-    BooruType.gelbooru => ref.watch(gelbooruFavoriteProvider(postId)),
+final favoriteRepoProvider =
+    Provider.family<FavoriteRepository, BooruConfigAuth>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.danbooru => DanbooruFavoriteRepository(ref, config),
+    BooruType.e621 => E621FavoriteRepository(ref, config),
+    BooruType.szurubooru => SzurubooruFavoriteRepository(ref, config),
+    BooruType.hydrus => HydrusFavoriteRepository(ref, config),
+    BooruType.gelbooru => GelbooruFavoriteRepository(ref, config),
     BooruType.gelbooruV1 ||
     BooruType.gelbooruV2 ||
+    BooruType.moebooru ||
     BooruType.zerochan ||
     BooruType.sankaku ||
-    BooruType.moebooru ||
     BooruType.philomena ||
-    BooruType.szurubooru ||
     BooruType.shimmie2 ||
     BooruType.animePictures ||
     BooruType.unknown =>
-      false,
-  },
-);
-
-//TODO: redesign this, it's a mess
-final addFavoriteProvider = Provider<FavoriteAdder?>(
-  (r) => switch (r.watchConfigAuth.booruType) {
-    BooruType.danbooru => (postId, ref) => ref
-        .read(danbooruFavoritesProvider(ref.readConfigAuth).notifier)
-        .add(postId)
-        .then((_) => true),
-    BooruType.e621 => (postId, ref) => ref
-        .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
-        .add(postId)
-        .then((value) => true),
-    BooruType.szurubooru => (postId, ref) => ref
-        .read(szurubooruFavoritesProvider(ref.readConfigAuth).notifier)
-        .add(postId)
-        .then((value) => true),
-    BooruType.hydrus => (postId, ref) => ref
-        .read(hydrusFavoritesProvider(ref.readConfigAuth).notifier)
-        .add(postId)
-        .then((value) => true),
-    BooruType.gelbooru =>
-      r.read(gelbooruClientProvider(r.readConfigAuth)).canFavorite
-          ? (postId, ref) async {
-              final status = await ref
-                  .read(
-                    gelbooruFavoritesProvider(ref.readConfigAuth).notifier,
-                  )
-                  .add(postId);
-
-              final context = ref.context;
-
-              if (context.mounted) {
-                if (status == AddFavoriteStatus.alreadyExists) {
-                  showErrorToast(context, 'Already favorited');
-                } else if (status == AddFavoriteStatus.failure) {
-                  showErrorToast(context, 'Failed to favorite');
-                } else {
-                  showSuccessToast(context, 'Favorited');
-                }
-              }
-
-              return status == AddFavoriteStatus.success;
-            }
-          : null,
-    BooruType.gelbooruV1 ||
-    BooruType.gelbooruV2 ||
-    BooruType.zerochan ||
-    BooruType.sankaku ||
-    BooruType.moebooru ||
-    BooruType.philomena ||
-    BooruType.szurubooru ||
-    BooruType.shimmie2 ||
-    BooruType.animePictures ||
-    BooruType.unknown =>
-      null,
-  },
-);
-
-//TODO: redesign this, it's a mess
-final removeFavoriteProvider = Provider<FavoriteAdder?>(
-  (r) => switch (r.watchConfigAuth.booruType) {
-    BooruType.danbooru => (postId, ref) => ref
-        .read(danbooruFavoritesProvider(ref.readConfigAuth).notifier)
-        .remove(postId)
-        .then((_) => true),
-    BooruType.e621 => (postId, ref) => ref
-        .read(e621FavoritesProvider(ref.readConfigAuth).notifier)
-        .remove(postId)
-        .then((value) => true),
-    BooruType.szurubooru => (postId, ref) => ref
-        .read(szurubooruFavoritesProvider(ref.readConfigAuth).notifier)
-        .remove(postId)
-        .then((value) => true),
-    BooruType.hydrus => (postId, ref) => ref
-        .read(hydrusFavoritesProvider(ref.readConfigAuth).notifier)
-        .remove(postId)
-        .then((value) => true),
-    BooruType.gelbooru =>
-      r.read(gelbooruClientProvider(r.readConfigAuth)).canFavorite
-          ? (postId, ref) async {
-              await ref
-                  .read(
-                    gelbooruFavoritesProvider(ref.readConfigAuth).notifier,
-                  )
-                  .remove(postId);
-
-              final context = ref.context;
-
-              if (context.mounted) {
-                showSuccessToast(context, 'Favorite removed');
-              }
-
-              return true;
-            }
-          : null,
-    BooruType.gelbooruV1 ||
-    BooruType.gelbooruV2 ||
-    BooruType.zerochan ||
-    BooruType.sankaku ||
-    BooruType.moebooru ||
-    BooruType.philomena ||
-    BooruType.szurubooru ||
-    BooruType.shimmie2 ||
-    BooruType.animePictures ||
-    BooruType.unknown =>
-      null,
+      EmptyFavoriteRepository(),
   },
 );
 

@@ -1,1 +1,1 @@
-export 'src/favorites_notifier.dart';
+export 'src/favorite_repository_impl.dart';
