@@ -92,13 +92,13 @@ class _FilledButtonDefaultOverlay extends WidgetStateProperty<Color?> {
   @override
   Color? resolve(Set<WidgetState> states) {
     if (states.contains(WidgetState.pressed)) {
-      return overlay.withOpacity(0.12);
+      return overlay.withAlpha(31); // 0.12 * 255 ≈ 31
     }
     if (states.contains(WidgetState.hovered)) {
-      return overlay.withOpacity(0.08);
+      return overlay.withAlpha(20); // 0.08 * 255 ≈ 20
     }
     if (states.contains(WidgetState.focused)) {
-      return overlay.withOpacity(0.12);
+      return overlay.withAlpha(31); // 0.12 * 255 ≈ 31
     }
     return null;
   }

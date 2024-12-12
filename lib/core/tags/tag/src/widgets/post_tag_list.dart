@@ -142,8 +142,8 @@ class PostTagListChip extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 11,
                         color: Theme.of(context).brightness.isLight
-                            ? Colors.white.withOpacity(0.85)
-                            : Colors.grey.withOpacity(0.85),
+                            ? Colors.white.withAlpha(215)
+                            : Colors.grey.withAlpha(215),
                       ),
                 ),
             ],

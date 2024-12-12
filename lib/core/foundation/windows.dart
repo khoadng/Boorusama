@@ -141,7 +141,7 @@ class _MacosCaptionState extends State<MacosCaption> with WindowListener {
                       child: DefaultTextStyle(
                         style: TextStyle(
                           color: widget.brightness == Brightness.light
-                              ? Colors.black.withOpacity(0.8956)
+                              ? Colors.black.withAlpha(230)
                               : Colors.white,
                           fontSize: 14,
                         ),

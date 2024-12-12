@@ -38,16 +38,16 @@ ChipColors? generateChipColorsFromColorScheme(
   }
 
   final darkColor = Color.fromRGBO(
-    (color.red * 0.3).round(),
-    (color.green * 0.3).round(),
-    (color.blue * 0.3).round(),
+    (ColorUtils.red(color) * 0.3).round(),
+    (ColorUtils.green(color) * 0.3).round(),
+    (ColorUtils.blue(color) * 0.3).round(),
     1,
   );
 
   final neutralDarkColor = Color.fromRGBO(
-    (color.red * 0.5).round(),
-    (color.green * 0.5).round(),
-    (color.blue * 0.5).round(),
+    (ColorUtils.red(color) * 0.5).round(),
+    (ColorUtils.green(color) * 0.5).round(),
+    (ColorUtils.blue(color) * 0.5).round(),
     1,
   );
 
@@ -70,10 +70,6 @@ extension ColorX on Color {
   String get hex => ColorUtils.colorToHex(this, includeAlpha: true);
 
   String get hexWithoutAlpha => ColorUtils.colorToHex(this);
-
-  Color withOpacity(final double opacity) {
-    return withOpacity(opacity);
-  }
 }
 
 class ColorUtils {
@@ -92,7 +88,7 @@ class ColorUtils {
     final Color color, {
     bool includeAlpha = false,
   }) {
-    final hexValue = color.value.toRadixString(16).padLeft(8, '0');
+    final hexValue = value(color).toRadixString(16).padLeft(8, '0');
 
     return includeAlpha ? '#$hexValue' : '#${hexValue.substring(2)}';
   }
@@ -122,5 +118,22 @@ class ColorUtils {
     if (hexValue == null) return null;
 
     return Color(hexValue);
+  }
+
+  static int value(Color color) {
+    return _floatToInt8(color.a) << 24 |
+        _floatToInt8(color.r) << 16 |
+        _floatToInt8(color.g) << 8 |
+        _floatToInt8(color.b) << 0;
+  }
+
+  static int red(Color color) => (0x00ff0000 & value(color)) >> 16;
+
+  static int green(Color color) => (0x0000ff00 & value(color)) >> 8;
+
+  static int blue(Color color) => (0x000000ff & value(color)) >> 0;
+
+  static int _floatToInt8(double x) {
+    return (x * 255.0).round() & 0xff;
   }
 }

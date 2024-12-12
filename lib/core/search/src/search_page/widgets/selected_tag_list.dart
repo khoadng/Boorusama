@@ -113,7 +113,7 @@ class SelectedTagList extends StatelessWidget {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .outline
-                                        .withOpacity(0.75),
+                                        .withAlpha(191),
                                   ),
                                   Text(
                                     otherTagsCount,
@@ -125,7 +125,7 @@ class SelectedTagList extends StatelessWidget {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .outline
-                                              .withOpacity(0.5),
+                                              .withAlpha(127),
                                         ),
                                   ),
                                 ],

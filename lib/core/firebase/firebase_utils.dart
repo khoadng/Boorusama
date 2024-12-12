@@ -21,7 +21,6 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
 
   // Always initialize to prevent crashings
   await Firebase.initializeApp(
-    name: 'boorusama',
     options: DefaultFirebaseOptions.currentPlatform,
   );
 

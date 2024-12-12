@@ -100,7 +100,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                     fromUser?.name ?? '...',
                                     style: dmail.isRead
                                         ? TextStyle(
-                                            color: color.withOpacity(0.7),
+                                            color: color.withAlpha(180),
                                           )
                                         : TextStyle(
                                             color: color,

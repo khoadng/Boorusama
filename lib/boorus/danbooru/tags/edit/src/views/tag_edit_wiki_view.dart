@@ -175,7 +175,7 @@ class _RelatedTagChips extends ConsumerWidget {
                           color: Theme.of(context).brightness.isLight
                               ? !selected
                                   ? null
-                                  : Colors.white.withOpacity(0.85)
+                                  : Colors.white.withAlpha(215)
                               : Theme.of(context).colorScheme.hintColor,
                         ),
                   ),

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:foundation/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -255,7 +254,6 @@ class _ImageInkWellWithBorderOnFocusState
           focusNode: node,
           focusColor: Theme.of(context).colorScheme.primary.withAlpha(50),
           highlightColor: Colors.transparent,
-          splashFactory: FasterInkSplash.splashFactory,
           splashColor: Colors.black38,
           onTap: widget.onTap,
         ),

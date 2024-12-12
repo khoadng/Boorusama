@@ -117,7 +117,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurfaceVariant
-                        .withOpacity(0.5),
+                        .withAlpha(127),
                   ),
                 ),
                 autofocus: widget.autofocus,

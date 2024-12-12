@@ -150,7 +150,7 @@ class FasterInkSplash extends InteractiveInkFeature {
       ..addListener(controller.markNeedsPaint)
       ..addStatusListener(_handleAlphaStatusChanged);
     _alpha = _alphaController!.drive(IntTween(
-      begin: color.alpha,
+      begin: color.a.toInt(),
       end: 0,
     ));
 

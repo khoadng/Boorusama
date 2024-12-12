@@ -251,7 +251,7 @@ class ImagePlaceHolder extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color:
-            Theme.of(context).colorScheme.surfaceContainerHigh.withOpacity(0.5),
+            Theme.of(context).colorScheme.surfaceContainerHigh.withAlpha(127),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(

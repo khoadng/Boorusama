@@ -5,7 +5,12 @@ publish_to: "none"
 version: 3.21.4+121
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
+
+workspace:
+  - packages/foundation
+  - packages/booru_clients
+  - packages/filename_generator
 
 dependencies:
   # local packages
@@ -39,7 +44,7 @@ dependencies:
   expandable: ^5.0.1
   extended_image: ^9.0.4
   fast_immutable_collections: ^11.0.0
-  file_picker: ^8.0.7
+  file_picker: 8.1.4
   firebase_analytics: ^11.3.5
   firebase_core: ^3.8.0
   firebase_crashlytics: ^4.1.5
@@ -91,7 +96,10 @@ dependencies:
   rich_text_controller: ^1.4.2
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  searchfield: ^1.1.6
+  searchfield:
+    git:
+      url: https://github.com/mrjake34/searchfield.git
+      ref: 94aaf6b6fb6744da7c876d467c773d2c070472bf
   share_handler: ^0.0.20
   share_plus: ^10.0.2
   sliver_tools: ^0.2.12
