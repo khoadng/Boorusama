@@ -7,12 +7,12 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../core/boorus/providers.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/home/home_navigation_tile.dart';
 import '../../../core/home/home_page_scaffold.dart';
 import '../../../core/home/side_menu_tile.dart';
 import '../../../core/router.dart';
-import '../../providers.dart';
 import '../favorites/favorites.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {

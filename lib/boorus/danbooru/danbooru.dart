@@ -2,22 +2,32 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklisted_tag.dart';
 import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
 import '../../core/boorus/booru_builder_types.dart';
+import '../../core/boorus/booru_engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/downloader.dart';
 import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
 import '../../core/favorites/providers.dart';
 import '../../core/foundation/url_launcher.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/listing/widgets.dart';
+import '../../core/posts/post/post.dart';
 import '../../core/posts/post/tags.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/shares/providers.dart';
@@ -29,19 +39,27 @@ import '../../core/router.dart';
 import '../../core/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
+import '../../core/tags/tag/tag.dart';
 import 'artists/artist/widgets.dart';
+import 'autocompletes/providers.dart';
+import 'blacklist/providers.dart';
 import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
 import 'home/widgets.dart';
+import 'notes/providers.dart';
+import 'posts/count/providers.dart';
 import 'posts/details/widgets.dart';
+import 'posts/favorites/providers.dart';
 import 'posts/favorites/widgets.dart';
 import 'posts/listing/providers.dart';
 import 'posts/listing/widgets.dart';
 import 'posts/post/post.dart';
+import 'posts/post/providers.dart';
 import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
 import 'posts/votes/providers.dart';
 import 'tags/details/widgets.dart';
+import 'tags/tag/providers.dart';
 import 'tags/tag/routes.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
@@ -383,4 +401,63 @@ bool handleDanbooruGestureAction(
   }
 
   return true;
+}
+
+class DanbooruRepository implements BooruRepository {
+  const DanbooruRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return ref.read(danbooruPostCountRepoProvider(config));
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(danbooruPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(danbooruAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(danbooruNoteRepoProvider(config));
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(danbooruTagRepoProvider(config));
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return DanbooruFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return DanbooruBlacklistTagRepository(ref, config);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => DanbooruClient(
+          baseUrl: config.url,
+          dio: dio,
+          login: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
 }

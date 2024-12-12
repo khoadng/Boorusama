@@ -6,10 +6,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/providers.dart';
-import '../../../boorus.dart';
-import '../../../boorus/booru_builder.dart';
-import '../../../boorus/booru_builder_types.dart';
+import '../../../boorus/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../../configs/ref.dart';
@@ -25,11 +22,10 @@ final tagColorProvider = Provider.family<Color?, String>(
   (ref, tag) {
     final config = ref.watchConfigAuth;
 
-    final colorBuilder = _getCurrentConfigColorBuilder(
-      tag,
-      ref.watch(booruBuildersProvider),
-      config,
-    );
+    final colorBuilder = ref
+        .watch(booruEngineRegistryProvider)
+        .getBuilder(config.booruType)
+        ?.tagColorBuilder;
 
     // In case the color builder is null, which means there is no config selected
     if (colorBuilder == null) return null;
@@ -53,13 +49,17 @@ final tagColorProvider = Provider.family<Color?, String>(
   ],
 );
 
-TagColorBuilder? _getCurrentConfigColorBuilder(
-  String tag,
-  Map<BooruType, BooruBuilder Function()> builders,
-  BooruConfigAuth config,
-) {
-  final booruBuilderFunc = builders[config.booruType];
-  final booruBuilder = booruBuilderFunc != null ? booruBuilderFunc() : null;
+final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
 
-  return booruBuilder?.tagColorBuilder;
-}
+    final tagRepo = repo?.tag(config);
+
+    if (tagRepo != null) {
+      return tagRepo;
+    }
+
+    return ref.watch(emptyTagRepoProvider);
+  },
+);

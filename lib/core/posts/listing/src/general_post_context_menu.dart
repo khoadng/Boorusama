@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/providers.dart';
 import '../../../bookmarks/bookmark_provider.dart';
+import '../../../boorus/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/url_launcher.dart';

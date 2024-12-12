@@ -2,8 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/providers.dart';
+import '../../../boorus/providers.dart';
+import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
+import '../../post/providers.dart';
 import 'post_count_repository.dart';
 
 final postCountProvider =
@@ -26,3 +28,12 @@ final cachedPostCountProvider =
 
 final emptyPostCountRepoProvider =
     Provider<PostCountRepository>((ref) => const EmptyPostCountRepository());
+
+final postCountRepoProvider =
+    Provider.family<PostCountRepository?, BooruConfigSearch>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+    return repo?.postCount(config);
+  },
+);

@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../boorus/providers.dart';
+import '../boorus/providers.dart';
 import '../configs/ref.dart';
 import '../foundation/display.dart';
 import '../home/home_page_controller.dart';
 import '../home/home_search_bar.dart';
 import '../posts/count/widgets.dart';
 import '../posts/listing/widgets.dart';
+import '../posts/post/providers.dart';
 import '../search/selected_tags.dart';
 import '../tags/configs/providers.dart';
 import '../widgets/widgets.dart';

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../core/boorus/providers.dart';
 import '../core/cache/providers.dart';
 import '../core/changelogs/utils.dart';
 import '../core/configs/config.dart';
@@ -23,7 +24,6 @@ import '../core/settings.dart';
 import '../core/settings/data.dart';
 import '../core/theme.dart';
 import '../core/widgets/widgets.dart';
-import 'providers.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({

@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import '../../../boorus/providers.dart';
 import '../../blacklists/providers.dart';
+import '../../boorus/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/http.dart';
 import '../../foundation/loggers.dart';
@@ -16,6 +16,7 @@ import '../../foundation/permissions.dart';
 import '../../info/device_info.dart';
 import '../../posts/filter/filter.dart';
 import '../../posts/post/post.dart';
+import '../../posts/post/providers.dart';
 import '../../posts/sources/source.dart';
 import '../../settings/data.dart';
 import '../../utils/duration_utils.dart';

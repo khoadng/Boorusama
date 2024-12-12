@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import '../../../boorus/providers.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../boorus/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/scrolling.dart';
 import '../../foundation/url_launcher.dart';

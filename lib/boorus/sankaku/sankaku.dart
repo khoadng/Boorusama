@@ -9,11 +9,13 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklisted_tag.dart';
 import '../../core/blacklists/providers.dart';
 import '../../core/boorus.dart';
 import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
 import '../../core/boorus/booru_builder_types.dart';
+import '../../core/boorus/booru_engine.dart';
 import '../../core/boorus/providers.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -21,8 +23,11 @@ import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/favorites/providers.dart';
 import '../../core/foundation/caching.dart';
 import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/parts.dart';
 import '../../core/posts/details/widgets.dart';
@@ -34,6 +39,7 @@ import '../../core/scaffolds/artist_page_scaffold.dart';
 import '../../core/search/query_composer_providers.dart';
 import '../../core/settings/data/listing_provider.dart';
 import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'create_sankaku_config_page.dart';
@@ -162,6 +168,65 @@ class SankakuBuilder
       DetailsPart.artistPosts: (context) => const SankakuArtistPostsSection(),
     },
   );
+}
+
+class SankakuRepository implements BooruRepository {
+  const SankakuRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(sankakuPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(sankakuAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => SankakuClient(
+          baseUrl: config.url,
+          dio: dio,
+          username: config.login,
+          password: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
 }
 
 class SankakuArtistPostsSection extends ConsumerWidget {

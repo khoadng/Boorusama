@@ -10,16 +10,24 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklisted_tag.dart';
+import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
 import '../../core/boorus/booru_builder_types.dart';
+import '../../core/boorus/booru_engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/favorites/providers.dart';
 import '../../core/foundation/caching.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/parts.dart';
 import '../../core/posts/details/widgets.dart';
@@ -27,6 +35,7 @@ import '../../core/posts/post/post.dart';
 import '../../core/router.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/settings/types.dart';
+import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
@@ -140,6 +149,63 @@ class AnimePicturesBuilder
           const AnimePicturesRelatedPostsSection(),
     },
   );
+}
+
+class AnimePicturesRepository implements BooruRepository {
+  const AnimePicturesRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(animePicturesPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(animePicturesAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return ref.read(animePicturesDownloadFileUrlExtractorProvider(config));
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => AnimePicturesClient(
+          baseUrl: config.url,
+          dio: dio,
+        ).getPosts().then((value) => true);
+  }
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {

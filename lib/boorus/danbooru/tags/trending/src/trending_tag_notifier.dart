@@ -9,7 +9,7 @@ import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/tags/categories/providers.dart';
 import '../../../../../core/tags/configs/providers.dart';
-import '../../../../providers.dart';
+import '../../../../../core/tags/tag/providers.dart';
 import 'popular_search_repository.dart';
 import 'search.dart';
 import 'trending_tag_provider.dart';

@@ -11,9 +11,9 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
-import '../../../../boorus/providers.dart';
 import '../../../boorus/booru_builder_default.dart';
 import '../../../boorus/booru_builder_types.dart';
+import '../../../boorus/providers.dart';
 import '../../../cache/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';

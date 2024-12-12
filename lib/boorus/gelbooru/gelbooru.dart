@@ -7,18 +7,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklisted_tag.dart';
+import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
 import '../../core/boorus/booru_builder_types.dart';
+import '../../core/boorus/booru_engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/favorites/providers.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
 import '../../core/posts/details/parts.dart';
 import '../../core/posts/details/widgets.dart';
+import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/search/search_ui.dart';
 import '../../core/tags/categories/tag_category.dart';
@@ -281,6 +288,65 @@ class GelbooruBuilder
           const GelbooruCharacterListSection(),
     },
   );
+}
+
+class GelbooruRepository implements BooruRepository {
+  const GelbooruRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(gelbooruPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(gelbooruAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(gelbooruNoteRepoProvider(config));
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(gelbooruTagRepoProvider(config));
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return GelbooruFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => GelbooruClient(
+          baseUrl: config.url,
+          dio: dio,
+          userId: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
 }
 
 class GelbooruSearchPage extends ConsumerWidget {

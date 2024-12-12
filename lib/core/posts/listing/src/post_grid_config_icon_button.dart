@@ -9,7 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../boorus/providers.dart';
+import '../../../boorus/providers.dart';
 import '../../../foundation/animations.dart';
 import '../../../foundation/display.dart';
 import '../../../settings.dart';

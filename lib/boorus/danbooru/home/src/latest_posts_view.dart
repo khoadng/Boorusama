@@ -7,6 +7,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../core/boorus/providers.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/display.dart';
 import '../../../../core/home/home_page_controller.dart';
@@ -15,7 +16,6 @@ import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/selected_tags.dart';
 import '../../../../core/tags/configs/providers.dart';
-import '../../../providers.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';
 import '../../posts/post/providers.dart';

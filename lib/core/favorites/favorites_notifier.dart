@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../boorus/danbooru/_shared/guard_login.dart';
-import '../../boorus/providers.dart';
+import '../boorus/providers.dart';
 import '../configs/config.dart';
 import '../configs/current.dart';
 import '../configs/ref.dart';
@@ -23,6 +23,22 @@ final favoriteProvider = Provider.autoDispose.family<bool, int>(
   (ref, postId) {
     final config = ref.watchConfigAuth;
     return ref.watch(favoritesProvider(config))[postId] ?? false;
+  },
+);
+
+final favoriteRepoProvider =
+    Provider.family<FavoriteRepository, BooruConfigAuth>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    final favoriteRepo = repo?.favorite(config);
+
+    if (favoriteRepo != null) {
+      return favoriteRepo;
+    }
+
+    return EmptyFavoriteRepository();
   },
 );
 

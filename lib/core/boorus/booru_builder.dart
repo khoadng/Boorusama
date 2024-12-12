@@ -39,3 +39,7 @@ abstract class BooruBuilder {
 
   PostDetailsUIBuilder get postDetailsUIBuilder;
 }
+
+extension BooruBuilderFeatureCheck on BooruBuilder {
+  bool get isArtistSupported => artistPageBuilder != null;
+}

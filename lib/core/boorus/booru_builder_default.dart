@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../boorus/providers.dart';
 import '../configs/config.dart';
 import '../configs/ref.dart';
 import '../downloads/downloader.dart';
@@ -19,6 +18,7 @@ import '../posts/details/parts.dart';
 import '../posts/details/widgets.dart';
 import '../posts/listing/widgets.dart';
 import '../posts/post/post.dart';
+import '../posts/post/providers.dart';
 import '../posts/post/tags.dart';
 import '../posts/rating/rating.dart';
 import '../posts/shares/providers.dart';
@@ -39,6 +39,7 @@ import '../tags/tag/widgets.dart';
 import '../theme.dart';
 import 'booru_builder.dart';
 import 'booru_builder_types.dart';
+import 'providers.dart';
 
 mixin FavoriteNotSupportedMixin implements BooruBuilder {
   @override

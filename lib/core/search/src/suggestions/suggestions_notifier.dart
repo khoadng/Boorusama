@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/providers.dart';
 import '../../../autocompletes/autocompletes.dart';
+import '../../../autocompletes/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../../configs/ref.dart';

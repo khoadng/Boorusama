@@ -15,6 +15,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
+import 'boorus/providers.dart';
 import 'core/analytics.dart';
 import 'core/app.dart';
 import 'core/blacklists/hive/tag_repository.dart';
@@ -256,6 +257,8 @@ Future<void> boot(BootLogger bootLogger) async {
         builder: (context, config, configs) => BooruLocalization(
           child: ProviderScope(
             overrides: [
+              booruEngineRegistryProvider
+                  .overrideWith((ref) => ref.watch(booruInitEngineProvider)),
               favoriteTagsRepoOverride,
               searchHistoryRepoOverride,
               booruFactoryProvider.overrideWithValue(booruFactory),

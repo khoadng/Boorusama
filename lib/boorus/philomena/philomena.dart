@@ -2,28 +2,41 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/philomena.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../core/artists/artists.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklisted_tag.dart';
+import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
 import '../../core/boorus/booru_builder_types.dart';
+import '../../core/boorus/booru_engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/favorites/providers.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/parts.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
 import '../../core/theme.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'create_philomena_config_page.dart';
 import 'philomena_post.dart';
+import 'providers.dart';
 
 class PhilomenaBuilder
     with
@@ -190,6 +203,64 @@ class PhilomenaBuilder
           const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
     },
   );
+}
+
+class PhilomenaRepository implements BooruRepository {
+  const PhilomenaRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(philomenaPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(philomenaAutoCompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => PhilomenaClient(
+          baseUrl: config.url,
+          dio: dio,
+          apiKey: config.apiKey,
+        ).getImages(tags: ['*']).then((value) => true);
+  }
 }
 
 class PhilomenaStatsTileSection extends ConsumerWidget {

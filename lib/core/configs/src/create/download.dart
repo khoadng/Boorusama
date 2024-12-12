@@ -11,7 +11,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../boorus/providers.dart';
+import '../../../boorus/providers.dart';
 import '../../../downloads/filename.dart';
 import '../../../downloads/widgets.dart';
 import '../../../foundation/clipboard.dart';

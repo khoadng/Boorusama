@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/categories/providers.dart';
+import '../../../../../core/tags/tag/providers.dart';
 import '../../../../../core/tags/tag/tag.dart';
-import '../../../../providers.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../post/post.dart';
 

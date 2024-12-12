@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../categories/providers.dart';
+import '../providers.dart';
 import 'tag.dart';
 import 'tag_group_item.dart';
 import 'tag_repository.dart';

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/providers.dart';
+import '../../../../../core/boorus/providers.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/current.dart';
 import '../../../../../core/configs/ref.dart';
@@ -13,7 +14,6 @@ import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/settings/data.dart';
 import '../../../../../core/settings/data/listing_provider.dart';
-import '../../../../providers.dart';
 import '../../../danbooru.dart';
 import '../../../danbooru_provider.dart';
 import '../../post/post.dart';

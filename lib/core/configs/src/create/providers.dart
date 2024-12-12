@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../boorus/providers.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings.dart';
 import '../booru_config.dart';
@@ -29,6 +30,24 @@ final initialBooruConfigProvider = Provider.autoDispose<BooruConfig>(
 final booruConfigDataProvider = StateProvider.autoDispose<BooruConfigData>(
   (ref) => ref.watch(initialBooruConfigProvider).toBooruConfigData(),
   dependencies: [initialBooruConfigProvider],
+);
+
+typedef BooruSiteValidator = Future<bool> Function();
+
+final booruSiteValidatorProvider =
+    FutureProvider.autoDispose.family<bool, BooruConfigAuth>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    final siteValidator = repo?.siteValidator(config);
+
+    if (siteValidator != null) {
+      return siteValidator();
+    }
+
+    return Future.value(false);
+  },
 );
 
 extension UpdateDataX on WidgetRef {

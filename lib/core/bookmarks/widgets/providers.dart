@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../boorus/providers.dart';
 import '../../boorus.dart';
+import '../../boorus/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/display.dart';
 import '../../tags/categories/providers.dart';
