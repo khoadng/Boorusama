@@ -9,6 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/providers.dart';
 import '../../core/boorus.dart';
 import '../../core/boorus/booru_builder.dart';
 import '../../core/boorus/booru_builder_default.dart';
@@ -35,7 +36,6 @@ import '../../core/settings/data/listing_provider.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
-import '../providers.dart';
 import 'create_sankaku_config_page.dart';
 import 'sankaku_home_page.dart';
 import 'sankaku_post.dart';

@@ -3,6 +3,7 @@ import 'package:booru_clients/moebooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../core/blacklists/providers.dart';
 import '../../../../core/configs/config.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/caching.dart';
@@ -13,7 +14,6 @@ import '../../../../core/posts/rating/rating.dart';
 import '../../../../core/posts/sources/source.dart';
 import '../../../../core/search/query_composer_providers.dart';
 import '../../../../core/settings/data/listing_provider.dart';
-import '../../../providers.dart';
 import '../../moebooru.dart';
 import 'posts.dart';
 

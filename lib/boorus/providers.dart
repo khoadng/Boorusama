@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:booru_clients/anime_pictures.dart';
 import 'package:booru_clients/danbooru.dart';
@@ -15,6 +18,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../core/autocompletes/autocompletes.dart';
+import '../core/blacklists/blacklisted_tag.dart';
 import '../core/blacklists/providers.dart';
 import '../core/boorus.dart';
 import '../core/boorus/booru_builder.dart';
@@ -243,16 +247,11 @@ final favoriteRepoProvider =
   },
 );
 
-final blacklistTagsProvider = FutureProvider.autoDispose
-    .family<Set<String>, BooruConfigAuth>((ref, config) {
-  final globalBlacklistedTags =
-      ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
-
-  return switch (config.booruType) {
-    BooruType.danbooru =>
-      ref.watch(danbooruBlacklistedTagsWithCensoredTagsProvider(config).future),
+final blacklistTagsRefRepoProvider =
+    Provider.family<BlacklistTagRefRepository, BooruConfigAuth>(
+  (ref, config) => switch (config.booruType) {
+    BooruType.danbooru => DanbooruBlacklistTagRepository(ref, config),
     BooruType.e621 ||
-    BooruType.szurubooru ||
     BooruType.gelbooru ||
     BooruType.gelbooruV1 ||
     BooruType.gelbooruV2 ||
@@ -265,9 +264,9 @@ final blacklistTagsProvider = FutureProvider.autoDispose
     BooruType.hydrus ||
     BooruType.animePictures ||
     BooruType.unknown =>
-      globalBlacklistedTags,
-  };
-});
+      GlobalBlacklistTagRefRepository(ref),
+  },
+);
 
 final booruSiteValidatorProvider =
     FutureProvider.autoDispose.family<bool, BooruConfigAuth>((ref, config) {

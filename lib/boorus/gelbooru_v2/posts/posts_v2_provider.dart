@@ -3,13 +3,13 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/foundation/caching/lru_cacher.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/search/query_composer_providers.dart';
 import '../../../core/settings/data/listing_provider.dart';
-import '../../providers.dart';
 import '../gelbooru_v2.dart';
 import 'posts_v2.dart';
 

@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/foundation/caching.dart';
 import '../../../core/posts/post/post.dart';
-import '../../providers.dart';
 import '../posts/posts.dart';
 
 final gelbooruArtistPostRepo =

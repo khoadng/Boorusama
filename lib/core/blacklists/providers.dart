@@ -9,6 +9,9 @@ import 'package:foundation/foundation.dart';
 import '../foundation/toast.dart';
 import 'blacklisted_tag.dart';
 
+export 'blacklisted_tag_notifier.dart';
+export 'global_blacklisted_tag_ref_repository.dart';
+
 final globalBlacklistedTagRepoProvider =
     Provider<GlobalBlacklistedTagRepository>(
   (ref) => throw UnimplementedError(),

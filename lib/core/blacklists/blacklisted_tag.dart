@@ -1,5 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import '../configs/config.dart';
 
 class BlacklistedTag extends Equatable {
   const BlacklistedTag({
@@ -49,4 +53,10 @@ List<String>? sanitizeBlacklistTagString(String tagString) {
   if (tags.isEmpty) return null;
 
   return tags;
+}
+
+abstract class BlacklistTagRefRepository {
+  Ref get ref;
+
+  Future<Set<String>> getBlacklistedTags(BooruConfigAuth config);
 }

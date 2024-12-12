@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../core/blacklists/blacklisted_tag.dart';
 import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/boorus.dart';
 import '../../../../../core/boorus/providers.dart';
@@ -19,37 +20,6 @@ final danbooruBlacklistedTagsProvider = AsyncNotifierProvider.family<
     currentBooruConfigProvider,
   ],
 );
-
-final danbooruBlacklistedTagsWithCensoredTagsProvider = FutureProvider
-    .autoDispose
-    .family<Set<String>, BooruConfigAuth>((ref, config) async {
-  final currentUser =
-      await ref.watch(danbooruCurrentUserProvider(config).future);
-  final globalBlacklistedTags =
-      ref.watch(globalBlacklistedTagsProvider).map((e) => e.name);
-
-  if (currentUser == null) {
-    return globalBlacklistedTags.toSet();
-  }
-
-  final danbooruBlacklistedTags =
-      await ref.watch(danbooruBlacklistedTagsProvider(config).future);
-  final isUnverified = config.isUnverified();
-  final booruFactory = ref.watch(booruFactoryProvider);
-  final censoredTagsBanned = booruFactory
-          .create(type: config.booruType)
-          ?.hasCensoredTagsBanned(config.url) ??
-      false;
-
-  return {
-    ...globalBlacklistedTags,
-    if (danbooruBlacklistedTags != null) ...danbooruBlacklistedTags,
-    if (!isUnverified &&
-        censoredTagsBanned &&
-        !isBooruGoldPlusAccount(currentUser.level))
-      ...kCensoredTags,
-  };
-});
 
 class BlacklistedTagsNotifier
     extends FamilyAsyncNotifier<List<String>?, BooruConfigAuth> {
@@ -155,5 +125,43 @@ class BlacklistedTagsNotifier
     } catch (e) {
       onFailure?.call('Fail to replace tag');
     }
+  }
+}
+
+class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
+  DanbooruBlacklistTagRepository(this.ref, this.config);
+
+  @override
+  final Ref ref;
+  final BooruConfigAuth config;
+
+  @override
+  Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
+    final currentUser =
+        await ref.watch(danbooruCurrentUserProvider(config).future);
+    final globalBlacklistedTags =
+        ref.watch(globalBlacklistedTagsProvider).map((e) => e.name);
+
+    if (currentUser == null) {
+      return globalBlacklistedTags.toSet();
+    }
+
+    final danbooruBlacklistedTags =
+        await ref.watch(danbooruBlacklistedTagsProvider(config).future);
+    final isUnverified = config.isUnverified();
+    final booruFactory = ref.watch(booruFactoryProvider);
+    final censoredTagsBanned = booruFactory
+            .create(type: config.booruType)
+            ?.hasCensoredTagsBanned(config.url) ??
+        false;
+
+    return {
+      ...globalBlacklistedTags,
+      if (danbooruBlacklistedTags != null) ...danbooruBlacklistedTags,
+      if (!isUnverified &&
+          censoredTagsBanned &&
+          !isBooruGoldPlusAccount(currentUser.level))
+        ...kCensoredTags,
+    };
   }
 }
