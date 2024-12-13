@@ -10,7 +10,7 @@ import 'package:foundation/foundation.dart';
 import '../../boorus/entry_page.dart';
 import '../app_rating/app_rating.dart';
 import '../applock/applock.dart';
-import '../blacklists/blacklisted_tag_page.dart';
+import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/redirect.dart';
@@ -73,7 +73,7 @@ class Routes {
           settings(),
           settingsDesktop(),
           bookmarkRoutes,
-          globalBlacklistedTags(),
+          globalBlacklistedTagsRoutes,
           downloadManager(),
           bulkDownloads(ref),
           favoriteTags(),
@@ -211,13 +211,5 @@ class Routes {
             child: OriginalImagePage.post(post),
           );
         },
-      );
-
-  static GoRoute globalBlacklistedTags() => GoRoute(
-        path: 'global_blacklisted_tags',
-        name: '/global_blacklisted_tags',
-        pageBuilder: genericMobilePageBuilder(
-          builder: (context, state) => const BlacklistedTagPage(),
-        ),
       );
 }

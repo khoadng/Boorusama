@@ -9,7 +9,7 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/blacklisted_tag.dart';
+import '../../core/blacklists/blacklist.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';

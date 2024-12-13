@@ -1,9 +1,5 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// Project imports:
-import '../configs/config.dart';
 
 class BlacklistedTag extends Equatable {
   const BlacklistedTag({
@@ -39,13 +35,6 @@ class BlacklistedTag extends Equatable {
   }
 }
 
-abstract class GlobalBlacklistedTagRepository {
-  Future<BlacklistedTag?> addTag(String tag);
-  Future<void> removeTag(int tagId);
-  Future<List<BlacklistedTag>> getBlacklist();
-  Future<BlacklistedTag> updateTag(int tagId, String newTag);
-}
-
 List<String>? sanitizeBlacklistTagString(String tagString) {
   final trimmed = tagString.trim();
   final tags = trimmed.split('\n');
@@ -53,10 +42,4 @@ List<String>? sanitizeBlacklistTagString(String tagString) {
   if (tags.isEmpty) return null;
 
   return tags;
-}
-
-abstract class BlacklistTagRefRepository {
-  Ref get ref;
-
-  Future<Set<String>> getBlacklistedTags(BooruConfigAuth config);
 }

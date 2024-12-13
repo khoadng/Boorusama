@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../core/blacklists/blacklisted_tag.dart';
+import '../../../../../core/blacklists/blacklist.dart';
 import '../../../../../core/foundation/toast.dart';
 import 'blacklisted_tags_notifier.dart';
 

@@ -18,8 +18,6 @@ import 'package:stack_trace/stack_trace.dart';
 import 'boorus/providers.dart';
 import 'core/analytics.dart';
 import 'core/app.dart';
-import 'core/blacklists/hive/tag_repository.dart';
-import 'core/blacklists/providers.dart';
 import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
@@ -175,10 +173,6 @@ Future<void> boot(BootLogger bootLogger) async {
     bootLogger: bootLogger,
   );
 
-  bootLogger.l('Initialize global blacklisted tag repository');
-  final globalBlacklistedTags = HiveBlacklistedTagRepository();
-  await globalBlacklistedTags.init();
-
   final bookmarkRepoOverride = await createBookmarkRepoProviderOverride(
     bootLogger: bootLogger,
   );
@@ -269,8 +263,6 @@ Future<void> boot(BootLogger bootLogger) async {
                 ),
               ),
               initialSettingsBooruConfigProvider.overrideWithValue(config),
-              globalBlacklistedTagRepoProvider
-                  .overrideWithValue(globalBlacklistedTags),
               httpCacheDirProvider.overrideWithValue(tempPath),
               loggerProvider.overrideWithValue(logger),
               bookmarkRepoOverride,

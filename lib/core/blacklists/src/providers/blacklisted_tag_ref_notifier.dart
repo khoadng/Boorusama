@@ -6,10 +6,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../boorus/engine/providers.dart';
-import '../configs/config.dart';
-import 'blacklisted_tag.dart';
-import 'global_blacklisted_tag_ref_repository.dart';
+import '../../../boorus/engine/providers.dart';
+import '../../../configs/config.dart';
+import '../types/blacklisted_tag_repository.dart';
+import 'global_blacklisted_tag_notifier.dart';
 
 final blacklistTagsRefRepoProvider =
     Provider.family<BlacklistTagRefRepository, BooruConfigAuth>(
@@ -62,3 +62,18 @@ final blacklistTagsProvider = FutureProvider.autoDispose
       .watch(blacklistedTagsNotifierProvider(config).future)
       .then((value) => value.tags);
 });
+
+class GlobalBlacklistTagRefRepository implements BlacklistTagRefRepository {
+  GlobalBlacklistTagRefRepository(this.ref);
+
+  @override
+  final Ref ref;
+
+  @override
+  Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
+    final globalBlacklistedTags =
+        ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
+
+    return globalBlacklistedTags;
+  }
+}

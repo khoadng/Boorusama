@@ -9,7 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/blacklisted_tag.dart';
+import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';

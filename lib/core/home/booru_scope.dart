@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../blacklists/blacklisted_tag_page.dart';
+import '../blacklists/widgets.dart';
 import '../bookmarks/widgets.dart';
 import '../cache/providers.dart';
 import '../downloads/bulks.dart';

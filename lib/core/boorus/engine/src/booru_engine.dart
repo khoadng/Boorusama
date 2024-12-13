@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../autocompletes/autocompletes.dart';
-import '../../../blacklists/blacklisted_tag.dart';
+import '../../../blacklists/blacklist.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create.dart';
 import '../../../downloads/urls.dart';

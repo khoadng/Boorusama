@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../core/blacklists/blacklisted_tag_view_scaffold.dart';
+import '../../../../core/blacklists/widgets.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/widgets/import_export_tag_button.dart';
 import 'providers/blacklisted_tags_notifier.dart';

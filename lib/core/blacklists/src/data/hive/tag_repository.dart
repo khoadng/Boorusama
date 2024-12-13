@@ -3,8 +3,13 @@ import 'package:collection/collection.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../blacklisted_tag.dart';
+import '../../types/blacklisted_tag.dart';
+import '../../types/blacklisted_tag_repository.dart';
+import 'converter.dart';
 import 'tag_hive_object.dart';
+
+// Project imports:
+
 
 class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   static const _boxName = 'blacklisted_tags';
@@ -54,23 +59,4 @@ class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
     await _box.put(tagId, obj);
     return convertFromHiveObject(obj);
   }
-}
-
-BlacklistedTagHiveObject convertToHiveObject(BlacklistedTag blacklistedTag) {
-  return BlacklistedTagHiveObject(
-    name: blacklistedTag.name,
-    isActive: blacklistedTag.isActive,
-    createdDate: blacklistedTag.createdDate,
-    updatedDate: blacklistedTag.updatedDate,
-  );
-}
-
-BlacklistedTag convertFromHiveObject(BlacklistedTagHiveObject hiveObject) {
-  return BlacklistedTag(
-    id: hiveObject.key,
-    name: hiveObject.name,
-    isActive: hiveObject.isActive,
-    createdDate: hiveObject.createdDate,
-    updatedDate: hiveObject.updatedDate,
-  );
 }

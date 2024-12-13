@@ -19,7 +19,6 @@ import '../posts/details/details.dart';
 import '../posts/listing/providers.dart';
 import '../posts/post/post.dart';
 import '../router.dart';
-import '../search/tag_edit.dart';
 import '../search/view_tags.dart';
 import '../tags/favorites/providers.dart';
 import '../widgets/widgets.dart';
@@ -149,29 +148,6 @@ void goToPostDetailsPageCore<T extends Post>({
       scrollController: scrollController,
       isDesktop: context.isLargeScreen,
     ),
-  );
-}
-
-void goToBlacklistedTagsSearchPage(
-  BuildContext context, {
-  required void Function(List<String> tags, String currentQuery) onSelectDone,
-  List<String>? initialTags,
-}) {
-  showDialog(
-    context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.blacklistedSearch,
-    ),
-    builder: (c) {
-      return SelectedTagEditDialog(
-        tag: TagSearchItem.raw(tag: initialTags?.join(' ') ?? ''),
-        onUpdated: (tag) {
-          if (tag.isNotEmpty) {
-            onSelectDone([], tag.trim());
-          }
-        },
-      );
-    },
   );
 }
 
@@ -331,14 +307,6 @@ void goToDownloadManagerPage(
   context.push(
     Uri(
       path: '/download_manager',
-    ).toString(),
-  );
-}
-
-void goToGlobalBlacklistedTagsPage(BuildContext context) {
-  context.push(
-    Uri(
-      path: '/global_blacklisted_tags',
     ).toString(),
   );
 }
