@@ -1,5 +1,5 @@
 // Project imports:
-import '../../settings.dart';
+import '../../settings/settings.dart';
 import 'booru_config.dart';
 import 'data/booru_config_data.dart';
 import 'gestures.dart';

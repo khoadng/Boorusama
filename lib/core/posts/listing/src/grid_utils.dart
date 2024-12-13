@@ -1,6 +1,6 @@
 // Project imports:
 import '../../../foundation/display.dart';
-import '../../../settings.dart';
+import '../../../settings/settings.dart';
 
 int calculateGridCount(double width, GridSize size) {
   final displaySize = screenWidthToDisplaySize(width);

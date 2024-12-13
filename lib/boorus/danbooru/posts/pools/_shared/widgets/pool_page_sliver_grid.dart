@@ -9,7 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/pools/pool_grid_item.dart';
 import '../../../../../../core/posts/listing/list.dart';
-import '../../../../../../core/settings/data/listing_provider.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../details/providers.dart';
 import '../../pool/pool.dart';
 import '../../pool/providers.dart';

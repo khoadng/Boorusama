@@ -18,7 +18,7 @@ import '../../posts/filter/filter.dart';
 import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';
 import '../../posts/sources/source.dart';
-import '../../settings/data.dart';
+import '../../settings/providers.dart';
 import '../../utils/duration_utils.dart';
 import '../downloader/metadata.dart';
 import '../downloader/providers.dart';

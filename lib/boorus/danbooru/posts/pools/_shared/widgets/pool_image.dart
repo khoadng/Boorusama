@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/images/booru_image.dart';
-import '../../../../../../core/settings/data/listing_provider.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../pool/pool.dart';
 import '../providers/pool_covers_notifier.dart';
 

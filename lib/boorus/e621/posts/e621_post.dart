@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
-import '../../../core/settings.dart';
+import '../../../core/settings/settings.dart';
 
 class E621Post extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin

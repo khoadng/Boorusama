@@ -15,7 +15,7 @@ import '../../../posts/count/widgets.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/post.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../../../tags/configs/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../histories/providers.dart';

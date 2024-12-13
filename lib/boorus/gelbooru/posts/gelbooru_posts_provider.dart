@@ -7,7 +7,7 @@ import '../../../core/configs/config.dart';
 import '../../../core/foundation/caching/lru_cacher.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/search/query_composer_providers.dart';
-import '../../../core/settings/data/listing_provider.dart';
+import '../../../core/settings/providers.dart';
 import '../gelbooru.dart';
 
 final gelbooruPostRepoProvider =

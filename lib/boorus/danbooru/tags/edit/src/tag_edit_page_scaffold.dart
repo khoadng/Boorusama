@@ -14,7 +14,7 @@ import '../../../../../core/foundation/display.dart';
 import '../../../../../core/foundation/scrolling.dart';
 import '../../../../../core/images/interactive_booru_image.dart';
 import '../../../../../core/router.dart';
-import '../../../../../core/settings/data.dart';
+import '../../../../../core/settings/providers.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
 import 'tag_edit_view_controller.dart';

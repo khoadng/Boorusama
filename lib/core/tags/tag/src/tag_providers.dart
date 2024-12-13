@@ -10,7 +10,7 @@ import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../../configs/ref.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../../../theme.dart';
 import 'tag_repository.dart';
 import 'tag_repository_impl.dart';

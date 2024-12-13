@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import '../../../foundation/error.dart';
-import '../../../settings/types.dart';
+import '../../../settings/settings.dart';
 import '../../../utils/collection_utils.dart';
 import '../../filter/filter.dart';
 import '../../post/post.dart';

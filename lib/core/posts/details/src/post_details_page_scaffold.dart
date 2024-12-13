@@ -19,7 +19,7 @@ import '../../../configs/ref.dart';
 import '../../../foundation/display.dart';
 import '../../../notes/notes.dart';
 import '../../../router.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../../../videos/play_pause_button.dart';
 import '../../../videos/providers.dart';
 import '../../../videos/sound_control_button.dart';

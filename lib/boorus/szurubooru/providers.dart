@@ -14,7 +14,7 @@ import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/query_composer_providers.dart';
-import '../../core/settings/data/listing_provider.dart';
+import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/tag.dart';
 import '../../core/utils/color_utils.dart';

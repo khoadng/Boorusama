@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../settings/data.dart';
+import '../settings/providers.dart';
 
 final globalSoundStateProvider = StateProvider<bool>((ref) {
   final isMuteByDefault =

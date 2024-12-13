@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../info/device_info.dart';
 import '../../search/history.dart';
-import '../../settings.dart';
-import '../../settings/data.dart';
+import '../../settings/providers.dart';
+import '../../settings/settings.dart';
 import '../manager/download_task.dart';
 import '../manager/download_tasks_notifier.dart';
 import 'bulk_download_notifier.dart';

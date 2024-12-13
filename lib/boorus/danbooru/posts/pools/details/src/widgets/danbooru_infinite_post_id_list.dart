@@ -13,7 +13,7 @@ import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../../core/posts/post/post.dart';
-import '../../../../../../../core/settings/data/listing_provider.dart';
+import '../../../../../../../core/settings/providers.dart';
 import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../listing/widgets.dart';
 import '../../../../post/post.dart';

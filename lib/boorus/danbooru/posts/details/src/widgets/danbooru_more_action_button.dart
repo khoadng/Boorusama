@@ -11,7 +11,7 @@ import '../../../../../../core/downloads/downloader.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/router.dart';
-import '../../../../../../core/settings/pages.dart';
+import '../../../../../../core/settings/routes.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../tags/tag/routes.dart';

@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/posts/sources/source.dart';
-import '../../../../../core/settings.dart';
+import '../../../../../core/settings/settings.dart';
 import '../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../core/tags/tag/tag.dart';
 import 'post_variant.dart';

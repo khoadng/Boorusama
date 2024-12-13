@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/ref.dart';
-import '../../../../settings/data.dart';
+import '../../../../settings/providers.dart';
 import '../../../../theme.dart';
 import '../../../../theme/utils.dart';
 import '../tag.dart';

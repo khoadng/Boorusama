@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../posts/post/post.dart';
-import '../../settings.dart';
+import '../../settings/settings.dart';
 
 class DownloadUrlData extends Equatable {
   const DownloadUrlData({

@@ -14,7 +14,7 @@ import '../cache/providers.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
-import '../router.dart';
+import '../settings/routes.dart';
 import '../tags/favorites/widgets.dart';
 import '../widgets/widgets.dart';
 import 'booru_desktop_scope.dart';

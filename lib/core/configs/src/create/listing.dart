@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../settings.dart';
-import '../../../settings/pages.dart';
+import '../../../settings/settings.dart';
+import '../../../settings/widgets.dart';
 import '../data/booru_config_data.dart';
 import '../gestures.dart';
 import 'providers.dart';

@@ -10,7 +10,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../analytics.dart';
 import '../configs/config.dart';
 import '../foundation/platform.dart';
-import '../settings.dart';
+import '../settings/settings.dart';
 
 class FirebaseAnalyticsImpl implements AnalyticsInterface {
   FirebaseAnalyticsImpl({

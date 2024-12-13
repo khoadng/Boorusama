@@ -11,7 +11,7 @@ import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/current.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/search/search_bar.dart';
-import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/tags/categories/providers.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';

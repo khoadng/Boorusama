@@ -14,8 +14,9 @@ import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../configs/widgets.dart';
 import '../router.dart';
-import '../settings.dart';
-import '../settings/data.dart';
+import '../settings/providers.dart';
+import '../settings/routes.dart';
+import '../settings/settings.dart';
 import '../tags/favorites/routes.dart';
 import 'side_menu_tile.dart';
 

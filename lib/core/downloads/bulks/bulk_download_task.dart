@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../foundation/platform.dart';
-import '../../settings.dart';
+import '../../settings/settings.dart';
 import '../path/validator.dart';
 
 enum BulkDownloadTaskStatus {

@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../../../tags/metatag/metatag.dart';
 import '../../../tags/metatag/routes.dart';
 import '../../../theme/utils.dart';

@@ -8,7 +8,7 @@ import '../../../foundation/error.dart';
 import '../../../foundation/http.dart';
 import '../../../search/query_composer.dart';
 import '../../../search/selected_tags.dart';
-import '../../../settings.dart';
+import '../../../settings/settings.dart';
 import '../../filter/filter.dart';
 import 'post.dart';
 

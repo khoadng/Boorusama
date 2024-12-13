@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/foundation/platform.dart';
-import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/theme.dart';

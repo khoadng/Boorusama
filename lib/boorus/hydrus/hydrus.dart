@@ -35,7 +35,7 @@ import '../../core/posts/sources/source.dart';
 import '../../core/router.dart';
 import '../../core/search/query_composer_providers.dart';
 import '../../core/search/search_ui.dart';
-import '../../core/settings/data/listing_provider.dart';
+import '../../core/settings/providers.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../../core/widgets/widgets.dart';

@@ -24,7 +24,7 @@ import '../../../http/providers.dart';
 import '../../../images/providers.dart';
 import '../../../info/device_info.dart';
 import '../../../posts/post/post.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../data/providers.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';

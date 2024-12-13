@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../../../core/datetimes/types.dart';
 import '../../../../../../core/http/http.dart';
 import '../../../../../../core/posts/post/post.dart';
-import '../../../../../../core/settings.dart';
+import '../../../../../../core/settings/settings.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
 import '../types/explore_repository.dart';

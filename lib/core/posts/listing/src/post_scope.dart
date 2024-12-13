@@ -10,8 +10,7 @@ import '../../../blacklists/providers.dart';
 import '../../../bookmarks/bookmark.dart';
 import '../../../bookmarks/providers.dart';
 import '../../../configs/ref.dart';
-import '../../../settings/data.dart';
-import '../../../settings/data/listing_provider.dart';
+import '../../../settings/providers.dart';
 import '../../post/post.dart';
 import 'post_grid_controller.dart';
 

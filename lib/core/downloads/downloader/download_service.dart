@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../configs/config.dart';
 import '../../foundation/path.dart';
-import '../../settings.dart';
+import '../../settings/settings.dart';
 import 'metadata.dart';
 
 enum FileSystemDownloadErrorType {

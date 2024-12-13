@@ -15,7 +15,7 @@ import '../../../configs/ref.dart';
 import '../../../foundation/display.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../images/booru_image.dart';
-import '../../../settings/data/listing_provider.dart';
+import '../../../settings/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/bookmark_provider.dart';
 import '../providers/local_providers.dart';

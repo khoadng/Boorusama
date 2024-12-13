@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import '../analytics.dart';
 import '../foundation/error.dart';
 import '../foundation/platform.dart';
-import '../settings.dart';
+import '../settings/settings.dart';
 import 'firebase_analytics.dart';
 import 'firebase_crashlytics.dart';
 import 'firebase_options.dart';

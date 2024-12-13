@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
 import '../../../user/providers.dart';

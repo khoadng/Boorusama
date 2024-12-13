@@ -6,7 +6,7 @@ import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/current.dart';
 import '../../http/providers.dart';
-import '../../settings/data.dart';
+import '../../settings/providers.dart';
 import '../notifications/providers.dart';
 import '../urls/download_url.dart';
 import 'background_downloader.dart';

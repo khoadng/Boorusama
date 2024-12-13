@@ -34,7 +34,7 @@ import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
 import '../../core/router.dart';
-import '../../core/settings.dart';
+import '../../core/settings/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
 import '../../core/tags/tag/tag.dart';

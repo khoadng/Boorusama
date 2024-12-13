@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../configs/config.dart';
 import '../../foundation/path.dart';
 import '../../posts/post/post.dart';
-import '../../settings.dart';
+import '../../settings/settings.dart';
 import '../urls/sanitizer.dart';
 import 'generator.dart';
 import 'token_options.dart';

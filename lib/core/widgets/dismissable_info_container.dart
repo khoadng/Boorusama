@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../foundation/html.dart';
-import '../settings/data.dart';
+import '../settings/providers.dart';
 import '../theme/utils.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {

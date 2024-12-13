@@ -7,7 +7,7 @@ import 'package:filename_generator/filename_generator.dart';
 // Project imports:
 import '../../configs/config.dart';
 import '../../posts/post/post.dart';
-import '../../settings.dart';
+import '../../settings/settings.dart';
 import 'token_options.dart';
 
 abstract class DownloadFilenameGenerator<T extends Post> {

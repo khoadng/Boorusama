@@ -287,20 +287,6 @@ Future<void> goToBulkDownloadPage(
   }
 }
 
-void goToSettingsPage(
-  BuildContext context, {
-  String? scrollTo,
-}) {
-  context.push(
-    Uri(
-      path: '/settings',
-      queryParameters: {
-        if (scrollTo != null) 'scrollTo': scrollTo,
-      },
-    ).toString(),
-  );
-}
-
 void goToDownloadManagerPage(
   BuildContext context,
 ) {

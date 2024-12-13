@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../settings/data.dart';
+import '../../settings/providers.dart';
 import 'app_lock.dart';
 
 class AppLockWithSettings extends ConsumerWidget {

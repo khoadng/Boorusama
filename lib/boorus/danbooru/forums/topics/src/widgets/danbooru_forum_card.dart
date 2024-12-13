@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/settings/data.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/theme/utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/creator/providers.dart';

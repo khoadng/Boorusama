@@ -40,8 +40,8 @@ import 'core/info/app_info.dart';
 import 'core/info/device_info.dart';
 import 'core/info/package_info.dart';
 import 'core/search/boot.dart';
-import 'core/settings.dart';
-import 'core/settings/data.dart';
+import 'core/settings/providers.dart';
+import 'core/settings/settings.dart';
 import 'core/tags/categories/providers.dart';
 import 'core/tags/configs/providers.dart';
 import 'core/tags/favorites/providers.dart';
@@ -114,13 +114,7 @@ Future<void> boot(BootLogger bootLogger) async {
   final booruFactory = BooruFactory.from(boorus);
 
   bootLogger.l('Initialize settings repository');
-  final settingRepository = SettingsRepositoryLoggerInterceptor(
-    SettingsRepositoryHive(
-      Hive.openBox('settings'),
-    ),
-    logger: logger,
-  );
-
+  final settingRepository = await createSettingsRepo(logger: logger);
   bootLogger.l('Set certificate to trusted certificates');
   try {
     // https://stackoverflow.com/questions/69511057/flutter-on-android-7-certificate-verify-failed-with-letsencrypt-ssl-cert-after-s

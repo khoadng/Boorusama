@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../settings.dart';
+import '../settings/settings.dart';
 import '../utils/color_utils.dart';
 
 extension DynamicColorX on BuildContext {

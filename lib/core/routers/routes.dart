@@ -19,6 +19,7 @@ import '../images/original_image_page.dart';
 import '../posts/details/details.dart';
 import '../posts/post/post.dart';
 import '../router.dart';
+import '../settings/routes.dart';
 import '../tags/favorites/routes.dart';
 import '../widgets/widgets.dart';
 
@@ -70,8 +71,8 @@ class Routes {
           favorites(ref),
           artists(ref),
           characters(ref),
-          settings(),
-          settingsDesktop(),
+          settingsRoutes,
+          settingsDesktopRoutes,
           bookmarkRoutes,
           globalBlacklistedTagsRoutes,
           downloadManager(),

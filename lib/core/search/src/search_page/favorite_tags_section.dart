@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../cache/providers.dart';
 import '../../../foundation/platform.dart';
 import '../../../router.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../../../tags/favorites/favorited.dart';
 import '../../../tags/favorites/widgets.dart';
 import '../../../theme/utils.dart';

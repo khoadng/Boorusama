@@ -12,7 +12,7 @@ import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../../router.dart';
-import '../../../../settings/data.dart';
+import '../../../../settings/providers.dart';
 import '../../../../tags/categories/tag_category.dart';
 import '../../../../tags/tag/providers.dart';
 import '../../../../tags/tag/widgets.dart';

@@ -12,7 +12,7 @@ import 'package:reorderables/reorderables.dart';
 // Project imports:
 import '../../../foundation/toast.dart';
 import '../../../router.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';
 import '../booru_config_ref.dart';

@@ -10,7 +10,7 @@ import '../../../core/artists/artists.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/parts.dart';
 import '../../../core/router.dart';
-import '../../../core/settings/data/listing_provider.dart';
+import '../../../core/settings/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../artists/artists.dart';
 import '../tags/tags.dart';

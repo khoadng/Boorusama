@@ -31,7 +31,7 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/router.dart';
 import '../../core/scaffolds/scaffolds.dart';
-import '../../core/settings/types.dart';
+import '../../core/settings/settings.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';

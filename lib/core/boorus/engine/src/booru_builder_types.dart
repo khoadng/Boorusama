@@ -12,7 +12,7 @@ import '../../../notes/notes.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
-import '../../../settings.dart';
+import '../../../settings/settings.dart';
 import '../../../tags/configs/configs.dart';
 import '../../../tags/metatag/metatag.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../analytics.dart';
 import '../../../foundation/loggers.dart';
-import '../../../settings/data.dart';
+import '../../../settings/providers.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';

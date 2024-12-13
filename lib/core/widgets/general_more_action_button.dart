@@ -12,7 +12,7 @@ import '../foundation/url_launcher.dart';
 import '../posts/post/post.dart';
 import '../posts/post/tags.dart';
 import '../router.dart';
-import '../settings/pages.dart';
+import '../settings/routes.dart';
 import '../tags/tag/routes.dart';
 import '../theme.dart';
 import 'booru_popup_menu_button.dart';

@@ -23,7 +23,7 @@ import 'foundation/windows.dart';
 import 'info/app_info.dart';
 import 'info/device_info.dart';
 import 'router.dart';
-import 'settings/data.dart';
+import 'settings/providers.dart';
 import 'theme/theme_buider.dart';
 
 const kMinSideBarWidth = 62.0;

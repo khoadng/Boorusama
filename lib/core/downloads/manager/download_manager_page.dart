@@ -15,7 +15,7 @@ import '../../../core/widgets/widgets.dart';
 import '../../foundation/http.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
-import '../../settings/pages.dart';
+import '../../settings/routes.dart';
 import '../../theme.dart';
 import '../downloader/metadata.dart';
 import '../internal_widgets/download_tile.dart';

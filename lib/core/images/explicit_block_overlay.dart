@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../posts/rating/rating.dart';
-import '../settings/data/listing_provider.dart';
+import '../settings/providers.dart';
 
 class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
   const ExplicitContentBlockOverlay({
