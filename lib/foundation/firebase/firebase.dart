@@ -67,7 +67,8 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
 bool isFirebaseEnabled({
   required DataCollectingStatus dataCollectingStatus,
 }) =>
-    dataCollectingStatus == DataCollectingStatus.allow && kReleaseMode;
+    dataCollectingStatus == DataCollectingStatus.allow &&
+    (kProfileMode || kReleaseMode);
 
 FirebaseOptions? _tryGetFirebaseOptions(String env, Logger? logger) {
   try {
