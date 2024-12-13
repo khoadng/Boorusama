@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../../boorus.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../downloads/filename.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';

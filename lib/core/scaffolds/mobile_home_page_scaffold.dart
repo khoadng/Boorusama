@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../boorus/providers.dart';
+import '../boorus/engine/providers.dart';
 import '../configs/ref.dart';
 import '../foundation/display.dart';
 import '../home/home_page_controller.dart';

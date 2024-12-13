@@ -6,7 +6,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import '../boorus.dart';
+import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
 import '../images/dio_extended_image.dart';
 import '../images/providers.dart';

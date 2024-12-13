@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import '../../boorus.dart';
-import '../../boorus/providers.dart';
+import '../../boorus/booru/src/booru_type.dart';
+import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/ref.dart';
 import '../../foundation/http.dart';

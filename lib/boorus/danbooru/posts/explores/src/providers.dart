@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/providers.dart';
-import '../../../../../core/boorus/providers.dart';
+import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/current.dart';
 import '../../../../../core/configs/ref.dart';

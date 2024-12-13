@@ -1,5 +1,5 @@
 // Project imports:
-import '../downloads/filename.dart';
+import '../../../downloads/filename.dart';
 import 'booru_builder_types.dart';
 
 abstract class BooruBuilder {

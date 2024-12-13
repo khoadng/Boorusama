@@ -7,8 +7,8 @@ import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../../../core/boorus/booru_builder_default.dart';
-import '../../../../../core/boorus/providers.dart';
+import '../../../../../core/boorus/engine/engine.dart';
+import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/foundation/clipboard.dart';

@@ -6,7 +6,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../boorus/providers.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/current.dart';
 import '../../../configs/ref.dart';

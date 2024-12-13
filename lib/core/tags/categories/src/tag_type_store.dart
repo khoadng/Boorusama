@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../boorus/booru_type.dart';
+import '../../../boorus/booru/booru.dart';
 
 abstract class TagTypeStore {
   Future<void> save(BooruType booruType, String tag, String category);

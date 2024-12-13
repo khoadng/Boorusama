@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../boorus.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../theme.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';

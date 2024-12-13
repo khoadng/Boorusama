@@ -13,7 +13,7 @@ import '../applock/applock.dart';
 import '../blacklists/blacklisted_tag_page.dart';
 import '../bookmarks/widgets/bookmark_details_page.dart';
 import '../bookmarks/widgets/bookmark_page.dart';
-import '../boorus/providers.dart';
+import '../boorus/engine/providers.dart';
 import '../configs/redirect.dart';
 import '../downloads/downloader.dart';
 import '../images/original_image_page.dart';

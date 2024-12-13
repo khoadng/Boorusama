@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../boorus/booru_builder.dart';
+import '../../../boorus/engine/engine.dart';
 import '../../../tags/configs/configs.dart';
 import '../../../tags/metatag/metatag.dart';
 import '../histories/search_history.dart';

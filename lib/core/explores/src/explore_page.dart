@@ -8,7 +8,7 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../core/widgets/widgets.dart';
 import '../../blacklists/providers.dart';
-import '../../boorus/booru_builder_default.dart';
+import '../../boorus/engine/engine.dart';
 import '../../configs/ref.dart';
 import '../../foundation/display.dart';
 import '../../images/booru_image.dart';

@@ -8,8 +8,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../boorus/booru_builder.dart';
-import '../../../../boorus/providers.dart';
+import '../../../../boorus/engine/engine.dart';
+import '../../../../boorus/engine/providers.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../../router.dart';
 import '../../../../settings/data.dart';

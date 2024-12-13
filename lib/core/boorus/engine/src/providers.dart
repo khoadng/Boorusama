@@ -2,22 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../configs/config.dart';
-import '../configs/ref.dart';
-import 'booru.dart';
+import '../../../configs/config.dart';
+import '../../../configs/ref.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
-import 'booru_factory.dart';
-
-final booruFactoryProvider =
-    Provider<BooruFactory>((ref) => throw UnimplementedError());
-
-final booruProvider =
-    Provider.autoDispose.family<Booru?, BooruConfigAuth>((ref, config) {
-  final booruFactory = ref.watch(booruFactoryProvider);
-
-  return config.createBooruFrom(booruFactory);
-});
 
 final booruEngineRegistryProvider = Provider<BooruEngineRegistry>((ref) {
   throw UnimplementedError();

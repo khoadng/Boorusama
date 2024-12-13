@@ -6,8 +6,8 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../boorus.dart';
-import '../../../boorus/providers.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../boorus/booru/providers.dart';
 import '../../../foundation/toast.dart';
 import '../../../theme.dart';
 import '../booru_config.dart';

@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../boorus/booru_builder_default.dart';
+import '../../../boorus/engine/engine.dart';
 import '../../../foundation/display.dart';
 import '../../post/post.dart';
 import 'post_modal_share.dart';

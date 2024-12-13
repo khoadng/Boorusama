@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../boorus/booru_type.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
 import '../../../utils/int_utils.dart';

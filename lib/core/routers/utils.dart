@@ -8,7 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../autocompletes/autocompletes.dart';
-import '../boorus/providers.dart';
+import '../boorus/engine/providers.dart';
 import '../comments/utils.dart';
 import '../configs/config.dart';
 import '../downloads/bulks/create_bulk_download_task_sheet.dart';

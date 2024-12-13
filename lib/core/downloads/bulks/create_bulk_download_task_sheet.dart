@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../boorus.dart';
+import '../../boorus/booru/booru.dart';
 import '../../configs/ref.dart';
 import '../../foundation/picker.dart';
 import '../../foundation/platform.dart';

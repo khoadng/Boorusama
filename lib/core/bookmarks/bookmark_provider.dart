@@ -12,7 +12,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../backups/types.dart';
-import '../boorus.dart';
+import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
 import '../downloads/downloader.dart';
 import '../foundation/animations.dart';

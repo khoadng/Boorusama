@@ -8,8 +8,8 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../core/boorus.dart';
-import '../../../core/boorus/providers.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/create.dart';
 import 'config_hashing.dart';

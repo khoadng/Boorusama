@@ -12,8 +12,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../app_update/providers.dart';
 import '../app_update/types.dart';
-import '../boorus/booru_builder.dart';
-import '../boorus/providers.dart';
+import '../boorus/engine/engine.dart';
+import '../boorus/engine/providers.dart';
 import '../foundation/display.dart';
 import '../foundation/url_launcher.dart';
 import '../router.dart';

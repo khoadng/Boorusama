@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../boorus/danbooru/_shared/guard_login.dart';
-import '../boorus/providers.dart';
+import '../boorus/engine/providers.dart';
 import '../configs/config.dart';
 import '../configs/current.dart';
 import '../configs/ref.dart';

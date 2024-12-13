@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../boorus/hydrus/hydrus.dart';
-import '../boorus.dart';
+import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
 
 final extraHttpHeaderProvider =

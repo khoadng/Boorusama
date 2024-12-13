@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../boorus/booru_type.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../tag/tag.dart';
 import 'tag_type_store.dart';
 

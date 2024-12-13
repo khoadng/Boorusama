@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../core/boorus.dart';
-import '../../../../../core/boorus/providers.dart';
+import '../../../../../core/boorus/booru/booru.dart';
+import '../../../../../core/boorus/booru/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/router.dart';
 import 'providers/tag_edit_notifier.dart';

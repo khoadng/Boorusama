@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../../boorus.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../foundation/path.dart';
 import '../../../foundation/platform.dart';
 import 'tag_type_store.dart';

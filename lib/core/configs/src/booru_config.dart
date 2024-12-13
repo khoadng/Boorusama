@@ -5,9 +5,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../boorus/danbooru/danbooru.dart';
-import '../../boorus/booru.dart';
-import '../../boorus/booru_factory.dart';
-import '../../boorus/booru_type.dart';
+import '../../boorus/booru/booru.dart';
 import '../../foundation/platform.dart';
 import '../../posts/rating/rating.dart';
 import '../../settings/settings.dart';

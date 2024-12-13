@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../core/boorus.dart';
+import '../../../core/boorus/booru/booru.dart';
 import '../../../core/foundation/crypto.dart';
 
 String hashBooruPasswordSHA1({

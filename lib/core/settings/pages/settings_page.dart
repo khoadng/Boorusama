@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../core/widgets/widgets.dart';
-import '../../boorus/providers.dart';
+import '../../boorus/engine/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/scrolling.dart';
 import '../../foundation/url_launcher.dart';

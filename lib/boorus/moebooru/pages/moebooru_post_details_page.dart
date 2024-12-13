@@ -8,8 +8,8 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../core/boorus.dart';
-import '../../../core/boorus/providers.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';

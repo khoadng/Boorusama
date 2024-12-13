@@ -8,7 +8,7 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import '../../blacklists/providers.dart';
-import '../../boorus/providers.dart';
+import '../../boorus/engine/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/http.dart';
 import '../../foundation/loggers.dart';

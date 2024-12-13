@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../boorus/providers.dart';
+import '../boorus/engine/providers.dart';
 import 'booru_scope.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';

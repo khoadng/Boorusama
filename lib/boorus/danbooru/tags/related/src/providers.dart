@@ -3,7 +3,7 @@ import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/boorus.dart';
+import '../../../../../core/boorus/booru/booru.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/categories/providers.dart';

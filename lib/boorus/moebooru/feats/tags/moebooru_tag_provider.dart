@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../core/boorus.dart';
+import '../../../../core/boorus/booru/booru.dart';
 import '../../../../core/configs/config.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../autocomplete/moebooru_autocomplete_provider.dart';

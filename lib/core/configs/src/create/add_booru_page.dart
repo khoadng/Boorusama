@@ -7,8 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../boorus.dart';
-import '../../../boorus/providers.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../boorus/booru/providers.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../edit_booru_config_id.dart';

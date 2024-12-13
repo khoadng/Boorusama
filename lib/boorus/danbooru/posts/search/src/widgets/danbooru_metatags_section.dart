@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import '../../../../../../core/boorus.dart';
-import '../../../../../../core/boorus/providers.dart';
+import '../../../../../../core/boorus/booru/booru.dart';
+import '../../../../../../core/boorus/booru/providers.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/metatag_widgets.dart';

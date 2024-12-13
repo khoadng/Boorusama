@@ -7,7 +7,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../core/boorus/providers.dart';
+import '../../../../core/boorus/engine/providers.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/display.dart';
 import '../../../../core/home/home_page_controller.dart';

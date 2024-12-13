@@ -12,7 +12,7 @@ import 'package:foundation/foundation.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
-import '../../boorus.dart';
+import '../../boorus/booru/booru.dart';
 import '../../configs/ref.dart';
 import '../../foundation/media_scanner.dart';
 import '../../foundation/path.dart';

@@ -2,7 +2,7 @@
 import 'dart:io';
 
 // Project imports:
-import '../../../boorus.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../configs/config.dart';
 import '../../../foundation/loggers.dart';
 

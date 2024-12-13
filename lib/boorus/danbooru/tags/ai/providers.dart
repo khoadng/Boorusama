@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../core/boorus.dart';
-import '../../../../core/boorus/providers.dart';
+import '../../../../core/boorus/booru/booru.dart';
+import '../../../../core/boorus/booru/providers.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/tags/categories/providers.dart';
 import '../../../../core/tags/categories/tag_category.dart';

@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../bookmarks/bookmark_provider.dart';
-import '../../../boorus/providers.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/url_launcher.dart';

@@ -6,15 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../configs/config.dart';
-import '../home/home_page_controller.dart';
-import '../notes/notes.dart';
-import '../posts/details/details.dart';
-import '../posts/post/post.dart';
-import '../posts/rating/rating.dart';
-import '../settings.dart';
-import '../tags/configs/configs.dart';
-import '../tags/metatag/metatag.dart';
+import '../../../configs/config.dart';
+import '../../../home/home_page_controller.dart';
+import '../../../notes/notes.dart';
+import '../../../posts/details/details.dart';
+import '../../../posts/post/post.dart';
+import '../../../posts/rating/rating.dart';
+import '../../../settings.dart';
+import '../../../tags/configs/configs.dart';
+import '../../../tags/metatag/metatag.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,

@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../core/boorus.dart';
-import '../core/boorus/booru_engine.dart';
+import '../core/boorus/booru/booru.dart';
+import '../core/boorus/engine/engine.dart';
 import 'anime-pictures/anime_pictures.dart';
 import 'danbooru/danbooru.dart';
 import 'e621/e621.dart';

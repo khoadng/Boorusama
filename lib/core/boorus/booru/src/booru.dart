@@ -3,8 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import '../../../http/http.dart';
 import 'booru_type.dart';
-import 'network_protocol.dart';
 
 sealed class Booru extends Equatable {
   const Booru({

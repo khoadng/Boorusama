@@ -10,11 +10,8 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklisted_tag.dart';
-import '../../core/boorus/booru_builder.dart';
-import '../../core/boorus/booru_builder_default.dart';
-import '../../core/boorus/booru_builder_types.dart';
-import '../../core/boorus/booru_engine.dart';
-import '../../core/boorus/providers.dart';
+import '../../core/boorus/booru/providers.dart';
+import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';

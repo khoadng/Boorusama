@@ -12,7 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
-import '../../../../core/boorus.dart';
+import '../../../../core/boorus/booru/booru.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/platform.dart';
 import '../../../../core/foundation/url_launcher.dart';
