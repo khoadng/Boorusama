@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
+import '../../../foundation/display.dart';
+import '../providers/local_providers.dart';
 import 'grid_size_adjustment_buttons.dart';
-import 'providers.dart';
 
 class BookmarkGridUpdateButtons extends ConsumerWidget {
   const BookmarkGridUpdateButtons({

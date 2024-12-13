@@ -11,22 +11,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../backups/types.dart';
-import '../boorus/booru/booru.dart';
-import '../configs/config.dart';
-import '../downloads/downloader.dart';
-import '../foundation/animations.dart';
-import '../foundation/http.dart';
-import '../foundation/path.dart';
-import '../foundation/permissions.dart';
-import '../foundation/toast.dart';
-import '../http/providers.dart';
-import '../images/providers.dart';
-import '../info/device_info.dart';
-import '../posts/post/post.dart';
-import '../settings/data.dart';
-import 'bookmark.dart';
-import 'providers.dart';
+import '../../../backups/types.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../configs/config.dart';
+import '../../../downloads/downloader.dart';
+import '../../../foundation/animations.dart';
+import '../../../foundation/http.dart';
+import '../../../foundation/path.dart';
+import '../../../foundation/permissions.dart';
+import '../../../foundation/toast.dart';
+import '../../../http/providers.dart';
+import '../../../images/providers.dart';
+import '../../../info/device_info.dart';
+import '../../../posts/post/post.dart';
+import '../../../settings/data.dart';
+import '../data/providers.dart';
+import '../types/bookmark.dart';
+import '../types/bookmark_repository.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -36,6 +37,12 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
     downloadServiceProvider,
   ],
 );
+
+final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
+  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
+
+  return bookmarks.isNotEmpty;
+});
 
 class BookmarkNotifier extends Notifier<BookmarkState> {
   @override

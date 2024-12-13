@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../blacklists/providers.dart';
 import '../../../bookmarks/bookmark.dart';
-import '../../../bookmarks/bookmark_provider.dart';
+import '../../../bookmarks/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../settings/data.dart';
 import '../../../settings/data/listing_provider.dart';

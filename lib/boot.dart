@@ -20,8 +20,6 @@ import 'core/analytics.dart';
 import 'core/app.dart';
 import 'core/blacklists/hive/tag_repository.dart';
 import 'core/blacklists/providers.dart';
-import 'core/bookmarks/hive/object.dart';
-import 'core/bookmarks/hive/repository.dart';
 import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
@@ -94,9 +92,6 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Initialize Hive');
   Hive.init(dbDirectory.path);
-
-  bootLogger.l('Register bookmark adapter');
-  Hive.registerAdapter(BookmarkHiveObjectAdapter());
 
   if (isDesktopPlatform() || isIOS()) {
     fvp.registerWith(
@@ -184,9 +179,9 @@ Future<void> boot(BootLogger bootLogger) async {
   final globalBlacklistedTags = HiveBlacklistedTagRepository();
   await globalBlacklistedTags.init();
 
-  bootLogger.l('Initialize bookmark repository');
-  final bookmarkBox = await Hive.openBox<BookmarkHiveObject>('favorites');
-  final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
+  final bookmarkRepoOverride = await createBookmarkRepoProviderOverride(
+    bootLogger: bootLogger,
+  );
 
   final tempPath = await getAppTemporaryDirectory();
 
@@ -278,7 +273,7 @@ Future<void> boot(BootLogger bootLogger) async {
                   .overrideWithValue(globalBlacklistedTags),
               httpCacheDirProvider.overrideWithValue(tempPath),
               loggerProvider.overrideWithValue(logger),
-              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
+              bookmarkRepoOverride,
               downloadNotificationProvider
                   .overrideWithValue(downloadNotifications),
               bulkDownloadNotificationProvider

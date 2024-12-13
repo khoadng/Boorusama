@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../core/widgets/widgets.dart';
-import 'bookmark_scroll_view.dart';
-import 'providers.dart';
+import '../../../widgets/widgets.dart';
+import '../providers/local_providers.dart';
+import '../widgets/bookmark_scroll_view.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
   const BookmarkPage({

@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../core/widgets/widgets.dart';
-import '../../configs/ref.dart';
-import '../bookmark_provider.dart';
-import 'providers.dart';
+import '../../../../core/widgets/widgets.dart';
+import '../../../configs/ref.dart';
+import '../providers/bookmark_provider.dart';
+import '../providers/local_providers.dart';
 
 class BookmarkAppBar extends ConsumerWidget {
   const BookmarkAppBar({

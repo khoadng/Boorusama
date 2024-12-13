@@ -1,4 +1,6 @@
 // Flutter imports:
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,95 +8,19 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:foundation/foundation.dart';
-import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../core/widgets/widgets.dart';
-import '../../configs/ref.dart';
-import '../../foundation/display.dart';
-import '../../foundation/url_launcher.dart';
-import '../../images/booru_image.dart';
-import '../../router.dart';
-import '../../settings/data/listing_provider.dart';
-import '../bookmark.dart';
-import '../bookmark_provider.dart';
-import 'bookmark_appbar.dart';
-import 'bookmark_booru_type_selector.dart';
-import 'bookmark_search_bar.dart';
-import 'bookmark_sort_button.dart';
-import 'bookmark_update_grid_buttons.dart';
-import 'providers.dart';
-
-class BookmarkScrollView extends ConsumerWidget {
-  const BookmarkScrollView({
-    super.key,
-    required this.controller,
-    required this.focusNode,
-    required this.searchController,
-  });
-
-  final ScrollController controller;
-  final TextEditingController searchController;
-  final FocusNode focusNode;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hasBookmarks = ref.watch(hasBookmarkProvider);
-
-    return CustomScrollView(
-      controller: controller,
-      slivers: [
-        SliverAppBar(
-          floating: true,
-          snap: true,
-          pinned: true,
-          automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          title: const BookmarkAppBar(),
-        ),
-        SliverToBoxAdapter(
-          child: BookmarkSearchBar(
-            focusNode: focusNode,
-            controller: searchController,
-          ),
-        ),
-        if (hasBookmarks)
-          const SliverPinnedHeader(
-            child: BookmarkBooruSourceUrlSelector(),
-          ),
-        const SliverSizedBox(height: 8),
-        if (hasBookmarks)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                '${ref.watch(filteredBookmarksProvider).length} bookmarks',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-          ),
-        if (hasBookmarks)
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  BookmarkSortButton(),
-                  Spacer(),
-                  BookmarkGridUpdateButtons(),
-                ],
-              ),
-            ),
-          ),
-        const SliverSizedBox(height: 8),
-        const SliverBookmarkGrid(),
-      ],
-    );
-  }
-}
+import '../../../configs/ref.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/url_launcher.dart';
+import '../../../images/booru_image.dart';
+import '../../../settings/data/listing_provider.dart';
+import '../../../widgets/widgets.dart';
+import '../providers/bookmark_provider.dart';
+import '../providers/local_providers.dart';
+import '../routes/route_utils.dart';
+import '../types/bookmark.dart';
 
 class SliverBookmarkGrid extends ConsumerWidget {
   const SliverBookmarkGrid({

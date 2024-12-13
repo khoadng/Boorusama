@@ -7,7 +7,7 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../bookmarks/bookmark_provider.dart';
+import '../../../../../bookmarks/providers.dart';
 import '../../../../../configs/ref.dart';
 import '../../../../../theme.dart';
 import '../../../../post/post.dart';

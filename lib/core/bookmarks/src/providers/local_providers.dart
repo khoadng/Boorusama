@@ -6,14 +6,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../boorus/booru/booru.dart';
-import '../../boorus/engine/providers.dart';
-import '../../configs/ref.dart';
-import '../../foundation/display.dart';
-import '../../tags/categories/providers.dart';
-import '../../theme.dart';
-import '../bookmark.dart';
-import '../bookmark_provider.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../boorus/engine/providers.dart';
+import '../../../configs/ref.dart';
+import '../../../foundation/display.dart';
+import '../../../tags/categories/providers.dart';
+import '../../../theme.dart';
+import '../types/bookmark.dart';
+import 'bookmark_provider.dart';
 
 enum BookmarkSortType {
   newest,
@@ -160,10 +160,4 @@ final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
       return hosts;
     },
   ).toList();
-});
-
-final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
-  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
-
-  return bookmarks.isNotEmpty;
 });

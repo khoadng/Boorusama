@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../blacklists/blacklisted_tag_page.dart';
-import '../bookmarks/widgets/bookmark_page.dart';
+import '../bookmarks/widgets.dart';
 import '../cache/providers.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';

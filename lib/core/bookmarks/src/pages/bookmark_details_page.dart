@@ -6,18 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../boorus/engine/engine.dart';
-import '../../configs/ref.dart';
-import '../../downloads/downloader.dart';
-import '../../posts/details/details.dart';
-import '../../posts/details/parts.dart';
-import '../../posts/details/widgets.dart';
-import '../../posts/shares/widgets.dart';
-import '../../posts/sources/source.dart';
-import '../../widgets/widgets.dart';
-import '../bookmark_convert.dart';
-import '../bookmark_provider.dart';
-import 'providers.dart';
+import '../../../boorus/engine/engine.dart';
+import '../../../configs/ref.dart';
+import '../../../downloads/downloader.dart';
+import '../../../posts/details/details.dart';
+import '../../../posts/details/parts.dart';
+import '../../../posts/details/widgets.dart';
+import '../../../posts/shares/widgets.dart';
+import '../../../posts/sources/source.dart';
+import '../../../widgets/widgets.dart';
+import '../data/bookmark_convert.dart';
+import '../providers/bookmark_provider.dart';
+import '../providers/local_providers.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({

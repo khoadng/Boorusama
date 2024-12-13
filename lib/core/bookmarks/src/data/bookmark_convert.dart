@@ -2,11 +2,11 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../foundation/path.dart';
-import '../posts/post/post.dart';
-import '../posts/rating/rating.dart';
-import '../posts/sources/source.dart';
-import 'bookmark.dart';
+import '../../../foundation/path.dart';
+import '../../../posts/post/post.dart';
+import '../../../posts/rating/rating.dart';
+import '../../../posts/sources/source.dart';
+import '../types/bookmark.dart';
 import 'hive/object.dart';
 
 // map BoxError to BookmarkGetError

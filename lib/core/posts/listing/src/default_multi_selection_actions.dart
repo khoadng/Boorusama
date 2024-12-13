@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../bookmarks/widgets/add_bookmarks_button.dart';
+import '../../../bookmarks/widgets.dart';
 import '../../../downloads/downloader.dart';
 import '../../post/post.dart';
 

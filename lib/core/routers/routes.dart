@@ -11,8 +11,7 @@ import '../../boorus/entry_page.dart';
 import '../app_rating/app_rating.dart';
 import '../applock/applock.dart';
 import '../blacklists/blacklisted_tag_page.dart';
-import '../bookmarks/widgets/bookmark_details_page.dart';
-import '../bookmarks/widgets/bookmark_page.dart';
+import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/redirect.dart';
 import '../downloads/downloader.dart';
@@ -73,7 +72,7 @@ class Routes {
           characters(ref),
           settings(),
           settingsDesktop(),
-          bookmarks(),
+          bookmarkRoutes,
           globalBlacklistedTags(),
           downloadManager(),
           bulkDownloads(ref),
@@ -191,27 +190,6 @@ class Routes {
                 : const UnimplementedPage();
           },
         ),
-      );
-
-  static GoRoute bookmarks() => GoRoute(
-        path: 'bookmarks',
-        name: '/bookmarks',
-        pageBuilder: genericMobilePageBuilder(
-          builder: (context, state) => const BookmarkPage(),
-        ),
-        routes: [
-          GoRoute(
-            path: 'details',
-            name: '/bookmarks/details',
-            pageBuilder: (context, state) => CupertinoPage(
-              key: state.pageKey,
-              name: '${state.name}?index=${state.uri.queryParameters['index']}',
-              child: BookmarkDetailsPage(
-                initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
-              ),
-            ),
-          ),
-        ],
       );
 
   static GoRoute originalImageViewer() => GoRoute(

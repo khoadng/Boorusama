@@ -12,8 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../core/widgets/widgets.dart';
 import '../../blacklists/providers.dart';
-import '../../bookmarks/bookmark_provider.dart';
-import '../../bookmarks/widgets/providers.dart';
+import '../../bookmarks/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/manage.dart';
 import '../../foundation/clipboard.dart';
