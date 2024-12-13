@@ -21,6 +21,8 @@ export 'firebase_crashlytics.dart';
 
 const _kEnv = String.fromEnvironment('ENV_NAME', defaultValue: '');
 
+const _kServiceName = 'Firebase';
+
 Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
     ensureFirebaseInitialized(
   Settings settings, {
@@ -29,7 +31,7 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
   final options = _tryGetFirebaseOptions(_kEnv, logger);
 
   if (options == null) {
-    logger?.logW('Firebase', 'Firebase options are not available, skipping');
+    logger?.logW(_kServiceName, 'Firebase options are not available, skipping');
     return (null, null);
   }
 
@@ -53,14 +55,24 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
   await crashlyticsReporter.enstureInitialized();
 
   if (isEnabled) {
-    logger?.logI('Firebase', 'All Firebase services are initialized');
+    logger?.logI(_kServiceName, 'All Firebase services are initialized');
     return (firebaseAnalytics, crashlyticsReporter);
   } else {
     logger?.logW(
-      'Firebase',
-      'Firebase is disabled: status=$dataCollectingStatus, release=$kReleaseMode',
+      _kServiceName,
+      _composeFirebaseDisableLogMessage(dataCollectingStatus),
     );
     return (null, null);
+  }
+}
+
+String _composeFirebaseDisableLogMessage(DataCollectingStatus status) {
+  if (status != DataCollectingStatus.allow) {
+    return 'Firebase services are disabled by user preference.';
+  } else if (!kReleaseMode || kProfileMode) {
+    return 'Firebase services are disabled in non-release mode.';
+  } else {
+    return 'Firebase services are disabled due to unknown reason.';
   }
 }
 
@@ -80,7 +92,7 @@ FirebaseOptions? _tryGetFirebaseOptions(String env, Logger? logger) {
 
     return options;
   } catch (e) {
-    logger?.logE('Firebase', 'Failed to get Firebase options: $e');
+    logger?.logE(_kServiceName, 'Failed to get Firebase options: $e');
     return null;
   }
 }
