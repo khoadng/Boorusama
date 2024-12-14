@@ -7,8 +7,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/posts/pools/pool_grid_item.dart';
 import '../../../../../../core/posts/listing/list.dart';
+import '../../../../../../core/posts/pools/pool_grid_item.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../details/providers.dart';
 import '../../pool/pool.dart';

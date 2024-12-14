@@ -197,14 +197,13 @@ Future<void> boot(BootLogger bootLogger) async {
   final supportedLanguages = await loadLanguageNames();
 
   bootLogger.l('Initialize tracking');
-  final (firebaseAnalytics, crashlyticsReporter) =
-      await initializeTracking(settings);
+  final (firebaseAnalytics, crashlyticsReporter) = await initializeTracking(
+    settings,
+    logger: logger,
+  );
 
   bootLogger.l('Initialize error handlers');
-  initializeErrorHandlers(
-    settings.dataCollectingStatus == DataCollectingStatus.allow,
-    crashlyticsReporter,
-  );
+  initializeErrorHandlers(crashlyticsReporter);
 
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
