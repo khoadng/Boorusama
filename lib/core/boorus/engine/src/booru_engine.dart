@@ -17,10 +17,12 @@ import 'booru_builder.dart';
 
 class BooruEngine {
   const BooruEngine({
+    required this.booru,
     required this.builder,
     required this.repository,
   });
 
+  final Booru? booru;
   final BooruBuilder builder;
   final BooruRepository repository;
 }

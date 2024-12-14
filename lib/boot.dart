@@ -240,8 +240,9 @@ Future<void> boot(BootLogger bootLogger) async {
         builder: (context, config, configs) => BooruLocalization(
           child: ProviderScope(
             overrides: [
-              booruEngineRegistryProvider
-                  .overrideWith((ref) => ref.watch(booruInitEngineProvider)),
+              booruEngineRegistryProvider.overrideWith(
+                (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
+              ),
               favoriteTagsRepoOverride,
               searchHistoryRepoOverride,
               booruFactoryProvider.overrideWithValue(booruFactory),

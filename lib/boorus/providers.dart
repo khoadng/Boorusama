@@ -18,18 +18,26 @@ import 'shimmie2/shimmie2.dart';
 import 'szurubooru/szurubooru.dart';
 import 'zerochan/zerochan.dart';
 
-final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
+final booruInitEngineProvider =
+    Provider.family<BooruEngineRegistry, BooruFactory>((ref, booruFactory) {
+  final danbooru = booruFactory.getBooruFromId(kDanbooruId)!;
+
   final registry = BooruEngineRegistry()
     ..register(
       BooruType.danbooru,
       BooruEngine(
+        booru: danbooru,
         builder: DanbooruBuilder(),
-        repository: DanbooruRepository(ref: ref),
+        repository: DanbooruRepository(
+          ref: ref,
+          booru: danbooru,
+        ),
       ),
     )
     ..register(
       BooruType.gelbooru,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kGelbooruId),
         builder: GelbooruBuilder(),
         repository: GelbooruRepository(ref: ref),
       ),
@@ -37,6 +45,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.gelbooruV2,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kGelbooruV2Id),
         builder: GelbooruV2Builder(),
         repository: GelbooruV2Repository(ref: ref),
       ),
@@ -44,6 +53,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.gelbooruV1,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kGelbooruV1Id),
         builder: GelbooruV1Builder(),
         repository: GelbooruV1Repository(ref: ref),
       ),
@@ -51,6 +61,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.moebooru,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kMoebooruId),
         builder: MoebooruBuilder(),
         repository: MoebooruRepository(ref: ref),
       ),
@@ -58,6 +69,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.e621,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kE621Id),
         builder: E621Builder(),
         repository: E621Repository(ref: ref),
       ),
@@ -65,6 +77,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.sankaku,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kSankaku),
         builder: SankakuBuilder(),
         repository: SankakuRepository(ref: ref),
       ),
@@ -72,6 +85,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.philomena,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kPhilomenaId),
         builder: PhilomenaBuilder(),
         repository: PhilomenaRepository(ref: ref),
       ),
@@ -79,6 +93,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.shimmie2,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kShimmie2Id),
         builder: Shimmie2Builder(),
         repository: Shimmie2Repository(ref: ref),
       ),
@@ -86,6 +101,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.zerochan,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kZerochanId),
         builder: ZerochanBuilder(),
         repository: ZerochanRepository(ref: ref),
       ),
@@ -93,6 +109,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.szurubooru,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kSzurubooruId),
         builder: SzurubooruBuilder(),
         repository: SzurubooruRepository(ref: ref),
       ),
@@ -100,6 +117,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.hydrus,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kHydrusId),
         builder: HydrusBuilder(),
         repository: HydrusRepository(ref: ref),
       ),
@@ -107,6 +125,7 @@ final booruInitEngineProvider = Provider<BooruEngineRegistry>((ref) {
     ..register(
       BooruType.animePictures,
       BooruEngine(
+        booru: booruFactory.getBooruFromId(kAnimePicturesId),
         builder: AnimePicturesBuilder(),
         repository: AnimePicturesRepository(ref: ref),
       ),

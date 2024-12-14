@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../../../core/boorus/booru/booru.dart';
-import '../../../../../../core/boorus/booru/providers.dart';
+import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/metatag_widgets.dart';
@@ -25,7 +25,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
-    final booru = booruConfig.createBooruFrom(ref.watch(booruFactoryProvider));
+    final booru = ref.watch(currentBooruProvider(booruConfig));
     final metatags = ref.watch(metatagsProvider);
     final cheatSheet = booru?.cheetsheet(booruConfig.url);
     final notifier = ref.watch(danbooruUserMetatagsProvider.notifier);

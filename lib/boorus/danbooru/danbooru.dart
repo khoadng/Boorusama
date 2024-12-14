@@ -10,7 +10,7 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
-import '../../core/boorus/booru/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -403,7 +403,12 @@ bool handleDanbooruGestureAction(
 }
 
 class DanbooruRepository implements BooruRepository {
-  const DanbooruRepository({required this.ref});
+  const DanbooruRepository({
+    required this.ref,
+    required this.booru,
+  });
+
+  final Booru booru;
 
   @override
   final Ref ref;
@@ -448,7 +453,7 @@ class DanbooruRepository implements BooruRepository {
     return DanbooruBlacklistTagRepository(
       ref,
       config,
-      booruFactory: ref.watch(booruFactoryProvider),
+      booru: booru,
     );
   }
 

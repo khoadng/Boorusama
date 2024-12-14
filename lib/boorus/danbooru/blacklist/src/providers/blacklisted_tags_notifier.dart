@@ -131,13 +131,13 @@ class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
   DanbooruBlacklistTagRepository(
     this.ref,
     this.config, {
-    required this.booruFactory,
+    required this.booru,
   });
 
   @override
   final Ref ref;
   final BooruConfigAuth config;
-  final BooruFactory booruFactory;
+  final Booru booru;
 
   @override
   Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
@@ -153,10 +153,7 @@ class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
     final danbooruBlacklistedTags =
         await ref.watch(danbooruBlacklistedTagsProvider(config).future);
     final isUnverified = config.isUnverified();
-    final censoredTagsBanned = booruFactory
-            .create(type: config.booruType)
-            ?.hasCensoredTagsBanned(config.url) ??
-        false;
+    final censoredTagsBanned = booru.hasCensoredTagsBanned(config.url) ?? false;
 
     return {
       ...globalBlacklistedTags,
