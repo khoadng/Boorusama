@@ -23,8 +23,6 @@ export 'error_box.dart';
 export 'general_more_action_button.dart';
 export 'generic_no_data_box.dart';
 export 'grayed_out.dart';
-export 'image_grid_item.dart';
-export 'image_overlay_icon.dart';
 export 'import_export_tag_button.dart';
 export 'import_tag_dialog.dart';
 export 'info_container.dart';

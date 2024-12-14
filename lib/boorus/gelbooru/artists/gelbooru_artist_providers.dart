@@ -7,6 +7,7 @@ import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/foundation/caching.dart';
 import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/providers.dart';
 import '../posts/posts.dart';
 
 final gelbooruArtistPostRepo =

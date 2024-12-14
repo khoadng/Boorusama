@@ -6,10 +6,13 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
 import '../../../boorus/booru/booru.dart';
-import '../../../foundation/http.dart';
 import '../../../foundation/platform.dart';
 import '../../../router.dart';
+import '../cloudflare_challenge_interceptor.dart';
+import '../http_utils.dart';
 import '../network_protocol.dart';
+import 'dio_ext.dart';
+import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
 
 Dio newDio({required DioOptions options}) {

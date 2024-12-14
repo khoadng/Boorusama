@@ -9,7 +9,7 @@ import 'package:foundation/widgets.dart';
 import '../../../configs/config.dart';
 import '../../../home/home_page_controller.dart';
 import '../../../notes/notes.dart';
-import '../../../posts/details/details.dart';
+import '../../../posts/details/routes.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
@@ -40,7 +40,7 @@ typedef SearchPageBuilder = Widget Function(
 
 typedef PostDetailsPageBuilder = Widget Function(
   BuildContext context,
-  DetailsPayload payload,
+  DetailsRoutePayload payload,
 );
 
 typedef FavoritesPageBuilder = Widget Function(

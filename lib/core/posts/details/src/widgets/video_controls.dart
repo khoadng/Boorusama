@@ -14,7 +14,7 @@ import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
 import '../../../../videos/video_progress_bar.dart';
 import '../../../post/post.dart';
-import '../post_details_controller.dart';
+import 'post_details_controller.dart';
 
 class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
   const PostDetailsVideoControls({

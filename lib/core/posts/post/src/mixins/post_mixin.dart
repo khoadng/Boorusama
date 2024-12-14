@@ -1,5 +1,5 @@
 // Project imports:
-import '../post_tags.dart';
+import '../types/post_tags.dart';
 
 mixin TagListCheckMixin {
   Set<String> get tags;

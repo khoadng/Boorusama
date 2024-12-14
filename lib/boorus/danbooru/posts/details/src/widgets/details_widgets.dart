@@ -9,8 +9,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../../../../core/artists/artists.dart';
 import '../../../../../../core/posts/details/details.dart';
-import '../../../../../../core/posts/details/parts.dart';
-import '../../../../../../core/router.dart';
+import '../../../../../../core/posts/details/routes.dart';
+import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
 import '../../../pools/pool/widgets.dart';

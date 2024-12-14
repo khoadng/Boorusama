@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../autocompletes/autocompletes.dart';
@@ -13,11 +12,6 @@ import '../comments/utils.dart';
 import '../configs/config.dart';
 import '../downloads/bulks/create_bulk_download_task_sheet.dart';
 import '../foundation/display.dart';
-import '../foundation/toast.dart';
-import '../images/booru_image.dart';
-import '../posts/details/details.dart';
-import '../posts/listing/providers.dart';
-import '../posts/post/post.dart';
 import '../router.dart';
 import '../search/view_tags.dart';
 import '../tags/favorites/providers.dart';
@@ -28,23 +22,6 @@ void goToHomePage(
   bool replace = false,
 }) {
   Navigator.of(context).popUntil((route) => route.isFirst);
-}
-
-void goToOriginalImagePage(BuildContext context, Post post) {
-  if (post.isMp4) {
-    showSimpleSnackBar(
-      context: context,
-      content: const Text('This is a video post, cannot view original image'),
-    );
-    return;
-  }
-
-  context.push(
-    Uri(
-      path: '/original_image_viewer',
-    ).toString(),
-    extra: post,
-  );
 }
 
 void goToSearchPage(
@@ -106,51 +83,6 @@ void goToCharacterPage(BuildContext context, String character) {
   );
 }
 
-void goToPostDetailsPageFromPosts<T extends Post>({
-  required BuildContext context,
-  required List<T> posts,
-  required int initialIndex,
-  AutoScrollController? scrollController,
-}) =>
-    goToPostDetailsPageCore(
-      context: context,
-      posts: posts,
-      initialIndex: initialIndex,
-      scrollController: scrollController,
-    );
-
-void goToPostDetailsPageFromController<T extends Post>({
-  required BuildContext context,
-  required int initialIndex,
-  AutoScrollController? scrollController,
-  required PostGridController<T> controller,
-}) =>
-    goToPostDetailsPageCore(
-      context: context,
-      posts: controller.items.toList(),
-      initialIndex: initialIndex,
-      scrollController: scrollController,
-    );
-
-void goToPostDetailsPageCore<T extends Post>({
-  required BuildContext context,
-  required List<T> posts,
-  required int initialIndex,
-  AutoScrollController? scrollController,
-}) {
-  context.push(
-    Uri(
-      path: '/details',
-    ).toString(),
-    extra: DetailsPayload(
-      initialIndex: initialIndex,
-      posts: posts,
-      scrollController: scrollController,
-      isDesktop: context.isLargeScreen,
-    ),
-  );
-}
-
 Future<Object?> goToFavoriteTagImportPage(
   BuildContext context,
 ) {
@@ -163,22 +95,6 @@ Future<Object?> goToFavoriteTagImportPage(
       padding: kPreferredLayout.isMobile ? 0 : 8,
       onImport: (tagString, ref) =>
           ref.read(favoriteTagsProvider.notifier).import(tagString),
-    ),
-  );
-}
-
-void goToImagePreviewPage(WidgetRef ref, BuildContext context, Post post) {
-  showGeneralDialog(
-    context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.postQuickPreview,
-    ),
-    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
-      child: BooruImage(
-        placeholderUrl: post.thumbnailImageUrl,
-        aspectRatio: post.aspectRatio,
-        imageUrl: post.sampleImageUrl,
-      ),
     ),
   );
 }

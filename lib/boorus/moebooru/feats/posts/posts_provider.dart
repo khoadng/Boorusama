@@ -9,6 +9,7 @@ import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/caching.dart';
 import '../../../../core/posts/filter/filter.dart';
 import '../../../../core/posts/post/post.dart';
+import '../../../../core/posts/post/providers.dart';
 import '../../../../core/posts/post/tags.dart';
 import '../../../../core/posts/rating/rating.dart';
 import '../../../../core/posts/sources/source.dart';

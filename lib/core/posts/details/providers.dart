@@ -1,1 +1,1 @@
-export 'src/post_details_controller.dart';
+export 'src/widgets/post_details_controller.dart';

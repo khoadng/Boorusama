@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/explores/widgets.dart';
+import '../../../../../../core/posts/explores/widgets.dart';
 import '../types/explore_category.dart';
 import 'danbooru_explore_page.dart';
 import 'explore_hot_page.dart';

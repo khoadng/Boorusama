@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/posts/post/providers.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../posts/post/providers.dart';

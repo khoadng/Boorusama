@@ -7,15 +7,15 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import '../../boorus/booru/src/booru_type.dart';
+import '../../boorus/booru/booru.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/ref.dart';
-import '../../foundation/http.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/permissions.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
+import '../../http/http.dart';
 import '../../http/providers.dart';
 import '../../images/providers.dart';
 import '../../posts/post/post.dart';

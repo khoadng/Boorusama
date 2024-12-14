@@ -1,7 +1,10 @@
 // Dart imports:
 
-import '../../../../configs/manage.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import '../../../../configs/manage.dart';
 
 class ImportBooruConfigsAlertDialog extends StatelessWidget {
   const ImportBooruConfigsAlertDialog({

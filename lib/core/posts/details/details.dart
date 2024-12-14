@@ -1,2 +1,2 @@
-export 'src/post_details.dart';
-export 'src/inherited_post.dart';
+export 'src/types/post_details.dart';
+export 'src/types/inherited_post.dart';

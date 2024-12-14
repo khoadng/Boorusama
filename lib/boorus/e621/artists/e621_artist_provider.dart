@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/providers.dart';
 import '../e621.dart';
 import '../posts/posts.dart';
 import 'artists.dart';

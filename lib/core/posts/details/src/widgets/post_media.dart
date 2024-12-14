@@ -16,8 +16,8 @@ import '../../../../images/interactive_booru_image.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/video_player.dart';
 import '../../../post/post.dart';
-import '../post_details.dart';
-import '../post_details_page_view.dart';
+import '../types/post_details.dart';
+import 'post_details_page_view.dart';
 import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {

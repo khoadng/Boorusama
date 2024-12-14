@@ -1,10 +1,8 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../boorus/entry_page.dart';
@@ -15,9 +13,8 @@ import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/redirect.dart';
 import '../downloads/downloader.dart';
-import '../images/original_image_page.dart';
-import '../posts/details/details.dart';
-import '../posts/post/post.dart';
+import '../posts/details/routes.dart';
+import '../posts/post/routes.dart';
 import '../router.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/routes.dart';
@@ -67,7 +64,7 @@ class Routes {
           BoorusRoutes.update(ref),
           BoorusRoutes.add(ref),
           search(ref),
-          postDetails(ref),
+          postDetailsRoutes(ref),
           favorites(ref),
           artists(ref),
           characters(ref),
@@ -78,48 +75,8 @@ class Routes {
           downloadManager(),
           bulkDownloads(ref),
           favoriteTags(),
-          originalImageViewer(),
+          originalImageRoutes,
         ],
-      );
-
-  static GoRoute postDetails(Ref ref) => GoRoute(
-        path: 'details',
-        pageBuilder: (context, state) {
-          final booruBuilder = ref.read(currentBooruBuilderProvider);
-          final builder = booruBuilder?.postDetailsPageBuilder;
-
-          final payload = castOrNull<DetailsPayload>(state.extra);
-
-          if (payload == null) {
-            return MaterialPage(
-              child: InvalidPage(message: 'Invalid payload: $payload'),
-            );
-          }
-
-          // must use the value from the payload for orientation
-          // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
-          final page = !payload.isDesktop
-              ? MaterialPage(
-                  key: state.pageKey,
-                  name: state.name,
-                  child: builder != null
-                      ? builder(context, payload)
-                      : const UnimplementedPage(),
-                )
-              : builder != null
-                  ? FastFadePage(
-                      key: state.pageKey,
-                      name: state.name,
-                      child: builder(context, payload),
-                    )
-                  : MaterialPage(
-                      key: state.pageKey,
-                      name: state.name,
-                      child: const UnimplementedPage(),
-                    );
-
-          return page;
-        },
       );
 
   static GoRoute search(Ref ref) => GoRoute(
@@ -191,26 +148,5 @@ class Routes {
                 : const UnimplementedPage();
           },
         ),
-      );
-
-  static GoRoute originalImageViewer() => GoRoute(
-        path: 'original_image_viewer',
-        name: '/original_image_viewer',
-        pageBuilder: (context, state) {
-          final post = state.extra as Post?;
-
-          if (post == null) {
-            return const CupertinoPage(
-              child: InvalidPage(message: 'Invalid post'),
-            );
-          }
-
-          return CustomTransitionPage(
-            key: state.pageKey,
-            name: state.name,
-            transitionsBuilder: fadeTransitionBuilder(),
-            child: OriginalImagePage.post(post),
-          );
-        },
       );
 }

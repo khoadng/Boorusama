@@ -8,7 +8,7 @@ import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/current.dart';
 import '../../../../../core/configs/ref.dart';
-import '../../../../../core/datetimes/types.dart';
+import '../../../../../core/posts/explores/explore.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/settings/providers.dart';

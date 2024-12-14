@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/notes/notes.dart';
 import '../../../../../core/posts/details/details.dart';
-import '../../../../../core/posts/details/parts.dart';
 import '../../../../../core/posts/details/widgets.dart';
+import '../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../core/router.dart';
 import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';

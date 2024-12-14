@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/post/providers.dart';
 import '../../pools/pool/pool.dart';
 import '../../pools/pool/providers.dart';
 import '../../post/post.dart';

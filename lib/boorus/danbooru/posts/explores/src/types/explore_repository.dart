@@ -1,7 +1,7 @@
 // Package imports:
 
 // Project imports:
-import '../../../../../../core/datetimes/types.dart';
+import '../../../../../../core/posts/explores/explore.dart';
 import '../../../post/post.dart';
 
 abstract class ExploreRepository {

@@ -12,11 +12,11 @@ import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
 import '../../types/types_l10n.dart';
-import 'image_listing_settings_section.dart';
 import '../../widgets/settings_header.dart';
 import '../../widgets/settings_interaction_blocker.dart';
 import '../../widgets/settings_page_scaffold.dart';
 import '../../widgets/settings_tile.dart';
+import 'image_listing_settings_section.dart';
 
 class AppearancePage extends ConsumerStatefulWidget {
   const AppearancePage({

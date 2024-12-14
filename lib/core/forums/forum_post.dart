@@ -3,7 +3,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../foundation/error.dart';
-import '../foundation/http.dart';
+import '../http/http.dart';
 
 abstract class ForumPost {
   int get id;

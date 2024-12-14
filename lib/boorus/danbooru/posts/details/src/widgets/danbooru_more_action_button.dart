@@ -10,7 +10,7 @@ import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/downloads/downloader.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/posts/post/post.dart';
-import '../../../../../../core/router.dart';
+import '../../../../../../core/posts/post/routes.dart';
 import '../../../../../../core/settings/routes.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/widgets/widgets.dart';

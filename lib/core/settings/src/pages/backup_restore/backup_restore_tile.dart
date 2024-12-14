@@ -1,7 +1,10 @@
 // Dart imports:
 
-import '../../../../theme.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import '../../../../theme.dart';
 
 class BackupRestoreTile extends StatelessWidget {
   const BackupRestoreTile({

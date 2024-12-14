@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../configs/ref.dart';
-import '../foundation/http.dart';
+import '../http/http.dart';
 import '../http/providers.dart';
 import 'dio_extended_image.dart';
 import 'providers.dart';

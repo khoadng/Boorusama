@@ -12,9 +12,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../core/widgets/widgets.dart';
-import '../../foundation/http.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
+import '../../http/http.dart';
 import '../../settings/routes.dart';
 import '../../theme.dart';
 import '../downloader/metadata.dart';

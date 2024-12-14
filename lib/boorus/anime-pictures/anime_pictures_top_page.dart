@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/configs/ref.dart';
-import '../../core/explores/widgets.dart';
+import '../../core/posts/explores/widgets.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/widgets/booru_segmented_button.dart';

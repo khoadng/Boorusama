@@ -1,1 +1,1 @@
-export 'src/post_tags.dart';
+export 'src/types/post_tags.dart';

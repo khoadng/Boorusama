@@ -4,7 +4,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/datetimes/types.dart';
+import '../../../../../../core/posts/explores/explore.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../post/post.dart';
 import '../types/explore_repository.dart';

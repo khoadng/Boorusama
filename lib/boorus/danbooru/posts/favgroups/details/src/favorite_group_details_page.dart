@@ -17,6 +17,7 @@ import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/posts/post/widgets.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
@@ -290,7 +291,8 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
 void goToImagePreviewPage(BuildContext context, DanbooruPost post) {
   showGeneralDialog(
     context: context,
-    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        QuickPreviewImageDialog(
       child: BooruImage(
         fit: BoxFit.contain,
         imageUrl: post.sampleImageUrl,
