@@ -10,9 +10,6 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Project imports:
-import 'package:boorusama/core/settings/settings.dart';
-
 final errorReporterProvider = Provider<ErrorReporter>(
   (ref) => NoErrorReporter(),
 );
@@ -99,30 +96,25 @@ class NoErrorReporter implements ErrorReporter {
   void recordFlutterFatalError(FlutterErrorDetails details) {}
 }
 
-void initializeErrorHandlers(Settings settings, ErrorReporter? reporter) {
+void initializeErrorHandlers(ErrorReporter? reporter) {
   if (reporter == null) return;
 
   // Pass all uncaught "fatal" errors from the framework to Crashlytics
   FlutterError.onError = onUncaughtError(
     reporter,
-    settings,
   );
 
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
   PlatformDispatcher.instance.onError = onAsyncFlutterUncaughtError(
     reporter,
-    settings,
   );
 }
 
 FlutterExceptionHandler? onUncaughtError(
   ErrorReporter reporter,
-  Settings settings,
 ) =>
     (details) {
-      if (kReleaseMode &&
-          reporter.isRemoteErrorReportingSupported &&
-          settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      if (reporter.isRemoteErrorReportingSupported) {
         // Ignore 304 errors
         if (details.exception is DioException) {
           final exception = details.exception as DioException;
@@ -142,12 +134,9 @@ FlutterExceptionHandler? onUncaughtError(
 
 ErrorCallback? onAsyncFlutterUncaughtError(
   ErrorReporter reporter,
-  Settings settings,
 ) =>
     (error, stack) {
-      if (kReleaseMode &&
-          reporter.isRemoteErrorReportingSupported &&
-          settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      if (reporter.isRemoteErrorReportingSupported) {
         // Ignore 304 errors
         if (error is DioException) {
           if (error.response?.statusCode == 304) return true;

@@ -127,5 +127,11 @@ exportOptions.plist
 # Firebase secrets
 google-services.json
 GoogleService-Info.plist
+firebase.json
 firebase_options.dart
+firebase_options_*.dart
 firebase_app_id_file.json
+
+# FVM Version Cache
+.fvm/
+.vscode/settings.json

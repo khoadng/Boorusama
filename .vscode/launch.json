@@ -14,7 +14,7 @@
             ]
         },
         {
-            "name": "boorusama desktop",
+            "name": "boorusama (windows + linux)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",

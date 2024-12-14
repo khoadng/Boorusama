@@ -218,8 +218,9 @@ PODS:
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
-  - rate_my_app (1.1.4):
+  - rate_my_app (2.2.0):
     - Flutter
+    - FlutterMacOS
   - SDWebImage (5.19.7):
     - SDWebImage/Core (= 5.19.7)
   - SDWebImage/Core (5.19.7)
@@ -270,7 +271,7 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-  - rate_my_app (from `.symlinks/plugins/rate_my_app/ios`)
+  - rate_my_app (from `.symlinks/plugins/rate_my_app/darwin`)
   - share_handler_ios (from `.symlinks/plugins/share_handler_ios/ios`)
   - share_handler_ios_models (from `.symlinks/plugins/share_handler_ios/ios/Models`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -343,7 +344,7 @@ EXTERNAL SOURCES:
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   rate_my_app:
-    :path: ".symlinks/plugins/rate_my_app/ios"
+    :path: ".symlinks/plugins/rate_my_app/darwin"
   share_handler_ios:
     :path: ".symlinks/plugins/share_handler_ios/ios"
   share_handler_ios_models:
@@ -404,11 +405,11 @@ SPEC CHECKSUMS:
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  rate_my_app: e249ec0751c276811746ff89558c23dc0da39f0c
+  rate_my_app: cd3e1c44d12f387482698ffaf6ea9bd669a69b94
   SDWebImage: 8a6b7b160b4d710e2a22b6900e25301075c34cb3
   share_handler_ios: 088138c17ce73333b4875a35860cd52604041521
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
-  share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
+  share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
@@ -420,4 +421,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 254c74d5de430d8119199055928095a36967728b
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
