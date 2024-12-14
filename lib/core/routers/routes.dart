@@ -14,6 +14,7 @@ import '../boorus/engine/providers.dart';
 import '../configs/redirect.dart';
 import '../downloads/downloader.dart';
 import '../posts/details/routes.dart';
+import '../posts/favorites/routes.dart';
 import '../posts/post/routes.dart';
 import '../router.dart';
 import '../settings/routes.dart';
@@ -65,7 +66,7 @@ class Routes {
           BoorusRoutes.add(ref),
           search(ref),
           postDetailsRoutes(ref),
-          favorites(ref),
+          postFavoritesRoutes(ref),
           artists(ref),
           characters(ref),
           settingsRoutes,
@@ -94,22 +95,6 @@ class Routes {
                 ? builder(context, query)
                 : const UnimplementedPage(),
             transitionsBuilder: fadeTransitionBuilder(),
-          );
-        },
-      );
-
-  static GoRoute favorites(Ref ref) => GoRoute(
-        path: 'favorites',
-        name: '/favorites',
-        pageBuilder: (context, state) {
-          final booruBuilder = ref.read(currentBooruBuilderProvider);
-          final builder = booruBuilder?.favoritesPageBuilder;
-
-          return CupertinoPage(
-            key: state.pageKey,
-            name: state.name,
-            child:
-                builder != null ? builder(context) : const UnimplementedPage(),
           );
         },
       );

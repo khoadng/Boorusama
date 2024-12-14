@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/ref.dart';
-import '../../../core/favorites/favorite_post_button.dart';
-import '../../../core/favorites/providers.dart';
-import '../../../core/favorites/quick_favorite_button.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/favorites/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/scaffolds/scaffolds.dart';
 import '../hydrus.dart';

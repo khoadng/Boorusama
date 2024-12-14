@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/current.dart';
 import '../../../core/configs/ref.dart';
-import '../../../core/favorites/providers.dart';
+import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/votes/providers.dart';
 import '../providers.dart';
 import '../szurubooru_post.dart';

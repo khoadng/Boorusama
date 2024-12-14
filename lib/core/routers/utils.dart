@@ -46,14 +46,6 @@ void goToSearchPage(
   }
 }
 
-void goToFavoritesPage(BuildContext context) {
-  context.push(
-    Uri(
-      path: '/favorites',
-    ).toString(),
-  );
-}
-
 void goToArtistPage(
   BuildContext context,
   String? artistName,

@@ -10,8 +10,7 @@ import 'package:foundation/foundation.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/failsafe.dart';
 import '../../../core/configs/ref.dart';
-import '../../../core/favorites/favorite.dart';
-import '../../../core/favorites/providers.dart';
+import '../../../core/posts/favorites/providers.dart';
 import '../../../core/scaffolds/scaffolds.dart';
 import '../gelbooru.dart';
 

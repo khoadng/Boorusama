@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
-import '../../../core/favorites/favorite.dart';
-import '../../../core/favorites/providers.dart';
+import '../../../core/posts/favorites/providers.dart';
 import '../e621.dart';
 import '../posts/e621_post.dart';
 

@@ -19,7 +19,7 @@ import '../../../../core/foundation/url_launcher.dart';
 import '../../../../core/home/home_navigation_tile.dart';
 import '../../../../core/home/home_page_scaffold.dart';
 import '../../../../core/home/side_menu_tile.dart';
-import '../../../../core/router.dart';
+import '../../../../core/posts/favorites/routes.dart';
 import '../../../../core/theme.dart';
 import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';

@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
-import '../../../../../core/favorites/providers.dart';
-import '../../../../../core/favorites/quick_favorite_button.dart';
+import '../../../../../core/posts/favorites/providers.dart';
+import '../../../../../core/posts/favorites/widgets.dart';
 import '../../post/post.dart';
 
 class DanbooruQuickFavoriteButton extends ConsumerWidget {

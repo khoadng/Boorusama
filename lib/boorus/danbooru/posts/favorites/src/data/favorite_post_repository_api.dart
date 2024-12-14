@@ -3,8 +3,8 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'favorite.dart';
-import 'favorite_post_repository.dart';
+import '../types/favorite.dart';
+import '../types/favorite_post_repository.dart';
 
 class FavoritePostRepositoryApi implements FavoritePostRepository {
   FavoritePostRepositoryApi(

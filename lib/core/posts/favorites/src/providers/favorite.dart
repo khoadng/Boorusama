@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../posts/post/post.dart';
+import '../../../post/post.dart';
 
 enum AddFavoriteStatus {
   success,

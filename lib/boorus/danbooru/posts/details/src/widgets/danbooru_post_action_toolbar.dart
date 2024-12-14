@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/favorites/favorite_post_button.dart';
-import '../../../../../../core/favorites/providers.dart';
 import '../../../../../../core/posts/details/details.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
+import '../../../../../../core/posts/favorites/providers.dart';
+import '../../../../../../core/posts/favorites/widgets.dart';
 import '../../../../../../core/posts/shares/widgets.dart';
 import '../../../../../../core/posts/votes/vote.dart';
 import '../../../../../../core/posts/votes/widgets.dart';

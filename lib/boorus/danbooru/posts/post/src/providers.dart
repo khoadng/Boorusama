@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
-import '../../../../../core/favorites/providers.dart';
+import '../../../../../core/posts/favorites/providers.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/search/query_composer_providers.dart';

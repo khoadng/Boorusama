@@ -8,9 +8,9 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/current.dart';
+import '../../../../../core/configs/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/votes/providers.dart';
-import '../../../_shared/guard_login.dart';
 import '../../../users/user/providers.dart';
 import '../../post/post.dart';
 import 'post_vote.dart';

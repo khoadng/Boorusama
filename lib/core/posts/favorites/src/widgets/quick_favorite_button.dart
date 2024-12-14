@@ -7,10 +7,10 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../configs/ref.dart';
-import '../posts/post/post.dart';
-import '../theme.dart';
-import 'favorites_notifier.dart';
+import '../../../../configs/ref.dart';
+import '../../../../theme.dart';
+import '../../../post/post.dart';
+import '../providers/favorites_notifier.dart';
 
 class QuickFavoriteButton extends ConsumerWidget {
   const QuickFavoriteButton({

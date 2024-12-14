@@ -15,7 +15,7 @@ import '../../../../../core/router.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
-import 'favorite.dart';
+import 'types/favorite.dart';
 
 class DanbooruFavoritesPage extends ConsumerWidget {
   const DanbooruFavoritesPage({super.key});

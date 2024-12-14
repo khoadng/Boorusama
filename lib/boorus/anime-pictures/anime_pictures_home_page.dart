@@ -13,7 +13,7 @@ import '../../core/configs/ref.dart';
 import '../../core/home/home_navigation_tile.dart';
 import '../../core/home/home_page_scaffold.dart';
 import '../../core/home/side_menu_tile.dart';
-import '../../core/router.dart';
+import '../../core/posts/favorites/routes.dart';
 import '../../core/widgets/custom_context_menu_overlay.dart';
 import 'anime_pictures.dart';
 import 'anime_pictures_top_page.dart';

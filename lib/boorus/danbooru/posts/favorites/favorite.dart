@@ -1,1 +1,1 @@
-export 'src/favorite.dart';
+export 'src/types/favorite.dart';

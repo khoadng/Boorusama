@@ -6,10 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/configs/config.dart';
-import '../../core/favorites/favorite.dart';
-import '../../core/favorites/providers.dart';
 import '../../core/foundation/path.dart';
 import '../../core/http/providers.dart';
+import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';

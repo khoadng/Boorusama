@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../_shared/guard_login.dart';
+import '../../../../../core/configs/providers.dart';
 import '../../../tags/edit/routes.dart';
 import '../../post/post.dart';
 

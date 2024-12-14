@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
-import '../../../../favorites/favorite_post_button.dart';
-import '../../../../favorites/providers.dart';
 import '../../../../router.dart';
 import '../../../details/details.dart';
+import '../../../favorites/providers.dart';
+import '../../../favorites/widgets.dart';
 import '../../../post/post.dart';
 import '../../../shares/widgets.dart';
 import 'bookmark_post_button.dart';

@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../boorus/danbooru/_shared/guard_login.dart';
-import '../boorus/engine/providers.dart';
-import '../configs/config.dart';
-import '../configs/current.dart';
-import '../configs/ref.dart';
-import '../posts/post/post.dart';
+import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/config.dart';
+import '../../../../configs/current.dart';
+import '../../../../configs/providers.dart';
+import '../../../../configs/ref.dart';
+import '../../../post/post.dart';
 import 'favorite.dart';
 
 final favoritesProvider = NotifierProvider.family<FavoritesNotifier,
