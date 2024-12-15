@@ -1,6 +1,8 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
+import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/foundation.dart';
@@ -423,27 +425,92 @@ Future<List<T>> __filter<T extends Post>(
       () => _filterInIsolate(items, tagCounts, activeFilters, blacklistedUrls),
     );
 
-Map<String, Set<int>> _countInIsolate<T extends Post>(
+const _minTagsForSplit = 10;
+const _minPostsForSplit = 1000;
+
+Future<Map<String, Set<int>>> _countInIsolate<T extends Post>(
   Iterable<T> posts,
   Iterable<String> tags,
-) {
-  final Map<String, Set<int>> tagCounts = {};
-  try {
-    final preprocessed =
-        tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
+) async {
+  if (posts.isEmpty || tags.isEmpty) return {};
 
-    for (final item in posts) {
-      for (final pattern in preprocessed) {
-        if (item.containsTagPattern(pattern)) {
-          final key = pattern.rawString;
-          tagCounts.putIfAbsent(key, () => <int>{});
-          tagCounts[key]!.add(item.id);
-        }
+  final preprocessedTags = tags
+      .map(
+        (tag) => tag.split(' ').map(TagExpression.parse).toList(),
+      )
+      .toList();
+
+  final postsList = posts.toList();
+
+  final shouldSplit =
+      tags.length >= _minTagsForSplit || postsList.length >= _minPostsForSplit;
+
+  if (!shouldSplit) {
+    return _processChunk(postsList, preprocessedTags);
+  }
+
+  final processorCount = Platform.numberOfProcessors;
+  final isolateCount = max(processorCount - 2, 2);
+  final chunkSize = (postsList.length / isolateCount).ceil();
+
+  final chunks = List<List<T>>.empty(growable: true);
+
+  for (var i = 0; i < postsList.length; i += chunkSize) {
+    chunks.add(
+      postsList.sublist(
+        i,
+        min(i + chunkSize, postsList.length),
+      ),
+    );
+  }
+
+  try {
+    final results = await Future.wait(
+      chunks.map(
+        (chunk) => Isolate.run(
+          () => _processChunk(chunk, preprocessedTags),
+        ),
+      ),
+    );
+
+    final merged = {
+      for (final k in preprocessedTags.map((p) => p.first.rawString))
+        k: <int>{},
+    };
+
+    for (final result in results) {
+      for (final entry in result.entries) {
+        merged[entry.key]!.addAll(entry.value);
       }
     }
 
-    return tagCounts;
+    return merged;
   } catch (e) {
     return {};
   }
+}
+
+Map<String, Set<int>> _processChunk<T extends Post>(
+  List<T> chunk,
+  List<List<TagExpression>> preprocessedTags,
+) {
+  final tagCounts = <String, Set<int>>{};
+
+  for (final pattern in preprocessedTags) {
+    if (pattern.isEmpty) continue;
+
+    tagCounts[pattern.first.rawString] = <int>{};
+  }
+
+  for (final item in chunk) {
+    for (final pattern in preprocessedTags) {
+      if (pattern.isEmpty) continue;
+
+      if (item.containsTagPattern(pattern)) {
+        tagCounts[pattern.first.rawString]!.add(item.id);
+      }
+    }
+  }
+
+  return tagCounts;
 }
