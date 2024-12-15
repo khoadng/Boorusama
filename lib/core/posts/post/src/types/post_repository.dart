@@ -4,8 +4,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/error.dart';
-import '../../../../search/query_composer.dart';
-import '../../../../search/selected_tags.dart';
+import '../../../../search/queries/query.dart';
+import '../../../../search/selected_tags/providers.dart';
 import 'post.dart';
 
 abstract class PostRepository<T extends Post> {

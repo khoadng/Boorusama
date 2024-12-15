@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../router.dart';
+import '../../../../search/search/routes.dart';
 import '../../../../settings/providers.dart';
 import '../../../../tags/categories/providers.dart';
 import '../../../../tags/tag/providers.dart';

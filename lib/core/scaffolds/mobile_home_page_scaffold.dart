@@ -13,7 +13,7 @@ import '../home/home_search_bar.dart';
 import '../posts/count/widgets.dart';
 import '../posts/listing/widgets.dart';
 import '../posts/post/providers.dart';
-import '../search/selected_tags.dart';
+import '../search/selected_tags/providers.dart';
 import '../tags/configs/providers.dart';
 import '../widgets/widgets.dart';
 

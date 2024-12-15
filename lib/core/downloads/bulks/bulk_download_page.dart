@@ -10,9 +10,9 @@ import '../../boorus/booru/booru.dart';
 import '../../configs/ref.dart';
 import '../../widgets/widgets.dart';
 import '../l10n.dart';
+import '../routes/route_utils.dart';
 import 'bulk_download_notifier.dart';
 import 'bulk_download_task_tile.dart';
-import 'create_bulk_download_task_sheet.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({super.key});

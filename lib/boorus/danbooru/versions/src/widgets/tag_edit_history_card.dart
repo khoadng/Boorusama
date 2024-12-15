@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../core/router.dart';
+import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/theme.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../users/user/providers.dart';

@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/images/booru_image.dart';
-import '../../../../../../../core/search/search_bar.dart';
+import '../../../../../../../core/search/search/widgets.dart';
 import '../../../../post/post.dart';
 import '../providers/favorite_groups_filterable_notifier.dart';
 import '../routes/route_utils.dart';

@@ -14,7 +14,7 @@ import '../../../../core/home/home_page_controller.dart';
 import '../../../../core/home/home_search_bar.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
-import '../../../../core/search/selected_tags.dart';
+import '../../../../core/search/selected_tags/providers.dart';
 import '../../../../core/tags/configs/providers.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../router.dart';
 import 'booru_config_ref.dart';
 import 'providers.dart';
+import 'route_utils.dart';
 
 class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
   const BooruConfigMoreSettingsRedirectCard({

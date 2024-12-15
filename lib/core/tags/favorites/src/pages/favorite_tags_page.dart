@@ -12,8 +12,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../foundation/toast.dart';
-import '../../../../router.dart';
-import '../../../../search/search_bar.dart';
+import '../../../../search/search/routes.dart';
+import '../../../../search/search/widgets.dart';
 import '../favorite_tag.dart';
 import '../favorite_tags_notifier.dart';
 import '../local_providers.dart';

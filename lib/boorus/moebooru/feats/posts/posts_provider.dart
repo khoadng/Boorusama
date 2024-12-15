@@ -13,7 +13,7 @@ import '../../../../core/posts/post/providers.dart';
 import '../../../../core/posts/post/tags.dart';
 import '../../../../core/posts/rating/rating.dart';
 import '../../../../core/posts/sources/source.dart';
-import '../../../../core/search/query_composer_providers.dart';
+import '../../../../core/search/queries/providers.dart';
 import '../../../../core/settings/providers.dart';
 import '../../moebooru.dart';
 import 'posts.dart';

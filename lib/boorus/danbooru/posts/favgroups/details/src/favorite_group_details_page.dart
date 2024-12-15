@@ -13,12 +13,13 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/downloads/routes.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/post/widgets.dart';
-import '../../../../../../core/router.dart';
+import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
 import '../../../post/post.dart';

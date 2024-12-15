@@ -10,7 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/current.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/search/search_bar.dart';
+import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/tags/categories/providers.dart';
 import '../../../../../../core/tags/tag/providers.dart';

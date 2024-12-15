@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../router.dart';
-import '../../../search/query_composer_providers.dart';
+import '../../../search/queries/providers.dart';
+import '../../../search/search/routes.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';

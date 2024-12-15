@@ -10,7 +10,7 @@ import '../../../../../../core/boorus/booru/booru.dart';
 import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
-import '../../../../../../core/search/metatag_widgets.dart';
+import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/tags/metatag/providers.dart';
 import '../../../../tags/user_metatags/providers.dart';
 

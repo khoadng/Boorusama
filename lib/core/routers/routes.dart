@@ -12,11 +12,14 @@ import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/redirect.dart';
+import '../configs/routes.dart';
 import '../downloads/downloader.dart';
+import '../downloads/routes/routes.dart';
 import '../posts/details/routes.dart';
 import '../posts/favorites/routes.dart';
 import '../posts/post/routes.dart';
 import '../router.dart';
+import '../search/search/routes.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/routes.dart';
 import '../widgets/widgets.dart';
@@ -62,9 +65,9 @@ class Routes {
           ),
         ),
         routes: [
-          BoorusRoutes.update(ref),
-          BoorusRoutes.add(ref),
-          search(ref),
+          addBooruConfigRoutes(ref),
+          updateBooruConfigRoutes(ref),
+          searchRoutes(ref),
           postDetailsRoutes(ref),
           postFavoritesRoutes(ref),
           artists(ref),
@@ -73,30 +76,11 @@ class Routes {
           settingsDesktopRoutes,
           bookmarkRoutes,
           globalBlacklistedTagsRoutes,
-          downloadManager(),
-          bulkDownloads(ref),
+          downloadManagerRoutes,
+          bulkDownloadsRoutes(ref),
           favoriteTags(),
           originalImageRoutes,
         ],
-      );
-
-  static GoRoute search(Ref ref) => GoRoute(
-        path: 'search',
-        name: '/search',
-        pageBuilder: (context, state) {
-          final booruBuilder = ref.read(currentBooruBuilderProvider);
-          final builder = booruBuilder?.searchPageBuilder;
-          final query = state.uri.queryParameters[kInitialQueryKey];
-
-          return CustomTransitionPage(
-            key: state.pageKey,
-            name: state.name,
-            child: builder != null
-                ? builder(context, query)
-                : const UnimplementedPage(),
-            transitionsBuilder: fadeTransitionBuilder(),
-          );
-        },
       );
 
   static GoRoute artists(Ref ref) => GoRoute(

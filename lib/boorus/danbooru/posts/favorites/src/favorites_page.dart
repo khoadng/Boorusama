@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../core/configs/failsafe.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/listing/widgets.dart';
-import '../../../../../core/router.dart';
+import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';

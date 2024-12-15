@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../blacklists/providers.dart';
 import '../../../../foundation/clipboard.dart';
-import '../../../../router.dart';
+import '../../../../search/search/routes.dart';
 import '../../../favorites/providers.dart';
 
 class GeneralTagContextMenu extends ConsumerWidget

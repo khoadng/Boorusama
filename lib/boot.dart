@@ -39,7 +39,7 @@ import 'core/http/providers.dart';
 import 'core/info/app_info.dart';
 import 'core/info/device_info.dart';
 import 'core/info/package_info.dart';
-import 'core/search/boot.dart';
+import 'core/search/histories/providers.dart';
 import 'core/settings/providers.dart';
 import 'core/settings/settings.dart';
 import 'core/tags/categories/providers.dart';

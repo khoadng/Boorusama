@@ -10,7 +10,7 @@ import '../../../../core/posts/details/details.dart';
 import '../../../../core/posts/details/routes.dart';
 import '../../../../core/posts/details_parts/widgets.dart';
 import '../../../../core/posts/post/post.dart';
-import '../../../../core/router.dart';
+import '../../../../core/search/search/routes.dart';
 import '../../feats/posts/posts.dart';
 
 class MoebooruRelatedPostsSection extends ConsumerWidget {

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/ref.dart';
-import '../../../core/search/search_ui.dart';
+import '../../../core/search/search/widgets.dart';
 import 'e621_post_provider.dart';
 
 class E621SearchPage extends ConsumerWidget {

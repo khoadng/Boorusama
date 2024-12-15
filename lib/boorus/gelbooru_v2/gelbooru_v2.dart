@@ -26,7 +26,7 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/scaffolds/scaffolds.dart';
-import '../../core/search/search_ui.dart';
+import '../../core/search/search/widgets.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';

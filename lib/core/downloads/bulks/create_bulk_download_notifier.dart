@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../info/device_info.dart';
-import '../../search/history.dart';
+import '../../search/histories/history.dart';
 import '../../settings/providers.dart';
 import '../../settings/settings.dart';
 import '../manager/download_task.dart';

@@ -9,7 +9,7 @@ import '../../../core/configs/ref.dart';
 import '../../../core/foundation/caching/lru_cacher.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
-import '../../../core/search/query_composer_providers.dart';
+import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../gelbooru_v2.dart';
 import 'posts_v2.dart';

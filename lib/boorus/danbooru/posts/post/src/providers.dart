@@ -9,7 +9,7 @@ import '../../../../../core/configs/config.dart';
 import '../../../../../core/posts/favorites/providers.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
-import '../../../../../core/search/query_composer_providers.dart';
+import '../../../../../core/search/queries/providers.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../danbooru_provider.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';

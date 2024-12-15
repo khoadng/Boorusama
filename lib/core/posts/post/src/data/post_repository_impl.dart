@@ -3,8 +3,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/caching.dart';
-import '../../../../search/query_composer.dart';
-import '../../../../search/selected_tags.dart';
+import '../../../../search/queries/query.dart';
+import '../../../../search/selected_tags/providers.dart';
 import '../types/post.dart';
 import '../types/post_repository.dart';
 

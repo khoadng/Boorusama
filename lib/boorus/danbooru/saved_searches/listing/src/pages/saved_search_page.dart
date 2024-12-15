@@ -10,7 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/router.dart';
+import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/widgets/generic_no_data_box.dart';
 import '../../../saved_search/providers.dart';

@@ -13,7 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import '../../../../../../core/router.dart';
+import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/utils/stream/text_editing_controller_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';

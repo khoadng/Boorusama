@@ -5,22 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../boorus/booru/booru.dart';
-import '../../configs/ref.dart';
 import '../../foundation/picker.dart';
 import '../../foundation/platform.dart';
-import '../../foundation/toast.dart';
 import '../../info/device_info.dart';
-import '../../router.dart';
-import '../../search/history_providers.dart';
-import '../../search/history_widgets.dart';
+import '../../search/histories/providers.dart';
+import '../../search/histories/widgets.dart';
+import '../../search/search/routes.dart';
 import '../../settings/settings.dart';
 import '../../settings/widgets.dart';
 import '../../theme.dart';
-import '../downloader/download_utils.dart';
 import '../l10n.dart';
 import '../widgets/download_folder_selector_section.dart';
 import 'bulk_download_task.dart';
@@ -310,46 +305,6 @@ class _CreateBulkDownloadTaskSheetState
       ),
     );
   }
-}
-
-void goToNewBulkDownloadTaskPage(
-  WidgetRef ref,
-  BuildContext context, {
-  required List<String>? initialValue,
-}) {
-  final config = ref.readConfigAuth;
-
-  if (!config.booruType.canDownloadMultipleFiles) {
-    showBulkDownloadUnsupportErrorToast(context);
-    return;
-  }
-
-  showMaterialModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(16),
-      ),
-    ),
-    builder: (_) => CreateBulkDownloadTaskSheet(
-      initialValue: initialValue,
-      title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),
-      onSubmitted: (_, isQueue) {
-        showSimpleSnackBar(
-          context: context,
-          content: Text(
-            isQueue ? 'Added' : 'Download started',
-          ),
-          action: SnackBarAction(
-            label: 'View',
-            onPressed: () {
-              context.pushNamed(kBulkdownload);
-            },
-          ),
-        );
-      },
-    ),
-  );
 }
 
 class CreateBulkDownloadTagList extends ConsumerStatefulWidget {

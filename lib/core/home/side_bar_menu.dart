@@ -13,7 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../configs/widgets.dart';
-import '../router.dart';
+import '../downloads/routes.dart';
 import '../settings/providers.dart';
 import '../settings/routes.dart';
 import '../settings/settings.dart';
