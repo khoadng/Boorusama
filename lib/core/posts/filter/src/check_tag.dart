@@ -27,7 +27,6 @@ bool checkIfTagsContainsTagExpression(
   final tags = caseSensitive
       ? filterData.tags
       : filterData.tags.map((tag) => tag.toLowerCase()).toSet();
-  final source = filterData.source?.toLowerCase();
 
   // Process each tag in the expression
   for (final expression in expressions) {
@@ -51,8 +50,9 @@ bool checkIfTagsContainsTagExpression(
       }
     }
     // Handle source "source"
-    else if (type is SourceType && source != null) {
+    else if (type is SourceType && filterData.source != null) {
       // find the first index of ':' and get the substring after it
+      final source = filterData.source!.toLowerCase();
       final targetSource = type.source;
       final wildCardPosition = type.wildCardPosition;
 
