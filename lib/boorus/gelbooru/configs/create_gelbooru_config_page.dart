@@ -7,15 +7,15 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/create.dart';
+import '../../../core/foundation/toast.dart';
+import '../../../core/foundation/url_launcher.dart';
+import '../../../core/theme.dart';
+import '../../../core/widgets/widgets.dart';
+import '../gelbooru.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -34,7 +34,7 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       backgroundColor: backgroundColor,
       initialTab: initialTab,
       authTab: const GelbooruAuthView(),
-      searchTab: DefaultBooruConfigSearchView(
+      searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
       ),
     );
@@ -50,12 +50,16 @@ class GelbooruAuthView extends ConsumerStatefulWidget {
 
 class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   late final loginController = TextEditingController(
-    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-        .select((value) => value.login)),
+    text: ref.read(
+      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+          .select((value) => value.login),
+    ),
   );
   late final apiKeyController = TextEditingController(
-    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-        .select((value) => value.apiKey)),
+    text: ref.read(
+      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+          .select((value) => value.apiKey),
+    ),
   );
 
   @override
@@ -69,8 +73,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
     final passHash = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.passHash));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.passHash),
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -121,7 +126,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       launchExternalUrlString(
-                          getGelbooruProfileUrl(config.url));
+                        getGelbooruProfileUrl(config.url),
+                      );
                     },
                   style: TextStyle(
                     fontWeight: FontWeight.bold,

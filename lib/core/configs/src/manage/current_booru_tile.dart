@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/app.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../app.dart';
+import '../../../posts/sources/source.dart';
+import '../../../widgets/widgets.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';
+import '../route_utils.dart';
 
 class CurrentBooruTile extends ConsumerWidget {
   const CurrentBooruTile({
@@ -31,7 +31,7 @@ class CurrentBooruTile extends ConsumerWidget {
             const Expanded(
               child: _Tile(),
             ),
-          if (constraints.maxWidth > 200) const _EditConfigButton()
+          if (constraints.maxWidth > 200) const _EditConfigButton(),
         ],
       ),
     );

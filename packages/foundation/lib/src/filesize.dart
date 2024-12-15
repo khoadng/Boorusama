@@ -36,7 +36,6 @@ String _defaultUnitBuilder(int index, List<String> units) {
 String _defaultFormatter(String size, String unit) => '$size $unit';
 
 class FilesizeOptions {
-
   factory FilesizeOptions() => FilesizeOptions._(
         divider: 1024,
         scalingFactors: _binaryScalingFactors,

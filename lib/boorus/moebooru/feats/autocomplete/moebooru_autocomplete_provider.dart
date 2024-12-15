@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/core/configs/config.dart';
+import '../../../../core/configs/config.dart';
+import '../../moebooru.dart';
+import '../tags/tags.dart';
 import 'autocomplete.dart';
 
 final moebooruAutocompleteRepoProvider =
@@ -14,7 +14,8 @@ final moebooruAutocompleteRepoProvider =
       ref.watch(moebooruTagSummaryRepoProvider(config));
 
   return MoebooruAutocompleteRepository(
-      tagSummaryRepository: tagSummaryRepository);
+    tagSummaryRepository: tagSummaryRepository,
+  );
 });
 
 final moebooruTagSummaryRepoProvider =

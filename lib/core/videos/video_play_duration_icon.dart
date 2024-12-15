@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
+import '../theme.dart';
 
 class VideoPlayDurationIcon extends StatelessWidget {
   const VideoPlayDurationIcon({
@@ -33,12 +33,14 @@ class VideoPlayDurationIcon extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(formatDurationForMedia(Duration(seconds: duration!.round())),
-              style: TextStyle(
-                color: foreground,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              )),
+          Text(
+            formatDurationForMedia(Duration(seconds: duration!.round())),
+            style: TextStyle(
+              color: foreground,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           hasSound.toOption().fold(
                 () => const SizedBox.shrink(),
                 (sound) => sound

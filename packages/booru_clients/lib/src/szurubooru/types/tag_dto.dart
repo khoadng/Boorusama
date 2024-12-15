@@ -1,5 +1,4 @@
 class TagDto {
-
   TagDto({
     this.names,
     this.category,
@@ -20,7 +19,6 @@ class TagDto {
 }
 
 class TagCategoryDto {
-
   TagCategoryDto({
     required this.name,
     required this.version,

@@ -9,10 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../search/queries/providers.dart';
+import '../../../search/search/routes.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
@@ -53,8 +52,9 @@ class BooruConfigSearchView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alwaysIncludeTags = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.alwaysIncludeTags));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.alwaysIncludeTags),
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -81,7 +81,7 @@ class BooruConfigSearchView extends ConsumerWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .applyOpacity(0.8),
+                        .withOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -109,7 +109,7 @@ class BooruConfigSearchView extends ConsumerWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .applyOpacity(0.8),
+                        .withOpacity(0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -146,12 +146,12 @@ class BooruConfigSearchView extends ConsumerWidget {
   }
 
   Widget _buildTooltip() {
-    return Tooltip(
+    return const Tooltip(
       message:
           'These tags will be appended to every search that the app makes, not just the ones you make manually.',
       triggerMode: TooltipTriggerMode.tap,
-      showDuration: const Duration(seconds: 5),
-      child: const Icon(
+      showDuration: Duration(seconds: 5),
+      child: Icon(
         Symbols.info,
         size: 14,
       ),
@@ -207,9 +207,10 @@ class BooruConfigSearchView extends ConsumerWidget {
     );
   }
 
-  String? alwaysIncludeTags(WidgetRef ref) =>
-      ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-          .select((value) => value.alwaysIncludeTags));
+  String? alwaysIncludeTags(WidgetRef ref) => ref.read(
+        editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+            .select((value) => value.alwaysIncludeTags),
+      );
 
   void _addTag(
     WidgetRef ref,
@@ -266,8 +267,9 @@ class _EffectiveTagPreview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.alwaysIncludeTags));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.alwaysIncludeTags),
+    );
 
     final effectiveConfigData = configData.copyWith(
       alwaysIncludeTags: () => tags,
@@ -287,10 +289,10 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer.applyOpacity(0.6),
+        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.applyOpacity(0.6),
+          color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.6),
           width: 0.5,
         ),
       ),
@@ -318,7 +320,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurfaceVariant
-                          .applyOpacity(0.6),
+                          .withOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),

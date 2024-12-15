@@ -2,7 +2,6 @@
 import 'types.dart';
 
 class UploadDto {
-
   UploadDto({
     this.id,
     this.source,
@@ -62,7 +61,6 @@ class UploadDto {
 }
 
 class UploadMediaAssetsDto {
-
   UploadMediaAssetsDto({
     this.id,
     this.createdAt,

@@ -5,22 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/search/history_providers.dart';
-import 'package:boorusama/core/search/history_widgets.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/widgets/settings_tile.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/picker.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
-import '../downloader/download_utils.dart';
+import '../../foundation/picker.dart';
+import '../../foundation/platform.dart';
+import '../../info/device_info.dart';
+import '../../search/histories/providers.dart';
+import '../../search/histories/widgets.dart';
+import '../../search/search/routes.dart';
+import '../../settings/settings.dart';
+import '../../settings/widgets.dart';
+import '../../theme.dart';
 import '../l10n.dart';
 import '../widgets/download_folder_selector_section.dart';
 import 'bulk_download_task.dart';
@@ -76,8 +71,10 @@ class _CreateBulkDownloadTaskSheetState
   Widget build(BuildContext context) {
     final notifier = ref.watch(createBulkDownloadProvider.notifier);
     final task = ref.watch(createBulkDownloadProvider);
-    final androidSdkInt = ref.watch(deviceInfoProvider
-        .select((value) => value.androidDeviceInfo?.version.sdkInt));
+    final androidSdkInt = ref.watch(
+      deviceInfoProvider
+          .select((value) => value.androidDeviceInfo?.version.sdkInt),
+    );
 
     return Material(
       color: Theme.of(context).colorScheme.surfaceContainer,
@@ -141,8 +138,8 @@ class _CreateBulkDownloadTaskSheetState
                 ),
               SwitchListTile(
                 title: const Text(
-                        DownloadTranslations.bulkdDownloadShowAdvancedOptions)
-                    .tr(),
+                  DownloadTranslations.bulkdDownloadShowAdvancedOptions,
+                ).tr(),
                 value: advancedOptions,
                 onChanged: (value) {
                   setState(() {
@@ -153,8 +150,8 @@ class _CreateBulkDownloadTaskSheetState
               if (advancedOptions) ...[
                 SwitchListTile(
                   title: const Text(
-                          DownloadTranslations.bulkDownloadEnableNotifications)
-                      .tr(),
+                    DownloadTranslations.bulkDownloadEnableNotifications,
+                  ).tr(),
                   value: task.options.notications,
                   onChanged: (value) {
                     notifier.setOptions(
@@ -236,8 +233,8 @@ class _CreateBulkDownloadTaskSheetState
                                 }
                               : null,
                           child: const Text(
-                                  DownloadTranslations.bulkDownloadDownload)
-                              .tr(),
+                            DownloadTranslations.bulkDownloadDownload,
+                          ).tr(),
                         ),
                       ),
                     ),
@@ -294,7 +291,8 @@ class _CreateBulkDownloadTaskSheetState
                             .textTheme
                             .titleMedium!
                             .copyWith(
-                                color: Theme.of(context).colorScheme.hintColor),
+                              color: Theme.of(context).colorScheme.hintColor,
+                            ),
                       ),
                 trailing: IconButton(
                   onPressed: () => _pickFolder(context),
@@ -307,46 +305,6 @@ class _CreateBulkDownloadTaskSheetState
       ),
     );
   }
-}
-
-void goToNewBulkDownloadTaskPage(
-  WidgetRef ref,
-  BuildContext context, {
-  required List<String>? initialValue,
-}) {
-  final config = ref.readConfigAuth;
-
-  if (!config.booruType.canDownloadMultipleFiles) {
-    showBulkDownloadUnsupportErrorToast(context);
-    return;
-  }
-
-  showMaterialModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(16),
-      ),
-    ),
-    builder: (_) => CreateBulkDownloadTaskSheet(
-      initialValue: initialValue,
-      title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),
-      onSubmitted: (_, isQueue) {
-        showSimpleSnackBar(
-          context: context,
-          content: Text(
-            isQueue ? 'Added' : 'Download started',
-          ),
-          action: SnackBarAction(
-            label: 'View',
-            onPressed: () {
-              context.pushNamed(kBulkdownload);
-            },
-          ),
-        );
-      },
-    ),
-  );
 }
 
 class CreateBulkDownloadTagList extends ConsumerStatefulWidget {

@@ -60,8 +60,9 @@ extension DownloadTaskStateX on DownloadTaskState {
 
   List<TaskUpdate> failed(String group) => all(group)
       .whereType<TaskStatusUpdate>()
-      .where((e) =>
-          e.status == TaskStatus.failed || e.status == TaskStatus.notFound)
+      .where(
+        (e) => e.status == TaskStatus.failed || e.status == TaskStatus.notFound,
+      )
       .toList();
 
   List<TaskUpdate> canceled(String group) => all(group)

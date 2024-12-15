@@ -91,12 +91,14 @@ void main() {
     test('not equal', () {
       expect(
         const ArtistCommentary.empty(),
-        isNot(const ArtistCommentary(
-          originalTitle: 'a',
-          originalDescription: '',
-          translatedTitle: '',
-          translatedDescription: '',
-        )),
+        isNot(
+          const ArtistCommentary(
+            originalTitle: 'a',
+            originalDescription: '',
+            translatedTitle: '',
+            translatedDescription: '',
+          ),
+        ),
       );
     });
   });

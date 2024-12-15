@@ -6,8 +6,8 @@ import 'package:foundation/foundation.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/downloads/filename.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../downloads/filename.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../types.dart';
@@ -19,18 +19,19 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   });
   final Box<String> box;
 
-  static String defaultValue(BooruFactory factory) =>
-      jsonEncode(BooruConfigData.anonymous(
-        booru: BooruType.danbooru,
-        booruHint: BooruType.danbooru,
-        name: 'Default profile',
-        filter: BooruConfigRatingFilter.none,
-        url: 'https://safebooru.donmai.us/',
-        customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat:
-            kBoorusamaBulkDownloadCustomFileNameFormat,
-        imageDetaisQuality: null,
-      ));
+  static String defaultValue(BooruFactory factory) => jsonEncode(
+        BooruConfigData.anonymous(
+          booru: BooruType.danbooru,
+          booruHint: BooruType.danbooru,
+          name: 'Default profile',
+          filter: BooruConfigRatingFilter.none,
+          url: 'https://safebooru.donmai.us/',
+          customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+          customBulkDownloadFileNameFormat:
+              kBoorusamaBulkDownloadCustomFileNameFormat,
+          imageDetaisQuality: null,
+        ),
+      );
 
   @override
   Future<BooruConfig?> add(BooruConfigData booruConfigData) async {
@@ -96,9 +97,11 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
       final jsonString = jsonEncode(json);
       await box.put(booruConfig.id, jsonString);
 
-      configs.add(data.toBooruConfig(
-        id: booruConfig.id,
-      )!);
+      configs.add(
+        data.toBooruConfig(
+          id: booruConfig.id,
+        )!,
+      );
     }
 
     return configs;

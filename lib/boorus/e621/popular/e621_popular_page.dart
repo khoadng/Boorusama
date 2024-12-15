@@ -6,14 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/datetimes/datetime_selector.dart';
-import 'package:boorusama/core/datetimes/time_scale_toggle_switch.dart';
-import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/explores/explore.dart';
+import '../../../core/posts/explores/widgets.dart';
+import '../../../core/posts/listing/widgets.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/widgets/widgets.dart';
+import '../posts/posts.dart';
 
 class E621PopularPage extends ConsumerStatefulWidget {
   const E621PopularPage({

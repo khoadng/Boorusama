@@ -3,10 +3,10 @@ import 'package:booru_clients/moebooru.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/foundation/http.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/http/http.dart';
+import '../../../../core/posts/post/post.dart';
+import 'posts.dart';
 
 class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(
@@ -20,9 +20,11 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   @override
   PostsOrError getPopularPostsByDay(DateTime dateTime) =>
       TaskEither.Do(($) async {
-        final data = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPostsByDay(date: dateTime),
-        ));
+        final data = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPostsByDay(date: dateTime),
+          ),
+        );
 
         return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
@@ -30,9 +32,11 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   @override
   PostsOrError getPopularPostsByMonth(DateTime dateTime) =>
       TaskEither.Do(($) async {
-        final data = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPostsByMonth(date: dateTime),
-        ));
+        final data = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPostsByMonth(date: dateTime),
+          ),
+        );
 
         return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
@@ -40,9 +44,11 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   @override
   PostsOrError getPopularPostsByWeek(DateTime dateTime) =>
       TaskEither.Do(($) async {
-        final data = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPostsByWeek(date: dateTime),
-        ));
+        final data = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPostsByWeek(date: dateTime),
+          ),
+        );
 
         return data.map(postDtoToPostNoMetadata).toList().toResult();
       });
@@ -50,15 +56,18 @@ class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   @override
   PostsOrError getPopularPostsRecent(MoebooruTimePeriod period) =>
       TaskEither.Do(($) async {
-        final data = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPostsRecent(
+        final data = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPostsRecent(
               period: switch (period) {
-            MoebooruTimePeriod.day => TimePeriod.day,
-            MoebooruTimePeriod.week => TimePeriod.week,
-            MoebooruTimePeriod.month => TimePeriod.month,
-            MoebooruTimePeriod.year => TimePeriod.year,
-          }),
-        ));
+                MoebooruTimePeriod.day => TimePeriod.day,
+                MoebooruTimePeriod.week => TimePeriod.week,
+                MoebooruTimePeriod.month => TimePeriod.month,
+                MoebooruTimePeriod.year => TimePeriod.year,
+              },
+            ),
+          ),
+        );
 
         return data.map(postDtoToPostNoMetadata).toList().toResult();
       });

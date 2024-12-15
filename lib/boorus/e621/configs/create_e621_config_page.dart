@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create.dart';
+import '../../../core/configs/create.dart';
 
 class CreateE621ConfigPage extends StatelessWidget {
   const CreateE621ConfigPage({
@@ -20,7 +20,7 @@ class CreateE621ConfigPage extends StatelessWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const DefaultBooruAuthConfigView(),
-      searchTab: DefaultBooruConfigSearchView(
+      searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
       ),
     );

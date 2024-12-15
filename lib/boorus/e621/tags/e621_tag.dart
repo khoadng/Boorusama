@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/categories/tag_category.dart';
+import '../../../core/tags/categories/tag_category.dart';
 
 class E621Tag extends Equatable {
   const E621Tag({
@@ -36,7 +36,7 @@ class E621Tag extends Equatable {
         category,
         isLocked,
         createdAt,
-        updatedAt
+        updatedAt,
       ];
 }
 

@@ -1,5 +1,4 @@
 class ImageDto {
-
   ImageDto({
     this.tagCount,
     this.deletionReason,
@@ -143,7 +142,6 @@ class ImageDto {
 }
 
 class RepresentationsDto {
-
   RepresentationsDto({
     this.full,
     this.large,
@@ -178,7 +176,6 @@ class RepresentationsDto {
 }
 
 class IntensitiesDto {
-
   IntensitiesDto({
     this.ne,
     this.nw,

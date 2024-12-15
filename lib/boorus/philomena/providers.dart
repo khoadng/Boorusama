@@ -4,14 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/philomena/philomena_post.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/settings/providers.dart';
+import 'philomena_post.dart';
 
 final philomenaClientProvider =
     Provider.family<PhilomenaClient, BooruConfigAuth>(
@@ -98,7 +100,7 @@ final philomenaPostRepoProvider =
 });
 
 String? _parseVideoThumbnail(ImageDto e) =>
-    e.representations?.thumb?.toOption().fold(
+    e.representations?.thumb.toOption().fold(
           () => '',
           (url) => '${url.substring(0, url.lastIndexOf("/") + 1)}thumb.gif',
         );
@@ -109,7 +111,7 @@ const _kSlugReplacement = [
   ['-fwslash-', '/'],
   ['-bwslash-', r'\'],
   ['-dot-', '.'],
-  ['-plus-', '+']
+  ['-plus-', '+'],
 ];
 
 final philomenaAutoCompleteRepoProvider =
@@ -121,22 +123,26 @@ final philomenaAutoCompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v2',
     autocomplete: (query) => switch (query.length) {
       0 || 1 => Future.value([]),
-      _ => client.getTags(query: '$query*').then((value) => value
-          .map((e) => AutocompleteData(
-                label: e.name ?? '???',
-                value: e.name?.replaceAll(' ', '_') ??
-                    e.slug.toOption().fold(
-                          () => '???',
-                          (slug) => _kSlugReplacement.fold(
-                            slug,
-                            (s, e) => s.replaceAll(e[1], e[0]),
-                          ),
-                        ),
-                antecedent: e.aliasedTag,
-                category: e.category ?? '',
-                postCount: e.images,
-              ))
-          .toList()),
+      _ => client.getTags(query: '$query*').then(
+            (value) => value
+                .map(
+                  (e) => AutocompleteData(
+                    label: e.name ?? '???',
+                    value: e.name?.replaceAll(' ', '_') ??
+                        e.slug.toOption().fold(
+                              () => '???',
+                              (slug) => _kSlugReplacement.fold(
+                                slug,
+                                (s, e) => s.replaceAll(e[1], e[0]),
+                              ),
+                            ),
+                    antecedent: e.aliasedTag,
+                    category: e.category ?? '',
+                    postCount: e.images,
+                  ),
+                )
+                .toList(),
+          ),
     },
   );
 });

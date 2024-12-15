@@ -1,5 +1,4 @@
 class NoteDto {
-
   NoteDto({
     this.id,
     this.body,

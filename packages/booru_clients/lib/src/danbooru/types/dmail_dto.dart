@@ -1,5 +1,4 @@
 class DmailDto {
-
   DmailDto({
     this.id,
     this.ownerId,

@@ -15,35 +15,37 @@ final gelbooruV1PostRepoProvider =
         );
 
         return posts
-            .map((e) => GelbooruV1Post(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
-                  sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
-                  originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
-                  tags: e.tags.splitTagString(),
-                  rating: mapStringToRating(e.rating),
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.none(),
-                  score: e.score ?? 0,
-                  duration: 0,
-                  fileSize: 0,
-                  format: extension(e.fileUrl ?? ''),
-                  hasSound: null,
-                  height: 0,
-                  md5: e.md5 ?? '',
-                  videoThumbnailUrl: e.previewUrl ?? '',
-                  videoUrl: e.fileUrl ?? '',
-                  width: 0,
-                  uploaderId: null,
-                  createdAt: null,
-                  uploaderName: null,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => GelbooruV1Post(
+                id: e.id ?? 0,
+                thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
+                sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
+                originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
+                tags: e.tags.splitTagString(),
+                rating: mapStringToRating(e.rating),
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.none(),
+                score: e.score ?? 0,
+                duration: 0,
+                fileSize: 0,
+                format: extension(e.fileUrl ?? ''),
+                hasSound: null,
+                height: 0,
+                md5: e.md5 ?? '',
+                videoThumbnailUrl: e.previewUrl ?? '',
+                videoUrl: e.fileUrl ?? '',
+                width: 0,
+                uploaderId: null,
+                createdAt: null,
+                uploaderName: null,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -63,10 +65,12 @@ final gelbooruV1AutocompleteRepoProvider =
       final dtos = await client.autocomplete(term: query);
 
       return dtos
-          .map((e) => AutocompleteData(
-                label: e.label ?? '<Unknown>',
-                value: e.value ?? '<Unknown>',
-              ))
+          .map(
+            (e) => AutocompleteData(
+              label: e.label ?? '<Unknown>',
+              value: e.value ?? '<Unknown>',
+            ),
+          )
           .toList();
     },
   );

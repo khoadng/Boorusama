@@ -1,5 +1,4 @@
 class CommentDto {
-
   CommentDto({
     this.id,
     this.createdAt,

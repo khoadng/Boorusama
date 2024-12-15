@@ -6,12 +6,13 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru_provider.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../core/configs/ref.dart';
+import '../danbooru_provider.dart';
 
 final danbooruSourceProvider =
     AsyncNotifierProvider.family<DanbooruSourceNotifier, SourceDto, String>(
-        DanbooruSourceNotifier.new);
+  DanbooruSourceNotifier.new,
+);
 
 class DanbooruSourceNotifier extends FamilyAsyncNotifier<SourceDto, String> {
   @override

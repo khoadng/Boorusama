@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/failsafe.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../feats/posts/posts.dart';
 
 class MoebooruFavoritesPage extends ConsumerWidget {
   const MoebooruFavoritesPage({super.key});

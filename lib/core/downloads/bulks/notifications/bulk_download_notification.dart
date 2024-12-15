@@ -5,11 +5,13 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../../../foundation/platform.dart';
 
 class BulkDownloadNotifications {
   BulkDownloadNotifications._(
-      this._flutterLocalNotificationsPlugin, this._streamController);
+    this._flutterLocalNotificationsPlugin,
+    this._streamController,
+  );
 
   final StreamController<String>? _streamController;
 
@@ -40,7 +42,9 @@ class BulkDownloadNotifications {
     );
 
     final notif = BulkDownloadNotifications._(
-        flutterLocalNotificationsPlugin, streamController);
+      flutterLocalNotificationsPlugin,
+      streamController,
+    );
 
     return notif;
   }

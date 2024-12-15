@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
-import 'package:boorusama/router.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/posts/details/details.dart';
+import '../../../../core/posts/details_parts/widgets.dart';
+import '../../../../core/router.dart';
+import '../../../../core/tags/tag/tag.dart';
+import '../../feats/posts/posts.dart';
+import '../../feats/tags/tags.dart';
 import '../moebooru_post_details_page.dart';
 
 class MoebooruInformationSection extends ConsumerWidget {

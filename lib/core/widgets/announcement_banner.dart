@@ -2,11 +2,16 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/boorusama.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'dismissable_info_container.dart';
+
+final announcementProvider = FutureProvider<String>((ref) {
+  final client = BoorusamaClient();
+  return client.getAnnouncement();
+});
 
 class SliverAppAnnouncementBanner extends StatelessWidget {
   const SliverAppAnnouncementBanner({

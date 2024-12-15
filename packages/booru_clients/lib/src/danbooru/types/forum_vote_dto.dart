@@ -1,5 +1,4 @@
 class ForumPostVoteDto {
-
   ForumPostVoteDto({
     this.id,
     this.forumPostId,

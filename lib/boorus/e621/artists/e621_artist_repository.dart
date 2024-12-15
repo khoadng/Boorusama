@@ -3,7 +3,7 @@ import 'package:booru_clients/e621.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/artists/artists.dart';
+import 'artists.dart';
 
 abstract interface class E621ArtistRepository {
   Future<Option<E621Artist>> getArtist(String name);

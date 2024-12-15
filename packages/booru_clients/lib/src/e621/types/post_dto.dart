@@ -1,5 +1,4 @@
 class PostDto {
-
   PostDto({
     this.id,
     this.createdAt,
@@ -82,7 +81,6 @@ class PostDto {
 }
 
 class E621FileDto {
-
   E621FileDto({
     this.width,
     this.height,
@@ -111,7 +109,6 @@ class E621FileDto {
 }
 
 class E621PreviewDto {
-
   E621PreviewDto({
     this.width,
     this.height,
@@ -131,7 +128,6 @@ class E621PreviewDto {
 }
 
 class E621SampleDto {
-
   E621SampleDto({
     this.has,
     this.height,
@@ -159,7 +155,6 @@ class E621SampleDto {
 }
 
 class E621SampleAlternatesDto {
-
   E621SampleAlternatesDto({
     this.type,
     this.height,
@@ -182,7 +177,6 @@ class E621SampleAlternatesDto {
 }
 
 class E621ScoreDto {
-
   E621ScoreDto({
     this.up,
     this.down,
@@ -202,7 +196,6 @@ class E621ScoreDto {
 }
 
 class E621FlagsDto {
-
   E621FlagsDto({
     this.pending,
     this.flagged,
@@ -231,7 +224,6 @@ class E621FlagsDto {
 }
 
 class E621RelationshipsDto {
-
   E621RelationshipsDto({
     this.parentId,
     this.hasChildren,

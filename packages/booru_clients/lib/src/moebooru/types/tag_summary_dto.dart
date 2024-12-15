@@ -1,5 +1,4 @@
 class TagSummaryDto {
-
   TagSummaryDto({this.version, this.data});
 
   factory TagSummaryDto.fromJson(Map<String, dynamic> json) {

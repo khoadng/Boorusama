@@ -3,25 +3,24 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:expandable/expandable.dart';
+import 'package:filename_generator/filename_generator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/downloads/widgets.dart';
-import 'package:boorusama/core/filename_generators/filename_generators.dart';
-import 'package:boorusama/core/posts/post.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../boorus/engine/providers.dart';
+import '../../../downloads/filename.dart';
+import '../../../downloads/widgets.dart';
+import '../../../foundation/clipboard.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/platform.dart';
+import '../../../foundation/toast.dart';
+import '../../../info/device_info.dart';
+import '../../../posts/post/post.dart';
+import '../../../theme.dart';
 import '../booru_config.dart';
 import 'providers.dart';
 
@@ -34,11 +33,14 @@ class BooruConfigDownloadView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
     final id = ref.watch(editBooruConfigIdProvider);
-    final customDownloadFileNameFormat = ref.watch(editBooruConfigProvider(id)
-        .select((value) => value.customDownloadFileNameFormat));
+    final customDownloadFileNameFormat = ref.watch(
+      editBooruConfigProvider(id)
+          .select((value) => value.customDownloadFileNameFormat),
+    );
     final customDownloadLocation = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.customDownloadLocation));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.customDownloadLocation),
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -178,10 +180,12 @@ class _CustomDownloadFileNameSectionState
             child: Column(
               children: generator
                   .generateSamples(format)
-                  .map((e) => FilenamePreview(
-                        filename: e,
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                      ))
+                  .map(
+                    (e) => FilenamePreview(
+                      filename: e,
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -214,7 +218,9 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
   final void Function(String value)? onChanged;
   final String title;
   final Widget Function(
-      DownloadFilenameGenerator<Post> generator, String format)? previewBuilder;
+    DownloadFilenameGenerator<Post> generator,
+    String format,
+  )? previewBuilder;
 
   @override
   ConsumerState<DownloadFormatCard> createState() => _DownloadFormatCardState();
@@ -243,7 +249,9 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
             valueListenable: textController,
             builder: (context, value, child) => widget.previewBuilder != null
                 ? widget.previewBuilder!(
-                    widget.downloadFilenameBuilder!, value.text)
+                    widget.downloadFilenameBuilder!,
+                    value.text,
+                  )
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: FilenamePreview(
@@ -365,13 +373,14 @@ class FilenamePreview extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Expanded(
-              child: Text(
-            filename,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.hintColor,
-                ),
-          )),
+            child: Text(
+              filename,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.hintColor,
+                  ),
+            ),
+          ),
         ],
       ),
     );
@@ -486,7 +495,7 @@ class TokenOptionHelpModal extends StatelessWidget {
                               StringTokenOption _ =>
                                 _buildOptionChip(context, 'string'),
                               _ => const SizedBox.shrink(),
-                            }
+                            },
                           ],
                         ),
                         subtitle: docs != null

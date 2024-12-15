@@ -8,12 +8,12 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/home/home_navigation_tile.dart';
+import '../../../core/home/home_page_scaffold.dart';
+import '../../../core/home/side_menu_tile.dart';
+import '../../../core/posts/favorites/routes.dart';
+import '../../../core/widgets/widgets.dart';
 import 'moebooru_popular_page.dart';
 import 'moebooru_popular_recent_page.dart';
 

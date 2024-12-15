@@ -8,11 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/http.dart';
+import '../configs/ref.dart';
+import '../http/http.dart';
+import '../http/providers.dart';
+import 'dio_extended_image.dart';
 import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
@@ -222,7 +221,7 @@ class _EmptyImage extends StatelessWidget {
             children: [
               Expanded(
                 child: placeholder,
-              )
+              ),
             ],
           )
         : NullableAspectRatio(
@@ -251,10 +250,8 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHigh
-            .applyOpacity(0.5),
+        color:
+            Theme.of(context).colorScheme.surfaceContainerHigh.withOpacity(0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(

@@ -10,10 +10,14 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/widgets.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/router.dart';
+import '../blacklists/routes.dart';
+import '../bookmarks/routes.dart';
+import '../configs/widgets.dart';
+import '../downloads/routes.dart';
+import '../settings/providers.dart';
+import '../settings/routes.dart';
+import '../settings/settings.dart';
+import '../tags/favorites/routes.dart';
 import 'side_menu_tile.dart';
 
 class SideBarMenu extends ConsumerWidget {
@@ -35,12 +39,14 @@ class SideBarMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final position = ref.watch(
-        settingsProvider.select((value) => value.booruConfigSelectorPosition));
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
 
     return Container(
       color: Theme.of(context).colorScheme.surfaceContainerLow,
       constraints: BoxConstraints.expand(
-          width: min(MediaQuery.sizeOf(context).width * 0.85, 400)),
+        width: min(MediaQuery.sizeOf(context).width * 0.85, 400),
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -71,16 +77,20 @@ class SideBarMenu extends ConsumerWidget {
                       child: CurrentBooruTile(),
                     ),
                     if (initialContent != null)
-                      ...initialContent!.map((e) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: e,
-                          )),
+                      ...initialContent!.map(
+                        (e) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: e,
+                        ),
+                      ),
                     if (initialContent != null) const Divider(),
                     if (content != null) ...[
-                      ...content!.map((e) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: e,
-                          )),
+                      ...content!.map(
+                        (e) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: e,
+                        ),
+                      ),
                     ] else
                       ...[
                         SideMenuTile(
@@ -152,12 +162,14 @@ class SideBarMenu extends ConsumerWidget {
                             goToSettingsPage(context);
                           },
                         ),
-                      ].map((e) => Padding(
-                            padding: e.key != const ValueKey('divider')
-                                ? const EdgeInsets.symmetric(horizontal: 8)
-                                : EdgeInsets.zero,
-                            child: e,
-                          )),
+                      ].map(
+                        (e) => Padding(
+                          padding: e.key != const ValueKey('divider')
+                              ? const EdgeInsets.symmetric(horizontal: 8)
+                              : EdgeInsets.zero,
+                          child: e,
+                        ),
+                      ),
                     SizedBox(
                       height: MediaQuery.viewPaddingOf(context).bottom + 12,
                     ),

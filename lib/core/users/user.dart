@@ -1,3 +1,3 @@
-abstract class User {
-  int get id;
-}
+export 'src/user.dart';
+export 'src/user_repository.dart';
+export 'src/user_color.dart';

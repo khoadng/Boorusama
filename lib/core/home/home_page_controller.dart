@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/keyboard.dart';
+import '../foundation/keyboard.dart';
 
 typedef HomePageControllerOpenHandler = void Function(bool open);
 

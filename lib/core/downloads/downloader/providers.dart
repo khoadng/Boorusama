@@ -2,11 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/settings/data.dart';
+import '../../boorus/engine/providers.dart';
+import '../../configs/config.dart';
+import '../../configs/current.dart';
+import '../../http/providers.dart';
+import '../../settings/providers.dart';
 import '../notifications/providers.dart';
+import '../urls/download_url.dart';
 import 'background_downloader.dart';
 import 'download_service.dart';
 
@@ -21,4 +23,20 @@ final downloadServiceProvider =
     currentBooruConfigProvider,
     settingsProvider,
   ],
+);
+
+final downloadFileUrlExtractorProvider =
+    Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    final downloadFileUrlExtractor = repo?.downloadFileUrlExtractor(config);
+
+    if (downloadFileUrlExtractor != null) {
+      return downloadFileUrlExtractor;
+    }
+
+    return const UrlInsidePostExtractor();
+  },
 );

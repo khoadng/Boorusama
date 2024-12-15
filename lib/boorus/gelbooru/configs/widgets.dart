@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/foundation/clipboard.dart';
+import '../../../core/configs/create.dart';
+import '../../../core/foundation/clipboard.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
   const GelbooruApiKeyField({

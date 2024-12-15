@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../foundation/display.dart';
 import '../booru_config.dart';
 
 class BooruSelectorItem extends StatelessWidget {
@@ -73,7 +71,7 @@ class BooruSelectorItem extends StatelessWidget {
               left: 4,
             ),
       child: InkWell(
-        hoverColor: Theme.of(context).hoverColor.applyOpacity(0.1),
+        hoverColor: Theme.of(context).hoverColor.withOpacity(0.1),
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

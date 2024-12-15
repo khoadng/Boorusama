@@ -1,5 +1,4 @@
 class TagDto {
-
   TagDto({
     this.id,
     this.name,
@@ -42,7 +41,6 @@ class TagDto {
 }
 
 class RelatedTagDto {
-
   const RelatedTagDto({
     required this.tag,
     required this.score,

@@ -9,29 +9,39 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/favorites/routes.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/search/search/widgets.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../core/widgets/widgets.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
 import 'favorites/favorites.dart';
 
 class HydrusPost extends SimplePost {
@@ -99,44 +109,44 @@ final hydrusPostRepoProvider =
       );
 
       final data = files.files
-          .map((e) => HydrusPost(
-                id: e.fileId ?? 0,
-                thumbnailImageUrl: e.thumbnailUrl,
-                sampleImageUrl: e.imageUrl,
-                originalImageUrl: e.imageUrl,
-                tags: e.allTags,
-                rating: Rating.general,
-                hasComment: false,
-                isTranslated: false,
-                hasParentOrChildren: false,
-                source: PostSource.from(e.firstSource),
-                score: 0,
-                duration: e.duration?.toDouble() ?? 0,
-                fileSize: e.size ?? 0,
-                format: e.ext ?? '',
-                hasSound: e.hasAudio,
-                height: e.height?.toDouble() ?? 0,
-                md5: e.hash ?? '',
-                videoThumbnailUrl: e.thumbnailUrl,
-                videoUrl: e.imageUrl,
-                width: e.width?.toDouble() ?? 0,
-                uploaderId: null,
-                uploaderName: null,
-                createdAt: null,
-                metadata: PostMetadata(
-                  page: page,
-                  search: tags.join(' '),
-                ),
-                ownFavorite: e.faved,
-              ))
+          .map(
+            (e) => HydrusPost(
+              id: e.fileId ?? 0,
+              thumbnailImageUrl: e.thumbnailUrl,
+              sampleImageUrl: e.imageUrl,
+              originalImageUrl: e.imageUrl,
+              tags: e.allTags,
+              rating: Rating.general,
+              hasComment: false,
+              isTranslated: false,
+              hasParentOrChildren: false,
+              source: PostSource.from(e.firstSource),
+              score: 0,
+              duration: e.duration?.toDouble() ?? 0,
+              fileSize: e.size ?? 0,
+              format: e.ext ?? '',
+              hasSound: e.hasAudio,
+              height: e.height?.toDouble() ?? 0,
+              md5: e.hash ?? '',
+              videoThumbnailUrl: e.thumbnailUrl,
+              videoUrl: e.imageUrl,
+              width: e.width?.toDouble() ?? 0,
+              uploaderId: null,
+              uploaderName: null,
+              createdAt: null,
+              metadata: PostMetadata(
+                page: page,
+                search: tags.join(' '),
+              ),
+              ownFavorite: e.faved,
+            ),
+          )
           .toList()
           .toResult(
             total: files.count,
           );
 
-      ref
-          .read(hydrusFavoritesProvider(config.auth).notifier)
-          .preload(data.posts);
+      ref.read(favoritesProvider(config.auth).notifier).preload(data.posts);
 
       return data;
     }
@@ -299,6 +309,64 @@ class HydrusBuilder
           ),
     },
   );
+}
+
+class HydrusRepository implements BooruRepository {
+  const HydrusRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(hydrusPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(hydrusAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return HydrusFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => HydrusClient(
+          baseUrl: config.url,
+          apiKey: config.apiKey ?? '',
+          dio: dio,
+        ).getFiles().then((value) => true);
+  }
 }
 
 class HydrusHomePage extends StatelessWidget {

@@ -2,14 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:filename_generator/filename_generator.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/filename_generators/filename_generators.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../configs/config.dart';
+import '../../foundation/path.dart';
+import '../../posts/post/post.dart';
+import '../../settings/settings.dart';
 import '../urls/sanitizer.dart';
 import 'generator.dart';
 import 'token_options.dart';
