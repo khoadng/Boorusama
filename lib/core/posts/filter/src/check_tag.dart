@@ -5,9 +5,8 @@ import 'tag_filter_data.dart';
 
 bool checkIfTagsContainsRawTagExpression(
   final TagFilterData filterData,
-  final String tagExpression, {
-  bool caseSensitive = false,
-}) {
+  final String tagExpression,
+) {
   // Split the tagExpression by spaces to handle multiple tags
   final expressions =
       tagExpression.split(' ').map(TagExpression.parse).toList();
@@ -15,27 +14,22 @@ bool checkIfTagsContainsRawTagExpression(
   return checkIfTagsContainsTagExpression(
     filterData,
     expressions,
-    caseSensitive: caseSensitive,
   );
 }
 
 bool checkIfTagsContainsTagExpression(
   final TagFilterData filterData,
-  final List<TagExpression> expressions, {
-  bool caseSensitive = false,
-}) {
-  final tags = caseSensitive
-      ? filterData.tags
-      : filterData.tags.map((tag) => tag.toLowerCase()).toSet();
+  final List<TagExpression> expressions,
+) {
+  final tags = filterData.tags;
+  final source = filterData.source;
 
   // Process each tag in the expression
   for (final expression in expressions) {
     final type = expression.type;
     final isNegative = expression.isNegative;
     final isOr = expression.isOr;
-    final value = caseSensitive
-        ? expression.expression
-        : expression.expression.toLowerCase();
+    final value = expression.expression;
 
     // Handle metatag "rating"
     if (type is RatingType && !isNegative) {
@@ -50,9 +44,8 @@ bool checkIfTagsContainsTagExpression(
       }
     }
     // Handle source "source"
-    else if (type is SourceType && filterData.source != null) {
+    else if (type is SourceType && source != null) {
       // find the first index of ':' and get the substring after it
-      final source = filterData.source!.toLowerCase();
       final targetSource = type.source;
       final wildCardPosition = type.wildCardPosition;
 

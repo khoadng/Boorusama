@@ -31,5 +31,7 @@ class TagFilterData {
 }
 
 extension TagFilterDataX on Set<String> {
-  TagFilterData toTagFilterData() => TagFilterData.tags(tags: this);
+  TagFilterData toTagFilterData() => TagFilterData.tags(
+        tags: map((tag) => tag.toLowerCase()).toSet(),
+      );
 }

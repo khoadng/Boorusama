@@ -50,7 +50,7 @@ List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
 
 extension PostFilterX on Post {
   TagFilterData extractTagFilterData() => TagFilterData(
-        tags: tags,
+        tags: tags.map((tag) => tag.toLowerCase()).toSet(),
         rating: rating,
         score: score,
         downvotes: downvotes,
@@ -59,7 +59,8 @@ extension PostFilterX on Post {
           final WebSource w => w.url,
           final NonWebSource nw => nw.value,
           _ => null,
-        },
+        }
+            ?.toLowerCase(),
         id: id,
       );
 

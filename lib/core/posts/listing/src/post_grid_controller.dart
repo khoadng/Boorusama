@@ -433,15 +433,15 @@ Map<String, Set<int>> _countInIsolate<T extends Post>(
         tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
 
     for (final item in posts) {
+      final filterData = item.extractTagFilterData();
       for (final pattern in preprocessed) {
-        if (item.containsTagPattern(pattern)) {
+        if (checkIfTagsContainsTagExpression(filterData, pattern)) {
           final key = pattern.rawString;
           tagCounts.putIfAbsent(key, () => <int>{});
           tagCounts[key]!.add(item.id);
         }
       }
     }
-
     return tagCounts;
   } catch (e) {
     return {};
