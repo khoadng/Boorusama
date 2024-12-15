@@ -232,57 +232,54 @@ Future<void> boot(BootLogger bootLogger) async {
   );
   stopwatch.stop();
 
-  void run() {
-    runApp(
-      Reboot(
-        initialConfigs: allConfigs,
-        initialConfig: initialConfig ?? BooruConfig.empty,
-        builder: (context, config, configs) => BooruLocalization(
-          child: ProviderScope(
-            overrides: [
-              booruEngineRegistryProvider.overrideWith(
-                (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
+  bootLogger.l('Run app');
+
+  runApp(
+    Reboot(
+      initialConfigs: allConfigs,
+      initialConfig: initialConfig ?? BooruConfig.empty,
+      builder: (context, config, configs) => BooruLocalization(
+        child: ProviderScope(
+          overrides: [
+            booruEngineRegistryProvider.overrideWith(
+              (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
+            ),
+            favoriteTagsRepoOverride,
+            searchHistoryRepoOverride,
+            booruFactoryProvider.overrideWithValue(booruFactory),
+            tagInfoOverride,
+            settingsRepoProvider.overrideWithValue(settingRepository),
+            settingsNotifierProvider
+                .overrideWith(() => SettingsNotifier(settings)),
+            booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+            booruConfigProvider.overrideWith(
+              () => BooruConfigNotifier(
+                initialConfigs: configs,
               ),
-              favoriteTagsRepoOverride,
-              searchHistoryRepoOverride,
-              booruFactoryProvider.overrideWithValue(booruFactory),
-              tagInfoOverride,
-              settingsRepoProvider.overrideWithValue(settingRepository),
-              settingsNotifierProvider
-                  .overrideWith(() => SettingsNotifier(settings)),
-              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              booruConfigProvider.overrideWith(
-                () => BooruConfigNotifier(
-                  initialConfigs: configs,
-                ),
-              ),
-              initialSettingsBooruConfigProvider.overrideWithValue(config),
-              httpCacheDirProvider.overrideWithValue(tempPath),
-              loggerProvider.overrideWithValue(logger),
-              bookmarkRepoOverride,
-              downloadNotificationProvider
-                  .overrideWithValue(downloadNotifications),
-              bulkDownloadNotificationProvider
-                  .overrideWithValue(bulkDownloadNotifications),
-              deviceInfoProvider.overrideWithValue(deviceInfo),
-              packageInfoProvider.overrideWithValue(packageInfo),
-              appInfoProvider.overrideWithValue(appInfo),
-              appLoggerProvider.overrideWithValue(appLogger),
-              supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-              miscDataBoxProvider.overrideWithValue(miscDataBox),
-              booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
-              if (firebaseAnalytics != null)
-                analyticsProvider.overrideWithValue(firebaseAnalytics),
-              if (crashlyticsReporter != null)
-                errorReporterProvider.overrideWithValue(crashlyticsReporter),
-            ],
-            child: const App(),
-          ),
+            ),
+            initialSettingsBooruConfigProvider.overrideWithValue(config),
+            httpCacheDirProvider.overrideWithValue(tempPath),
+            loggerProvider.overrideWithValue(logger),
+            bookmarkRepoOverride,
+            downloadNotificationProvider
+                .overrideWithValue(downloadNotifications),
+            bulkDownloadNotificationProvider
+                .overrideWithValue(bulkDownloadNotifications),
+            deviceInfoProvider.overrideWithValue(deviceInfo),
+            packageInfoProvider.overrideWithValue(packageInfo),
+            appInfoProvider.overrideWithValue(appInfo),
+            appLoggerProvider.overrideWithValue(appLogger),
+            supportedLanguagesProvider.overrideWithValue(supportedLanguages),
+            miscDataBoxProvider.overrideWithValue(miscDataBox),
+            booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
+            if (firebaseAnalytics != null)
+              analyticsProvider.overrideWithValue(firebaseAnalytics),
+            if (crashlyticsReporter != null)
+              errorReporterProvider.overrideWithValue(crashlyticsReporter),
+          ],
+          child: const App(),
         ),
       ),
-    );
-  }
-
-  bootLogger.l('Run app');
-  run();
+    ),
+  );
 }
