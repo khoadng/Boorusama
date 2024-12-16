@@ -7,6 +7,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
@@ -352,7 +353,8 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
           Positioned.fill(
             child: InkWell(
               highlightColor: Colors.transparent,
-              splashColor: Colors.black,
+              splashFactory: FasterInkSplash.splashFactory,
+              splashColor: Colors.black38,
               onTap: blockOverlay?.onTap,
             ),
           ),
