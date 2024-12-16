@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../home_widgets/home_widget_manager.dart';
 import '../../../analytics.dart';
 import '../../../foundation/loggers.dart';
 import '../../../settings/providers.dart';
@@ -108,6 +109,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       final tmp = [...state];
       tmp.remove(config);
+      syncToHomeScreen();
       state = tmp;
       onSuccess?.call(config);
     } catch (e) {
@@ -189,6 +191,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       await _add(config);
 
+      // No need to await this
+      syncToHomeScreen();
+
       if (setAsCurrent || state.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
       }
@@ -197,6 +202,20 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         'Something went wrong while adding your profile. Please try again',
       );
     }
+  }
+
+  BooruConfig? findConfigById(int id) {
+    return state.firstWhereOrNull((config) => config.id == id);
+  }
+
+  Future<void> pinToHomeScreen({
+    required BooruConfig config,
+  }) =>
+      ref.read(homeWidgetProvider).pinToHomeScreen(config: config);
+
+  Future<void> syncToHomeScreen() async {
+    final configs = state;
+    await ref.read(homeWidgetProvider).updateWidget(configs);
   }
 
   void _logError(String message) {

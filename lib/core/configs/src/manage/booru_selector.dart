@@ -189,6 +189,12 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
             onPressed: () => notifier.duplicate(config: config),
           ),
           ContextMenuButtonConfig(
+            'Pin to home screen',
+            onPressed: () => notifier.pinToHomeScreen(
+              config: config,
+            ),
+          ),
+          ContextMenuButtonConfig(
             'generic.action.delete'.tr(),
             labelStyle: TextStyle(
               color: Theme.of(context).colorScheme.error,

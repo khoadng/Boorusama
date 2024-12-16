@@ -11,6 +11,7 @@ import 'booru_config.dart';
 import 'booru_config_ref.dart';
 import 'manage/booru_config_provider.dart';
 import 'manage/current_booru_providers.dart';
+import 'manage/utils.dart';
 
 class BooruConfigDeepLinkResolver extends ConsumerStatefulWidget {
   const BooruConfigDeepLinkResolver({
@@ -75,43 +76,12 @@ class _BooruConfigDeepLinkResolverState
   }
 
   BooruConfig? _getConfigFromLink(String? path) {
-    final uri = path != null ? Uri.parse(path) : null;
-
-    if (uri == null) return null;
-
-    _print('Deep link: $uri');
-
-    // check for '/?cid=1' format only '/settings/?cid=1' is not allowed
-    final isBooruConfigDeepLink = uri.pathSegments.isEmpty;
-
-    if (!isBooruConfigDeepLink) return null;
-
-    _print('Deep link is booru config deep link');
-
-    final configIdString = uri.queryParameters['cid'];
-    final configId =
-        configIdString != null ? int.tryParse(configIdString) : null;
-
-    if (configId == null) return null;
-
-    _print('Deep link config id: $configId');
-
     final currentConfigId = ref.readConfig.id;
-
-    if (configId == currentConfigId) return null;
-
-    _print('Deep link config id not same as current config id');
-
-    final config = ref
-        .read(booruConfigProvider)
-        .where((element) => element.id == configId)
-        .firstOrNull;
-
-    if (config == null) return null;
-
-    _print('Deep link config found: $config');
-
-    return config;
+    return getConfigFromLink(
+      (id) => ref.read(booruConfigProvider.notifier).findConfigById(id),
+      currentConfigId,
+      path,
+    );
   }
 
   @override

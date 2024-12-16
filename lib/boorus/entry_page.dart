@@ -1,12 +1,9 @@
 // Flutter imports:
-// ignore_for_file: prefer_const_declarations
-
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:home_widget/home_widget.dart';
 
 // Project imports:
 import '../core/boorus/engine/providers.dart';
@@ -45,21 +42,8 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       final miscBox = ref.read(miscDataBoxProvider);
       ref.showChangelogDialogIfNeeded(miscBox);
 
-      final configs = ref.read(booruConfigProvider);
-      updateAndroidWidget('You have ${configs.length} boorus');
+      ref.read(booruConfigProvider.notifier).syncToHomeScreen();
     });
-  }
-
-  void updateAndroidWidget(
-    String quote,
-  ) {
-    final packageName = 'com.degenk.boorusama';
-
-    HomeWidget.saveWidgetData('quote', quote);
-    HomeWidget.updateWidget(
-      name: 'TestHomeWidget',
-      qualifiedAndroidName: '$packageName.TestHomeWidget',
-    );
   }
 
   @override
