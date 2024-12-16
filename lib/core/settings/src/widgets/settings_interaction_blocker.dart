@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import '../../../configs/ref.dart';
 import '../../../configs/routes.dart';
-import '../../../theme.dart';
+import '../../../theme/theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/listing_provider.dart';
 
@@ -105,6 +105,65 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
                     context,
                     config: config,
                     initialTab: 'listing',
+                  );
+
+                  onNavigateAway?.call();
+                },
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const TextSpan(
+              text: ' page instead.',
+            ),
+          ],
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
+class ThemeSettingsInteractionBlocker extends ConsumerWidget {
+  const ThemeSettingsInteractionBlocker({
+    super.key,
+    this.padding,
+    this.onNavigateAway,
+    required this.child,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final void Function()? onNavigateAway;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasCustomTheme = ref.watch(hasCustomThemeSettingsProvider);
+    final config = ref.watchConfig;
+
+    return SettingsInteractionBlocker(
+      padding: padding,
+      block: hasCustomTheme,
+      description: RichText(
+        text: TextSpan(
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+          children: [
+            const TextSpan(
+              text: 'These settings are overridden by custom theme. Go to ',
+            ),
+            TextSpan(
+              text: 'Theme',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  goToUpdateBooruConfigPage(
+                    context,
+                    config: config,
+                    initialTab: 'theme',
                   );
 
                   onNavigateAway?.call();

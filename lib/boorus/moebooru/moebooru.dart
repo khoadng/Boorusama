@@ -17,6 +17,7 @@ import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -33,6 +34,8 @@ import 'feats/posts/posts.dart';
 import 'feats/tags/tags.dart';
 import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
+import 'pages/moebooru_popular_page.dart';
+import 'pages/moebooru_popular_recent_page.dart';
 import 'pages/moebooru_post_details_page.dart';
 import 'pages/widgets/moebooru_comment_section.dart';
 import 'pages/widgets/moebooru_information_section.dart';
@@ -149,6 +152,10 @@ class MoebooruBuilder
   );
 
   @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kMoebooruAltHomeView;
+
+  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) => const MoebooruInformationSection(),
@@ -229,6 +236,22 @@ class MoebooruRepository implements BooruRepository {
         ).getPosts().then((value) => true);
   }
 }
+
+final kMoebooruAltHomeView = {
+  ...kDefaultAltHomeView,
+  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const MoebooruFavoritesPage(),
+  ),
+  const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
+    displayName: 'Popular',
+    builder: (context, _) => const MoebooruPopularPage(),
+  ),
+  const CustomHomeViewKey('hot'): CustomHomeDataBuilder(
+    displayName: 'Hot',
+    builder: (context, _) => const MoebooruPopularRecentPage(),
+  ),
+};
 
 class MoebooruArtistPage extends ConsumerWidget {
   const MoebooruArtistPage({

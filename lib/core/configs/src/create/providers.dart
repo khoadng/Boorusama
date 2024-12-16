@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
+import '../../../theme/theme_configs.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
@@ -176,4 +177,14 @@ class EditBooruConfigNotifier
             ? BooruConfigDeletedItemBehavior.hide
             : BooruConfigDeletedItemBehavior.show,
       );
+
+  void updateLayout(
+    LayoutConfigs? layout,
+  ) =>
+      state = state.copyWith(layout: () => layout);
+
+  void updateTheme(
+    ThemeConfigs? theme,
+  ) =>
+      state = state.copyWith(theme: () => theme);
 }

@@ -11,7 +11,9 @@ import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/display.dart';
 import '../../../foundation/url_launcher.dart';
+import '../../../home/custom_home.dart';
 import '../../../home/home_page_scaffold.dart';
+import '../../../home/user_custom_home_builder.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_parts/widgets.dart';
@@ -257,10 +259,17 @@ class DefaultSearchPage extends ConsumerWidget {
 mixin DefaultHomeMixin implements BooruBuilder {
   @override
   HomeViewBuilder get homeViewBuilder =>
-      (context, controller) => MobileHomePageScaffold(
-            controller: controller,
-            onSearchTap: () => goToSearchPage(context),
+      (context, controller) => UserCustomHomeBuilder(
+            homePageController: controller,
+            defaultView: MobileHomePageScaffold(
+              controller: controller,
+              onSearchTap: () => goToSearchPage(context),
+            ),
           );
+
+  @override
+  final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders =
+      kDefaultAltHomeView;
 }
 
 String Function(

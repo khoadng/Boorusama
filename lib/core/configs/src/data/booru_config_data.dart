@@ -5,7 +5,9 @@ import 'package:equatable/equatable.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
+import '../../../theme/theme_configs.dart';
 import '../../../utils/int_utils.dart';
+import '../booru_config.dart';
 import '../gestures.dart';
 import '../rating_parser.dart';
 import '../types.dart';
@@ -30,7 +32,9 @@ class BooruConfigData extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.theme,
     required this.alwaysIncludeTags,
+    required this.layout,
   });
 
   factory BooruConfigData.anonymous({
@@ -62,7 +66,9 @@ class BooruConfigData extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        theme: null,
         alwaysIncludeTags: null,
+        layout: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -90,7 +96,9 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction:
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
+        theme: json['theme'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+        layout: json['layout'] as String?,
       );
     } catch (e) {
       return null;
@@ -117,7 +125,9 @@ class BooruConfigData extends Equatable {
       'postGestures': postGestures,
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
+      'theme': theme,
       'alwaysIncludeTags': alwaysIncludeTags,
+      'layout': layout,
     };
   }
 
@@ -139,7 +149,9 @@ class BooruConfigData extends Equatable {
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
   final String? listing;
+  final String? theme;
   final String? alwaysIncludeTags;
+  final String? layout;
 
   @override
   List<Object?> get props => [
@@ -161,7 +173,9 @@ class BooruConfigData extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        theme,
         alwaysIncludeTags,
+        layout,
       ];
 }
 
@@ -172,6 +186,14 @@ extension BooruConfigDataX on BooruConfigData {
 
   ListingConfigs? get listingTyped {
     return ListingConfigs.fromJsonString(listing);
+  }
+
+  LayoutConfigs? get layoutTyped {
+    return LayoutConfigs.fromJsonString(layout);
+  }
+
+  ThemeConfigs? get themeTyped {
+    return ThemeConfigs.fromJsonString(theme);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
@@ -226,7 +248,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     PostGestureConfig? Function()? postGestures,
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
+    ThemeConfigs? Function()? theme,
     String? Function()? alwaysIncludeTags,
+    LayoutConfigs? Function()? layout,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -267,9 +291,11 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           ? defaultPreviewImageButtonAction()
           : this.defaultPreviewImageButtonAction,
       listing: listing != null ? listing()?.toJsonString() : this.listing,
+      theme: theme != null ? theme()?.toJsonString() : this.theme,
       alwaysIncludeTags: alwaysIncludeTags != null
           ? alwaysIncludeTags()
           : this.alwaysIncludeTags,
+      layout: layout != null ? layout()?.toJsonString() : this.layout,
     );
   }
 }

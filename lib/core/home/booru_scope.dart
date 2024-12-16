@@ -18,6 +18,7 @@ import '../settings/routes.dart';
 import '../tags/favorites/widgets.dart';
 import '../widgets/widgets.dart';
 import 'booru_desktop_scope.dart';
+import 'custom_home.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
 
@@ -106,12 +107,15 @@ int _v(int value) => _kPlaceholderOffset + value;
 
 List<Widget> coreDesktopViewBuilder({
   required int previousItemCount,
+  required CustomHomeViewKey? viewKey,
+  required Widget Function() searchPageBuilder,
 }) {
   // skip previousItemCount to prevent access the wrong index
   final totalPlaceholder = _kPlaceholderOffset - previousItemCount + 1;
 
   final views = [
     for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
+    if (viewKey.isAlt) searchPageBuilder(),
     const BookmarkPage(),
     const BlacklistedTagPage(),
     const FavoriteTagsPage(),
@@ -126,11 +130,21 @@ List<Widget> coreDesktopTabBuilder(
   BuildContext context,
   BoxConstraints constraints,
   HomePageController controller,
+  CustomHomeViewKey? viewKey,
 ) {
   return [
     const Divider(),
+    if (viewKey.isAlt)
+      HomeNavigationTile(
+        value: _v(1),
+        controller: controller,
+        constraints: constraints,
+        selectedIcon: Symbols.search,
+        icon: Symbols.search,
+        title: 'Search',
+      ),
     HomeNavigationTile(
-      value: _v(1),
+      value: _v(2),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.bookmark,
@@ -138,7 +152,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.your_bookmarks'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(2),
+      value: _v(3),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.list_alt,
@@ -146,7 +160,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.your_blacklist'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(3),
+      value: _v(4),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.tag,
@@ -154,7 +168,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'favorite_tags.favorite_tags'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(4),
+      value: _v(5),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.sim_card_download,
@@ -162,7 +176,7 @@ List<Widget> coreDesktopTabBuilder(
       title: 'sideMenu.bulk_download'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(5),
+      value: _v(6),
       controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.download,

@@ -28,6 +28,7 @@ import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
 import '../../../shares/providers.dart';
+import '../../custom_details.dart';
 import 'post_details_controller.dart';
 import 'post_details_page_view.dart';
 import 'post_details_preload_image.dart';
@@ -45,6 +46,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.topRightButtonsBuilder,
     required this.controller,
     this.uiBuilder,
+    this.preferredParts,
+    this.preferredPreviewParts,
   });
 
   final List<T> posts;
@@ -54,6 +57,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       topRightButtonsBuilder;
   final PostDetailsController<T> controller;
   final PostDetailsUIBuilder? uiBuilder;
+  final Set<DetailsPart>? preferredParts;
+  final Set<DetailsPart>? preferredPreviewParts;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -128,11 +133,14 @@ class _PostDetailPageScaffoldState<T extends Post>
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.fullview;
+    final layout = ref.watchLayoutConfigs;
     final imageUrlBuilder =
         widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
-
+    final preferredParts = widget.preferredParts ??
+        layout?.getParsedParts() ??
+        uiBuilder?.full.keys.toSet();
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
@@ -201,6 +209,8 @@ class _PostDetailPageScaffoldState<T extends Post>
               scrollController: scrollController,
               sheetState: state,
               uiBuilder: uiBuilder,
+              preferredParts: preferredParts,
+              canCustomize: widget.uiBuilder == null,
             ),
           );
         },
@@ -313,6 +323,11 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder) {
+    final layout = ref.watchLayoutConfigs;
+    final preferredPreviewParts = widget.preferredPreviewParts ??
+        layout?.getPreviewParsedParts() ??
+        uiBuilder.preview.keys.toSet();
+
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
@@ -324,7 +339,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             color: Theme.of(context).colorScheme.surface,
           ),
           sliver: MultiSliver(
-            children: uiBuilder.preview.keys
+            children: preferredPreviewParts
                 .map((p) => uiBuilder.buildPart(context, p))
                 .nonNulls
                 .toList(),
@@ -370,22 +385,45 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({
     super.key,
     this.scrollController,
-    this.uiBuilder,
+    required this.uiBuilder,
     required this.sheetState,
+    required this.preferredParts,
+    this.canCustomize = true,
   });
 
   final ScrollController? scrollController;
   final SheetState sheetState;
   final PostDetailsUIBuilder? uiBuilder;
+  final Set<DetailsPart>? preferredParts;
+  final bool canCustomize;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final parts = preferredParts;
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
-    if (builder == null) {
-      return DefaultPostDetailsInfoPreview(
+    if (builder == null || parts == null) {
+      return RawPostDetailsInfoSheet(
         scrollController: scrollController,
+        preview: DefaultPostDetailsInfoPreview(
+          scrollController: scrollController,
+        ),
+        slivers: [
+          const SliverSizedBox(height: 12),
+          SliverOffstage(
+            offstage: sheetState == SheetState.hidden,
+            sliver: const SliverToBoxAdapter(
+              child: Center(
+                child: Text('No widgets to display'),
+              ),
+            ),
+          ),
+          SliverSizedBox(
+            height: MediaQuery.paddingOf(context).bottom + 72,
+          ),
+        ],
+        sheetState: sheetState,
       );
     }
 
@@ -394,10 +432,18 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       preview: DefaultPostDetailsInfoPreview(
         scrollController: scrollController,
       ),
-      slivers: builder.full.keys
-          .map((p) => builder.buildPart(context, p))
-          .nonNulls
-          .toList(),
+      slivers: [
+        ...parts
+            .map(
+              (p) => builder.buildPart(context, p),
+            )
+            .nonNulls,
+        const SliverSizedBox(height: 24),
+        if (canCustomize)
+          const SliverToBoxAdapter(
+            child: AddCustomDetailsButton(),
+          ),
+      ],
       sheetState: sheetState,
     );
   }

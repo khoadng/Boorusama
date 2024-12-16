@@ -14,6 +14,7 @@ import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
+import 'booru_config_layout_view.dart';
 import 'download.dart';
 import 'gestures.dart';
 import 'listing.dart';
@@ -56,6 +57,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.gestureTab,
     this.imageViewerTab,
     this.listingTab,
+    this.layoutTab,
     this.canSubmit,
     required this.initialTab,
     this.footer,
@@ -69,13 +71,13 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Widget? gestureTab;
   final Widget? imageViewerTab;
   final Widget? listingTab;
+  final Widget? layoutTab;
 
   final String? initialTab;
 
   final Widget? footer;
 
   final bool Function(BooruConfigData config)? canSubmit;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final editId = ref.watch(editBooruConfigIdProvider);
@@ -83,6 +85,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final tabMap = {
       if (authTab != null) 'booru.authentication': authTab!,
       'Listing': listingTab ?? const DefaultBooruConfigListingView(),
+      'settings.appearance.appearance':
+          layoutTab ?? const DefaultBooruConfigLayoutView(),
       'booru.download': downloadTab ?? const BooruConfigDownloadView(),
       'Search': searchTab ?? const DefaultBooruConfigSearchView(),
       'booru.gestures': gestureTab ?? const DefaultBooruConfigGesturesView(),

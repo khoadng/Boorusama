@@ -7,6 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../boorus/engine/providers.dart';
+import '../configs/ref.dart';
+import '../routers/routers.dart';
 import 'booru_scope.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
@@ -45,7 +47,10 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final customHome = ref.watch(currentBooruBuilderProvider)?.homeViewBuilder;
+    final layout = ref.watchLayoutConfigs;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final customHome = booruBuilder?.homeViewBuilder;
+    final viewKey = layout?.home;
 
     final views = [
       if (customHome != null)
@@ -75,12 +80,17 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
           context,
           constraints,
           controller,
+          viewKey,
         ),
       ],
       desktopViews: [
         ...views,
         ...coreDesktopViewBuilder(
           previousItemCount: views.length,
+          viewKey: viewKey,
+          searchPageBuilder: () =>
+              booruBuilder?.searchPageBuilder.call(context, null) ??
+              const UnimplementedPage(),
         ),
       ],
     );

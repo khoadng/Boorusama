@@ -6,10 +6,23 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../configs/current.dart';
+import '../configs/ref.dart';
 import '../settings/providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
+import 'theme_configs.dart';
 import 'theme_mode.dart';
+
+//FIXME: remove this when premium is implemented
+const kHasPremium = true;
+
+final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
+  final themeConfigs =
+      ref.watch(currentBooruConfigProvider.select((value) => value.theme));
+
+  return themeConfigs != null && themeConfigs.enable;
+});
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
@@ -26,6 +39,8 @@ class ThemeBuilder extends ConsumerWidget {
     final enableDynamicColor = ref
         .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
+    final colors = ref.watch(settingsProvider.select((value) => value.colors));
+
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
@@ -37,12 +52,29 @@ class ThemeBuilder extends ConsumerWidget {
                 : (null, null)
             : (null, null);
 
-        final scheme = AppTheme.generateScheme(
-          theme,
-          dynamicDarkScheme: dark,
-          dynamicLightScheme: light,
-          systemDarkMode: systemDarkMode,
-        );
+        final customColorScheme = kHasPremium
+            ? ref.watchThemeConfigs?.enable == true
+                ? getSchemeFromColorSettings(
+                    ref.watchConfig.theme?.colors,
+                    dynamicDarkScheme: dark,
+                    dynamicLightScheme: light,
+                    systemDarkMode: systemDarkMode,
+                  )
+                : getSchemeFromColorSettings(
+                    colors,
+                    dynamicDarkScheme: dark,
+                    dynamicLightScheme: light,
+                    systemDarkMode: systemDarkMode,
+                  )
+            : null;
+
+        final scheme = customColorScheme ??
+            AppTheme.generateScheme(
+              theme,
+              dynamicDarkScheme: dark,
+              dynamicLightScheme: light,
+              systemDarkMode: systemDarkMode,
+            );
 
         return Builder(
           builder: (context) => ProviderScope(
@@ -53,7 +85,7 @@ class ThemeBuilder extends ConsumerWidget {
             ],
             child: builder(
               AppTheme.themeFrom(
-                theme,
+                customColorScheme != null ? null : theme,
                 colorScheme: scheme,
                 systemDarkMode: systemDarkMode,
               ),
