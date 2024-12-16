@@ -243,7 +243,7 @@ class _AddButton extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
+            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)
             : Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -42,7 +41,6 @@ class PoolGridItem extends ConsumerWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           highlightColor: Colors.transparent,
-                          splashFactory: FasterInkSplash.splashFactory,
                           splashColor: Colors.black38,
                           onTap: onTap,
                         ),

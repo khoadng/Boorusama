@@ -274,7 +274,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                           children: [
                             Positioned.fill(
                               child: Container(
-                                color: Colors.black.withOpacity(0.8),
+                                color: Colors.black.withValues(alpha: 0.8),
                               ),
                             ),
                             if (isHidden)
@@ -316,7 +316,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                           width: 25,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
+                            color: Colors.black.withValues(alpha: 0.7),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4)),
                           ),
@@ -328,7 +328,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         padding: const EdgeInsets.all(4),
                         margin: const EdgeInsets.all(1),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.withValues(alpha: 0.7),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                         ),
@@ -344,7 +344,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         padding: const EdgeInsets.all(4),
                         margin: const EdgeInsets.all(1),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.withValues(alpha: 0.7),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(4)),
                         ),
@@ -373,7 +373,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: Colors.black.withValues(alpha: 0.7),
           borderRadius: const BorderRadius.all(Radius.circular(4)),
         ),
         child: Row(
@@ -410,7 +410,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 4,
         ),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.black.withValues(alpha: 0.8),
         ),
         child: RichText(
           text: TextSpan(
@@ -450,7 +450,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
           vertical: 2,
         ),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface.withOpacity(0.8),
+          color: theme.colorScheme.surface.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Builder(

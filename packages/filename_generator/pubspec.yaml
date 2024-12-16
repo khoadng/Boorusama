@@ -3,7 +3,9 @@ description: A package that generates filenames for files.
 publish_to: none
 
 environment:
-  sdk: ^3.5.4
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   clock: ^1.1.1

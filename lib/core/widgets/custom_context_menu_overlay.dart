@@ -83,7 +83,7 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                             : Theme.of(context)
                                 .colorScheme
                                 .onSurfaceVariant
-                                .withOpacity(0.75),
+                                .withValues(alpha: 0.75),
                       ),
                 ),
         ),

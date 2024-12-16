@@ -219,7 +219,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                         text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).brightness.isLight
-                                  ? Colors.white.withOpacity(0.85)
+                                  ? Colors.white.withValues(alpha: 0.85)
                                   : null,
                             ),
                       ),

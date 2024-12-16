@@ -170,7 +170,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                       alignment: Alignment.topCenter,
                       colors: <Color>[
                         const Color.fromARGB(60, 0, 0, 0),
-                        Colors.black12.withOpacity(0),
+                        Colors.black12.withValues(alpha: 0),
                       ],
                     )
                   : null,

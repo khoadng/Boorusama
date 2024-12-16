@@ -114,7 +114,8 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                                     color: Theme.of(context).brightness.isLight
                                         ? !selected
                                             ? null
-                                            : Colors.white.withOpacity(0.85)
+                                            : Colors.white
+                                                .withValues(alpha: 0.85)
                                         : Theme.of(context)
                                             .colorScheme
                                             .hintColor,

@@ -204,7 +204,7 @@ class ExploreList extends ConsumerWidget {
                         alignment: Alignment.bottomCenter,
                         colors: [
                           const Color(0xC2000000),
-                          Colors.black12.withOpacity(0),
+                          Colors.black12.withValues(alpha: 0),
                         ],
                       ),
                     ),

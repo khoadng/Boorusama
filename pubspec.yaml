@@ -5,7 +5,12 @@ publish_to: "none"
 version: 3.21.5+122
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
+
+workspace:
+  - packages/foundation
+  - packages/booru_clients
+  - packages/filename_generator
 
 dependencies:
   # local packages
@@ -91,7 +96,7 @@ dependencies:
   rich_text_controller: ^1.4.2
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  searchfield: ^1.1.6
+  searchfield: ^1.2.1
   share_handler: ^0.0.20
   share_plus: ^10.0.2
   sliver_tools: ^0.2.12

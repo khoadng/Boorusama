@@ -18,7 +18,10 @@ void main() {
 
       test(
         'Hex to Color',
-        () => expect(ColorUtils.hexToColor('#F44336'), Color(Colors.red.value)),
+        () => expect(
+          ColorUtils.hexToColor('#F44336'),
+          Color(LegacyColor(Colors.red).value),
+        ),
       );
     },
   );

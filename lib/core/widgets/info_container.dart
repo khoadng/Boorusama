@@ -49,7 +49,7 @@ class WarningContainer extends StatelessWidget {
         color: Theme.of(context).colorScheme.error,
       ),
       titleBackgroundColor:
-          Theme.of(context).colorScheme.error.withOpacity(0.2),
+          Theme.of(context).colorScheme.error.withValues(alpha: 0.2),
       title: title,
       titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,

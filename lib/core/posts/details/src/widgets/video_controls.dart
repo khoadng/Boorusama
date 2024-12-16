@@ -55,7 +55,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           child: IgnorePointer(
             child: Container(
               decoration: BoxDecoration(
-                color: surfaceColor.withOpacity(0.8),
+                color: surfaceColor.withValues(alpha: 0.8),
               ),
             ),
           ),
@@ -132,7 +132,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                                 backgroundColor: Theme.of(context)
                                     .colorScheme
                                     .hintColor
-                                    .withOpacity(0.2),
+                                    .withValues(alpha: 0.2),
                                 playedColor:
                                     Theme.of(context).colorScheme.primary,
                                 bufferedColor:

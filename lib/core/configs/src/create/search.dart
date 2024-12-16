@@ -81,7 +81,7 @@ class BooruConfigSearchView extends ConsumerWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.8),
+                        .withValues(alpha: 0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -109,7 +109,7 @@ class BooruConfigSearchView extends ConsumerWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.8),
+                        .withValues(alpha: 0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -289,10 +289,16 @@ class _EffectiveTagPreview extends ConsumerWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.6),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainer
+            .withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.6),
+          color: Theme.of(context)
+              .colorScheme
+              .outlineVariant
+              .withValues(alpha: 0.6),
           width: 0.5,
         ),
       ),
@@ -320,7 +326,7 @@ class _EffectiveTagPreview extends ConsumerWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurfaceVariant
-                          .withOpacity(0.6),
+                          .withValues(alpha: 0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
