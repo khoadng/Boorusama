@@ -53,7 +53,11 @@ DetailsPart? parseDetailsPart(String part) {
 }
 
 List<CustomDetailsPartKey> convertDetailsParts(List<DetailsPart> parts) {
-  return parts.map((e) => CustomDetailsPartKey(e.name)).toList();
+  return parts.map(convertDetailsPart).toList();
+}
+
+CustomDetailsPartKey convertDetailsPart(DetailsPart part) {
+  return CustomDetailsPartKey(part.name);
 }
 
 final _knownPartsMap = {for (final part in DetailsPart.values) part.name: part};
