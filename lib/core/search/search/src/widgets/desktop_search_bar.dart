@@ -23,8 +23,6 @@ import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
 import 'selected_tag_list_with_data.dart';
 
-// Project imports:
-
 class DesktopSearchbar extends ConsumerStatefulWidget {
   const DesktopSearchbar({
     super.key,
