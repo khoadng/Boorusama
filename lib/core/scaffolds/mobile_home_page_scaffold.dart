@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/home/home_page_controller.dart';
-import 'package:boorusama/core/home/home_search_bar.dart';
-import 'package:boorusama/core/posts/count.dart';
-import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/core/search/selected_tags.dart';
-import 'package:boorusama/core/tags/configs/providers.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../boorus/engine/providers.dart';
+import '../configs/ref.dart';
+import '../foundation/display.dart';
+import '../home/home_page_controller.dart';
+import '../home/home_search_bar.dart';
+import '../posts/count/widgets.dart';
+import '../posts/listing/widgets.dart';
+import '../posts/post/providers.dart';
+import '../search/selected_tags/providers.dart';
+import '../tags/configs/providers.dart';
+import '../widgets/widgets.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({

@@ -28,7 +28,7 @@ class UpdateBooruConfigScope extends ConsumerWidget {
     if (config == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: Center(
+        body: const Center(
           child: Text('Config not found'),
         ),
       );

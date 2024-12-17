@@ -8,22 +8,24 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
-import 'package:boorusama/core/tags/tag/display.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/providers.dart';
+import '../../../core/posts/details/routes.dart';
+import '../../../core/posts/details/widgets.dart';
+import '../../../core/posts/details_parts/widgets.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/search/search/routes.dart';
+import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../../../core/widgets/widgets.dart';
+import '../feats/favorites/favorites.dart';
+import '../feats/posts/posts.dart';
+import '../feats/tags/tags.dart';
+import '../moebooru.dart';
 
 final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, Post>((ref, post) async {
@@ -209,7 +211,8 @@ Set<String>? _extractCharacter(
   if (tagGroups == null) return null;
 
   final tag = tagGroups.firstWhereOrNull(
-      (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character());
+    (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character(),
+  );
   final characterTags = tag?.tags.map((e) => e.rawName).toSet();
   return characterTags;
 }
@@ -221,7 +224,8 @@ List<String>? _extractArtist(
   if (tagGroups == null) return null;
 
   final tag = tagGroups.firstWhereOrNull(
-      (e) => TagCategory.fromLegacyId(e.category) == TagCategory.artist());
+    (e) => TagCategory.fromLegacyId(e.category) == TagCategory.artist(),
+  );
   final artistTags = tag?.tags.map((e) => e.rawName).toList();
   return artistTags;
 }
@@ -298,10 +302,11 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
 
     return SliverToBoxAdapter(
       child: booru?.whenMoebooru(
-              data: (data) => data.supportsFavorite(config.url)
-                  ? _Toolbar(post: post)
-                  : DefaultPostActionToolbar(post: post),
-              orElse: () => DefaultPostActionToolbar(post: post)) ??
+            data: (data) => data.supportsFavorite(config.url)
+                ? _Toolbar(post: post)
+                : DefaultPostActionToolbar(post: post),
+            orElse: () => DefaultPostActionToolbar(post: post),
+          ) ??
           DefaultPostActionToolbar(post: post),
     );
   }

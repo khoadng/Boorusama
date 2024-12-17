@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
+import '../../foundation/toast.dart';
+import '../../router.dart';
 import '../bulks/bulk_download_notifier.dart';
 import '../bulks/bulk_download_task.dart';
 import '../bulks/notifications/providers.dart';
@@ -53,7 +53,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
             notifQueue.remove(group);
 
             ref.read(bulkDownloadNotificationQueueProvider.notifier).state = {
-              ...notifQueue
+              ...notifQueue,
             };
           }
         }

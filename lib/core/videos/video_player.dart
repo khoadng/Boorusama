@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/booru_image.dart';
-import 'package:boorusama/dart.dart';
+import '../images/booru_image.dart';
+import '../utils/duration_utils.dart';
 
 //TODO: implement caching video
 class BooruVideo extends StatefulWidget {
@@ -50,7 +50,8 @@ class _BooruVideoState extends State<BooruVideo> {
 
   void _initVideoPlayerController() {
     _videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse(widget.url)); // TODO: dangerous parsing here
+      Uri.parse(widget.url),
+    ); // TODO: dangerous parsing here
 
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
 
@@ -141,10 +142,10 @@ class _BooruVideoState extends State<BooruVideo> {
                     ),
                   ],
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 24,
                   width: 24,
-                  child: const CircularProgressIndicator(),
+                  child: CircularProgressIndicator(),
                 ),
     );
   }

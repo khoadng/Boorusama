@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../foundation/platform.dart';
+import '../../settings/settings.dart';
 import '../path/validator.dart';
 
 enum BulkDownloadTaskStatus {

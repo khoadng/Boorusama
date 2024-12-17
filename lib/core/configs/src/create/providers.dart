@@ -3,13 +3,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/gestures.dart';
+import '../../../boorus/engine/providers.dart';
+import '../../../posts/rating/rating.dart';
+import '../../../settings/settings.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
+import '../gestures.dart';
 import '../manage/booru_config_provider.dart';
 import '../types.dart';
 
@@ -19,7 +20,8 @@ final editBooruConfigIdProvider = Provider.autoDispose<EditBooruConfigId>(
 
 final editBooruConfigProvider = NotifierProvider.autoDispose
     .family<EditBooruConfigNotifier, BooruConfigData, EditBooruConfigId>(
-        EditBooruConfigNotifier.new);
+  EditBooruConfigNotifier.new,
+);
 
 final initialBooruConfigProvider = Provider.autoDispose<BooruConfig>(
   (ref) => throw UnimplementedError(),
@@ -28,6 +30,24 @@ final initialBooruConfigProvider = Provider.autoDispose<BooruConfig>(
 final booruConfigDataProvider = StateProvider.autoDispose<BooruConfigData>(
   (ref) => ref.watch(initialBooruConfigProvider).toBooruConfigData(),
   dependencies: [initialBooruConfigProvider],
+);
+
+typedef BooruSiteValidator = Future<bool> Function();
+
+final booruSiteValidatorProvider =
+    FutureProvider.autoDispose.family<bool, BooruConfigAuth>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    final siteValidator = repo?.siteValidator(config);
+
+    if (siteValidator != null) {
+      return siteValidator();
+    }
+
+    return Future.value(false);
+  },
 );
 
 extension UpdateDataX on WidgetRef {
@@ -101,14 +121,16 @@ class EditBooruConfigNotifier
     String? customDownloadFileNameFormat,
   ) =>
       state = state.copyWith(
-          customDownloadFileNameFormat: () => customDownloadFileNameFormat);
+        customDownloadFileNameFormat: () => customDownloadFileNameFormat,
+      );
 
   void updateCustomBulkDownloadFileNameFormat(
     String? customBulkDownloadFileNameFormat,
   ) =>
       state = state.copyWith(
-          customBulkDownloadFileNameFormat: () =>
-              customBulkDownloadFileNameFormat);
+        customBulkDownloadFileNameFormat: () =>
+            customBulkDownloadFileNameFormat,
+      );
 
   void updateImageDetailsQuality(
     String? imageDetailsQuality,
@@ -119,8 +141,8 @@ class EditBooruConfigNotifier
     String? defaultPreviewImageButtonAction,
   ) =>
       state = state.copyWith(
-          defaultPreviewImageButtonAction: () =>
-              defaultPreviewImageButtonAction);
+        defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
+      );
 
   void updateGranularRatingFilter(
     Set<Rating>? granularRatingFilter,

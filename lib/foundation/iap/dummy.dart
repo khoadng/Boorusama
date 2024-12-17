@@ -59,11 +59,11 @@ class DummyInAppPurchase implements InAppPurchase {
 }
 
 class DummySubscriptionManager implements SubscriptionManager {
-  final DummyInAppPurchase iap;
-
   DummySubscriptionManager({
     required this.iap,
   });
+
+  final DummyInAppPurchase iap;
 
   @override
   Future<bool> hasActiveSubscription(String id) async {

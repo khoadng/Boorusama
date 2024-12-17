@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/anime-pictures/providers.dart';
-import 'package:boorusama/boorus/danbooru/explores/explore_section.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/explores/explore_page.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/listing.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/configs/ref.dart';
+import '../../core/posts/explores/widgets.dart';
+import '../../core/posts/listing/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/widgets/booru_segmented_button.dart';
+import 'providers.dart';
 
 final _eroticOnProvider = StateProvider<bool>((ref) => false);
 

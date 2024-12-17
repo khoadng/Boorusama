@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/version.dart';
+import 'package:boorusama/core/foundation/version.dart';
 
 void main() {
   group('significant version test', () {

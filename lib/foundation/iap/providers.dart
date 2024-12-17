@@ -2,8 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/iap/iap.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../core/foundation/loggers.dart';
+import 'dummy.dart';
+import 'in_app_purchase.dart';
+import 'subscription.dart';
+
+// Project imports:
+
 
 final iapProvider = Provider<InAppPurchase>((ref) {
   throw UnimplementedError();
@@ -48,32 +53,32 @@ const _kPackages = <Package>[
   ),
 ];
 
-const _kVNDPackages = <Package>[
-  Package(
-    id: 'annual_subscription',
-    product: ProductDetails(
-      id: 'annual_subscription',
-      title: '1 year',
-      description: '',
-      price: '₫260000',
-      rawPrice: 260000,
-      currencyCode: 'VND',
-    ),
-    type: PackageType.annual,
-  ),
-  Package(
-    id: 'monthly_subscription',
-    product: ProductDetails(
-      id: 'monthly_subscription',
-      title: '1 month',
-      description: '',
-      price: '₫45000',
-      rawPrice: 45000,
-      currencyCode: 'VND',
-    ),
-    type: PackageType.monthly,
-  ),
-];
+// const _kVNDPackages = <Package>[
+//   Package(
+//     id: 'annual_subscription',
+//     product: ProductDetails(
+//       id: 'annual_subscription',
+//       title: '1 year',
+//       description: '',
+//       price: '₫260000',
+//       rawPrice: 260000,
+//       currencyCode: 'VND',
+//     ),
+//     type: PackageType.annual,
+//   ),
+//   Package(
+//     id: 'monthly_subscription',
+//     product: ProductDetails(
+//       id: 'monthly_subscription',
+//       title: '1 month',
+//       description: '',
+//       price: '₫45000',
+//       rawPrice: 45000,
+//       currencyCode: 'VND',
+//     ),
+//     type: PackageType.monthly,
+//   ),
+// ];
 
 Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
   Logger logger,

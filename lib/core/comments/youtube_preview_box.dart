@@ -8,9 +8,9 @@ import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../foundation/url_launcher.dart';
+import '../images/dio_extended_image.dart';
+import '../images/providers.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
@@ -127,12 +127,13 @@ PreviewUrlData parseHtml(String text) {
   final html = parse(text);
   final metas = html.getElementsByTagName('meta');
 
-  final props = metas
-      .where((e) => e.attributes['property']?.isNotEmpty ?? false)
-      .map((e) => _MetaElement(
-            e.attributes['property']!,
-            e.attributes['content'] ?? '',
-          ));
+  final props =
+      metas.where((e) => e.attributes['property']?.isNotEmpty ?? false).map(
+            (e) => _MetaElement(
+              e.attributes['property']!,
+              e.attributes['content'] ?? '',
+            ),
+          );
 
   final propMap = {for (final p in props) p.property: p.content};
 

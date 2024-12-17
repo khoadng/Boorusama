@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/dart.dart';
+import '../settings/settings.dart';
+import '../utils/color_utils.dart';
 
 extension DynamicColorX on BuildContext {
   ChipColors? generateChipColors(

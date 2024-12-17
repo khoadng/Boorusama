@@ -7,28 +7,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v1/create_gelbooru_v1_config_page.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/downloads/urls.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/search/search_ui.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/widgets/info_container.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/foundation/html.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/post/tags.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/search/search/widgets.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../core/widgets/info_container.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru/gelbooru.dart';
+import 'create_gelbooru_v1_config_page.dart';
 
 part 'providers.dart';
 
@@ -106,6 +113,62 @@ class GelbooruV1Builder
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder =
       kFallbackPostDetailsUIBuilder;
+}
+
+class GelbooruV1Repository implements BooruRepository {
+  const GelbooruV1Repository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(gelbooruV1PostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(gelbooruV1AutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => GelbooruV1Client(baseUrl: config.url, dio: dio)
+        .getPosts()
+        .then((value) => true);
+  }
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {

@@ -2,19 +2,13 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/tags/tag/tag.dart';
 
 class SankakuPost extends Equatable
-    with
-        MediaInfoMixin,
-        TranslatedMixin,
-        ImageInfoMixin,
-        VideoInfoMixin,
-        TagListCheckMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements Post {
   SankakuPost({
     required this.id,

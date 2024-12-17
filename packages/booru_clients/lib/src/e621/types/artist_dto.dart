@@ -1,5 +1,4 @@
 class ArtistDto {
-
   ArtistDto({
     this.id,
     this.name,
@@ -60,7 +59,6 @@ class ArtistDto {
 }
 
 class UrlDto {
-
   UrlDto({
     this.id,
     this.artistId,

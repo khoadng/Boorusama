@@ -4,7 +4,7 @@
 import 'package:version/version.dart';
 
 // Project imports:
-import 'package:boorusama/core/backups/types.dart';
+import '../../../backups/types.dart';
 import '../booru_config.dart';
 
 class BooruConfigExportData {

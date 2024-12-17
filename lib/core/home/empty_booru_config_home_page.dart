@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/home/side_bar_menu.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/router.dart';
+import '../configs/routes.dart';
+import '../theme.dart';
+import 'side_bar_menu.dart';
 
 class EmptyBooruConfigHomePage extends ConsumerStatefulWidget {
   const EmptyBooruConfigHomePage({

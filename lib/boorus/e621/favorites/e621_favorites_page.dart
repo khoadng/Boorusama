@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/failsafe.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../posts/posts.dart';
 
 class E621FavoritesPage extends ConsumerWidget {
   const E621FavoritesPage({super.key});
@@ -39,8 +39,9 @@ class E621FavoritesPageInternal extends ConsumerWidget {
     final query = 'fav:${config.auth.login?.replaceAll(' ', '_')}';
 
     return FavoritesPageScaffold(
-        favQueryBuilder: () => query,
-        fetcher: (page) =>
-            ref.read(e621PostRepoProvider(config)).getPosts(query, page));
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(e621PostRepoProvider(config)).getPosts(query, page),
+    );
   }
 }

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import 'comments.dart';
 
 class GelbooruV2CommentPage extends ConsumerWidget {
   const GelbooruV2CommentPage({

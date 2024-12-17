@@ -10,26 +10,33 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/anime-pictures/anime_pictures_home_page.dart';
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/booru_builder_types.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/downloads/urls.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/details.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/core/tags/groups/item.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/router.dart';
-import '../booru_builder_default.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/foundation/caching.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/routes.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import '../../core/settings/settings.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
+import 'anime_pictures_home_page.dart';
 import 'create_anime_pictures_config_page.dart';
 import 'providers.dart';
 
@@ -141,6 +148,63 @@ class AnimePicturesBuilder
   );
 }
 
+class AnimePicturesRepository implements BooruRepository {
+  const AnimePicturesRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(animePicturesPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(animePicturesAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return ref.read(animePicturesDownloadFileUrlExtractorProvider(config));
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => AnimePicturesClient(
+          baseUrl: config.url,
+          dio: dio,
+        ).getPosts().then((value) => true);
+  }
+}
+
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
   const AnimePicturesCurrentUserIdScope({
     super.key,
@@ -242,7 +306,7 @@ class AnimePicturesDownloadFileUrlExtractor
   @override
   final Cache<DownloadUrlData> cache = Cache(
     maxCapacity: 10,
-    staleDuration: Duration(minutes: 5),
+    staleDuration: const Duration(minutes: 5),
   );
 }
 
@@ -270,11 +334,13 @@ final postTagsProvider =
                 ?.where((e) => e.tag?.type == c)
                 .nonNulls
                 .map((e) => e.tag!)
-                .map((e) => Tag(
-                      name: e.tag ?? '???',
-                      category: animePicturesTagTypeToTagCategory(e.type),
-                      postCount: e.num ?? 0,
-                    ))
+                .map(
+                  (e) => Tag(
+                    name: e.tag ?? '???',
+                    category: animePicturesTagTypeToTagCategory(e.type),
+                    postCount: e.num ?? 0,
+                  ),
+                )
                 .toList() ??
             [],
       ),

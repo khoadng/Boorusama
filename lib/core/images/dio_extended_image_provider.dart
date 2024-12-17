@@ -14,7 +14,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/http/dio.dart';
+import '../http/http.dart';
 
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>
@@ -130,7 +130,8 @@ class DioExtendedNetworkImageProvider
 
   @override
   Future<ExtendedNetworkImageProvider> obtainKey(
-      ImageConfiguration configuration) {
+    ImageConfiguration configuration,
+  ) {
     return SynchronousFuture<ExtendedNetworkImageProvider>(this);
   }
 
@@ -194,7 +195,8 @@ class DioExtendedNetworkImageProvider
     String md5Key,
   ) async {
     final Directory cacheImagesDirectory = Directory(
-        join((await getTemporaryDirectory()).path, cacheImageFolderName));
+      join((await getTemporaryDirectory()).path, cacheImageFolderName),
+    );
     Uint8List? data;
     // exist, try to find cache image file
     if (cacheImagesDirectory.existsSync()) {
@@ -248,7 +250,8 @@ class DioExtendedNetworkImageProvider
       final Uint8List bytes = Uint8List.fromList(response.data!);
       if (bytes.lengthInBytes == 0) {
         return Future<Uint8List>.error(
-            StateError('NetworkImage is an empty file: $resolved'));
+          StateError('NetworkImage is an empty file: $resolved'),
+        );
       }
 
       return bytes;
@@ -298,8 +301,12 @@ class DioExtendedNetworkImageProvider
               validateStatus: (status) => status == HttpStatus.ok,
             ),
             onReceiveProgress: chunkEvents != null
-                ? (count, total) => chunkEvents.add(ImageChunkEvent(
-                    cumulativeBytesLoaded: count, expectedTotalBytes: total))
+                ? (count, total) => chunkEvents.add(
+                      ImageChunkEvent(
+                        cumulativeBytesLoaded: count,
+                        expectedTotalBytes: total,
+                      ),
+                    )
                 : null,
           ),
         );

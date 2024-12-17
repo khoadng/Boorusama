@@ -3,12 +3,12 @@ import 'package:booru_clients/e621.dart' as e;
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/datetimes/types.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/foundation/caching.dart';
-import 'package:boorusama/foundation/http.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/foundation/caching.dart';
+import '../../../core/http/http.dart';
+import '../../../core/posts/explores/explore.dart';
+import '../../../core/posts/post/post.dart';
+import 'posts.dart';
 
 abstract interface class E621PopularRepository {
   PostsOrError<E621Post> getPopularPosts(DateTime date, TimeScale timeScale);
@@ -40,16 +40,18 @@ class E621PopularRepositoryApi implements E621PopularRepository {
 
         if (cached != null && cached.isNotEmpty) return cached.toResult();
 
-        final response = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPosts(
-            date: date,
-            scale: switch (timeScale) {
-              TimeScale.day => e.TimeScale.day,
-              TimeScale.week => e.TimeScale.week,
-              TimeScale.month => e.TimeScale.month,
-            },
+        final response = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPosts(
+              date: date,
+              scale: switch (timeScale) {
+                TimeScale.day => e.TimeScale.day,
+                TimeScale.week => e.TimeScale.week,
+                TimeScale.month => e.TimeScale.month,
+              },
+            ),
           ),
-        ));
+        );
 
         final data = response.map(postDtoToPostNoMetadata).toList();
 

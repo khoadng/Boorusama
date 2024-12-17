@@ -2,7 +2,6 @@
 import 'types.dart';
 
 class CommentDto {
-
   CommentDto({
     this.id,
     this.user,

@@ -2,9 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/current.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts.dart';
+import '../boorus/engine/providers.dart';
+import '../configs/config.dart';
+import '../configs/current.dart';
+import '../posts/post/post.dart';
+import 'notes.dart';
 
 final notesControllerProvider = NotifierProvider.autoDispose
     .family<NotesControllerNotifier, NotesControllerState, Post>(
@@ -16,4 +18,19 @@ final notesControllerProvider = NotifierProvider.autoDispose
 
 final emptyNoteRepoProvider = Provider<NoteRepository>(
   (_) => const EmptyNoteRepository(),
+);
+
+final noteRepoProvider = Provider.family<NoteRepository, BooruConfigAuth>(
+  (ref, config) {
+    final repo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    final noteRepo = repo?.note(config);
+
+    if (noteRepo != null) {
+      return noteRepo;
+    }
+
+    return ref.watch(emptyNoteRepoProvider);
+  },
 );

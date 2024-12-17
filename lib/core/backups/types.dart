@@ -78,7 +78,8 @@ final class ImportInvalidJson extends ImportError {
 final class ImportInvalidJsonField extends ImportError {
   const ImportInvalidJsonField()
       : super._(
-            'Missing required fields or invalid field type, are you sure this is a valid backup file?');
+          'Missing required fields or invalid field type, are you sure this is a valid backup file?',
+        );
 }
 
 class ExportDataPayload {

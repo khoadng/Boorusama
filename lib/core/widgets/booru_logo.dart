@@ -6,11 +6,11 @@ import 'package:extended_image/extended_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/posts/sources.dart';
+import '../boorus/booru/booru.dart';
+import '../configs/config.dart';
+import '../images/dio_extended_image.dart';
+import '../images/providers.dart';
+import '../posts/sources/source.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({

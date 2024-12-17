@@ -2,7 +2,6 @@
 import 'package:path/path.dart' as path;
 
 class PostV2Dto {
-
   PostV2Dto({
     this.previewUrl,
     this.sampleUrl,

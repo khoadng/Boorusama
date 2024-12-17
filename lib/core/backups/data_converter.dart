@@ -65,30 +65,40 @@ Either<ImportError, ExportDataPayload> tryDecodeData({
   required String data,
 }) =>
     Either.Do(($) {
-      final json = $(tryDecodeJson<Map<String, dynamic>>(data)
-          .mapLeft((a) => const ImportInvalidJson()));
+      final json = $(
+        tryDecodeJson<Map<String, dynamic>>(data)
+            .mapLeft((a) => const ImportInvalidJson()),
+      );
 
-      final version = $(Either.tryCatch(
-        () => json['version'] as int,
-        (o, s) => const ImportInvalidJsonField(),
-      ));
+      final version = $(
+        Either.tryCatch(
+          () => json['version'] as int,
+          (o, s) => const ImportInvalidJsonField(),
+        ),
+      );
 
-      final date = $(Either.tryCatch(
-        () => DateTime.parse(json['date'] as String),
-        (o, s) => const ImportInvalidJsonField(),
-      ));
+      final date = $(
+        Either.tryCatch(
+          () => DateTime.parse(json['date'] as String),
+          (o, s) => const ImportInvalidJsonField(),
+        ),
+      );
 
-      final exportVersion = $(Either.tryCatch(
-        () => json['exportVersion'] != null
-            ? Version.parse(json['exportVersion'] as String)
-            : null,
-        (o, s) => const ImportInvalidJsonField(),
-      ));
+      final exportVersion = $(
+        Either.tryCatch(
+          () => json['exportVersion'] != null
+              ? Version.parse(json['exportVersion'] as String)
+              : null,
+          (o, s) => const ImportInvalidJsonField(),
+        ),
+      );
 
-      final payload = $(Either.tryCatch(
-        () => json['data'] as List<dynamic>,
-        (o, s) => const ImportInvalidJsonField(),
-      ));
+      final payload = $(
+        Either.tryCatch(
+          () => json['data'] as List<dynamic>,
+          (o, s) => const ImportInvalidJsonField(),
+        ),
+      );
 
       return ExportDataPayload(
         version: version,

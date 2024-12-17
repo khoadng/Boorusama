@@ -6,8 +6,8 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/core/comments/comment.dart';
-import 'package:boorusama/core/configs/config.dart';
+import '../../../core/comments/comment.dart';
+import '../../../core/configs/config.dart';
 
 abstract interface class GelbooruV2CommentRepository {
   Future<List<Comment>> getComments(int postId);

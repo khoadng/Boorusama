@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/iap/iap.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/iap/iap.dart';
+import '../foundation/loggers.dart';
+import '../foundation/toast.dart';
+import '../foundation/url_launcher.dart';
+import '../widgets/widgets.dart';
 import 'premiums.dart';
 
 class PremiumPage extends ConsumerStatefulWidget {
@@ -62,7 +62,7 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.6),
+                        .withValues(alpha: 0.6),
                   ),
             ),
             Text('You are subscribed to ${package.product.title}'),
@@ -84,8 +84,10 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (url == null) {
-                                logger.logW('Subscription',
-                                    'Management URL is null. Cannot open.');
+                                logger.logW(
+                                  'Subscription',
+                                  'Management URL is null. Cannot open.',
+                                );
 
                                 showErrorToast(
                                   context,
@@ -142,11 +144,11 @@ class PremiumOffersPage extends ConsumerWidget {
             if (success == true) {
               showDialog(
                 context: context,
-                builder: (context) => Dialog(
-                  shape: const RoundedRectangleBorder(
+                builder: (context) => const Dialog(
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
-                  child: const PremiumThanksDialog(),
+                  child: PremiumThanksDialog(),
                 ),
               );
             } else if (success == false) {
@@ -186,7 +188,7 @@ class PremiumOffersPage extends ConsumerWidget {
                           filterQuality: FilterQuality.none,
                         ),
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           kPremiumBrandNameFull,
                           style: TextStyle(
@@ -373,13 +375,13 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
                   onPurchase: onPurchase,
                 ),
                 error: (e, st) => Text('Error: $e'),
-                loading: () => Center(
+                loading: () => const Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                    padding: EdgeInsets.only(bottom: 16),
                     child: SizedBox(
                       height: 20,
                       width: 20,
-                      child: const CircularProgressIndicator(),
+                      child: CircularProgressIndicator(),
                     ),
                   ),
                 ),
@@ -415,10 +417,10 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Select your plan'),
+              Text('Select your plan'),
             ],
           ),
           const SizedBox(height: 8),
@@ -485,7 +487,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.6),
+                            .withValues(alpha: 0.6),
                       ),
                   children: [
                     TextSpan(
@@ -560,7 +562,10 @@ class SubscriptionPlanTile extends StatelessWidget {
               border: Border.all(
                 color: selected
                     ? Theme.of(context).colorScheme.onSurface
-                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.25),
+                    : Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.25),
               ),
             ),
             child: Row(
@@ -568,15 +573,17 @@ class SubscriptionPlanTile extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(switch (package.type) {
-                      null => '???',
-                      PackageType.monthly => 'Monthly',
-                      PackageType.annual => 'Yearly',
-                    }),
+                    Text(
+                      switch (package.type) {
+                        null => '???',
+                        PackageType.monthly => 'Monthly',
+                        PackageType.annual => 'Yearly',
+                      },
+                    ),
                     if (saveIndicator != null) ...[
                       const SizedBox(width: 8),
                       saveIndicator!,
-                    ]
+                    ],
                   ],
                 ),
                 Column(
@@ -596,7 +603,7 @@ class SubscriptionPlanTile extends StatelessWidget {
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withOpacity(0.6),
+                                  .withValues(alpha: 0.6),
                             ),
                           ),
                         ],
@@ -632,7 +639,7 @@ class BenefitCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(
+          const Text(
             '•',
             style: TextStyle(
               fontSize: 32,
@@ -657,7 +664,7 @@ class BenefitCard extends StatelessWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.6),
+                        .withValues(alpha: 0.6),
                   ),
                 ),
               ],

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/networking.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../foundation/networking.dart';
+import 'conditional_parent_widget.dart';
+import 'network_unavailable_indicator.dart';
 
 class NetworkUnavailableIndicatorWithState extends ConsumerWidget {
   const NetworkUnavailableIndicatorWithState({

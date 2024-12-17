@@ -7,14 +7,14 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/sankaku/sankaku.dart';
-import 'package:boorusama/core/configs/failsafe.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/home/home_navigation_tile.dart';
-import 'package:boorusama/core/home/home_page_scaffold.dart';
-import 'package:boorusama/core/home/side_menu_tile.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/router.dart';
+import '../../core/configs/failsafe.dart';
+import '../../core/configs/ref.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/posts/favorites/routes.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import 'sankaku.dart';
 
 class SankakuHomePage extends ConsumerWidget {
   const SankakuHomePage({super.key});

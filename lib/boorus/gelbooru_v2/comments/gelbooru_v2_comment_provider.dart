@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/configs/config.dart';
+import '../../../core/configs/config.dart';
+import '../gelbooru_v2.dart';
+import 'comments.dart';
 
 final gelbooruV2CommentRepoProvider =
     Provider.family<GelbooruV2CommentRepository, BooruConfigAuth>(

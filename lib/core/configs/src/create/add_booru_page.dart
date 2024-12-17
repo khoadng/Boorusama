@@ -7,10 +7,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../boorus/booru/providers.dart';
+import '../../../boorus/engine/providers.dart';
+import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../edit_booru_config_id.dart';
 import '../validator/booru_url_error.dart';
@@ -216,19 +216,20 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           valueListenable: booruUrlError,
           builder: (_, error, __) => error.fold(
             (e) => Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: ValueListenableBuilder(
+                valueListenable: inputText,
+                builder: (_, input, __) => Text(
+                  e.message(input),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                 ),
-                child: ValueListenableBuilder(
-                  valueListenable: inputText,
-                  builder: (_, input, __) => Text(
-                    e.message(input),
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                  ),
-                )),
+              ),
+            ),
             (uri) => const SizedBox.shrink(),
           ),
         ),

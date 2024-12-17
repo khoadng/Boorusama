@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
 
 class PostDto {
-
   PostDto({
     this.previewUrl,
     this.sampleUrl,

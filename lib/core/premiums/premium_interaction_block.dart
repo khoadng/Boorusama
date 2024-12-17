@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/premiums/premiums.dart';
-import 'package:boorusama/router.dart';
+import 'premiums.dart';
+import 'routes.dart';
 
 class PremiumInteractionBlock extends ConsumerWidget {
   const PremiumInteractionBlock({
@@ -75,7 +75,7 @@ class PremiumInteractionBlock extends ConsumerWidget {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    context.push('/premium');
+                    goToPremiumPage(context);
                   },
                 ),
               ),

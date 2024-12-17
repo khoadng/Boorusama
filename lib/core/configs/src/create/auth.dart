@@ -6,10 +6,10 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../boorus/booru/providers.dart';
+import '../../../foundation/toast.dart';
+import '../../../theme.dart';
 import '../booru_config.dart';
 import 'cookie_access_webview_page.dart';
 import 'providers.dart';
@@ -28,9 +28,11 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
-    final passHash = ref.watch(editBooruConfigProvider(
-      ref.watch(editBooruConfigIdProvider),
-    ).select((value) => value.passHash));
+    final passHash = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.passHash),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

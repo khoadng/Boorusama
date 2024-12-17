@@ -6,19 +6,28 @@ import 'package:booru_clients/e621.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/e621/configs/configs.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
-import 'package:boorusama/core/configs/manage.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts/details.dart';
-import '../booru_builder_default.dart';
-import '../booru_builder_types.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
+import 'configs/configs.dart';
+import 'favorites/favorite_repository_impl.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
 import 'posts/posts.dart';
@@ -48,14 +57,16 @@ final e621AutocompleteRepoProvider =
       final dtos = await client.getAutocomplete(query: query);
 
       return dtos
-          .map((e) => AutocompleteData(
-                type: AutocompleteData.tag,
-                label: e.name?.replaceAll('_', ' ') ?? '',
-                value: e.name ?? '',
-                category: intToE621TagCategory(e.category).name,
-                postCount: e.postCount,
-                antecedent: e.antecedentName,
-              ))
+          .map(
+            (e) => AutocompleteData(
+              type: AutocompleteData.tag,
+              label: e.name?.replaceAll('_', ' ') ?? '',
+              value: e.name ?? '',
+              category: intToE621TagCategory(e.category).name,
+              postCount: e.postCount,
+              antecedent: e.antecedentName,
+            ),
+          )
           .toList();
     },
   );
@@ -247,4 +258,63 @@ class E621Builder
       DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
     },
   );
+}
+
+class E621Repository implements BooruRepository {
+  const E621Repository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(e621PostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(e621AutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return E621FavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => E621Client(
+          baseUrl: config.url,
+          dio: dio,
+          login: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
 }
