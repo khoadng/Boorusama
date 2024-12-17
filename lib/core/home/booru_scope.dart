@@ -131,17 +131,6 @@ List<Widget> coreDesktopTabBuilder(
 ) {
   return [
     const Divider(),
-    if (kPremiumEnabled) ...[
-      HomeNavigationTile(
-        value: _v(1),
-        controller: controller,
-        constraints: constraints,
-        selectedIcon: Symbols.star,
-        icon: Symbols.star,
-        title: kPremiumBrandNameFull,
-      ),
-      const Divider(),
-    ],
     HomeNavigationTile(
       value: _v(2),
       controller: controller,

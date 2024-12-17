@@ -17,6 +17,8 @@ import '../../../configs/routes.dart';
 import '../../../foundation/scrolling.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../info/app_info.dart';
+import '../../../premiums/premium_page.dart';
+import '../../../premiums/strings.dart';
 import '../../../theme.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -79,6 +81,11 @@ const _entries = [
     title: 'settings.privacy.privacy',
     icon: FontAwesomeIcons.shieldHalved,
     content: PrivacyPage(),
+  ),
+  SettingEntry(
+    title: kPremiumBrandNameFull,
+    icon: FontAwesomeIcons.solidStar,
+    content: PremiumPage(),
   ),
 ];
 
