@@ -268,7 +268,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
           color: Theme.of(context).colorScheme.outlineVariant,
-          width: 1.5,
+          width: 0.5,
         ),
       ),
       child: ExpandablePanel(
