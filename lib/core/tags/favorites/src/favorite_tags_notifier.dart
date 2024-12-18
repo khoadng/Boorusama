@@ -180,7 +180,7 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   }
 
   Future<void> importWithLabelsFromRawString({
-    required BuildContext context,
+    BuildContext? context,
     required String text,
   }) async {
     await ref
@@ -191,7 +191,8 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
         .run()
         .then(
           (value) => value.fold(
-            (l) => showErrorToast(context, l.toString()),
+            (l) =>
+                context != null ? showErrorToast(context, l.toString()) : null,
             (r) => repo.createFrom(r).then((value) => load()),
           ),
         );

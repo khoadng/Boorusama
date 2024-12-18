@@ -118,7 +118,7 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
     void Function(String message, List<BooruConfig> configs)? onSuccess,
     Future<bool> Function(BooruConfigExportData data)? onWillImport,
   }) async {
-    tryDecodeData(data: jsonString)
+    return tryDecodeData(data: jsonString)
         .map(
       (a) => BooruConfigExportData(
         data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),

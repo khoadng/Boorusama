@@ -14,9 +14,13 @@ class AppServer {
   AppServer({
     required this.onError,
     required this.routes,
+    required this.serverName,
+    required this.appVersion,
   });
 
   final Map<String, Handler> routes;
+  final String serverName;
+  final String appVersion;
 
   HttpServer? _server;
   final void Function(String message) onError;
@@ -45,11 +49,12 @@ class AppServer {
 
       // Setup Bonsoir service
       final service = BonsoirService(
-        name: 'Boorusama Server',
+        name: serverName,
         type: '_boorusama._tcp',
         port: server.port,
         attributes: {
           'server': 'boorusama',
+          'version': appVersion,
           'ip': address,
           'port': server.port.toString(),
         },
@@ -91,68 +96,4 @@ class AppServer {
 
     return Response.notFound('Not found: $path');
   }
-}
-
-class AppClient {
-  AppClient({
-    this.onError,
-    this.onServiceFound,
-    this.onServiceResolved,
-    this.onServiceLost,
-  });
-
-  BonsoirDiscovery? _discovery;
-  StreamSubscription? _discoverySubscription;
-  final void Function(String message)? onError;
-  final void Function(BonsoirService service)? onServiceFound;
-  final void Function(BonsoirService service)? onServiceResolved;
-  final void Function(BonsoirService service)? onServiceLost;
-
-  Future<void> startDiscovery() async {
-    try {
-      _discovery = BonsoirDiscovery(type: '_boorusama._tcp');
-      await _discovery?.ready;
-
-      _discoverySubscription = _discovery?.eventStream?.listen((event) {
-        switch (event.type) {
-          case BonsoirDiscoveryEventType.discoveryServiceFound:
-            final service = event.service;
-            if (service != null) {
-              onServiceFound?.call(service);
-              service.resolve(_discovery!.serviceResolver);
-            }
-            break;
-          case BonsoirDiscoveryEventType.discoveryServiceResolved:
-            if (event.service != null) {
-              onServiceResolved?.call(event.service!);
-            }
-            break;
-          case BonsoirDiscoveryEventType.discoveryServiceLost:
-            if (event.service != null) {
-              onServiceLost?.call(event.service!);
-            }
-            break;
-          default:
-            onError?.call('Unknown discovery event: ${event.type}');
-        }
-      });
-
-      await _discovery?.start();
-    } catch (e) {
-      onError?.call('Failed to start discovery: $e');
-    }
-  }
-
-  void stopDiscovery() {
-    _discoverySubscription?.cancel();
-    _discoverySubscription = null;
-    _discovery?.stop();
-    _discovery = null;
-  }
-
-  void dispose() {
-    stopDiscovery();
-  }
-
-  bool get isDiscovering => _discovery != null;
 }

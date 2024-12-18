@@ -1,4 +1,7 @@
 PODS:
+  - bonsoir_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -18,14 +21,14 @@ PODS:
   - Firebase/Crashlytics (11.4.0):
     - Firebase/CoreOnly
     - FirebaseCrashlytics (~> 11.4.0)
-  - firebase_analytics (11.3.6):
+  - firebase_analytics (11.3.5):
     - Firebase/Analytics (= 11.4.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_core (3.8.1):
+  - firebase_core (3.8.0):
     - Firebase/CoreOnly (~> 11.4.0)
     - FlutterMacOS
-  - firebase_crashlytics (4.2.0):
+  - firebase_crashlytics (4.1.5):
     - Firebase/CoreOnly (~> 11.4.0)
     - Firebase/Crashlytics (~> 11.4.0)
     - firebase_core
@@ -176,6 +179,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - bonsoir_darwin (from `Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin`)
   - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin`)
   - cupertino_http (from `Flutter/ephemeral/.symlinks/plugins/cupertino_http/macos`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
@@ -218,6 +222,8 @@ SPEC REPOS:
     - PromisesSwift
 
 EXTERNAL SOURCES:
+  bonsoir_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin
   connectivity_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin
   cupertino_http:
@@ -262,14 +268,15 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
+  bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
+  connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
   cupertino_http: 1d506209e339211efa0764caa7b2de4bc55b6818
   device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
   dynamic_color: 2eaa27267de1ca20d879fbd6e01259773fb1670f
   Firebase: cf1b19f21410b029b6786a54e9764a0cacad3c99
-  firebase_analytics: a80b3d6645f2f12d626fde928b61dae12e5ea2ef
-  firebase_core: e4a35c426636a2cce00a5163df7ba69bfd0cca57
-  firebase_crashlytics: 4bf853f7b18680fe9095aebde606be148de3d4a8
+  firebase_analytics: 0b7c895f240587bbc77ed28144c1a599dd4523ff
+  firebase_core: d95c4a2225d7b6ed46bc31fb2a6f421fc7c8285b
+  firebase_crashlytics: 341c1dc63a96dbd0341196c10964669fff4874eb
   FirebaseAnalytics: 3feef9ae8733c567866342a1000691baaa7cad49
   FirebaseCore: e0510f1523bc0eb21653cac00792e1e2bd6f1771
   FirebaseCoreExtension: f1bc67a4702931a7caa097d8e4ac0a1b0d16720e
@@ -281,7 +288,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 7062189aabf7f50938a7b8b6614ffa97656eb0bf
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   fvp: e2a89a4b8c310b01cb81580f37b4cbd10f1cefd7
-  gal: 6a522c75909f1244732d4596d11d6a2f86ff37a5
+  gal: 61e868295d28fe67ffa297fae6dacebf56fd53e1
   GoogleAppMeasurement: 987769c4ca6b968f2479fbcc9fe3ce34af454b8e
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d

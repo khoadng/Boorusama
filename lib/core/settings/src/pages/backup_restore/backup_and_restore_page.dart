@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../backups/routes.dart';
+import '../../../../backups/sync_data_page.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/config.dart';
@@ -23,10 +26,10 @@ import '../../../../info/device_info.dart';
 import '../../../../info/package_info.dart';
 import '../../../../router.dart';
 import '../../../../tags/favorites/providers.dart';
+import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../providers/settings_notifier.dart';
 import '../../widgets/settings_page_scaffold.dart';
-import '../sync_data_page.dart';
 import 'backup_restore_tile.dart';
 import 'import_booru_configs_alert_dialog.dart';
 
@@ -46,6 +49,48 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
+        const _Title(
+          title: 'Transfer data',
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 12,
+            children: [
+              Expanded(
+                child: DataTransferCard(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.paperPlane,
+                  ),
+                  title: 'Send',
+                  onPressed: () {
+                    goToSyncDataPage(context, mode: TransferMode.export);
+                  },
+                ),
+              ),
+              Expanded(
+                child: DataTransferCard(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.download,
+                  ),
+                  title: 'Receive',
+                  onPressed: () {
+                    goToSyncDataPage(context, mode: TransferMode.import);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+        const _Title(
+          title: 'Manual backup',
+        ),
         const SizedBox(height: 8),
         _buildProfiles(),
         const SizedBox(height: 8),
@@ -57,21 +102,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         const SizedBox(height: 8),
         _buildSettings(),
         const SizedBox(height: 8),
-        const Divider(),
-        const SizedBox(height: 8),
-        FilledButton(
-          onPressed: () {
-            goToSyncDataPage(context, mode: TransferMode.export);
-          },
-          child: const Text('Transfer data to another device'),
-        ),
-        const SizedBox(height: 8),
-        ElevatedButton(
-          onPressed: () {
-            goToSyncDataPage(context, mode: TransferMode.import);
-          },
-          child: const Text('Import data from another device'),
-        ),
       ],
     );
   }
@@ -391,4 +421,96 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               );
         },
       );
+}
+
+class _Title extends StatelessWidget {
+  const _Title({
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 8,
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+        ),
+      ),
+    );
+  }
+}
+
+class DataTransferCard extends StatelessWidget {
+  const DataTransferCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onPressed,
+  });
+
+  final Widget icon;
+  final String title;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconTheme = theme.iconTheme;
+    final borderRadius = BorderRadius.circular(16);
+
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius,
+      ),
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+        ),
+        onTap: onPressed,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  shape: BoxShape.circle,
+                ),
+                child: Theme(
+                  data: theme.copyWith(
+                    iconTheme: iconTheme.copyWith(
+                      size: 18,
+                      color: theme.colorScheme.hintColor,
+                    ),
+                  ),
+                  child: icon,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
