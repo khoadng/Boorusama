@@ -150,11 +150,11 @@ const staticDanbooruDarkScheme = ColorScheme(
   secondaryContainer: Color(0xff2c2c3e),
   onSecondaryContainer: Colors.white,
   onTertiaryContainer: Colors.white,
-  surfaceContainerLowest: Color(0xff36384f), // Darkest
-  surfaceContainerLow: Color(0xff393b54), // Darker
-  surfaceContainer: Color(0xff3e4059), // Middle
-  surfaceContainerHigh: Color(0xff454760), // Lighter
-  surfaceContainerHighest: Color(0xff4c4e67), // Lightest
+  surfaceContainerLowest: Color.fromARGB(255, 19, 19, 27),
+  surfaceContainerLow: Color.fromARGB(255, 34, 36, 51),
+  surfaceContainer: Color.fromARGB(255, 46, 47, 66),
+  surfaceContainerHigh: Color.fromARGB(255, 53, 54, 73),
+  surfaceContainerHighest: Color.fromARGB(255, 61, 62, 82),
   primary: Color(0xff019ae6),
   onPrimary: Colors.white,
   secondary: Color(0xff019ae6),
@@ -194,11 +194,11 @@ const staticGreenScheme = ColorScheme(
   secondaryContainer: Color(0xff93c292),
   onSecondaryContainer: Colors.black,
   onTertiaryContainer: Colors.black,
-  surfaceContainerLowest: Color(0xff95c394), // Lightest
-  surfaceContainerLow: Color(0xff94c393), // Lighter
-  surfaceContainer: Color(0xff93c292), // Middle
-  surfaceContainerHigh: Color(0xff92bf91), // Slightly darker
-  surfaceContainerHighest: Color(0xff90bd8f), // Darkest
+  surfaceContainerLowest: Color.fromARGB(255, 180, 236, 179),
+  surfaceContainerLow: Color.fromARGB(255, 173, 226, 173),
+  surfaceContainer: Color.fromARGB(255, 165, 219, 164),
+  surfaceContainerHigh: Color.fromARGB(255, 158, 207, 157),
+  surfaceContainerHighest: Color.fromARGB(255, 151, 200, 150),
   primary: Color(0xff000198),
   onPrimary: Colors.white,
   secondary: Color(0xff000198),
@@ -219,11 +219,11 @@ const staticCoralPinkScheme = ColorScheme(
   onSecondary: Colors.white,
   secondaryContainer: Color(0xff2c1f1e),
   onSecondaryContainer: Colors.white,
-  surfaceContainerLowest: Color(0xff3d2c2a), // Darkest
-  surfaceContainerLow: Color(0xff3e2d2b), // Slightly darker
-  surfaceContainer: Color(0xff3e2d2b), // Middle
-  surfaceContainerHigh: Color(0xff42302e), // Slightly lighter
-  surfaceContainerHighest: Color(0xff453331), // Lightest
+  surfaceContainerLowest: Color.fromARGB(255, 35, 25, 24),
+  surfaceContainerLow: Color.fromARGB(255, 41, 30, 29),
+  surfaceContainer: Color.fromARGB(255, 51, 38, 37),
+  surfaceContainerHigh: Color.fromARGB(255, 60, 43, 41),
+  surfaceContainerHighest: Color.fromARGB(255, 70, 51, 49),
   onTertiaryContainer: Colors.white,
   error: Color(0xffc10105),
   onError: kOnErrorDarkColor,
