@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 
-// Project imports:
-
 class BooruSegmentedButton<T> extends StatefulWidget {
   const BooruSegmentedButton({
     super.key,

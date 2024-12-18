@@ -17,9 +17,6 @@ import '../../../../tags/favorites/widgets.dart';
 import '../../../../theme/utils.dart';
 import 'constants.dart';
 
-// Project imports:
-
-
 class FavoriteTagsSection extends ConsumerWidget {
   const FavoriteTagsSection({
     super.key,

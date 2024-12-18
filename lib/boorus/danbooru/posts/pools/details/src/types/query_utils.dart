@@ -1,6 +1,4 @@
 // Project imports:
-
-// Project imports:
 import '../../../pool/pool.dart';
 
 extension DanbooruPoolX on DanbooruPool {
