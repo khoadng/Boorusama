@@ -70,7 +70,7 @@ class _DownloadFolderSelectorSectionState
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
               color: Theme.of(context).colorScheme.outlineVariant,
-              width: 1.5,
+              width: 0.75,
             ),
           ),
           child: InkWell(

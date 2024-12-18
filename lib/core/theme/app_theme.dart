@@ -41,8 +41,8 @@ const staticDarkScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray48,
   onTertiaryContainer: Colors.white,
-  surfaceContainerLowest: GreyscaleShades.gray38,
-  surfaceContainerLow: GreyscaleShades.gray42,
+  surfaceContainerLowest: GreyscaleShades.gray12,
+  surfaceContainerLow: GreyscaleShades.gray32,
   surfaceContainer: GreyscaleShades.gray46,
   surfaceContainerHigh: GreyscaleShades.gray50,
   surfaceContainerHighest: GreyscaleShades.gray54,
@@ -64,8 +64,8 @@ const staticBlackScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray28,
   onTertiaryContainer: Colors.white,
-  surfaceContainerLowest: GreyscaleShades.gray24,
-  surfaceContainerLow: GreyscaleShades.gray28,
+  surfaceContainerLowest: GreyscaleShades.gray8,
+  surfaceContainerLow: GreyscaleShades.gray20,
   surfaceContainer: GreyscaleShades.gray32,
   surfaceContainerHigh: GreyscaleShades.gray36,
   surfaceContainerHighest: GreyscaleShades.gray40,
@@ -77,8 +77,8 @@ const staticBlackScheme = ColorScheme(
   onError: kOnErrorAmoledDarkColor,
   surface: Colors.black,
   onSurface: Colors.white,
-  outline: GreyscaleShades.gray160,
-  outlineVariant: GreyscaleShades.gray60,
+  outline: GreyscaleShades.gray120,
+  outlineVariant: GreyscaleShades.gray48,
 );
 
 const staticLightExtendedScheme = ExtendedColorScheme(

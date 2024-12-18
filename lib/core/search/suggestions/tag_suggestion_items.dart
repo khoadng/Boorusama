@@ -41,35 +41,38 @@ class TagSuggestionItems extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tagInfo = ref.watch(tagInfoProvider);
 
-    return Material(
-      color: backgroundColor ?? Theme.of(context).colorScheme.surface,
-      elevation: elevation ?? 4,
-      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 12,
-        ),
-        itemCount: _tags.length,
-        itemBuilder: (context, index) {
-          final tag = _tags[index];
+    return _tags.isNotEmpty
+        ? Material(
+            color: backgroundColor ?? Theme.of(context).colorScheme.surface,
+            elevation: elevation ?? 4,
+            borderRadius:
+                borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 12,
+              ),
+              itemCount: _tags.length,
+              itemBuilder: (context, index) {
+                final tag = _tags[index];
 
-          return TagSuggestionItem(
-            key: ValueKey(tag.value),
-            showCount: tag.hasCount && !ref.watchConfigAuth.hasStrictSFW,
-            onItemTap: onItemTap,
-            tag: tag,
-            dense: dense,
-            currentQuery: currentQuery,
-            textColorBuilder: textColorBuilder,
-            metatagExtractor: ref
-                .watch(currentBooruBuilderProvider)
-                ?.metatagExtractorBuilder
-                ?.call(tagInfo),
-          );
-        },
-      ),
-    );
+                return TagSuggestionItem(
+                  key: ValueKey(tag.value),
+                  showCount: tag.hasCount && !ref.watchConfigAuth.hasStrictSFW,
+                  onItemTap: onItemTap,
+                  tag: tag,
+                  dense: dense,
+                  currentQuery: currentQuery,
+                  textColorBuilder: textColorBuilder,
+                  metatagExtractor: ref
+                      .watch(currentBooruBuilderProvider)
+                      ?.metatagExtractorBuilder
+                      ?.call(tagInfo),
+                );
+              },
+            ),
+          )
+        : const SizedBox.shrink();
   }
 }
 

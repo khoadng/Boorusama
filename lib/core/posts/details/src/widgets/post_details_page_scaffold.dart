@@ -112,6 +112,8 @@ class _PostDetailPageScaffoldState<T extends Post>
         child: VisibilityDetector(
           key: const Key('post_details_page_scaffold'),
           onVisibilityChanged: (info) {
+            if (!mounted) return;
+
             if (info.visibleFraction == 0) {
               _previouslyPlaying = widget.controller.isVideoPlaying.value;
               if (_previouslyPlaying) {

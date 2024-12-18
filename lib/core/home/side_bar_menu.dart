@@ -45,9 +45,13 @@ class SideBarMenu extends ConsumerWidget {
       settingsProvider.select((value) => value.booruConfigSelectorPosition),
     );
     final viewKey = ref.watchConfig.layout?.home;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final navigator = Navigator.of(context);
+    final viewPadding = MediaQuery.viewPaddingOf(context);
 
     return Container(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      color: colorScheme.surfaceContainerLow,
       constraints: BoxConstraints.expand(
         width: min(MediaQuery.sizeOf(context).width * 0.85, 400),
       ),
@@ -56,15 +60,20 @@ class SideBarMenu extends ConsumerWidget {
         children: [
           if (position == BooruConfigSelectorPosition.side)
             ColoredBox(
-              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              color: colorScheme.surface,
               child: const SafeArea(
                 bottom: false,
                 child: BooruSelector(),
               ),
             ),
+          VerticalDivider(
+            color: colorScheme.outlineVariant,
+            thickness: 0.25,
+            width: 1,
+          ),
           Expanded(
             child: ColoredBox(
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              color: colorScheme.surfaceContainerLow,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
@@ -72,7 +81,7 @@ class SideBarMenu extends ConsumerWidget {
                   children: [
                     if (initialContent != null)
                       SizedBox(
-                        height: MediaQuery.viewPaddingOf(context).top,
+                        height: viewPadding.top,
                       )
                     else
                       const SizedBox(height: 24),
@@ -87,7 +96,10 @@ class SideBarMenu extends ConsumerWidget {
                           child: e,
                         ),
                       ),
-                    if (initialContent != null) const Divider(),
+                    if (initialContent != null)
+                      const Divider(
+                        thickness: 0.75,
+                      ),
                     if (content != null) ...[
                       ...content!.map(
                         (e) => Padding(
@@ -110,7 +122,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToBookmarkPage(context);
                           },
                         ),
@@ -118,7 +130,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToGlobalBlacklistedTagsPage(context);
                           },
                         ),
@@ -126,7 +138,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.tag),
                           title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToFavoriteTagsPage(context);
                           },
                         ),
@@ -134,7 +146,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.sim_card_download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToBulkDownloadPage(
                               context,
                               null,
@@ -146,12 +158,13 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.download),
                           title: const Text('Download manager'),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToDownloadManagerPage(context);
                           },
                         ),
                         const Divider(
                           key: ValueKey('divider'),
+                          thickness: 0.75,
                         ),
                         SideMenuTile(
                           icon: const Icon(
@@ -160,7 +173,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToSettingsPage(context, scrollTo: 'support');
                           },
                         ),
@@ -171,7 +184,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
+                            if (popOnSelect) navigator.pop();
                             goToSettingsPage(context);
                           },
                         ),
@@ -184,7 +197,7 @@ class SideBarMenu extends ConsumerWidget {
                         ),
                       ),
                     SizedBox(
-                      height: MediaQuery.viewPaddingOf(context).bottom + 12,
+                      height: viewPadding.bottom + 12,
                     ),
                   ],
                 ),
