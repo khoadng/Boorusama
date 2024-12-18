@@ -2,29 +2,40 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/gelbooru/home/home.dart';
-import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client.dart';
-import 'package:boorusama/clients/gelbooru/types/types.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/search/search/widgets.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
 import 'artists/gelbooru_artist_page.dart';
 import 'comments/gelbooru_comment_page.dart';
 import 'configs/create_gelbooru_config_page.dart';
+import 'favorites/favorites.dart';
+import 'home/home.dart';
 import 'posts/gelbooru_post_details_page.dart';
+import 'posts/posts.dart';
 
 export 'posts/posts.dart';
 
@@ -61,11 +72,13 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
         );
 
         return data
-            .map((e) => Tag(
-                  name: e.name ?? '',
-                  category: TagCategory.fromLegacyId(e.type),
-                  postCount: e.count ?? 0,
-                ))
+            .map(
+              (e) => Tag(
+                name: e.name ?? '',
+                category: TagCategory.fromLegacyId(e.type),
+                postCount: e.count ?? 0,
+              ),
+            )
             .toList();
       },
     );
@@ -274,6 +287,65 @@ class GelbooruBuilder
   );
 }
 
+class GelbooruRepository implements BooruRepository {
+  const GelbooruRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(gelbooruPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(gelbooruAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(gelbooruNoteRepoProvider(config));
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(gelbooruTagRepoProvider(config));
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return GelbooruFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => GelbooruClient(
+          baseUrl: config.url,
+          dio: dio,
+          userId: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
+}
+
 class GelbooruSearchPage extends ConsumerWidget {
   const GelbooruSearchPage({
     super.key,
@@ -285,11 +357,12 @@ class GelbooruSearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
+    final postRepo = ref.watch(gelbooruPostRepoProvider(config));
+
     return SearchPageScaffold(
       initialQuery: initialQuery,
-      fetcher: (page, controller) => ref
-          .watch(gelbooruPostRepoProvider(config))
-          .getPosts(controller.rawTagsString, page),
+      fetcher: (page, controller) =>
+          postRepo.getPostsFromController(controller, page),
     );
   }
 }

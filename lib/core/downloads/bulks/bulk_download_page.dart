@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
+import '../../boorus/booru/booru.dart';
+import '../../configs/ref.dart';
+import '../../widgets/widgets.dart';
 import '../l10n.dart';
+import '../routes/route_utils.dart';
+import 'bulk_download_notifier.dart';
+import 'bulk_download_task_tile.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({super.key});
@@ -24,7 +28,8 @@ class BulkDownloadPage extends ConsumerWidget {
             ),
             body: const Center(
               child: Text(
-                  'Temporarily disabled due to an issue with getting the download link'),
+                'Temporarily disabled due to an issue with getting the download link',
+              ),
             ),
           )
         : const BulkDownloadPageInternal();

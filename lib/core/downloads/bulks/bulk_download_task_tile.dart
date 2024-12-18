@@ -4,22 +4,23 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/filesize.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
+import '../../configs/ref.dart';
+import '../../foundation/clipboard.dart';
+import '../../images/booru_image.dart';
+import '../../router.dart';
+import '../../theme.dart';
+import '../../utils/flutter_utils.dart';
+import '../../widgets/widgets.dart';
 import '../l10n.dart';
+import 'bulk_download_notifier.dart';
+import 'bulk_download_task.dart';
+import 'providers.dart';
 
 final _currentDownloadTaskProvider =
     Provider.autoDispose.family<BulkDownloadTask, String>(
@@ -181,7 +182,7 @@ class _CoverImage extends ConsumerWidget {
             () => SizedBox(
               height: 72,
               child: Card(
-                color: context.colorScheme.tertiaryContainer,
+                color: Theme.of(context).colorScheme.tertiaryContainer,
                 child: const Icon(
                   Symbols.image,
                   color: Colors.white,
@@ -248,8 +249,9 @@ class _InfoText extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(_currentDownloadTaskIdProvider);
-    final fileSize = ref.watch(_currentDownloadTaskProvider(id)
-        .select((e) => e.estimatedDownloadSize));
+    final fileSize = ref.watch(
+      _currentDownloadTaskProvider(id).select((e) => e.estimatedDownloadSize),
+    );
     final mixedMedia =
         ref.watch(_currentDownloadTaskProvider(id).select((e) => e.mixedMedia));
     final totalItems =
@@ -290,8 +292,8 @@ class _InfoText extends ConsumerWidget {
             DownloadTranslations.bulkDownloadCreatedStatus.tr(),
           BulkDownloadTaskStatus.queue =>
             DownloadTranslations.bulkDownloadInProgressStatus(
-                    pageProgress?.completed)
-                .tr(),
+              pageProgress?.completed,
+            ).tr(),
           BulkDownloadTaskStatus.error => error ?? 'Error',
           _ => infoText,
         },
@@ -299,7 +301,7 @@ class _InfoText extends ConsumerWidget {
         overflow: TextOverflow.fade,
         softWrap: false,
         style: TextStyle(
-          color: context.colorScheme.hintColor,
+          color: Theme.of(context).colorScheme.hintColor,
           fontSize: 12,
         ),
       ),
@@ -320,11 +322,11 @@ class _Subtitle extends ConsumerWidget {
 
     return !isCompleted && status == BulkDownloadTaskStatus.inProgress ||
             status == BulkDownloadTaskStatus.queue
-        ? Column(
+        ? const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _ProgressBar(),
-              const _FailedCount(),
+              _ProgressBar(),
+              _FailedCount(),
             ],
           )
         : ReadMoreText(
@@ -336,12 +338,12 @@ class _Subtitle extends ConsumerWidget {
             lessStyle: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: context.colorScheme.primary,
+              color: Theme.of(context).colorScheme.primary,
             ),
             moreStyle: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: context.colorScheme.primary,
+              color: Theme.of(context).colorScheme.primary,
             ),
             style: TextStyle(
               color: Theme.of(context).colorScheme.hintColor,
@@ -363,8 +365,8 @@ class _ProgressBar extends ConsumerWidget {
     );
 
     return status == BulkDownloadTaskStatus.queue
-        ? Padding(
-            padding: const EdgeInsets.only(
+        ? const Padding(
+            padding: EdgeInsets.only(
               top: 10,
               right: 40,
               left: 4,
@@ -422,7 +424,7 @@ class _FailedCount extends ConsumerWidget {
         ? Text(
             '$failedCount failed',
             style: TextStyle(
-              color: context.colorScheme.error,
+              color: Theme.of(context).colorScheme.error,
               fontSize: 11,
             ),
           )
@@ -494,7 +496,7 @@ class _Title extends ConsumerWidget {
       softWrap: false,
       style: TextStyle(
         color: status == BulkDownloadTaskStatus.canceled
-            ? context.colorScheme.hintColor
+            ? Theme.of(context).colorScheme.hintColor
             : null,
         fontWeight: FontWeight.w500,
         decoration: strikeThrough ? TextDecoration.lineThrough : null,

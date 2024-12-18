@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/dtext/dtext.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/theme.dart';
+import '../../../core/comments/comment.dart';
+import '../../../core/comments/comment_header.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/dtext/dtext.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../e621.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({
@@ -36,14 +37,16 @@ class E621CommentPage extends ConsumerWidget {
       ),
       fetcher: (id) => client.getComments(postId: postId, page: 1).then(
             (value) => value
-                .map((e) => SimpleComment(
-                      id: e.id ?? 0,
-                      body: e.body ?? '',
-                      createdAt: e.createdAt ?? DateTime(1),
-                      updatedAt: e.updatedAt ?? DateTime(1),
-                      creatorName: e.creatorName ?? '',
-                      creatorId: e.creatorId ?? 0,
-                    ))
+                .map(
+                  (e) => SimpleComment(
+                    id: e.id ?? 0,
+                    body: e.body ?? '',
+                    createdAt: e.createdAt ?? DateTime(1),
+                    updatedAt: e.updatedAt ?? DateTime(1),
+                    creatorName: e.creatorName ?? '',
+                    creatorId: e.creatorId ?? 0,
+                  ),
+                )
                 .toList(),
           ),
     );
@@ -68,7 +71,7 @@ class _CommentItem extends StatelessWidget {
           authorName: comment.creatorName == null
               ? comment.creatorId?.toString() ?? 'Anon'
               : comment.creatorName!,
-          authorTitleColor: context.colorScheme.primary,
+          authorTitleColor: Theme.of(context).colorScheme.primary,
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),

@@ -1,13 +1,14 @@
+// Package imports:
+import 'package:booru_clients/e621.dart' as e;
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/clients/e621/e621_client.dart';
-import 'package:boorusama/clients/e621/types/types.dart' as e;
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/datetimes/datetimes.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/http/http.dart';
-import 'package:boorusama/functional.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/foundation/caching.dart';
+import '../../../core/http/http.dart';
+import '../../../core/posts/explores/explore.dart';
+import '../../../core/posts/post/post.dart';
+import 'posts.dart';
 
 abstract interface class E621PopularRepository {
   PostsOrError<E621Post> getPopularPosts(DateTime date, TimeScale timeScale);
@@ -19,7 +20,7 @@ class E621PopularRepositoryApi implements E621PopularRepository {
     this.booruConfig,
   );
 
-  final E621Client client;
+  final e.E621Client client;
   final BooruConfig booruConfig;
 
   final Cache<List<E621Post>> _cache = Cache(
@@ -39,16 +40,18 @@ class E621PopularRepositoryApi implements E621PopularRepository {
 
         if (cached != null && cached.isNotEmpty) return cached.toResult();
 
-        final response = await $(tryFetchRemoteData(
-          fetcher: () => client.getPopularPosts(
-            date: date,
-            scale: switch (timeScale) {
-              TimeScale.day => e.TimeScale.day,
-              TimeScale.week => e.TimeScale.week,
-              TimeScale.month => e.TimeScale.month,
-            },
+        final response = await $(
+          tryFetchRemoteData(
+            fetcher: () => client.getPopularPosts(
+              date: date,
+              scale: switch (timeScale) {
+                TimeScale.day => e.TimeScale.day,
+                TimeScale.week => e.TimeScale.week,
+                TimeScale.month => e.TimeScale.month,
+              },
+            ),
           ),
-        ));
+        );
 
         final data = response.map(postDtoToPostNoMetadata).toList();
 

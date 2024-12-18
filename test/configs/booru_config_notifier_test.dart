@@ -3,17 +3,22 @@ import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/foundation/analytics.dart';
-import 'package:boorusama/foundation/loggers/loggers.dart';
-import 'package:boorusama/functional.dart';
+import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/manage.dart';
+import 'package:boorusama/core/configs/src/booru_config_converter.dart';
+import 'package:boorusama/core/foundation/loggers.dart';
+import 'package:boorusama/core/settings/src/data/providers.dart';
+import 'package:boorusama/core/settings/src/providers/settings_notifier.dart';
+import 'package:boorusama/core/settings/src/providers/settings_provider.dart';
+import 'package:boorusama/core/settings/src/types/settings.dart';
+import 'package:boorusama/core/settings/src/types/settings_repository.dart';
 import '../riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {
@@ -113,7 +118,8 @@ ProviderContainer createBooruConfigContainer({
   return createContainer(
     overrides: [
       booruConfigRepoProvider.overrideWith(
-          (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository()),
+        (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository(),
+      ),
       settingsRepoProvider.overrideWithValue(settingsRepository),
       settingsNotifierProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),

@@ -5,12 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../boorus/engine/providers.dart';
+import '../configs/ref.dart';
+import '../foundation/display.dart';
+import '../home/home_page_controller.dart';
+import '../home/home_search_bar.dart';
+import '../posts/count/widgets.dart';
+import '../posts/listing/widgets.dart';
+import '../posts/post/providers.dart';
+import '../search/selected_tags/providers.dart';
+import '../tags/configs/providers.dart';
+import '../widgets/widgets.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
@@ -30,6 +35,17 @@ class MobileHomePageScaffold extends ConsumerStatefulWidget {
 class _MobileHomePageScaffoldState
     extends ConsumerState<MobileHomePageScaffold> {
   final selectedTagString = ValueNotifier('');
+  late final selectedTagController = SelectedTagController.fromBooruBuilder(
+    builder: ref.read(currentBooruBuilderProvider),
+    tagInfo: ref.read(tagInfoProvider),
+  );
+
+  @override
+  void dispose() {
+    super.dispose();
+    selectedTagString.dispose();
+    selectedTagController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +53,13 @@ class _MobileHomePageScaffoldState
 
     return PostScope(
       fetcher: (page) {
-        final tags = selectedTagString.value;
-
-        return postRepo.getPosts(tags, page);
+        return postRepo.getPostsFromController(selectedTagController, page);
       },
       builder: (context, postController) => PostGrid(
         controller: postController,
         sliverHeaders: [
           SliverHomeSearchBar(
+            selectedTagController: selectedTagController,
             controller: widget.controller,
             selectedTagString: selectedTagString,
             onSearch: () {

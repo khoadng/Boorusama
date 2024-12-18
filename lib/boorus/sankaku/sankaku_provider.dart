@@ -40,38 +40,50 @@ final sankakuPostRepoProvider =
               final hasChilren = e.hasChildren ?? false;
               final hasParentOrChildren = hasParent || hasChilren;
               final artistTags = e.tags
-                      ?.where((e) =>
-                          TagCategory.fromLegacyId(e.type) ==
-                          TagCategory.artist())
-                      .map((e) => Tag(
-                            name: e.tagName ?? '????',
-                            category: TagCategory.artist(),
-                            postCount: e.postCount ?? 0,
-                          ))
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.artist(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.artist(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
                       .toList() ??
                   [];
 
               final characterTags = e.tags
-                      ?.where((e) =>
-                          TagCategory.fromLegacyId(e.type) ==
-                          TagCategory.character())
-                      .map((e) => Tag(
-                            name: e.tagName ?? '????',
-                            category: TagCategory.character(),
-                            postCount: e.postCount ?? 0,
-                          ))
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.character(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.character(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
                       .toList() ??
                   [];
 
               final copyrightTags = e.tags
-                      ?.where((e) =>
-                          TagCategory.fromLegacyId(e.type) ==
-                          TagCategory.copyright())
-                      .map((e) => Tag(
-                            name: e.tagName ?? '????',
-                            category: TagCategory.copyright(),
-                            postCount: e.postCount ?? 0,
-                          ))
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.copyright(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.copyright(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
                       .toList() ??
                   [];
               final timestamp = e.createdAt?.s;
@@ -124,15 +136,18 @@ final sankakuAutocompleteRepoProvider =
   return AutocompleteRepositoryBuilder(
     persistentStorageKey:
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
-    autocomplete: (query) =>
-        client.getAutocomplete(query: query).then((value) => value
-            .map((e) => AutocompleteData(
+    autocomplete: (query) => client.getAutocomplete(query: query).then(
+          (value) => value
+              .map(
+                (e) => AutocompleteData(
                   label: e.name?.toLowerCase().replaceAll('_', ' ') ?? '???',
                   value: e.tagName ?? '???',
                   postCount: e.count,
                   category: e.type?.toString(),
-                ))
-            .toList()),
+                ),
+              )
+              .toList(),
+        ),
   );
 });
 

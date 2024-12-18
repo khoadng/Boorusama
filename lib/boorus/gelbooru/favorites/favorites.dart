@@ -2,15 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_client_favorites.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/functional.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/failsafe.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../gelbooru.dart';
 
 class GelbooruFavoritesPage extends ConsumerWidget {
   const GelbooruFavoritesPage({super.key});
@@ -44,12 +46,11 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
       favQueryBuilder: () => query,
       fetcher: (page) => TaskEither.Do(($) async {
         final r = await $(
-            ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page));
+          ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page),
+        );
 
         // all posts from this page are already favorited by the user
-        ref
-            .read(gelbooruFavoritesProvider(config.auth).notifier)
-            .preloadInternal(
+        ref.read(favoritesProvider(config.auth).notifier).preloadInternal(
               r.posts,
               selfFavorited: (post) => true,
             );
@@ -60,55 +61,34 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
   }
 }
 
-class GelbooruFavoritesNotifier
-    extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
-    with FavoritesNotifierMixin {
-  @override
-  IMap<int, bool> build(BooruConfigAuth arg) {
-    ref.watchConfig;
+class GelbooruFavoriteRepository extends FavoriteRepository<GelbooruPost> {
+  GelbooruFavoriteRepository(this.ref, this.config);
 
-    return <int, bool>{}.lock;
-  }
+  final Ref ref;
+  final BooruConfigAuth config;
+
+  GelbooruClient get client => ref.read(gelbooruClientProvider(config));
 
   @override
-  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
-      (postId) => ref
-          .read(
-            gelbooruClientProvider(arg),
-          )
-          .addFavorite(postId: postId)
-          .then((value) => switch (value) {
-                GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
-                GelbooruFavoriteStatus.alreadyFavorited =>
-                  AddFavoriteStatus.alreadyExists,
-                _ => AddFavoriteStatus.failure,
-              });
+  bool canFavorite() => client.canFavorite;
 
   @override
-  Future<bool> Function(int postId) get favoriteRemover => (postId) => ref
-      .read(
-        gelbooruClientProvider(arg),
-      )
+  Future<AddFavoriteStatus> addToFavorites(int postId) async =>
+      client.addFavorite(postId: postId).then(
+            (value) => switch (value) {
+              GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
+              GelbooruFavoriteStatus.alreadyFavorited =>
+                AddFavoriteStatus.alreadyExists,
+              _ => AddFavoriteStatus.failure,
+            },
+          );
+
+  @override
+  Future<bool> removeFromFavorites(int postId) async => client
       .removeFavorite(postId: postId)
       .then((value) => true)
       .catchError((e) => false);
 
   @override
-  IMap<int, bool> get favorites => state;
-
-  @override
-  void Function(IMap<int, bool> data) get updateFavorites =>
-      (data) => state = data;
+  bool isPostFavorited(GelbooruPost post) => false;
 }
-
-final gelbooruFavoritesProvider = NotifierProvider.family<
-    GelbooruFavoritesNotifier, IMap<int, bool>, BooruConfigAuth>(
-  GelbooruFavoritesNotifier.new,
-);
-
-final gelbooruFavoriteProvider =
-    Provider.autoDispose.family<bool, int>((ref, postId) {
-  final config = ref.watchConfigAuth;
-  final favorites = ref.watch(gelbooruFavoritesProvider(config));
-  return favorites[postId] ?? false;
-});

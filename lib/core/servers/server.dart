@@ -1,8 +1,11 @@
+// Dart imports:
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
+// Flutter imports:
 import 'package:flutter/widgets.dart';
+
+// Package imports:
 import 'package:bonsoir/bonsoir.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
@@ -91,19 +94,19 @@ class AppServer {
 }
 
 class AppClient {
-  BonsoirDiscovery? _discovery;
-  StreamSubscription? _discoverySubscription;
-  final void Function(String message)? onError;
-  final void Function(BonsoirService service)? onServiceFound;
-  final void Function(BonsoirService service)? onServiceResolved;
-  final void Function(BonsoirService service)? onServiceLost;
-
   AppClient({
     this.onError,
     this.onServiceFound,
     this.onServiceResolved,
     this.onServiceLost,
   });
+
+  BonsoirDiscovery? _discovery;
+  StreamSubscription? _discoverySubscription;
+  final void Function(String message)? onError;
+  final void Function(BonsoirService service)? onServiceFound;
+  final void Function(BonsoirService service)? onServiceResolved;
+  final void Function(BonsoirService service)? onServiceLost;
 
   Future<void> startDiscovery() async {
     try {

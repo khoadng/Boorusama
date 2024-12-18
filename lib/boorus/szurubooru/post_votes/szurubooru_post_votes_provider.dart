@@ -1,13 +1,14 @@
 // Package imports:
+import 'package:booru_clients/szurubooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/functional.dart';
-import '../favorites/favorites.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/current.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/votes/providers.dart';
 import '../providers.dart';
 import '../szurubooru_post.dart';
 import 'post_votes.dart';
@@ -21,9 +22,7 @@ class SzurubooruPostVotesNotifier
   }
 
   void _removeLocalFavorite(int postId) {
-    ref
-        .read(szurubooruFavoritesProvider(arg).notifier)
-        .removeLocalFavorite(postId);
+    ref.read(favoritesProvider(arg).notifier).removeLocalFavorite(postId);
   }
 
   SzurubooruClient get client => ref.read(szurubooruClientProvider(arg));

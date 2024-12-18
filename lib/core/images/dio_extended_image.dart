@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/dio_extended_image_provider.dart';
+import 'dio_extended_image_provider.dart';
 
 class DioExtendedImage extends ExtendedImage {
   DioExtendedImage.network(

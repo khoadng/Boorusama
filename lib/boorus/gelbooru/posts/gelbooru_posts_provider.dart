@@ -1,12 +1,15 @@
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/lru_cacher.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/foundation/caching/lru_cacher.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/providers.dart';
+import '../../../core/search/queries/providers.dart';
+import '../../../core/settings/providers.dart';
+import '../gelbooru.dart';
 
 final gelbooruPostRepoProvider =
     Provider.family<PostRepository<GelbooruPost>, BooruConfigSearch>(
@@ -15,22 +18,12 @@ final gelbooruPostRepoProvider =
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
-      fetch: (tags, page, {limit}) => client
-          .getPosts(
-            tags: tags,
-            page: page,
-            limit: limit,
-          )
-          .then((value) => value.posts
-              .map((e) => gelbooruPostDtoToGelbooruPost(
-                    e,
-                    PostMetadata(
-                      page: page,
-                      search: tags.join(' '),
-                    ),
-                  ))
-              .toList()
-              .toResult(total: value.count)),
+      fetch: client.getPostResults,
+      fetchFromController: (controller, page, {limit}) {
+        final tags = controller.tags.map((e) => e.originalTag).toList();
+
+        return client.getPostResults(tags, page, limit: limit);
+      },
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
@@ -45,3 +38,29 @@ final gelbooruArtistCharacterPostRepoProvider =
     );
   },
 );
+
+extension GelbooruClientX on GelbooruClient {
+  Future<PostResult<GelbooruPost>> getPostResults(
+    List<String> tags,
+    int page, {
+    int? limit,
+  }) =>
+      getPosts(
+        tags: tags,
+        page: page,
+        limit: limit,
+      ).then(
+        (value) => value.posts
+            .map(
+              (e) => gelbooruPostDtoToGelbooruPost(
+                e,
+                PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
+            .toList()
+            .toResult(total: value.count),
+      );
+}

@@ -1,9 +1,3 @@
-export 'debug_logs_notifier.dart';
-export 'setting_repository_hive.dart';
-export 'settings_io_handler.dart';
-export 'settings_notifier.dart';
-export 'settings_providers.dart';
-export 'settings_repository.dart';
-export 'settings_repository_logger_interceptor.dart';
-export 'settings_utils.dart';
-export 'types.dart';
+export 'src/types/types.dart';
+export 'src/types/types_l10n.dart';
+export 'src/types/settings.dart';

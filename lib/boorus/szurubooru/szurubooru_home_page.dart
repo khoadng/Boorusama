@@ -3,13 +3,15 @@ import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
+import '../../core/configs/ref.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/posts/favorites/routes.dart';
 import 'szurubooru.dart';
 
 class SzurubooruHomePage extends ConsumerWidget {
@@ -29,7 +31,7 @@ class SzurubooruHomePage extends ConsumerWidget {
             title: Text('profile.favorites'.tr()),
             onTap: () => goToFavoritesPage(context),
           ),
-        ]
+        ],
       ],
       desktopMenuBuilder: (context, controller, constraints) => [
         if (config.hasLoginDetails()) ...[

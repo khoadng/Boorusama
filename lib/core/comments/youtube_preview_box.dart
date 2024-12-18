@@ -8,10 +8,9 @@ import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../foundation/url_launcher.dart';
+import '../images/dio_extended_image.dart';
+import '../images/providers.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
@@ -42,13 +41,15 @@ class YoutubePreviewBox extends StatelessWidget {
                   children: [
                     Text(
                       data.siteName,
-                      style: context.textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     TextButton(
                       onPressed: () => launchExternalUrl(uri),
                       child: Text(
                         data.title,
-                        style: context.textTheme.titleMedium!
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
                             .copyWith(color: Colors.blue),
                       ),
                     ),
@@ -126,12 +127,13 @@ PreviewUrlData parseHtml(String text) {
   final html = parse(text);
   final metas = html.getElementsByTagName('meta');
 
-  final props = metas
-      .where((e) => e.attributes['property']?.isNotEmpty ?? false)
-      .map((e) => _MetaElement(
-            e.attributes['property']!,
-            e.attributes['content'] ?? '',
-          ));
+  final props =
+      metas.where((e) => e.attributes['property']?.isNotEmpty ?? false).map(
+            (e) => _MetaElement(
+              e.attributes['property']!,
+              e.attributes['content'] ?? '',
+            ),
+          );
 
   final propMap = {for (final p in props) p.property: p.content};
 

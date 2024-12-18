@@ -2,7 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/tags.dart';
+import '../../../../core/tags/categories/tag_category.dart';
+import '../../../../core/tags/tag/tag.dart';
 import 'tag_summary.dart';
 import 'tag_summary_repository.dart';
 

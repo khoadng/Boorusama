@@ -5,22 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/app_update/app_update.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../app_update/providers.dart';
+import '../app_update/types.dart';
+import '../boorus/engine/engine.dart';
+import '../boorus/engine/providers.dart';
+import '../foundation/display.dart';
+import '../foundation/url_launcher.dart';
+import '../search/histories/providers.dart';
+import '../search/search/routes.dart';
+import '../search/search/widgets.dart';
+import '../search/selected_tags/providers.dart';
+import '../tags/configs/providers.dart';
+import '../theme.dart';
+import 'home_page_controller.dart';
 
 class HomeSearchBar extends ConsumerWidget {
   const HomeSearchBar({
@@ -43,7 +45,7 @@ class HomeSearchBar extends ConsumerWidget {
                   icon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: context.colorScheme.error,
+                      color: Theme.of(context).colorScheme.error,
                       shape: BoxShape.circle,
                     ),
                     child: const FaIcon(
@@ -71,7 +73,9 @@ class HomeSearchBar extends ConsumerWidget {
                                   children: [
                                     Text(
                                       'app_update.update_available',
-                                      style: context.textTheme.titleLarge,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
                                     ).tr(),
                                   ],
                                 ),
@@ -87,17 +91,21 @@ class HomeSearchBar extends ConsumerWidget {
                                 children: [
                                   Text(
                                     'app_update.whats_new',
-                                    style:
-                                        context.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ).tr(),
                                 ],
                               ),
                               Flexible(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 4),
+                                    vertical: 8,
+                                    horizontal: 4,
+                                  ),
                                   child: SingleChildScrollView(
                                     child: Row(
                                       children: [
@@ -116,11 +124,12 @@ class HomeSearchBar extends ConsumerWidget {
                                 children: [
                                   TextButton(
                                     style: TextButton.styleFrom(
-                                      foregroundColor:
-                                          context.colorScheme.onSurface,
+                                      foregroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                                     ),
                                     onPressed: () {
-                                      context.navigator.pop();
+                                      Navigator.of(context).pop();
                                     },
                                     child: const Text('app_update.later').tr(),
                                   ),
@@ -128,7 +137,7 @@ class HomeSearchBar extends ConsumerWidget {
                                   FilledButton(
                                     onPressed: () {
                                       launchExternalUrlString(d.storeUrl);
-                                      context.navigator.pop();
+                                      Navigator.of(context).pop();
                                     },
                                     child: const Text('app_update.update').tr(),
                                   ),
@@ -171,18 +180,18 @@ class _VersionChangeVisualizedText extends StatelessWidget {
         children: [
           TextSpan(
             text: status.currentVersion,
-            style: context.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: context.colorScheme.hintColor,
-            ),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.hintColor,
+                ),
           ),
           const TextSpan(text: '  ➞  '),
           TextSpan(
             text: status.storeVersion,
-            style: context.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: context.colorScheme.error,
-            ),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.error,
+                ),
           ),
         ],
       ),
@@ -280,7 +289,7 @@ class _SliverHomeSearchBarState
         onTap: () => goToSearchPage(context),
       );
       return SliverAppBar(
-        backgroundColor: context.colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -303,7 +312,7 @@ class _SliverHomeSearchBarState
   Widget _buildPinned(BuildContext context) {
     return SliverPinnedHeader(
       child: ColoredBox(
-        color: context.colorScheme.surface,
+        color: Theme.of(context).colorScheme.surface,
         child: _buildDesktop(),
       ),
     );

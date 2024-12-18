@@ -1,14 +1,22 @@
 // Package imports:
+import 'package:booru_clients/moebooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
+import '../../../../core/blacklists/providers.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/foundation/caching.dart';
+import '../../../../core/posts/filter/filter.dart';
+import '../../../../core/posts/post/post.dart';
+import '../../../../core/posts/post/providers.dart';
+import '../../../../core/posts/post/tags.dart';
+import '../../../../core/posts/rating/rating.dart';
+import '../../../../core/posts/sources/source.dart';
+import '../../../../core/search/queries/providers.dart';
+import '../../../../core/settings/providers.dart';
+import '../../moebooru.dart';
+import 'posts.dart';
 
 final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfigSearch>(
@@ -23,16 +31,20 @@ final moebooruPostRepoProvider =
             tags: tags,
             limit: limit,
           )
-          .then((value) => value
-              .map((e) => postDtoToPost(
+          .then(
+            (value) => value
+                .map(
+                  (e) => postDtoToPost(
                     e,
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
                     ),
-                  ))
-              .toList()
-              .toResult()),
+                  ),
+                )
+                .toList()
+                .toResult(),
+          ),
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },

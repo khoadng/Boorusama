@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/foundation/theme.dart';
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/booru/providers.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {
   const CreateAnimePicturesConfigPage({
@@ -28,7 +28,7 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
     return CreateBooruConfigScaffold(
       backgroundColor: backgroundColor,
       initialTab: initialTab,
-      authTab: AnimePicturesAuthView(),
+      authTab: const AnimePicturesAuthView(),
       footer: editId.isNew
           ? Container(
               padding: const EdgeInsets.symmetric(
@@ -36,8 +36,8 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                color: context.theme.colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.only(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
@@ -48,13 +48,13 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
                   Icon(
                     Symbols.info,
                     size: 16,
-                    color: context.theme.colorScheme.error,
+                    color: Theme.of(context).colorScheme.error,
                   ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       "Bulk download and blacklist won't work for this booru.",
-                      style: context.textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ],

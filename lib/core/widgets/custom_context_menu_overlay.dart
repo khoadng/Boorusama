@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:context_menus/context_menus.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/theme.dart';
+import '../foundation/display.dart';
 
 class CustomContextMenuOverlay extends StatelessWidget {
   const CustomContextMenuOverlay({
@@ -23,7 +21,8 @@ class CustomContextMenuOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return ContextMenuOverlay(
       cardBuilder: (context, children) => Material(
-        color: backgroundColor ?? context.colorScheme.surfaceContainerHighest,
+        color: backgroundColor ??
+            Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(4),
         elevation: 4,
         child: Container(
@@ -61,7 +60,7 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
         constraints: const BoxConstraints(minWidth: 200),
         child: _Tile(
           hoverColor: widget.config.labelStyle == null
-              ? context.colorScheme.primary
+              ? Theme.of(context).colorScheme.primary
               : widget.config.labelStyle?.color,
           onTap: widget.config.onPressed,
           title: isMouseOver
@@ -69,10 +68,10 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                   widget.config.label,
                   style: widget.config.labelStyle != null
                       ? widget.config.labelStyle?.copyWith(
-                          color: context.colorScheme.onError,
+                          color: Theme.of(context).colorScheme.onError,
                         )
                       : TextStyle(
-                          color: context.colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                 )
               : Text(
@@ -80,9 +79,11 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                   style: widget.config.labelStyle ??
                       TextStyle(
                         color: kPreferredLayout.isMobile
-                            ? context.colorScheme.onSurfaceVariant
-                            : context.colorScheme.onSurfaceVariant
-                                .applyOpacity(0.75),
+                            ? Theme.of(context).colorScheme.onSurfaceVariant
+                            : Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant
+                                .withValues(alpha: 0.75),
                       ),
                 ),
         ),
