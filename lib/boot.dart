@@ -18,6 +18,7 @@ import 'package:stack_trace/stack_trace.dart';
 import 'boorus/providers.dart';
 import 'core/analytics.dart';
 import 'core/app.dart';
+import 'core/blacklists/src/data/providers.dart';
 import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
@@ -170,6 +171,8 @@ Future<void> boot(BootLogger bootLogger) async {
   final bookmarkRepoOverride = await createBookmarkRepoProviderOverride(
     bootLogger: bootLogger,
   );
+
+  initBlacklistTagRepo();
 
   final tempPath = await getAppTemporaryDirectory();
 
