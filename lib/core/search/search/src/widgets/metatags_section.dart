@@ -14,9 +14,6 @@ import '../../../../theme/utils.dart';
 import 'add_tag_button.dart';
 import 'option_tags_arena.dart';
 
-// Project imports:
-
-
 class MetatagsSection extends ConsumerStatefulWidget {
   const MetatagsSection({
     super.key,

@@ -14,9 +14,6 @@ import '../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';
 
-// Project imports:
-
-
 final suggestionsNotifierProvider = NotifierProvider.family<SuggestionsNotifier,
     IMap<String, IList<AutocompleteData>>, BooruConfigAuth>(
   SuggestionsNotifier.new,

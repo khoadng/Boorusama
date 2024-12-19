@@ -1,6 +1,4 @@
 // Package imports:
-
-// Package imports:
 import 'package:foundation/foundation.dart';
 
 // Project imports:

@@ -1,8 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-
 class ExploreSliverAppBar extends StatelessWidget {
   const ExploreSliverAppBar({
     super.key,

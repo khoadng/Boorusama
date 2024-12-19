@@ -7,8 +7,6 @@ import '../manager/download_tasks_notifier.dart';
 import 'bulk_download_task.dart';
 import 'create_bulk_download_notifier.dart';
 
-// Project imports:
-
 final downloadGroupCompletedProvider =
     Provider.autoDispose.family<bool, String>((ref, group) {
   return ref.watch(downloadTasksProvider).allCompleted(group);

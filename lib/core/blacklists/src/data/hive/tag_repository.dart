@@ -8,16 +8,12 @@ import '../../types/blacklisted_tag_repository.dart';
 import 'converter.dart';
 import 'tag_hive_object.dart';
 
-// Project imports:
-
-
 class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   static const _boxName = 'blacklisted_tags';
 
   late Box<BlacklistedTagHiveObject> _box;
 
   Future<void> init() async {
-    Hive.registerAdapter(BlacklistedTagHiveObjectAdapter());
     _box = await Hive.openBox<BlacklistedTagHiveObject>(_boxName);
   }
 

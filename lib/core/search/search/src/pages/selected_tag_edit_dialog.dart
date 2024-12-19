@@ -14,9 +14,6 @@ import '../../../selected_tags/tag_search_item.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
 
-// Project imports:
-
-
 class SelectedTagEditDialog extends ConsumerStatefulWidget {
   const SelectedTagEditDialog({
     super.key,

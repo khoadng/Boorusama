@@ -1,8 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-
 class NavigationTile extends StatelessWidget {
   const NavigationTile({
     super.key,

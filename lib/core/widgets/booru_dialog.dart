@@ -8,8 +8,6 @@ import 'package:flutter/services.dart';
 // Project imports:
 import '../theme.dart';
 
-// Project imports:
-
 class BooruDialog extends StatelessWidget {
   const BooruDialog({
     super.key,

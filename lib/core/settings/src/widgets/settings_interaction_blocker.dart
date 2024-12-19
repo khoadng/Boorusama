@@ -13,8 +13,6 @@ import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/listing_provider.dart';
 
-// Project imports:
-
 class SettingsInteractionBlocker extends ConsumerWidget {
   const SettingsInteractionBlocker({
     super.key,
