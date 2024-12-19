@@ -759,10 +759,11 @@ packages:
   fvp:
     dependency: "direct main"
     description:
-      name: fvp
-      sha256: "3dd245cac5dfba36311cbf5834d8f275ba1f3e49a5cdcb4a98e01cb41e9a21d8"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "7090c3a926b295747cccb1333895417ab8a85584"
+      resolved-ref: "7090c3a926b295747cccb1333895417ab8a85584"
+      url: "https://github.com/wang-bin/fvp.git"
+    source: git
     version: "0.28.0"
   gal:
     dependency: "direct main"
@@ -1990,9 +1991,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "923e514752ad7bb7e83849f11de767a301ac57b5"
-      resolved-ref: "923e514752ad7bb7e83849f11de767a301ac57b5"
-      url: "https://github.com/fryette/webview_cookie_manager"
+      ref: "8572dd54c437c919aedc8dca6c5bffd25fe74b3c"
+      resolved-ref: "8572dd54c437c919aedc8dca6c5bffd25fe74b3c"
+      url: "https://github.com/khoadng/webview_cookie_manager"
     source: git
     version: "2.0.7"
   webview_flutter:
