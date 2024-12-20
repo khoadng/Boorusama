@@ -2,9 +2,6 @@
 import 'dart:async';
 import 'dart:io';
 
-// Flutter imports:
-import 'package:flutter/widgets.dart';
-
 // Package imports:
 import 'package:bonsoir/bonsoir.dart';
 import 'package:shelf/shelf.dart';
@@ -24,6 +21,8 @@ class AppServer {
     required this.logger,
   });
 
+  var _isRunning = false;
+
   final Map<String, Handler> routes;
   final String serverName;
   final String appVersion;
@@ -32,7 +31,7 @@ class AppServer {
 
   HttpServer? _server;
   final void Function(String message) onError;
-  final ValueNotifier<bool> isRunning = ValueNotifier(false);
+  bool get isRunning => _isRunning;
   BonsoirBroadcast? _broadcast;
 
   HttpServer? get server => _server;
@@ -58,26 +57,8 @@ class AppServer {
         'Server running on http://${server.address.host}:${server.port}',
       );
 
-      // Setup Bonsoir service
-      final service = BonsoirService(
-        name: serverName,
-        type: '_boorusama._tcp',
-        port: server.port,
-        attributes: {
-          'server': 'boorusama',
-          'version': appVersion,
-          'ip': address,
-          'port': server.port.toString(),
-        },
-      );
-
-      // Start broadcasting
-      _broadcast = BonsoirBroadcast(service: service);
-      await _broadcast?.ready;
-      await _broadcast?.start();
-
       _server = server;
-      isRunning.value = true;
+      _isRunning = true;
 
       return _server;
     } catch (e) {
@@ -89,13 +70,37 @@ class AppServer {
     }
   }
 
+  Future<void> startBroadcast() async {
+    final server = _server;
+
+    if (server == null) return;
+
+    // Setup Bonsoir service
+    final service = BonsoirService(
+      name: serverName,
+      type: '_boorusama._tcp',
+      port: server.port,
+      attributes: {
+        'server': 'boorusama',
+        'version': appVersion,
+        'ip': server.address.host,
+        'port': server.port.toString(),
+      },
+    );
+
+    // Start broadcasting
+    _broadcast = BonsoirBroadcast(service: service);
+    await _broadcast?.ready;
+    await _broadcast?.start();
+  }
+
   void stopServer() {
     _server?.close(force: true);
     _server = null;
 
     _broadcast?.stop();
     _broadcast = null;
-    isRunning.value = false;
+    _isRunning = false;
 
     logger.logI(_kServerName, 'Server stopped');
   }

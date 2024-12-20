@@ -11,7 +11,6 @@ import '../foundation/toast.dart';
 import '../foundation/version.dart';
 import '../info/package_info.dart';
 import '../servers/discovery_client.dart';
-import '../settings/src/widgets/settings_page_scaffold.dart';
 import '../theme/app_theme.dart';
 import '../widgets/booru_dialog.dart';
 import '../widgets/reboot.dart';
@@ -70,107 +69,119 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
   Widget build(BuildContext context) {
     final currentVersion = ref.watch(appVersionProvider);
 
-    return SettingsPageScaffold(
-      title: const Text(''),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      children: [
-        const SizedBox(height: 16),
-        Text(
-          'Nearby devices',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 12),
-        if (discoveredServices.isNotEmpty)
-          Column(
-            children: discoveredServices.map((service) {
-              final address = service.attributes['ip'];
-              final port = service.attributes['port'];
-              final appVersion = service.attributes['version'];
-              final url = Uri(
-                scheme: 'http',
-                host: address,
-                port: int.tryParse(port ?? ''),
-              );
-
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Receive data'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Nearby devices',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                margin: const EdgeInsets.symmetric(
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  title: Text(
-                    service.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Version $appVersion',
-                  ),
-                  trailing: TextButton(
-                    child: const Text('Import'),
-                    onPressed: () async {
-                      if (appVersion == null) {
-                        showErrorToast(
-                          context,
-                          "Couldn't determine this device's version, aborting.",
-                        );
-                        return;
-                      }
-
-                      if (currentVersion == null) {
-                        showErrorToast(
-                          context,
-                          "Couldn't determine the current version, aborting.",
-                        );
-                        return;
-                      }
-
-                      final parsedVersion = Version.parse(appVersion);
-                      final shouldShowDialog = currentVersion
-                              .significantlyLowerThan(parsedVersion) ||
-                          currentVersion.significantlyHigherThan(parsedVersion);
-
-                      if (shouldShowDialog) {
-                        final result = await showDialog(
-                          context: context,
-                          builder: (context) => VersionMismatchAlertDialog(
-                            importVersion: Version.parse(appVersion),
-                            currentVersion: currentVersion,
-                          ),
-                        );
-
-                        if (result == null || !result) return;
-                      }
-
-                      if (context.mounted) {
-                        showTransferOptionsDialog(
-                          context,
-                          url: url.toString(),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              );
-            }).toList(),
-          )
-        else
-          Center(
-            child: Text(
-              'No devices found',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                  ),
+              ],
             ),
-          ),
-      ],
+            const SizedBox(height: 12),
+            if (discoveredServices.isNotEmpty)
+              Column(
+                children: discoveredServices.map((service) {
+                  final address = service.attributes['ip'];
+                  final port = service.attributes['port'];
+                  final appVersion = service.attributes['version'];
+                  final url = Uri(
+                    scheme: 'http',
+                    host: address,
+                    port: int.tryParse(port ?? ''),
+                  );
+
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        service.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Version $appVersion',
+                      ),
+                      trailing: TextButton(
+                        child: const Text('Import'),
+                        onPressed: () async {
+                          if (appVersion == null) {
+                            showErrorToast(
+                              context,
+                              "Couldn't determine this device's version, aborting.",
+                            );
+                            return;
+                          }
+
+                          if (currentVersion == null) {
+                            showErrorToast(
+                              context,
+                              "Couldn't determine the current version, aborting.",
+                            );
+                            return;
+                          }
+
+                          final parsedVersion = Version.parse(appVersion);
+                          final shouldShowDialog = currentVersion
+                                  .significantlyLowerThan(parsedVersion) ||
+                              currentVersion
+                                  .significantlyHigherThan(parsedVersion);
+
+                          if (shouldShowDialog) {
+                            final result = await showDialog(
+                              context: context,
+                              builder: (context) => VersionMismatchAlertDialog(
+                                importVersion: Version.parse(appVersion),
+                                currentVersion: currentVersion,
+                              ),
+                            );
+
+                            if (result == null || !result) return;
+                          }
+
+                          if (context.mounted) {
+                            showTransferOptionsDialog(
+                              context,
+                              url: url.toString(),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              )
+            else
+              Center(
+                child: Text(
+                  'No devices found',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.hintColor,
+                      ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

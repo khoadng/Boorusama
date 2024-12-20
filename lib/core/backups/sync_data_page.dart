@@ -8,8 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'export_data_page.dart';
 import 'import_data_page.dart';
 
-final serverPortProvider = StateProvider<int?>((ref) => null);
-
 enum TransferMode {
   import,
   export,

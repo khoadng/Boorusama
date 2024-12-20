@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import '../foundation/networking/network_provider.dart';
-import '../servers/server_providers.dart';
-import '../settings/src/widgets/settings_page_scaffold.dart';
 import '../theme/app_theme.dart';
-import 'sync_data_page.dart';
+import 'export_data_notifier.dart';
 
 class ExportDataPage extends ConsumerStatefulWidget {
   const ExportDataPage({super.key});
@@ -22,134 +18,101 @@ class ExportDataPage extends ConsumerStatefulWidget {
 class _ExportDataPageState extends ConsumerState<ExportDataPage> {
   @override
   Widget build(BuildContext context) {
-    final server = ref.watch(dataSyncServerProvider);
+    final notifier = ref.watch(exportDataProvider.notifier);
 
-    return SettingsPageScaffold(
-      title: const Text(''),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      children: [
-        const SizedBox(height: 16),
-        ref.watch(localIPAddressProvider).when(
-              data: (address) => Column(
-                children: [
-                  ValueListenableBuilder(
-                    valueListenable: server.isRunning,
-                    builder: (context, isRunning, _) {
-                      return FilledButton.icon(
-                        onPressed: () async {
-                          if (isRunning) {
-                            server.stopServer();
-                          } else {
-                            if (address == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Error getting IP address'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            final messenger = ScaffoldMessenger.of(context);
-
-                            final httpServer =
-                                await server.startServer(address);
-
-                            if (!mounted) return;
-
-                            if (httpServer == null) {
-                              messenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text('Error starting server'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            ref.read(serverPortProvider.notifier).state =
-                                httpServer.port;
-                          }
-                        },
-                        icon: FaIcon(
-                          isRunning
-                              ? FontAwesomeIcons.stop
-                              : FontAwesomeIcons.play,
-                        ),
-                        label: Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            isRunning ? 'Stop' : 'Start',
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                ],
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          notifier.stopServer();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Transfer data'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          child: ref.watch(exportDataProvider).when(
+                data: (data) => _buildBody(data),
+                error: (error, _) => Text('Error: $error'),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
-              error: (error, _) => Text('Error: $error'),
-              loading: () => const CircularProgressIndicator(),
-            ),
-        const SizedBox(height: 16),
-        ValueListenableBuilder(
-          valueListenable: server.isRunning,
-          builder: (context, isRunning, _) {
-            return ref.watch(localIPAddressProvider).when(
-                  data: (address) {
-                    if (isRunning) {
-                      final port = ref.watch(serverPortProvider);
-                      final serverUrl = 'http://$address:$port';
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerLow,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ServerInfoTile(
-                                  title: 'IP',
-                                  value: serverUrl,
-                                ),
-                                ServerInfoTile(
-                                  title: 'Name',
-                                  value: server.serverName,
-                                ),
-                                ServerInfoTile(
-                                  title: 'Version',
-                                  value: server.appVersion,
-                                ),
-                              ],
-                            ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody(ExportDataState state) {
+    return Column(
+      children: [
+        Builder(
+          builder: (context) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ServerInfoTile(
+                        title: 'IP',
+                        value: state.serverUrl,
+                      ),
+                      ServerInfoTile(
+                        title: 'Name',
+                        value: state.serverName,
+                      ),
+                      ServerInfoTile(
+                        title: 'Version',
+                        value: state.appVersion,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 8,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.hintColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 4,
-                            ),
-                            child: Text(
-                              'You can connect to this device from other devices to import data. Make sure both devices are connected to the same network.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.hintColor,
-                              ),
-                            ),
+                      children: [
+                        const TextSpan(
+                          text:
+                              'Open the app on the other device and go to the ',
+                        ),
+                        TextSpan(
+                          text: 'Settings > Backup and restore',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
-                        ],
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                  error: (error, _) => Text('Error: $error'),
-                  loading: () => const CircularProgressIndicator(),
-                );
+                        ),
+                        const TextSpan(
+                          text:
+                              ", then select 'Receive' and start import data from this device. All devices must be connected to the same network and you have to stay on this page until the transfer is complete.",
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
           },
         ),
       ],
