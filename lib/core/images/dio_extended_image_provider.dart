@@ -301,12 +301,17 @@ class DioExtendedNetworkImageProvider
               validateStatus: (status) => status == HttpStatus.ok,
             ),
             onReceiveProgress: chunkEvents != null
-                ? (count, total) => chunkEvents.add(
-                      ImageChunkEvent(
-                        cumulativeBytesLoaded: count,
-                        expectedTotalBytes: total,
-                      ),
-                    )
+                ? (count, total) {
+                    // Only add event if controller is not closed
+                    if (!chunkEvents.isClosed) {
+                      chunkEvents.add(
+                        ImageChunkEvent(
+                          cumulativeBytesLoaded: count,
+                          expectedTotalBytes: total,
+                        ),
+                      );
+                    }
+                  }
                 : null,
           ),
         );
