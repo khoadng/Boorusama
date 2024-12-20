@@ -176,6 +176,10 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
           .select((value) => value.swipeAreaToOpenSidebarPercentage),
     );
 
+    final position = ref.watch(
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
+
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -185,7 +189,10 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
       ),
       child: Scaffold(
         key: widget.controller.scaffoldKey,
-        bottomNavigationBar: const BooruSelectorWithBottomPadding(),
+        bottomNavigationBar:
+            !isDesktop && position == BooruConfigSelectorPosition.bottom
+                ? const BooruSelectorWithBottomPadding()
+                : null,
         drawer: !isDesktop
             ? SideBarMenu(
                 width: 300,
@@ -303,25 +310,19 @@ class BooruSelectorWithBottomPadding extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final position = ref.watch(
-      settingsProvider.select((value) => value.booruConfigSelectorPosition),
-    );
     final hideLabel = ref
         .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
-    final isDesktop = context.isLargeScreen;
 
-    return !isDesktop && position == BooruConfigSelectorPosition.bottom
-        ? Container(
-            color: Colors.transparent,
-            height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
-            margin: EdgeInsets.only(
-              bottom: MediaQuery.paddingOf(context).bottom,
-            ),
-            child: const BooruSelector(
-              direction: Axis.horizontal,
-            ),
-          )
-        : const SizedBox.shrink();
+    return Container(
+      color: Colors.transparent,
+      height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
+      margin: EdgeInsets.only(
+        bottom: MediaQuery.paddingOf(context).bottom,
+      ),
+      child: const BooruSelector(
+        direction: Axis.horizontal,
+      ),
+    );
   }
 }
 
