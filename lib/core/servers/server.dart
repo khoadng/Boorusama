@@ -10,17 +10,25 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 
+// Project imports:
+import '../foundation/loggers/logger.dart';
+
+const _kServerName = 'App Server';
+
 class AppServer {
   AppServer({
     required this.onError,
     required this.routes,
     required this.serverName,
     required this.appVersion,
+    required this.logger,
   });
 
   final Map<String, Handler> routes;
   final String serverName;
   final String appVersion;
+
+  final Logger logger;
 
   HttpServer? _server;
   final void Function(String message) onError;
@@ -45,7 +53,10 @@ class AppServer {
         0,
       );
 
-      print('Server running on http://${server.address.host}:${server.port}');
+      logger.logI(
+        _kServerName,
+        'Server running on http://${server.address.host}:${server.port}',
+      );
 
       // Setup Bonsoir service
       final service = BonsoirService(
@@ -70,7 +81,10 @@ class AppServer {
 
       return _server;
     } catch (e) {
+      logger.logE(_kServerName, 'Failed to start server: $e');
+
       onError('Failed to start server: $e');
+
       return null;
     }
   }
@@ -83,7 +97,7 @@ class AppServer {
     _broadcast = null;
     isRunning.value = false;
 
-    print('Server stopped');
+    logger.logI(_kServerName, 'Server stopped');
   }
 
   Future<Response> _handleRequest(Request request) async {

@@ -31,7 +31,7 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
     ExportCategory(
       name: 'favorite_tags',
       displayName: 'Favorite tags',
-      route: '/favorite_tags',
+      route: 'favorite_tags',
       handler: (request) async {
         final value = await ref
             .read(favoriteTagsProvider.notifier)
@@ -43,7 +43,7 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
     ExportCategory(
       name: 'booru_configs',
       displayName: 'Booru profiles',
-      route: '/configs',
+      route: 'configs',
       handler: (request) async {
         final repo = ref.read(booruConfigRepoProvider);
         final configs = await repo.getAll();
@@ -67,6 +67,7 @@ final dataSyncServerProvider = Provider<AppServer>((ref) {
   final categories = ref.watch(exportCategoriesProvider);
 
   final server = AppServer(
+    logger: ref.watch(loggerProvider),
     serverName: ref.watch(deviceInfoProvider).deviceName ?? 'Unknown server',
     appVersion: ref.watch(packageInfoProvider).version,
     onError: (message) {

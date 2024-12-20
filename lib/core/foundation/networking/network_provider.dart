@@ -14,6 +14,8 @@ import 'network_state.dart';
 
 const _serviceName = 'Connectivity';
 
+const _fallbackIPAddress = '127.0.0.1'; // Fallback to localhost
+
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
   return Connectivity().onConnectivityChanged;
 });
@@ -33,6 +35,8 @@ final networkStateProvider = Provider<NetworkState>((ref) {
 });
 
 final localIPAddressProvider = FutureProvider<String?>((ref) async {
+  final logger = ref.watch(loggerProvider);
+
   // listen to changes in network state
   ref.listen(
     connectivityProvider,
@@ -44,7 +48,7 @@ final localIPAddressProvider = FutureProvider<String?>((ref) async {
 
   try {
     final interfaces = await NetworkInterface.list();
-    for (var interface in interfaces) {
+    for (final interface in interfaces) {
       // Look for the WiFi or Ethernet interface
       if (interface.addresses.isNotEmpty) {
         // Filter for IPv4 addresses
@@ -59,9 +63,14 @@ final localIPAddressProvider = FutureProvider<String?>((ref) async {
       }
     }
   } catch (e) {
-    print('Error getting IP address: $e');
+    logger.logE(_serviceName, 'Error getting IP address: $e');
   }
-  return '127.0.0.1'; // Fallback to localhost
+
+  logger.logW(
+    _serviceName,
+    'Failed to get local IP address, falling back to $_fallbackIPAddress',
+  );
+  return _fallbackIPAddress;
 });
 
 class NetworkListener extends ConsumerWidget {
