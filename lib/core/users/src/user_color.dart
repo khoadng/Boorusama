@@ -1,7 +1,7 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
+import 'dart:ui';
 
 abstract class UserColor {
-  BuildContext get context;
+  Brightness get brightness;
   Color fromString(String color);
 }

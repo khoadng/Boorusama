@@ -35,23 +35,24 @@ int getUserHexColor(UserLevel level) => switch (level) {
 
 class DanbooruUserColor implements UserColor {
   factory DanbooruUserColor.of(BuildContext context) =>
-      DanbooruUserColor._(context: context);
-  const DanbooruUserColor._({required this.context});
+      DanbooruUserColor._(brightness: Theme.of(context).brightness);
+  const DanbooruUserColor._({required this.brightness});
 
   @override
-  final BuildContext context;
+  final Brightness brightness;
 
-  static Color _color(BuildContext context, UserLevel? level) {
+  static Color _color(Brightness brightness, UserLevel? level) {
     final lvl = level ?? UserLevel.member;
 
-    return Theme.of(context).brightness.isLight
+    return !brightness.isLight
         ? Color(getUserHexColor(lvl))
         : Color(getUserHexOnDarkColor(lvl));
   }
 
-  Color fromLevel(UserLevel? level) => _color(context, level);
-  Color fromUser(DanbooruUser? user) => _color(context, user?.level);
+  Color fromLevel(UserLevel? level) => _color(brightness, level);
+  Color fromUser(DanbooruUser? user) => _color(brightness, user?.level);
   @override
-  Color fromString(String? level) => _color(context, stringToUserLevel(level));
-  Color fromInt(int? level) => _color(context, intToUserLevel(level ?? 0));
+  Color fromString(String? level) =>
+      _color(brightness, stringToUserLevel(level));
+  Color fromInt(int? level) => _color(brightness, intToUserLevel(level ?? 0));
 }
