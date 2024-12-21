@@ -1,24 +1,39 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
 import '../configs/config.dart';
+import '../settings/settings.dart';
+
+class RebootData extends Equatable {
+  const RebootData({
+    required this.config,
+    required this.configs,
+    required this.settings,
+  });
+  final BooruConfig config;
+  final Settings settings;
+  final List<BooruConfig> configs;
+
+  @override
+  List<Object?> get props => [config, configs, settings];
+}
 
 class Reboot extends StatefulWidget {
   const Reboot({
     super.key,
-    required this.initialConfig,
-    required this.initialConfigs,
+    required this.initialData,
     required this.builder,
   });
 
-  final BooruConfig initialConfig;
-  final List<BooruConfig> initialConfigs;
+  final RebootData initialData;
 
   final Widget Function(
     BuildContext context,
-    BooruConfig config,
-    List<BooruConfig> configs,
+    RebootData rebootData,
   ) builder;
 
   @override
@@ -26,24 +41,19 @@ class Reboot extends StatefulWidget {
 
   static void start(
     BuildContext context,
-    BooruConfig newInitialConfig,
-    List<BooruConfig> newInitialConfigs,
+    RebootData rebootData,
   ) {
-    context
-        .findAncestorStateOfType<_RebootState>()!
-        .restartApp(newInitialConfig, newInitialConfigs);
+    context.findAncestorStateOfType<_RebootState>()!.restartApp(rebootData);
   }
 }
 
 class _RebootState extends State<Reboot> {
   Key _key = UniqueKey();
-  late var _config = widget.initialConfig;
-  late var _configs = widget.initialConfigs;
+  late var _rebootData = widget.initialData;
 
-  void restartApp(BooruConfig config, List<BooruConfig> configs) {
+  void restartApp(RebootData rebootData) {
     setState(() {
-      _config = config;
-      _configs = configs;
+      _rebootData = rebootData;
       _key = UniqueKey();
     });
   }
@@ -52,7 +62,7 @@ class _RebootState extends State<Reboot> {
   Widget build(BuildContext context) {
     return KeyedSubtree(
       key: _key,
-      child: widget.builder(context, _config, _configs),
+      child: widget.builder(context, _rebootData),
     );
   }
 }
