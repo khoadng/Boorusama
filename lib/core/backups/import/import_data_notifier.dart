@@ -8,6 +8,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../blacklists/providers.dart';
+import '../../bookmarks/bookmark.dart';
+import '../../bookmarks/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/manage.dart';
 import '../../settings/providers.dart';
@@ -212,7 +215,7 @@ class ImportDataNotifier
       );
 
       // Artificial delay to make sure user sees the loading indicator
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 250));
 
       try {
         switch (task.id) {
@@ -262,6 +265,48 @@ class ImportDataNotifier
             await ref.read(settingsNotifierProvider.notifier).updateSettings(
                   settings,
                 );
+
+            break;
+          case 'blacklisted_tags':
+            final res = await dio.get('/blacklisted_tags');
+
+            final jsonData = res.data;
+
+            final map = jsonDecode(jsonData) as Map<String, dynamic>;
+            final tagString = map['tags'] as String;
+
+            ref.read(globalBlacklistedTagsProvider.notifier).addTagString(
+              tagString,
+              onError: () {
+                throw Exception('Failed to import blacklisted tags');
+              },
+            );
+
+            break;
+          case 'bookmarks':
+            final currentBookmarks = ref.read(bookmarkProvider).bookmarks;
+            final bookmarkRepository = ref.read(bookmarkRepoProvider);
+            final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
+
+            final res = await dio.get('/bookmarks');
+
+            final jsonString = res.data;
+
+            final json = jsonDecode(jsonString) as List<dynamic>;
+
+            final bookmarks = json
+                .map((bookmark) => Bookmark.fromJson(bookmark))
+                .toList()
+                // remove duplicates
+                .where(
+                  (bookmark) =>
+                      !currentBookmarks.containsKey(bookmark.originalUrl),
+                )
+                .toList();
+
+            await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
+
+            await bookmarkNotifier.getAllBookmarks();
 
             break;
         }

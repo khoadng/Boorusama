@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf/shelf.dart';
 
 // Project imports:
+import '../../blacklists/providers.dart';
+import '../../bookmarks/providers.dart';
 import '../../configs/manage.dart';
 import '../../configs/src/export_import/booru_config_io_handler.dart';
 import '../../foundation/loggers.dart';
@@ -72,6 +74,31 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
         final settings = ref.read(settingsProvider);
 
         return Response.ok(jsonEncode(settings.toJson()));
+      },
+    ),
+    ExportCategory(
+      name: 'blacklisted_tags',
+      displayName: 'Blacklisted tags',
+      route: 'blacklisted_tags',
+      handler: (request) async {
+        final blacklistedTags = ref.read(globalBlacklistedTagsProvider);
+        final tags = blacklistedTags.map((e) => e.name).join('\n');
+        final map = {'tags': tags};
+
+        return Response.ok(jsonEncode(map));
+      },
+    ),
+    ExportCategory(
+      name: 'bookmarks',
+      displayName: 'Bookmarks',
+      route: 'bookmarks',
+      handler: (request) async {
+        final bookmarks = ref.read(bookmarkProvider).bookmarks;
+        final json =
+            bookmarks.values.map((bookmark) => bookmark.toJson()).toList();
+        final jsonString = jsonEncode(json);
+
+        return Response.ok(jsonString);
       },
     ),
   ];
