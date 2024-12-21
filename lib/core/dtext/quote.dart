@@ -10,7 +10,7 @@ import '../foundation/url_launcher.dart';
 import '../theme.dart';
 
 class Quote extends StatelessWidget {
-  const Quote({super.key, required this.text});
+  const Quote({required this.text, super.key});
   final String text;
 
   @override

@@ -15,9 +15,9 @@ import '../widgets/widgets.dart';
 
 class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
   const FavoritesPageScaffold({
-    super.key,
     required this.fetcher,
     required this.favQueryBuilder,
+    super.key,
   });
 
   final PostsOrError<T> Function(int page) fetcher;

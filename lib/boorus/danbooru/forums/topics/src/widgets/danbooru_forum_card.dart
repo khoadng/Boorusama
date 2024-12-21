@@ -17,8 +17,8 @@ import 'forum_card.dart';
 
 class DanbooruForumCard extends ConsumerWidget {
   const DanbooruForumCard({
-    super.key,
     required this.topic,
+    super.key,
   });
 
   final DanbooruForumTopic topic;

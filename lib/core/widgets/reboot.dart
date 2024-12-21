@@ -24,9 +24,9 @@ class RebootData extends Equatable {
 
 class Reboot extends StatefulWidget {
   const Reboot({
-    super.key,
     required this.initialData,
     required this.builder,
+    super.key,
   });
 
   final RebootData initialData;

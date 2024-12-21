@@ -9,13 +9,9 @@ import '../foundation/platform.dart';
 
 class VideoProgressBar extends StatefulWidget {
   const VideoProgressBar({
-    super.key,
     required this.duration,
     required this.position,
     required this.buffered,
-    this.onDragEnd,
-    this.onDragStart,
-    this.onDragUpdate,
     required this.seekTo,
     required this.barHeight,
     required this.handleHeight,
@@ -24,6 +20,10 @@ class VideoProgressBar extends StatefulWidget {
     required this.playedColor,
     required this.bufferedColor,
     required this.handleColor,
+    super.key,
+    this.onDragEnd,
+    this.onDragStart,
+    this.onDragUpdate,
   });
 
   final Duration duration;
@@ -182,30 +182,29 @@ class _ProgressBarPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromPoints(
-          Offset(0.0, baseOffset),
+          Offset(0, baseOffset),
           Offset(size.width, baseOffset + barHeight),
         ),
-        const Radius.circular(4.0),
+        const Radius.circular(4),
       ),
       Paint()..color = backgroundColor,
     );
     if (duration.inMilliseconds == 0) {
       return;
     }
-    final double playedPartPercent =
-        position.inMilliseconds / duration.inMilliseconds;
-    final double playedPart =
+    final playedPartPercent = position.inMilliseconds / duration.inMilliseconds;
+    final playedPart =
         playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
-    for (final DurationRange range in buffered) {
-      final double start = range.startFraction(duration) * size.width;
-      final double end = range.endFraction(duration) * size.width;
+    for (final range in buffered) {
+      final start = range.startFraction(duration) * size.width;
+      final end = range.endFraction(duration) * size.width;
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromPoints(
             Offset(start, baseOffset),
             Offset(end, baseOffset + barHeight),
           ),
-          const Radius.circular(4.0),
+          const Radius.circular(4),
         ),
         Paint()..color = bufferedColor,
       );
@@ -213,16 +212,16 @@ class _ProgressBarPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromPoints(
-          Offset(0.0, baseOffset),
+          Offset(0, baseOffset),
           Offset(playedPart, baseOffset + barHeight),
         ),
-        const Radius.circular(4.0),
+        const Radius.circular(4),
       ),
       Paint()..color = playedColor,
     );
     if (useHandle) {
       if (drawShadow) {
-        final Path shadowPath = Path()
+        final shadowPath = Path()
           ..addOval(
             Rect.fromCircle(
               center: Offset(playedPart, baseOffset + barHeight / 2),

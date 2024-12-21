@@ -11,9 +11,9 @@ import '../utils/duration_utils.dart';
 //TODO: implement caching video
 class BooruVideo extends StatefulWidget {
   const BooruVideo({
-    super.key,
     required this.url,
     required this.aspectRatio,
+    super.key,
     this.onCurrentPositionChanged,
     this.onVisibilityChanged,
     this.onVideoPlayerCreated,
@@ -55,9 +55,10 @@ class _BooruVideoState extends State<BooruVideo> {
 
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
 
-    _videoPlayerController.setVolume(widget.sound ? 1 : 0);
-    _videoPlayerController.setPlaybackSpeed(widget.speed);
-    _videoPlayerController.setLooping(true);
+    _videoPlayerController
+      ..setVolume(widget.sound ? 1 : 0)
+      ..setPlaybackSpeed(widget.speed)
+      ..setLooping(true);
 
     _initialized = false;
     _videoPlayerController.initialize().then((_) {

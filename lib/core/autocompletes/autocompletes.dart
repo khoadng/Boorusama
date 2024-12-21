@@ -97,8 +97,8 @@ class AutocompleteData extends Equatable {
 
 bool isSfwTag({
   required String value,
-  String? antecedent,
   required Set<String> nsfwTags,
+  String? antecedent,
 }) {
   for (final tag in nsfwTags) {
     if (value.contains(tag)) {

@@ -14,9 +14,9 @@ import '../../../saved_search/saved_search.dart';
 class SavedSearchContextMenu extends ConsumerWidget
     with TagContextMenuButtonConfigMixin {
   const SavedSearchContextMenu({
-    super.key,
     required this.search,
     required this.child,
+    super.key,
   });
 
   final SavedSearch search;

@@ -68,8 +68,7 @@ class WebmVideoController {
     final duration = await _webViewController.runJavaScriptReturningResult(
       'document.getElementById("video").duration;',
     );
-    _duration = duration.toDoubleOrNull();
-    return _duration;
+    return duration.toDoubleOrNull();
   }
 
   // get current video time
@@ -136,7 +135,7 @@ String urlToHtml(
 }) {
   final colorText = backgroundColor.hexWithoutAlpha;
   final mutedText = muted == true ? 'muted' : '';
-  late final String videoHtml = '''
+  late final videoHtml = '''
 <!DOCTYPE html>
 <html>
 <head>
@@ -163,15 +162,15 @@ String urlToHtml(
 
 class EmbeddedWebViewWebm extends StatefulWidget {
   const EmbeddedWebViewWebm({
-    super.key,
     required this.url,
+    required this.playbackSpeed,
+    super.key,
     this.onVisibilityChanged,
     this.onCurrentPositionChanged,
     this.backgroundColor,
     this.onWebmVideoPlayerCreated,
     this.autoPlay = false,
     this.sound = true,
-    required this.playbackSpeed,
     this.userAgent,
     this.onZoomUpdated,
   });

@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 
 class FileDetailTile extends StatelessWidget {
   const FileDetailTile({
-    super.key,
     required this.title,
+    super.key,
     this.valueLabel,
     this.value,
     this.valueTrailing,
-  }) : assert(valueLabel != null || value != null);
+  }) : assert(
+          valueLabel != null || value != null,
+          'valueLabel or value must be provided',
+        );
 
   final String title;
   final String? valueLabel;

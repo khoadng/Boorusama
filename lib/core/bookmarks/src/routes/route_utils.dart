@@ -6,8 +6,8 @@ import '../../../router.dart';
 
 Future<void> goToBookmarkPage(
   BuildContext context,
-) async {
-  context.push(
+) {
+  return context.push(
     Uri(
       path: '/bookmarks',
     ).toString(),
@@ -17,8 +17,8 @@ Future<void> goToBookmarkPage(
 Future<void> goToBookmarkDetailsPage(
   BuildContext context,
   int index,
-) async {
-  context.push(
+) {
+  return context.push(
     Uri(
       path: '/bookmarks/details',
       queryParameters: {

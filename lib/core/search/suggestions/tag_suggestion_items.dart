@@ -13,11 +13,11 @@ import 'tag_suggestion_item.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
   const TagSuggestionItems({
-    super.key,
     required IList<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
     required this.config,
+    super.key,
     this.backgroundColor,
     this.dense = false,
     this.borderRadius,

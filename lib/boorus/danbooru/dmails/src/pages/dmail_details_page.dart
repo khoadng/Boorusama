@@ -17,9 +17,9 @@ import '../types/dmail.dart';
 
 class DanbooruDmailDetailsPage extends ConsumerWidget {
   const DanbooruDmailDetailsPage({
-    super.key,
     required this.dmail,
     required this.onDmailUnread,
+    super.key,
   });
 
   final Dmail dmail;

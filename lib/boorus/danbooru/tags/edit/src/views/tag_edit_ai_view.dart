@@ -15,11 +15,11 @@ import '../../../ai/providers.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {
   const TagEditAITagView({
-    super.key,
     required this.onRemoved,
     required this.onAdded,
     required this.isSelected,
     required this.postId,
+    super.key,
   });
 
   final int postId;

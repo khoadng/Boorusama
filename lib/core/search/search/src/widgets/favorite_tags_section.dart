@@ -19,9 +19,9 @@ import 'constants.dart';
 
 class FavoriteTagsSection extends ConsumerWidget {
   const FavoriteTagsSection({
-    super.key,
     required this.selectedLabel,
     required this.onTagTap,
+    super.key,
   });
 
   final String selectedLabel;
@@ -89,10 +89,10 @@ class FavoriteTagsSection extends ConsumerWidget {
 
 class OptionTagsArenaNoEdit extends StatelessWidget {
   const OptionTagsArenaNoEdit({
-    super.key,
     required this.title,
-    this.titleTrailing,
     required this.children,
+    super.key,
+    this.titleTrailing,
   });
 
   final String title;

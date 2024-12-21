@@ -213,8 +213,8 @@ class SzurubooruRepository implements BooruRepository {
 
 class SzurubooruSearchPage extends ConsumerWidget {
   const SzurubooruSearchPage({
-    super.key,
     required this.initialQuery,
+    super.key,
   });
 
   final String? initialQuery;
@@ -242,9 +242,9 @@ class SzurubooruSearchPage extends ConsumerWidget {
 
 class SzurubooruCommentPage extends ConsumerWidget {
   const SzurubooruCommentPage({
-    super.key,
     required this.postId,
     required this.useAppBar,
+    super.key,
   });
 
   final int postId;
@@ -295,8 +295,8 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
 
 class SzurubooruFavoritesPageInternal extends ConsumerWidget {
   const SzurubooruFavoritesPageInternal({
-    super.key,
     required this.username,
+    super.key,
   });
 
   final String username;

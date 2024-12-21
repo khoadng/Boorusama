@@ -8,5 +8,5 @@ class MediaScanner {
   static const MethodChannel _channel = MethodChannel('media_scanner');
 
   static Future<String?> loadMedia({String? path}) async =>
-      await _channel.invokeMethod('refreshGallery', {'path': path});
+      _channel.invokeMethod('refreshGallery', {'path': path});
 }

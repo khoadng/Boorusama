@@ -24,8 +24,8 @@ import 'widgets/pool_category_toggle_switch.dart';
 
 class PoolDetailPage extends ConsumerWidget {
   const PoolDetailPage({
-    super.key,
     required this.pool,
+    super.key,
   });
 
   final DanbooruPool pool;

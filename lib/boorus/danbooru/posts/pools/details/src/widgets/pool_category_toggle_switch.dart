@@ -7,8 +7,8 @@ import '../../../pool/pool.dart';
 
 class PoolCategoryToggleSwitch extends StatelessWidget {
   const PoolCategoryToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(String order) onToggle;

@@ -27,7 +27,7 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
   @override
   Future<UpdateStatus> checkForUpdate() async {
     final id = packageInfo.packageName;
-    assert(id.isNotEmpty);
+    assert(id.isNotEmpty, 'package name is empty');
     if (id.isEmpty) return const UpdateError('package name is empty');
 
     final url = lookupURLById(
@@ -80,10 +80,10 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
     String? language = 'en',
     bool useCacheBuster = true,
   }) {
-    assert(id.isNotEmpty);
+    assert(id.isNotEmpty, 'id is empty');
     if (id.isEmpty) return null;
 
-    final Map<String, dynamic> parameters = {'id': id};
+    final parameters = <String, dynamic>{'id': id};
     if (country != null && country.isNotEmpty) {
       parameters['gl'] = country;
     }
@@ -179,9 +179,7 @@ extension DocumentX on Document {
       releaseNotes = releaseNotesSpan.firstMatch(innerHtml)!.group(1);
     }
     // Detect default multiline replacement
-    releaseNotes = releaseNotes!.replaceAll('<br>', '\n');
-
-    return releaseNotes;
+    return releaseNotes!.replaceAll('<br>', '\n');
   }
 }
 

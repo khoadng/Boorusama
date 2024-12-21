@@ -14,10 +14,10 @@ import 'route_utils.dart';
 
 class RelatedTagHeader extends ConsumerStatefulWidget {
   const RelatedTagHeader({
-    super.key,
     required this.relatedTag,
     required this.onAdded,
     required this.onNegated,
+    super.key,
     this.backgroundColor,
   });
 

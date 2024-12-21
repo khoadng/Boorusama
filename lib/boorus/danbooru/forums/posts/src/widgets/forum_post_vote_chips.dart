@@ -14,8 +14,8 @@ import 'forum_vote_chip.dart';
 
 class DanbooruForumVoteChips extends ConsumerWidget {
   const DanbooruForumVoteChips({
-    super.key,
     required this.votes,
+    super.key,
   });
 
   final List<DanbooruForumPostVote> votes;

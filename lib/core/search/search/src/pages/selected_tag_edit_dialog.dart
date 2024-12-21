@@ -15,9 +15,9 @@ import '../../../suggestions/tag_suggestion_items.dart';
 
 class SelectedTagEditDialog extends ConsumerStatefulWidget {
   const SelectedTagEditDialog({
-    super.key,
     required this.tag,
     required this.onUpdated,
+    super.key,
   });
 
   final TagSearchItem tag;

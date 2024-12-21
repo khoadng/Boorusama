@@ -26,10 +26,10 @@ import 'post_grid_controller.dart';
 
 class SliverPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPostGrid({
-    super.key,
     required this.constraints,
     required this.itemBuilder,
     required this.postController,
+    super.key,
   });
 
   final BoxConstraints? constraints;
@@ -71,16 +71,16 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
 
 class SliverRawPostGrid<T extends Post> extends StatelessWidget {
   const SliverRawPostGrid({
-    super.key,
     required this.constraints,
     required this.postController,
+    required this.itemBuilder,
+    super.key,
     this.padding,
     this.listType,
     this.size,
     this.spacing,
     this.aspectRatio,
     this.borderRadius,
-    required this.itemBuilder,
   });
 
   final BoxConstraints? constraints;
@@ -289,8 +289,8 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
 class BlockOverlayItem {
   const BlockOverlayItem({
-    this.onTap,
     required this.overlay,
+    this.onTap,
   });
 
   final VoidCallback? onTap;
@@ -299,7 +299,6 @@ class BlockOverlayItem {
 
 class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
   const SliverPostGridImageGridItem({
-    super.key,
     required this.post,
     required this.hideOverlay,
     required this.quickActionButton,
@@ -307,6 +306,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     required this.onTap,
     required this.image,
     required this.score,
+    super.key,
     this.blockOverlay,
   });
 
@@ -371,11 +371,11 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
 
 class DefaultPostListContextMenuRegion extends StatelessWidget {
   const DefaultPostListContextMenuRegion({
-    super.key,
-    this.isEnabled = true,
     required this.gestures,
     required this.contextMenu,
     required this.child,
+    super.key,
+    this.isEnabled = true,
   });
 
   final GestureConfig? gestures;

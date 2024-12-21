@@ -21,8 +21,8 @@ import 'post_grid_controller.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({
-    super.key,
     required this.postController,
+    super.key,
   });
 
   final PostGridController<Post> postController;
@@ -86,7 +86,6 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
 class PostGridActionSheet extends ConsumerWidget {
   const PostGridActionSheet({
-    super.key,
     required this.onModeChanged,
     required this.onGridChanged,
     required this.pageMode,
@@ -95,8 +94,9 @@ class PostGridActionSheet extends ConsumerWidget {
     required this.imageQuality,
     required this.onImageListChanged,
     required this.onImageQualityChanged,
-    this.popOnSelect = true,
     required this.postController,
+    super.key,
+    this.popOnSelect = true,
   });
 
   final void Function(PageMode mode) onModeChanged;
@@ -292,10 +292,10 @@ class PostGridActionSheet extends ConsumerWidget {
 
 class OptionActionSheet<T> extends StatelessWidget {
   const OptionActionSheet({
-    super.key,
     required this.onChanged,
     required this.options,
     required this.optionName,
+    super.key,
   });
 
   final void Function(T option) onChanged;
@@ -335,12 +335,12 @@ class OptionActionSheet<T> extends StatelessWidget {
 
 class DesktopPostGridConfigTile<T> extends StatelessWidget {
   const DesktopPostGridConfigTile({
-    super.key,
     required this.value,
     required this.title,
     required this.onChanged,
     required this.items,
     required this.optionNameBuilder,
+    super.key,
   });
 
   final String title;

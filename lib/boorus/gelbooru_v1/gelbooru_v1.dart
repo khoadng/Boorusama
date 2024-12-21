@@ -174,8 +174,8 @@ class GelbooruV1Repository implements BooruRepository {
 
 class GelbooruV1SearchPage extends ConsumerWidget {
   const GelbooruV1SearchPage({
-    super.key,
     required this.initialQuery,
+    super.key,
   });
 
   final String? initialQuery;

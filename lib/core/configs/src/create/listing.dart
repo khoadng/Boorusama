@@ -33,9 +33,9 @@ class DefaultBooruConfigListingView extends ConsumerWidget {
 
 class BooruConfigListingView extends ConsumerWidget {
   const BooruConfigListingView({
-    super.key,
     required this.postPreviewQuickActionButtonActions,
     required this.describePostPreviewQuickAction,
+    super.key,
   });
 
   final Set<String?> postPreviewQuickActionButtonActions;

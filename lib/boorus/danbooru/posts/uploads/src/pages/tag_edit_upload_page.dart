@@ -53,8 +53,8 @@ final tagEditUploadRelatedExpandedProvider =
 
 class TagEditUploadPage extends ConsumerStatefulWidget {
   const TagEditUploadPage({
-    super.key,
     required this.post,
+    super.key,
     this.onSubmitted,
   });
 
@@ -83,43 +83,43 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     final config = ref.watchConfigAuth;
     final rating = ref.watch(selectedTagEditRatingProvider(null));
 
-    ref.listen(
-      danbooruPostCreateProvider(config),
-      (previous, next) {
-        next.when(
-          data: (data) {
-            if (data != null) {
-              widget.onSubmitted?.call();
-              context.pop();
-            }
-          },
-          loading: () {},
-          error: (error, stackTrace) {
-            showErrorToast(
-              context,
-              error.toString(),
-              duration: AppDurations.longToast,
-            );
-          },
-        );
-      },
-    );
+    ref
+      ..listen(
+        danbooruPostCreateProvider(config),
+        (previous, next) {
+          next.when(
+            data: (data) {
+              if (data != null) {
+                widget.onSubmitted?.call();
+                context.pop();
+              }
+            },
+            loading: () {},
+            error: (error, stackTrace) {
+              showErrorToast(
+                context,
+                error.toString(),
+                duration: AppDurations.longToast,
+              );
+            },
+          );
+        },
+      )
+      ..listen(
+        danbooruSourceProvider(widget.post.pageUrl),
+        (previous, next) {
+          next.maybeWhen(
+            data: (data) {
+              setState(() {
+                originalTitle ??= data.artistCommentary?.dtextTitle;
 
-    ref.listen(
-      danbooruSourceProvider(widget.post.pageUrl),
-      (previous, next) {
-        next.maybeWhen(
-          data: (data) {
-            setState(() {
-              originalTitle ??= data.artistCommentary?.dtextTitle;
-
-              originalDescription ??= data.artistCommentary?.dtextDescription;
-            });
-          },
-          orElse: () {},
-        );
-      },
-    );
+                originalDescription ??= data.artistCommentary?.dtextDescription;
+              });
+            },
+            orElse: () {},
+          );
+        },
+      );
 
     return TagEditUploadScaffold(
       imageFooterBuilder: () {
@@ -882,9 +882,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
 
 class TagEditUploadTextControllerScope extends ConsumerStatefulWidget {
   const TagEditUploadTextControllerScope({
-    super.key,
     required this.initialText,
     required this.builder,
+    super.key,
   });
 
   final String initialText;
@@ -909,8 +909,9 @@ class _TagEditUploadTextControllerScopeState
   @override
   void dispose() {
     super.dispose();
-    textEditingController.removeListener(_onSelectionChanged);
-    textEditingController.dispose();
+    textEditingController
+      ..removeListener(_onSelectionChanged)
+      ..dispose();
   }
 
   void _onSelectionChanged() {
@@ -967,8 +968,8 @@ class _TagEditUploadTextControllerScopeState
 
 class TagSuggestionsPortalFollower extends ConsumerWidget {
   const TagSuggestionsPortalFollower({
-    super.key,
     required this.onSelected,
+    super.key,
   });
 
   final void Function(String tag) onSelected;

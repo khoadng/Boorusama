@@ -6,11 +6,11 @@ import '../../../../theme.dart';
 
 class BackupRestoreTile extends StatelessWidget {
   const BackupRestoreTile({
-    super.key,
     required this.leadingIcon,
     required this.title,
-    this.subtitle,
     required this.trailing,
+    super.key,
+    this.subtitle,
     this.extra,
   });
 

@@ -16,9 +16,9 @@ import '../providers/local_providers.dart';
 
 class BookmarkSearchBar extends ConsumerWidget {
   const BookmarkSearchBar({
-    super.key,
     required this.focusNode,
     required this.controller,
+    super.key,
   });
 
   final FocusNode focusNode;

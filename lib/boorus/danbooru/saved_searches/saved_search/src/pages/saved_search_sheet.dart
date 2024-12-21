@@ -19,8 +19,8 @@ import '../types/saved_search.dart';
 
 class SavedSearchSheet extends ConsumerStatefulWidget {
   const SavedSearchSheet({
-    super.key,
     required this.onSubmit,
+    super.key,
     this.initialValue,
     this.title,
   });

@@ -16,12 +16,12 @@ import '../users/user/providers.dart';
 
 class DanbooruTagSuggestionItem extends ConsumerWidget {
   const DanbooruTagSuggestionItem({
-    super.key,
     required this.config,
     required this.tag,
     required this.onItemTap,
     required this.currentQuery,
     required this.dense,
+    super.key,
   });
 
   final BooruConfigAuth config;

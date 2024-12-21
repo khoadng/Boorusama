@@ -20,8 +20,8 @@ import '../providers/favorite_groups_notifier.dart';
 
 class AddToFavgroupList extends ConsumerWidget {
   const AddToFavgroupList({
-    super.key,
     required this.posts,
+    super.key,
   });
 
   final List<DanbooruPost> posts;

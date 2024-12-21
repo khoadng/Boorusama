@@ -50,12 +50,12 @@ Future<T?> showSideSheetFromRight<T>({
 Future<T?> _showSheetSide<T>({
   required Widget body,
   required bool rightSide,
-  double? width,
   required BuildContext context,
   required String barrierLabel,
   required bool barrierDismissible,
   required Color barrierColor,
   required Duration transitionDuration,
+  double? width,
   RouteSettings? settings,
 }) =>
     showGeneralDialog(

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class GrayedOut extends StatelessWidget {
   const GrayedOut({
+    required this.child,
     super.key,
     this.grayedOut = true,
-    required this.child,
   });
 
   final Widget child;

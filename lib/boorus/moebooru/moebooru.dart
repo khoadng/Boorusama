@@ -233,8 +233,8 @@ class MoebooruRepository implements BooruRepository {
 
 class MoebooruArtistPage extends ConsumerWidget {
   const MoebooruArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;

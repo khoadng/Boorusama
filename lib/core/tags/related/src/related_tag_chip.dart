@@ -11,11 +11,11 @@ import '../../../theme/utils.dart';
 
 class RelatedTagButton extends ConsumerWidget {
   const RelatedTagButton({
-    super.key,
-    this.backgroundColor,
     required this.onAdd,
     required this.onRemove,
     required this.label,
+    super.key,
+    this.backgroundColor,
   });
 
   final Color? backgroundColor;
@@ -86,9 +86,9 @@ class RelatedTagButton extends ConsumerWidget {
 
 class SimpleIconButton extends StatelessWidget {
   const SimpleIconButton({
-    super.key,
     required this.icon,
     required this.onPressed,
+    super.key,
     this.backgroundColor,
   });
 

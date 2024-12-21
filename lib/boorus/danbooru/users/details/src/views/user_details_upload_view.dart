@@ -28,11 +28,11 @@ const _kTopCopyrigthTags = 5;
 
 class UserDetailsUploadView extends ConsumerStatefulWidget {
   const UserDetailsUploadView({
-    super.key,
     required this.uid,
     required this.username,
     required this.isSelf,
     required this.user,
+    super.key,
   });
 
   final int uid;
@@ -78,7 +78,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                             children: [
                               Expanded(
                                 child: Text(
-                                  '${data.sumBy((e) => e.postCount).toString()} uploads',
+                                  '${data.sumBy((e) => e.postCount)} uploads',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleMedium!
@@ -236,9 +236,9 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
 
 class SliverUploadPostList extends ConsumerWidget {
   const SliverUploadPostList({
-    super.key,
     required this.title,
     required this.user,
+    super.key,
   });
 
   final String title;

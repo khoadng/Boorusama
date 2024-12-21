@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -12,8 +15,8 @@ import '../../post/post.dart';
 
 class DanbooruQuickFavoriteButton extends ConsumerWidget {
   const DanbooruQuickFavoriteButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final DanbooruPost post;
@@ -28,9 +31,9 @@ class DanbooruQuickFavoriteButton extends ConsumerWidget {
       isFaved: isFaved,
       onFavToggle: (isFaved) async {
         if (!isFaved) {
-          notifier.remove(post.id);
+          unawaited(notifier.remove(post.id));
         } else {
-          notifier.add(post.id);
+          unawaited(notifier.add(post.id));
         }
       },
     );

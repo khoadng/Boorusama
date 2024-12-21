@@ -22,8 +22,8 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
 
   Future<List<T>> getPostsFromTagsWithBlacklist({
     required String tags,
-    int page = 1,
     required Future<Set<String>> blacklist,
+    int page = 1,
     int? hardLimit,
     int? softLimit,
   }) async {
@@ -46,8 +46,8 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
 
   Future<List<T>> getPostsFromTagWithBlacklist({
     required String? tag,
-    int page = 1,
     required Future<Set<String>> blacklist,
+    int page = 1,
     int? hardLimit,
     int? softLimit = 30,
   }) async {

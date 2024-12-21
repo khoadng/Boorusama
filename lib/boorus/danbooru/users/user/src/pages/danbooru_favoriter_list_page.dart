@@ -13,8 +13,8 @@ import 'user_list_page.dart';
 
 class DanbooruFavoriterListPage extends ConsumerWidget {
   const DanbooruFavoriterListPage({
-    super.key,
     required this.postId,
+    super.key,
   });
 
   final int postId;

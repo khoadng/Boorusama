@@ -40,8 +40,8 @@ final _currentDownloadTaskIdProvider = Provider.autoDispose<String>((ref) {
 
 class BulkDownloadTaskTile extends ConsumerWidget {
   const BulkDownloadTaskTile({
-    super.key,
     required this.taskId,
+    super.key,
   });
 
   final String taskId;

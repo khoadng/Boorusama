@@ -78,9 +78,9 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
   }
 
   Future<void> exportClipboard({
+    required Version? appVersion,
     void Function(String message)? onFailure,
     void Function(String message)? onSuccess,
-    required Version? appVersion,
   }) async {
     await ref.read(booruConfigFileHandlerProvider).exportToClipboard(
           configs: state,

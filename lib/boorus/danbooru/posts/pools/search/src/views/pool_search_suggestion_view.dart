@@ -14,8 +14,8 @@ import '../providers.dart';
 
 class PoolSearchSuggestionView extends ConsumerWidget {
   const PoolSearchSuggestionView({
-    super.key,
     required this.textEditingController,
+    super.key,
   });
 
   final TextEditingController textEditingController;

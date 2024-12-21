@@ -34,11 +34,11 @@ void goToSearchPage(
 
 void goToQuickSearchPage(
   BuildContext context, {
+  required WidgetRef ref,
+  required void Function(String tag, bool isMultiple) onSelected,
   bool ensureValidTag = false,
   BooruConfigAuth? initialConfig,
-  required WidgetRef ref,
   Widget Function(String text)? floatingActionButton,
-  required void Function(String tag, bool isMultiple) onSelected,
   void Function(BuildContext context, String text, bool isMultiple)?
       onSubmitted,
   Widget Function(TextEditingController controller)? emptyBuilder,

@@ -6,12 +6,12 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class GridSizeAdjustmentButtons extends StatelessWidget {
   const GridSizeAdjustmentButtons({
-    super.key,
     required this.count,
     required this.maxCount,
     required this.minCount,
     required this.onAdded,
     required this.onDecreased,
+    super.key,
   });
 
   final int count;

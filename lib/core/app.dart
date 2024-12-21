@@ -82,10 +82,10 @@ class _App extends ConsumerWidget {
 
 class AppFailedToInitialize extends ConsumerWidget {
   const AppFailedToInitialize({
-    super.key,
     required this.error,
     required this.stackTrace,
     required this.logs,
+    super.key,
   });
 
   final Object error;

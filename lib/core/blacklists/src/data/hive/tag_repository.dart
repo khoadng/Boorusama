@@ -49,8 +49,9 @@ class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
     final obj = _box.get(tagId)!;
     final updatedDate = DateTime.now();
 
-    obj.name = newTag;
-    obj.updatedDate = updatedDate;
+    obj
+      ..name = newTag
+      ..updatedDate = updatedDate;
 
     await _box.put(tagId, obj);
     return convertFromHiveObject(obj);

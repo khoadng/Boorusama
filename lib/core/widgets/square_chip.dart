@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class SquareChip extends StatelessWidget {
   const SquareChip({
+    required this.label,
     super.key,
     this.color,
     this.borderRadius,
-    required this.label,
   });
 
   final Color? color;

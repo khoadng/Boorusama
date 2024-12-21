@@ -11,10 +11,10 @@ const end = '\x1B[0m';
 String colorize(String message, String color) {
   final colorCode = _colorStringToColorCode(color);
 
-  final buffer = StringBuffer();
-  buffer.write(colorCode);
-  buffer.write(message);
-  buffer.write(end);
+  final buffer = StringBuffer()
+    ..write(colorCode)
+    ..write(message)
+    ..write(end);
   return buffer.toString();
 }
 

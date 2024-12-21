@@ -9,10 +9,10 @@ import '../../../widgets/widgets.dart';
 
 class BlacklistedTagTile extends StatelessWidget {
   const BlacklistedTagTile({
-    super.key,
     required this.tag,
     required this.onEditTap,
     required this.onRemoveTag,
+    super.key,
   });
 
   final String tag;
@@ -28,10 +28,8 @@ class BlacklistedTagTile extends StatelessWidget {
           switch (value) {
             case 'remove':
               onRemoveTag.call(tag);
-              break;
             case 'edit':
               onEditTap.call();
-              break;
           }
         },
         itemBuilder: {

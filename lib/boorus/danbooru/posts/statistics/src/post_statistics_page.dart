@@ -21,8 +21,8 @@ import 'widgets/post_stats_uploader_section.dart';
 
 class DanbooruPostStatisticsPage extends ConsumerWidget {
   const DanbooruPostStatisticsPage({
-    super.key,
     required this.posts,
+    super.key,
   });
 
   final List<DanbooruPost> posts;

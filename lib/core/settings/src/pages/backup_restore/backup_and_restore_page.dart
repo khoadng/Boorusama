@@ -100,24 +100,20 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           switch (value) {
             case 'export':
               _pickProfileFolder(ref);
-              break;
             case 'import':
               _pickProfileFile(ref);
-              break;
             case 'export_clipboard':
               ref.read(booruConfigProvider.notifier).exportClipboard(
                     onSuccess: (message) => showSuccessToast(context, message),
                     onFailure: (message) => showErrorToast(context, message),
                     appVersion: ref.read(appVersionProvider),
                   );
-              break;
             case 'import_clipboard':
               ref.read(booruConfigProvider.notifier).importClipboard(
                     onSuccess: _onImportSuccess,
                     onWillImport: _showImportBooruConfigsAlertDialog,
                     onFailure: (message) => showErrorToast(context, message),
                   );
-              break;
             default:
           }
         },
@@ -200,7 +196,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           switch (value) {
             case 'export':
               _pickBookmarkFolder(ref);
-              break;
             case 'import':
               _pickBookmarkFile(ref);
             default:
@@ -223,10 +218,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           switch (value) {
             case 'export':
               _pickSettingsFolder(ref);
-              break;
             case 'import':
               _pickSettingsFile(ref);
-              break;
             default:
           }
         },

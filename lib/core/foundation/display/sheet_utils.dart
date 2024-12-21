@@ -78,7 +78,8 @@ Future<T?> showAdaptiveBottomSheet<T>(
           barrierColor: Colors.black45,
           backgroundColor: backgroundColor ?? Colors.transparent,
           builder: (context) {
-            Widget child = builder(context);
+            var child = builder(context);
+            // ignore: join_return_with_assignment
             child = !expand ? SizedBox(height: height, child: child) : child;
             return child;
           },

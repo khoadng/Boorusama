@@ -55,8 +55,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
-  }) async {
-    bookmarkRepository.getAllBookmarks().run().then(
+  }) {
+    return bookmarkRepository.getAllBookmarks().run().then(
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(

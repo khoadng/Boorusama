@@ -197,15 +197,15 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
                 if (!mounted) return;
                 final groups = createTagGroupItems(data);
 
-                ref.setGelbooruPostDetailsArtistMap(
-                  post: post,
-                  tags: groups,
-                );
-
-                ref.setGelbooruPostDetailsCharacterMap(
-                  post: post,
-                  tags: groups,
-                );
+                ref
+                  ..setGelbooruPostDetailsArtistMap(
+                    post: post,
+                    tags: groups,
+                  )
+                  ..setGelbooruPostDetailsCharacterMap(
+                    post: post,
+                    tags: groups,
+                  );
               });
             }
 

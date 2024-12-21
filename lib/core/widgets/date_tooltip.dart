@@ -8,9 +8,9 @@ const _kDefaultFormat = 'yyyy-MM-dd HH:mm:ss';
 
 class DateTooltip extends StatelessWidget {
   const DateTooltip({
-    super.key,
     required this.date,
     required this.child,
+    super.key,
     this.format,
   });
 

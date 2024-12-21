@@ -253,8 +253,8 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
 
 class DefaultSearchPage extends ConsumerWidget {
   const DefaultSearchPage({
-    super.key,
     required this.initialQuery,
+    super.key,
   });
 
   final String? initialQuery;
@@ -298,8 +298,8 @@ String Function(
 
 class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
   const DefaultImagePreviewQuickActionButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;

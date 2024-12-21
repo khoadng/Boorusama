@@ -12,8 +12,8 @@ import '../../../../images/providers.dart';
 
 class PostDetailsPreloadImage extends ConsumerWidget {
   const PostDetailsPreloadImage({
-    super.key,
     required this.url,
+    super.key,
   });
 
   final String url;

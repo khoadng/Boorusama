@@ -24,8 +24,7 @@ class BulkDownloadNotifications {
     }
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),

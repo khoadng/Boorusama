@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class ExploreSliverAppBar extends StatelessWidget {
   const ExploreSliverAppBar({
-    super.key,
     required this.title,
     required this.onBack,
+    super.key,
   });
 
   final String title;

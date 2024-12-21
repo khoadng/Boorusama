@@ -14,8 +14,8 @@ import '../posts/sources/source.dart';
 
 class BooruLogo extends StatelessWidget {
   const BooruLogo({
-    super.key,
     required this.source,
+    super.key,
     this.width,
     this.height,
   }) : _isFixedIcon = false;

@@ -13,9 +13,9 @@ import '../../../post/post.dart';
 
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({
-    super.key,
     required this.currentPost,
     required this.posts,
+    super.key,
   });
 
   final DanbooruPost currentPost;

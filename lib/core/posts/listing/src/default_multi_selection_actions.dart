@@ -14,8 +14,8 @@ import '../../post/post.dart';
 
 class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   const DefaultMultiSelectionActions({
-    super.key,
     required this.controller,
+    super.key,
     this.extraActions,
   });
 

@@ -16,8 +16,8 @@ import '../../../blacklist/providers.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {
   const DanbooruShowTagListPage({
-    super.key,
     required this.tags,
+    super.key,
   });
 
   final List<Tag> tags;

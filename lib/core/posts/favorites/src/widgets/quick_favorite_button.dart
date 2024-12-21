@@ -14,9 +14,9 @@ import '../providers/favorites_notifier.dart';
 
 class QuickFavoriteButton extends ConsumerWidget {
   const QuickFavoriteButton({
+    required this.isFaved,
     super.key,
     this.onFavToggle,
-    required this.isFaved,
   });
 
   final void Function(bool value)? onFavToggle;
@@ -58,8 +58,8 @@ class QuickFavoriteButton extends ConsumerWidget {
 
 class DefaultQuickFavoriteButton extends ConsumerWidget {
   const DefaultQuickFavoriteButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;

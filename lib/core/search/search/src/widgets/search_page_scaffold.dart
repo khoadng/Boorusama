@@ -40,9 +40,9 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
+    required this.fetcher,
     super.key,
     this.initialQuery,
-    required this.fetcher,
     this.noticeBuilder,
     this.queryPattern,
     this.metatagsBuilder,
@@ -179,12 +179,13 @@ class _SearchPageScaffoldState<T extends Post>
                 },
               ),
             ),
-            state == SearchState.suggestions
-                ? SuggestionView(
-                    queryPattern: widget.queryPattern,
-                    searchController: searchController,
-                  )
-                : const SizedBox.shrink(),
+            if (state == SearchState.suggestions)
+              SuggestionView(
+                queryPattern: widget.queryPattern,
+                searchController: searchController,
+              )
+            else
+              const SizedBox.shrink(),
           ],
         ),
       ),
@@ -326,8 +327,8 @@ class _SearchPageScaffoldState<T extends Post>
 
 class SuggestionView extends StatefulWidget {
   const SuggestionView({
-    super.key,
     required this.searchController,
+    super.key,
     this.queryPattern,
   });
 
@@ -358,8 +359,9 @@ class _SuggestionViewState extends State<SuggestionView> {
 
   @override
   void dispose() {
-    textController.removeListener(_onTextChanged);
-    textController.dispose();
+    textController
+      ..removeListener(_onTextChanged)
+      ..dispose();
     focus.dispose();
     super.dispose();
   }

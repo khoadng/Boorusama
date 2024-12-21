@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
@@ -152,9 +153,9 @@ Future<void> boot(BootLogger bootLogger) async {
         ),
       );
 
-  bootLogger.l('Settings: ${settings.toJson()}');
-
-  bootLogger.l('Load current booru config');
+  bootLogger
+    ..l('Settings: ${settings.toJson()}')
+    ..l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
   bootLogger.l('Load all configs');
@@ -227,7 +228,7 @@ Future<void> boot(BootLogger bootLogger) async {
   HttpOverrides.global = AppHttpOverrides();
 
   // Prepare for Android 15
-  showSystemStatus();
+  unawaited(showSystemStatus());
 
   logger.logI(
     'Start up',

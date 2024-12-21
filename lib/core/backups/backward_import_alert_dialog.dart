@@ -22,8 +22,8 @@ Future<bool?> showBackwardImportAlertDialog({
 
 class BackwardImportAlertDialog extends ConsumerWidget {
   const BackwardImportAlertDialog({
-    super.key,
     required this.data,
+    super.key,
   });
 
   final ExportDataPayload data;

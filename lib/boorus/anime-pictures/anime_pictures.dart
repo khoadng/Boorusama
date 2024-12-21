@@ -206,8 +206,8 @@ class AnimePicturesRepository implements BooruRepository {
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
   const AnimePicturesCurrentUserIdScope({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;
@@ -343,9 +343,7 @@ final postTagsProvider =
                 .toList() ??
             [],
       ),
-  ];
-
-  tagGroups.sort((a, b) => a.order.compareTo(b.order));
+  ]..sort((a, b) => a.order.compareTo(b.order));
 
   final filtered = tagGroups.where((e) => e.tags.isNotEmpty).toList();
 

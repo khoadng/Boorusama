@@ -20,7 +20,6 @@ import '../../theme.dart';
 
 class TagSuggestionItem extends StatelessWidget {
   const TagSuggestionItem({
-    super.key,
     required this.onItemTap,
     required this.tag,
     required this.dense,
@@ -28,6 +27,7 @@ class TagSuggestionItem extends StatelessWidget {
     required this.textColor,
     required this.showCount,
     required this.metatagExtractor,
+    super.key,
   });
 
   final ValueChanged<AutocompleteData> onItemTap;
@@ -95,12 +95,12 @@ class TagSuggestionItem extends StatelessWidget {
 
 class DefaultTagSuggestionItem extends ConsumerWidget {
   const DefaultTagSuggestionItem({
-    super.key,
     required this.config,
     required this.tag,
     required this.onItemTap,
     required this.currentQuery,
     required this.dense,
+    super.key,
   });
 
   final BooruConfigAuth config;

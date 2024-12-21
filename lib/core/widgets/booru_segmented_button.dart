@@ -6,11 +6,11 @@ import 'package:custom_sliding_segmented_control/custom_sliding_segmented_contro
 
 class BooruSegmentedButton<T> extends StatefulWidget {
   const BooruSegmentedButton({
-    super.key,
     required this.segments,
     required this.initialValue,
-    this.fixedWidth,
     required this.onChanged,
+    super.key,
+    this.fixedWidth,
     this.selectedColor,
     this.unselectedColor,
     this.selectedTextStyle,

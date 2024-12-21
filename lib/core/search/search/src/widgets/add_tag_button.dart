@@ -6,8 +6,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class AddTagButton extends StatelessWidget {
   const AddTagButton({
-    super.key,
     required this.onPressed,
+    super.key,
   });
 
   final VoidCallback onPressed;

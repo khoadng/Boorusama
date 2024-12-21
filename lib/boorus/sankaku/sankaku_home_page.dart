@@ -68,8 +68,8 @@ class SankakuFavoritesPage extends ConsumerWidget {
 
 class SankakuFavoritesPageInternal extends ConsumerWidget {
   const SankakuFavoritesPageInternal({
-    super.key,
     required this.username,
+    super.key,
   });
 
   final String username;

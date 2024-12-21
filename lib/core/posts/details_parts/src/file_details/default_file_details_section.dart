@@ -30,8 +30,8 @@ class DefaultInheritedFileDetailsSection<T extends Post>
 
 class DefaultFileDetailsSection extends StatelessWidget {
   const DefaultFileDetailsSection({
-    super.key,
     required this.post,
+    super.key,
     this.uploaderName,
     this.customDetails,
     this.initialExpanded = false,

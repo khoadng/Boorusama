@@ -10,6 +10,7 @@ import '../theme.dart';
 
 class BooruDialog extends StatelessWidget {
   const BooruDialog({
+    required this.child,
     super.key,
     this.color,
     this.width,
@@ -18,7 +19,6 @@ class BooruDialog extends StatelessWidget {
     this.padding,
     this.barrierColor,
     this.dismissible = true,
-    required this.child,
   });
 
   final Color? color;

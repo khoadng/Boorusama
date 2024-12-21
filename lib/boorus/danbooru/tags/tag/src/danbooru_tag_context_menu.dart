@@ -15,9 +15,9 @@ import '../../../saved_searches/saved_search/routes.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {
   const DanbooruTagContextMenu({
-    super.key,
     required this.tag,
     required this.child,
+    super.key,
   });
 
   final String tag;

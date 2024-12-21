@@ -8,8 +8,8 @@ import '../../../../../../core/widgets/widgets.dart';
 
 class DanbooruArtistUrlChips extends StatelessWidget {
   const DanbooruArtistUrlChips({
-    super.key,
     required this.artistUrls,
+    super.key,
     this.alignment,
   });
 

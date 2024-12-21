@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -12,26 +15,28 @@ import 'platform.dart';
 Future<void> initialize() async {
   await windowManager.ensureInitialized();
 
-  windowManager.waitUntilReadyToShow(
-    const WindowOptions(
-      size: Size(1000, 700),
-      minimumSize: Size(350, 350),
-      center: true,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
+  unawaited(
+    windowManager.waitUntilReadyToShow(
+      const WindowOptions(
+        size: Size(1000, 700),
+        minimumSize: Size(350, 350),
+        center: true,
+        backgroundColor: Colors.transparent,
+        skipTaskbar: false,
+        titleBarStyle: TitleBarStyle.hidden,
+      ),
+      () async {
+        await windowManager.show();
+        await windowManager.focus();
+      },
     ),
-    () async {
-      await windowManager.show();
-      await windowManager.focus();
-    },
   );
 }
 
 class AppTitleBar extends ConsumerWidget {
   const AppTitleBar({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

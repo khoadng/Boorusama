@@ -9,10 +9,10 @@ import '../theme.dart';
 
 class MobileConfigTile extends StatelessWidget {
   const MobileConfigTile({
-    super.key,
     required this.value,
     required this.title,
     required this.onTap,
+    super.key,
   });
 
   final String title;

@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -99,9 +102,9 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   Future<void> playVideo(int id, bool isWebm) async {
     if (isWebm && isAndroid()) {
-      _webmVideoControllers[id]?.play();
+      unawaited(_webmVideoControllers[id]?.play());
     } else {
-      _videoControllers[id]?.play();
+      unawaited(_videoControllers[id]?.play());
     }
 
     _isVideoPlaying.value = true;
@@ -121,9 +124,9 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   Future<void> pauseVideo(int id, bool isWebm) async {
     if (isWebm && isAndroid()) {
-      _webmVideoControllers[id]?.pause();
+      unawaited(_webmVideoControllers[id]?.pause());
     } else {
-      _videoControllers[id]?.pause();
+      unawaited(_videoControllers[id]?.pause());
     }
 
     _isVideoPlaying.value = false;

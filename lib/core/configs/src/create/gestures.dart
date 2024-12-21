@@ -25,8 +25,8 @@ class DefaultBooruConfigGesturesView extends ConsumerWidget {
 
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
-    super.key,
     required this.postDetailsGestureActions,
+    super.key,
     this.describePostDetailsAction,
   });
 
@@ -201,8 +201,8 @@ class BooruConfigGesturesView extends ConsumerWidget {
 
 class BooruConfigSettingsHeader extends StatelessWidget {
   const BooruConfigSettingsHeader({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;

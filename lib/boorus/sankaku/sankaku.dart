@@ -293,8 +293,8 @@ class SankakuTagsTile extends StatelessWidget {
 
 class SankakuArtistPage extends ConsumerWidget {
   const SankakuArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;

@@ -16,13 +16,13 @@ import 'option_tags_arena.dart';
 
 class MetatagsSection extends ConsumerStatefulWidget {
   const MetatagsSection({
-    super.key,
     required this.onOptionTap,
     required this.metatags,
     required this.userMetatags,
-    this.onHelpRequest,
     required this.onUserMetatagDeleted,
     required this.onUserMetatagAdded,
+    super.key,
+    this.onHelpRequest,
   });
 
   final ValueChanged<String>? onOptionTap;

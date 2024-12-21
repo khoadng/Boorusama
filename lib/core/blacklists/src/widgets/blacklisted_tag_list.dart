@@ -13,10 +13,10 @@ import 'blacklisted_tag_tile.dart';
 
 class BlacklistedTagList extends StatelessWidget {
   const BlacklistedTagList({
-    super.key,
     required this.tags,
     required this.onRemoveTag,
     required this.onEditTap,
+    super.key,
   });
 
   final void Function(String tag) onRemoveTag;

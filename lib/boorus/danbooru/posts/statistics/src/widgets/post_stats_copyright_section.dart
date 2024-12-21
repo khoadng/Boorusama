@@ -13,9 +13,9 @@ import '../post_stats.dart';
 
 class PostStatsCopyrightSection extends ConsumerWidget {
   const PostStatsCopyrightSection({
-    super.key,
     required this.stats,
     required this.totalPosts,
+    super.key,
   });
 
   final DanbooruPostStats stats;

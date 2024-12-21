@@ -6,8 +6,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class SoundControlButton extends StatelessWidget {
   const SoundControlButton({
-    super.key,
     required this.soundOn,
+    super.key,
     this.onSoundChanged,
     this.padding,
   });

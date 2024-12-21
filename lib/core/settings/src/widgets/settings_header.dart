@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;

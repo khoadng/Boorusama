@@ -25,7 +25,7 @@ sealed class ReleaseVersion {
         final Unreleased u =>
           '${kChangelogKey}_unreleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
         final Official o =>
-          '${kChangelogKey}_${o.version.withoutPreRelease().toString()}_seen',
+          '${kChangelogKey}_${o.version.withoutPreRelease()}_seen',
         Invalid _ => null,
       };
 

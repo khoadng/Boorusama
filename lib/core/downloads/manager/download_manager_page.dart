@@ -372,13 +372,13 @@ final _filePathProvider = FutureProvider.autoDispose
 
 class SimpleDownloadTile extends ConsumerWidget {
   const SimpleDownloadTile({
-    super.key,
     required this.task,
     required this.onResume,
     required this.onPause,
     required this.onResumeFailed,
     required this.onRestart,
     required this.onCancel,
+    super.key,
   });
 
   final TaskUpdate task;

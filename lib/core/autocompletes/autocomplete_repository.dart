@@ -20,9 +20,9 @@ class AutocompleteRepositoryBuilder
     with PersistentCacheMixin, DebugPrintMixin
     implements AutocompleteRepository {
   AutocompleteRepositoryBuilder({
-    this.persistentStaleDuration = const Duration(days: 3),
     required this.autocomplete,
     required this.persistentStorageKey,
+    this.persistentStaleDuration = const Duration(days: 3),
   });
 
   final Future<List<AutocompleteData>> Function(String query) autocomplete;

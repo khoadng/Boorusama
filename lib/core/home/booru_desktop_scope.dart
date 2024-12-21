@@ -25,12 +25,12 @@ const double _kDefaultMenuSize = 220;
 
 class BooruDesktopScope extends ConsumerStatefulWidget {
   const BooruDesktopScope({
-    super.key,
     required this.controller,
     required this.menuBuilder,
     required this.mobileMenu,
     required this.views,
     required this.menuWidth,
+    super.key,
   });
 
   final HomePageController controller;

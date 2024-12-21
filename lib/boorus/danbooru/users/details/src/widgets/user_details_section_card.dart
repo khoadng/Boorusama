@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class UserDetailsSectionCard extends StatelessWidget {
   const UserDetailsSectionCard({
-    super.key,
     required this.child,
     required this.title,
+    super.key,
   });
 
   final Widget child;

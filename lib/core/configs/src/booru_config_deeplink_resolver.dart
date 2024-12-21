@@ -14,9 +14,9 @@ import 'manage/current_booru_providers.dart';
 
 class BooruConfigDeepLinkResolver extends ConsumerStatefulWidget {
   const BooruConfigDeepLinkResolver({
-    super.key,
     required this.path,
     required this.child,
+    super.key,
   });
 
   final String? path;
@@ -52,9 +52,7 @@ class _BooruConfigDeepLinkResolverState
   void _print(String message) {
     if (!kDebugMode) return;
 
-    final logger = ref.read(loggerProvider);
-
-    logger.logI('Deeplink', message);
+    ref.read(loggerProvider).logI('Deeplink', message);
   }
 
   @override

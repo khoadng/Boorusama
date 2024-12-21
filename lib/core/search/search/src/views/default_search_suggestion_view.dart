@@ -14,10 +14,10 @@ import '../widgets/selected_tag_list_with_data.dart';
 
 class DefaultSearchSuggestionView extends ConsumerWidget {
   const DefaultSearchSuggestionView({
-    super.key,
     required this.textEditingController,
-    this.selectedTagController,
     required this.searchController,
+    super.key,
+    this.selectedTagController,
   });
 
   final TextEditingController textEditingController;

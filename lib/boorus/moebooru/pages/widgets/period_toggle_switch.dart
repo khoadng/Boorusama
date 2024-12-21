@@ -7,8 +7,8 @@ import '../../feats/posts/posts.dart';
 
 class PeriodToggleSwitch extends StatelessWidget {
   const PeriodToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(MoebooruTimePeriod period) onToggle;

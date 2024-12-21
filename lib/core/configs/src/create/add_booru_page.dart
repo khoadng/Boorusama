@@ -26,8 +26,8 @@ enum AddBooruPhase {
 
 class AddBooruPage extends ConsumerStatefulWidget {
   const AddBooruPage({
-    super.key,
     required this.setCurrentBooruOnSubmit,
+    super.key,
     this.backgroundColor,
   });
 
@@ -106,8 +106,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
 class AddBooruPageInternal extends ConsumerStatefulWidget {
   const AddBooruPageInternal({
-    super.key,
     required this.setCurrentBooruOnSubmit,
+    super.key,
     this.backgroundColor,
     this.onBooruSubmit,
   });

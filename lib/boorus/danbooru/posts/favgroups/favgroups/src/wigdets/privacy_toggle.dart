@@ -13,9 +13,9 @@ import '../../../../../users/user/user.dart';
 
 class PrivacyToggle extends ConsumerWidget {
   const PrivacyToggle({
-    super.key,
     required this.isPrivate,
     required this.onChanged,
+    super.key,
   });
 
   final bool isPrivate;

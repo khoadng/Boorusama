@@ -15,8 +15,8 @@ import '../../../post/post.dart';
 
 class DanbooruFileDetails extends ConsumerWidget {
   const DanbooruFileDetails({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final DanbooruPost post;

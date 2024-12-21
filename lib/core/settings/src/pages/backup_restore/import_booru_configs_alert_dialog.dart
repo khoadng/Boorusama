@@ -6,8 +6,8 @@ import '../../../../configs/manage.dart';
 
 class ImportBooruConfigsAlertDialog extends StatelessWidget {
   const ImportBooruConfigsAlertDialog({
-    super.key,
     required this.data,
+    super.key,
   });
 
   final BooruConfigExportData data;

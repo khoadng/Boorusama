@@ -16,9 +16,9 @@ import 'post_grid_controller.dart';
 
 class PostScope<T extends Post> extends ConsumerStatefulWidget {
   const PostScope({
-    super.key,
     required this.fetcher,
     required this.builder,
+    super.key,
   });
 
   final PostGridFetcher<T> fetcher;
@@ -65,33 +65,33 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      imageListingSettingsProvider.select((value) => value.pageMode),
-      (previous, next) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          _controller.setPageMode(next);
-        });
-      },
-    );
-
-    ref.listen(
-      blacklistTagsProvider(ref.watchConfigAuth),
-      (previous, next) {
-        if (previous != next) {
-          next.when(
-            data: (tags) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted) return;
-                _controller.setBlacklistedTags(tags);
-              });
-            },
-            error: (error, st) {},
-            loading: () {},
-          );
-        }
-      },
-    );
+    ref
+      ..listen(
+        imageListingSettingsProvider.select((value) => value.pageMode),
+        (previous, next) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            _controller.setPageMode(next);
+          });
+        },
+      )
+      ..listen(
+        blacklistTagsProvider(ref.watchConfigAuth),
+        (previous, next) {
+          if (previous != next) {
+            next.when(
+              data: (tags) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted) return;
+                  _controller.setBlacklistedTags(tags);
+                });
+              },
+              error: (error, st) {},
+              loading: () {},
+            );
+          }
+        },
+      );
 
     return widget.builder(
       context,

@@ -12,8 +12,8 @@ import 'danbooru_tag_details_page.dart';
 
 class DanbooruCharacterPage extends ConsumerWidget {
   const DanbooruCharacterPage({
-    super.key,
     required this.characterName,
+    super.key,
   });
 
   final String characterName;

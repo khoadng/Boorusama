@@ -389,16 +389,12 @@ bool handleDanbooruGestureAction(
   switch (action) {
     case kToggleFavoriteAction:
       onToggleFavorite?.call();
-      break;
     case kUpvoteAction:
       onUpvote?.call();
-      break;
     case kDownvoteAction:
       onDownvote?.call();
-      break;
     case kEditAction:
       onEdit?.call();
-      break;
     default:
       return handleDefaultGestureAction(
         action,
