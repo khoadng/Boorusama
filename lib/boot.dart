@@ -239,9 +239,12 @@ Future<void> boot(BootLogger bootLogger) async {
 
   runApp(
     Reboot(
-      initialConfigs: allConfigs,
-      initialConfig: initialConfig ?? BooruConfig.empty,
-      builder: (context, config, configs) => BooruLocalization(
+      initialData: RebootData(
+        config: initialConfig ?? BooruConfig.empty,
+        configs: allConfigs,
+        settings: settings,
+      ),
+      builder: (context, data) => BooruLocalization(
         child: ProviderScope(
           overrides: [
             booruEngineRegistryProvider.overrideWith(
@@ -253,14 +256,14 @@ Future<void> boot(BootLogger bootLogger) async {
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),
             settingsNotifierProvider
-                .overrideWith(() => SettingsNotifier(settings)),
+                .overrideWith(() => SettingsNotifier(data.settings)),
             booruConfigRepoProvider.overrideWithValue(booruUserRepo),
             booruConfigProvider.overrideWith(
               () => BooruConfigNotifier(
-                initialConfigs: configs,
+                initialConfigs: data.configs,
               ),
             ),
-            initialSettingsBooruConfigProvider.overrideWithValue(config),
+            initialSettingsBooruConfigProvider.overrideWithValue(data.config),
             httpCacheDirProvider.overrideWithValue(tempPath),
             loggerProvider.overrideWithValue(logger),
             bookmarkRepoOverride,
