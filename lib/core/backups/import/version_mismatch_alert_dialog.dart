@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 Future<bool?> showVersionMismatchAlertDialog({
   required BuildContext context,

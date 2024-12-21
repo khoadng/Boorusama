@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../info/package_info.dart';
-import 'types.dart';
+import '../../info/package_info.dart';
+import '../types.dart';
 
 Future<bool?> showBackwardImportAlertDialog({
   required BuildContext context,

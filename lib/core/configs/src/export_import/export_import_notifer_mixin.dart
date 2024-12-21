@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../../backups/backward_import_alert_dialog.dart';
+import '../../../backups/import/backward_import_alert_dialog.dart';
 import '../../../backups/data_converter.dart';
 import '../../../foundation/version.dart';
 import '../../../info/package_info.dart';

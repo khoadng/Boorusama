@@ -5,10 +5,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../configs/config.dart';
-import '../configs/manage.dart';
-import '../servers/servers.dart';
-import '../tags/favorites/providers.dart';
+import '../../configs/config.dart';
+import '../../configs/manage.dart';
+import '../../tags/favorites/providers.dart';
+import '../servers/server_providers.dart';
 
 final importDataProvider = NotifierProvider.autoDispose
     .family<ImportDataNotifier, ImportDataState, String>(

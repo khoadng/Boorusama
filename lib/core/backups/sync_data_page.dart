@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'export_data_page.dart';
-import 'import_data_page.dart';
+import 'export/export_data_page.dart';
+import 'import/import_data_page.dart';
 
 enum TransferMode {
   import,

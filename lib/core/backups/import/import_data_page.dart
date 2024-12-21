@@ -7,13 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../foundation/toast.dart';
-import '../foundation/version.dart';
-import '../info/package_info.dart';
+import '../../foundation/toast.dart';
+import '../../foundation/version.dart';
+import '../../info/package_info.dart';
 import '../servers/discovery_client.dart';
-import '../theme/app_theme.dart';
-import '../widgets/booru_dialog.dart';
-import '../widgets/reboot.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/booru_dialog.dart';
+import '../../widgets/reboot.dart';
 import 'import_data_notifier.dart';
 import 'version_mismatch_alert_dialog.dart';
 
