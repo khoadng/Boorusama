@@ -46,6 +46,7 @@ class GelbooruV1Builder
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,

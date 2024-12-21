@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../autocompletes/autocompletes.dart';
+import '../../../../configs/ref.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
@@ -41,14 +41,13 @@ class DefaultSearchSuggestionView extends ConsumerWidget {
                     ref.watch(suggestionProvider(query.text));
 
                 return TagSuggestionItems(
+                  config: ref.watchConfigAuth,
                   tags: suggestionTags,
                   currentQuery: query.text,
                   onItemTap: (tag) {
                     FocusManager.instance.primaryFocus?.unfocus();
                     searchController.tapTag(tag.value);
                   },
-                  textColorBuilder: (tag) =>
-                      generateAutocompleteTagColor(ref, context, tag),
                 );
               },
             ),

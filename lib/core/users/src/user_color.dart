@@ -1,4 +1,4 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:ui';
 
 abstract class UserColor {

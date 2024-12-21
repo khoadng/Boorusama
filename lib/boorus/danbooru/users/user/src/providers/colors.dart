@@ -44,7 +44,7 @@ class DanbooruUserColor implements UserColor {
   static Color _color(Brightness brightness, UserLevel? level) {
     final lvl = level ?? UserLevel.member;
 
-    return !brightness.isLight
+    return brightness.isLight
         ? Color(getUserHexColor(lvl))
         : Color(getUserHexOnDarkColor(lvl));
   }

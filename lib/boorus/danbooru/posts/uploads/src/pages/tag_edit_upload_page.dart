@@ -994,14 +994,13 @@ class TagSuggestionsPortalFollower extends ConsumerWidget {
             width: MediaQuery.sizeOf(context).width,
             color: Theme.of(context).colorScheme.secondaryContainer,
             child: TagSuggestionItems(
+              config: ref.watchConfigAuth,
               dense: true,
               tags: tags,
               onItemTap: (tag) {
                 onSelected(tag.value);
               },
               currentQuery: lastQuery ?? '',
-              textColorBuilder: (tag) =>
-                  generateAutocompleteTagColor(ref, context, tag),
             ),
           );
   }

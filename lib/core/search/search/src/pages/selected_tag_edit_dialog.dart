@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../autocompletes/autocompletes.dart';
 import '../../../../configs/ref.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../queries/query_utils.dart';
@@ -52,6 +51,8 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
+
     return Column(
       children: [
         Material(
@@ -72,7 +73,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
                 ref
                     .read(
-                      suggestionsNotifierProvider(ref.readConfigAuth).notifier,
+                      suggestionsNotifierProvider(config).notifier,
                     )
                     .getSuggestions(query);
               },
@@ -103,6 +104,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
                 return Flexible(
                   child: TagSuggestionItems(
+                    config: config,
                     tags: tags,
                     onItemTap: (tag) {
                       // replace the last word with the selected tag
@@ -112,8 +114,6 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
                       focusNode.requestFocus();
                     },
                     currentQuery: currentQuery,
-                    textColorBuilder: (tag) =>
-                        generateAutocompleteTagColor(ref, context, tag),
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(8),
                       bottomRight: Radius.circular(8),

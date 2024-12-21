@@ -15,7 +15,7 @@ class DefaultUserColor implements UserColor {
 
   @override
   Color fromString(String color) {
-    return brightness != Brightness.light
+    return brightness == Brightness.light
         ? Color(getUserHexColor(color))
         : Color(getUserHexOnDarkColor(color));
   }

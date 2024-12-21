@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../autocompletes/autocompletes.dart';
 import '../../../../configs/config.dart';
 import '../../../../router.dart';
 import '../views/simple_tag_search_view.dart';
@@ -60,8 +59,6 @@ void goToQuickSearchPage(
                 ? (text) => floatingActionButton.call(text)
                 : null,
             onSelected: onSelected,
-            textColorBuilder: (tag) =>
-                generateAutocompleteTagColor(ref, context, tag),
             emptyBuilder: emptyBuilder,
           )
         : SimpleTagSearchView(
@@ -74,8 +71,6 @@ void goToQuickSearchPage(
             ),
             ensureValidTag: ensureValidTag,
             onSelected: onSelected,
-            textColorBuilder: (tag) =>
-                generateAutocompleteTagColor(ref, context, tag),
             emptyBuilder: emptyBuilder,
           ),
   );

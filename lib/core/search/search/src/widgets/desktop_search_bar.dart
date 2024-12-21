@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../autocompletes/autocompletes.dart';
 import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
@@ -140,6 +139,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
             children: [
               query.text.isNotEmpty
                   ? TagSuggestionItems(
+                      config: ref.watchConfigAuth,
                       dense: true,
                       backgroundColor:
                           Theme.of(context).colorScheme.surfaceContainer,
@@ -155,8 +155,6 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         showSuggestions.value = false;
                         FocusScope.of(context).unfocus();
                       },
-                      textColorBuilder: (tag) =>
-                          generateAutocompleteTagColor(ref, context, tag),
                     )
                   : Container(
                       padding: const EdgeInsets.symmetric(
