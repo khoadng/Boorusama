@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf/shelf.dart';
@@ -8,6 +11,7 @@ import '../../configs/src/export_import/booru_config_io_handler.dart';
 import '../../foundation/loggers.dart';
 import '../../info/device_info.dart';
 import '../../info/package_info.dart';
+import '../../settings/providers.dart';
 import '../../tags/favorites/providers.dart';
 import '../providers.dart';
 import 'server.dart';
@@ -58,6 +62,16 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
           (l) => Response.internalServerError(body: l.toString()),
           (r) => Response.ok(r),
         );
+      },
+    ),
+    ExportCategory(
+      name: 'settings',
+      displayName: 'Settings',
+      route: 'settings',
+      handler: (request) async {
+        final settings = ref.read(settingsProvider);
+
+        return Response.ok(jsonEncode(settings.toJson()));
       },
     ),
   ];

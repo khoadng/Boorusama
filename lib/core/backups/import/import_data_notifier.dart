@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../configs/config.dart';
 import '../../configs/manage.dart';
+import '../../settings/providers.dart';
+import '../../settings/settings.dart';
 import '../../tags/favorites/providers.dart';
 import '../servers/server_providers.dart';
 
@@ -52,10 +57,32 @@ enum ImportStep {
   done,
 }
 
-typedef ReloadPayload = ({
-  List<BooruConfig> configs,
-  BooruConfig selectedConfig,
-});
+class ReloadPayload extends Equatable {
+  const ReloadPayload({
+    required this.configs,
+    required this.selectedConfig,
+    this.settings,
+  });
+
+  final List<BooruConfig> configs;
+  final BooruConfig selectedConfig;
+  final Settings? settings;
+
+  ReloadPayload copyWith({
+    List<BooruConfig>? configs,
+    BooruConfig? selectedConfig,
+    Settings? Function()? settings,
+  }) {
+    return ReloadPayload(
+      configs: configs ?? this.configs,
+      selectedConfig: selectedConfig ?? this.selectedConfig,
+      settings: settings != null ? settings() : this.settings,
+    );
+  }
+
+  @override
+  List<Object?> get props => [configs, selectedConfig, settings];
+}
 
 class ImportTask extends Equatable {
   const ImportTask({
@@ -213,13 +240,27 @@ class ImportDataNotifier
                     final config = configs.first;
 
                     state = state.copyWith(
-                      reloadPayload: () => (
+                      reloadPayload: () => ReloadPayload(
                         configs: configs,
                         selectedConfig: config,
                       ),
                     );
                   },
                   onFailure: (message) => throw Exception(message),
+                );
+
+            break;
+          case 'settings':
+            final res = await dio.get('/settings');
+
+            final jsonString = res.data;
+
+            final json = jsonDecode(jsonString) as Map<String, dynamic>;
+
+            final settings = Settings.fromJson(json);
+
+            await ref.read(settingsNotifierProvider.notifier).updateSettings(
+                  settings,
                 );
 
             break;

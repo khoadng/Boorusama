@@ -10,10 +10,11 @@ import 'package:version/version.dart';
 import '../../foundation/toast.dart';
 import '../../foundation/version.dart';
 import '../../info/package_info.dart';
-import '../servers/discovery_client.dart';
+import '../../settings/providers.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/booru_dialog.dart';
 import '../../widgets/reboot.dart';
+import '../servers/discovery_client.dart';
 import 'import_data_notifier.dart';
 import 'version_mismatch_alert_dialog.dart';
 
@@ -231,6 +232,7 @@ class ImportingStep extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
     final tasks = ref.watch(importDataProvider(url).select((s) => s.tasks));
     final isDone = tasks.every((element) {
       return element.importStatus is ImportDone;
@@ -343,8 +345,11 @@ class ImportingStep extends ConsumerWidget {
                   onPressed: () {
                     Reboot.start(
                       context,
-                      reloadPayload.selectedConfig,
-                      reloadPayload.configs,
+                      RebootData(
+                        config: reloadPayload.selectedConfig,
+                        configs: reloadPayload.configs,
+                        settings: reloadPayload.settings ?? settings,
+                      ),
                     );
                   },
                   child: const Padding(
