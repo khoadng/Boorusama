@@ -303,8 +303,8 @@ class DioExtendedNetworkImageProvider
             ),
             onReceiveProgress: chunkEvents != null
                 ? (count, total) {
-                    // Only add event if controller is not closed
-                    if (!chunkEvents.isClosed) {
+                    // Only add event if controller is not closed and total is valid
+                    if (!chunkEvents.isClosed && total >= 0) {
                       chunkEvents.add(
                         ImageChunkEvent(
                           cumulativeBytesLoaded: count,
