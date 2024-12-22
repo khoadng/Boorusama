@@ -46,6 +46,7 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final imageGridPadding = ref.watch(
         imageListingSettingsProvider.select((value) => value.imageGridPadding));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(
@@ -53,33 +54,61 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       ),
       sliver: Builder(
         builder: (context) {
-          if (error != null) {
-            final message = translateBooruError(error!);
+          final err = error;
+
+          if (err != null) {
+            final message = translateBooruError(err);
 
             return SliverToBoxAdapter(
-              child: switch (error!) {
+              child: switch (err) {
                 AppError _ => ErrorBox(
                     errorMessage: message.tr(),
                     onRetry: _onErrorRetry,
                   ),
-                final ServerError e => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 48, bottom: 16),
-                          child: Text(
-                            e.httpStatusCode.toString(),
-                            style: context.textTheme.headlineMedium,
-                          ),
+                final ServerError e => Column(
+                    children: [
+                      const SizedBox(height: 24),
+                      Text(
+                        e.httpStatusCode.toString(),
+                        style: context.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                        Builder(
+                      ),
+                      Builder(
+                        builder: (context) {
+                          final serverError = translateServerError(e);
+
+                          return serverError != null
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: Text(serverError.tr()),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: e.isServerError ? 4 : 24,
+                        ),
+                        child: Builder(
                           builder: (context) {
                             try {
                               final data = wrapIntoJsonToCodeBlock(
                                   prettyPrintJson(e.message));
 
                               return MarkdownBody(
+                                styleSheet: MarkdownStyleSheet(
+                                  codeblockPadding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 8,
+                                  ),
+                                  codeblockDecoration: BoxDecoration(
+                                    //FIXME: change this to surfaceContainerLow
+                                    color: colorScheme.secondaryContainer,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
                                 data: data,
                               );
                             } catch (err) {
@@ -89,14 +118,13 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
                             }
                           },
                         ),
-                        const SizedBox(height: 16),
-                        if (e.isServerError)
-                          FilledButton(
-                            onPressed: _onErrorRetry,
-                            child: const Text('Retry'),
-                          ),
-                      ],
-                    ),
+                      ),
+                      if (e.isServerError)
+                        FilledButton(
+                          onPressed: _onErrorRetry,
+                          child: const Text('Retry'),
+                        ),
+                    ],
                   ),
                 UnknownError _ => ErrorBox(errorMessage: message),
               },
@@ -284,3 +312,14 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     );
   }
 }
+
+String? translateServerError(ServerError error) => switch (error) {
+      final ServerError e => switch (e.httpStatusCode) {
+          null => null,
+          401 => 'search.errors.forbidden',
+          403 => 'search.errors.access_denied',
+          429 => 'search.errors.rate_limited',
+          >= 500 => 'search.errors.down',
+          _ => null,
+        },
+    };
