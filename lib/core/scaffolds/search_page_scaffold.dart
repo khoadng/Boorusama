@@ -17,6 +17,7 @@ import 'package:boorusama/core/search_histories/search_histories.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/error.dart';
 import 'package:boorusama/router.dart';
+import '../autocompletes/utils.dart';
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -286,7 +287,7 @@ class _SearchPageScaffoldState<T extends Post>
   }
 }
 
-class SuggestionView extends StatefulWidget {
+class SuggestionView extends ConsumerStatefulWidget {
   const SuggestionView({
     super.key,
     required this.searchController,
@@ -297,10 +298,10 @@ class SuggestionView extends StatefulWidget {
   final SearchPageController searchController;
 
   @override
-  State<SuggestionView> createState() => _SuggestionViewState();
+  ConsumerState<SuggestionView> createState() => _SuggestionViewState();
 }
 
-class _SuggestionViewState extends State<SuggestionView> {
+class _SuggestionViewState extends ConsumerState<SuggestionView> {
   final focus = FocusNode();
   late final textController = RichTextController(
     text: widget.searchController.textEditingController.text,
@@ -332,6 +333,9 @@ class _SuggestionViewState extends State<SuggestionView> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedTagController = widget.searchController.selectedTagController;
+    final searchController = widget.searchController;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
@@ -342,10 +346,34 @@ class _SuggestionViewState extends State<SuggestionView> {
           leading: (!context.canPop() ? null : const SearchAppBarBackButton()),
         ),
       ),
-      body: DefaultSearchSuggestionView(
-        textEditingController: textController,
-        searchController: widget.searchController,
-        selectedTagController: widget.searchController.selectedTagController,
+      body: SafeArea(
+        child: Column(
+          children: [
+            SelectedTagListWithData(
+              controller: selectedTagController,
+            ),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: textController,
+                builder: (context, query, child) {
+                  final suggestionTags =
+                      ref.watch(suggestionProvider(query.text));
+
+                  return TagSuggestionItems(
+                    tags: suggestionTags,
+                    currentQuery: query.text,
+                    onItemTap: (tag) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      searchController.tapTag(tag.value);
+                    },
+                    textColorBuilder: (tag) =>
+                        generateAutocompleteTagColor(ref, context, tag),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

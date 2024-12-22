@@ -1,5 +1,4 @@
 export 'booru_search_bar.dart';
-export 'default_search_suggestion_view.dart';
 export 'desktop_search_bar.dart';
 export 'filter_operator.dart';
 export 'search_controller.dart';
