@@ -24,6 +24,7 @@ dependencies:
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
   background_downloader: ^8.8.0
+  bonsoir: ^5.1.10
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
   context_menus:
@@ -102,6 +103,7 @@ dependencies:
   searchfield: ^1.2.1
   share_handler: ^0.0.20
   share_plus: ^10.0.2
+  shelf: ^1.4.1
   sliver_tools: ^0.2.12
   stack_trace: ^1.11.0
   timeago: ^3.7.0

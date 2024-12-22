@@ -78,7 +78,7 @@ class DeviceInfo extends Equatable {
 
   String? get deviceName {
     if (androidDeviceInfo != null) {
-      return androidDeviceInfo!.brand;
+      return '${androidDeviceInfo!.brand} (${androidDeviceInfo!.model})';
     } else if (iosDeviceInfo != null) {
       return iosDeviceInfo!.name;
     } else if (macOsDeviceInfo != null) {

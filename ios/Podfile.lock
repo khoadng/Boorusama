@@ -1,6 +1,9 @@
 PODS:
   - background_downloader (0.0.1):
     - Flutter
+  - bonsoir_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -253,6 +256,7 @@ PODS:
 
 DEPENDENCIES:
   - background_downloader (from `.symlinks/plugins/background_downloader/ios`)
+  - bonsoir_darwin (from `.symlinks/plugins/bonsoir_darwin/darwin`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - cupertino_http (from `.symlinks/plugins/cupertino_http/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -309,6 +313,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   background_downloader:
     :path: ".symlinks/plugins/background_downloader/ios"
+  bonsoir_darwin:
+    :path: ".symlinks/plugins/bonsoir_darwin/darwin"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/darwin"
   cupertino_http:
@@ -362,6 +368,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   background_downloader: 9f788ffc5de45acf87d6380e91ca0841066c18cf
+  bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
   connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
   cupertino_http: 1a3a0f163c1b26e7f1a293b33d476e0fde7a64ec
   device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342

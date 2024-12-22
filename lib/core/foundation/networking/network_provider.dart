@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -10,6 +13,8 @@ import '../loggers.dart';
 import 'network_state.dart';
 
 const _serviceName = 'Connectivity';
+
+const _fallbackIPAddress = '127.0.0.1'; // Fallback to localhost
 
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
   return Connectivity().onConnectivityChanged;
@@ -27,6 +32,45 @@ final networkStateProvider = Provider<NetworkState>((ref) {
         loading: () => NetworkInitialState(),
         error: (_, __) => NetworkDisconnectedState(),
       );
+});
+
+final localIPAddressProvider = FutureProvider<String?>((ref) async {
+  final logger = ref.watch(loggerProvider);
+
+  // listen to changes in network state
+  ref.listen(
+    connectivityProvider,
+    (previous, next) {
+      // if the network state changes, we want to update the IP address
+      ref.invalidateSelf();
+    },
+  );
+
+  try {
+    final interfaces = await NetworkInterface.list();
+    for (final interface in interfaces) {
+      // Look for the WiFi or Ethernet interface
+      if (interface.addresses.isNotEmpty) {
+        // Filter for IPv4 addresses
+        final ipv4 = interface.addresses.firstWhere(
+          (addr) => addr.type == InternetAddressType.IPv4,
+          orElse: () => interface.addresses.first,
+        );
+        // Skip loopback addresses (127.0.0.1)
+        if (!ipv4.address.startsWith('127.')) {
+          return ipv4.address;
+        }
+      }
+    }
+  } catch (e) {
+    logger.logE(_serviceName, 'Error getting IP address: $e');
+  }
+
+  logger.logW(
+    _serviceName,
+    'Failed to get local IP address, falling back to $_fallbackIPAddress',
+  );
+  return _fallbackIPAddress;
 });
 
 class NetworkListener extends ConsumerWidget {
