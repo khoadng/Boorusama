@@ -13,14 +13,17 @@ final gelbooruPostRepoProvider =
     Provider.family<PostRepository<GelbooruPost>, BooruConfig>(
   (ref, config) {
     final client = ref.watch(gelbooruClientProvider(config));
+    final composer = ref.watch(tagQueryComposerProvider(config));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      tagComposer: composer,
       fetch: client.getPostResults,
       fetchFromController: (controller, page, {limit}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
 
-        return client.getPostResults(tags, page, limit: limit);
+        final newTags = composer.compose(tags);
+
+        return client.getPostResults(newTags, page, limit: limit);
       },
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
