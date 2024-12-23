@@ -21,7 +21,7 @@ import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../suggestions/suggestions_notifier.dart';
-import '../views/default_search_suggestion_view.dart';
+import '../../../suggestions/tag_suggestion_items.dart';
 import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
 import 'search_button.dart';
@@ -325,7 +325,7 @@ class _SearchPageScaffoldState<T extends Post>
   }
 }
 
-class SuggestionView extends StatefulWidget {
+class SuggestionView extends ConsumerStatefulWidget {
   const SuggestionView({
     required this.searchController,
     super.key,
@@ -336,10 +336,10 @@ class SuggestionView extends StatefulWidget {
   final SearchPageController searchController;
 
   @override
-  State<SuggestionView> createState() => _SuggestionViewState();
+  ConsumerState<SuggestionView> createState() => _SuggestionViewState();
 }
 
-class _SuggestionViewState extends State<SuggestionView> {
+class _SuggestionViewState extends ConsumerState<SuggestionView> {
   final focus = FocusNode();
   late final textController = RichTextController(
     text: widget.searchController.textEditingController.text,
@@ -372,6 +372,8 @@ class _SuggestionViewState extends State<SuggestionView> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedTagController = widget.searchController.selectedTagController;
+    final searchController = widget.searchController;
     final parentRoute = ModalRoute.of(context);
 
     return Scaffold(
@@ -386,10 +388,33 @@ class _SuggestionViewState extends State<SuggestionView> {
               : null,
         ),
       ),
-      body: DefaultSearchSuggestionView(
-        textEditingController: textController,
-        searchController: widget.searchController,
-        selectedTagController: widget.searchController.selectedTagController,
+      body: SafeArea(
+        child: Column(
+          children: [
+            SelectedTagListWithData(
+              controller: selectedTagController,
+            ),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: textController,
+                builder: (context, query, child) {
+                  final suggestionTags =
+                      ref.watch(suggestionProvider(query.text));
+
+                  return TagSuggestionItems(
+                    config: ref.watchConfigAuth,
+                    tags: suggestionTags,
+                    currentQuery: query.text,
+                    onItemTap: (tag) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      searchController.tapTag(tag.value);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
