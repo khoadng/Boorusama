@@ -10,12 +10,14 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/core/posts/posts.dart';
+import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../settings/widgets/image_viewer_page.dart';
 
 class PostMedia extends ConsumerWidget {
   const PostMedia({
@@ -54,15 +56,22 @@ class PostMedia extends ConsumerWidget {
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
   final bool inFocus;
 
+  void _openSettings(BuildContext context) {
+    openImageViewerSettingsPage(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final useDefault = ref.watch(settingsProvider
+        .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk));
+
     final media = post.isVideo
         ? !inFocus
             ? BooruImage(
                 imageUrl: post.videoThumbnailUrl,
                 fit: BoxFit.contain,
               )
-            : extension(post.videoUrl) == '.webm'
+            : extension(post.videoUrl) == '.webm' && useDefault
                 ? !isDesktopPlatform()
                     ? isAndroid()
                         ? EmbeddedWebViewWebm(
@@ -94,6 +103,7 @@ class PostMedia extends ConsumerWidget {
                             sound: ref.isGlobalVideoSoundOn,
                             speed: ref.watchPlaybackSpeed(post.videoUrl),
                             onZoomUpdated: onImageZoomUpdated,
+                            onOpenSettings: () => _openSettings(context),
                           )
                     : BooruVideo(
                         url: post.videoUrl,
@@ -105,6 +115,7 @@ class PostMedia extends ConsumerWidget {
                         sound: ref.isGlobalVideoSoundOn,
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         onZoomUpdated: onImageZoomUpdated,
+                        onOpenSettings: () => _openSettings(context),
                       )
                 : PerformanceOrientationBuilder(
                     builder: (context, orientation) => BooruVideo(
@@ -119,6 +130,7 @@ class PostMedia extends ConsumerWidget {
                       onZoomUpdated: onImageZoomUpdated,
                       customControlsBuilder:
                           orientation.isPortrait ? null : () => null,
+                      onOpenSettings: () => _openSettings(context),
                     ),
                   )
         : InteractiveBooruImage(

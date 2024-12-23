@@ -91,6 +91,18 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
           ),
         ),
+        SettingsTile(
+          title: const Text('Video player engine'),
+          subtitle: const Text(
+              'App restart is required for the change to take effect'),
+          selectedOption: settings.videoPlayerEngine,
+          items: VideoPlayerEngine.values
+              .where((e) => e != VideoPlayerEngine.videoPlayerPlugin)
+              .toList(),
+          onChanged: (value) =>
+              ref.updateSettings(settings.copyWith(videoPlayerEngine: value)),
+          optionBuilder: (value) => Text(value.localize().tr()),
+        ),
         const SizedBox(
           height: 10,
         ),

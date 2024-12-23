@@ -101,19 +101,6 @@ Future<void> boot(BootLogger bootLogger) async {
     });
   }
 
-  if (isDesktopPlatform() || isIOS()) {
-    fvp.registerWith(
-      options: {
-        'platforms': [
-          'linux',
-          'ios',
-          'windows',
-          'macos',
-        ],
-      },
-    );
-  }
-
   bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
 
@@ -178,6 +165,18 @@ Future<void> boot(BootLogger bootLogger) async {
           ));
 
   bootLogger.l('Settings: ${settings.toJson()}');
+
+  fvp.registerWith(
+    options: {
+      'platforms': [
+        'linux',
+        'ios',
+        'windows',
+        'macos',
+        if (settings.videoPlayerEngine == VideoPlayerEngine.mdk) 'android',
+      ],
+    },
+  );
 
   bootLogger.l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
