@@ -123,8 +123,6 @@ enum VideoPlayerEngine {
 class Settings extends Equatable {
   const Settings({
     required this.listing,
-    required this.safeMode,
-    required this.blacklistedTags,
     required this.themeMode,
     required this.language,
     required this.dataCollectingStatus,
@@ -154,9 +152,7 @@ class Settings extends Equatable {
   });
 
   Settings.fromJson(Map<String, dynamic> json)
-      : safeMode = json['safeMode'] ?? true,
-        listing = ImageListingSettings.fromJson(json),
-        blacklistedTags = json['hideBlacklist'] ?? [],
+      : listing = ImageListingSettings.fromJson(json),
         themeMode = json['themeMode'] != null
             ? AppThemeMode.values[json['themeMode']]
             : AppThemeMode.amoledDark,
@@ -243,8 +239,6 @@ class Settings extends Equatable {
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
     ),
-    safeMode: true,
-    blacklistedTags: '',
     themeMode: AppThemeMode.amoledDark,
     language: 'en-US',
     dataCollectingStatus: DataCollectingStatus.allow,
@@ -275,9 +269,7 @@ class Settings extends Equatable {
 
   final ImageListingSettings listing;
 
-  final String blacklistedTags;
   final String language;
-  final bool safeMode;
   final AppThemeMode themeMode;
   final DataCollectingStatus dataCollectingStatus;
 
@@ -328,9 +320,7 @@ class Settings extends Equatable {
   final VideoPlayerEngine videoPlayerEngine;
 
   Settings copyWith({
-    String? blacklistedTags,
     String? language,
-    bool? safeMode,
     AppThemeMode? themeMode,
     DataCollectingStatus? dataCollectingStatus,
     String? downloadPath,
@@ -361,8 +351,6 @@ class Settings extends Equatable {
   }) =>
       Settings(
         listing: listing ?? this.listing,
-        safeMode: safeMode ?? this.safeMode,
-        blacklistedTags: blacklistedTags ?? this.blacklistedTags,
         themeMode: themeMode ?? this.themeMode,
         language: language ?? this.language,
         dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
@@ -409,8 +397,6 @@ class Settings extends Equatable {
 
     return {
       ...listing,
-      'safeMode': safeMode,
-      'hideBlacklist': blacklistedTags,
       'themeMode': themeMode.index,
       'dataCollectingStatus': dataCollectingStatus.index,
       'language': language,
@@ -444,8 +430,6 @@ class Settings extends Equatable {
   @override
   List<Object?> get props => [
         listing,
-        safeMode,
-        blacklistedTags,
         themeMode,
         language,
         dataCollectingStatus,
