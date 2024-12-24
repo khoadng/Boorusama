@@ -12,8 +12,8 @@ import '../../../comment/comment.dart';
 
 class DanbooruCommentHeader extends ConsumerWidget {
   const DanbooruCommentHeader({
-    super.key,
     required this.comment,
+    super.key,
   });
 
   final CommentData comment;

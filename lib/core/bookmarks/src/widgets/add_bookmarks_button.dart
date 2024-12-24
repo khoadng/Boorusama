@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -12,9 +15,9 @@ import '../providers/bookmark_provider.dart';
 
 class AddBookmarksButton extends ConsumerWidget {
   const AddBookmarksButton({
-    super.key,
     required this.posts,
     required this.onPressed,
+    super.key,
   });
 
   final Iterable<Post> posts;
@@ -27,11 +30,13 @@ class AddBookmarksButton extends ConsumerWidget {
     return IconButton(
       onPressed: posts.isNotEmpty
           ? () async {
-              ref.bookmarks.addBookmarksWithToast(
-                context,
-                booruConfig.booruId,
-                booruConfig.url,
-                posts,
+              unawaited(
+                ref.bookmarks.addBookmarksWithToast(
+                  context,
+                  booruConfig.booruId,
+                  booruConfig.url,
+                  posts,
+                ),
               );
               onPressed();
             }

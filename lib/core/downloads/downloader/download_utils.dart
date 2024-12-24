@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -82,7 +85,7 @@ extension PostDownloadX on WidgetRef {
       message: 'Downloading ${posts.length} files...',
     );
 
-    for (int i = 0; i < posts.length; i++) {
+    for (var i = 0; i < posts.length; i++) {
       final post = posts[i];
       await _download(
         this,
@@ -104,12 +107,12 @@ extension PostDownloadX on WidgetRef {
 Future<void> _download(
   WidgetRef ref,
   Post downloadable, {
-  PermissionStatus? permission,
   required Settings settings,
+  required DownloadFileUrlExtractor downloadFileUrlExtractor,
+  PermissionStatus? permission,
   String? group,
   String? downloadPath,
   Map<String, String>? bulkMetadata,
-  required DownloadFileUrlExtractor downloadFileUrlExtractor,
   void Function()? onStarted,
 }) async {
   final booruConfig = ref.readConfig;
@@ -192,25 +195,27 @@ Future<void> _download(
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
-    download();
+    await download();
     return;
   }
 
   if (permission == PermissionStatus.granted) {
-    download();
+    await download();
   } else {
     logger.logI('Single Download', 'Permission not granted, requesting...');
-    deviceStoragePermissionNotifier.requestPermission(
-      onDone: (isGranted) {
-        if (isGranted) {
-          download();
-        } else {
-          logger.logI(
-            'Single Download',
-            'Storage permission request denied, aborting...',
-          );
-        }
-      },
+    unawaited(
+      deviceStoragePermissionNotifier.requestPermission(
+        onDone: (isGranted) {
+          if (isGranted) {
+            download();
+          } else {
+            logger.logI(
+              'Single Download',
+              'Storage permission request denied, aborting...',
+            );
+          }
+        },
+      ),
     );
   }
 }

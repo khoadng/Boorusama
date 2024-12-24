@@ -6,9 +6,9 @@ import 'package:flutter_scatter/flutter_scatter.dart';
 
 class TagCloud extends StatelessWidget {
   const TagCloud({
-    super.key,
     required this.itemCount,
     required this.itemBuilder,
+    super.key,
     this.scaleFactor,
   });
 

@@ -507,9 +507,9 @@ class SettingsPageOtherSection extends ConsumerWidget {
 
 class SettingTile extends StatelessWidget {
   const SettingTile({
-    super.key,
     required this.title,
     required this.leading,
+    super.key,
     this.onTap,
     this.showLeading,
     this.subtitle,

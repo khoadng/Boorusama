@@ -41,13 +41,11 @@ class BookmarkAppBar extends ConsumerWidget {
               switch (value) {
                 case 'edit':
                   ref.read(bookmarkEditProvider.notifier).state = true;
-                  break;
                 case 'download_all':
                   ref.bookmarks.downloadBookmarks(
                     ref.readConfig,
                     ref.read(filteredBookmarksProvider),
                   );
-                  break;
               }
             },
             itemBuilder: {

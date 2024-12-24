@@ -8,8 +8,8 @@ final biometricsProvider = Provider<LocalAuthentication>((ref) {
 
 final biometricDeviceSupportProvider = FutureProvider<bool>((ref) async {
   final auth = ref.watch(biometricsProvider);
-  final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-  final bool canAuthenticate =
+  final canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+  final canAuthenticate =
       canAuthenticateWithBiometrics || await auth.isDeviceSupported();
 
   return canAuthenticate;

@@ -13,8 +13,8 @@ import '../../../widgets/widgets.dart';
 
 class SliverCharacterPostList extends ConsumerWidget {
   const SliverCharacterPostList({
-    super.key,
     required this.tags,
+    super.key,
   });
 
   final Set<String> tags;

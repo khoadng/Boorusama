@@ -26,8 +26,8 @@ final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
-    super.key,
     required this.builder,
+    super.key,
   });
 
   final Widget Function(ThemeData theme, ThemeMode themeMode) builder;

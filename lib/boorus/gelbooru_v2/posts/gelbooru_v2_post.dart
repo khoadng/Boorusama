@@ -40,7 +40,7 @@ class GelbooruV2Post extends Equatable
 
   factory GelbooruV2Post.empty() => GelbooruV2Post(
         format: '',
-        height: 0.0,
+        height: 0,
         id: 0,
         md5: '',
         originalImageUrl: '',
@@ -49,7 +49,7 @@ class GelbooruV2Post extends Equatable
         source: PostSource.none(),
         tags: const {},
         thumbnailImageUrl: '',
-        width: 0.0,
+        width: 0,
         hasComment: false,
         hasParentOrChildren: false,
         fileSize: 0,

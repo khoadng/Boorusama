@@ -14,8 +14,8 @@ import 'selected_tag_list.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final SelectedTagController controller;

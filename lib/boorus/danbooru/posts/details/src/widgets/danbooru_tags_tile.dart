@@ -23,8 +23,8 @@ final danbooruTagTileExpansionStateProvider =
 
 class DanbooruTagsTile extends ConsumerWidget {
   const DanbooruTagsTile({
-    super.key,
     required this.post,
+    super.key,
     this.allowFetch = true,
     this.initialExpanded = false,
   });

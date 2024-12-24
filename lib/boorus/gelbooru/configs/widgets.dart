@@ -11,8 +11,8 @@ import '../../../core/foundation/clipboard.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
   const GelbooruApiKeyField({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -29,8 +29,8 @@ class GelbooruApiKeyField extends ConsumerWidget {
 
 class GelbooruLoginField extends ConsumerWidget {
   const GelbooruLoginField({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -48,9 +48,9 @@ class GelbooruLoginField extends ConsumerWidget {
 
 class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
   const GelbooruConfigPasteFromClipboardButton({
-    super.key,
     required this.login,
     required this.apiKey,
+    super.key,
   });
 
   final TextEditingController login;
@@ -88,7 +88,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
 
 (String uid, String key) extractValues(String? input) {
   if (input == null) return ('', '');
-  final Map<String, String> values = {};
+  final values = <String, String>{};
   final exp = RegExp(r'&(\w+)=(\w+)');
 
   final matches = exp.allMatches(input);

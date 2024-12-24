@@ -17,9 +17,9 @@ class PostDetailsData<T extends Post> {
 
 class PostDetails<T extends Post> extends InheritedWidget {
   const PostDetails({
-    super.key,
     required this.data,
     required super.child,
+    super.key,
   });
 
   final PostDetailsData<T> data;

@@ -27,9 +27,9 @@ Future<void> pickDirectoryPathToastOnError({
 
 Future<void> pickSingleFilePathToastOnError({
   required BuildContext context,
+  required void Function(String path) onPick,
   FileType type = FileType.any,
   List<String>? allowedExtensions,
-  required void Function(String path) onPick,
 }) =>
     pickSingleFilePath(
       type: type,
@@ -44,9 +44,9 @@ Future<void> pickSingleFilePathToastOnError({
     );
 
 Future<void> pickSingleFilePath({
+  required void Function(String path) onPick,
   FileType type = FileType.any,
   List<String>? allowedExtensions,
-  required void Function(String path) onPick,
   void Function()? onCanceled,
   void Function(Object error)? onError,
 }) async {

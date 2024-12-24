@@ -16,9 +16,9 @@ import 'artist_tag_cloud.dart';
 
 class DanbooruTagDetailsPage extends ConsumerStatefulWidget {
   const DanbooruTagDetailsPage({
-    super.key,
     required this.tagName,
     required this.otherNames,
+    super.key,
     this.extras,
   });
 

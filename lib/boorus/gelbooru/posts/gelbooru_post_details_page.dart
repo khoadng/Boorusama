@@ -59,15 +59,15 @@ class _GelbooruTagListSectionState
       onSuccess: (tags) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           if (!context.mounted) return;
-          ref.setGelbooruPostDetailsArtistMap(
-            post: post,
-            tags: tags,
-          );
-
-          ref.setGelbooruPostDetailsCharacterMap(
-            post: post,
-            tags: tags,
-          );
+          ref
+            ..setGelbooruPostDetailsArtistMap(
+              post: post,
+              tags: tags,
+            )
+            ..setGelbooruPostDetailsCharacterMap(
+              post: post,
+              tags: tags,
+            );
         });
       },
     );

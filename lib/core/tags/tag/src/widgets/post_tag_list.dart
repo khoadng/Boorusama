@@ -19,10 +19,10 @@ import '../tag_providers.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
-    super.key,
-    this.maxTagWidth,
     required this.itemBuilder,
     required this.tags,
+    super.key,
+    this.maxTagWidth,
   });
 
   final double? maxTagWidth;
@@ -87,8 +87,8 @@ class PostTagList extends StatelessWidget {
 
 class PostTagListChip extends ConsumerWidget {
   const PostTagListChip({
-    super.key,
     required this.tag,
+    super.key,
     this.maxTagWidth,
     this.onTap,
     this.color,

@@ -12,10 +12,10 @@ import '../../../../tags/related/widgets.dart';
 
 class RelatedTagSection extends ConsumerWidget {
   const RelatedTagSection({
-    super.key,
     required this.query,
     required this.onAdded,
     required this.onNegated,
+    super.key,
     this.backgroundColor,
   });
 

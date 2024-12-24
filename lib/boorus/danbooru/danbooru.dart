@@ -44,6 +44,7 @@ import '../../core/tags/tag/tag.dart';
 import 'artists/artist/widgets.dart';
 import 'artists/search/src/artist_search_page.dart';
 import 'autocompletes/providers.dart';
+import 'autocompletes/widgets.dart';
 import 'blacklist/providers.dart';
 import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
@@ -406,6 +407,17 @@ class DanbooruBuilder
           const DanbooruCharacterListSection(),
     },
   );
+
+  @override
+  TagSuggestionItemBuilder get tagSuggestionItemBuilder =>
+      (config, tag, dense, currentQuery, onItemTap) =>
+          DanbooruTagSuggestionItem(
+            config: config,
+            tag: tag,
+            dense: dense,
+            currentQuery: currentQuery,
+            onItemTap: onItemTap,
+          );
 }
 
 bool handleDanbooruGestureAction(
@@ -424,16 +436,12 @@ bool handleDanbooruGestureAction(
   switch (action) {
     case kToggleFavoriteAction:
       onToggleFavorite?.call();
-      break;
     case kUpvoteAction:
       onUpvote?.call();
-      break;
     case kDownvoteAction:
       onDownvote?.call();
-      break;
     case kEditAction:
       onEdit?.call();
-      break;
     default:
       return handleDefaultGestureAction(
         action,

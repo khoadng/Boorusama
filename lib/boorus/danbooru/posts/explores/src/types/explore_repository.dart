@@ -1,5 +1,3 @@
-// Package imports:
-
 // Project imports:
 import '../../../../../../core/posts/explores/explore.dart';
 import '../../../post/post.dart';

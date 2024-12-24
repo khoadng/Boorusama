@@ -1,6 +1,4 @@
 // Package imports:
-
-// Package imports:
 import 'package:booru_clients/szurubooru.dart';
 import 'package:equatable/equatable.dart';
 

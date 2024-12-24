@@ -25,8 +25,8 @@ import 'widgets/forum_post_vote_chips.dart';
 
 class DanbooruForumPostsPage extends ConsumerStatefulWidget {
   const DanbooruForumPostsPage({
-    super.key,
     required this.topic,
+    super.key,
   });
 
   final DanbooruForumTopic topic;

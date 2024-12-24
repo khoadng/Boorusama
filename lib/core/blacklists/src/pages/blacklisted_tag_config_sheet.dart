@@ -7,8 +7,8 @@ import '../types/blacklisted_tags_sort_type.dart';
 
 class BlacklistedTagConfigSheet extends StatelessWidget {
   const BlacklistedTagConfigSheet({
-    super.key,
     required this.onSorted,
+    super.key,
   });
 
   final void Function(BlacklistedTagsSortType) onSorted;

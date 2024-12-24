@@ -59,6 +59,7 @@ class MoebooruBuilder
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultBooruUIMixin,
@@ -255,8 +256,8 @@ final kMoebooruAltHomeView = {
 
 class MoebooruArtistPage extends ConsumerWidget {
   const MoebooruArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;

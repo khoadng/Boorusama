@@ -18,10 +18,10 @@ import 'sliver_bookmark_grid.dart';
 
 class BookmarkScrollView extends ConsumerWidget {
   const BookmarkScrollView({
-    super.key,
     required this.controller,
     required this.focusNode,
     required this.searchController,
+    super.key,
   });
 
   final ScrollController controller;

@@ -11,11 +11,11 @@ import '../favorite_tags_sort_type.dart';
 
 class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
   const FavoriteTagsFilterScope({
+    required this.builder,
     super.key,
     this.initialValue,
     this.filterQuery,
     this.sortType,
-    required this.builder,
   });
 
   final String? initialValue;

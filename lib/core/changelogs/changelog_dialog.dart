@@ -12,8 +12,8 @@ import 'what_news.dart';
 
 class ChangelogDialog extends StatelessWidget {
   const ChangelogDialog({
-    super.key,
     required this.data,
+    super.key,
   });
 
   final ChangelogData data;

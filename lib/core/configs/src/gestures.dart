@@ -211,22 +211,16 @@ bool handleDefaultGestureAction(
   switch (action) {
     case kDownloadAction:
       onDownload?.call();
-      break;
     case kShareAction:
       onShare?.call();
-      break;
     case kViewTagsAction:
       onViewTags?.call();
-      break;
     case kToggleBookmarkAction:
       onToggleBookmark?.call();
-      break;
     case kViewOriginalAction:
       onViewOriginal?.call();
-      break;
     case kOpenSourceAction:
       onOpenSource?.call();
-      break;
     default:
       return false;
   }

@@ -168,7 +168,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                             Navigator.of(context).pop();
                           }
                         : null,
-                    child: value == true
+                    child: value
                         ? const Text('booru.config_booru_confirm').tr()
                         : const Text('Verify'),
                   ),

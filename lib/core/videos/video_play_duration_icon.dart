@@ -10,9 +10,9 @@ import '../theme.dart';
 
 class VideoPlayDurationIcon extends StatelessWidget {
   const VideoPlayDurationIcon({
-    super.key,
     required this.duration,
     required this.hasSound,
+    super.key,
   });
 
   final double? duration;

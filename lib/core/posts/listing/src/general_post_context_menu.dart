@@ -20,10 +20,10 @@ import '../../post/tags.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({
-    super.key,
     required this.post,
-    this.onMultiSelect,
     required this.hasAccount,
+    super.key,
+    this.onMultiSelect,
   });
 
   final Post post;

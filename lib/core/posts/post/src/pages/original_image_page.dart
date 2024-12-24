@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,9 +21,9 @@ import '../types/post.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({
-    super.key,
     required this.imageUrl,
     required this.id,
+    super.key,
   });
 
   OriginalImagePage.post(
@@ -52,7 +55,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   Future<void> _pop(bool didPop) async {
     await setDeviceToAutoRotateMode();
-    showSystemStatus();
+    unawaited(showSystemStatus());
 
     if (mounted && !didPop) {
       Navigator.of(context).pop();

@@ -48,8 +48,8 @@ RouteTransitionsBuilder leftToRightTransitionBuilder() =>
 RouteTransitionsBuilder fadeTransitionBuilder() =>
     (context, animation, secondaryAnimation, child) => FadeTransition(
           opacity: Tween<double>(
-            begin: 0.0, // Start with a fully transparent page
-            end: 1.0, // End with a fully opaque page
+            begin: 0, // Start with a fully transparent page
+            end: 1, // End with a fully opaque page
           ).animate(
             CurvedAnimation(
               parent: animation,

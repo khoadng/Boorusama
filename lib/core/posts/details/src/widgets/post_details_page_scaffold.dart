@@ -39,12 +39,12 @@ const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
-    super.key,
     required this.posts,
+    required this.controller,
+    super.key,
     this.onExpanded,
     this.imageUrlBuilder,
     this.topRightButtonsBuilder,
-    required this.controller,
     this.uiBuilder,
     this.preferredParts,
     this.preferredPreviewParts,
@@ -255,17 +255,17 @@ class _PostDetailPageScaffoldState<T extends Post>
                     builder: (_, state, __) => state.isExpanded &&
                             !context.isLargeScreen
                         ? Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8),
                             child: Row(
                               children: [
                                 // duplicate codes, maybe refactor later
                                 PlayPauseButton(
                                   isPlaying: widget.controller.isVideoPlaying,
                                   onPlayingChanged: (value) {
-                                    if (value == true) {
+                                    if (value) {
                                       widget.controller
                                           .pauseVideo(post.id, post.isWebm);
-                                    } else if (value == false) {
+                                    } else if (!value) {
                                       widget.controller
                                           .playVideo(post.id, post.isWebm);
                                     } else {
@@ -385,11 +385,11 @@ class _PostDetailPageScaffoldState<T extends Post>
 
 class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({
+    required this.sheetState,
+    required this.uiBuilder,
+    required this.preferredParts,
     super.key,
     this.scrollController,
-    required this.uiBuilder,
-    required this.sheetState,
-    required this.preferredParts,
     this.canCustomize = true,
   });
 
@@ -453,11 +453,11 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
 
 class RawPostDetailsInfoSheet extends StatelessWidget {
   const RawPostDetailsInfoSheet({
-    super.key,
     required this.scrollController,
     required this.preview,
     required this.slivers,
     required this.sheetState,
+    super.key,
   });
 
   final ScrollController? scrollController;

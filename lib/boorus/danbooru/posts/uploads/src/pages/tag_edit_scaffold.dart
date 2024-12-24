@@ -16,14 +16,14 @@ import '../../../../../../core/images/interactive_booru_image.dart';
 //FIXME: Split view is broken, need to fix it later, check tag_edit_page.dart for the correct implementation
 class TagEditUploadScaffold extends ConsumerStatefulWidget {
   const TagEditUploadScaffold({
-    super.key,
     required this.modeBuilder,
     required this.contentBuilder,
     required this.aspectRatio,
     required this.imageUrl,
+    required this.imageFooterBuilder,
+    super.key,
     this.maxSplit = false,
     this.splitWeights = const [0.5, 0.5],
-    required this.imageFooterBuilder,
   });
 
   final Widget Function() contentBuilder;
@@ -250,8 +250,8 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
     double maxHeight,
   ) {
     final height =
-        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280.0) : 280.0;
+        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280) : 280.0;
 
-    return widget.modeBuilder(height);
+    return widget.modeBuilder(height.toDouble());
   }
 }

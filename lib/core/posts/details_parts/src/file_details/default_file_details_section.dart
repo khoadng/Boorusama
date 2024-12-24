@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -32,8 +30,8 @@ class DefaultInheritedFileDetailsSection<T extends Post>
 
 class DefaultFileDetailsSection extends StatelessWidget {
   const DefaultFileDetailsSection({
-    super.key,
     required this.post,
+    super.key,
     this.uploaderName,
     this.customDetails,
     this.initialExpanded = false,

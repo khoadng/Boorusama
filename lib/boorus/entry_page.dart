@@ -183,7 +183,7 @@ class _Boorus extends ConsumerWidget {
               'Current selected profile is invalid',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            if (availableConfigs.isNotEmpty == true)
+            if (availableConfigs.isNotEmpty)
               Text(
                 'Select a profile from the list below to continue',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(

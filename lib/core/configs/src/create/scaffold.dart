@@ -25,10 +25,10 @@ import 'viewer.dart';
 
 class CreateBooruConfigScope extends ConsumerWidget {
   const CreateBooruConfigScope({
-    super.key,
     required this.config,
     required this.child,
     required this.id,
+    super.key,
   });
 
   final EditBooruConfigId id;
@@ -49,6 +49,7 @@ class CreateBooruConfigScope extends ConsumerWidget {
 
 class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
+    required this.initialTab,
     super.key,
     this.backgroundColor,
     this.authTab,
@@ -59,7 +60,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.listingTab,
     this.layoutTab,
     this.canSubmit,
-    required this.initialTab,
     this.footer,
   });
 
@@ -211,8 +211,8 @@ class _TabControllerProvider extends StatefulWidget {
     required this.tabMap,
     required this.animationDuration,
     required this.length,
-    this.initialIndex,
     required this.builder,
+    this.initialIndex,
   });
 
   final Map<String, Widget> tabMap;
@@ -248,9 +248,9 @@ class _TabControllerProviderState extends State<_TabControllerProvider>
 
 class SelectedBooruChip extends StatelessWidget {
   const SelectedBooruChip({
-    super.key,
     required this.booruType,
     required this.url,
+    super.key,
   });
 
   final BooruType booruType;

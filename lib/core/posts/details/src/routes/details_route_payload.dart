@@ -1,5 +1,3 @@
-// Flutter imports:
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';

@@ -23,8 +23,8 @@ import 'most_search_tag_list.dart';
 
 class LatestView extends ConsumerStatefulWidget {
   const LatestView({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final HomePageController controller;
@@ -105,8 +105,9 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
                     selectedTagString.value = search.keyword;
                     if (sel) {
-                      selectedTagController.clear();
-                      selectedTagController.addTag(search.keyword);
+                      selectedTagController
+                        ..clear()
+                        ..addTag(search.keyword);
                     } else {
                       selectedTagController.clear();
                     }

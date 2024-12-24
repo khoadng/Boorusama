@@ -12,14 +12,14 @@ import '../../../../../../core/widgets/widgets.dart';
 
 class ForumCard extends ConsumerWidget {
   const ForumCard({
-    super.key,
     required this.title,
     required this.responseCount,
     required this.createdAt,
+    required this.creatorInfo,
+    super.key,
     this.isSticky = false,
     this.isLocked = false,
     this.onTap,
-    required this.creatorInfo,
   });
 
   final bool isSticky;

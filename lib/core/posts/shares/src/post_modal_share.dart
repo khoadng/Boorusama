@@ -43,10 +43,10 @@ typedef ModalShareImageData = ({
 
 class PostModalShare extends ConsumerWidget {
   const PostModalShare({
-    super.key,
     required this.booruLink,
     required this.sourceLink,
     required this.imageData,
+    super.key,
   });
 
   final String booruLink;

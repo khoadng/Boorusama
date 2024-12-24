@@ -24,8 +24,8 @@ double? _calcFailedIconSize(
 
 class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
-    super.key,
     required this.url,
+    super.key,
     this.size = _faviconSize,
   });
 

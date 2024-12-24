@@ -22,16 +22,16 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     Settings settings,
     BooruConfig config,
     T post, {
-    Map<String, String>? metadata,
     required String downloadUrl,
+    Map<String, String>? metadata,
   });
 
   Future<String> generateForBulkDownload(
     Settings settings,
     BooruConfig config,
     T post, {
-    Map<String, String>? metadata,
     required String downloadUrl,
+    Map<String, String>? metadata,
   });
 
   String generateSample(String format);

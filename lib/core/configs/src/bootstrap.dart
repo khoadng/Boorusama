@@ -28,9 +28,9 @@ Future<BooruConfigRepository> createBooruConfigsRepo({
     await onCreateNew(id);
   }
 
-  logger.l('Total booru config: ${booruConfigBox.length}');
-
-  logger.l('Initialize booru user repository');
+  logger
+    ..l('Total booru config: ${booruConfigBox.length}')
+    ..l('Initialize booru user repository');
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 
   return booruUserRepo;

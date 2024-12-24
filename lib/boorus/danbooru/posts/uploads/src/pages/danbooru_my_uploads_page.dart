@@ -63,8 +63,8 @@ class DanbooruUploadsPage extends ConsumerWidget {
 
 class DanbooruMyUploadsPageInternal extends ConsumerStatefulWidget {
   const DanbooruMyUploadsPageInternal({
-    super.key,
     required this.userId,
+    super.key,
   });
 
   final int userId;
@@ -101,11 +101,9 @@ class _DanbooruMyUploadsPageState
                   case 'show_hidden':
                     ref.read(_danbooruShowUploadHiddenProvider.notifier).state =
                         true;
-                    break;
                   case 'hide_hidden':
                     ref.read(_danbooruShowUploadHiddenProvider.notifier).state =
                         false;
-                    break;
                 }
               },
               itemBuilder: {
@@ -159,9 +157,9 @@ class _DanbooruMyUploadsPageState
 
 class DanbooruUploadGrid extends ConsumerStatefulWidget {
   const DanbooruUploadGrid({
-    super.key,
     required this.userId,
     required this.type,
+    super.key,
   });
 
   final UploadTabType type;

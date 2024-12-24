@@ -22,12 +22,12 @@ import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({
-    super.key,
     required this.post,
     required this.imageUrl,
+    required this.controller,
+    super.key,
     this.useHero = false,
     this.imageOverlayBuilder,
-    required this.controller,
   });
 
   final T post;

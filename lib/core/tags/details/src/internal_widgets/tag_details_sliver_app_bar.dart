@@ -10,8 +10,8 @@ import '../../../../downloads/routes.dart';
 
 class TagDetailsSlilverAppBar extends ConsumerWidget {
   const TagDetailsSlilverAppBar({
-    super.key,
     required this.tagName,
+    super.key,
   });
 
   final String tagName;

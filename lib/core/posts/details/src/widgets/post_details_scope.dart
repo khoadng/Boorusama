@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,11 +14,11 @@ import 'post_details_controller.dart';
 
 class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsScope({
-    super.key,
     required this.initialIndex,
     required this.posts,
     required this.child,
     required this.scrollController,
+    super.key,
   });
 
   final int initialIndex;
@@ -65,9 +63,9 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
 
 class CurrentPostScope<T extends Post> extends StatelessWidget {
   const CurrentPostScope({
-    super.key,
     required this.post,
     required this.child,
+    super.key,
   });
 
   final ValueNotifier<T> post;

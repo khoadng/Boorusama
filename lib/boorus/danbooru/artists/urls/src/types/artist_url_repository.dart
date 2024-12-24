@@ -1,5 +1,3 @@
-// Package imports:
-
 // Project imports:
 import 'artist_url.dart';
 

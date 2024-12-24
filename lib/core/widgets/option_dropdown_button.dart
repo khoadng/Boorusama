@@ -7,10 +7,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class OptionDropDownButton<T> extends StatelessWidget {
   const OptionDropDownButton({
-    super.key,
     required this.value,
     required this.onChanged,
     required this.items,
+    super.key,
     this.alignment = AlignmentDirectional.centerEnd,
     this.backgroundColor,
     this.padding,
@@ -58,10 +58,10 @@ class OptionDropDownButton<T> extends StatelessWidget {
 
 class OptionDropDownButtonDesktop<T> extends StatelessWidget {
   const OptionDropDownButtonDesktop({
-    super.key,
     required this.value,
     required this.onChanged,
     required this.items,
+    super.key,
     this.alignment = AlignmentDirectional.centerEnd,
     this.backgroundColor,
   });

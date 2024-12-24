@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -14,8 +12,8 @@ import '../providers.dart';
 
 class PoolSearchBar extends ConsumerWidget {
   const PoolSearchBar({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;

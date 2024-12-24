@@ -55,8 +55,8 @@ final _tagCategoryColorsProvider =
 
 class ArtistTagCloud extends ConsumerWidget {
   const ArtistTagCloud({
-    super.key,
     required this.tagName,
+    super.key,
     this.scaleFactor,
   });
 

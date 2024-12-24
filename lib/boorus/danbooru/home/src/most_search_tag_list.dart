@@ -17,9 +17,9 @@ import '../../tags/trending/trending.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
-    super.key,
     required this.onSelected,
     required this.selected,
+    super.key,
   });
 
   final void Function(Search search, bool value) onSelected;

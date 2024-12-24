@@ -1,6 +1,4 @@
 // Dart imports:
-
-// Dart imports:
 import 'dart:math';
 
 // Flutter imports:
@@ -21,8 +19,8 @@ import '../types/saved_search.dart';
 
 class SavedSearchSheet extends ConsumerStatefulWidget {
   const SavedSearchSheet({
-    super.key,
     required this.onSubmit,
+    super.key,
     this.initialValue,
     this.title,
   });

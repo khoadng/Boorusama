@@ -13,9 +13,9 @@ import 'tag_how_to_rate_button.dart';
 
 class TagEditRatingSelectorSection extends ConsumerWidget {
   const TagEditRatingSelectorSection({
-    super.key,
     required this.rating,
     required this.onChanged,
+    super.key,
   });
 
   final Rating? rating;

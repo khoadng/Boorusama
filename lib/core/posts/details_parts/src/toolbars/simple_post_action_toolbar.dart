@@ -19,8 +19,8 @@ import 'download_post_button.dart';
 
 class SimplePostActionToolbar extends ConsumerWidget {
   const SimplePostActionToolbar({
-    super.key,
     required this.post,
+    super.key,
     this.isFaved,
     this.isAuthorized,
     this.addFavorite,
@@ -84,8 +84,8 @@ class DefaultInheritedPostActionToolbar<T extends Post>
 
 class DefaultPostActionToolbar extends ConsumerWidget {
   const DefaultPostActionToolbar({
-    super.key,
     required this.post,
+    super.key,
     this.forceHideFav = false,
   });
 
@@ -111,8 +111,8 @@ class DefaultPostActionToolbar extends ConsumerWidget {
 
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
-    super.key,
     required this.children,
+    super.key,
   });
 
   final List<Widget> children;

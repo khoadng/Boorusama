@@ -201,10 +201,10 @@ class _VersionChangeVisualizedText extends StatelessWidget {
 
 class SliverHomeSearchBar extends ConsumerWidget {
   const SliverHomeSearchBar({
-    super.key,
     required this.controller,
-    this.selectedTagString,
     required this.onSearch,
+    super.key,
+    this.selectedTagString,
     this.selectedTagController,
   });
 
@@ -229,12 +229,12 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
 class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
   const SliverHomeSearchBarInternal({
-    super.key,
     required this.controller,
-    this.selectedTagString,
     required this.onSearch,
-    this.selectedTagController,
     required this.booruBuilder,
+    super.key,
+    this.selectedTagString,
+    this.selectedTagController,
   });
 
   final HomePageController controller;

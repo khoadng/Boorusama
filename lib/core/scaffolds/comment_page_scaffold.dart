@@ -18,11 +18,11 @@ typedef CommentFetcher = Future<List<Comment>> Function(int postId);
 
 class CommentPageScaffold extends ConsumerStatefulWidget {
   const CommentPageScaffold({
-    super.key,
     required this.postId,
     required this.fetcher,
-    this.commentItemBuilder,
     required this.useAppBar,
+    super.key,
+    this.commentItemBuilder,
   });
 
   final int postId;

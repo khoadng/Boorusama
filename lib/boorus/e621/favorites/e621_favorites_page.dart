@@ -27,8 +27,8 @@ class E621FavoritesPage extends ConsumerWidget {
 
 class E621FavoritesPageInternal extends ConsumerWidget {
   const E621FavoritesPageInternal({
-    super.key,
     required this.username,
+    super.key,
   });
 
   final String username;

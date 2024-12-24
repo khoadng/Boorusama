@@ -4,8 +4,6 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/core/foundation/caching/lru_cacher.dart';
 
-// Project imports:
-
 void main() {
   test(
     'get a cached item should return cached value',

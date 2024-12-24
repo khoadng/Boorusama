@@ -14,8 +14,8 @@ import '../../../post/post.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
   const BookmarkPostButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;
@@ -62,8 +62,8 @@ class BookmarkPostButton extends ConsumerWidget {
 
 class BookmarkPostLikeButtonButton extends ConsumerWidget {
   const BookmarkPostLikeButtonButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;

@@ -108,12 +108,13 @@ Map<String, int> countDomain(Iterable<Post> posts) {
 
   // merge x.com and twitter.com to twitter.com
   final count = domainMap['x.com'] ?? 0;
-  domainMap.remove('x.com');
-  domainMap.update(
-    'twitter.com',
-    (value) => value + count,
-    ifAbsent: () => count,
-  );
+  domainMap
+    ..remove('x.com')
+    ..update(
+      'twitter.com',
+      (value) => value + count,
+      ifAbsent: () => count,
+    );
 
   return domainMap;
 }
@@ -128,11 +129,12 @@ void _mergeDomain(
 
   for (final domain in domains) {
     final count = domainMap[domain]!;
-    domainMap.remove(domain);
-    domainMap.update(
-      mergedDomain,
-      (value) => value + count,
-      ifAbsent: () => count,
-    );
+    domainMap
+      ..remove(domain)
+      ..update(
+        mergedDomain,
+        (value) => value + count,
+        ifAbsent: () => count,
+      );
   }
 }

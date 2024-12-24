@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,8 +13,8 @@ import '../widgets/modal_saved_search_action.dart';
 
 class SavedSearchQuickEditSheet extends ConsumerWidget {
   const SavedSearchQuickEditSheet({
-    super.key,
     required this.savedSearch,
+    super.key,
   });
 
   final SavedSearch savedSearch;

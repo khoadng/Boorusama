@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +28,9 @@ final danbooruDmailsProvider = FutureProvider.autoDispose
     final userList =
         dmails.expand((e) => {e.fromId, e.toId, e.ownerId}.nonNulls).toList();
 
-    ref.read(danbooruCreatorsProvider(config).notifier).load(userList);
+    unawaited(
+      ref.read(danbooruCreatorsProvider(config).notifier).load(userList),
+    );
   }
 
   return dmails.map((e) => dmailDtoToDmail(e)).toList();

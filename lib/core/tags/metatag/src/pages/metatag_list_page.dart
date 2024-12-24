@@ -11,9 +11,9 @@ import '../metatag.dart';
 
 class MetatagListPage extends StatelessWidget {
   const MetatagListPage({
-    super.key,
     required this.metatags,
     required this.onSelected,
+    super.key,
   });
 
   final List<Metatag> metatags;

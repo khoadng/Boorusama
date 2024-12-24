@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class CompactChip extends StatelessWidget {
   const CompactChip({
-    super.key,
     required this.label,
+    super.key,
     this.onTap,
     this.backgroundColor,
     this.textColor,
@@ -44,8 +44,8 @@ class CompactChip extends StatelessWidget {
 
 class RawCompactChip extends StatelessWidget {
   const RawCompactChip({
-    super.key,
     required this.label,
+    super.key,
     this.onTap,
     this.backgroundColor,
     this.foregroundColor,

@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -172,9 +170,9 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 
 class ImageListingSettingsSection extends ConsumerStatefulWidget {
   const ImageListingSettingsSection({
-    super.key,
     required this.listing,
     required this.onUpdate,
+    super.key,
     this.itemPadding,
   });
 

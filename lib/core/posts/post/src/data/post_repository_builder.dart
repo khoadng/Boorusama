@@ -13,8 +13,8 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   PostRepositoryBuilder({
     required this.fetch,
     required this.getSettings,
-    this.fetchFromController,
     required this.getComposer,
+    this.fetchFromController,
   });
 
   final TagQueryComposer Function() getComposer;

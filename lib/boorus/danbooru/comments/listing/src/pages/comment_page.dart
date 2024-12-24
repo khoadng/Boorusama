@@ -18,8 +18,8 @@ import '../widgets/comment_list.dart';
 
 class CommentPage extends ConsumerStatefulWidget {
   const CommentPage({
-    super.key,
     required this.postId,
+    super.key,
     this.useAppBar = true,
   });
 

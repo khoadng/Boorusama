@@ -71,8 +71,12 @@ Future<PostResult<DanbooruPost>> transformPosts(
   if (user != null) {
     final ids = posts.map((e) => e.id).toList();
 
-    ref.read(favoritesProvider(config.auth).notifier).checkFavorites(ids);
-    ref.read(danbooruPostVotesProvider(config.auth).notifier).getVotes(posts);
+    unawaited(
+      ref.read(favoritesProvider(config.auth).notifier).checkFavorites(ids),
+    );
+    unawaited(
+      ref.read(danbooruPostVotesProvider(config.auth).notifier).getVotes(posts),
+    );
     ref.read(danbooruTagListProvider(config.auth).notifier).removeTags(ids);
   }
 

@@ -135,6 +135,7 @@ class GelbooruV2Builder
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -378,8 +379,8 @@ class GelbooruV2FavoritesPage extends ConsumerWidget {
 
 class GelbooruV2FavoritesPageInternal extends ConsumerWidget {
   const GelbooruV2FavoritesPageInternal({
-    super.key,
     required this.uid,
+    super.key,
   });
 
   final String uid;

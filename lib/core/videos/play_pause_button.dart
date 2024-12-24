@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,9 +6,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class PlayPauseButton extends StatelessWidget {
   const PlayPauseButton({
-    super.key,
     required this.isPlaying,
     required this.onPlayingChanged,
+    super.key,
     this.padding,
   });
 

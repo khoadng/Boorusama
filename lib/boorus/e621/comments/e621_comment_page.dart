@@ -15,9 +15,9 @@ import '../e621.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({
-    super.key,
     required this.postId,
     required this.useAppBar,
+    super.key,
   });
 
   final int postId;

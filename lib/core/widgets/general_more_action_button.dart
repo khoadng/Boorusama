@@ -19,8 +19,8 @@ import 'booru_popup_menu_button.dart';
 
 class GeneralMoreActionButton extends ConsumerWidget {
   const GeneralMoreActionButton({
-    super.key,
     required this.post,
+    super.key,
     this.onDownload,
     this.onStartSlideshow,
   });
@@ -48,29 +48,23 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 } else {
                   ref.download(post);
                 }
-                break;
               case 'view_in_browser':
                 launchExternalUrl(
                   post.getUriLink(booru.url),
                 );
-                break;
               case 'show_tag_list':
                 goToShowTaglistPage(
                   context,
                   post.extractTags(),
                 );
-                break;
               case 'view_original':
                 goToOriginalImagePage(context, post);
-                break;
               case 'start_slideshow':
                 if (onStartSlideshow != null) {
                   onStartSlideshow!();
                 }
-                break;
               case 'settings':
                 openImageViewerSettingsPage(context);
-                break;
               // ignore: no_default_cases
               default:
             }

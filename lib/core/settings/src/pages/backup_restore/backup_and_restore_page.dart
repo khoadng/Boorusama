@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../backups/routes.dart';
+import '../../../../backups/sync_data_page.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/config.dart';
@@ -23,6 +26,7 @@ import '../../../../info/device_info.dart';
 import '../../../../info/package_info.dart';
 import '../../../../router.dart';
 import '../../../../tags/favorites/providers.dart';
+import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../providers/settings_notifier.dart';
 import '../../widgets/settings_page_scaffold.dart';
@@ -45,6 +49,48 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
+        const _Title(
+          title: 'Transfer data',
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 12,
+            children: [
+              Expanded(
+                child: DataTransferCard(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.paperPlane,
+                  ),
+                  title: 'Send',
+                  onPressed: () {
+                    goToSyncDataPage(context, mode: TransferMode.export);
+                  },
+                ),
+              ),
+              Expanded(
+                child: DataTransferCard(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.download,
+                  ),
+                  title: 'Receive',
+                  onPressed: () {
+                    goToSyncDataPage(context, mode: TransferMode.import);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 28),
+        const _Title(
+          title: 'Manual backup',
+        ),
         const SizedBox(height: 8),
         _buildProfiles(),
         const SizedBox(height: 8),
@@ -55,6 +101,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         _buildBlacklistedTags(),
         const SizedBox(height: 8),
         _buildSettings(),
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -100,24 +147,20 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           switch (value) {
             case 'export':
               _pickProfileFolder(ref);
-              break;
             case 'import':
               _pickProfileFile(ref);
-              break;
             case 'export_clipboard':
               ref.read(booruConfigProvider.notifier).exportClipboard(
                     onSuccess: (message) => showSuccessToast(context, message),
                     onFailure: (message) => showErrorToast(context, message),
                     appVersion: ref.read(appVersionProvider),
                   );
-              break;
             case 'import_clipboard':
               ref.read(booruConfigProvider.notifier).importClipboard(
                     onSuccess: _onImportSuccess,
                     onWillImport: _showImportBooruConfigsAlertDialog,
                     onFailure: (message) => showErrorToast(context, message),
                   );
-              break;
             default:
           }
         },
@@ -200,7 +243,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           switch (value) {
             case 'export':
               _pickBookmarkFolder(ref);
-              break;
             case 'import':
               _pickBookmarkFile(ref);
             default:
@@ -223,10 +265,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           switch (value) {
             case 'export':
               _pickSettingsFolder(ref);
-              break;
             case 'import':
               _pickSettingsFile(ref);
-              break;
             default:
           }
         },
@@ -251,7 +291,14 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   void _onImportSuccess(String message, List<BooruConfig> configs) {
     final config = configs.first;
-    Reboot.start(context, config, configs);
+    Reboot.start(
+      context,
+      RebootData(
+        config: config,
+        configs: configs,
+        settings: ref.read(settingsNotifierProvider),
+      ),
+    );
   }
 
   Future<void> _pickBookmarkFolder(WidgetRef ref) =>
@@ -374,4 +421,93 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
               );
         },
       );
+}
+
+class _Title extends StatelessWidget {
+  const _Title({
+    required this.title,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 8,
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 18,
+        ),
+      ),
+    );
+  }
+}
+
+class DataTransferCard extends StatelessWidget {
+  const DataTransferCard({
+    required this.icon, required this.title, required this.onPressed, super.key,
+  });
+
+  final Widget icon;
+  final String title;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final iconTheme = theme.iconTheme;
+    final borderRadius = BorderRadius.circular(16);
+
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius,
+      ),
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+        ),
+        onTap: onPressed,
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  shape: BoxShape.circle,
+                ),
+                child: Theme(
+                  data: theme.copyWith(
+                    iconTheme: iconTheme.copyWith(
+                      size: 18,
+                      color: theme.colorScheme.hintColor,
+                    ),
+                  ),
+                  child: icon,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

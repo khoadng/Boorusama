@@ -14,11 +14,11 @@ import '../tag_edit_view_controller.dart';
 
 class TagEditContainer extends ConsumerWidget {
   const TagEditContainer({
-    super.key,
     required this.title,
     required this.maxHeight,
     required this.viewController,
     required this.child,
+    super.key,
   });
 
   final Widget child;
@@ -31,10 +31,10 @@ class TagEditContainer extends ConsumerWidget {
     final viewExpanded =
         ref.watch(tagEditProvider.select((value) => value.viewExpanded));
     final height =
-        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280.0) : 280.0;
+        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280) : 280.0;
 
     return Container(
-      height: height,
+      height: height.toDouble(),
       color: Theme.of(context).colorScheme.surfaceContainerLow,
       child: Column(
         children: [

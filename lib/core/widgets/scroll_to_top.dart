@@ -7,10 +7,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ScrollToTop extends StatefulWidget {
   const ScrollToTop({
+    required this.child,
     super.key,
     this.scrollController,
     this.onBottomReached,
-    required this.child,
   });
 
   final ScrollController? scrollController;
@@ -66,10 +66,8 @@ class _ScrollToTopState extends State<ScrollToTop>
     switch (_scrollController.position.userScrollDirection) {
       case ScrollDirection.forward:
         _animationController.forward();
-        break;
       case ScrollDirection.reverse:
         _animationController.reverse();
-        break;
       case ScrollDirection.idle:
         break;
     }
@@ -94,10 +92,10 @@ class _ScrollToTopState extends State<ScrollToTop>
 // scroll to bottom
 class ScrollToBottom extends StatefulWidget {
   const ScrollToBottom({
+    required this.child,
     super.key,
     this.scrollController,
     this.onTopReached,
-    required this.child,
   });
 
   final ScrollController? scrollController;
@@ -153,10 +151,8 @@ class _ScrollToBottomState extends State<ScrollToBottom>
     switch (_scrollController.position.userScrollDirection) {
       case ScrollDirection.forward:
         _animationController.reverse();
-        break;
       case ScrollDirection.reverse:
         _animationController.forward();
-        break;
       case ScrollDirection.idle:
         break;
     }

@@ -18,8 +18,8 @@ import 'post_details_controller.dart';
 
 class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
   const PostDetailsVideoControls({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final PostDetailsController<T> controller;
@@ -85,9 +85,9 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                         builder: (_, post, __) => PlayPauseButton(
                           isPlaying: controller.isVideoPlaying,
                           onPlayingChanged: (value) {
-                            if (value == true) {
+                            if (value) {
                               controller.pauseVideo(post.id, post.isWebm);
-                            } else if (value == false) {
+                            } else if (!value) {
                               controller.playVideo(post.id, post.isWebm);
                             } else {
                               // do nothing
@@ -168,8 +168,8 @@ const _kMinWidth = 320.0;
 
 class VideoTimeText extends StatelessWidget {
   const VideoTimeText({
-    super.key,
     required this.duration,
+    super.key,
   });
 
   final Duration duration;

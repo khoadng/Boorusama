@@ -16,10 +16,10 @@ import 'danbooru_related_tag.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {
   const RelatedTagActionSheet({
-    super.key,
     required this.relatedTag,
     required this.onAdded,
     required this.onNegated,
+    super.key,
   });
 
   final DanbooruRelatedTag relatedTag;

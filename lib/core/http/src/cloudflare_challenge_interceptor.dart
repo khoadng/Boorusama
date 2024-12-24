@@ -123,9 +123,9 @@ extension CookieJarX on List<Cookie> {
 
 class CloudflareChallengeSolverPage extends StatefulWidget {
   const CloudflareChallengeSolverPage({
-    super.key,
     required this.url,
     required this.onCfClearance,
+    super.key,
   });
 
   final String url;
@@ -147,21 +147,21 @@ class _CloudflareChallengeSolverPageState
     final cookieManager = WebviewCookieManager();
     final urlWithoutQuery = Uri.parse(widget.url).replace(query: '').toString();
 
-    controller.loadRequest(Uri.parse(widget.url));
-    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller
+      ..loadRequest(Uri.parse(widget.url))
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (url) async {
+            final cookies = await cookieManager.getCookies(urlWithoutQuery);
 
-    controller.setNavigationDelegate(
-      NavigationDelegate(
-        onPageFinished: (url) async {
-          final cookies = await cookieManager.getCookies(urlWithoutQuery);
-
-          if (cookies.isNotEmpty) {
-            widget.onCfClearance(cookies);
-            return;
-          }
-        },
-      ),
-    );
+            if (cookies.isNotEmpty) {
+              widget.onCfClearance(cookies);
+              return;
+            }
+          },
+        ),
+      );
   }
 
   @override

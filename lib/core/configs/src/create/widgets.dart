@@ -77,8 +77,8 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
 
 class CreateBooruConfigNameField extends StatefulWidget {
   const CreateBooruConfigNameField({
-    super.key,
     required this.onChanged,
+    super.key,
     this.text,
   });
 
@@ -118,8 +118,8 @@ class _CreateBooruConfigNameFieldState
 
 class CreateBooruHideDeletedSwitch extends StatelessWidget {
   const CreateBooruHideDeletedSwitch({
-    super.key,
     required this.onChanged,
+    super.key,
     this.value,
     this.subtitle,
   });
@@ -142,9 +142,9 @@ class CreateBooruHideDeletedSwitch extends StatelessWidget {
 
 class CreateBooruLoginField extends StatefulWidget {
   const CreateBooruLoginField({
+    required this.labelText,
     super.key,
     this.onChanged,
-    required this.labelText,
     this.hintText,
     this.text,
     this.controller,
@@ -195,10 +195,10 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
 
 class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
   const CreateBooruImageDetailsResolutionOptionTile({
-    super.key,
     required this.value,
     required this.items,
     required this.onChanged,
+    super.key,
   });
 
   final List<String> items;
@@ -238,9 +238,9 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
 class CreateBooruGeneralPostDetailsResolutionOptionTile
     extends StatelessWidget {
   const CreateBooruGeneralPostDetailsResolutionOptionTile({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
   });
 
   final String? value;
@@ -303,8 +303,8 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
 
 class CreateBooruSubmitButton extends StatelessWidget {
   const CreateBooruSubmitButton({
-    super.key,
     required this.onSubmit,
+    super.key,
     this.backgroundColor,
     this.child,
     this.fill = false,

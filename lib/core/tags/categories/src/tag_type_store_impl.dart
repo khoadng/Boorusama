@@ -38,8 +38,8 @@ class BooruTagTypeStore implements TagTypeStore {
     final box = await getBox();
     final keyForSpecificBooru = '${booruType.name}%%%$tag';
     final keyForGeneralBooru = 'generic%%%$tag';
-    await box.put(keyForSpecificBooru, category.toString());
-    await box.put(keyForGeneralBooru, category.toString());
+    await box.put(keyForSpecificBooru, category);
+    await box.put(keyForGeneralBooru, category);
   }
 
   @override

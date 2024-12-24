@@ -5,12 +5,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme.dart';
-
 // Project imports:
+import '../theme.dart';
 
 class BooruDialog extends StatelessWidget {
   const BooruDialog({
+    required this.child,
     super.key,
     this.color,
     this.width,
@@ -18,7 +18,7 @@ class BooruDialog extends StatelessWidget {
     this.borderRadius,
     this.padding,
     this.barrierColor,
-    required this.child,
+    this.dismissible = true,
   });
 
   final Color? color;
@@ -28,6 +28,7 @@ class BooruDialog extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final Widget child;
   final Color? barrierColor;
+  final bool dismissible;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class BooruDialog extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: dismissible ? () => Navigator.pop(context) : null,
             child: Container(
               color: barrierColor ?? Colors.transparent,
               width: MediaQuery.sizeOf(context).width,

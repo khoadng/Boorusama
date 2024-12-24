@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,8 +14,8 @@ import 'forum_vote_chip.dart';
 
 class DanbooruForumVoteChips extends ConsumerWidget {
   const DanbooruForumVoteChips({
-    super.key,
     required this.votes,
+    super.key,
   });
 
   final List<DanbooruForumPostVote> votes;
