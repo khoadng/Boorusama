@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:exprollable_page_view/exprollable_page_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_builder.dart';
@@ -165,8 +166,9 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   void _onPageChanged() {
     final page = _controller.currentPage.value;
+    final settings = ref.read(settingsProvider);
 
-    onSwiped(page);
+    onSwiped(page, _isDefaultEngine(settings));
     widget.onPageChangeIndexed?.call(page);
     widget.onPageChanged?.call(posts[page]);
   }
@@ -179,6 +181,10 @@ class _PostDetailPageScaffoldState<T extends Post>
     super.dispose();
   }
 
+  bool _isDefaultEngine(Settings settings) {
+    return settings.videoPlayerEngine != VideoPlayerEngine.mdk;
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(
@@ -189,6 +195,10 @@ class _PostDetailPageScaffoldState<T extends Post>
         }
       },
     );
+
+    final useDefaultEngine = ref.watch(settingsProvider.select(
+      (value) => _isDefaultEngine(value),
+    ));
 
     return CallbackShortcuts(
       bindings: {
@@ -219,7 +229,17 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
             child: ValueListenableBuilder(
               valueListenable: controller.currentPage,
-              builder: (_, page, __) => _build(page),
+              builder: (_, page, __) => VisibilityDetector(
+                key: const Key('post_details_page_scaffold'),
+                onVisibilityChanged: (info) {
+                  if (!mounted) return;
+
+                  if (info.visibleFraction == 0) {
+                    pauseCurrentVideo(useDefaultEngine);
+                  }
+                },
+                child: _build(page),
+              ),
             ),
           ),
         ),
@@ -245,6 +265,10 @@ class _PostDetailPageScaffoldState<T extends Post>
     }
 
     Widget buildBottomSheet() {
+      final useDefaultEngine = ref.watch(settingsProvider.select(
+        (value) => _isDefaultEngine(value),
+      ));
+
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -257,7 +281,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                   progress: progress,
                   playbackSpeed:
                       ref.watchPlaybackSpeed(posts[currentPage].videoUrl),
-                  onSeek: (position) => onVideoSeekTo(position, currentPage),
+                  onSeek: (position) =>
+                      onVideoSeekTo(position, currentPage, useDefaultEngine),
                   onSpeedChanged: (speed) =>
                       ref.setPlaybackSpeed(posts[currentPage].videoUrl, speed),
                   onSoundToggle: (value) => ref.setGlobalVideoSound(value),
