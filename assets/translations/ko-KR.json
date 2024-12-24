@@ -1,128 +1,128 @@
 {
     "generic": {
-        "done": "",
+        "done": "완료",
         "errors": {
-            "no_data": "",
-            "unknown": ""
+            "no_data": "사용 가능한 데이터 없음",
+            "unknown": "무언가 잘못되었습니다"
         },
         "action": {
-            "add": "",
-            "delete": "",
-            "edit": "",
-            "ok": "",
-            "cancel": "",
-            "duplicate": ""
+            "add": "추가",
+            "delete": "삭제",
+            "edit": "수정",
+            "ok": "확인",
+            "cancel": "취소",
+            "duplicate": "복제"
         },
-        "view": ""
+        "view": "보기"
     },
     "profile": {
-        "favorites": "",
-        "profile": "",
-        "copy_user_id": "",
-        "messages": ""
+        "favorites": "즐겨찾기",
+        "profile": "프로필",
+        "copy_user_id": "유저 ID 복사",
+        "messages": "메시지"
     },
     "network": {
-        "unavailable": ""
+        "unavailable": "네트워크 사용할 수 없음"
     },
     "tag": {
         "related": {
-            "more": "",
-            "related": "",
-            "add_to_current_search": "",
-            "open_wiki": ""
+            "more": "더보기",
+            "related": "관련",
+            "add_to_current_search": "현재 검색에 추가",
+            "open_wiki": "위키 열기"
         },
         "explore": {
-            "new": "",
-            "popular": ""
+            "new": "새로운",
+            "popular": "인기 항목"
         }
     },
     "post": {
         "detail": {
-            "view": "",
-            "view_in_browser": "",
-            "file_details": "",
-            "size": "",
-            "resolution": "",
-            "rating": "",
-            "file_format": "",
+            "view": "보기",
+            "view_in_browser": "브라우저에서 보기",
+            "file_details": "파일 세부정보",
+            "size": "크기",
+            "resolution": "해상도",
+            "rating": "등급",
+            "file_format": "파일 포맷",
             "share": {
-                "source": "",
-                "booru": "",
-                "image": ""
+                "source": "출처 링크 공유",
+                "booru": "booru 링크 공유",
+                "image": "이미지 공유"
             },
-            "copied": "",
-            "show_original": "",
-            "show_translated": "",
-            "login_required_notice": "",
-            "open_wiki": "",
-            "add_to_blacklist": "",
-            "add_to_favorites": "",
-            "copy_and_open_saved_search": "",
+            "copied": "복사됨",
+            "show_original": "원본 보기",
+            "show_translated": "번역문 보기",
+            "login_required_notice": "이 작업을 수행하려면 로그인해야 합니다",
+            "open_wiki": "위키 열기",
+            "add_to_blacklist": "블랙리스트에 추가",
+            "add_to_favorites": "즐겨찾기에 추가",
+            "copy_and_open_saved_search": "저장된 검색어 복사 및 열기",
             "score": {
-                "one": "",
-                "other": ""
+                "one": "포인트",
+                "other": "포인트"
             },
-            "source_label": "",
-            "related_posts": "",
-            "add_to_bookmark": "",
-            "remove_from_bookmark": ""
+            "source_label": "출처",
+            "related_posts": "관련 게시물",
+            "add_to_bookmark": "북마크에 추가",
+            "remove_from_bookmark": "북마크에서 제거"
         },
         "action": {
-            "preview": "",
-            "view_comments": "",
-            "add_to_favorite_group": "",
-            "select": ""
+            "preview": "미리보기",
+            "view_comments": "댓글 보기",
+            "add_to_favorite_group": "즐겨찾기 그룹에 추가",
+            "select": "선택"
         },
         "image_fullview": {
-            "view_original": "",
-            "view_resized": ""
+            "view_original": "원본 보기",
+            "view_resized": "리사이즈 보기"
         }
     },
     "comment": {
-        "comments": "",
+        "comments": "댓글",
         "create": {
-            "hint": "",
-            "loading": "",
-            "error": ""
+            "hint": "댓글",
+            "loading": "기다려 주십시오...",
+            "error": "오류"
         },
         "list": {
-            "edit": "",
-            "reply": "",
-            "reply_to": "",
-            "delete": "",
-            "noComments": "",
-            "last_updated": "",
-            "send": ""
+            "edit": "편집",
+            "reply": "답글",
+            "reply_to": "에 답글 달기",
+            "delete": "삭제",
+            "noComments": "댓글이 없습니다",
+            "last_updated": "마지막 업데이트",
+            "send": "전송"
         },
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "댓글",
+            "other": "댓글"
         }
     },
     "explore": {
-        "latest": "",
-        "popular": "",
-        "hot": "",
-        "most_viewed": "",
-        "see_more": "",
-        "explore": ""
+        "latest": "최신",
+        "popular": "인기",
+        "hot": "핫",
+        "most_viewed": "가장 많이 본",
+        "see_more": "더 보기",
+        "explore": "탐색"
     },
     "search": {
         "errors": {
-            "generic": "",
-            "tag_limit": "",
-            "database_timeout": "",
-            "rate_limited": "",
-            "pagination_limit": "",
-            "max_capacity": "",
-            "down": "",
-            "access_denied": "",
-            "forbidden": "",
-            "unknown": ""
+            "generic": "무언가 잘못되었습니다",
+            "tag_limit": "최대 태그 제한에 도달했습니다. 더 많은 태그를 한 번에 검색하려면 계정을 업그레이드하세요.",
+            "database_timeout": "검색 실행이 너무 오래 걸려 취소되었습니다.",
+            "rate_limited": "요청 제한에 도달했습니다. 나중에 다시 시도하세요",
+            "pagination_limit": "페이지네이션 제한에 도달했습니다. 더 이상 스크롤할 수 없습니다",
+            "max_capacity": "서버에 과부하가 걸려 요청을 처리할 수 없습니다. 나중에 다시 시도해주세요",
+            "down": "서버가 응답하지 않습니다. 나중에 다시 시도하세요",
+            "access_denied": "접근 거부됨",
+            "forbidden": "인증 실패",
+            "unknown": "알 수 없는 서버 오류가 발생했습니다. 이 문제를 개발자에게 보고해주세요"
         },
-        "hint": "",
-        "no_result": "",
-        "search_options": "",
+        "hint": "검색...",
+        "no_result": "깊고 넓게 찾아봤지만, 결과를 찾을 수 없습니다.",
+        "search_options": "검색 옵션",
         "metatags_notice": "",
         "history": {
             "history": "",
