@@ -9,8 +9,7 @@ import 'widgets.dart';
 
 class AccentColorSelector extends StatefulWidget {
   const AccentColorSelector({
-    super.key,
-    required this.onSchemeChanged,
+    required this.onSchemeChanged, super.key,
     this.initialScheme,
   });
 

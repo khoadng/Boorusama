@@ -24,10 +24,7 @@ const _kMaxSheetSize = 0.65;
 
 class ThemePreviewApp extends StatefulWidget {
   const ThemePreviewApp({
-    super.key,
-    required this.defaultScheme,
-    required this.currentScheme,
-    required this.onSchemeChanged,
+    required this.defaultScheme, required this.currentScheme, required this.onSchemeChanged, super.key,
   });
 
   final ColorScheme defaultScheme;

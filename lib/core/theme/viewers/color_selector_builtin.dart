@@ -14,9 +14,7 @@ import 'widgets.dart';
 
 class BuiltInColorSelector extends StatelessWidget {
   const BuiltInColorSelector({
-    super.key,
-    required this.onSchemeChanged,
-    required this.currentScheme,
+    required this.onSchemeChanged, required this.currentScheme, super.key,
   });
 
   final void Function(ColorSettings? color) onSchemeChanged;
@@ -71,9 +69,7 @@ class BuiltInColorSelector extends StatelessWidget {
 
 class BasicColorSelector extends ConsumerWidget {
   const BasicColorSelector({
-    super.key,
-    required this.onSchemeChanged,
-    required this.currentScheme,
+    required this.onSchemeChanged, required this.currentScheme, super.key,
   });
 
   final void Function(ColorSettings? color) onSchemeChanged;

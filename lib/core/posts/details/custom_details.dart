@@ -46,7 +46,7 @@ class CustomDetailsPartKey extends Equatable {
 
 DetailsPart? parseDetailsPart(String part) {
   if (_knownPartsMap.containsKey(part)) {
-    return _knownPartsMap[part]!;
+    return _knownPartsMap[part];
   }
 
   return null;
@@ -110,10 +110,7 @@ class AddCustomDetailsButton extends ConsumerWidget {
 
 class CustomDetailsChooserPage extends StatefulWidget {
   const CustomDetailsChooserPage({
-    super.key,
-    required this.availableParts,
-    required this.selectedParts,
-    required this.onDone,
+    required this.availableParts, required this.selectedParts, required this.onDone, super.key,
   });
 
   final List<DetailsPart> availableParts;

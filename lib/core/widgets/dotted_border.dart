@@ -6,8 +6,8 @@ import 'package:path_drawing/path_drawing.dart';
 
 class DottedBorder extends StatelessWidget {
   DottedBorder({
-    super.key,
     required this.child,
+    super.key,
     this.color = Colors.black,
     this.gradient,
     this.strokeWidth = 1,
@@ -15,7 +15,7 @@ class DottedBorder extends StatelessWidget {
     this.dashPattern = const [3, 1],
     this.padding = const EdgeInsets.all(2),
     this.borderPadding = EdgeInsets.zero,
-    this.radius = const Radius.circular(0),
+    this.radius = Radius.zero,
     this.strokeCap = StrokeCap.butt,
     this.customPath,
     this.stackFit = StackFit.loose,
@@ -70,7 +70,7 @@ class DottedBorder extends StatelessWidget {
   /// * Cannot be null or empty
   /// * If [dashPattern] has only 1 element, it cannot be 0
   bool _isValidDashPattern(List<double>? dashPattern) {
-    final Set<double>? dashSet = dashPattern?.toSet();
+    final dashSet = dashPattern?.toSet();
     if (dashSet == null) return false;
     if (dashSet.length == 1 && dashSet.elementAt(0) == 0.0) return false;
     if (dashSet.isEmpty) return false;
@@ -90,13 +90,11 @@ class DashedPainter extends CustomPainter {
     this.color = Colors.black,
     this.gradient,
     this.borderType = BorderType.rect,
-    this.radius = const Radius.circular(0),
+    this.radius = Radius.zero,
     this.strokeCap = StrokeCap.butt,
     this.customPath,
     this.padding = EdgeInsets.zero,
-  }) {
-    assert(dashPattern.isNotEmpty, 'Dash Pattern cannot be empty');
-  }
+  }) : assert(dashPattern.isNotEmpty, 'Dash Pattern cannot be empty');
 
   final double strokeWidth;
   final List<double> dashPattern;
@@ -228,9 +226,9 @@ class DashedPainter extends CustomPainter {
 
 class DottedBorderButton extends StatelessWidget {
   const DottedBorderButton({
+    required this.title,
     super.key,
     this.onTap,
-    required this.title,
     this.borderColor,
   });
 

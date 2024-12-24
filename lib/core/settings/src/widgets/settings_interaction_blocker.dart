@@ -125,10 +125,9 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
 
 class ThemeSettingsInteractionBlocker extends ConsumerWidget {
   const ThemeSettingsInteractionBlocker({
-    super.key,
+    required this.child, super.key,
     this.padding,
     this.onNavigateAway,
-    required this.child,
   });
 
   final Widget child;

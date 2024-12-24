@@ -17,9 +17,7 @@ import 'home_page_controller.dart';
 
 class UserCustomHomeBuilder extends ConsumerWidget {
   const UserCustomHomeBuilder({
-    super.key,
-    required this.defaultView,
-    required this.homePageController,
+    required this.defaultView, required this.homePageController, super.key,
   });
 
   final Widget defaultView;
@@ -50,9 +48,7 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
 class CustomHomeContainer extends ConsumerWidget {
   const CustomHomeContainer({
-    super.key,
-    required this.homePageController,
-    required this.child,
+    required this.homePageController, required this.child, super.key,
   });
 
   final HomePageController homePageController;

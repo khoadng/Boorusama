@@ -218,9 +218,7 @@ class _HomeScreenSection extends ConsumerWidget {
 
 class ThemeListTile extends ConsumerWidget {
   const ThemeListTile({
-    super.key,
-    required this.colorSettings,
-    required this.onThemeUpdated,
+    required this.colorSettings, required this.onThemeUpdated, super.key,
   });
 
   final ColorSettings? colorSettings;
@@ -270,9 +268,7 @@ class ThemeListTile extends ConsumerWidget {
 
 class ThemePreviewRealView extends StatefulWidget {
   const ThemePreviewRealView({
-    super.key,
-    required this.onThemeUpdated,
-    required this.colorSettings,
+    required this.onThemeUpdated, required this.colorSettings, super.key,
   });
 
   final void Function(ColorSettings? colors) onThemeUpdated;
@@ -324,9 +320,7 @@ class ThemePreviewPreviewView extends StatelessWidget {
 
 class ThemePreviewView extends ConsumerStatefulWidget {
   const ThemePreviewView({
-    super.key,
-    required this.colorSettings,
-    required this.saveButton,
+    required this.colorSettings, required this.saveButton, super.key,
     this.onColorChanged,
   });
 

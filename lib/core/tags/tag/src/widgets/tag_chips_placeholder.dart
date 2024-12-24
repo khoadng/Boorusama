@@ -3,8 +3,11 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
 import '../../../../theme.dart';
 
 class TagChipsPlaceholder extends ConsumerWidget {

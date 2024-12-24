@@ -132,9 +132,7 @@ class DetailsLayoutNotifier extends AutoDisposeFamilyNotifier<
 
 class DetailsLayoutManagerPage extends ConsumerStatefulWidget {
   const DetailsLayoutManagerPage({
-    super.key,
-    required this.params,
-    required this.onDone,
+    required this.params, required this.onDone, super.key,
   });
 
   final DetailsLayoutManagerParams params;
@@ -198,9 +196,7 @@ class _DetailsLayoutManagerPageState
 
 class AvailableWidgetSelectorSheet extends ConsumerWidget {
   const AvailableWidgetSelectorSheet({
-    super.key,
-    required this.params,
-    required this.controller,
+    required this.params, required this.controller, super.key,
   });
 
   final DetailsLayoutManagerParams params;
@@ -255,7 +251,7 @@ class _List extends ConsumerWidget {
 
     return ReorderableColumn(
       scrollController: controller,
-      onReorder: (int oldIndex, int newIndex) {
+      onReorder: (oldIndex, newIndex) {
         notifier.reorder(oldIndex, newIndex);
       },
       children: details
@@ -295,8 +291,8 @@ class _List extends ConsumerWidget {
                       notifier.remove(e);
                     }
                   },
-                  itemBuilder: {
-                    'remove': const Text('Remove'),
+                  itemBuilder: const {
+                    'remove': Text('Remove'),
                   },
                 ),
                 contentPadding: const EdgeInsets.symmetric(

@@ -342,14 +342,7 @@ extension DynamicSchemeVariantX on DynamicSchemeVariant {
 class ColorSettings extends Equatable {
   const ColorSettings({
     required this.name,
-    this.nickname,
-    required this.brightness,
-    required this.colorScheme,
-    required this.extendedColorScheme,
-    required String schemeType,
-    required String? dynamicSchemeVariant,
-    required this.enableDynamicColoring,
-    required this.followSystemDarkMode,
+    required this.brightness, required this.colorScheme, required this.extendedColorScheme, required String schemeType, required String? dynamicSchemeVariant, required this.enableDynamicColoring, required this.followSystemDarkMode, this.nickname,
   })  : _schemeType = schemeType,
         _dynamicSchemeVariant = dynamicSchemeVariant;
 

@@ -441,6 +441,12 @@ enum ImageQuickActionType {
 }
 
 class LayoutConfigs extends Equatable {
+
+  const LayoutConfigs({
+    required this.home,
+    required this.details,
+    required this.previewDetails,
+  });
   factory LayoutConfigs.fromJson(Map<String, dynamic> json) {
     final home = json['home'] == null
         ? const CustomHomeViewKey.defaultValue()
@@ -464,12 +470,6 @@ class LayoutConfigs extends Equatable {
       previewDetails: previewDetails,
     );
   }
-
-  const LayoutConfigs({
-    required this.home,
-    required this.details,
-    required this.previewDetails,
-  });
 
   const LayoutConfigs.undefined()
       : home = const CustomHomeViewKey.defaultValue(),

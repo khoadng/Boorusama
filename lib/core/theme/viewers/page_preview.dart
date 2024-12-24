@@ -36,9 +36,8 @@ final _kRandomTags = [
 
 class PreviewFrame extends StatelessWidget {
   const PreviewFrame({
-    super.key,
+    required this.child, super.key,
     this.padding,
-    required this.child,
   });
 
   final Widget child;
@@ -59,7 +58,7 @@ class PreviewFrame extends StatelessWidget {
         border: Border.all(
           color: Theme.of(context).colorScheme.onSurface,
         ),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: child,
     );
@@ -246,9 +245,7 @@ class PreviewPostActionToolbar extends StatelessWidget {
 
 class PreviewTagsTile extends ConsumerWidget {
   const PreviewTagsTile({
-    super.key,
-    required this.post,
-    required this.colorScheme,
+    required this.post, required this.colorScheme, super.key,
   });
 
   final Post post;

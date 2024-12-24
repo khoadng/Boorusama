@@ -9,7 +9,6 @@ import '../../widgets/widgets.dart';
 
 // Project imports:
 
-
 const _kVariantsOptions = [
   DynamicSchemeVariant.tonalSpot,
   DynamicSchemeVariant.fidelity,
@@ -21,9 +20,9 @@ const _kVariantsOptions = [
 
 class ColorVariantSelector extends StatelessWidget {
   const ColorVariantSelector({
-    super.key,
     required this.variant,
     required this.onChanged,
+    super.key,
   });
 
   final DynamicSchemeVariant variant;
@@ -61,9 +60,9 @@ class ColorVariantSelector extends StatelessWidget {
 
 class DarkModeToggleButton extends StatelessWidget {
   const DarkModeToggleButton({
-    super.key,
     required this.isDark,
     required this.onChanged,
+    super.key,
   });
 
   final bool isDark;
@@ -94,12 +93,11 @@ enum ThemeCategory {
 class SplashClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    final path = Path();
-
-    path.moveTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width, 0);
+    final path = Path()
+      ..moveTo(size.width, 0)
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..lineTo(size.width, 0);
 
     return path;
   }
@@ -110,9 +108,9 @@ class SplashClipper extends CustomClipper<Path> {
 
 class CategoryToggleSwitch extends StatelessWidget {
   const CategoryToggleSwitch({
-    super.key,
     required this.onToggle,
     required this.initialCategory,
+    super.key,
   });
 
   final void Function(ThemeCategory category) onToggle;
@@ -125,7 +123,7 @@ class CategoryToggleSwitch extends StatelessWidget {
     return Center(
       child: BooruSegmentedButton(
         initialValue: initialCategory,
-        segments: {
+        segments: const {
           ThemeCategory.basic: 'Basic',
           ThemeCategory.builtIn: 'Built-in',
           ThemeCategory.accent: 'Accent',
@@ -146,11 +144,11 @@ class CategoryToggleSwitch extends StatelessWidget {
 
 class PreviewColorContainer extends StatelessWidget {
   const PreviewColorContainer({
-    super.key,
     required this.primary,
     required this.onSurface,
     required this.selected,
     required this.onTap,
+    super.key,
     this.followSystem = false,
   });
 
