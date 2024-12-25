@@ -156,7 +156,7 @@ class Settings extends Equatable {
   Settings.fromJson(Map<String, dynamic> json)
       : safeMode = json['safeMode'] ?? true,
         listing = ImageListingSettings.fromJson(json),
-        blacklistedTags = json['hideBlacklist'] ?? [],
+        blacklistedTags = json['hideBlacklist'] ?? '',
         themeMode = json['themeMode'] != null
             ? AppThemeMode.values[json['themeMode']]
             : AppThemeMode.amoledDark,
