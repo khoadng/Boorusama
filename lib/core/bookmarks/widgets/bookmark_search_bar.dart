@@ -29,10 +29,11 @@ class BookmarkSearchBar extends ConsumerWidget {
 
     if (!hasBookmarks) return const SizedBox.shrink();
 
-    final selectedTag = ref.watch(selectedTagsProvider);
-
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 12,
+      ),
       height: kPreferredLayout.isDesktop ? 34 : null,
       child: SearchField(
         animationDuration: const Duration(milliseconds: 100),
@@ -52,67 +53,82 @@ class BookmarkSearchBar extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         searchInputDecoration: SearchInputDecoration(
+          cursorColor: Theme.of(context).colorScheme.primary,
           prefixIcon: const Icon(Symbols.search),
-          suffixIcon: selectedTag.isNotEmpty
-              ? InkWell(
-                  child: const Icon(Symbols.clear),
-                  onTap: () {
-                    controller.clear();
-                    ref.read(selectedTagsProvider.notifier).state = '';
-                  },
-                )
-              : null,
+          suffixIcon: ValueListenableBuilder(
+            valueListenable: controller,
+            builder: (_, value, ___) => value.text.isNotEmpty
+                ? InkWell(
+                    child: const Icon(Symbols.clear),
+                    onTap: () {
+                      controller.clear();
+                      ref.read(selectedTagsProvider.notifier).state = '';
+                    },
+                  )
+                : const SizedBox.shrink(),
+          ),
           hintText: 'Filter...',
         ),
         controller: controller,
+        onTapOutside: (_) {
+          focusNode.unfocus();
+        },
         onSuggestionTap: (p0) {
-          ref.read(selectedTagsProvider.notifier).state = p0.searchKey;
-          FocusScope.of(context).unfocus();
+          ref.read(selectedTagsProvider.notifier).state = '${p0.searchKey} ';
         },
         suggestions: ref
             .watch(tagSuggestionsProvider)
-            .map(
-              (e) => SearchFieldListItem(
-                e,
-                item: e,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: kPreferredLayout.isMobile ? 2 : 0,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: AppHtml(
-                          style: {
-                            'p': Style(
-                              fontSize: FontSize.medium,
-                              color: ref.watch(tagColorProvider(e)).maybeWhen(
-                                    data: (color) => color,
-                                    orElse: () => null,
-                                  ),
-                              margin: Margins.zero,
+            .map((e) => _buildItem(e, ref))
+            .toList(),
+      ),
+    );
+  }
+
+  SearchFieldListItem<String> _buildItem(String tag, WidgetRef ref) {
+    final context = ref.context;
+
+    return SearchFieldListItem(
+      tag,
+      item: tag,
+      child: IgnorePointer(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 4,
+            vertical: kPreferredLayout.isMobile ? 2 : 0,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: ValueListenableBuilder(
+                  valueListenable: controller,
+                  builder: (_, value, ___) => AppHtml(
+                    style: {
+                      'p': Style(
+                        fontSize: FontSize.medium,
+                        color: ref.watch(tagColorProvider(tag)).maybeWhen(
+                              data: (color) => color,
+                              orElse: () => null,
                             ),
-                            'b': Style(
-                              fontWeight: FontWeight.w900,
-                            ),
-                          },
-                          data:
-                              '<p>${e.replaceAll(selectedTag, '<b>$selectedTag</b>')}</p>',
-                        ),
+                        margin: Margins.zero,
                       ),
-                      Text(
-                        ref.watch(tagCountProvider(e)).toString(),
-                        style: TextStyle(
-                          color: Theme.of(context).hintColor,
-                        ),
+                      'b': Style(
+                        fontWeight: FontWeight.w900,
                       ),
-                    ],
+                    },
+                    data:
+                        '<p>${tag.replaceAll(value.text, '<b>${value.text}</b>')}</p>',
                   ),
                 ),
               ),
-            )
-            .toList(),
+              Text(
+                ref.watch(tagCountProvider(tag)).toString(),
+                style: TextStyle(
+                  color: Theme.of(context).hintColor,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
