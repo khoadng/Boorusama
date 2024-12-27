@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
@@ -12,6 +13,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/i18n.dart';
+import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
 
@@ -29,6 +31,8 @@ class AddUnknownBooruPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final engine = ref.watch(booruEngineProvider);
+
     return ProviderScope(
       overrides: [
         initialBooruConfigProvider.overrideWithValue(
@@ -81,21 +85,21 @@ class AddUnknownBooruPage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const BooruUrlField(),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        if (engine != BooruType.hydrus)
                           const SizedBox(height: 16),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        if (engine != BooruType.hydrus)
                           Text(
                             'Advanced options (optional)',
                             style: context.textTheme.titleMedium,
                           ),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        if (engine != BooruType.hydrus)
                           const DefaultBooruInstructionText(
                             '*These options only be used if the site allows it.',
                           ),
                         //FIXME: make this part of the config customisable
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        if (engine != BooruType.hydrus)
                           const SizedBox(height: 16),
-                        if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                        if (engine != BooruType.hydrus)
                           const DefaultBooruLoginField(),
                         const SizedBox(height: 16),
                         const DefaultBooruApiKeyField(),
@@ -260,11 +264,57 @@ class BooruUrlField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
+    final engine = ref.watch(booruEngineProvider);
 
-    return CreateBooruSiteUrlField(
-      text: config.url,
-      onChanged: (value) =>
-          ref.read(_siteUrlProvider(config).notifier).state = value,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CreateBooruSiteUrlField(
+          text: config.url,
+          onChanged: (value) =>
+              ref.read(_siteUrlProvider(config).notifier).state = value,
+        ),
+        if (engine == BooruType.shimmie2)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 8,
+            ),
+            child: RichText(
+              text: TextSpan(
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: context.theme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+                children: [
+                  const TextSpan(text: 'The app requires the '),
+                  TextSpan(
+                    text: 'Danbooru Client API',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(
+                      text:
+                          ' extension to be installed on the site to function.'),
+                ],
+              ),
+            ),
+          ),
+        if (engine == BooruType.shimmie2)
+          TextButton(
+            style: TextButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+            ),
+            onPressed: () {
+              launchUrlString(join(config.url, 'ext_doc'));
+            },
+            child: const Text('View extension documentation'),
+          ),
+      ],
     );
   }
 }
