@@ -30,7 +30,7 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
   int get initialPage;
   late var _page = initialPage;
 
-  void onSwiped(int page) {
+  void onSwiped(int page, bool useDefaultEngine) {
     _videoProgress.value = VideoProgress.zero;
     if (posts[page].isVideo) {
       controller.disableSwipeDownToDismiss();
@@ -39,7 +39,7 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
     }
 
     // Pause previous video
-    if (posts[page].videoUrl.endsWith('.webm')) {
+    if (posts[page].videoUrl.endsWith('.webm') && useDefaultEngine) {
       _webmVideoControllers[_page]?.pause();
     } else {
       _videoControllers[_page]?.pause();
@@ -58,8 +58,8 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
         Duration(milliseconds: (current * 1000).toInt()));
   }
 
-  void onVideoSeekTo(Duration position, int page) {
-    if (posts[page].videoUrl.endsWith('.webm')) {
+  void onVideoSeekTo(Duration position, int page, bool useDefaultEngine) {
+    if (posts[page].videoUrl.endsWith('.webm') && useDefaultEngine) {
       _webmVideoControllers[page]?.seek(position.inSeconds.toDouble());
     } else {
       _videoControllers[page]?.seekTo(position);
@@ -72,6 +72,18 @@ mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
 
   void onVideoPlayerCreated(VideoPlayerController controller, int page) {
     _videoControllers[page] = controller;
+  }
+
+  Future<void> pauseCurrentVideo(bool useDefaultEngine) {
+    if (_page < 0 || _page >= posts.length) return Future.value();
+
+    final post = posts[_page];
+
+    if (post.videoUrl.endsWith('.webm') && useDefaultEngine) {
+      return _webmVideoControllers[_page]?.pause() ?? Future.value();
+    } else {
+      return _videoControllers[_page]?.pause() ?? Future.value();
+    }
   }
 
   void onVisibilityChanged(bool value) {

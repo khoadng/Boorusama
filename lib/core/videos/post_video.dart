@@ -23,6 +23,7 @@ class BooruVideo extends StatefulWidget {
     this.speed = 1.0,
     this.onZoomUpdated,
     this.customControlsBuilder,
+    this.onOpenSettings,
   });
 
   final String url;
@@ -36,6 +37,7 @@ class BooruVideo extends StatefulWidget {
   final double speed;
   final void Function(bool value)? onZoomUpdated;
   final Widget? Function()? customControlsBuilder;
+  final void Function()? onOpenSettings;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -64,6 +66,45 @@ class _BooruVideoState extends State<BooruVideo> {
           : MaterialDesktopControls(
               onVisibilityChanged: widget.onVisibilityChanged,
             ),
+      errorBuilder: (context, errorMessage) {
+        return Container(
+          color: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                errorMessage,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'If this happens on a regular basis, consider using a different video player engine in the settings.',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              FilledButton(
+                onPressed: widget.onOpenSettings,
+                child: const Text(
+                  'Open settings',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
       looping: true,
       autoInitialize: true,
       showControlsOnInitialize: false,

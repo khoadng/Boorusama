@@ -2,7 +2,6 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/booru.dart';
 import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
@@ -14,7 +13,7 @@ class BooruTagTypeStore {
 
   Box<String>? _box;
 
-  static String get dataKey => 'general_tag_type_store_v1';
+  static String get dataKey => 'general_tag_type_store_v2';
 
   static Future<String> getBoxPath(String dirPath) async {
     return join(dirPath, '$dataKey.hive');
@@ -99,16 +98,5 @@ extension BooruTagTypeStoreX on BooruTagTypeStore {
         tags,
         (tag) => tag.rawName,
         (tag) => tag.category.name,
-      );
-
-  Future<void> saveAutocompleteIfNotExist(
-    BooruType booruType,
-    List<AutocompleteData> tags,
-  ) =>
-      saveIfNotExist(
-        booruType,
-        tags,
-        (tag) => tag.value,
-        (tag) => tag.category,
       );
 }

@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 3.21.6+123
+version: 3.22.0+124
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
@@ -104,6 +104,7 @@ dependencies:
   uuid: ^4.5.1
   version: ^3.0.2
   video_player: ^2.9.2
+  visibility_detector: ^0.4.0+2
   webview_cookie_manager:
     git:
        url: https://github.com/fryette/webview_cookie_manager
