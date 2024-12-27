@@ -158,7 +158,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
         configName.isNotEmpty;
 
     return ref.watch(_validateConfigProvider).when(
-          data: (value) => value != null
+          data: (value) => value != null && value
               ? CreateBooruSubmitButton(
                   fill: true,
                   backgroundColor: value ? Colors.green : null,
@@ -184,24 +184,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                       ? const Text('booru.config_booru_confirm').tr()
                       : const Text('Verify'),
                 )
-              : CreateBooruSubmitButton(
-                  fill: true,
-                  onSubmit: isValid
-                      ? () {
-                          ref
-                              .read(_targetConfigToValidateProvider.notifier)
-                              .state = BooruConfig.defaultConfig(
-                            booruType: engine,
-                            url: url!,
-                            customDownloadFileNameFormat: null,
-                          ).copyWith(
-                            login: auth.login,
-                            apiKey: auth.apiKey,
-                          );
-                        }
-                      : null,
-                  child: const Text('Verify'),
-                ),
+              : _buildVerifyButton(isValid, ref, engine, url, auth),
           loading: () => const CreateBooruSubmitButton(
             fill: true,
             backgroundColor: Colors.grey,
@@ -214,19 +197,35 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
               ),
             ),
           ),
-          error: (err, _) => CreateBooruSubmitButton(
-            fill: true,
-            onSubmit: isValid
-                ? () {
-                    ref.read(_targetConfigToValidateProvider.notifier).state =
-                        null;
-                    // clear selected engine
-                    ref.read(booruEngineProvider.notifier).state = null;
-                  }
-                : null,
-            child: const Text('Clear'),
-          ),
+          error: (err, _) =>
+              _buildVerifyButton(isValid, ref, engine, url, auth),
         );
+  }
+
+  Widget _buildVerifyButton(
+    bool isValid,
+    WidgetRef ref,
+    BooruType? engine,
+    String? url,
+    AuthConfigData auth,
+  ) {
+    return CreateBooruSubmitButton(
+      fill: true,
+      onSubmit: isValid && engine != null
+          ? () {
+              ref.read(_targetConfigToValidateProvider.notifier).state =
+                  BooruConfig.defaultConfig(
+                booruType: engine,
+                url: url!,
+                customDownloadFileNameFormat: null,
+              ).copyWith(
+                login: auth.login,
+                apiKey: auth.apiKey,
+              );
+            }
+          : null,
+      child: const Text('Verify'),
+    );
   }
 }
 
@@ -236,6 +235,17 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(_validateConfigProvider).maybeWhen(
           orElse: () => const SizedBox(),
+          data: (value) => value == false
+              ? WarningContainer(
+                  title: 'Empty results',
+                  contentBuilder: (context) => Text(
+                    'The app cannot find any posts with this engine. Please try with another one.',
+                    style: TextStyle(
+                      color: context.colorScheme.onSurface,
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           error: (error, st) => Stack(
             children: [
               WarningContainer(

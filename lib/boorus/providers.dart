@@ -404,7 +404,7 @@ final booruSiteValidatorProvider =
         .then((value) => true),
     BooruType.gelbooruV1 => GelbooruV1Client(baseUrl: config.url, dio: dio)
         .getPosts()
-        .then((value) => true),
+        .then((value) => value.isNotEmpty),
     BooruType.sankaku => SankakuClient(
         baseUrl: config.url,
         dio: dio,
