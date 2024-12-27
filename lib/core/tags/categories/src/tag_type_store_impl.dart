@@ -13,7 +13,7 @@ class BooruTagTypeStore implements TagTypeStore {
 
   Box<String>? _box;
 
-  static String get dataKey => 'general_tag_type_store_v1';
+  static String get dataKey => 'general_tag_type_store_v2';
 
   static Future<String> getBoxPath(String dirPath) async {
     return join(dirPath, '$dataKey.hive');

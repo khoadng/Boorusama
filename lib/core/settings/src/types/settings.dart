@@ -40,12 +40,13 @@ class Settings extends Equatable {
     required this.reduceAnimations,
     required this.downloadFileExistedBehavior,
     required this.videoAudioDefaultState,
+    required this.videoPlayerEngine,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
       : safeMode = json['safeMode'] ?? true,
         listing = ImageListingSettings.fromJson(json),
-        blacklistedTags = json['hideBlacklist'] ?? [],
+        blacklistedTags = json['hideBlacklist'] ?? '',
         themeMode = json['themeMode'] != null
             ? AppThemeMode.values[json['themeMode']]
             : AppThemeMode.amoledDark,
@@ -109,6 +110,9 @@ class Settings extends Equatable {
         videoAudioDefaultState = json['videoAudioDefaultState'] != null
             ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
             : VideoAudioDefaultState.unspecified,
+        videoPlayerEngine = json['videoPlayerEngine'] != null
+            ? VideoPlayerEngine.values[json['videoPlayerEngine']]
+            : VideoPlayerEngine.auto,
         reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5;
@@ -156,6 +160,7 @@ class Settings extends Equatable {
     reduceAnimations: false,
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
     videoAudioDefaultState: VideoAudioDefaultState.unspecified,
+    videoPlayerEngine: VideoPlayerEngine.auto,
   );
 
   final ImageListingSettings listing;
@@ -210,6 +215,8 @@ class Settings extends Equatable {
 
   final VideoAudioDefaultState videoAudioDefaultState;
 
+  final VideoPlayerEngine videoPlayerEngine;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -240,6 +247,7 @@ class Settings extends Equatable {
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
     VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
+    VideoPlayerEngine? videoPlayerEngine,
   }) =>
       Settings(
         listing: listing ?? this.listing,
@@ -283,6 +291,7 @@ class Settings extends Equatable {
             downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
         videoAudioDefaultState:
             videoAudioDefaultState ?? this.videoAudioDefaultState,
+        videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
       );
 
   Map<String, dynamic> toJson() {
@@ -318,6 +327,7 @@ class Settings extends Equatable {
       'reduceAnimations': reduceAnimations,
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
       'videoAudioDefaultState': videoAudioDefaultState.index,
+      'videoPlayerEngine': videoPlayerEngine.index,
     };
   }
 
@@ -351,6 +361,7 @@ class Settings extends Equatable {
         reduceAnimations,
         downloadFileExistedBehavior,
         videoAudioDefaultState,
+        videoPlayerEngine,
       ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

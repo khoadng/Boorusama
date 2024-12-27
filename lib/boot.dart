@@ -93,19 +93,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Initialize Hive');
   Hive.init(dbDirectory.path);
 
-  if (isDesktopPlatform() || isIOS()) {
-    fvp.registerWith(
-      options: {
-        'platforms': [
-          'linux',
-          'ios',
-          'windows',
-          'macos',
-        ],
-      },
-    );
-  }
-
   bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
 
@@ -152,6 +139,18 @@ Future<void> boot(BootLogger bootLogger) async {
           (r) => r,
         ),
       );
+
+  fvp.registerWith(
+    options: {
+      'platforms': [
+        'linux',
+        'ios',
+        'windows',
+        'macos',
+        if (settings.videoPlayerEngine == VideoPlayerEngine.mdk) 'android',
+      ],
+    },
+  );
 
   bootLogger
     ..l('Settings: ${settings.toJson()}')

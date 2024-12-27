@@ -20,6 +20,7 @@ import '../../../../foundation/display.dart';
 import '../../../../notes/notes.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
@@ -75,11 +76,19 @@ class _PostDetailPageScaffoldState<T extends Post>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.controller.setPage(widget.controller.initialPage);
+      final settings = ref.read(settingsProvider);
+      widget.controller.setPage(
+        widget.controller.initialPage,
+        useDefaultEngine: _isDefaultEngine(settings),
+      );
     });
   }
 
   var _previouslyPlaying = false;
+
+  bool _isDefaultEngine(Settings settings) {
+    return settings.videoPlayerEngine != VideoPlayerEngine.mdk;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +99,12 @@ class _PostDetailPageScaffoldState<T extends Post>
           _controller.overlay.value = !next;
         }
       },
+    );
+
+    final useDefaultEngine = ref.watch(
+      settingsProvider.select(
+        (value) => _isDefaultEngine(value),
+      ),
     );
 
     return CallbackShortcuts(
@@ -112,11 +127,15 @@ class _PostDetailPageScaffoldState<T extends Post>
             if (info.visibleFraction == 0) {
               _previouslyPlaying = widget.controller.isVideoPlaying.value;
               if (_previouslyPlaying) {
-                widget.controller.pauseCurrentVideo();
+                widget.controller.pauseCurrentVideo(
+                  useDefaultEngine: useDefaultEngine,
+                );
               }
             } else if (info.visibleFraction == 1) {
               if (_previouslyPlaying) {
-                widget.controller.playCurrentVideo();
+                widget.controller.playCurrentVideo(
+                  useDefaultEngine: useDefaultEngine,
+                );
               }
             }
           },
@@ -140,7 +159,10 @@ class _PostDetailPageScaffoldState<T extends Post>
     return Scaffold(
       body: PostDetailsPageView(
         onPageChanged: (page) {
-          widget.controller.setPage(page);
+          widget.controller.setPage(
+            page,
+            useDefaultEngine: _isDefaultEngine(settings),
+          );
 
           ref
               .read(postShareProvider(posts[page]).notifier)
@@ -253,11 +275,17 @@ class _PostDetailPageScaffoldState<T extends Post>
                                   isPlaying: widget.controller.isVideoPlaying,
                                   onPlayingChanged: (value) {
                                     if (value) {
-                                      widget.controller
-                                          .pauseVideo(post.id, post.isWebm);
+                                      widget.controller.pauseVideo(
+                                        post.id,
+                                        post.isWebm,
+                                        _isDefaultEngine(settings),
+                                      );
                                     } else if (!value) {
-                                      widget.controller
-                                          .playVideo(post.id, post.isWebm);
+                                      widget.controller.playVideo(
+                                        post.id,
+                                        post.isWebm,
+                                        _isDefaultEngine(settings),
+                                      );
                                     } else {
                                       // do nothing
                                     }

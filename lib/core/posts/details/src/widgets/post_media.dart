@@ -13,6 +13,9 @@ import '../../../../foundation/path.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/interactive_booru_image.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/routes.dart';
+import '../../../../settings/settings.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/video_player.dart';
 import '../../../post/post.dart';
@@ -36,18 +39,28 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final PostDetailsPageViewController controller;
 
+  void _openSettings(BuildContext context) {
+    openImageViewerSettingsPage(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
     final booruType = ref.watch(
       currentBooruConfigProvider.select((value) => value.auth.booruType),
     );
+    final useDefault = ref.watch(
+      settingsProvider
+          .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk),
+    );
 
     return post.isVideo
         ? Stack(
             children: [
               Positioned.fill(
-                child: extension(post.videoUrl) == '.webm' && isAndroid()
+                child: extension(post.videoUrl) == '.webm' &&
+                        isAndroid() &&
+                        useDefault
                     ? EmbeddedWebViewWebm(
                         url: post.videoUrl,
                         onCurrentPositionChanged:
@@ -73,6 +86,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         sound: ref.isGlobalVideoSoundOn,
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         thumbnailUrl: post.videoThumbnailUrl,
+                        onOpenSettings: () => _openSettings(context),
                       ),
               ),
               if (context.isLargeScreen)

@@ -35,7 +35,10 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
-  void setPage(int page) {
+  void setPage(
+    int page, {
+    required bool useDefaultEngine,
+  }) {
     currentPage.value = page;
     _videoProgress.value = VideoProgress.zero;
     _isVideoPlaying.value = false;
@@ -46,7 +49,11 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
       currentPost.value = post;
       if (page == initialPage.toDouble()) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          playVideo(post.id, post.isWebm);
+          playVideo(
+            post.id,
+            post.isWebm,
+            useDefaultEngine,
+          );
         });
         return;
       }
@@ -83,25 +90,30 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     );
   }
 
-  void onVideoSeekTo(Duration position, int id, bool isWebm) {
+  void onVideoSeekTo(
+    Duration position,
+    int id,
+    bool isWebm,
+    bool useDefaultEngine,
+  ) {
     // Only Android is using Webview for webm
-    if (isWebm && isAndroid()) {
+    if (isWebm && isAndroid() && useDefaultEngine) {
       _webmVideoControllers[id]?.seek(position.inSeconds.toDouble());
     } else {
       _videoControllers[id]?.seekTo(position);
     }
   }
 
-  bool isPlaying(int id, bool isWebm) {
-    if (isWebm && isAndroid()) {
+  bool isPlaying(int id, bool isWebm, bool useDefaultEngine) {
+    if (isWebm && isAndroid() && useDefaultEngine) {
       return _webmVideoControllers[id]?.isPlaying ?? false;
     } else {
       return _videoControllers[id]?.value.isPlaying ?? false;
     }
   }
 
-  Future<void> playVideo(int id, bool isWebm) async {
-    if (isWebm && isAndroid()) {
+  Future<void> playVideo(int id, bool isWebm, bool useDefaultEngine) async {
+    if (isWebm && isAndroid() && useDefaultEngine) {
       unawaited(_webmVideoControllers[id]?.play());
     } else {
       unawaited(_videoControllers[id]?.play());
@@ -110,20 +122,28 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _isVideoPlaying.value = true;
   }
 
-  Future<void> playCurrentVideo() {
+  Future<void> playCurrentVideo({
+    required bool useDefaultEngine,
+  }) {
     final post = currentPost.value;
 
-    return playVideo(post.id, post.isWebm);
+    return playVideo(post.id, post.isWebm, useDefaultEngine);
   }
 
-  Future<void> pauseCurrentVideo() {
+  Future<void> pauseCurrentVideo({
+    required bool useDefaultEngine,
+  }) {
     final post = currentPost.value;
 
-    return pauseVideo(post.id, post.isWebm);
+    return pauseVideo(
+      post.id,
+      post.isWebm,
+      useDefaultEngine,
+    );
   }
 
-  Future<void> pauseVideo(int id, bool isWebm) async {
-    if (isWebm && isAndroid()) {
+  Future<void> pauseVideo(int id, bool isWebm, bool useDefaultEngine) async {
+    if (isWebm && isAndroid() && useDefaultEngine) {
       unawaited(_webmVideoControllers[id]?.pause());
     } else {
       unawaited(_videoControllers[id]?.pause());

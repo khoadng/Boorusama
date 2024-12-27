@@ -1,3 +1,8 @@
+# 3.22.0
+- Add a new experimental video player engine that has better performance for certain devices and video formats. Can be enabled in settings.
+- Update translations for Turkish, French, Chinese, Ukrainian.
+- Add new languages: Tamil and Korean.
+
 # 3.21.0
 - [Danbooru] Add an option to hide banned posts
 - Add support for Hydrus Network and anime-pictures
