@@ -44,62 +44,64 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               }),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              dmail.title,
-              style: context.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text(
-                  'Sender: ',
-                  style: context.textTheme.titleMedium,
-                ),
-                Text(
-                  fromUser?.name ?? 'Anon',
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: fromUser?.level.toColor(context),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  'Receiver: ',
-                  style: context.textTheme.titleMedium,
-                ),
-                Text(
-                  toUser?.name ?? 'Anon',
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: toUser?.level.toColor(context),
-                  ),
-                ),
-              ],
-            ),
-            Text(
-                'Date: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
-                style: context.textTheme.titleMedium),
-            const SizedBox(height: 16),
-            Dtext.parse(
-              parseDtext(dmail.body),
-              '[quote]',
-              '[/quote]',
-            ),
-            const SizedBox(height: 16),
-            if (!config.hasStrictSFW)
-              FilledButton(
-                onPressed: () {
-                  launchExternalUrlString('${config.url}dmails/${dmail.id}');
-                },
-                child: const Text('View in Browser (LOGGED IN REQUIRED))'),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                dmail.title,
+                style: context.textTheme.titleLarge,
               ),
-          ],
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    'Sender: ',
+                    style: context.textTheme.titleMedium,
+                  ),
+                  Text(
+                    fromUser?.name ?? 'Anon',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: fromUser?.level.toColor(context),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Receiver: ',
+                    style: context.textTheme.titleMedium,
+                  ),
+                  Text(
+                    toUser?.name ?? 'Anon',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: toUser?.level.toColor(context),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                  'Date: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
+                  style: context.textTheme.titleMedium),
+              const SizedBox(height: 16),
+              Dtext.parse(
+                parseDtext(dmail.body),
+                '[quote]',
+                '[/quote]',
+              ),
+              const SizedBox(height: 16),
+              if (!config.hasStrictSFW)
+                FilledButton(
+                  onPressed: () {
+                    launchExternalUrlString('${config.url}dmails/${dmail.id}');
+                  },
+                  child: const Text('View in Browser (LOGGED IN REQUIRED))'),
+                ),
+            ],
+          ),
         ),
       ),
     );
