@@ -7,7 +7,6 @@ import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/foundation/debounce_mixin.dart';
 import 'package:boorusama/functional.dart';
 
@@ -63,15 +62,12 @@ class SuggestionsNotifier
 
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
     final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
-    final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
     final tagInfo = ref.read(tagInfoProvider);
 
     debounce(
       'suggestions',
       () async {
         final data = await autocompleteRepo.getAutocomplete(sanitized);
-
-        await booruTagTypeStore.saveAutocompleteIfNotExist(arg.booruType, data);
 
         final filter = filterNsfw(
           data,
