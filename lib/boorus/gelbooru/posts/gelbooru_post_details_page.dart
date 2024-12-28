@@ -80,7 +80,7 @@ class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
                                         posts: data,
                                         initialIndex: postIdx,
                                       ),
-                                      imageUrl: (item) => item.sampleImageUrl,
+                                      imageUrl: getGelbooruPostPreviewImageUrl,
                                     ),
                                     orElse: () =>
                                         const SliverPreviewPostGridPlaceholder(),
@@ -166,4 +166,12 @@ extension GelbooruArtistMapProviderX on WidgetRef {
       ...map,
     };
   }
+}
+
+String getGelbooruPostPreviewImageUrl(GelbooruPost post) {
+  if (post.isVideo) return post.videoThumbnailUrl;
+
+  if (post.sampleImageUrl.isNotEmpty) return post.sampleImageUrl;
+
+  return post.thumbnailImageUrl;
 }

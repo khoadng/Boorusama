@@ -102,7 +102,7 @@ class _DanbooruPostDetailsDesktopPageState
                                         posts: data,
                                         initialIndex: postIdx,
                                       ),
-                                      imageUrl: (item) => item.sampleImageUrl,
+                                      imageUrl: getGelbooruPostPreviewImageUrl,
                                     ),
                                     orElse: () =>
                                         const SliverPreviewPostGridPlaceholder(),
