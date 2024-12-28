@@ -88,31 +88,93 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                     vertical: 8,
                     horizontal: 8,
                   ),
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.hintColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                      children: [
-                        const TextSpan(
-                          text:
-                              'Open the app on the other device and go to the ',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8),
+                      Text(
+                        'How to transfer:',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                      const SizedBox(height: 8),
+                      RichText(
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          children: [
+                            const TextSpan(
+                              text: '• On receiving device, go to ',
+                            ),
+                            TextSpan(
+                              text: 'Settings > Backup and restore',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                            const TextSpan(
+                              text: '\n• Select ',
+                            ),
+                            TextSpan(
+                              text: 'Receive',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                            const TextSpan(
+                              text: ' to start importing data from this device',
+                            ),
+                            const TextSpan(
+                              text:
+                                  '\n• Stay on this page until transfer completes',
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                          text: 'Settings > Backup and restore',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                      ),
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .errorContainer
+                              .withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        const TextSpan(
-                          text:
-                              ", then select 'Receive' and start import data from this device. All devices must be connected to the same network and you have to stay on this page until the transfer is complete.",
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.warning_rounded,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Transfer might not work on public WiFi networks (coffee shops, libraries) due to security restrictions. Please use a private network like your home WiFi.',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],

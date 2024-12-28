@@ -23,6 +23,52 @@ final importDataProvider = NotifierProvider.autoDispose
   ImportDataNotifier.new,
 );
 
+final serverCheckProvider =
+    NotifierProvider.autoDispose<ServerCheckNotifier, ServerCheckStatus>(
+  ServerCheckNotifier.new,
+);
+
+enum ServerCheckStatus {
+  initial,
+  checking,
+  available,
+  unavailable,
+}
+
+class ServerCheckNotifier extends AutoDisposeNotifier<ServerCheckStatus> {
+  @override
+  ServerCheckStatus build() {
+    return ServerCheckStatus.initial;
+  }
+
+  Future<void> check(String address) async {
+    state = ServerCheckStatus.checking;
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: address,
+      ),
+    );
+
+    final startTime = DateTime.now();
+    try {
+      final res = await dio.get('/health').timeout(const Duration(seconds: 10));
+      final elapsed = DateTime.now().difference(startTime).inMilliseconds;
+
+      // Artificial delay to make sure things don't fly by too fast
+      if (elapsed < 500) {
+        await Future.delayed(Duration(milliseconds: 500 - elapsed));
+      }
+
+      final available = res.statusCode == 204;
+      state = available
+          ? ServerCheckStatus.available
+          : ServerCheckStatus.unavailable;
+    } on Exception catch (_) {
+      state = ServerCheckStatus.unavailable;
+    }
+  }
+}
+
 enum SelectStatus {
   unslected,
   selected,

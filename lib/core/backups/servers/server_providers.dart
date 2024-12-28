@@ -115,6 +115,7 @@ final dataSyncServerProvider = Provider<AppServer>((ref) {
       ref.read(loggerProvider).logE('DataSyncServer', message);
     },
     routes: {
+      'health': (request) async => Response(204),
       for (final category in categories) category.route: category.handler,
     },
   );
