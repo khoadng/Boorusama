@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../configs/redirect.dart';
-import '../../../../configs/src/create/booru_config_layout_view.dart';
+import '../../../../configs/src/create/appearance_theme.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../theme/theme.dart';
 import '../../../providers.dart';

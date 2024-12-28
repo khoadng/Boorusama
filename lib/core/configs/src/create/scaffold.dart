@@ -14,7 +14,7 @@ import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
-import 'booru_config_layout_view.dart';
+import 'appearance.dart';
 import 'download.dart';
 import 'gestures.dart';
 import 'listing.dart';

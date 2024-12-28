@@ -20,9 +20,6 @@ import '../../tags/tag/tag.dart';
 import '../../utils/color_utils.dart';
 import '../../widgets/widgets.dart';
 
-// Project imports:
-
-
 final _kRandomTags = [
   'outdoors',
   'sky',
@@ -36,7 +33,8 @@ final _kRandomTags = [
 
 class PreviewFrame extends StatelessWidget {
   const PreviewFrame({
-    required this.child, super.key,
+    required this.child,
+    super.key,
     this.padding,
   });
 
@@ -51,9 +49,6 @@ class PreviewFrame extends StatelessWidget {
             vertical: 12,
             horizontal: 12,
           ),
-      margin: const EdgeInsets.symmetric(
-        horizontal: 60,
-      ),
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.onSurface,
@@ -245,7 +240,9 @@ class PreviewPostActionToolbar extends StatelessWidget {
 
 class PreviewTagsTile extends ConsumerWidget {
   const PreviewTagsTile({
-    required this.post, required this.colorScheme, super.key,
+    required this.post,
+    required this.colorScheme,
+    super.key,
   });
 
   final Post post;

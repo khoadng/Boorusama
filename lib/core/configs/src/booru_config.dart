@@ -184,6 +184,7 @@ class BooruConfig extends Equatable {
     String? apiKey,
     String? login,
     String? name,
+    LayoutConfigs? Function()? layout,
   }) {
     return BooruConfig(
       id: id,
@@ -207,7 +208,7 @@ class BooruConfig extends Equatable {
       listing: listing,
       theme: theme,
       alwaysIncludeTags: alwaysIncludeTags,
-      layout: layout,
+      layout: layout != null ? layout() : this.layout,
     );
   }
 
@@ -441,7 +442,6 @@ enum ImageQuickActionType {
 }
 
 class LayoutConfigs extends Equatable {
-
   const LayoutConfigs({
     required this.home,
     required this.details,

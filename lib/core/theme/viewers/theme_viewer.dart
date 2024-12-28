@@ -16,15 +16,15 @@ import 'color_selector_builtin.dart';
 import 'page_preview.dart';
 import 'widgets.dart';
 
-// Project imports:
-
-
 const _kMinSheetSize = 0.24;
 const _kMaxSheetSize = 0.65;
 
 class ThemePreviewApp extends StatefulWidget {
   const ThemePreviewApp({
-    required this.defaultScheme, required this.currentScheme, required this.onSchemeChanged, super.key,
+    required this.defaultScheme,
+    required this.currentScheme,
+    required this.onSchemeChanged,
+    super.key,
   });
 
   final ColorScheme defaultScheme;
@@ -191,8 +191,18 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
     ColorScheme colorScheme,
   ) {
     const pages = [
-      PreviewHome(),
-      PreviewDetails(),
+      Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 36,
+        ),
+        child: PreviewHome(),
+      ),
+      Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 36,
+        ),
+        child: PreviewDetails(),
+      ),
     ];
 
     return Column(

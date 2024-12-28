@@ -132,7 +132,9 @@ class DetailsLayoutNotifier extends AutoDisposeFamilyNotifier<
 
 class DetailsLayoutManagerPage extends ConsumerStatefulWidget {
   const DetailsLayoutManagerPage({
-    required this.params, required this.onDone, super.key,
+    required this.params,
+    required this.onDone,
+    super.key,
   });
 
   final DetailsLayoutManagerParams params;
@@ -196,7 +198,9 @@ class _DetailsLayoutManagerPageState
 
 class AvailableWidgetSelectorSheet extends ConsumerWidget {
   const AvailableWidgetSelectorSheet({
-    required this.params, required this.controller, super.key,
+    required this.params,
+    required this.controller,
+    super.key,
   });
 
   final DetailsLayoutManagerParams params;
@@ -215,19 +219,40 @@ class AvailableWidgetSelectorSheet extends ConsumerWidget {
           ? const Center(
               child: Text('No available widgets, all are selected'),
             )
-          : ListView(
-              controller: controller,
-              children: availableParts
-                  .map(
-                    (e) => ListTile(
-                      title: Text(e.name),
-                      onTap: () {
-                        notifer.add(e);
-                        Navigator.of(context).pop(e);
-                      },
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 12,
+                  ),
+                  child: const Text(
+                    'Available widgets',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    controller: controller,
+                    children: availableParts
+                        .map(
+                          (e) => ListTile(
+                            title: Text(e.name),
+                            onTap: () {
+                              notifer.add(e);
+                              Navigator.of(context).pop(e);
+                            },
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
             ),
     );
   }

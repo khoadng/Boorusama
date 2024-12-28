@@ -163,6 +163,7 @@ class PostDetailsUIBuilder {
     // use full widgets, except for the ones that are not allowed
     return {
       ...previewAllowedParts.intersection(full.keys.toSet()),
+      ...kDefaultPostDetailsBuildablePreviewPart,
       ...preview.keys.toSet(),
     };
   }
