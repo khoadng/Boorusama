@@ -7,6 +7,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/display.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
 import '../../../../videos/more_options_control_button.dart';
 import '../../../../videos/play_pause_button.dart';
@@ -49,6 +51,12 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
     final isLarge = context.isLargeScreen;
     final surfaceColor = Theme.of(context).colorScheme.surface;
 
+    final useDefaultEngine = ref.watch(
+      settingsProvider.select(
+        (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+      ),
+    );
+
     return Stack(
       children: [
         Positioned.fill(
@@ -86,9 +94,17 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                           isPlaying: controller.isVideoPlaying,
                           onPlayingChanged: (value) {
                             if (value) {
-                              controller.pauseVideo(post.id, post.isWebm);
+                              controller.pauseVideo(
+                                post.id,
+                                post.isWebm,
+                                useDefaultEngine,
+                              );
                             } else if (!value) {
-                              controller.playVideo(post.id, post.isWebm);
+                              controller.playVideo(
+                                post.id,
+                                post.isWebm,
+                                useDefaultEngine,
+                              );
                             } else {
                               // do nothing
                             }
@@ -115,16 +131,25 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                                 buffered: const [],
                                 onDragStart: () {
                                   // pause the video when dragging
-                                  controller.pauseVideo(post.id, post.isWebm);
+                                  controller.pauseVideo(
+                                    post.id,
+                                    post.isWebm,
+                                    useDefaultEngine,
+                                  );
                                 },
                                 onDragEnd: () {
                                   // resume the video when dragging ends
-                                  controller.playVideo(post.id, post.isWebm);
+                                  controller.playVideo(
+                                    post.id,
+                                    post.isWebm,
+                                    useDefaultEngine,
+                                  );
                                 },
                                 seekTo: (position) => controller.onVideoSeekTo(
                                   position,
                                   post.id,
                                   post.isWebm,
+                                  useDefaultEngine,
                                 ),
                                 barHeight: 2,
                                 handleHeight: 6,

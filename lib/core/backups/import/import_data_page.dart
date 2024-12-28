@@ -12,6 +12,7 @@ import '../../foundation/version.dart';
 import '../../info/package_info.dart';
 import '../../theme/app_theme.dart';
 import '../servers/discovery_client.dart';
+import 'manual_device_input_dialog.dart';
 import 'transfer_data_dialog.dart';
 import 'version_mismatch_alert_dialog.dart';
 
@@ -81,11 +82,31 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
           children: [
             const SizedBox(height: 12),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Nearby devices',
                   style: Theme.of(context).textTheme.titleLarge,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () async {
+                    final uri = await showGeneralDialog<Uri>(
+                      context: context,
+                      transitionDuration: const Duration(milliseconds: 200),
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const ManualDeviceInputDialog(),
+                    );
+
+                    if (uri == null) return;
+
+                    if (context.mounted) {
+                      await showTransferOptionsDialog(
+                        context,
+                        url: uri.toString(),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
@@ -176,15 +197,30 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 60,
-                    vertical: 12,
+                    horizontal: 32,
+                    vertical: 8,
                   ),
-                  child: Text(
-                    'No devices found. Start data transfer on the other device.',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.hintColor,
-                        ),
+                  child: RichText(
                     textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.hintColor,
+                          ),
+                      children: const [
+                        TextSpan(
+                          text:
+                              'No devices found. Start transfer on the other device first.\n',
+                        ),
+                        TextSpan(text: '\nTap '),
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(
+                            Icons.add,
+                          ),
+                        ),
+                        TextSpan(text: ' to add manually by IP address.'),
+                      ],
+                    ),
                   ),
                 ),
               ),

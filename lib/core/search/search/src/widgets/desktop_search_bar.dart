@@ -10,9 +10,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../boorus/danbooru/posts/search/src/widgets/danbooru_metatags_section.dart';
+import '../../../../boorus/booru/booru.dart';
 import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
+import '../../../../utils/flutter_utils.dart';
 import '../../../histories/providers.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
@@ -191,6 +194,18 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                       selectedTagController.addTagFromSearchHistory(value);
                       FocusScope.of(context).unfocus();
                     },
+                    metatagsBuilder:
+                        ref.watchConfigAuth.booruType == BooruType.danbooru
+                            ? (context) => DanbooruMetatagsSection(
+                                  onOptionTap: (value) {
+                                    textEditingController.text = '$value:';
+                                    // ignore: cascade_invocations
+                                    textEditingController
+                                        .setTextAndCollapseSelection('$value:');
+                                    setState(() {});
+                                  },
+                                )
+                            : null,
                   ),
                 ),
               if (kPreferredLayout.isMobile)

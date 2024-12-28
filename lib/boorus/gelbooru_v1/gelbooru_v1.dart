@@ -168,7 +168,7 @@ class GelbooruV1Repository implements BooruRepository {
 
     return () => GelbooruV1Client(baseUrl: config.url, dio: dio)
         .getPosts()
-        .then((value) => true);
+        .then((value) => value.isNotEmpty);
   }
 }
 

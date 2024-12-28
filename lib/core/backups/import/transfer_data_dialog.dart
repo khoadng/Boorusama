@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../settings/providers.dart';
+import '../../settings/settings.dart';
 import '../../theme.dart';
 import '../../widgets/widgets.dart';
 import 'import_data_notifier.dart';
@@ -148,42 +149,38 @@ class ImportingStep extends ConsumerWidget {
           ),
         ),
         if (!isDone)
-          FilledButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          )
+          _buildCancelButton(context, isDone, reloadPayload, settings)
         else
           reloadPayload != null
-              ? FilledButton(
-                  onPressed: () {
-                    Reboot.start(
-                      context,
-                      RebootData(
-                        config: reloadPayload.selectedConfig,
-                        configs: reloadPayload.configs,
-                        settings: reloadPayload.settings ?? settings,
-                      ),
-                    );
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    child: Text(
-                      'Reboot',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                        Reboot.start(
+                          context,
+                          RebootData(
+                            config: reloadPayload.selectedConfig,
+                            configs: reloadPayload.configs,
+                            settings: reloadPayload.settings ?? settings,
+                          ),
+                        );
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        child: Text(
+                          'Restart App',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    _buildCancelButton(
+                        context, isDone, reloadPayload, settings),
+                  ],
                 )
               : FilledButton(
                   onPressed: () {
@@ -202,6 +199,86 @@ class ImportingStep extends ConsumerWidget {
       ],
     );
   }
+
+  Widget _buildCancelButton(
+    BuildContext context,
+    bool isDone,
+    ReloadPayload? reloadPayload,
+    Settings settings,
+  ) {
+    return !isDone
+        ? FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 14),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          )
+        : ElevatedButton(
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+
+              final result = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('App Restart Required'),
+                  content: const Text(
+                    'To apply all changes, the app needs to restart.'
+                    '\n\nContinue without restarting? Some features may not work properly.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: const Text('Continue Anyway'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: const Text('Restart Now'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (result == null) return;
+
+              if (result) {
+                navigator.pop();
+              } else {
+                if (context.mounted && reloadPayload != null) {
+                  Reboot.start(
+                    context,
+                    RebootData(
+                      config: reloadPayload.selectedConfig,
+                      configs: reloadPayload.configs,
+                      settings: reloadPayload.settings ?? settings,
+                    ),
+                  );
+                }
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ),
+          );
+  }
 }
 
 class SelectDataStep extends ConsumerWidget {
@@ -217,6 +294,15 @@ class SelectDataStep extends ConsumerWidget {
     final state = ref.watch(importDataProvider(url));
     final options = state.tasks;
     final notifier = ref.watch(importDataProvider(url).notifier);
+    final serverCheckNotifier = ref.watch(serverCheckProvider.notifier);
+    final serverCheckStatus = ref.watch(serverCheckProvider);
+
+    ref.listen(serverCheckProvider, (prev, next) {
+      if (prev == ServerCheckStatus.checking &&
+          next == ServerCheckStatus.available) {
+        notifier.startImport();
+      }
+    });
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -245,15 +331,26 @@ class SelectDataStep extends ConsumerWidget {
         const SizedBox(height: 24),
         FilledButton(
           onPressed: state.atLeastOneSelected
-              ? () {
-                  notifier.startImport();
+              ? switch (serverCheckStatus) {
+                  ServerCheckStatus.initial => () {
+                      serverCheckNotifier.check(url);
+                    },
+                  ServerCheckStatus.available => () {
+                      notifier.startImport();
+                    },
+                  _ => null,
                 }
               : null,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
             child: Text(
-              'Import',
-              style: TextStyle(
+              switch (serverCheckStatus) {
+                ServerCheckStatus.initial => 'Import',
+                ServerCheckStatus.available => 'Import',
+                ServerCheckStatus.checking => 'Verifying...',
+                ServerCheckStatus.unavailable => 'Unavailable',
+              },
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
               ),
             ),

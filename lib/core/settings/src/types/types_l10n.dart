@@ -82,3 +82,11 @@ extension SlideshowDirectionTranslated on SlideshowDirection {
         SlideshowDirection.random => 'Random',
       };
 }
+
+extension VideoPlayerEngineTranslated on VideoPlayerEngine {
+  String localize() => switch (this) {
+        VideoPlayerEngine.auto => 'Default',
+        VideoPlayerEngine.videoPlayerPlugin => 'video_player',
+        VideoPlayerEngine.mdk => 'mdk',
+      };
+}

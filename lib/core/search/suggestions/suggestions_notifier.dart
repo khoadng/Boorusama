@@ -9,7 +9,6 @@ import '../../configs/config.dart';
 import '../../configs/current.dart';
 import '../../configs/ref.dart';
 import '../../foundation/debounce_mixin.dart';
-import '../../tags/categories/providers.dart';
 import '../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';
@@ -65,20 +64,12 @@ class SuggestionsNotifier extends FamilyNotifier<
 
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
     final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
-    final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
     final tagInfo = ref.read(tagInfoProvider);
 
     debounce(
       'suggestions',
       () async {
         final data = await autocompleteRepo.getAutocomplete(sanitized);
-
-        await booruTagTypeStore.saveIfNotExist(
-          arg.booruType,
-          data,
-          (tag) => tag.value,
-          (tag) => tag.category,
-        );
 
         final filter = filterNsfw(
           data,

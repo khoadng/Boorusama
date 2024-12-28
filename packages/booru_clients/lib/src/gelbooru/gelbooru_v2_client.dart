@@ -93,22 +93,27 @@ class GelbooruV2Client with GelbooruClientFavorites {
     required String term,
     int? limit,
   }) async {
-    final response = await _dio.get(
-      '/autocomplete.php',
-      queryParameters: {
-        'q': term,
-        if (userId != null) 'user_id': userId,
-        if (apiKey != null) 'api_key': apiKey,
-      },
-    );
+    try {
+      final response = await _dio.get(
+        '/autocomplete.php',
+        queryParameters: {
+          'q': term,
+          if (userId != null) 'user_id': userId,
+          if (apiKey != null) 'api_key': apiKey,
+        },
+      );
 
-    return switch (response.data) {
-      final List l => l.map((item) => AutocompleteDto.fromJson(item)).toList(),
-      final String s => (jsonDecode(s) as List<dynamic>)
-          .map((item) => AutocompleteDto.fromJson(item))
-          .toList(),
-      _ => <AutocompleteDto>[],
-    };
+      return switch (response.data) {
+        final List l =>
+          l.map((item) => AutocompleteDto.fromJson(item)).toList(),
+        final String s => (jsonDecode(s) as List<dynamic>)
+            .map((item) => AutocompleteDto.fromJson(item))
+            .toList(),
+        _ => <AutocompleteDto>[],
+      };
+    } on Exception catch (_) {
+      return [];
+    }
   }
 
   Future<List<CommentDto>> getComments({

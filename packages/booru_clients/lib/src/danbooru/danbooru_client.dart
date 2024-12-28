@@ -103,18 +103,22 @@ class DanbooruClient
     required String query,
     int? limit,
   }) async {
-    final response = await dio.get(
-      '/autocomplete.json',
-      queryParameters: {
-        'search[query]': query,
-        'search[type]': 'tag_query',
-        'limit': limit ?? 20,
-      },
-    );
+    try {
+      final response = await dio.get(
+        '/autocomplete.json',
+        queryParameters: {
+          'search[query]': query,
+          'search[type]': 'tag_query',
+          'limit': limit ?? 20,
+        },
+      );
 
-    return (response.data as List)
-        .map((item) => AutocompleteDto.fromJson(item))
-        .toList();
+      return (response.data as List)
+          .map((item) => AutocompleteDto.fromJson(item))
+          .toList();
+    } on Exception catch (_) {
+      return [];
+    }
   }
 
   Future<SourceDto> getSource(String source) async {

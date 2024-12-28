@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
@@ -31,6 +33,9 @@ class AddUnknownBooruPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final engine = ref.watch(booruEngineProvider);
+    final theme = Theme.of(context);
+
     return Material(
       color: backgroundColor,
       child: Stack(
@@ -51,9 +56,7 @@ class AddUnknownBooruPage extends ConsumerWidget {
                   ),
                   child: Text(
                     'Select a booru engine to continue',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall!
+                    style: theme.textTheme.headlineSmall!
                         .copyWith(fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -75,21 +78,21 @@ class AddUnknownBooruPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const BooruUrlField(),
-                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                      if (engine != BooruType.hydrus)
                         const SizedBox(height: 16),
-                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                      if (engine != BooruType.hydrus)
                         Text(
                           'Advanced options (optional)',
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: theme.textTheme.titleMedium,
                         ),
-                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                      if (engine != BooruType.hydrus)
                         const DefaultBooruInstructionText(
                           '*These options only be used if the site allows it.',
                         ),
                       //FIXME: make this part of the config customisable
-                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                      if (engine != BooruType.hydrus)
                         const SizedBox(height: 16),
-                      if (ref.watch(booruEngineProvider) != BooruType.hydrus)
+                      if (engine != BooruType.hydrus)
                         const DefaultBooruLoginField(),
                       const SizedBox(height: 16),
                       const DefaultBooruApiKeyField(),
@@ -173,26 +176,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                         : const Text('Verify'),
                   ),
                 )
-              : CreateBooruSubmitButton(
-                  fill: true,
-                  onSubmit: isValid
-                      ? () {
-                          ref
-                              .read(_targetConfigToValidateProvider.notifier)
-                              .state = BooruConfig.defaultConfig(
-                            booruType: engine,
-                            url: url!,
-                            customDownloadFileNameFormat: null,
-                          )
-                              .copyWith(
-                                login: auth.login,
-                                apiKey: auth.apiKey,
-                              )
-                              .auth;
-                        }
-                      : null,
-                  child: const Text('Verify'),
-                ),
+              : _buildVerifyButton(isValid, ref, engine, url, auth),
           loading: () => CreateBooruSubmitButton(
             fill: true,
             backgroundColor: Theme.of(context).colorScheme.hintColor,
@@ -205,19 +189,37 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
               ),
             ),
           ),
-          error: (err, _) => CreateBooruSubmitButton(
-            fill: true,
-            onSubmit: isValid
-                ? () {
-                    ref.read(_targetConfigToValidateProvider.notifier).state =
-                        null;
-                    // clear selected engine
-                    ref.read(booruEngineProvider.notifier).state = null;
-                  }
-                : null,
-            child: const Text('Clear'),
-          ),
+          error: (err, _) =>
+              _buildVerifyButton(isValid, ref, engine, url, auth),
         );
+  }
+
+  Widget _buildVerifyButton(
+    bool isValid,
+    WidgetRef ref,
+    BooruType? engine,
+    String? url,
+    AuthConfigData auth,
+  ) {
+    return CreateBooruSubmitButton(
+      fill: true,
+      onSubmit: isValid && engine != null
+          ? () {
+              ref.read(_targetConfigToValidateProvider.notifier).state =
+                  BooruConfig.defaultConfig(
+                booruType: engine,
+                url: url!,
+                customDownloadFileNameFormat: null,
+              )
+                      .copyWith(
+                        login: auth.login,
+                        apiKey: auth.apiKey,
+                      )
+                      .auth;
+            }
+          : null,
+      child: const Text('Verify'),
+    );
   }
 }
 
@@ -225,8 +227,21 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
   const InvalidBooruWarningContainer({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ref.watch(_validateConfigProvider).maybeWhen(
           orElse: () => const SizedBox(),
+          data: (value) => value == false
+              ? WarningContainer(
+                  title: 'Empty results',
+                  contentBuilder: (context) => Text(
+                    'The app cannot find any posts with this engine. Please try with another one.',
+                    style: TextStyle(
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           error: (error, st) => Stack(
             children: [
               WarningContainer(
@@ -234,7 +249,7 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
                 contentBuilder: (context) => Text(
                   'It seems like the site is not running on the selected engine. Please try with another one.',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -255,11 +270,59 @@ class BooruUrlField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
+    final engine = ref.watch(booruEngineProvider);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    return CreateBooruSiteUrlField(
-      text: config.url,
-      onChanged: (value) =>
-          ref.read(_siteUrlProvider(config).notifier).state = value,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CreateBooruSiteUrlField(
+          text: config.url,
+          onChanged: (value) =>
+              ref.read(_siteUrlProvider(config).notifier).state = value,
+        ),
+        if (engine == BooruType.shimmie2)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 8,
+            ),
+            child: RichText(
+              text: TextSpan(
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: colorScheme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+                children: const [
+                  TextSpan(text: 'The app requires the '),
+                  TextSpan(
+                    text: 'Danbooru Client API',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: ' extension to be installed on the site to function.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        if (engine == BooruType.shimmie2)
+          TextButton(
+            style: TextButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+            ),
+            onPressed: () {
+              launchUrlString(join(config.url, 'ext_doc'));
+            },
+            child: const Text('View extension documentation'),
+          ),
+      ],
     );
   }
 }
