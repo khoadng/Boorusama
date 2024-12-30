@@ -179,7 +179,11 @@ class ImportingStep extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     _buildCancelButton(
-                        context, isDone, reloadPayload, settings),
+                      context,
+                      isDone,
+                      reloadPayload,
+                      settings,
+                    ),
                   ],
                 )
               : FilledButton(

@@ -30,6 +30,7 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       authConfig: config,
       loggerService: loggerService,
       booruFactory: booruFactory,
+      proxySettings: config.proxySettings,
     ),
   );
 });

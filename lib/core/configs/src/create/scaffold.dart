@@ -17,6 +17,7 @@ import '../edit_booru_config_id.dart';
 import 'download.dart';
 import 'gestures.dart';
 import 'listing.dart';
+import 'network.dart';
 import 'providers.dart';
 import 'riverpod_widgets.dart';
 import 'search.dart';
@@ -57,6 +58,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.gestureTab,
     this.imageViewerTab,
     this.listingTab,
+    this.networkTab,
     this.canSubmit,
     this.footer,
   });
@@ -69,6 +71,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Widget? gestureTab;
   final Widget? imageViewerTab;
   final Widget? listingTab;
+  final Widget? networkTab;
 
   final String? initialTab;
 
@@ -88,6 +91,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       'booru.gestures': gestureTab ?? const DefaultBooruConfigGesturesView(),
       'settings.image_viewer.image_viewer':
           imageViewerTab ?? const BooruConfigViewerView(),
+      'Network': networkTab ?? const BooruConfigNetworkView(),
     };
 
     return Scaffold(

@@ -5,6 +5,7 @@ import 'dart:io';
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/config.dart';
 import '../../../foundation/loggers.dart';
+import '../../../proxy/proxy.dart';
 
 class DioOptions {
   DioOptions({
@@ -14,6 +15,7 @@ class DioOptions {
     required this.authConfig,
     required this.loggerService,
     required this.booruFactory,
+    required this.proxySettings,
   });
   final Directory cacheDir;
   final String baseUrl;
@@ -21,4 +23,5 @@ class DioOptions {
   final BooruConfigAuth authConfig;
   final Logger loggerService;
   final BooruFactory booruFactory;
+  final ProxySettings? proxySettings;
 }
