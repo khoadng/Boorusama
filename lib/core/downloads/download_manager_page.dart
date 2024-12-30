@@ -525,18 +525,21 @@ class _TaskSubtitle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final s = task;
+    final status = task.status;
+    final exception = task.exception;
+    final theme = Theme.of(context);
+
     return ReadMoreText(
-      s.exception?.description == null
-          ? switch (s.status) {
+      exception == null
+          ? switch (status) {
               TaskStatus.complete =>
                 ref.watch(_filePathProvider(task.task)).maybeWhen(
                       data: (data) => _prettifyFilePathIfNeeded(data),
                       orElse: () => '...',
                     ),
-              _ => s.status.name.sentenceCase,
+              _ => status.name.sentenceCase,
             }
-          : '${s.exception!.getErrorDescription()} ',
+          : '${exception.getErrorDescription()} ',
       trimLines: 1,
       trimMode: TrimMode.Line,
       trimCollapsedText: ' more',
@@ -544,15 +547,15 @@ class _TaskSubtitle extends ConsumerWidget {
       lessStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: context.colorScheme.primary,
+        color: theme.colorScheme.primary,
       ),
       moreStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: context.colorScheme.primary,
+        color: theme.colorScheme.primary,
       ),
       style: TextStyle(
-        color: Theme.of(context).hintColor,
+        color: theme.hintColor,
         fontSize: 12,
       ),
     );
