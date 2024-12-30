@@ -180,7 +180,8 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
   }
 
   Future<void> importWithLabelsFromRawString({
-    required String text, BuildContext? context,
+    required String text,
+    BuildContext? context,
   }) async {
     await ref
         .read(favoriteTagsIOHandlerProvider)
