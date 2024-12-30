@@ -26,7 +26,9 @@ Future<bool?> showVersionMismatchAlertDialog({
 
 class VersionMismatchAlertDialog extends ConsumerWidget {
   const VersionMismatchAlertDialog({
-    required this.importVersion, required this.currentVersion, super.key,
+    required this.importVersion,
+    required this.currentVersion,
+    super.key,
   });
 
   final Version importVersion;
@@ -89,7 +91,8 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'The app version of the device you are trying to import is different from the current version of the app. This may cause compatibility issues.'
+              'The app version of the device you are trying to import is different from the current version of the app.'
+              ' This may cause compatibility issues and potential data loss.'
               '\n\nAre you sure you want to continue?',
               style: TextStyle(
                 fontWeight: FontWeight.w400,
