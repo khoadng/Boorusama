@@ -368,6 +368,19 @@ extension TaskCancelX on TaskUpdate {
       };
 }
 
+extension TaskExceptionX on TaskException {
+  String? getErrorDescription() {
+    final map = toJson();
+    final responseCode = map['httpResponseCode'] as int?;
+
+    return switch (responseCode) {
+      416 =>
+        'HTTP 416 Requested range not satisfiable, this is likely because you have an invalid download location. Please change the download location and try again.',
+      _ => 'Failed: $description',
+    };
+  }
+}
+
 final _filePathProvider = FutureProvider.autoDispose
     .family<String, Task>((ref, task) => task.filePath());
 
@@ -523,7 +536,7 @@ class _TaskSubtitle extends ConsumerWidget {
                     ),
               _ => s.status.name.sentenceCase,
             }
-          : 'Failed: ${s.exception!.description} ',
+          : '${s.exception!.getErrorDescription()} ',
       trimLines: 1,
       trimMode: TrimMode.Line,
       trimCollapsedText: ' more',
