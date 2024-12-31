@@ -84,6 +84,12 @@ class _PostDetailPageScaffoldState<T extends Post>
     });
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   var _previouslyPlaying = false;
 
   bool _isDefaultEngine(Settings settings) {
