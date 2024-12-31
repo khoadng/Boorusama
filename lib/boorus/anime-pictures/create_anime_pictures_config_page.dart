@@ -103,7 +103,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Provide this information so the app can access more content. Note that if you change your password or something looks wrong after some time, try to login again.',
+            'Provide this information so the app can access more content. Note that if you change your password or something looks wrong after some time, try to login again. This feature barely works so don\'t expect much.',
             style: context.textTheme.titleSmall?.copyWith(
               color: context.theme.hintColor,
               fontSize: 12,

@@ -1,5 +1,4 @@
 class TagDto {
-
   TagDto({
     this.id,
     this.name,
@@ -42,7 +41,6 @@ class TagDto {
 }
 
 class RelatedTagDto {
-
   const RelatedTagDto({
     required this.tag,
     required this.score,
@@ -52,7 +50,10 @@ class RelatedTagDto {
 }
 
 List<RelatedTagDto>? _parseRelatedTags(String? relatedTags) {
-  if (relatedTags == null) return null;
+  final isEmpty =
+      relatedTags == null || relatedTags.isEmpty || relatedTags == '[]';
+
+  if (isEmpty) return null;
 
   final parts = relatedTags.split(' ');
 

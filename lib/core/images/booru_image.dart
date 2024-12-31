@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/networking/dio.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/functional.dart';
 import 'package:boorusama/string.dart';
@@ -187,6 +188,7 @@ class BooruImage extends ConsumerWidget {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentGeneratorProvider(config)).generate(),
         ...ref.watch(extraHttpHeaderProvider(config)),
+        ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       };
 }
 

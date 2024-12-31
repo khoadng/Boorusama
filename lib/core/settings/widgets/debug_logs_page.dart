@@ -104,7 +104,10 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       tryGetDownloadDirectory().run().then((value) => value.fold(
             (error) => showErrorToast(context, error.name),
             (directory) async {
-              final file = File('${directory.path}/boorusama_logs.txt');
+              final timestamp =
+                  DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+              final file =
+                  File('${directory.path}/boorusama_logs_$timestamp.txt');
               final buffer = StringBuffer();
               for (final log in logs) {
                 buffer.write(

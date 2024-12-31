@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
@@ -214,6 +215,7 @@ final settingsRepoProvider = Provider<SettingsRepository>(
 
 class DioArgs {
   DioArgs({
+    required this.cookieJar,
     required this.cacheDir,
     required this.baseUrl,
     required this.userAgentGenerator,
@@ -221,6 +223,7 @@ class DioArgs {
     required this.loggerService,
     required this.booruFactory,
   });
+  final CookieJar cookieJar;
   final Directory cacheDir;
   final String baseUrl;
   final UserAgentGenerator userAgentGenerator;
@@ -231,11 +234,13 @@ class DioArgs {
 
 final dioArgsProvider = Provider.family<DioArgs, BooruConfig>((ref, config) {
   final cacheDir = ref.watch(httpCacheDirProvider);
+  final cookieJar = ref.watch(cookieJarProvider);
   final userAgentGenerator = ref.watch(userAgentGeneratorProvider(config));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
 
   return DioArgs(
+    cookieJar: cookieJar,
     cacheDir: cacheDir,
     baseUrl: config.url,
     userAgentGenerator: userAgentGenerator,
