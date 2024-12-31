@@ -245,7 +245,8 @@ class _ThemeSection extends StatelessWidget {
             SwitchListTile(
               title: const Text('Turn on'),
               subtitle: const Text(
-                  "Override the global theme using this profile's theme"),
+                "Override the global theme using this profile's theme",
+              ),
               value: theme?.enable ?? false,
               onChanged: (value) => onThemeUpdated(
                 theme?.copyWith(enable: value),
