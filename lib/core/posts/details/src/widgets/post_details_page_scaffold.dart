@@ -34,6 +34,7 @@ import 'post_details_page_view.dart';
 import 'post_details_preload_image.dart';
 import 'post_media.dart';
 import 'video_controls.dart';
+import 'volume_key_page_navigator.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
@@ -68,6 +69,14 @@ class _PostDetailPageScaffoldState<T extends Post>
     initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
   );
+  late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
+    pageViewController: _controller,
+    totalPosts: _posts.length,
+    visibilityNotifier: visibilityNotifier,
+    getSettings: () => ref.read(settingsProvider),
+  );
+
+  ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
 
   List<T> get posts => _posts;
 
@@ -82,11 +91,15 @@ class _PostDetailPageScaffoldState<T extends Post>
         useDefaultEngine: _isDefaultEngine(settings),
       );
     });
+
+    _volumeKeyPageNavigator.initialize();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _volumeKeyPageNavigator.dispose();
+
     super.dispose();
   }
 
@@ -131,6 +144,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             if (!mounted) return;
 
             if (info.visibleFraction == 0) {
+              visibilityNotifier.value = false;
               _previouslyPlaying = widget.controller.isVideoPlaying.value;
               if (_previouslyPlaying) {
                 widget.controller.pauseCurrentVideo(
@@ -138,6 +152,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 );
               }
             } else if (info.visibleFraction == 1) {
+              visibilityNotifier.value = true;
               if (_previouslyPlaying) {
                 widget.controller.playCurrentVideo(
                   useDefaultEngine: useDefaultEngine,

@@ -41,6 +41,7 @@ class Settings extends Equatable {
     required this.downloadFileExistedBehavior,
     required this.videoAudioDefaultState,
     required this.videoPlayerEngine,
+    required this.volumeKeyViewerNavigation,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -113,6 +114,7 @@ class Settings extends Equatable {
         videoPlayerEngine = json['videoPlayerEngine'] != null
             ? VideoPlayerEngine.values[json['videoPlayerEngine']]
             : VideoPlayerEngine.auto,
+        volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
         reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
             json['swipeAreaToOpenSidebarPercentage'] ?? 5;
@@ -161,6 +163,7 @@ class Settings extends Equatable {
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
     videoAudioDefaultState: VideoAudioDefaultState.unspecified,
     videoPlayerEngine: VideoPlayerEngine.auto,
+    volumeKeyViewerNavigation: false,
   );
 
   final ImageListingSettings listing;
@@ -217,6 +220,8 @@ class Settings extends Equatable {
 
   final VideoPlayerEngine videoPlayerEngine;
 
+  final bool volumeKeyViewerNavigation;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -248,6 +253,7 @@ class Settings extends Equatable {
     VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
     VideoPlayerEngine? videoPlayerEngine,
+    bool? volumeKeyViewerNavigation,
   }) =>
       Settings(
         listing: listing ?? this.listing,
@@ -292,6 +298,8 @@ class Settings extends Equatable {
         videoAudioDefaultState:
             videoAudioDefaultState ?? this.videoAudioDefaultState,
         videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+        volumeKeyViewerNavigation:
+            volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
       );
 
   Map<String, dynamic> toJson() {
@@ -328,6 +336,7 @@ class Settings extends Equatable {
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
       'videoAudioDefaultState': videoAudioDefaultState.index,
       'videoPlayerEngine': videoPlayerEngine.index,
+      'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
     };
   }
 
@@ -362,6 +371,7 @@ class Settings extends Equatable {
         downloadFileExistedBehavior,
         videoAudioDefaultState,
         videoPlayerEngine,
+        volumeKeyViewerNavigation,
       ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

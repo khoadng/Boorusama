@@ -76,6 +76,18 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
             ),
           ),
         ),
+        SwitchListTile(
+          title: const Text('Use volume keys for navigation'),
+          subtitle: const Text(
+            'Navigate between posts using the volume keys when in image viewer.',
+          ).tr(),
+          value: settings.volumeKeyViewerNavigation,
+          onChanged: (value) => notifer.updateSettings(
+            settings.copyWith(
+              volumeKeyViewerNavigation: value,
+            ),
+          ),
+        ),
       ],
     );
   }
