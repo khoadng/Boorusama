@@ -22,6 +22,7 @@ class BooruVideo extends StatefulWidget {
     this.customControlsBuilder,
     this.thumbnailUrl,
     this.onOpenSettings,
+    this.headers,
   });
 
   final String url;
@@ -35,6 +36,7 @@ class BooruVideo extends StatefulWidget {
   final Widget? Function()? customControlsBuilder;
   final String? thumbnailUrl;
   final void Function()? onOpenSettings;
+  final Map<String, String>? headers;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -54,7 +56,8 @@ class _BooruVideoState extends State<BooruVideo> {
   void _initVideoPlayerController() {
     _videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(widget.url),
-    ); // TODO: dangerous parsing here
+      httpHeaders: widget.headers ?? const {},
+    );
 
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
 
@@ -105,7 +108,7 @@ class _BooruVideoState extends State<BooruVideo> {
   void didUpdateWidget(BooruVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.url != oldWidget.url) {
+    if (widget.url != oldWidget.url || widget.headers != oldWidget.headers) {
       _disposeVideoPlayerController();
       _initVideoPlayerController();
     }
@@ -170,10 +173,10 @@ class _BooruVideoState extends State<BooruVideo> {
                       const SizedBox(height: 12),
                       FilledButton(
                         onPressed: widget.onOpenSettings,
-                        child: const Text(
+                        child: Text(
                           'Open settings',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ),

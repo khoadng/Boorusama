@@ -65,7 +65,7 @@ Dio newDio({required DioOptions options}) {
   if (context != null) {
     dio.interceptors.add(
       CloudflareChallengeInterceptor(
-        storagePath: options.cacheDir.path,
+        cookieJar: options.cookieJar,
         context: context,
       ),
     );

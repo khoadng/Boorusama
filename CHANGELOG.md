@@ -1,5 +1,6 @@
-# 3.22.0
+# 3.22.1
 - Add a new experimental video player engine that has better performance for certain devices and video formats. Can be enabled in settings.
+- Attempt to bypass firewall protection for some sites.
 - Update translations for Turkish, French, Chinese, Ukrainian.
 - Add new languages: Tamil and Korean.
 

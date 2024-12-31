@@ -125,6 +125,7 @@ Future<void> _download(
     AppHttpHeaders.userAgentHeader:
         ref.read(userAgentProvider(booruConfig.auth.booruType)),
     ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
+    ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),
   };
 
   final deviceStoragePermissionNotifier =
