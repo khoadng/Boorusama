@@ -10,14 +10,14 @@ import 'routes.dart';
 
 class PremiumInteractionBlock extends ConsumerWidget {
   const PremiumInteractionBlock({
+    required this.child,
     super.key,
     this.padding,
-    required this.child,
   });
 
   const PremiumInteractionBlock.horizontalPadding({
-    super.key,
     required this.child,
+    super.key,
   }) : padding = const EdgeInsets.symmetric(horizontal: 8);
 
   final EdgeInsetsGeometry? padding;
@@ -119,14 +119,12 @@ class GradientBoxBorder extends BoxBorder {
           'A borderRadius can only be given for rectangular boxes.',
         );
         _paintCircle(canvas, rect);
-        break;
       case BoxShape.rectangle:
         if (borderRadius != null) {
           _paintRRect(canvas, rect, borderRadius);
           return;
         }
         _paintRect(canvas, rect);
-        break;
     }
   }
 

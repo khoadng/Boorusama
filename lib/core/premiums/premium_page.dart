@@ -130,8 +130,8 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
 
 class PremiumOffersPage extends ConsumerWidget {
   const PremiumOffersPage({
-    super.key,
     required this.canGoBack,
+    super.key,
   });
 
   final bool canGoBack;
@@ -280,7 +280,7 @@ class PremiumOffersPage extends ConsumerWidget {
                 )
                 .toList(),
           ),
-          error: (e, st) => Text('Error: ${e.toString()}'),
+          error: (e, st) => Text('Error: $e'),
           loading: () => const CircularProgressIndicator(),
         );
   }
@@ -381,15 +381,15 @@ class PremiumOffersPage extends ConsumerWidget {
 
 class SubscriptionPlanSelectModal extends ConsumerWidget {
   const SubscriptionPlanSelectModal({
-    super.key,
     required this.onPurchase,
+    super.key,
   });
 
   final void Function(Package) onPurchase;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.vertical(
@@ -427,9 +427,9 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
 
 class SubscriptionPlans extends ConsumerStatefulWidget {
   const SubscriptionPlans({
-    super.key,
     required this.products,
     required this.onPurchase,
+    super.key,
   });
 
   final List<Package> products;
@@ -482,7 +482,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: FilledButton(
               style: FilledButton.styleFrom(
                 minimumSize: const Size(0, 48),
@@ -557,8 +557,8 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
 
 class SubscriptionPlanTile extends StatelessWidget {
   const SubscriptionPlanTile({
-    super.key,
     required this.package,
+    super.key,
     this.selected = false,
     this.onTap,
     this.saveIndicator,
@@ -655,9 +655,9 @@ class SubscriptionPlanTile extends StatelessWidget {
 
 class BenefitCard extends StatelessWidget {
   const BenefitCard({
-    super.key,
     required this.title,
     required this.description,
+    super.key,
   });
 
   final String title;

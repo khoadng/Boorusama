@@ -101,9 +101,8 @@ class SubscriptionNotifier extends Notifier<Package?> {
   }
 
   Future<bool> restoreSubscription() async {
-    final logger = ref.read(loggerProvider);
-
-    logger.logI('Subscription', 'Restoring subscription...');
+    final logger = ref.read(loggerProvider)
+      ..logI('Subscription', 'Restoring subscription...');
 
     final res = await iap.restorePurchases();
 

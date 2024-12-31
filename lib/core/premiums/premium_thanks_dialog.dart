@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../theme.dart';
 
-// Project imports:
-
-
 class PremiumThanksDialog extends StatelessWidget {
   const PremiumThanksDialog({super.key});
 

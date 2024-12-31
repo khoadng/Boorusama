@@ -185,11 +185,11 @@ class PurchaseVerificationData extends Equatable {
 
 class PurchaseDetails extends Equatable {
   const PurchaseDetails({
-    this.purchaseID,
     required this.productID,
     required this.verificationData,
-    this.transactionDate,
     required this.status,
+    this.purchaseID,
+    this.transactionDate,
   });
 
   final String? purchaseID;

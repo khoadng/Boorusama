@@ -7,9 +7,6 @@ import 'dummy.dart';
 import 'in_app_purchase.dart';
 import 'subscription.dart';
 
-// Project imports:
-
-
 final iapProvider = Provider<InAppPurchase>((ref) {
   throw UnimplementedError();
 });
@@ -33,7 +30,7 @@ const _kPackages = <Package>[
       id: 'annual_subscription',
       title: '1 year',
       description: '',
-      price: '\$19.99',
+      price: r'$19.99',
       rawPrice: 19.99,
       currencyCode: 'USD',
     ),
@@ -45,7 +42,7 @@ const _kPackages = <Package>[
       id: 'monthly_subscription',
       title: '1 month',
       description: '',
-      price: '\$1.99',
+      price: r'$1.99',
       rawPrice: 1.99,
       currencyCode: 'USD',
     ),
