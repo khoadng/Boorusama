@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class TagChangedText extends StatelessWidget {
   const TagChangedText({
-    super.key,
     required this.title,
     required this.added,
     required this.removed,
+    super.key,
   });
 
   final String title;

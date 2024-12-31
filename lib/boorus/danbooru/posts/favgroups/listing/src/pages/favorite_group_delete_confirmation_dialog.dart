@@ -12,8 +12,8 @@ import '../../../favgroups/providers.dart';
 
 class FavoriteGroupDeleteConfirmationDialog extends ConsumerWidget {
   const FavoriteGroupDeleteConfirmationDialog({
-    super.key,
     required this.favGroup,
+    super.key,
   });
 
   final DanbooruFavoriteGroup favGroup;

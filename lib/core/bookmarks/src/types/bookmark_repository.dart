@@ -1,5 +1,3 @@
-// Package imports:
-
 // Project imports:
 import '../../../posts/post/post.dart';
 import 'bookmark.dart';

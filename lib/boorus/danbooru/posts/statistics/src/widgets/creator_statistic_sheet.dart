@@ -12,10 +12,10 @@ import '../../../../users/creator/providers.dart';
 
 class CreatorStatisticSheet extends ConsumerWidget {
   const CreatorStatisticSheet({
-    super.key,
     required this.totalPosts,
     required this.stats,
     required this.title,
+    super.key,
   });
 
   final int totalPosts;

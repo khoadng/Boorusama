@@ -18,10 +18,10 @@ import 'search_controller.dart';
 
 class SliverSearchAppBar extends ConsumerStatefulWidget {
   const SliverSearchAppBar({
-    super.key,
     required this.search,
     required this.searchController,
     required this.selectedTagController,
+    super.key,
     this.metatagsBuilder,
   });
 

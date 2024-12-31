@@ -8,29 +8,91 @@ analyzer:
   errors:
     unnecessary_lambdas: ignore
     invalid_annotation_target: ignore
-    missing_required_param: error
     missing_return: error
     todo: ignore
     parameter_assignments: error
 
 linter:
   rules:
+    - always_declare_return_types
+    - always_put_required_named_parameters_first
+    - avoid_escaping_inner_quotes
+    - avoid_field_initializers_in_const_classes
+    - avoid_multiple_declarations_per_line
+    - avoid_private_typedef_functions
+    - avoid_returning_this
+    - avoid_setters_without_getters
+    - avoid_slow_async_io
+    - avoid_type_to_string
+    - avoid_types_on_closure_parameters
+    - avoid_unused_constructor_parameters
+    - avoid_void_async
+    - cancel_subscriptions
+    - cascade_invocations
+    - cast_nullable_to_non_nullable
+    - close_sinks
+    - combinators_ordering
+    - comment_references
+    - conditional_uri_does_not_exist
+    - deprecated_consistency
+    - deprecated_member_use_from_same_package
+    - eol_at_end_of_file
+    - invalid_case_patterns
+    - join_return_with_assignment
+    - leading_newlines_in_multiline_strings
+    - literal_only_boolean_expressions
+    - matching_super_parameters
+    - missing_whitespace_between_adjacent_strings
+    - no_adjacent_strings_in_list
+    - no_default_cases
+    - no_literal_bool_comparisons
+    - no_runtimeType_toString
+    - no_self_assignments
+    - noop_primitive_operations
+    - omit_local_variable_types
+    - omit_obvious_local_variable_types
+    - only_throw_errors
+    - parameter_assignments
+    - prefer_asserts_in_initializer_lists
+    - prefer_asserts_with_message
     - prefer_constructors_over_static_methods
-    - prefer_relative_imports
-    - prefer_const_declarations
     - prefer_const_constructors
-    - prefer_single_quotes
-    - require_trailing_commas
-    - sort_constructors_first
-    - tighten_type_of_initializing_formals
-    - prefer_final_locals
+    - prefer_const_declarations
+    - prefer_const_literals_to_create_immutables
     - prefer_final_in_for_each
+    - prefer_final_locals
+    - prefer_if_elements_to_conditional_expressions
+    - prefer_int_literals
+    - prefer_mixin
+    - prefer_relative_imports
+    - prefer_single_quotes
+    - prefer_void_to_null
+    - require_trailing_commas
+    - sized_box_shrink_expand
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - test_types_in_equals
+    - throw_in_finally
+    - tighten_type_of_initializing_formals
+    - unawaited_futures
+    - unnecessary_await_in_return
+    - unnecessary_breaks
     - unnecessary_lambdas
     - unnecessary_library_directive
     - unnecessary_null_aware_operator_on_extension_on_nullable
+    - unnecessary_null_checks
     - unnecessary_parenthesis
     - unnecessary_raw_strings
+    - unnecessary_statements
+    - unreachable_from_main
+    - use_colored_box
+    - use_decorated_box
+    - use_enums
+    - use_named_constants
+    - use_raw_strings
+    - use_setters_to_change_properties
     - use_string_buffers
+    - use_test_throws_matchers
     - use_to_and_as_if_applicable
-    - parameter_assignments
-    - avoid_slow_async_io
+    - use_truncating_division
+

@@ -1,11 +1,14 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../home_widgets/home_widget_manager.dart';
 import '../../../analytics.dart';
 import '../../../foundation/loggers.dart';
+import '../../../home_widgets/home_widget_manager.dart';
 import '../../../settings/providers.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
@@ -107,9 +110,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       await ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
 
-      final tmp = [...state];
-      tmp.remove(config);
-      syncToHomeScreen();
+      final tmp = [...state]..remove(config);
+      unawaited(syncToHomeScreen());
+
       state = tmp;
       onSuccess?.call(config);
     } catch (e) {
@@ -192,7 +195,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       await _add(config);
 
       // No need to await this
-      syncToHomeScreen();
+      unawaited(syncToHomeScreen());
 
       if (setAsCurrent || state.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);

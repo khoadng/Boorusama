@@ -507,9 +507,9 @@ class SettingsPageOtherSection extends ConsumerWidget {
 
 class SettingTile extends StatelessWidget {
   const SettingTile({
-    super.key,
     required this.title,
     required this.leading,
+    super.key,
     this.onTap,
     this.showLeading,
     this.subtitle,
@@ -540,7 +540,7 @@ class SettingTile extends StatelessWidget {
             : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          hoverColor: Theme.of(context).hoverColor.withOpacity(0.1),
+          hoverColor: Theme.of(context).hoverColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Container(

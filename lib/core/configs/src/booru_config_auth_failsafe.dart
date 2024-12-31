@@ -9,8 +9,8 @@ import 'booru_config_ref.dart';
 
 class BooruConfigAuthFailsafe extends ConsumerWidget {
   const BooruConfigAuthFailsafe({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

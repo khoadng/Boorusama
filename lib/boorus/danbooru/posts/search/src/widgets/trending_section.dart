@@ -13,8 +13,8 @@ import 'trending_tags.dart';
 
 class TrendingSection extends ConsumerWidget {
   const TrendingSection({
-    super.key,
     required this.onTagTap,
+    super.key,
   });
 
   final ValueChanged<String>? onTagTap;

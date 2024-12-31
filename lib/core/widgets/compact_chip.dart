@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class CompactChip extends StatelessWidget {
   const CompactChip({
-    super.key,
     required this.label,
+    super.key,
     this.onTap,
     this.backgroundColor,
     this.textColor,
@@ -44,8 +44,8 @@ class CompactChip extends StatelessWidget {
 
 class RawCompactChip extends StatelessWidget {
   const RawCompactChip({
-    super.key,
     required this.label,
+    super.key,
     this.onTap,
     this.backgroundColor,
     this.foregroundColor,
@@ -92,13 +92,13 @@ class _FilledButtonDefaultOverlay extends WidgetStateProperty<Color?> {
   @override
   Color? resolve(Set<WidgetState> states) {
     if (states.contains(WidgetState.pressed)) {
-      return overlay.withOpacity(0.12);
+      return overlay.withValues(alpha: 0.12);
     }
     if (states.contains(WidgetState.hovered)) {
-      return overlay.withOpacity(0.08);
+      return overlay.withValues(alpha: 0.08);
     }
     if (states.contains(WidgetState.focused)) {
-      return overlay.withOpacity(0.12);
+      return overlay.withValues(alpha: 0.12);
     }
     return null;
   }

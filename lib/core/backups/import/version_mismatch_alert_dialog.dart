@@ -3,35 +3,39 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:version/version.dart';
 
 // Project imports:
-import '../info/package_info.dart';
-import 'types.dart';
+import '../../theme/app_theme.dart';
 
-Future<bool?> showBackwardImportAlertDialog({
+Future<bool?> showVersionMismatchAlertDialog({
   required BuildContext context,
-  required ExportDataPayload data,
+  required Version importVersion,
+  required Version currentVersion,
 }) {
   return showDialog<bool>(
     context: context,
     builder: (context) {
-      return BackwardImportAlertDialog(data: data);
+      return VersionMismatchAlertDialog(
+        importVersion: importVersion,
+        currentVersion: currentVersion,
+      );
     },
   );
 }
 
-class BackwardImportAlertDialog extends ConsumerWidget {
-  const BackwardImportAlertDialog({
+class VersionMismatchAlertDialog extends ConsumerWidget {
+  const VersionMismatchAlertDialog({
+    required this.importVersion,
+    required this.currentVersion,
     super.key,
-    required this.data,
   });
 
-  final ExportDataPayload data;
+  final Version importVersion;
+  final Version currentVersion;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion = ref.watch(appVersionProvider);
-
     return Dialog(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 650),
@@ -42,7 +46,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
           children: [
             const SizedBox(height: 20),
             const Text(
-              'Importing from an older version detected',
+              'Importing from a different version detected',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -51,15 +55,15 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             const SizedBox(height: 4),
             RichText(
               text: TextSpan(
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.hintColor,
                 ),
                 children: [
                   const TextSpan(text: 'Current version: '),
                   TextSpan(
-                    text: appVersion?.toString() ?? 'Unknown',
+                    text: currentVersion.toString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
@@ -69,15 +73,15 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             ),
             RichText(
               text: TextSpan(
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.hintColor,
                 ),
                 children: [
-                  const TextSpan(text: 'Exported version: '),
+                  const TextSpan(text: 'Import version: '),
                   TextSpan(
-                    text: data.exportVersion.toString(),
+                    text: importVersion.toString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
@@ -87,7 +91,9 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Backward import might not work as expected, are you sure?',
+              'The app version of the device you are trying to import is different from the current version of the app.'
+              ' This may cause compatibility issues and potential data loss.'
+              '\n\nAre you sure you want to continue?',
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,

@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -19,8 +17,8 @@ import 'forum_card.dart';
 
 class DanbooruForumCard extends ConsumerWidget {
   const DanbooruForumCard({
-    super.key,
     required this.topic,
+    super.key,
   });
 
   final DanbooruForumTopic topic;

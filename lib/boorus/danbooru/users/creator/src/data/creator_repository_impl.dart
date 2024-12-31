@@ -35,7 +35,7 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
         .map((e) => Creator.fromJson(box.get(e)['creator']))
         .toList();
 
-    List<Creator> creators = [];
+    var creators = <Creator>[];
 
     // Only fetch creators from API when there are uncached IDs
     if (idsNotInCached.isNotEmpty) {
@@ -65,7 +65,7 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
             DateTime.parse(box.get(e.id.toString())['time'])
                 .isBefore(twoDaysAgo)) {
           // Update cache with new creators
-          box.put(e.id.toString(), {
+          await box.put(e.id.toString(), {
             'time': now.toIso8601String(),
             'creator': e.toJson(),
           });

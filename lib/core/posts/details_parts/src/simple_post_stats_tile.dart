@@ -10,11 +10,11 @@ import '../../../widgets/widgets.dart';
 
 class SimplePostStatsTile extends StatelessWidget {
   const SimplePostStatsTile({
-    super.key,
-    this.padding,
     required this.totalComments,
     required this.favCount,
     required this.score,
+    super.key,
+    this.padding,
     this.onFavCountTap,
     this.onScoreTap,
     this.onTotalCommentsTap,

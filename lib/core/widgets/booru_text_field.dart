@@ -49,7 +49,7 @@ class BooruTextField extends ConsumerWidget {
     this.cursorOpacityAnimates,
     this.cursorColor,
     this.keyboardAppearance,
-    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.scrollPadding = const EdgeInsets.all(20),
     this.enableInteractiveSelection,
     this.selectionControls,
     this.onTap,

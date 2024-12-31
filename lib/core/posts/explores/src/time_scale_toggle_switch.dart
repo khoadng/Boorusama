@@ -10,8 +10,8 @@ import 'types.dart';
 
 class TimeScaleToggleSwitch extends StatelessWidget {
   const TimeScaleToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(TimeScale category) onToggle;

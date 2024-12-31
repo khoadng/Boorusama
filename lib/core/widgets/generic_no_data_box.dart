@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class GenericNoDataBox extends StatelessWidget {
   const GenericNoDataBox({
-    super.key,
     required this.text,
+    super.key,
   });
 
   final String text;

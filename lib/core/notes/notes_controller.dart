@@ -82,9 +82,9 @@ extension NotesControllerStateX on NotesControllerState {
 
 class NoteActionButtonWithProvider extends ConsumerWidget {
   const NoteActionButtonWithProvider({
-    super.key,
     required this.post,
     required this.noteState,
+    super.key,
   });
   final Post post;
   final NotesControllerState noteState;

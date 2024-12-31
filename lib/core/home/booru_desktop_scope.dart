@@ -25,12 +25,12 @@ const double _kDefaultMenuSize = 220;
 
 class BooruDesktopScope extends ConsumerStatefulWidget {
   const BooruDesktopScope({
-    super.key,
     required this.controller,
     required this.menuBuilder,
     required this.mobileMenu,
     required this.views,
     required this.menuWidth,
+    super.key,
   });
 
   final HomePageController controller;
@@ -111,6 +111,9 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
     final content = ValueListenableBuilder(
       valueListenable: widget.controller,
       builder: (context, value, child) => MediaQuery.removePadding(
@@ -130,10 +133,10 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             right: false,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
+                color: colorScheme.surfaceContainerLow,
                 border: Border(
                   right: BorderSide(
-                    color: Theme.of(context).colorScheme.hintColor,
+                    color: colorScheme.hintColor,
                     width: 0.25,
                   ),
                 ),
@@ -145,9 +148,8 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                     child: LayoutBuilder(
                       builder: (_, constraints) => SingleChildScrollView(
                         child: Theme(
-                          data: Theme.of(context).copyWith(
-                            iconTheme:
-                                Theme.of(context).iconTheme.copyWith(size: 20),
+                          data: theme.copyWith(
+                            iconTheme: theme.iconTheme.copyWith(size: 20),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -169,39 +171,28 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
           )
         : const SizedBox();
 
-    final booruConfigSelectorPosition = ref.watch(
-      settingsProvider.select((value) => value.booruConfigSelectorPosition),
-    );
     final swipeArea = ref.watch(
       settingsProvider
           .select((value) => value.swipeAreaToOpenSidebarPercentage),
     );
-    final hideLabel = ref
-        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+
+    final position = ref.watch(
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
 
     return AnnotatedRegion(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarBrightness: Theme.of(context).brightness,
+        statusBarBrightness: theme.brightness,
         statusBarIconBrightness: context.onBrightness,
       ),
       child: Scaffold(
         key: widget.controller.scaffoldKey,
-        bottomNavigationBar: !isDesktop &&
-                booruConfigSelectorPosition ==
-                    BooruConfigSelectorPosition.bottom
-            ? Container(
-                color: Colors.transparent,
-                margin: EdgeInsets.only(
-                  bottom: MediaQuery.paddingOf(context).bottom,
-                ),
-                height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
-                child: const BooruSelector(
-                  direction: Axis.horizontal,
-                ),
-              )
-            : null,
+        bottomNavigationBar:
+            !isDesktop && position == BooruConfigSelectorPosition.bottom
+                ? const BooruSelectorWithBottomPadding()
+                : null,
         drawer: !isDesktop
             ? SideBarMenu(
                 width: 300,
@@ -210,7 +201,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                 initialContent: widget.mobileMenu,
               )
             : null,
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: colorScheme.surface,
         resizeToAvoidBottomInset: !isDesktop ? false : null,
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         body: MultiSplitViewTheme(
@@ -223,15 +214,15 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
             dividerPainter: isDesktopPlatform()
                 ? DividerPainters.background(
                     animationEnabled: false,
-                    color: Theme.of(context).colorScheme.surface,
-                    highlightedColor: Theme.of(context).colorScheme.primary,
+                    color: colorScheme.surface,
+                    highlightedColor: colorScheme.primary,
                   )
                 : DividerPainters.grooved1(
                     animationDuration: const Duration(milliseconds: 150),
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: colorScheme.onSurface,
                     thickness: Screen.of(context).size.isLarge ? 6 : 3,
                     size: 75,
-                    highlightedColor: Theme.of(context).colorScheme.primary,
+                    highlightedColor: colorScheme.primary,
                   ),
           ),
           child: Column(
@@ -264,11 +255,11 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
                               },
                             ),
                           'content' => content,
-                          _ => const SizedBox(),
+                          _ => const SizedBox.shrink(),
                         }
                       : switch (area.data) {
                           'content' => content,
-                          _ => const SizedBox(),
+                          _ => const SizedBox.shrink(),
                         },
                 ),
               ),
@@ -314,8 +305,32 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
   late final menuWidth = ValueNotifier(widget.menuWidth ?? _kDefaultMenuSize);
 }
 
-double _calculateDrawerEdgeDragWidth(BuildContext context, int areaPercentage) {
-  final minValue = 20 + MediaQuery.paddingOf(context).left;
+class BooruSelectorWithBottomPadding extends ConsumerWidget {
+  const BooruSelectorWithBottomPadding({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hideLabel = ref
+        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+
+    return Container(
+      color: Colors.transparent,
+      height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
+      margin: EdgeInsets.only(
+        bottom: MediaQuery.paddingOf(context).bottom,
+      ),
+      child: const BooruSelector(
+        direction: Axis.horizontal,
+      ),
+    );
+  }
+}
+
+double? _calculateDrawerEdgeDragWidth(
+  BuildContext context,
+  int areaPercentage,
+) {
+  const minValue = 20.0;
   final screenWidth = MediaQuery.sizeOf(context).width;
   final value = (areaPercentage / 100).clamp(0.05, 1);
   final width = screenWidth * value;

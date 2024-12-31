@@ -25,7 +25,9 @@ final gelbooruV2PostRepoProvider =
       fetchFromController: (controller, page, {limit}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
 
-        return client.getPostResults(tags, page, limit: limit);
+        final newTags = ref.read(currentTagQueryComposerProvider).compose(tags);
+
+        return client.getPostResults(newTags, page, limit: limit);
       },
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );

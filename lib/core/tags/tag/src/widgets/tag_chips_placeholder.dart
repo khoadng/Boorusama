@@ -4,8 +4,6 @@ import 'dart:math';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-
 class TagChipsPlaceholder extends StatelessWidget {
   const TagChipsPlaceholder({
     super.key,

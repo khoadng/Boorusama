@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class ConditionalValueListenableBuilder extends StatelessWidget {
   const ConditionalValueListenableBuilder({
-    super.key,
     required this.valueListenable,
     required this.trueChild,
     required this.falseChild,
+    super.key,
     this.useFalseChildAsCache = false,
   });
   final ValueListenable<bool> valueListenable;

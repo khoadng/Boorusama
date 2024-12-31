@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class SwipeTo extends StatefulWidget {
   const SwipeTo({
-    super.key,
     required this.child,
-    this.onRightSwipe,
-    this.onLeftSwipe,
     required this.rightSwipeWidget,
     required this.leftSwipeWidget,
+    super.key,
+    this.onRightSwipe,
+    this.onLeftSwipe,
     this.animationDuration = const Duration(milliseconds: 150),
     this.enabled = true,
     this.swipeLeftEnabled = true,
@@ -85,7 +85,7 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
       return;
     }
 
-    double dx =
+    var dx =
         (details.globalPosition.dx - _dragStartOffset.dx) / context.size!.width;
 
     // clamp dx to prevent swiping from the opposite direction
@@ -96,7 +96,7 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
     }
 
     setState(() {
-      _dragUpdateOffset = Offset(dx, 0.0);
+      _dragUpdateOffset = Offset(dx, 0);
     });
   }
 

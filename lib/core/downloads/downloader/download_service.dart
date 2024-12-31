@@ -98,11 +98,11 @@ extension DownloadWithSettingsX on DownloadService {
   DownloadPathOrError downloadWithSettings(
     Settings settings, {
     required String url,
-    DownloaderMetadata? metadata,
-    String? folderName,
     required String filename,
     required BooruConfig config,
     required Map<String, String>? headers,
+    DownloaderMetadata? metadata,
+    String? folderName,
     String? path,
   }) {
     final downloadPath = path ??

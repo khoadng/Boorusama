@@ -1,13 +1,11 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class QuickPreviewImageDialog extends StatelessWidget {
   const QuickPreviewImageDialog({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

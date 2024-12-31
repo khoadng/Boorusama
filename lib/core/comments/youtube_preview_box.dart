@@ -14,8 +14,8 @@ import '../images/providers.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
-    super.key,
     required this.uri,
+    super.key,
   });
 
   final Uri uri;

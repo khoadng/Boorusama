@@ -1,5 +1,3 @@
-// Dart imports:
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 

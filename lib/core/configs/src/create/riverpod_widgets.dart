@@ -54,8 +54,8 @@ bool apiKeyRequired(BooruConfigData config) {
 
 class CreateOrUpdateBooruConfigButton extends ConsumerWidget {
   const CreateOrUpdateBooruConfigButton({
-    super.key,
     required this.canSubmit,
+    super.key,
   });
 
   final bool Function(BooruConfigData config)? canSubmit;
@@ -74,8 +74,8 @@ class CreateOrUpdateBooruConfigButton extends ConsumerWidget {
 
 class CreateNewBooruConfigButton extends ConsumerWidget {
   const CreateNewBooruConfigButton({
-    super.key,
     required this.canSubmit,
+    super.key,
   });
 
   final bool Function(BooruConfigData config) canSubmit;
@@ -104,8 +104,8 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
 
 class UpdateBooruConfigButton extends ConsumerWidget {
   const UpdateBooruConfigButton({
-    super.key,
     required this.canSubmit,
+    super.key,
   });
 
   final bool Function(BooruConfigData config) canSubmit;
@@ -184,8 +184,8 @@ class BooruConfigNameField extends ConsumerWidget {
 
 class BooruConfigDataProvider extends ConsumerWidget {
   const BooruConfigDataProvider({
-    super.key,
     required this.builder,
+    super.key,
   });
 
   final Widget Function(BooruConfigData data) builder;
@@ -278,8 +278,8 @@ class DefaultBooruInstructionText extends StatelessWidget {
 
 class CreateBooruConfigGranularRatingOptions extends ConsumerStatefulWidget {
   const CreateBooruConfigGranularRatingOptions({
-    super.key,
     required this.config,
+    super.key,
     this.initialValues,
     this.onChanged,
     this.singleSelection = false,
@@ -356,9 +356,9 @@ class _CreateBooruConfigGranularRatingOptionsState
 
 class CreateBooruRatingOptionsTile extends StatelessWidget {
   const CreateBooruRatingOptionsTile({
-    super.key,
     required this.config,
     required this.onChanged,
+    super.key,
     this.value,
     this.initialGranularRatingFilters,
     this.options,
@@ -409,8 +409,10 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
           Text(
             'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.6),
                 ),
           ),
           const SizedBox(height: 8),

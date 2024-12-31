@@ -19,10 +19,10 @@ import '../widgets/booru_search_bar.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {
+  required Widget Function(BuildContext context, bool isMobile) builder,
   bool ensureValidTag = false,
   Widget Function(String text)? floatingActionButton,
   RouteSettings? settings,
-  required Widget Function(BuildContext context, bool isMobile) builder,
 }) {
   showAppModalBarBottomSheet(
     context: context,
@@ -33,8 +33,8 @@ void showSimpleTagSearchView(
 
 class SimpleTagSearchView extends ConsumerStatefulWidget {
   const SimpleTagSearchView({
-    super.key,
     required this.onSelected,
+    super.key,
     this.ensureValidTag = true,
     this.closeOnSelected = true,
     this.floatingActionButton,
@@ -146,45 +146,44 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                   ],
                 ),
               ),
-              tags.isNotEmpty
-                  ? Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: TagSuggestionItems(
-                          textColorBuilder: widget.textColorBuilder,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
-                          tags: tags,
-                          onItemTap: (tag) {
-                            if (isMultiple) {
-                              textEditingController.text = textEditingController
-                                  .text
-                                  .replaceLastQuery(tag.value);
-                              focus.requestFocus();
-                              suggestionNotifier.clear();
-                            } else {
-                              if (widget.closeOnSelected) {
-                                Navigator.of(context).pop();
-                              }
-                              widget.onSelected(tag.value, isMultiple);
-                            }
-                          },
-                          currentQuery: isMultiple
-                              ? query.text.lastQuery ?? query.text
-                              : query.text,
-                        ),
-                      ),
-                    )
-                  : Expanded(
-                      child: widget.emptyBuilder != null
-                          ? SingleChildScrollView(
-                              child:
-                                  widget.emptyBuilder!(textEditingController),
-                            )
-                          : const Center(
-                              child: SizedBox.shrink(),
-                            ),
+              if (tags.isNotEmpty)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: TagSuggestionItems(
+                      config: config,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      tags: tags,
+                      onItemTap: (tag) {
+                        if (isMultiple) {
+                          textEditingController.text = textEditingController
+                              .text
+                              .replaceLastQuery(tag.value);
+                          focus.requestFocus();
+                          suggestionNotifier.clear();
+                        } else {
+                          if (widget.closeOnSelected) {
+                            Navigator.of(context).pop();
+                          }
+                          widget.onSelected(tag.value, isMultiple);
+                        }
+                      },
+                      currentQuery: isMultiple
+                          ? query.text.lastQuery ?? query.text
+                          : query.text,
                     ),
+                  ),
+                )
+              else
+                Expanded(
+                  child: widget.emptyBuilder != null
+                      ? SingleChildScrollView(
+                          child: widget.emptyBuilder!(textEditingController),
+                        )
+                      : const Center(
+                          child: SizedBox.shrink(),
+                        ),
+                ),
             ],
           ),
         );
@@ -243,7 +242,7 @@ class _AddButton extends StatelessWidget {
       button: true,
       child: Material(
         color: onTap == null
-            ? Theme.of(context).colorScheme.onSurface.withOpacity(0.1)
+            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)
             : Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(

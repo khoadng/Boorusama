@@ -1,5 +1,3 @@
-// Package imports:
-
 // Project imports:
 import 'danbooru_report_data_point.dart';
 import 'danbooru_report_period.dart';

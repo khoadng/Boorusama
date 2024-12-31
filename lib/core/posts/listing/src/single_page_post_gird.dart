@@ -14,8 +14,8 @@ import 'post_scope.dart';
 class SinglePagePostListScaffold<T extends Post>
     extends ConsumerStatefulWidget {
   const SinglePagePostListScaffold({
-    super.key,
     required this.posts,
+    super.key,
     this.sliverHeaders,
   });
 

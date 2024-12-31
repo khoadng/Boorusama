@@ -45,8 +45,8 @@ class CreateSavedSearchSheet extends ConsumerWidget {
 
 class EditSavedSearchSheet extends ConsumerWidget {
   const EditSavedSearchSheet({
-    super.key,
     required this.savedSearch,
+    super.key,
   });
 
   final SavedSearch savedSearch;

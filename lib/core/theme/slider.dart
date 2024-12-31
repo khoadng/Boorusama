@@ -7,8 +7,8 @@ class CustomSliderTrackShape extends RoundedRectSliderTrackShape {
   @override
   Rect getPreferredRect({
     required RenderBox parentBox,
-    Offset offset = Offset.zero,
     required SliderThemeData sliderTheme,
+    Offset offset = Offset.zero,
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {
@@ -48,7 +48,7 @@ class CustomSliderThumbShape extends RoundSliderThumbShape {
   }) {
     super.paint(
       context,
-      center.translate(-(value - 0.5) / 0.5 * enabledThumbRadius, 0.0),
+      center.translate(-(value - 0.5) / 0.5 * enabledThumbRadius, 0),
       activationAnimation: activationAnimation,
       enableAnimation: enableAnimation,
       isDiscrete: isDiscrete,
@@ -84,7 +84,7 @@ class CustomSliderOverlayShape extends RoundSliderOverlayShape {
   }) {
     super.paint(
       context,
-      center.translate(-(value - 0.5) / 0.5 * thumbRadius, 0.0),
+      center.translate(-(value - 0.5) / 0.5 * thumbRadius, 0),
       activationAnimation: activationAnimation,
       enableAnimation: enableAnimation,
       isDiscrete: isDiscrete,

@@ -13,10 +13,10 @@ import '../search_history.dart';
 
 class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
-    super.key,
     required this.onHistoryTap,
-    this.onFullHistoryRequested,
     required this.histories,
+    super.key,
+    this.onFullHistoryRequested,
     this.maxHistory = 5,
     this.showTime = false,
     this.reverseScheme,
@@ -84,8 +84,8 @@ class SearchHistorySection extends StatelessWidget {
 
 class SearchHistoryQueryWidget extends StatelessWidget {
   const SearchHistoryQueryWidget({
-    super.key,
     required this.history,
+    super.key,
     this.reverseScheme,
   });
 

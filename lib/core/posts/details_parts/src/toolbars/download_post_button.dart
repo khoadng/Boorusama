@@ -11,8 +11,8 @@ import '../../../post/post.dart';
 
 class DownloadPostButton extends ConsumerWidget {
   const DownloadPostButton({
-    super.key,
     required this.post,
+    super.key,
     this.small = false,
   });
 

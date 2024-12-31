@@ -14,9 +14,6 @@ import '../../../../videos/video_play_duration_icon.dart';
 import '../../../../widgets/widgets.dart';
 import 'image_overlay_icon.dart';
 
-// Project imports:
-
-
 class AutoScrollOptions {
   const AutoScrollOptions({
     required this.controller,
@@ -29,6 +26,7 @@ class AutoScrollOptions {
 
 class ImageGridItem extends StatelessWidget {
   const ImageGridItem({
+    required this.image,
     super.key,
     this.onTap,
     this.isAnimated,
@@ -36,7 +34,6 @@ class ImageGridItem extends StatelessWidget {
     this.hasParentOrChildren,
     this.isTranslated,
     this.autoScrollOptions,
-    required this.image,
     this.hideOverlay = false,
     this.duration,
     this.hasSound,
@@ -222,8 +219,9 @@ class _ImageInkWellWithBorderOnFocusState
   @override
   void dispose() {
     super.dispose();
-    node.removeListener(_onFocusChange);
-    node.dispose();
+    node
+      ..removeListener(_onFocusChange)
+      ..dispose();
   }
 
   void _onFocusChange() {

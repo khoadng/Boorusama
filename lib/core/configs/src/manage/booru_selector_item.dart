@@ -8,11 +8,11 @@ import '../booru_config.dart';
 
 class BooruSelectorItem extends StatelessWidget {
   const BooruSelectorItem({
-    super.key,
     required this.config,
     required this.onTap,
     required this.show,
     required this.selected,
+    super.key,
     this.direction = Axis.vertical,
     this.hideLabel = false,
   });
@@ -71,7 +71,7 @@ class BooruSelectorItem extends StatelessWidget {
               left: 4,
             ),
       child: InkWell(
-        hoverColor: Theme.of(context).hoverColor.withOpacity(0.1),
+        hoverColor: Theme.of(context).hoverColor.withValues(alpha: 0.1),
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

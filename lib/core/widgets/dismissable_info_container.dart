@@ -13,8 +13,8 @@ import '../theme/utils.dart';
 
 class DismissableInfoContainer extends ConsumerStatefulWidget {
   const DismissableInfoContainer({
-    super.key,
     required this.content,
+    super.key,
     this.forceShow = false,
     this.mainColor,
     this.actions = const [],

@@ -107,8 +107,7 @@ class DioExtendedNetworkImageProvider
     // Ownership of this controller is handed off to [_loadAsync]; it is that
     // method's responsibility to close the controller's stream when the image
     // has been loaded or an error is thrown.
-    final StreamController<ImageChunkEvent> chunkEvents =
-        StreamController<ImageChunkEvent>();
+    final chunkEvents = StreamController<ImageChunkEvent>();
 
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(
@@ -140,12 +139,15 @@ class DioExtendedNetworkImageProvider
     StreamController<ImageChunkEvent> chunkEvents,
     ImageDecoderCallback decode,
   ) async {
-    assert(key == this);
-    final String md5Key = cacheKey ?? keyToMd5(key.url);
+    assert(
+      key == this,
+      'The key provided to obtainKey must be the same key that was used to obtain this ImageStreamCompleter',
+    );
+    final md5Key = cacheKey ?? keyToMd5(key.url);
     ui.Codec? result;
     if (cache) {
       try {
-        final Uint8List? data = await _loadCache(
+        final data = await _loadCache(
           key,
           chunkEvents,
           md5Key,
@@ -164,7 +166,7 @@ class DioExtendedNetworkImageProvider
 
     if (result == null) {
       try {
-        final Uint8List? data = await _loadNetwork(
+        final data = await _loadNetwork(
           key,
           chunkEvents,
         );
@@ -194,17 +196,17 @@ class DioExtendedNetworkImageProvider
     StreamController<ImageChunkEvent>? chunkEvents,
     String md5Key,
   ) async {
-    final Directory cacheImagesDirectory = Directory(
+    final cacheImagesDirectory = Directory(
       join((await getTemporaryDirectory()).path, cacheImageFolderName),
     );
     Uint8List? data;
     // exist, try to find cache image file
     if (cacheImagesDirectory.existsSync()) {
-      final File cacheFlie = File(join(cacheImagesDirectory.path, md5Key));
+      final cacheFlie = File(join(cacheImagesDirectory.path, md5Key));
       if (cacheFlie.existsSync()) {
         if (key.cacheMaxAge != null) {
-          final DateTime now = DateTime.now();
-          final FileStat fs = cacheFlie.statSync();
+          final now = DateTime.now();
+          final fs = cacheFlie.statSync();
           if (now.subtract(key.cacheMaxAge!).isAfter(fs.changed)) {
             await cacheFlie.delete(recursive: true);
           } else {
@@ -240,14 +242,13 @@ class DioExtendedNetworkImageProvider
     StreamController<ImageChunkEvent>? chunkEvents,
   ) async {
     try {
-      final Uri resolved = Uri.base.resolve(key.url);
-      final Response<List<int>>? response =
-          await _tryGetResponse(resolved, chunkEvents);
+      final resolved = Uri.base.resolve(key.url);
+      final response = await _tryGetResponse(resolved, chunkEvents);
       if (response == null || response.data == null) {
         return null;
       }
 
-      final Uint8List bytes = Uint8List.fromList(response.data!);
+      final bytes = Uint8List.fromList(response.data!);
       if (bytes.lengthInBytes == 0) {
         return Future<Uint8List>.error(
           StateError('NetworkImage is an empty file: $resolved'),
@@ -301,12 +302,17 @@ class DioExtendedNetworkImageProvider
               validateStatus: (status) => status == HttpStatus.ok,
             ),
             onReceiveProgress: chunkEvents != null
-                ? (count, total) => chunkEvents.add(
-                      ImageChunkEvent(
-                        cumulativeBytesLoaded: count,
-                        expectedTotalBytes: total,
-                      ),
-                    )
+                ? (count, total) {
+                    // Only add event if controller is not closed and total is valid
+                    if (!chunkEvents.isClosed && total >= 0) {
+                      chunkEvents.add(
+                        ImageChunkEvent(
+                          cumulativeBytesLoaded: count,
+                          expectedTotalBytes: total,
+                        ),
+                      );
+                    }
+                  }
                 : null,
           ),
         );
@@ -354,7 +360,7 @@ class DioExtendedNetworkImageProvider
       );
 
   @override
-  String toString() => '$runtimeType("$url", scale: $scale)';
+  String toString() => 'DioExtendedNetworkImageProvider("$url", scale: $scale)';
 
   @override
 
@@ -362,7 +368,7 @@ class DioExtendedNetworkImageProvider
   Future<Uint8List?> getNetworkImageData({
     StreamController<ImageChunkEvent>? chunkEvents,
   }) async {
-    final String uId = cacheKey ?? keyToMd5(url);
+    final uId = cacheKey ?? keyToMd5(url);
 
     if (cache) {
       return _loadCache(

@@ -21,8 +21,8 @@ import '../providers/local_providers.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({
-    super.key,
     required this.initialIndex,
+    super.key,
   });
 
   final int initialIndex;

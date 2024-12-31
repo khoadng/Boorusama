@@ -22,10 +22,10 @@ enum TranlationState {
 
 class ArtistSection extends StatefulWidget {
   const ArtistSection({
-    super.key,
     required this.commentary,
     required this.artistTags,
     required this.source,
+    super.key,
   });
 
   final ArtistCommentary commentary;
@@ -130,8 +130,8 @@ class _Link extends StatelessWidget {
     required this.commentary,
     required this.display,
     required this.artistTags,
-    this.url,
     required this.onChanged,
+    this.url,
   });
 
   final ArtistCommentary commentary;

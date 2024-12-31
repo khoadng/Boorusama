@@ -8,10 +8,10 @@ const kSpecialLabelKeyForAll = '____all____';
 
 class FavoriteTagLabelSelectorField extends StatelessWidget {
   const FavoriteTagLabelSelectorField({
-    super.key,
     required this.selected,
     required this.labels,
     required this.onSelect,
+    super.key,
   });
 
   final String selected;

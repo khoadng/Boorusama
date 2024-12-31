@@ -17,11 +17,11 @@ import '../internal_widgets/tag_title_name.dart';
 
 class TagDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const TagDetailsPageScaffold({
-    super.key,
     required this.tagName,
     required this.otherNames,
-    this.extras,
     required this.gridBuilder,
+    super.key,
+    this.extras,
     this.onCategoryToggle,
   });
 
@@ -51,9 +51,10 @@ class _DanbooruTagDetailsPageState<T extends Post>
             const SizedBox(height: 12),
             widget.otherNames,
             ...widget.extras ?? [],
-            isDesktopPlatform()
-                ? const SizedBox(height: 36)
-                : const SizedBox.shrink(),
+            if (isDesktopPlatform())
+              const SizedBox(height: 36)
+            else
+              const SizedBox.shrink(),
           ],
         ),
         builder: (context) {

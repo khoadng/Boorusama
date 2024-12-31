@@ -18,8 +18,8 @@ const _defaultRadius = BorderRadius.all(Radius.circular(8));
 
 class BooruImage extends ConsumerWidget {
   const BooruImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
@@ -63,6 +63,7 @@ class BooruImage extends ConsumerWidget {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentProvider(config.booruType)),
         ...ref.watch(extraHttpHeaderProvider(config)),
+        ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
     );
   }
@@ -70,9 +71,9 @@ class BooruImage extends ConsumerWidget {
 
 class BooruRawImage extends StatelessWidget {
   const BooruRawImage({
-    super.key,
     required this.dio,
     required this.imageUrl,
+    super.key,
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
@@ -250,8 +251,10 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color:
-            Theme.of(context).colorScheme.surfaceContainerHigh.withOpacity(0.5),
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHigh
+            .withValues(alpha: 0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
@@ -295,9 +298,9 @@ class ErrorPlaceholder extends StatelessWidget {
 
 class NullableAspectRatio extends StatelessWidget {
   const NullableAspectRatio({
+    required this.child,
     super.key,
     this.aspectRatio,
-    required this.child,
   });
 
   final double? aspectRatio;

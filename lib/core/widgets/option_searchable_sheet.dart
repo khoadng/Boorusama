@@ -12,10 +12,10 @@ import '../foundation/platform.dart';
 
 class OptionSearchableSheet<T extends Object> extends StatefulWidget {
   const OptionSearchableSheet({
-    super.key,
     required this.items,
     required this.onFilter,
     required this.itemBuilder,
+    super.key,
     this.areItemsTheSame,
     this.title,
     this.scrollController,
@@ -102,11 +102,11 @@ class _OptionSearchableSheetState<T extends Object>
 
 class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
   const OptionSingleSearchableField({
-    super.key,
-    this.value,
     required this.onSelect,
     required this.items,
     required this.optionValueBuilder,
+    super.key,
+    this.value,
     this.optionSheetValueBuilder,
     this.onTap,
     this.backgroundColor,
@@ -171,7 +171,7 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                optionValueBuilder(value as T),
+                optionValueBuilder(value!),
                 style: const TextStyle(
                   fontSize: 16,
                 ),

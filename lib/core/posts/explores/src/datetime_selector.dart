@@ -11,9 +11,9 @@ import 'utils.dart';
 
 class DateTimeSelector extends StatelessWidget {
   const DateTimeSelector({
-    super.key,
     required this.onDateChanged,
     required this.date,
+    super.key,
     this.scale = TimeScale.day,
     this.backgroundColor,
   });

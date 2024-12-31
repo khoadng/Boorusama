@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -21,9 +19,9 @@ import '../../widgets/settings_tile.dart';
 
 class ImageListingSettingsSection extends ConsumerStatefulWidget {
   const ImageListingSettingsSection({
-    super.key,
     required this.listing,
     required this.onUpdate,
+    super.key,
     this.itemPadding,
   });
 

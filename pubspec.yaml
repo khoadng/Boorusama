@@ -2,10 +2,15 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 3.21.5+122
+version: 3.22.1+125
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
+
+workspace:
+  - packages/foundation
+  - packages/booru_clients
+  - packages/filename_generator
 
 dependencies:
   # local packages
@@ -19,6 +24,7 @@ dependencies:
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
   background_downloader: ^8.8.0
+  bonsoir: ^5.1.10
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
   context_menus:
@@ -39,7 +45,7 @@ dependencies:
   expandable: ^5.0.1
   extended_image: ^9.0.4
   fast_immutable_collections: ^11.0.0
-  file_picker: ^8.0.7
+  file_picker: 8.1.4
   firebase_analytics: ^11.3.5
   firebase_core: ^3.8.0
   firebase_crashlytics: ^4.1.5
@@ -49,7 +55,7 @@ dependencies:
     sdk: flutter
   flutter_html: ^3.0.0-beta.2
   flutter_improved_scrolling: ^0.0.3
-  flutter_local_notifications: ^17.2.3
+  flutter_local_notifications: ^18.0.1
   flutter_markdown: ^0.7.3+2
   flutter_portal: ^1.1.4
   flutter_riverpod: ^2.5.1
@@ -59,7 +65,10 @@ dependencies:
   flutter_svg: ^2.0.10+1
   flutter_widget_from_html_core: ^0.15.2
   font_awesome_flutter: ^10.7.0
-  fvp: ^0.27.0
+  fvp:
+    git:
+      url: https://github.com/wang-bin/fvp.git
+      ref: 7090c3a926b295747cccb1333895417ab8a85584
   gal: ^2.3.0
   go_router: ^14.3.0
   hive: ^2.2.3
@@ -92,9 +101,10 @@ dependencies:
   rich_text_controller: ^1.4.2
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  searchfield: ^1.1.6
+  searchfield: ^1.2.1
   share_handler: ^0.0.20
   share_plus: ^10.0.2
+  shelf: ^1.4.1
   sliver_tools: ^0.2.12
   stack_trace: ^1.11.0
   timeago: ^3.7.0
@@ -104,8 +114,8 @@ dependencies:
   visibility_detector: ^0.4.0+2
   webview_cookie_manager:
     git:
-       url: https://github.com/fryette/webview_cookie_manager
-       ref: 923e514752ad7bb7e83849f11de767a301ac57b5
+       url: https://github.com/khoadng/webview_cookie_manager
+       ref: 8572dd54c437c919aedc8dca6c5bffd25fe74b3c
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
   window_manager: ^0.4.3

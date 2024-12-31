@@ -43,8 +43,7 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
   List<int>? _currentRandomPages;
 
   List<int> _generateRandomPages(int end) {
-    final pages = List.generate(end, (index) => index);
-    pages.shuffle();
+    final pages = List.generate(end, (index) => index)..shuffle();
     return pages;
   }
 

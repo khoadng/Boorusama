@@ -21,8 +21,8 @@ import '../../../post/post.dart';
 
 class DanbooruMoreActionButton extends ConsumerWidget {
   const DanbooruMoreActionButton({
-    super.key,
     required this.post,
+    super.key,
     this.onStartSlideshow,
   });
 
@@ -44,35 +44,27 @@ class DanbooruMoreActionButton extends ConsumerWidget {
             switch (value) {
               case 'download':
                 ref.download(post);
-                break;
               case 'add_to_favgroup':
                 goToAddToFavoriteGroupSelectionPage(context, [post]);
-                break;
               case 'show_tag_list':
                 goToDanbooruShowTaglistPage(
                   ref,
                   post.extractTags(),
                 );
-                break;
               case 'view_in_browser':
                 launchExternalUrl(
                   post.getUriLink(booruConfig.url),
                 );
-                break;
               case 'view_original':
                 goToOriginalImagePage(context, post);
-                break;
               case 'start_slideshow':
                 if (onStartSlideshow != null) {
                   onStartSlideshow!();
                 }
-                break;
               case 'tag_history':
                 goToPostVersionPage(context, post);
-                break;
               case 'settings':
                 openImageViewerSettingsPage(context);
-                break;
               default:
             }
           },

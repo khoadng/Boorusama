@@ -51,7 +51,7 @@ final danbooruCurrentUserProvider =
 
     // If the id is not null, we cache it
     if (id != null) {
-      miscData.put(key, id.toString());
+      await miscData.put(key, id.toString());
     }
   }
 

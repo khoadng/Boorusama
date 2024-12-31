@@ -96,7 +96,7 @@ extension DanbooruUploadX on DanbooruUpload {
       favCount: 0,
       uploaderId: uploaderId,
       rating: Rating.unknown,
-      fileSize: mediaAsset.fileSize?.toInt() ?? 0,
+      fileSize: mediaAsset.fileSize ?? 0,
       isBanned: false,
       hasChildren: false,
       parentId: null,

@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -17,8 +15,8 @@ import '../../../post/post.dart';
 
 class DanbooruFileDetails extends ConsumerWidget {
   const DanbooruFileDetails({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final DanbooruPost post;

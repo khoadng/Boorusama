@@ -14,9 +14,9 @@ import 'tag_changed_text.dart';
 
 class TagEditHistoryCard extends StatelessWidget {
   const TagEditHistoryCard({
-    super.key,
     required this.version,
     required this.onUserTap,
+    super.key,
   });
 
   final DanbooruPostVersion version;
@@ -169,9 +169,9 @@ class TagEditHistoryCard extends StatelessWidget {
 
 class PostVersionTagText extends StatelessWidget {
   const PostVersionTagText({
-    super.key,
     required this.tag,
     required this.style,
+    super.key,
     this.onTap,
   });
 

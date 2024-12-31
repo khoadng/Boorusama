@@ -17,11 +17,11 @@ import '../../../related/providers.dart';
 
 class TagEditWikiView extends ConsumerStatefulWidget {
   const TagEditWikiView({
-    super.key,
     required this.onRemoved,
     required this.onAdded,
     required this.isSelected,
     required this.tag,
+    super.key,
   });
 
   final String? tag;
@@ -175,7 +175,7 @@ class _RelatedTagChips extends ConsumerWidget {
                           color: Theme.of(context).brightness.isLight
                               ? !selected
                                   ? null
-                                  : Colors.white.withOpacity(0.85)
+                                  : Colors.white.withValues(alpha: 0.85)
                               : Theme.of(context).colorScheme.hintColor,
                         ),
                   ),

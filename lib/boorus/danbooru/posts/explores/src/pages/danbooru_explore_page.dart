@@ -58,8 +58,8 @@ class DanbooruExplorePageInternal extends ConsumerWidget {
 
 class MostViewedExplore extends ConsumerStatefulWidget {
   const MostViewedExplore({
-    super.key,
     required this.onPressed,
+    super.key,
   });
 
   final void Function() onPressed;
@@ -84,8 +84,8 @@ class _MostViewedExploreState extends ConsumerState<MostViewedExplore> {
 
 class HotExplore extends ConsumerStatefulWidget {
   const HotExplore({
-    super.key,
     required this.onPressed,
+    super.key,
   });
 
   final void Function() onPressed;
@@ -110,8 +110,8 @@ class _HotExploreState extends ConsumerState<HotExplore> {
 
 class PopularExplore extends ConsumerStatefulWidget {
   const PopularExplore({
-    super.key,
     required this.onPressed,
+    super.key,
   });
 
   final void Function() onPressed;

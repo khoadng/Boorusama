@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class FilterableScope<T> extends StatefulWidget {
   const FilterableScope({
-    super.key,
     required this.originalItems,
     required this.filter,
     required this.builder,
+    super.key,
     this.query,
   });
 

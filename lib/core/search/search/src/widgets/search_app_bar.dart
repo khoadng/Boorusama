@@ -11,11 +11,11 @@ import 'booru_search_bar.dart';
 
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
-    super.key,
     required this.controller,
+    required this.leading,
+    super.key,
     this.onSubmitted,
     this.focusNode,
-    required this.leading,
     this.onClear,
     this.onChanged,
     this.trailingSearchButton,
@@ -77,16 +77,17 @@ class SearchAppBar extends ConsumerWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            constraints.maxWidth < 600
-                ? Expanded(
-                    child: searchBar,
-                  )
-                : ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 480,
-                    ),
-                    child: searchBar,
-                  ),
+            if (constraints.maxWidth < 600)
+              Expanded(
+                child: searchBar,
+              )
+            else
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 480,
+                ),
+                child: searchBar,
+              ),
             if (trailingSearchButton != null) const SizedBox(width: 4),
             if (trailingSearchButton != null) trailingSearchButton!,
           ],

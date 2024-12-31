@@ -9,8 +9,8 @@ import '../../../tag/widgets.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({
-    super.key,
     required this.otherNames,
+    super.key,
   });
 
   final List<String>? otherNames;
@@ -58,8 +58,8 @@ class TagOtherNames extends StatelessWidget {
 
 class OtherNameChip extends StatelessWidget {
   const OtherNameChip({
-    super.key,
     required this.otherName,
+    super.key,
   });
 
   final String otherName;

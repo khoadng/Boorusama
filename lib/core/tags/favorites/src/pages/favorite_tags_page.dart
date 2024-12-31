@@ -132,16 +132,17 @@ class FavoriteTagsPage extends ConsumerWidget {
                 ],
               ),
             ),
-            tags.isNotEmpty
-                ? Expanded(
-                    child: _buildTags(tags, ref),
-                  )
-                : const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('No tags'),
-                    ),
-                  ),
+            if (tags.isNotEmpty)
+              Expanded(
+                child: _buildTags(tags, ref),
+              )
+            else
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('No tags'),
+                ),
+              ),
           ],
         ),
       ),
@@ -185,7 +186,6 @@ class FavoriteTagsPage extends ConsumerWidget {
                 case 'delete':
                   final tag = tags[index];
                   ref.read(favoriteTagsProvider.notifier).remove(tag.name);
-                  break;
                 case 'edit':
                   showMaterialModalBottomSheet(
                     context: context,
@@ -205,7 +205,6 @@ class FavoriteTagsPage extends ConsumerWidget {
                       },
                     ),
                   );
-                  break;
               }
             },
             itemBuilder: const {

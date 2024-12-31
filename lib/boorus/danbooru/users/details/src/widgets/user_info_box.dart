@@ -14,8 +14,8 @@ import '../../../user/user.dart';
 
 class UserInfoBox extends ConsumerWidget {
   const UserInfoBox({
-    super.key,
     required this.user,
+    super.key,
   });
 
   final DanbooruUser user;

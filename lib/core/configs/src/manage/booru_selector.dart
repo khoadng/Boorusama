@@ -59,7 +59,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
 
     return Container(
       width: 68,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(orderedConfigsProvider).maybeWhen(
@@ -130,7 +130,7 @@ class _BooruSelectorHorizontalState
 
     return Container(
       height: 48,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(orderedConfigsProvider).maybeWhen(
@@ -225,9 +225,8 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = orders.isEmpty || orders.length != configs.length
         ? [for (final config in configs) config.id]
-        : orders.toList();
-
-    newOrders.reorder(oldIndex, newIndex);
+        : orders.toList()
+      ..reorder(oldIndex, newIndex);
 
     ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
   }

@@ -16,70 +16,69 @@ import '../manager/download_tasks_notifier.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(
-      downloadTasksProvider,
-      (prev, cur) {
-        final notifQueue = ref.read(bulkDownloadNotificationQueueProvider);
+    ref
+      ..listen(
+        downloadTasksProvider,
+        (prev, cur) {
+          final notifQueue = ref.read(bulkDownloadNotificationQueueProvider);
 
-        if (notifQueue.isEmpty) return;
+          if (notifQueue.isEmpty) return;
 
-        for (final group in cur.tasks.keys) {
-          if (!notifQueue.containsKey(group)) {
-            continue;
+          for (final group in cur.tasks.keys) {
+            if (!notifQueue.containsKey(group)) {
+              continue;
+            }
+
+            final curComleted = cur.allCompleted(group);
+
+            if (curComleted) {
+              final task = ref.read(bulkdownloadProvider).firstWhereOrNull(
+                    (e) => e.id == group,
+                  );
+
+              if (task == null) return;
+
+              ref.read(bulkDownloadNotificationProvider).showNotification(
+                    task.displayName,
+                    'Downloaded ${task.totalItems} files',
+                  );
+
+              notifQueue.remove(group);
+
+              ref.read(bulkDownloadNotificationQueueProvider.notifier).state = {
+                ...notifQueue,
+              };
+            }
           }
+        },
+      )
+      ..listen(
+        bulkDownloadErrorNotificationQueueProvider,
+        (prev, cur) {
+          if (cur == null) return;
 
-          final curComleted = cur.allCompleted(group);
+          ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
+              null;
 
-          if (curComleted) {
-            final task = ref.read(bulkdownloadProvider).firstWhereOrNull(
-                  (e) => e.id == group,
-                );
+          showErrorToast(context, cur);
+        },
+      )
+      ..listen(
+        bulkDownloadOnTapStreamProvider,
+        (prev, cur) {
+          if (prev == null) return;
 
-            if (task == null) return;
-
-            ref.read(bulkDownloadNotificationProvider).showNotification(
-                  task.displayName,
-                  'Downloaded ${task.totalItems} files',
-                );
-
-            notifQueue.remove(group);
-
-            ref.read(bulkDownloadNotificationQueueProvider.notifier).state = {
-              ...notifQueue,
-            };
-          }
-        }
-      },
-    );
-
-    ref.listen(
-      bulkDownloadErrorNotificationQueueProvider,
-      (prev, cur) {
-        if (cur == null) return;
-
-        ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
-            null;
-
-        showErrorToast(context, cur);
-      },
-    );
-
-    ref.listen(
-      bulkDownloadOnTapStreamProvider,
-      (prev, cur) {
-        if (prev == null) return;
-
-        context.pushNamed(kBulkdownload);
-      },
-    );
+          context.pushNamed(kBulkdownload);
+        },
+      );
 
     return child;
   }

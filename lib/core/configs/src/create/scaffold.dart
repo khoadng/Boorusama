@@ -17,6 +17,7 @@ import '../edit_booru_config_id.dart';
 import 'download.dart';
 import 'gestures.dart';
 import 'listing.dart';
+import 'network.dart';
 import 'providers.dart';
 import 'riverpod_widgets.dart';
 import 'search.dart';
@@ -24,10 +25,10 @@ import 'viewer.dart';
 
 class CreateBooruConfigScope extends ConsumerWidget {
   const CreateBooruConfigScope({
-    super.key,
     required this.config,
     required this.child,
     required this.id,
+    super.key,
   });
 
   final EditBooruConfigId id;
@@ -48,6 +49,7 @@ class CreateBooruConfigScope extends ConsumerWidget {
 
 class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
+    required this.initialTab,
     super.key,
     this.backgroundColor,
     this.authTab,
@@ -56,8 +58,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.gestureTab,
     this.imageViewerTab,
     this.listingTab,
+    this.networkTab,
     this.canSubmit,
-    required this.initialTab,
     this.footer,
   });
 
@@ -69,6 +71,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Widget? gestureTab;
   final Widget? imageViewerTab;
   final Widget? listingTab;
+  final Widget? networkTab;
 
   final String? initialTab;
 
@@ -88,6 +91,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       'booru.gestures': gestureTab ?? const DefaultBooruConfigGesturesView(),
       'settings.image_viewer.image_viewer':
           imageViewerTab ?? const BooruConfigViewerView(),
+      'Network': networkTab ?? const BooruConfigNetworkView(),
     };
 
     return Scaffold(
@@ -207,8 +211,8 @@ class _TabControllerProvider extends StatefulWidget {
     required this.tabMap,
     required this.animationDuration,
     required this.length,
-    this.initialIndex,
     required this.builder,
+    this.initialIndex,
   });
 
   final Map<String, Widget> tabMap;
@@ -244,9 +248,9 @@ class _TabControllerProviderState extends State<_TabControllerProvider>
 
 class SelectedBooruChip extends StatelessWidget {
   const SelectedBooruChip({
-    super.key,
     required this.booruType,
     required this.url,
+    super.key,
   });
 
   final BooruType booruType;

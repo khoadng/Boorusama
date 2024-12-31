@@ -50,7 +50,10 @@ class RelatedTagDto {
 }
 
 List<RelatedTagDto>? _parseRelatedTags(String? relatedTags) {
-  if (relatedTags == null) return null;
+  final isEmpty =
+      relatedTags == null || relatedTags.isEmpty || relatedTags == '[]';
+
+  if (isEmpty) return null;
 
   final parts = relatedTags.split(' ');
 

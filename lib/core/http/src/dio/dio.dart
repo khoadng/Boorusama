@@ -1,12 +1,18 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 
 // Project imports:
 import '../../../boorus/booru/booru.dart';
+import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
+import '../../../proxy/proxy.dart';
 import '../../../router.dart';
 import '../cloudflare_challenge_interceptor.dart';
 import '../http_utils.dart';
@@ -39,20 +45,12 @@ Dio newDio({required DioOptions options}) {
         AppHttpHeaders.userAgentHeader: userAgent,
       },
     ),
-  );
-
-  // NativeAdapter only does something on Android and iOS/MacOS
-  if (isAndroid() || isIOS() || isMacOS()) {
-    dio.httpClientAdapter = newNativeAdapter(
+  )..httpClientAdapter = _createHttpClientAdapter(
+      logger: logger,
       userAgent: userAgent,
+      supportsHttp2: supportsHttp2,
+      proxy: options.proxySettings,
     );
-  } else if (supportsHttp2) {
-    dio.httpClientAdapter = Http2Adapter(
-      ConnectionManager(
-        idleTimeout: const Duration(seconds: 30),
-      ),
-    );
-  }
 
   dio.interceptors.add(
     DioCacheInterceptor(
@@ -67,7 +65,7 @@ Dio newDio({required DioOptions options}) {
   if (context != null) {
     dio.interceptors.add(
       CloudflareChallengeInterceptor(
-        storagePath: options.cacheDir.path,
+        cookieJar: options.cookieJar,
         context: context,
       ),
     );
@@ -80,6 +78,76 @@ Dio newDio({required DioOptions options}) {
   );
 
   return dio;
+}
+
+HttpClientAdapter _createHttpClientAdapter({
+  required Logger logger,
+  required String userAgent,
+  required bool supportsHttp2,
+  ProxySettings? proxy,
+}) {
+  final proxySettings = proxy != null
+      ? proxy.enable
+          ? proxy
+          : null
+      : null;
+  final proxyAddress = proxySettings?.getProxyAddress();
+
+  if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
+    logger.logI('Network', 'Using native adapter');
+    return newNativeAdapter(
+      userAgent: userAgent,
+    );
+  } else if (supportsHttp2 && proxySettings == null) {
+    logger.logI(
+      'Network',
+      'Using HTTP2 adapter',
+    );
+
+    return Http2Adapter(
+      ConnectionManager(
+        idleTimeout: const Duration(seconds: 30),
+      ),
+    );
+  } else {
+    logger.logI('Network', 'Using default adapter');
+    return IOHttpClientAdapter(
+      createHttpClient: proxySettings != null && proxyAddress != null
+          ? () {
+              final client = HttpClient();
+              final username = proxySettings.username;
+              final password = proxySettings.password;
+              final port = proxySettings.port;
+              final host = proxySettings.host;
+
+              final credentials = username != null && password != null
+                  ? HttpClientBasicCredentials(username, password)
+                  : null;
+
+              logger.logI(
+                'Network',
+                'Using proxy: ${proxySettings.type.name.toUpperCase()} $host:$port',
+              );
+
+              client
+                ..badCertificateCallback = (cert, host, port) {
+                  return true;
+                }
+                ..findProxy = (uri) {
+                  final address = '$host:$port';
+
+                  return 'PROXY $address';
+                };
+
+              if (credentials != null) {
+                client.addProxyCredentials(host, port, 'main', credentials);
+              }
+
+              return client;
+            }
+          : null,
+    );
+  }
 }
 
 // Some user might input the url with /index.php/ or /index.php so we need to clean it

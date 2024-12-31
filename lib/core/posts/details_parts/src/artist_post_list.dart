@@ -16,9 +16,9 @@ import '../../post/widgets.dart';
 
 class SliverArtistPostList extends ConsumerWidget {
   const SliverArtistPostList({
-    super.key,
     required this.tag,
     required this.child,
+    super.key,
   });
 
   final String tag;
@@ -71,10 +71,10 @@ class SliverArtistPostList extends ConsumerWidget {
 
 class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
   const SliverPreviewPostGrid({
-    super.key,
     required this.posts,
     required this.onTap,
     required this.imageUrl,
+    super.key,
   });
 
   final List<T> posts;
@@ -137,7 +137,7 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
           color: Theme.of(context)
               .colorScheme
               .surfaceContainerHigh
-              .withOpacity(0.5),
+              .withValues(alpha: 0.5),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),

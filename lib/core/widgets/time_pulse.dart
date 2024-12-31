@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 
 class TimePulse extends StatefulWidget {
   const TimePulse({
-    super.key,
     required this.initial,
     required this.updateInterval,
     required this.builder,
+    super.key,
   });
 
   final DateTime initial;

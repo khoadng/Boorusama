@@ -10,8 +10,8 @@ import 'app_lock.dart';
 
 class AppLockWithSettings extends ConsumerWidget {
   const AppLockWithSettings({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

@@ -46,6 +46,7 @@ class GelbooruV1Builder
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultThumbnailUrlMixin,
@@ -167,14 +168,14 @@ class GelbooruV1Repository implements BooruRepository {
 
     return () => GelbooruV1Client(baseUrl: config.url, dio: dio)
         .getPosts()
-        .then((value) => true);
+        .then((value) => value.isNotEmpty);
   }
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {
   const GelbooruV1SearchPage({
-    super.key,
     required this.initialQuery,
+    super.key,
   });
 
   final String? initialQuery;

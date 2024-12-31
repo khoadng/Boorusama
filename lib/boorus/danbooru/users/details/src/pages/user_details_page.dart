@@ -18,8 +18,8 @@ import '../widgets/user_info_box.dart';
 
 class UserDetailsPage extends ConsumerWidget {
   const UserDetailsPage({
-    super.key,
     required this.uid,
+    super.key,
     this.hasAppBar = true,
     this.isSelf = false,
   });
@@ -133,8 +133,8 @@ class UserDetailsPage extends ConsumerWidget {
 
 class UserDetailsActionButtons extends ConsumerWidget {
   const UserDetailsActionButtons({
-    super.key,
     required this.uid,
+    super.key,
   });
 
   final int uid;

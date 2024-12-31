@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,9 +11,9 @@ import '../widgets/mobile_config_tile.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
-    super.key,
     required this.speed,
     required this.onSpeedChanged,
+    super.key,
   });
 
   final double speed;
@@ -45,9 +43,9 @@ class MoreOptionsControlButton extends StatelessWidget {
 
 class BooruVideoOptionSheet extends StatelessWidget {
   const BooruVideoOptionSheet({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
   });
 
   final double value;
@@ -93,9 +91,9 @@ class BooruVideoOptionSheet extends StatelessWidget {
 
 class PlaybackSpeedActionSheet extends StatelessWidget {
   const PlaybackSpeedActionSheet({
-    super.key,
     required this.onChanged,
     required this.speeds,
+    super.key,
   });
 
   final void Function(double value) onChanged;

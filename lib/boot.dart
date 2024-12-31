@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
@@ -18,6 +19,7 @@ import 'package:stack_trace/stack_trace.dart';
 import 'boorus/providers.dart';
 import 'core/analytics.dart';
 import 'core/app.dart';
+import 'core/blacklists/src/data/providers.dart';
 import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
@@ -91,19 +93,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Initialize Hive');
   Hive.init(dbDirectory.path);
 
-  if (isDesktopPlatform() || isIOS()) {
-    fvp.registerWith(
-      options: {
-        'platforms': [
-          'linux',
-          'ios',
-          'windows',
-          'macos',
-        ],
-      },
-    );
-  }
-
   bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
 
@@ -151,9 +140,21 @@ Future<void> boot(BootLogger bootLogger) async {
         ),
       );
 
-  bootLogger.l('Settings: ${settings.toJson()}');
+  fvp.registerWith(
+    options: {
+      'platforms': [
+        'linux',
+        'ios',
+        'windows',
+        'macos',
+        if (settings.videoPlayerEngine == VideoPlayerEngine.mdk) 'android',
+      ],
+    },
+  );
 
-  bootLogger.l('Load current booru config');
+  bootLogger
+    ..l('Settings: ${settings.toJson()}')
+    ..l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
   bootLogger.l('Load all configs');
@@ -170,6 +171,8 @@ Future<void> boot(BootLogger bootLogger) async {
   final bookmarkRepoOverride = await createBookmarkRepoProviderOverride(
     bootLogger: bootLogger,
   );
+
+  initBlacklistTagRepo();
 
   final tempPath = await getAppTemporaryDirectory();
 
@@ -224,7 +227,7 @@ Future<void> boot(BootLogger bootLogger) async {
   HttpOverrides.global = AppHttpOverrides();
 
   // Prepare for Android 15
-  showSystemStatus();
+  unawaited(showSystemStatus());
 
   logger.logI(
     'Start up',
@@ -236,9 +239,12 @@ Future<void> boot(BootLogger bootLogger) async {
 
   runApp(
     Reboot(
-      initialConfigs: allConfigs,
-      initialConfig: initialConfig ?? BooruConfig.empty,
-      builder: (context, config, configs) => BooruLocalization(
+      initialData: RebootData(
+        config: initialConfig ?? BooruConfig.empty,
+        configs: allConfigs,
+        settings: settings,
+      ),
+      builder: (context, data) => BooruLocalization(
         child: ProviderScope(
           overrides: [
             booruEngineRegistryProvider.overrideWith(
@@ -250,14 +256,14 @@ Future<void> boot(BootLogger bootLogger) async {
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),
             settingsNotifierProvider
-                .overrideWith(() => SettingsNotifier(settings)),
+                .overrideWith(() => SettingsNotifier(data.settings)),
             booruConfigRepoProvider.overrideWithValue(booruUserRepo),
             booruConfigProvider.overrideWith(
               () => BooruConfigNotifier(
-                initialConfigs: configs,
+                initialConfigs: data.configs,
               ),
             ),
-            initialSettingsBooruConfigProvider.overrideWithValue(config),
+            initialSettingsBooruConfigProvider.overrideWithValue(data.config),
             httpCacheDirProvider.overrideWithValue(tempPath),
             loggerProvider.overrideWithValue(logger),
             bookmarkRepoOverride,

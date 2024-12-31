@@ -1,6 +1,4 @@
 // Project imports:
-
-// Project imports:
 import 'post_stats.dart';
 
 extension PostStatsDisplay on PostStats {

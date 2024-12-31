@@ -15,8 +15,8 @@ import '../wigdets/privacy_toggle.dart';
 
 class EditFavoriteGroupDialog extends ConsumerStatefulWidget {
   const EditFavoriteGroupDialog({
-    super.key,
     required this.title,
+    super.key,
     this.padding,
     this.initialData,
     this.enableManualDataInput = true,

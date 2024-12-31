@@ -1,5 +1,7 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Project imports:
 import '../booru_config.dart';
 
 BooruConfig? getConfigFromLink(

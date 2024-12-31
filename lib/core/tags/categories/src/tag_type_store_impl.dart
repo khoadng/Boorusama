@@ -13,7 +13,7 @@ class BooruTagTypeStore implements TagTypeStore {
 
   Box<String>? _box;
 
-  static String get dataKey => 'general_tag_type_store_v1';
+  static String get dataKey => 'general_tag_type_store_v2';
 
   static Future<String> getBoxPath(String dirPath) async {
     return join(dirPath, '$dataKey.hive');
@@ -38,8 +38,8 @@ class BooruTagTypeStore implements TagTypeStore {
     final box = await getBox();
     final keyForSpecificBooru = '${booruType.name}%%%$tag';
     final keyForGeneralBooru = 'generic%%%$tag';
-    await box.put(keyForSpecificBooru, category.toString());
-    await box.put(keyForGeneralBooru, category.toString());
+    await box.put(keyForSpecificBooru, category);
+    await box.put(keyForGeneralBooru, category);
   }
 
   @override

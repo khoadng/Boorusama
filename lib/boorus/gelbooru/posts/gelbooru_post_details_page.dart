@@ -59,15 +59,15 @@ class _GelbooruTagListSectionState
       onSuccess: (tags) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           if (!context.mounted) return;
-          ref.setGelbooruPostDetailsArtistMap(
-            post: post,
-            tags: tags,
-          );
-
-          ref.setGelbooruPostDetailsCharacterMap(
-            post: post,
-            tags: tags,
-          );
+          ref
+            ..setGelbooruPostDetailsArtistMap(
+              post: post,
+              tags: tags,
+            )
+            ..setGelbooruPostDetailsCharacterMap(
+              post: post,
+              tags: tags,
+            );
         });
       },
     );
@@ -157,7 +157,7 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                                       posts: data,
                                       initialIndex: postIdx,
                                     ),
-                                    imageUrl: (item) => item.sampleImageUrl,
+                                    imageUrl: getGelbooruPostPreviewImageUrl,
                                   ),
                                   orElse: () =>
                                       const SliverPreviewPostGridPlaceholder(),
@@ -206,4 +206,12 @@ extension GelbooruArtistMapProviderX on WidgetRef {
       ...map,
     };
   }
+}
+
+String getGelbooruPostPreviewImageUrl(GelbooruPost post) {
+  if (post.isVideo) return post.videoThumbnailUrl;
+
+  if (post.sampleImageUrl.isNotEmpty) return post.sampleImageUrl;
+
+  return post.thumbnailImageUrl;
 }

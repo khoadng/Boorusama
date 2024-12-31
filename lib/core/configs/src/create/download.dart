@@ -81,11 +81,11 @@ class BooruConfigDownloadView extends ConsumerWidget {
 
 class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
   const CustomDownloadFileNameSection({
+    required this.config,
     super.key,
     this.format,
     this.onIndividualDownloadChanged,
     this.onBulkDownloadChanged,
-    required this.config,
   });
 
   final String? format;
@@ -201,13 +201,13 @@ class _CustomDownloadFileNameSectionState
 
 class DownloadFormatCard extends ConsumerStatefulWidget {
   const DownloadFormatCard({
-    super.key,
     required this.downloadFilenameBuilder,
     required this.defaultFileNameFormat,
     required this.format,
     required this.onChanged,
     required this.config,
     required this.title,
+    super.key,
     this.previewBuilder,
   });
 
@@ -268,7 +268,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         border: Border.all(
           color: Theme.of(context).colorScheme.outlineVariant,
-          width: 1.5,
+          width: 0.5,
         ),
       ),
       child: ExpandablePanel(
@@ -325,8 +325,8 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
 
 class FormatEditingField extends StatelessWidget {
   const FormatEditingField({
-    super.key,
     required this.controller,
+    super.key,
     this.onChanged,
   });
 
@@ -352,8 +352,8 @@ class FormatEditingField extends StatelessWidget {
 
 class FilenamePreview extends StatelessWidget {
   const FilenamePreview({
-    super.key,
     required this.filename,
+    super.key,
     this.padding,
   });
 
@@ -389,8 +389,8 @@ class FilenamePreview extends StatelessWidget {
 
 class AvailableTokens extends ConsumerWidget {
   const AvailableTokens({
-    super.key,
     required this.downloadFilenameBuilder,
+    super.key,
   });
 
   final DownloadFilenameGenerator? downloadFilenameBuilder;
@@ -436,10 +436,10 @@ class AvailableTokens extends ConsumerWidget {
 
 class TokenOptionHelpModal extends StatelessWidget {
   const TokenOptionHelpModal({
-    super.key,
     required this.token,
     required this.tokenOptions,
     required this.downloadFilenameBuilder,
+    super.key,
   });
 
   final String token;

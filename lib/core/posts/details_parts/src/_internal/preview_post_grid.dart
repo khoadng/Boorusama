@@ -12,12 +12,12 @@ import '../../../post/widgets.dart';
 
 class PreviewPostList<T extends Post> extends StatelessWidget {
   const PreviewPostList({
-    super.key,
     required this.posts,
     required this.onTap,
+    required this.imageUrl,
+    super.key,
     this.physics,
     this.imageBuilder,
-    required this.imageUrl,
     this.width,
     this.height,
   });

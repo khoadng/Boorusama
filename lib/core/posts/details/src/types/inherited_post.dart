@@ -6,9 +6,9 @@ import '../../../post/post.dart';
 
 class InheritedPost<T extends Post> extends InheritedWidget {
   const InheritedPost({
-    super.key,
     required this.post,
     required super.child,
+    super.key,
   });
 
   final T post;

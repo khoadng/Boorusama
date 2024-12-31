@@ -15,10 +15,10 @@ const kTagEditFavoriteViewSelectedLabelKey =
 
 class TagEditFavoriteView extends ConsumerStatefulWidget {
   const TagEditFavoriteView({
-    super.key,
     required this.onRemoved,
     required this.onAdded,
     required this.isSelected,
+    super.key,
   });
 
   final void Function(String tag) onRemoved;

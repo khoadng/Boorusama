@@ -21,10 +21,10 @@ import 'tag_edit_view_controller.dart';
 
 class TagEditPageScaffold extends ConsumerStatefulWidget {
   const TagEditPageScaffold({
-    super.key,
     required this.submitButton,
     required this.content,
     required this.scrollController,
+    super.key,
   });
 
   final Widget submitButton;
@@ -56,9 +56,9 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
   void dispose() {
     super.dispose();
 
-    viewController.removeListener(_onViewChanged);
-
-    viewController.dispose();
+    viewController
+      ..removeListener(_onViewChanged)
+      ..dispose();
   }
 
   void _pop() {
@@ -80,45 +80,45 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
     final expandMode =
         ref.watch(tagEditProvider.select((value) => value.expandMode));
 
-    ref.listen(
-      tagEditProvider.select((value) => value.tags),
-      (prev, current) {
-        if ((prev?.length ?? 0) < (current.length)) {
-          // Hacky way to scroll to the end of the list, somehow if it is currently on top, it won't scroll to last item
-          final offset = scrollController.offset ==
-                  scrollController.position.maxScrollExtent
-              ? 0
-              : scrollController.position.maxScrollExtent / current.length;
+    ref
+      ..listen(
+        tagEditProvider.select((value) => value.tags),
+        (prev, current) {
+          if ((prev?.length ?? 0) < (current.length)) {
+            // Hacky way to scroll to the end of the list, somehow if it is currently on top, it won't scroll to last item
+            final offset = scrollController.offset ==
+                    scrollController.position.maxScrollExtent
+                ? 0
+                : scrollController.position.maxScrollExtent / current.length;
 
-          WidgetsBinding.instance.addPostFrameCallback(
-            (_) {
-              if (!mounted || !scrollController.hasClients) return;
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) {
+                if (!mounted || !scrollController.hasClients) return;
 
-              scrollController.animateToWithAccessibility(
-                scrollController.position.maxScrollExtent + offset,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOut,
-                reduceAnimations: ref.read(settingsProvider).reduceAnimations,
-              );
-            },
-          );
+                scrollController.animateToWithAccessibility(
+                  scrollController.position.maxScrollExtent + offset,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  reduceAnimations: ref.read(settingsProvider).reduceAnimations,
+                );
+              },
+            );
 
-          Future.delayed(
-            const Duration(milliseconds: 200),
-            () {},
-          );
-        }
-      },
-    );
-
-    ref.listen(
-      tagEditProvider.select((value) => value.expandMode),
-      (prev, current) {
-        if (prev != current) {
-          viewController.setMaxSplit(context);
-        }
-      },
-    );
+            Future.delayed(
+              const Duration(milliseconds: 200),
+              () {},
+            );
+          }
+        },
+      )
+      ..listen(
+        tagEditProvider.select((value) => value.expandMode),
+        (prev, current) {
+          if (prev != current) {
+            viewController.setMaxSplit(context);
+          }
+        },
+      );
 
     return PopScope(
       canPop: expandMode == null,

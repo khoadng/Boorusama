@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -20,8 +23,8 @@ import '../widgets/explore_sliver_app_bar.dart';
 
 class ExploreMostViewedPage extends ConsumerWidget {
   const ExploreMostViewedPage({
-    super.key,
     required this.onBack,
+    super.key,
   });
 
   final void Function()? onBack;
@@ -79,7 +82,7 @@ class _MostViewedContent extends ConsumerWidget {
         if (previous != next) {
           // Delay 100ms, this is a hack
           await const Duration(milliseconds: 100).future;
-          controller.refresh();
+          unawaited(controller.refresh());
         }
       },
     );

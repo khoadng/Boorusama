@@ -35,6 +35,8 @@ abstract class BooruBuilder {
 
   MetatagExtractorBuilder? get metatagExtractorBuilder;
 
+  TagSuggestionItemBuilder get tagSuggestionItemBuilder;
+
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder;
 
   PostDetailsUIBuilder get postDetailsUIBuilder;

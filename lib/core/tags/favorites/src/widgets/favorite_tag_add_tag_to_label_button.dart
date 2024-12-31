@@ -11,8 +11,8 @@ import '../favorite_tags_notifier.dart';
 
 class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
   const FavoriteTagAddTagToLabelButton({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;

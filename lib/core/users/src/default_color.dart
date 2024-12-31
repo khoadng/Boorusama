@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'user_color.dart';
 
 class DefaultUserColor implements UserColor {
-  DefaultUserColor._(this.context);
+  DefaultUserColor._(this.brightness);
 
   factory DefaultUserColor.of(BuildContext context) =>
-      DefaultUserColor._(context);
+      DefaultUserColor._(Theme.of(context).brightness);
 
   @override
-  final BuildContext context;
+  final Brightness brightness;
 
   @override
   Color fromString(String color) {
-    return Theme.of(context).brightness == Brightness.light
+    return brightness == Brightness.light
         ? Color(getUserHexColor(color))
         : Color(getUserHexOnDarkColor(color));
   }

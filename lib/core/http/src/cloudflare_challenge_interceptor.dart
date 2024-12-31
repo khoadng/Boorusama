@@ -9,27 +9,27 @@ import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
 import 'http_utils.dart';
 
-const kCloudflareClearanceKey = 'cf_clearance';
-const kCloudflareChallengeTrace = 'cf_chl';
+const kChecklist = [
+  'cf_chl',
+  'ddos',
+];
 
 const kDefaultCloudflareChallengeTriggerStatus = {
   403,
+  503,
 };
 
 class CloudflareChallengeInterceptor extends Interceptor {
   CloudflareChallengeInterceptor({
-    required String storagePath,
     required this.context,
+    required this.cookieJar,
     this.triggerOnStatus = kDefaultCloudflareChallengeTriggerStatus,
-  }) : cookieJar = PersistCookieJar(
-          storage: FileStorage(storagePath),
-        );
+  });
 
   var _userAgent = '';
-  late final PersistCookieJar cookieJar;
+  final CookieJar cookieJar;
   var _block = false;
   var _disable = false;
   final BuildContext context;
@@ -47,7 +47,7 @@ class CloudflareChallengeInterceptor extends Interceptor {
     try {
       final cookies = await cookieJar.loadForRequest(options.uri);
 
-      if (cookies.isNotEmpty && cookies.hasClearance) {
+      if (cookies.isNotEmpty) {
         if (_userAgent.isEmpty) {
           final webviewController = WebViewController();
           final ua = await webviewController.getUserAgent();
@@ -81,8 +81,14 @@ class CloudflareChallengeInterceptor extends Interceptor {
     if (triggerOnStatus.contains(statusCode)) {
       final body = err.response?.data;
 
-      if (body is String &&
-          body.toLowerCase().contains(kCloudflareChallengeTrace)) {
+      if (body is String) {
+        final bodyString = body.toLowerCase();
+
+        // return early if we can't find any of the checklist
+        if (!kChecklist.any(bodyString.contains)) {
+          return handler.next(err);
+        }
+
         if (_block) {
           // if we already open the webview, we should not open it again
           return handler.next(err);
@@ -100,10 +106,9 @@ class CloudflareChallengeInterceptor extends Interceptor {
                   cookieJar.saveFromResponse(err.requestOptions.uri, cookies);
                   _block = false;
 
-                  showSuccessToast(
-                    context,
-                    'Cloudflare challenge solved, you can close this screen now',
-                  );
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
                 },
               );
             },
@@ -117,15 +122,14 @@ class CloudflareChallengeInterceptor extends Interceptor {
 }
 
 extension CookieJarX on List<Cookie> {
-  bool get hasClearance => any((e) => e.name == kCloudflareClearanceKey);
   String get cookieString => map((e) => e.toString()).join('; ');
 }
 
 class CloudflareChallengeSolverPage extends StatefulWidget {
   const CloudflareChallengeSolverPage({
-    super.key,
     required this.url,
     required this.onCfClearance,
+    super.key,
   });
 
   final String url;
@@ -139,29 +143,16 @@ class CloudflareChallengeSolverPage extends StatefulWidget {
 class _CloudflareChallengeSolverPageState
     extends State<CloudflareChallengeSolverPage> {
   final WebViewController controller = WebViewController();
+  final cookieManager = WebviewCookieManager();
+  late final urlWithoutQuery =
+      Uri.parse(widget.url).replace(query: '').toString();
 
   @override
   void initState() {
     super.initState();
-
-    final cookieManager = WebviewCookieManager();
-    final urlWithoutQuery = Uri.parse(widget.url).replace(query: '').toString();
-
-    controller.loadRequest(Uri.parse(widget.url));
-    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
-
-    controller.setNavigationDelegate(
-      NavigationDelegate(
-        onPageFinished: (url) async {
-          final cookies = await cookieManager.getCookies(urlWithoutQuery);
-
-          if (cookies.isNotEmpty) {
-            widget.onCfClearance(cookies);
-            return;
-          }
-        },
-      ),
-    );
+    controller
+      ..loadRequest(Uri.parse(widget.url))
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
   }
 
   @override
@@ -169,12 +160,23 @@ class _CloudflareChallengeSolverPageState
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Cloudflare Challenge Solver'),
+        title: const Text('Challenge Solver'),
       ),
       body: Column(
         children: [
           _buildBanner(
-            'Please stay on this screen and wait until the challenge is solved',
+            'Please stay on this screen and wait until the challenge is solved and press the button below.',
+          ),
+          FilledButton(
+            onPressed: () async {
+              final cookies = await cookieManager.getCookies(urlWithoutQuery);
+
+              if (cookies.isNotEmpty) {
+                widget.onCfClearance(cookies);
+                return;
+              }
+            },
+            child: const Text('Access Cookie'),
           ),
           Expanded(
             child: WebViewWidget(
