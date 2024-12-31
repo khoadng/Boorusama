@@ -57,22 +57,26 @@ class SzurubooruClient
     required String query,
     int limit = 15,
   }) async {
-    final q = query.length < 3 ? '$query*' : '*$query*';
+    try {
+      final q = query.length < 3 ? '$query*' : '*$query*';
 
-    final response = await _dio.get(
-      '/api/tags',
-      queryParameters: {
-        'query': [
-          q,
-          'sort:usages',
-        ].join(' '),
-        'limit': limit,
-      },
-    );
+      final response = await _dio.get(
+        '/api/tags',
+        queryParameters: {
+          'query': [
+            q,
+            'sort:usages',
+          ].join(' '),
+          'limit': limit,
+        },
+      );
 
-    final results = response.data['results'] as List;
+      final results = response.data['results'] as List;
 
-    return results.map((e) => TagDto.fromJson(e)).toList();
+      return results.map((e) => TagDto.fromJson(e)).toList();
+    } on Exception catch (_) {
+      return [];
+    }
   }
 
   Future<List<TagCategoryDto>> getTagCategories() async {

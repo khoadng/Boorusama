@@ -1,5 +1,3 @@
-library;
-
 export 'src/create/add_booru_page.dart';
 export 'src/create/add_unknown_booru_page.dart';
 export 'src/create/auth.dart';

@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/platform.dart';
+import '../../core/foundation/loggers.dart';
+import '../../core/foundation/platform.dart';
 import '../iap/iap.dart' as i;
 import 'constants.dart';
 import 'converter.dart';
@@ -77,7 +77,8 @@ class RevenuecatPurchase implements i.InAppPurchase {
       // find the package that has the same product sku
       final package = _packages.entries
           .firstWhereOrNull(
-              (element) => element.value.storeProduct.identifier == sku)
+            (element) => element.value.storeProduct.identifier == sku,
+          )
           ?.value;
 
       if (package != null) {
@@ -139,12 +140,12 @@ class RevenuecatPurchase implements i.InAppPurchase {
         return Future.value(false);
       }
 
-      logger.logI(_kServiceName, 'Restored purchases successfully');
-
-      logger.logI(
-        _kServiceName,
-        'Entitlement status: ${entitlement.isActive}, period: ${entitlement.periodType.name}',
-      );
+      logger
+        ..logI(_kServiceName, 'Restored purchases successfully')
+        ..logI(
+          _kServiceName,
+          'Entitlement status: ${entitlement.isActive}, period: ${entitlement.periodType.name}',
+        );
 
       return entitlement.isActive;
     } on PlatformException catch (e) {
@@ -165,7 +166,8 @@ class RevenuecatPurchase implements i.InAppPurchase {
 
   @override
   String? describePurchaseError(Object error) => switch (error) {
-        PlatformException pe => PurchasesErrorHelper.getErrorCode(pe).name,
+        final PlatformException pe =>
+          PurchasesErrorHelper.getErrorCode(pe).name,
         _ => null,
       };
 }

@@ -1,8 +1,9 @@
 // Project imports:
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/gestures.dart';
+import '../../proxy/proxy.dart';
+import '../../settings/settings.dart';
 import 'booru_config.dart';
 import 'data/booru_config_data.dart';
+import 'gestures.dart';
 import 'rating_parser.dart';
 import 'types.dart';
 
@@ -45,6 +46,8 @@ extension BooruConfigDataConverter on BooruConfigData? {
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
       alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
+      proxySettings:
+          ProxySettings.fromJsonString(booruConfigData.proxySettings),
     );
   }
 }
@@ -73,6 +76,7 @@ extension BooruConfigConverter on BooruConfig {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
       alwaysIncludeTags: alwaysIncludeTags,
+      proxySettings: proxySettings?.toJsonString(),
     );
   }
 }

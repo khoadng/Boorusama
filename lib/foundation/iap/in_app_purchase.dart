@@ -21,7 +21,7 @@ extension PackageX on Package {
 
   Package withDealFrom(Package? other) => switch (other) {
         null => this,
-        Package p => copyWith(
+        final Package p => copyWith(
             deal: () => _compareWith(p),
           ),
       };
@@ -42,15 +42,15 @@ extension PackageX on Package {
 }
 
 class DealData extends Equatable {
-  final String from;
-  final String to;
-  final double savings;
-
   const DealData({
     required this.from,
     required this.to,
     required this.savings,
   });
+
+  final String from;
+  final String to;
+  final double savings;
 
   @override
   List<Object> get props => [
@@ -61,17 +61,17 @@ class DealData extends Equatable {
 }
 
 class Package extends Equatable {
-  final String id;
-  final ProductDetails product;
-  final PackageType? type;
-  final DealData? bestValue;
-
   const Package({
     required this.id,
     required this.product,
     required this.type,
     this.bestValue,
   });
+
+  final String id;
+  final ProductDetails product;
+  final PackageType? type;
+  final DealData? bestValue;
 
   Package copyWith({
     DealData? Function()? deal,
@@ -94,13 +94,13 @@ class Package extends Equatable {
 }
 
 class Offering extends Equatable {
-  final String id;
-  final List<ProductDetails> availablePackages;
-
   const Offering({
     required this.id,
     required this.availablePackages,
   });
+
+  final String id;
+  final List<ProductDetails> availablePackages;
 
   @override
   List<Object> get props => [
@@ -118,13 +118,6 @@ abstract class InAppPurchase {
 }
 
 class ProductDetails extends Equatable {
-  final String id;
-  final String title;
-  final String description;
-  final String price;
-  final double rawPrice;
-  final String currencyCode;
-
   const ProductDetails({
     required this.id,
     required this.title,
@@ -133,6 +126,13 @@ class ProductDetails extends Equatable {
     required this.rawPrice,
     required this.currencyCode,
   });
+
+  final String id;
+  final String title;
+  final String description;
+  final String price;
+  final double rawPrice;
+  final String currencyCode;
 
   @override
   List<Object> get props => [
@@ -160,10 +160,6 @@ enum PurchaseStatus {
 }
 
 class PurchaseVerificationData extends Equatable {
-  final String localVerificationData;
-  final String serverVerificationData;
-  final String source;
-
   const PurchaseVerificationData({
     required this.localVerificationData,
     required this.serverVerificationData,
@@ -175,6 +171,10 @@ class PurchaseVerificationData extends Equatable {
         serverVerificationData = '',
         source = '';
 
+  final String localVerificationData;
+  final String serverVerificationData;
+  final String source;
+
   @override
   List<Object> get props => [
         localVerificationData,
@@ -184,19 +184,19 @@ class PurchaseVerificationData extends Equatable {
 }
 
 class PurchaseDetails extends Equatable {
+  const PurchaseDetails({
+    required this.productID,
+    required this.verificationData,
+    required this.status,
+    this.purchaseID,
+    this.transactionDate,
+  });
+
   final String? purchaseID;
   final String productID;
   final PurchaseVerificationData verificationData;
   final String? transactionDate;
   final PurchaseStatus status;
-
-  const PurchaseDetails({
-    this.purchaseID,
-    required this.productID,
-    required this.verificationData,
-    this.transactionDate,
-    required this.status,
-  });
 
   @override
   List<Object?> get props => [

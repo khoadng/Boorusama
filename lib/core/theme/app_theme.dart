@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/display.dart';
+import '../foundation/display.dart';
 import 'colors.dart';
 import 'extended_color_scheme.dart';
 import 'grayscale_shades.dart';
@@ -41,8 +41,8 @@ const staticDarkScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray48,
   onTertiaryContainer: Colors.white,
-  surfaceContainerLowest: GreyscaleShades.gray38,
-  surfaceContainerLow: GreyscaleShades.gray42,
+  surfaceContainerLowest: GreyscaleShades.gray12,
+  surfaceContainerLow: GreyscaleShades.gray32,
   surfaceContainer: GreyscaleShades.gray46,
   surfaceContainerHigh: GreyscaleShades.gray50,
   surfaceContainerHighest: GreyscaleShades.gray54,
@@ -64,8 +64,8 @@ const staticBlackScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray28,
   onTertiaryContainer: Colors.white,
-  surfaceContainerLowest: GreyscaleShades.gray24,
-  surfaceContainerLow: GreyscaleShades.gray28,
+  surfaceContainerLowest: GreyscaleShades.gray8,
+  surfaceContainerLow: GreyscaleShades.gray20,
   surfaceContainer: GreyscaleShades.gray32,
   surfaceContainerHigh: GreyscaleShades.gray36,
   surfaceContainerHighest: GreyscaleShades.gray40,
@@ -77,8 +77,8 @@ const staticBlackScheme = ColorScheme(
   onError: kOnErrorAmoledDarkColor,
   surface: Colors.black,
   onSurface: Colors.white,
-  outline: GreyscaleShades.gray160,
-  outlineVariant: GreyscaleShades.gray60,
+  outline: GreyscaleShades.gray120,
+  outlineVariant: GreyscaleShades.gray48,
 );
 
 const staticLightExtendedScheme = ExtendedColorScheme(
@@ -107,9 +107,9 @@ class AppTheme {
 
   static ColorScheme generateScheme(
     AppThemeMode mode, {
+    required bool systemDarkMode,
     ColorScheme? dynamicDarkScheme,
     ColorScheme? dynamicLightScheme,
-    required bool systemDarkMode,
   }) =>
       switch ((dynamicDarkScheme, dynamicLightScheme)) {
         (final ColorScheme dark, final ColorScheme light) => switch (mode) {
@@ -177,7 +177,7 @@ class AppTheme {
           indent: 0,
         ),
         extensions: [
-          BoorusamaColors(
+          const BoorusamaColors(
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
@@ -191,12 +191,12 @@ class AppTheme {
   }) =>
       defaultTheme(colorScheme: colorScheme).copyWith(
         brightness: Brightness.dark,
-        dividerTheme: DividerThemeData(
+        dividerTheme: const DividerThemeData(
           endIndent: 0,
           indent: 0,
         ),
         extensions: [
-          BoorusamaColors(
+          const BoorusamaColors(
             upvoteColor: Colors.redAccent,
             downvoteColor: Colors.blueAccent,
           ),
@@ -232,7 +232,7 @@ class AppTheme {
         dialogTheme: DialogTheme(
           surfaceTintColor: Colors.transparent,
           backgroundColor: colorScheme.surfaceContainer,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),

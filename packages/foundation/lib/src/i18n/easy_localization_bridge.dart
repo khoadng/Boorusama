@@ -67,7 +67,11 @@ extension I18nX on BuildContext {
 const fallbackLocale = Locale('en', 'US');
 
 class RootBundleAssetLoader extends el.AssetLoader {
-  const RootBundleAssetLoader();
+  const RootBundleAssetLoader({
+    required this.supportedLocales,
+  });
+
+  final List<Locale> supportedLocales;
 
   String getLocalePath(String basePath, Locale locale) {
     return '$basePath/${locale.toStringWithSeparator(separator: "-")}.json';
@@ -75,6 +79,10 @@ class RootBundleAssetLoader extends el.AssetLoader {
 
   @override
   Future<Map<String, dynamic>?> load(String path, Locale locale) async {
+    if (!supportedLocales.contains(locale)) {
+      return null;
+    }
+
     final localePath = getLocalePath(path, locale);
     final data = json.decode(await rootBundle.loadString(localePath));
     return removeEmptyFields(data);
@@ -126,7 +134,9 @@ class BooruLocalization extends StatelessWidget {
       path: 'assets/translations',
       fallbackLocale: fallbackLocale,
       useFallbackTranslations: true,
-      assetLoader: const RootBundleAssetLoader(),
+      assetLoader: RootBundleAssetLoader(
+        supportedLocales: supportedLocales,
+      ),
       child: child,
     );
   }

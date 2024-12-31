@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -7,23 +10,22 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/providers.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/http.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/permissions.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
+import '../../boorus/booru/booru.dart';
+import '../../boorus/engine/providers.dart';
+import '../../configs/config.dart';
+import '../../configs/ref.dart';
+import '../../foundation/loggers.dart';
+import '../../foundation/permissions.dart';
+import '../../foundation/platform.dart';
+import '../../foundation/toast.dart';
+import '../../http/http.dart';
+import '../../http/providers.dart';
+import '../../images/providers.dart';
+import '../../posts/post/post.dart';
+import '../../posts/sources/source.dart';
+import '../../router.dart';
+import '../../settings/providers.dart';
+import '../../settings/settings.dart';
 import '../l10n.dart';
 import '../urls/download_url.dart';
 import 'download_service.dart';
@@ -83,7 +85,7 @@ extension PostDownloadX on WidgetRef {
       message: 'Downloading ${posts.length} files...',
     );
 
-    for (int i = 0; i < posts.length; i++) {
+    for (var i = 0; i < posts.length; i++) {
       final post = posts[i];
       await _download(
         this,
@@ -105,12 +107,12 @@ extension PostDownloadX on WidgetRef {
 Future<void> _download(
   WidgetRef ref,
   Post downloadable, {
-  PermissionStatus? permission,
   required Settings settings,
+  required DownloadFileUrlExtractor downloadFileUrlExtractor,
+  PermissionStatus? permission,
   String? group,
   String? downloadPath,
   Map<String, String>? bulkMetadata,
-  required DownloadFileUrlExtractor downloadFileUrlExtractor,
   void Function()? onStarted,
 }) async {
   final booruConfig = ref.readConfig;
@@ -123,6 +125,7 @@ Future<void> _download(
     AppHttpHeaders.userAgentHeader:
         ref.read(userAgentProvider(booruConfig.auth.booruType)),
     ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
+    ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),
   };
 
   final deviceStoragePermissionNotifier =
@@ -193,23 +196,27 @@ Future<void> _download(
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
-    download();
+    await download();
     return;
   }
 
   if (permission == PermissionStatus.granted) {
-    download();
+    await download();
   } else {
     logger.logI('Single Download', 'Permission not granted, requesting...');
-    deviceStoragePermissionNotifier.requestPermission(
-      onDone: (isGranted) {
-        if (isGranted) {
-          download();
-        } else {
-          logger.logI('Single Download',
-              'Storage permission request denied, aborting...');
-        }
-      },
+    unawaited(
+      deviceStoragePermissionNotifier.requestPermission(
+        onDone: (isGranted) {
+          if (isGranted) {
+            download();
+          } else {
+            logger.logI(
+              'Single Download',
+              'Storage permission request denied, aborting...',
+            );
+          }
+        },
+      ),
     );
   }
 }

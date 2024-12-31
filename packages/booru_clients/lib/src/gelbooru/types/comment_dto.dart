@@ -2,7 +2,6 @@
 import 'package:xml/xml.dart' as xml;
 
 class CommentDto {
-
   CommentDto({
     this.createdAt,
     this.postId,

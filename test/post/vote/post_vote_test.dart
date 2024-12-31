@@ -2,8 +2,8 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/posts/votes/post_vote.dart';
-import 'package:boorusama/core/posts/votes.dart';
+import 'package:boorusama/boorus/danbooru/posts/votes/src/post_vote.dart';
+import 'package:boorusama/core/posts/votes/src/post_vote.dart';
 
 void main() {
   group('[vote state test]', () {

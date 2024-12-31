@@ -12,9 +12,9 @@ import 'booru_config_provider.dart';
 
 class UpdateBooruConfigScope extends ConsumerWidget {
   const UpdateBooruConfigScope({
-    super.key,
     required this.id,
     required this.child,
+    super.key,
   });
 
   final EditBooruConfigId id;
@@ -28,7 +28,7 @@ class UpdateBooruConfigScope extends ConsumerWidget {
     if (config == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: Center(
+        body: const Center(
           child: Text('Config not found'),
         ),
       );

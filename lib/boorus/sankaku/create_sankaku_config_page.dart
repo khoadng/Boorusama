@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create.dart';
+import '../../core/configs/create.dart';
 
 class CreateSankakuConfigPage extends ConsumerWidget {
   const CreateSankakuConfigPage({

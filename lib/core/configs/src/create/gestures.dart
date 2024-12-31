@@ -6,18 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../theme.dart';
 import '../data/booru_config_data.dart';
+import '../gestures.dart';
 import 'providers.dart';
+import 'widgets.dart';
 
 class DefaultBooruConfigGesturesView extends ConsumerWidget {
   const DefaultBooruConfigGesturesView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BooruConfigGesturesView(
+    return const BooruConfigGesturesView(
       postDetailsGestureActions: kDefaultGestureActions,
     );
   }
@@ -25,8 +26,8 @@ class DefaultBooruConfigGesturesView extends ConsumerWidget {
 
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
-    super.key,
     required this.postDetailsGestureActions,
+    super.key,
     this.describePostDetailsAction,
   });
 
@@ -36,8 +37,9 @@ class BooruConfigGesturesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postGesturesConfigTyped = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.postGesturesConfigTyped));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.postGesturesConfigTyped),
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -46,7 +48,8 @@ class BooruConfigGesturesView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BooruConfigSettingsHeader(
-              label: 'settings.image_viewer.image_viewer'.tr()),
+            label: 'settings.image_viewer.image_viewer'.tr(),
+          ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
@@ -60,12 +63,16 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 );
               },
               items: postDetailsGestureActions
-                  .map((value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(describePostDetailsAction != null
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value)),
-                      ))
+                            : describeDefaultGestureAction(value),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -82,12 +89,16 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 );
               },
               items: postDetailsGestureActions
-                  .map((value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(describePostDetailsAction != null
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value)),
-                      ))
+                            : describeDefaultGestureAction(value),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -105,12 +116,16 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 );
               },
               items: postDetailsGestureActions
-                  .map((value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(describePostDetailsAction != null
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value)),
-                      ))
+                            : describeDefaultGestureAction(value),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -131,12 +146,16 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 );
               },
               items: postDetailsGestureActions
-                  .map((value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(describePostDetailsAction != null
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value)),
-                      ))
+                            : describeDefaultGestureAction(value),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -153,12 +172,16 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 );
               },
               items: postDetailsGestureActions
-                  .map((value) => DropdownMenuItem(
-                        value: value,
-                        child: Text(describePostDetailsAction != null
+                  .map(
+                    (value) => DropdownMenuItem(
+                      value: value,
+                      child: Text(
+                        describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value)),
-                      ))
+                            : describeDefaultGestureAction(value),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -172,29 +195,6 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class BooruConfigSettingsHeader extends StatelessWidget {
-  const BooruConfigSettingsHeader({
-    super.key,
-    required this.label,
-  });
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w500,
-        ),
       ),
     );
   }

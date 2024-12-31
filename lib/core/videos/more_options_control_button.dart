@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,14 +6,14 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/listing/post_grid_config_icon_button.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../foundation/display.dart';
+import '../widgets/mobile_config_tile.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
-    super.key,
     required this.speed,
     required this.onSpeedChanged,
+    super.key,
   });
 
   final double speed;
@@ -45,9 +43,9 @@ class MoreOptionsControlButton extends StatelessWidget {
 
 class BooruVideoOptionSheet extends StatelessWidget {
   const BooruVideoOptionSheet({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
   });
 
   final double value;
@@ -67,7 +65,7 @@ class BooruVideoOptionSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
-            MobilePostGridConfigTile(
+            MobileConfigTile(
               value: _buildSpeedText(value),
               title: 'Play back speed',
               onTap: () {
@@ -93,9 +91,9 @@ class BooruVideoOptionSheet extends StatelessWidget {
 
 class PlaybackSpeedActionSheet extends StatelessWidget {
   const PlaybackSpeedActionSheet({
-    super.key,
     required this.onChanged,
     required this.speeds,
+    super.key,
   });
 
   final void Function(double value) onChanged;

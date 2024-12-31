@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../foundation/html.dart';
+import '../foundation/url_launcher.dart';
 
 class NonQuote extends StatelessWidget {
-  const NonQuote({super.key, required this.text});
+  const NonQuote({required this.text, super.key});
   final String text;
 
   @override

@@ -8,19 +8,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/images/dio_extended_image.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/http.dart';
+import '../configs/ref.dart';
+import '../http/http.dart';
+import '../http/providers.dart';
+import 'dio_extended_image.dart';
 import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
 
 class BooruImage extends ConsumerWidget {
   const BooruImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
@@ -64,6 +63,7 @@ class BooruImage extends ConsumerWidget {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentProvider(config.booruType)),
         ...ref.watch(extraHttpHeaderProvider(config)),
+        ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
     );
   }
@@ -71,9 +71,9 @@ class BooruImage extends ConsumerWidget {
 
 class BooruRawImage extends StatelessWidget {
   const BooruRawImage({
-    super.key,
     required this.dio,
     required this.imageUrl,
+    super.key,
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
@@ -222,7 +222,7 @@ class _EmptyImage extends StatelessWidget {
             children: [
               Expanded(
                 child: placeholder,
-              )
+              ),
             ],
           )
         : NullableAspectRatio(
@@ -254,7 +254,7 @@ class ImagePlaceHolder extends StatelessWidget {
         color: Theme.of(context)
             .colorScheme
             .surfaceContainerHigh
-            .applyOpacity(0.5),
+            .withValues(alpha: 0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: LayoutBuilder(
@@ -298,9 +298,9 @@ class ErrorPlaceholder extends StatelessWidget {
 
 class NullableAspectRatio extends StatelessWidget {
   const NullableAspectRatio({
+    required this.child,
     super.key,
     this.aspectRatio,
-    required this.child,
   });
 
   final double? aspectRatio;

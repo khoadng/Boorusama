@@ -2,11 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/tags/tag/tag.dart';
 
 class SzurubooruPost extends Equatable
     with
@@ -14,12 +13,10 @@ class SzurubooruPost extends Equatable
         TranslatedMixin,
         ImageInfoMixin,
         VideoInfoMixin,
-        NoTagDetailsMixin,
-        TagListCheckMixin
+        NoTagDetailsMixin
     implements Post {
   SzurubooruPost({
     required this.id,
-    this.createdAt,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
@@ -28,10 +25,8 @@ class SzurubooruPost extends Equatable
     required this.hasComment,
     required this.isTranslated,
     required this.hasParentOrChildren,
-    this.parentId,
     required this.source,
     required this.score,
-    this.downvotes,
     required this.duration,
     required this.fileSize,
     required this.format,
@@ -47,6 +42,9 @@ class SzurubooruPost extends Equatable
     required this.commentCount,
     required this.metadata,
     required this.tagDetails,
+    this.createdAt,
+    this.parentId,
+    this.downvotes,
   });
 
   @override

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 
 class RemoveBooruConfigAlertDialog extends StatelessWidget {
   const RemoveBooruConfigAlertDialog({
-    super.key,
     required this.onConfirm,
     required this.title,
     required this.description,
+    super.key,
   });
 
   final void Function() onConfirm;

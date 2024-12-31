@@ -12,12 +12,12 @@ import 'package:foundation/foundation.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/foundation/media_scanner.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/router.dart';
+import '../../boorus/booru/booru.dart';
+import '../../configs/ref.dart';
+import '../../foundation/media_scanner.dart';
+import '../../foundation/path.dart';
+import '../../foundation/platform.dart';
+import '../../router.dart';
 import '../l10n.dart';
 import '../manager/download_tasks_notifier.dart';
 import '../path/download_path.dart';
@@ -114,8 +114,8 @@ class BackgroundDownloader implements DownloadService {
 
 class BackgroundDownloaderBuilder extends ConsumerWidget {
   const BackgroundDownloaderBuilder({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;
@@ -140,9 +140,9 @@ class BackgroundDownloaderBuilder extends ConsumerWidget {
 
 class BackgroundDownloaderScope extends ConsumerStatefulWidget {
   const BackgroundDownloaderScope({
-    super.key,
     required this.onTapNotification,
     required this.child,
+    super.key,
   });
 
   final Widget child;
@@ -167,7 +167,7 @@ class _BackgroundDownloaderScopeState
             if (isAndroid()) {
               await MediaScanner.loadMedia(path: path);
             } else if (isIOS()) {
-              Gal.putImage(path);
+              unawaited(Gal.putImage(path));
             }
           },
         );
@@ -225,7 +225,8 @@ class _BackgroundDownloaderScopeState
 
     FileDownloader()
         .registerCallbacks(
-            taskNotificationTapCallback: myNotificationTapCallback)
+          taskNotificationTapCallback: myNotificationTapCallback,
+        )
         .configureNotificationForGroup(
           FileDownloader.defaultGroup,
           running: const TaskNotification(

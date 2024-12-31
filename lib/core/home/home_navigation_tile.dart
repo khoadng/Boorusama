@@ -2,20 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/app.dart';
+import '../app.dart';
 import 'home_page_controller.dart';
 import 'navigation_tile.dart';
 
 class HomeNavigationTile extends StatelessWidget {
   const HomeNavigationTile({
-    super.key,
-    this.onTap,
     required this.title,
     required this.icon,
     required this.selectedIcon,
     required this.value,
     required this.constraints,
     required this.controller,
+    super.key,
+    this.onTap,
   });
 
   // Will override the onTap function

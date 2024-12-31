@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/foundation/iap/iap.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/iap/iap.dart';
+import '../foundation/loggers.dart';
+import '../foundation/toast.dart';
+import '../foundation/url_launcher.dart';
+import '../widgets/widgets.dart';
 import 'premiums.dart';
 
 class PremiumPage extends ConsumerStatefulWidget {
@@ -52,72 +52,76 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
         padding: const EdgeInsets.symmetric(
           horizontal: 16,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Your subscriptions'.toUpperCase(),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.6),
-                  ),
-            ),
-            Text('You are subscribed to ${package.product.title}'),
-            ref.watch(premiumManagementURLProvider).when(
-                  data: (url) => kDebugMode
-                      ? Container(
-                          padding: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              ref
-                                  .read(subscriptionNotifierProvider.notifier)
-                                  .debugCancelSubscription();
-                            },
-                            child: const Text('Cancel Subscription (debug)'),
-                          ),
-                        )
-                      : Container(
-                          padding: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (url == null) {
-                                logger.logW('Subscription',
-                                    'Management URL is null. Cannot open.');
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Your subscriptions'.toUpperCase(),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
+                    ),
+              ),
+              Text('You are subscribed to ${package.product.title}'),
+              ref.watch(premiumManagementURLProvider).when(
+                    data: (url) => kDebugMode
+                        ? Container(
+                            padding: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                ref
+                                    .read(subscriptionNotifierProvider.notifier)
+                                    .debugCancelSubscription();
+                              },
+                              child: const Text('Cancel Subscription (debug)'),
+                            ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (url == null) {
+                                  logger.logW(
+                                    'Subscription',
+                                    'Management URL is null. Cannot open.',
+                                  );
 
-                                showErrorToast(
-                                  context,
-                                  'Failed to open subscription management',
+                                  showErrorToast(
+                                    context,
+                                    'Failed to open subscription management',
+                                  );
+
+                                  return;
+                                }
+
+                                // open management URL
+                                logger.logI(
+                                  'Subscription',
+                                  'Opening management URL: $url',
                                 );
-
-                                return;
-                              }
-
-                              // open management URL
-                              logger.logI(
-                                'Subscription',
-                                'Opening management URL: $url',
-                              );
-                              launchExternalUrlString(url);
-                            },
-                            child: const Text('Manage Subscription'),
+                                launchExternalUrlString(url);
+                              },
+                              child: const Text('Manage Subscription'),
+                            ),
                           ),
+                    error: (e, st) => const SizedBox.shrink(),
+                    loading: () => const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
                         ),
-                  error: (e, st) => const SizedBox.shrink(),
-                  loading: () => const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(),
                       ),
                     ),
                   ),
-                ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -126,8 +130,8 @@ class _PremiumPageState extends ConsumerState<PremiumPage> {
 
 class PremiumOffersPage extends ConsumerWidget {
   const PremiumOffersPage({
-    super.key,
     required this.canGoBack,
+    super.key,
   });
 
   final bool canGoBack;
@@ -142,11 +146,11 @@ class PremiumOffersPage extends ConsumerWidget {
             if (success == true) {
               showDialog(
                 context: context,
-                builder: (context) => Dialog(
-                  shape: const RoundedRectangleBorder(
+                builder: (context) => const Dialog(
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
-                  child: const PremiumThanksDialog(),
+                  child: PremiumThanksDialog(),
                 ),
               );
             } else if (success == false) {
@@ -167,103 +171,29 @@ class PremiumOffersPage extends ConsumerWidget {
         child: Stack(
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(height: 48),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 36,
-                          height: 36,
-                          isAntiAlias: true,
-                          filterQuality: FilterQuality.none,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          kPremiumBrandNameFull,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 26,
-                            letterSpacing: -1,
-                          ),
-                        ),
-                      ),
-                    ],
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 36),
+                        _buildTitle(),
+                        const SizedBox(height: 12),
+                        _buildBenefits(ref),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                ref.watch(premiumBenefitProvider).when(
-                      data: (benefits) => SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: benefits
-                              .map(
-                                (benefit) => BenefitCard(
-                                  title: benefit.title,
-                                  description: benefit.description,
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                      error: (e, st) => Text('Error: ${e.toString()}'),
-                      loading: () => const CircularProgressIndicator(),
-                    ),
-                const Spacer(),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                  ),
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.onSurface,
-                    ),
-                    onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
-                          loading: () => null,
-                          orElse: () {
-                            return () => restore(ref, context);
-                          },
-                        ),
-                    child: const Text('Restore subscription'),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
-                  ),
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(0, 48),
-                    ),
-                    onPressed: ref.watch(packagePurchaseProvider).when(
-                          data: (_) {
-                            return () => _showPlans(context, ref);
-                          },
-                          loading: () => null,
-                          error: (_, __) {
-                            return () => _showPlans(context, ref);
-                          },
-                        ),
-                    child: ref.watch(packagePurchaseProvider).maybeWhen(
-                          orElse: () => const Text('Get Plus'),
-                          loading: () => SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildRestoreButton(context, ref),
+                    _buildPurchaseButton(ref, context),
+                  ],
                 ),
               ],
             ),
@@ -280,6 +210,109 @@ class PremiumOffersPage extends ConsumerWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPurchaseButton(WidgetRef ref, BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 32,
+        vertical: 12,
+      ),
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(0, 48),
+        ),
+        onPressed: ref.watch(packagePurchaseProvider).when(
+              data: (_) {
+                return () => _showPlans(context, ref);
+              },
+              loading: () => null,
+              error: (_, __) {
+                return () => _showPlans(context, ref);
+              },
+            ),
+        child: ref.watch(packagePurchaseProvider).maybeWhen(
+              orElse: () => const Text('Get Plus'),
+              loading: () => SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ),
+      ),
+    );
+  }
+
+  Widget _buildRestoreButton(BuildContext context, WidgetRef ref) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 12,
+      ),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+        ),
+        onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+              loading: () => null,
+              orElse: () {
+                return () => restore(ref, context);
+              },
+            ),
+        child: const Text('Restore subscription'),
+      ),
+    );
+  }
+
+  Widget _buildBenefits(WidgetRef ref) {
+    return ref.watch(premiumBenefitProvider).when(
+          data: (benefits) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: benefits
+                .map(
+                  (benefit) => BenefitCard(
+                    title: benefit.title,
+                    description: benefit.description,
+                  ),
+                )
+                .toList(),
+          ),
+          error: (e, st) => Text('Error: $e'),
+          loading: () => const CircularProgressIndicator(),
+        );
+  }
+
+  Widget _buildTitle() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 36,
+              height: 36,
+              isAntiAlias: true,
+              filterQuality: FilterQuality.none,
+            ),
+          ),
+          const Expanded(
+            child: Text(
+              kPremiumBrandNameFull,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 26,
+                letterSpacing: -1,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -348,15 +381,15 @@ class PremiumOffersPage extends ConsumerWidget {
 
 class SubscriptionPlanSelectModal extends ConsumerWidget {
   const SubscriptionPlanSelectModal({
-    super.key,
     required this.onPurchase,
+    super.key,
   });
 
   final void Function(Package) onPurchase;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.vertical(
@@ -373,13 +406,15 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
                   onPurchase: onPurchase,
                 ),
                 error: (e, st) => Text('Error: $e'),
-                loading: () => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: const CircularProgressIndicator(),
+                loading: () => const Center(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
                   ),
                 ),
@@ -392,9 +427,9 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
 
 class SubscriptionPlans extends ConsumerStatefulWidget {
   const SubscriptionPlans({
-    super.key,
     required this.products,
     required this.onPurchase,
+    super.key,
   });
 
   final List<Package> products;
@@ -415,10 +450,10 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Select your plan'),
+              Text('Select your plan'),
             ],
           ),
           const SizedBox(height: 8),
@@ -447,7 +482,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: FilledButton(
               style: FilledButton.styleFrom(
                 minimumSize: const Size(0, 48),
@@ -485,7 +520,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.6),
+                            .withValues(alpha: 0.6),
                       ),
                   children: [
                     TextSpan(
@@ -522,8 +557,8 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
 
 class SubscriptionPlanTile extends StatelessWidget {
   const SubscriptionPlanTile({
-    super.key,
     required this.package,
+    super.key,
     this.selected = false,
     this.onTap,
     this.saveIndicator,
@@ -560,7 +595,10 @@ class SubscriptionPlanTile extends StatelessWidget {
               border: Border.all(
                 color: selected
                     ? Theme.of(context).colorScheme.onSurface
-                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.25),
+                    : Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.25),
               ),
             ),
             child: Row(
@@ -568,15 +606,17 @@ class SubscriptionPlanTile extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(switch (package.type) {
-                      null => '???',
-                      PackageType.monthly => 'Monthly',
-                      PackageType.annual => 'Yearly',
-                    }),
+                    Text(
+                      switch (package.type) {
+                        null => '???',
+                        PackageType.monthly => 'Monthly',
+                        PackageType.annual => 'Yearly',
+                      },
+                    ),
                     if (saveIndicator != null) ...[
                       const SizedBox(width: 8),
                       saveIndicator!,
-                    ]
+                    ],
                   ],
                 ),
                 Column(
@@ -596,7 +636,7 @@ class SubscriptionPlanTile extends StatelessWidget {
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withOpacity(0.6),
+                                  .withValues(alpha: 0.6),
                             ),
                           ),
                         ],
@@ -615,9 +655,9 @@ class SubscriptionPlanTile extends StatelessWidget {
 
 class BenefitCard extends StatelessWidget {
   const BenefitCard({
-    super.key,
     required this.title,
     required this.description,
+    super.key,
   });
 
   final String title;
@@ -632,7 +672,7 @@ class BenefitCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(
+          const Text(
             '•',
             style: TextStyle(
               fontSize: 32,
@@ -657,7 +697,7 @@ class BenefitCard extends StatelessWidget {
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
-                        .withOpacity(0.6),
+                        .withValues(alpha: 0.6),
                   ),
                 ),
               ],

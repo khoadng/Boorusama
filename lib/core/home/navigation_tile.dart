@@ -1,17 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-
 class NavigationTile extends StatelessWidget {
   const NavigationTile({
-    super.key,
     required this.value,
     required this.index,
     required this.selectedIcon,
     required this.icon,
     required this.title,
     required this.onTap,
+    super.key,
     this.showIcon = true,
     this.showTitle = true,
   });
@@ -50,7 +48,7 @@ class NavigationTile extends StatelessWidget {
             child: showIcon && showTitle
                 ? Row(
                     children: [
-                      selected ? selectedIcon : icon,
+                      if (selected) selectedIcon else icon,
                       const SizedBox(width: 16),
                       Expanded(child: title),
                     ],

@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 
 // Project imports:
-import 'package:boorusama/foundation/iap/iap.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../core/foundation/loggers.dart';
+import '../iap/iap.dart';
 import 'constants.dart';
 import 'revenuecat.dart';
 
@@ -20,7 +20,8 @@ Future<void> initRevenuecat() async {
   // check if key is available
   if (!hasKey) {
     throw Exception(
-        'Revenuecat API key is empty, make sure to set it in your environment');
+      'Revenuecat API key is empty, make sure to set it in your environment',
+    );
   }
 
   final configuration = Platform.isAndroid

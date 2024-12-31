@@ -2,7 +2,7 @@
 import 'package:booru_clients/e621.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
+import '../../../core/configs/config.dart';
 import 'e621_tag.dart';
 import 'e621_tag_category.dart';
 
@@ -39,10 +39,12 @@ E621Tag e621TagDtoToTag(TagDto dto) {
     name: dto.name ?? '',
     postCount: dto.postCount ?? 0,
     relatedTags: dto.relatedTags
-            ?.map((e) => E621RelatedTag(
-                  tag: e.tag,
-                  score: e.score,
-                ))
+            ?.map(
+              (e) => E621RelatedTag(
+                tag: e.tag,
+                score: e.score,
+              ),
+            )
             .toList() ??
         [],
     relatedTagsUpdatedAt:

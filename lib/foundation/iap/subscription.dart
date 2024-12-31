@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import '../../core/foundation/loggers.dart';
 import 'iap.dart';
 
 abstract class SubscriptionManager {
@@ -15,11 +15,13 @@ abstract class SubscriptionManager {
 
 final subscriptionNotifierProvider =
     NotifierProvider<SubscriptionNotifier, Package?>(
-        () => throw UnimplementedError());
+  () => throw UnimplementedError(),
+);
 
 final packagePurchaseProvider =
     AsyncNotifierProvider.autoDispose<PackagePurchaseNotifier, bool?>(
-        PackagePurchaseNotifier.new);
+  PackagePurchaseNotifier.new,
+);
 
 class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
   @override
@@ -36,7 +38,9 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
       state = const AsyncLoading();
 
       logger.logI(
-          _kServiceName, 'Starting purchase for package: ${package.id}...');
+        _kServiceName,
+        'Starting purchase for package: ${package.id}...',
+      );
 
       final notifier = ref.read(subscriptionNotifierProvider.notifier);
 
@@ -50,7 +54,9 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
       state = AsyncData(success);
     } on Exception catch (e, st) {
       logger.logE(
-          _kServiceName, 'Failed to purchase package: ${package.id}, $e');
+        _kServiceName,
+        'Failed to purchase package: ${package.id}, $e',
+      );
 
       state = AsyncError(e, st);
     }
@@ -97,9 +103,8 @@ class SubscriptionNotifier extends Notifier<Package?> {
   }
 
   Future<bool> restoreSubscription() async {
-    final logger = ref.read(loggerProvider);
-
-    logger.logI('Subscription', 'Restoring subscription...');
+    final logger = ref.read(loggerProvider)
+      ..logI('Subscription', 'Restoring subscription...');
 
     final res = await iap.restorePurchases();
 

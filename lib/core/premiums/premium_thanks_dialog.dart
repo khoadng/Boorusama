@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
+import '../theme.dart';
 
 class PremiumThanksDialog extends StatelessWidget {
   const PremiumThanksDialog({super.key});
@@ -16,9 +16,9 @@ class PremiumThanksDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 20),
-          Text(
+          const Text(
             'Thank you for supporting me!',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
@@ -40,8 +40,8 @@ class PremiumThanksDialog extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 14),
               child: Text(
                 'Got it!',
                 style: TextStyle(

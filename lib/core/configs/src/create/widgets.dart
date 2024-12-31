@@ -6,9 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/option_dropdown_button.dart';
+import '../../../posts/post/post.dart';
+import '../../../widgets/widgets.dart';
 
 class CreateBooruApiKeyField extends StatefulWidget {
   const CreateBooruApiKeyField({
@@ -78,8 +77,8 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
 
 class CreateBooruConfigNameField extends StatefulWidget {
   const CreateBooruConfigNameField({
-    super.key,
     required this.onChanged,
+    super.key,
     this.text,
   });
 
@@ -119,8 +118,8 @@ class _CreateBooruConfigNameFieldState
 
 class CreateBooruHideDeletedSwitch extends StatelessWidget {
   const CreateBooruHideDeletedSwitch({
-    super.key,
     required this.onChanged,
+    super.key,
     this.value,
     this.subtitle,
   });
@@ -143,9 +142,9 @@ class CreateBooruHideDeletedSwitch extends StatelessWidget {
 
 class CreateBooruLoginField extends StatefulWidget {
   const CreateBooruLoginField({
+    required this.labelText,
     super.key,
     this.onChanged,
-    required this.labelText,
     this.hintText,
     this.text,
     this.controller,
@@ -196,10 +195,10 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
 
 class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
   const CreateBooruImageDetailsResolutionOptionTile({
-    super.key,
     required this.value,
     required this.items,
     required this.onChanged,
+    super.key,
   });
 
   final List<String> items;
@@ -224,10 +223,12 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
         onChanged: (value) => onChanged(value),
         items: items
             .append('Auto')
-            .map((e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(e.sentenceCase),
-                ))
+            .map(
+              (e) => DropdownMenuItem(
+                value: e,
+                child: Text(e.sentenceCase),
+              ),
+            )
             .toList(),
       ),
     );
@@ -237,9 +238,9 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
 class CreateBooruGeneralPostDetailsResolutionOptionTile
     extends StatelessWidget {
   const CreateBooruGeneralPostDetailsResolutionOptionTile({
-    super.key,
     required this.value,
     required this.onChanged,
+    super.key,
   });
 
   final String? value;
@@ -302,8 +303,8 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
 
 class CreateBooruSubmitButton extends StatelessWidget {
   const CreateBooruSubmitButton({
-    super.key,
     required this.onSubmit,
+    super.key,
     this.backgroundColor,
     this.child,
     this.fill = false,
@@ -332,6 +333,29 @@ class CreateBooruSubmitButton extends StatelessWidget {
       ),
       onPressed: onSubmit,
       child: child ?? const Text('Save'),
+    );
+  }
+}
+
+class BooruConfigSettingsHeader extends StatelessWidget {
+  const BooruConfigSettingsHeader({
+    required this.label,
+    super.key,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 }

@@ -2,8 +2,8 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../boorus/booru/booru.dart';
+import '../../foundation/loggers.dart';
 import 'booru_config.dart';
 import 'data/booru_config_repository_hive.dart';
 
@@ -28,9 +28,9 @@ Future<BooruConfigRepository> createBooruConfigsRepo({
     await onCreateNew(id);
   }
 
-  logger.l('Total booru config: ${booruConfigBox.length}');
-
-  logger.l('Initialize booru user repository');
+  logger
+    ..l('Total booru config: ${booruConfigBox.length}')
+    ..l('Initialize booru user repository');
   final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
 
   return booruUserRepo;

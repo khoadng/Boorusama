@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus/booru_type.dart';
-import 'package:boorusama/core/settings/data/settings_providers.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import '../../../boorus/booru/booru.dart';
+import '../../../foundation/loggers.dart';
+import '../../../settings/providers.dart';
 import '../booru_config.dart';
+import '../gestures.dart';
 
 final currentBooruConfigProvider =
     NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
@@ -68,7 +68,9 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
         .read(settingsProvider)
         .copyWith(currentBooruConfigId: booruConfig.id);
     await ref.read(settingsNotifierProvider.notifier).updateSettings(settings);
-    ref.read(loggerProvider).logI('Booru',
-        'Current booru config updated from ${intToBooruType(old.booruId)} to ${intToBooruType(booruConfig.booruId)}');
+    ref.read(loggerProvider).logI(
+          'Booru',
+          'Current booru config updated from ${intToBooruType(old.booruId)} to ${intToBooruType(booruConfig.booruId)}',
+        );
   }
 }

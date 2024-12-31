@@ -13,9 +13,12 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
 import 'package:boorusama/core/configs/src/booru_config_converter.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/loggers.dart';
+import 'package:boorusama/core/foundation/loggers.dart';
+import 'package:boorusama/core/settings/src/data/providers.dart';
+import 'package:boorusama/core/settings/src/providers/settings_notifier.dart';
+import 'package:boorusama/core/settings/src/providers/settings_provider.dart';
+import 'package:boorusama/core/settings/src/types/settings.dart';
+import 'package:boorusama/core/settings/src/types/settings_repository.dart';
 import '../riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {
@@ -103,19 +106,21 @@ class MockLogger extends Mock implements Logger {}
 final mockAnalytics = MockAnalytics();
 
 class MockCallback extends Mock {
+  // ignore: unreachable_from_main
   void call();
 }
 
 ProviderContainer createBooruConfigContainer({
-  BooruConfigRepository? booruConfigRepository,
   required SettingsRepository settingsRepository,
+  BooruConfigRepository? booruConfigRepository,
 }) {
   final mockLogger = MockLogger();
 
   return createContainer(
     overrides: [
       booruConfigRepoProvider.overrideWith(
-          (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository()),
+        (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository(),
+      ),
       settingsRepoProvider.overrideWithValue(settingsRepository),
       settingsNotifierProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),

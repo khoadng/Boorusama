@@ -6,21 +6,21 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/picker.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../core/widgets/widgets.dart';
+import '../../foundation/html.dart';
+import '../../foundation/picker.dart';
+import '../../foundation/platform.dart';
+import '../../info/device_info.dart';
+import '../../theme.dart';
 import '../l10n.dart';
 import '../path/validator.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
-    super.key,
     required this.storagePath,
     required this.deviceInfo,
     required this.onPathChanged,
+    super.key,
     this.hint,
     this.title,
   });
@@ -70,7 +70,7 @@ class _DownloadFolderSelectorSectionState
             borderRadius: BorderRadius.circular(4),
             side: BorderSide(
               color: Theme.of(context).colorScheme.outlineVariant,
-              width: 1.5,
+              width: 0.75,
             ),
           ),
           child: InkWell(
@@ -97,9 +97,9 @@ class _DownloadFolderSelectorSectionState
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .hintColor),
+                                  color:
+                                      Theme.of(context).colorScheme.hintColor,
+                                ),
                           ),
                   ),
                 ),
@@ -151,9 +151,9 @@ class _DownloadFolderSelectorSectionState
 
 class DownloadPathWarning extends StatelessWidget {
   const DownloadPathWarning({
-    super.key,
     required this.releaseName,
     required this.allowedFolders,
+    super.key,
     this.padding,
   });
 

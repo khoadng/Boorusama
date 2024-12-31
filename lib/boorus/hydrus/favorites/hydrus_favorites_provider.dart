@@ -1,25 +1,11 @@
 // Package imports:
 import 'package:booru_clients/hydrus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/hydrus/hydrus.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'favorites.dart';
-
-final hydrusFavoritesProvider = NotifierProvider.family<HydrusFavoritesNotifier,
-    IMap<int, bool>, BooruConfigAuth>(
-  HydrusFavoritesNotifier.new,
-);
-
-final hydrusFavoriteProvider =
-    Provider.autoDispose.family<bool, int>((ref, postId) {
-  final config = ref.watchConfigAuth;
-  final favorites = ref.watch(hydrusFavoritesProvider(config));
-  return favorites[postId] ?? false;
-});
+import '../../../core/configs/config.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../hydrus.dart';
 
 final hydrusCanFavoriteProvider =
     FutureProvider.family<bool, BooruConfigAuth>((ref, config) async {
@@ -29,3 +15,29 @@ final hydrusCanFavoriteProvider =
 
   return getLikeDislikeRatingKey(services) != null;
 });
+
+class HydrusFavoriteRepository extends FavoriteRepository<HydrusPost> {
+  HydrusFavoriteRepository(this.ref, this.config);
+
+  final Ref ref;
+  final BooruConfigAuth config;
+
+  HydrusClient get client => ref.read(hydrusClientProvider(config));
+
+  @override
+  bool canFavorite() => true;
+
+  @override
+  Future<AddFavoriteStatus> addToFavorites(int postId) async =>
+      client.changeLikeStatus(fileId: postId, liked: true).then(
+            (value) =>
+                value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
+          );
+
+  @override
+  Future<bool> removeFromFavorites(int postId) async =>
+      client.changeLikeStatus(fileId: postId, liked: null);
+
+  @override
+  bool isPostFavorited(HydrusPost post) => post.ownFavorite ?? false;
+}

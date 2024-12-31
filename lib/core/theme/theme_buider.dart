@@ -6,15 +6,15 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data/settings_providers.dart';
+import '../settings/providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
 import 'theme_mode.dart';
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
-    super.key,
     required this.builder,
+    super.key,
   });
 
   final Widget Function(ThemeData theme, ThemeMode themeMode) builder;

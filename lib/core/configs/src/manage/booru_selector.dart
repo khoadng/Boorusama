@@ -10,13 +10,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/router.dart';
+import '../../../foundation/toast.dart';
+import '../../../settings/providers.dart';
+import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';
+import '../route_utils.dart';
 import 'booru_config_provider.dart';
 import 'booru_selector_item.dart';
 import 'current_booru_providers.dart';
@@ -59,7 +59,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
 
     return Container(
       width: 68,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(orderedConfigsProvider).maybeWhen(
@@ -130,7 +130,7 @@ class _BooruSelectorHorizontalState
 
     return Container(
       height: 48,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: ref.watch(orderedConfigsProvider).maybeWhen(
@@ -219,15 +219,16 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = orders.isEmpty || orders.length != configs.length
         ? [for (final config in configs) config.id]
-        : orders.toList();
-
-    newOrders.reorder(oldIndex, newIndex);
+        : orders.toList()
+      ..reorder(oldIndex, newIndex);
 
     ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
   }
 
-  bool get reverseScroll => ref.watch(settingsProvider
-      .select((value) => value.reverseBooruConfigSelectorScrollDirection));
+  bool get reverseScroll => ref.watch(
+        settingsProvider
+            .select((value) => value.reverseBooruConfigSelectorScrollDirection),
+      );
 
   bool get hideLabel =>
       ref.watch(settingsProvider.select((value) => value.hideBooruConfigLabel));

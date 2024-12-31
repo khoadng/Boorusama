@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/artists/artists.dart';
-import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
+import '../../../core/blacklists/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/post/providers.dart';
+import '../e621.dart';
+import '../posts/posts.dart';
+import 'artists.dart';
 
 final e621ArtistRepoProvider =
     Provider.family<E621ArtistRepository, BooruConfigAuth>((ref, config) {

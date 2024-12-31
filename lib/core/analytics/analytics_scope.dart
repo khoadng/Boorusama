@@ -5,13 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/current.dart';
+import '../configs/current.dart';
 import 'analytics_providers.dart';
 
 class AnalyticsScope extends ConsumerWidget {
   const AnalyticsScope({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

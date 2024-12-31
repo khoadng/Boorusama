@@ -6,16 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import 'booru_dialog.dart';
+import 'booru_text_field.dart';
 
 //FIXME: don't reuse translation keys with favorites tags
 class ImportTagsDialog extends ConsumerStatefulWidget {
   const ImportTagsDialog({
+    required this.onImport,
     super.key,
     this.padding,
     this.hint,
-    required this.onImport,
   });
 
   final double? padding;

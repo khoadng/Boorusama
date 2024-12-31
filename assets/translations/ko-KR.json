@@ -1,0 +1,512 @@
+{
+    "generic": {
+        "done": "완료",
+        "errors": {
+            "no_data": "사용 가능한 데이터 없음",
+            "unknown": "무언가 잘못되었습니다"
+        },
+        "action": {
+            "add": "추가",
+            "delete": "삭제",
+            "edit": "수정",
+            "ok": "확인",
+            "cancel": "취소",
+            "duplicate": "복제"
+        },
+        "view": "보기"
+    },
+    "profile": {
+        "favorites": "즐겨찾기",
+        "profile": "프로필",
+        "copy_user_id": "유저 ID 복사",
+        "messages": "메시지"
+    },
+    "network": {
+        "unavailable": "네트워크 사용할 수 없음"
+    },
+    "tag": {
+        "related": {
+            "more": "더보기",
+            "related": "관련",
+            "add_to_current_search": "현재 검색에 추가",
+            "open_wiki": "위키 열기"
+        },
+        "explore": {
+            "new": "새로운",
+            "popular": "인기 항목"
+        }
+    },
+    "post": {
+        "detail": {
+            "view": "보기",
+            "view_in_browser": "브라우저에서 보기",
+            "file_details": "파일 세부정보",
+            "size": "크기",
+            "resolution": "해상도",
+            "rating": "등급",
+            "file_format": "파일 포맷",
+            "share": {
+                "source": "출처 링크 공유",
+                "booru": "booru 링크 공유",
+                "image": "이미지 공유"
+            },
+            "copied": "복사됨",
+            "show_original": "원본 보기",
+            "show_translated": "번역문 보기",
+            "login_required_notice": "이 작업을 수행하려면 로그인해야 합니다",
+            "open_wiki": "위키 열기",
+            "add_to_blacklist": "블랙리스트에 추가",
+            "add_to_favorites": "즐겨찾기에 추가",
+            "copy_and_open_saved_search": "저장된 검색어 복사 및 열기",
+            "score": {
+                "one": "포인트",
+                "other": "포인트"
+            },
+            "source_label": "출처",
+            "related_posts": "관련 게시물",
+            "add_to_bookmark": "북마크에 추가",
+            "remove_from_bookmark": "북마크에서 제거"
+        },
+        "action": {
+            "preview": "미리보기",
+            "view_comments": "댓글 보기",
+            "add_to_favorite_group": "즐겨찾기 그룹에 추가",
+            "select": "선택"
+        },
+        "image_fullview": {
+            "view_original": "원본 보기",
+            "view_resized": "리사이즈 보기"
+        }
+    },
+    "comment": {
+        "comments": "댓글",
+        "create": {
+            "hint": "댓글",
+            "loading": "기다려 주십시오...",
+            "error": "오류"
+        },
+        "list": {
+            "edit": "편집",
+            "reply": "답글",
+            "reply_to": "에 답글 달기",
+            "delete": "삭제",
+            "noComments": "댓글이 없습니다",
+            "last_updated": "마지막 업데이트",
+            "send": "전송"
+        },
+        "counter": {
+            "one": "댓글",
+            "other": "댓글"
+        }
+    },
+    "explore": {
+        "latest": "최신",
+        "popular": "인기",
+        "hot": "핫",
+        "most_viewed": "가장 많이 본",
+        "see_more": "더 보기",
+        "explore": "탐색"
+    },
+    "search": {
+        "errors": {
+            "generic": "무언가 잘못되었습니다",
+            "tag_limit": "최대 태그 제한에 도달했습니다. 더 많은 태그를 한 번에 검색하려면 계정을 업그레이드하세요.",
+            "database_timeout": "검색 실행이 너무 오래 걸려 취소되었습니다.",
+            "rate_limited": "요청 제한에 도달했습니다. 나중에 다시 시도하세요",
+            "pagination_limit": "페이지네이션 제한에 도달했습니다. 더 이상 스크롤할 수 없습니다",
+            "max_capacity": "서버에 과부하가 걸려 요청을 처리할 수 없습니다. 나중에 다시 시도해주세요",
+            "down": "서버가 응답하지 않습니다. 나중에 다시 시도하세요",
+            "access_denied": "접근 거부됨",
+            "forbidden": "인증 실패",
+            "unknown": "알 수 없는 서버 오류가 발생했습니다. 이 문제를 개발자에게 보고해주세요"
+        },
+        "hint": "검색...",
+        "no_result": "깊고 넓게 찾아봤지만, 결과를 찾을 수 없습니다.",
+        "search_options": "검색 옵션",
+        "metatags_notice": "Free 메타 태그는 태그 검색 제한에 포함되지 않습니다",
+        "history": {
+            "history": "히스토리",
+            "clear": "비우기",
+            "recent": "최근"
+        },
+        "trending": "트렌딩",
+        "remove_all_selected": "선택한 태그 모두 삭제",
+        "result_counter": {
+            "one": "{} 개 결과",
+            "other": "{} 개 결과"
+        },
+        "no_result_notice": "결과 없음",
+        "search_in_progress_notice": "검색중..."
+    },
+    "pool": {
+        "pool": "저장소",
+        "pool_gallery": "저장소 갤러리",
+        "order": {
+            "recent": "최근",
+            "new": "새로운",
+            "post_count": "포스트 수",
+            "name": "이름"
+        },
+        "category": {
+            "series": "시리즈",
+            "collection": "컬렉션"
+        },
+        "search": {
+            "hint": "저장소 검색"
+        },
+        "detail": {
+            "last_updated": "마지막 업데이트"
+        }
+    },
+    "settings": {
+        "settings": "설정",
+        "app_settings": "앱 설정",
+        "appearance": {
+            "appearance": "외관",
+            "show_scores": "점수 보기",
+            "show_post_list_config_header": "게시물 설정 헤더 표시",
+            "booru_config": "Booru 프로필",
+            "booru_config_placement": "Booru 프로필 배치"
+        },
+        "general": "일반",
+        "search": {
+            "search": "검색",
+            "auto_focus_search_bar": "검색 화면이 처음 열리면 검색창에 자동 포커스",
+            "hide_bookmarked_posts_from_search_results": "검색 결과에서 북마크한 게시물 숨기기"
+        },
+        "information": "정보",
+        "changelog": "수정 로그",
+        "infinite_scroll_warning": "오랫동안 스크롤하면 앱이 충돌할 수 있습니다",
+        "result_layout": {
+            "result_layout": "페이지 모드",
+            "infinite_scroll": "무한 스크롤",
+            "pagination": "페이지 나누기"
+        },
+        "image_list": {
+            "image_list": "이미지 리스트",
+            "standard": "스탠다드",
+            "masonry": "그리드 레이아웃"
+        },
+        "image_grid": {
+            "image_grid": "이미지 그리드",
+            "grid_size": {
+                "grid_size": "그리드 크기",
+                "small": "작음",
+                "medium": "중간",
+                "large": "큼"
+            },
+            "image_quality": {
+                "image_quality": "이미지 퀄리티",
+                "high_quality_notice": "고화질 이미지는 로딩 시간이 더 오래 걸립니다.",
+                "high": "높음",
+                "low": "낮음",
+                "original": "원본",
+                "automatic": "자동",
+                "highest": "가장 높음"
+            },
+            "spacing": "간격",
+            "corner_radius": "모서리 반경",
+            "padding": "내부 여백",
+            "aspect_ratio": "화면 비율"
+        },
+        "image_viewer": {
+            "image_viewer": "이미지 뷰어",
+            "full_res_as_default": "최대 해상도 표시를 기본으로 설정",
+            "full_res_notice": "이미지 크기에 따라 로딩 시간이 걸릴 수 있습니다",
+            "slideshow": "슬라이드 쇼",
+            "slideshow_interval": "슬라이드 쇼 간격",
+            "slideshow_mode": "슬라이드 쇼 모드",
+            "slideshow_modes": {
+                "random": "랜덤",
+                "forward": "앞으로",
+                "backward": "뒤로"
+            },
+            "slideshow_skip": "슬라이드 쇼 전환 효과 스킵",
+            "slideshow_interval_explanation": "1초 미만의 값은 자동으로 전환을 건너뜁니다",
+            "mute_video": "동영상 음소거를 기본으로 설정",
+            "video_section_title": "동영상"
+        },
+        "image_detail": {
+            "image_detail": "이미지 디테일"
+        },
+        "language": {
+            "language": "언어",
+            "language_name": "한국어"
+        },
+        "theme": {
+            "theme": "테마",
+            "dark": "다크",
+            "light": "라이트",
+            "amoled_dark": "블랙",
+            "dynamic_color": "다이나믹 테마 색",
+            "dynamic_color_mobile_description": "배경화면에 맞춰 테마 색상 동기화",
+            "dynamic_color_desktop_description": "OS의 색상에 맞춰 테마 색상 동기화",
+            "dynamic_color_unsupported_description": "이 장치는 다이나믹 컬러를 지원하지 않습니다."
+        },
+        "privacy": {
+            "privacy": "개인정보 보호",
+            "send_error_data_notice": "에러 로그 수집을 위해 익명 데이터를 보냅니다",
+            "enable_incognito_keyboard": "개인정보 보호 키보드 활성화",
+            "enable_incognito_keyboard_notice": "Android에만 해당됩니다.",
+            "enable_biometric_lock": "생체인식 잠금 활성화",
+            "enable_biometric_lock_notice": "생체 인식을 지원하며 설정이 완료된 기기에서만 작동합니다."
+        },
+        "performance": {
+            "performance": "성능",
+            "posts_per_page": "페이지 당 포스트",
+            "posts_per_page_explain": "페이지당 썸네일 개수",
+            "cache_size": "캐시 크기",
+            "clear_cache": "비우기",
+            "cache_size_info": "{1}개 파일 중 {0}개"
+        },
+        "debug_logs": {
+            "debug_logs": "디버그 로그",
+            "logs_copied": "로그가 클립보드에 복사됨"
+        },
+        "download": {
+            "path": "다운로드 경로",
+            "select_a_folder": "폴더 선택",
+            "quality": "다운로드 이미지 퀄리티",
+            "qualities": {
+                "original": "원본",
+                "sample": "샘플",
+                "preview": "썸네일"
+            },
+            "title": "다운로드"
+        },
+        "help_us_translate": "번역을 도와주세요",
+        "other_settings": "기타 설정",
+        "data_and_storage": {
+            "data_and_storage": "데이터와 저장 공간",
+            "clear_cache_on_start_up": "앱 시작 시 이미지 캐시 비우기"
+        },
+        "backup_and_restore": {
+            "backup_and_restore": "백업 및 복원"
+        },
+        "image_details": {
+            "image_details": "이미지 디테일",
+            "ui_overlay": {
+                "show": "보기",
+                "hide": "숨김",
+                "ui_overlay": "UI 오버레이"
+            }
+        },
+        "page_indicator": {
+            "page_indicator": "페이지 표시 위치",
+            "top": "위",
+            "bottom": "아래",
+            "both": "모두"
+        },
+        "accessibility": {
+            "accessibility": "접근성",
+            "reverseBooruConfigSelectorScrollDirection": "Booru 프로필 스크롤 방향 반전",
+            "swipeAreaToOpenSidebar": "사이드바 스와이프 영역",
+            "swipeAreaToOpenSidebarDescription": "화면 왼쪽의 스와이프 인식 영역 크기입니다. 값이 너무 크면 페이지 넘기기 등의 가로 제스처를 사용할 수 없게 됩니다."
+        },
+        "booru_settings": {
+            "edit_current_profile": "현재 프로필 수정",
+            "booru_settings": "Booru 설정"
+        },
+        "contribute": "기여",
+        "source_code": "소스 코드",
+        "support": "지원",
+        "contact_developer": "개발자에게 연락",
+        "contact_developer_description": "문제 또는 제안이 있으시면 이 기능을 통해 이메일을 보내주세요",
+        "feature_request_and_bug_report": "기능 요청 및 버그 리포트",
+        "feature_request_and_bug_report_description": "GitHub 저장소를 통해 기능을 제안하거나 버그를 신고할 수 있습니다"
+    },
+    "blacklisted_tags": {
+        "remove": "삭제",
+        "edit": "수정",
+        "blacklisted_tags": "블랙리스트 태그",
+        "load_error": "블랙리스트된 태그를 불러오는 데 실패했습니다",
+        "updated": "블랙리스트 태그 업데이트",
+        "limitation_notice": "<b>NOT</b>, <b>OR</b> 연산자와 <b>score</b>, <b>rating</b> 메타 태그만 지원합니다\n\n다른 메타 태그를 이용한 블랙리스트 기능은 현재 버전에서 지원되지 않습니다.",
+        "failed_to_add": "태그 추가 실패",
+        "failed_to_remove": "태그 삭제 실패",
+        "blacklisted_header_title": "블랙리스트됨",
+        "disable_all": "모두 비활성화",
+        "reenable_all": "전부 다시 활성화"
+    },
+    "download": {
+        "download": "다운로드",
+        "bulk_download": "일괄 다운로드",
+        "bulk_download_tag_confirmation": "아래 태그들이 다운로드됩니다",
+        "bulk_download_save_to_folder": "폴더에 저장",
+        "bulk_download_total_count": "전체",
+        "bulk_download_done_count": "완료",
+        "bulk_download_done_confirm": "완료",
+        "bulk_download_cancel": "취소",
+        "bulk_download_duplicate": "복제",
+        "bulk_download_invalid_folder_name_error": "폴더 이름에 다음 문자들을 포함할 수 없습니다: ",
+        "bulk_download_folder_select_warning": "Android 11 이상 기기에서는 앱이 다음 공개 디렉터리(<b>{0}</b>) 안의 파일만 다운로드할 수 있습니다. <br><br> 올바른 저장 위치 예시: <br><b>[내장 메모리]</b> /storage/emulated/0/Download <br><b>[SD 카드]</b> /storage/A1B2-C3D4/Download<br><br> 다른 디렉터리를 선택하거나, 없다면 새로 만들어 주세요. <br> 현재 기기의 Android 버전은 <b>{1}</b>입니다.",
+        "bulk_download_select_a_folder": "폴더 선택",
+        "bulk_download_downloaded_counter": {
+            "one": "{} 개 이미지 다운로드됨",
+            "other": "{} 개 이미지 다운로드됨"
+        },
+        "bulk_download_skipped_counter": {
+            "one": "{} 개 이미지 건너뜀",
+            "other": "{} 개 이미지 건너뜀"
+        },
+        "bulk_download_download_more": "더 다운로드",
+        "open_app_settings": "설정 열기",
+        "storage_permission_explanation": "다운로드한 파일을 저장하려면 저장 권한이 필요합니다.",
+        "app_restart_request": "이 변경 사항이 적용되려면 앱을 다시 시작해야 합니다",
+        "image_counter": {
+            "one": "다운로드 {}개 이미지",
+            "other": "다운로드 {}개 이미지"
+        },
+        "bulk": {
+            "all_done_notification_message": "모든 다운로드 완료"
+        }
+    },
+    "saved_search": {
+        "saved_search": "저장된 검색",
+        "saved_search_counter": {
+            "one": "{}개 검색",
+            "other": "{}개 검색"
+        },
+        "add_saved_search": "저장된 검색에 추가",
+        "saved_search_added": "저장된 검색에 추가되었습니다",
+        "empty_saved_search": "아직 어떤 검색도 추가하지 않았습니다",
+        "update_saved_search": "저장된 검색 업데이트",
+        "saved_search_updated": "저장된 검색이 업데이트 되었습니다",
+        "saved_search_feed": "피드",
+        "saved_search_help": "이게 무엇인가요?",
+        "saved_search_examples": "예시",
+        "saved_search_try": "시도하기",
+        "saved_search_query": "쿼리",
+        "saved_search_labels": "라벨*",
+        "saved_search_labels_description": "*이 검색의 분류를 돕는 태그 목록입니다. 공백으로 구분합니다."
+    },
+    "favorites": {
+        "counter": {
+            "one": "즐겨찾기",
+            "other": "즐겨찾기"
+        },
+        "favorited": "즐겨찾기됨",
+        "favorite": "즐겨찾기"
+    },
+    "favorite_groups": {
+        "favorite_groups": "즐겨찾기 그룹",
+        "empty_group_notice": "즐겨찾기 그룹 없음",
+        "create_group": "그룹 생성",
+        "edit_group": "그룹 수정",
+        "add_to_group_dialog_title": "즐겨찾기 그룹에 추가",
+        "add_to": "추가하기",
+        "create": "생성",
+        "private": "비공개",
+        "view_more_popup": "보기",
+        "items_added_notification_popup": "{1}에 {0}개의 포스트가 추가되었습니다",
+        "group_name": "그룹 이름",
+        "group_name_hint": "새 그룹",
+        "all_posts": "포스트",
+        "initial_posts_hint": "ID 번호를 공백으로 구분하여 입력하세요 (선택 사항)",
+        "is_private_group_option": "비공개 그룹",
+        "create_group_cancel": "취소",
+        "create_group_confirm": "OK",
+        "max_limit_warning": "회원은 즐겨찾기 그룹을 10개까지만 생성할 수 있습니다",
+        "duplicate_items_warning_notification": "입력하신 포스트는 이미 그룹에 있습니다",
+        "detete_confirmation": "이 즐겨찾기 그룹을 정말로 삭제하시겠습니까?",
+        "group_item_counter": {
+            "one": "{}개 포스트",
+            "other": "{}개 포스트"
+        }
+    },
+    "favorite_tags": {
+        "favorites": "즐겨찾기",
+        "import": "가져오기",
+        "import_hint": "여기에 태그를 입력하세요. 공백으로 구분합니다.",
+        "cancel": "취소",
+        "export": "내보내기",
+        "export_notification": "태그 문자열을 클립보드에 복사했습니다",
+        "favorite_tags": "즐겨찾기 태그"
+    },
+    "rating": {
+        "rate_request": "이 앱을 평가해주세요",
+        "rate": "평가",
+        "cancel": "괜찮습니다",
+        "later": "나중에",
+        "rationale": "앱이 마음에 드신다면 잠시 시간을 내어 평가해 주세요.\n몇 초면 되고, 이 프로젝트에 정말 큰 힘이 됩니다."
+    },
+    "sideMenu": {
+        "settings": "설정",
+        "your_bookmarks": "북마크",
+        "your_blacklist": "블랙리스트",
+        "bulk_download": "일괄 다운로드",
+        "get_support": "문의하기"
+    },
+    "dateRange": {
+        "day": "하루",
+        "week": "일주일",
+        "month": "한달"
+    },
+    "booru": {
+        "booru_engine_input_label": "Booru 엔진 (*)",
+        "config_name_label": "프로필 이름 (*)",
+        "site_url_label": "사이트 주소",
+        "login_name_label": "로그인",
+        "password_api_key_label": "API 키",
+        "password_hashed_label": "비밀번호 해시 처리됨 (읽기 전용)",
+        "password_label": "비밀번호",
+        "content_filtering_label": "컨텐츠 필터링",
+        "hide_deleted_label": "삭제된 포스트 가리기",
+        "config_booru_confirm": "OK",
+        "add_a_booru_site": "새 프로필 생성",
+        "next_step": "다음",
+        "site_url": "사이트 주소",
+        "unsupported_warning": "이 Booru는 아직 지원하지 않습니다.",
+        "validation_empty_url": "URL이 비었습니다",
+        "validation_invalid_url": "\"{0}\"은(는) 올바른 URL 형식이 아닙니다",
+        "validation_invalid_http_url": "\"{0}\"은(는) HTTP나 HTTPS URL이 아닙니다",
+        "validation_missing_trailing_slash": "\"{0}\"의 끝에는 슬래시(/)가 없습니다",
+        "validation_redundant_www": "\"{0}\"에는 \"www\"가 중복으로 사용되었습니다",
+        "validation_contains_spaces": "\"{0}\"에는 단어 사이에 불필요한 공백이 있습니다",
+        "validation_missing_scheme": "\"{0}\"에는 주소 체계(예: https://)가 없습니다",
+        "authentication": "인증",
+        "download": "다운로드",
+        "gestures": "제스처",
+        "misc": "기타"
+    },
+    "blacklist": {
+        "manage": {
+            "title": "블랙리스트",
+            "empty_blacklist": "블랙리스트 태그 없음"
+        }
+    },
+    "bookmark": {
+        "added": "북마크 추가됨",
+        "failed_to_add": "북마크 추가 실패",
+        "many_added": "{0}개 북마크 추가됨",
+        "failed_to_add_many": "북마크 추가 실패",
+        "removed": "북마크 제거됨",
+        "updated": "북마크 업데이트됨",
+        "failed_to_remove": "북마크 삭제 실패",
+        "failed_to_update": "북마크 업데이트 실패",
+        "failed_to_load": "{0}개의 북마크를 불러오는데 실패했습니다"
+    },
+    "app_update": {
+        "update": "업데이트",
+        "later": "나중에",
+        "whats_new": "새로운 기능",
+        "update_available": "업데이트 가능"
+    },
+    "forum": {
+        "forum": "포럼"
+    },
+    "gestures": {
+        "swipe_down": "아래로 스와이프",
+        "double_tap": "더블 탭",
+        "long_press": "길게 누르기",
+        "tap": "탭"
+    },
+    "time": {
+        "counters": {
+            "second": {
+                "one": "초",
+                "other": "초"
+            }
+        }
+    }
+}

@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/premiums/premiums.dart';
-import 'package:boorusama/router.dart';
+import 'premiums.dart';
+import 'routes.dart';
 
 class PremiumInteractionBlock extends ConsumerWidget {
   const PremiumInteractionBlock({
+    required this.child,
     super.key,
     this.padding,
-    required this.child,
   });
 
   const PremiumInteractionBlock.horizontalPadding({
-    super.key,
     required this.child,
+    super.key,
   }) : padding = const EdgeInsets.symmetric(horizontal: 8);
 
   final EdgeInsetsGeometry? padding;
@@ -75,7 +75,7 @@ class PremiumInteractionBlock extends ConsumerWidget {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    context.push('/premium');
+                    goToPremiumPage(context);
                   },
                 ),
               ),
@@ -119,14 +119,12 @@ class GradientBoxBorder extends BoxBorder {
           'A borderRadius can only be given for rectangular boxes.',
         );
         _paintCircle(canvas, rect);
-        break;
       case BoxShape.rectangle:
         if (borderRadius != null) {
           _paintRRect(canvas, rect, borderRadius);
           return;
         }
         _paintRect(canvas, rect);
-        break;
     }
   }
 

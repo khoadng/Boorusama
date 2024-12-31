@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/hydrus/hydrus.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/favorites/favorite_post_button.dart';
-import 'package:boorusama/core/favorites/quick_favorite_button.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/favorites/widgets.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../hydrus.dart';
 import 'favorites.dart';
 
 class HydrusFavoritesPage extends ConsumerWidget {
@@ -58,8 +57,8 @@ class HydrusFavoritesPage extends ConsumerWidget {
 
 class HydrusFavoritePostButton extends ConsumerWidget {
   const HydrusFavoritePostButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;
@@ -67,8 +66,8 @@ class HydrusFavoritePostButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(hydrusFavoriteProvider(post.id));
-    final favNotifier = ref.watch(hydrusFavoritesProvider(config).notifier);
+    final isFaved = ref.watch(favoriteProvider(post.id));
+    final favNotifier = ref.watch(favoritesProvider(config).notifier);
 
     return FavoritePostButton(
       isFaved: isFaved,
@@ -81,8 +80,8 @@ class HydrusFavoritePostButton extends ConsumerWidget {
 
 class HydrusQuickFavoriteButton extends ConsumerWidget {
   const HydrusQuickFavoriteButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;
@@ -90,23 +89,21 @@ class HydrusQuickFavoriteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final favoriteAdder = ref.watch(addFavoriteProvider);
-    final favoriteRemover = ref.watch(removeFavoriteProvider);
+    final notifier = ref.watch(favoritesProvider(config).notifier);
 
     return ref.watch(hydrusCanFavoriteProvider(config)).when(
-          data: (canFavorite) =>
-              canFavorite && favoriteAdder != null && favoriteRemover != null
-                  ? QuickFavoriteButton(
-                      isFaved: ref.watch(hydrusFavoriteProvider(post.id)),
-                      onFavToggle: (isFaved) async {
-                        if (isFaved) {
-                          await favoriteAdder(post.id, ref);
-                        } else {
-                          await favoriteRemover(post.id, ref);
-                        }
-                      },
-                    )
-                  : const SizedBox.shrink(),
+          data: (canFavorite) => canFavorite
+              ? QuickFavoriteButton(
+                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  onFavToggle: (isFaved) async {
+                    if (isFaved) {
+                      await notifier.add(post.id);
+                    } else {
+                      await notifier.remove(post.id);
+                    }
+                  },
+                )
+              : const SizedBox.shrink(),
           loading: () => const SizedBox.shrink(),
           error: (error, _) => const SizedBox.shrink(),
         );

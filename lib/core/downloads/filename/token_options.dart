@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/dart.dart';
+import '../../utils/number_utils.dart';
 
 class DownloadFilenameTokenOptions extends Equatable {
   const DownloadFilenameTokenOptions({
@@ -22,5 +22,5 @@ class DownloadFilenameTokenOptions extends Equatable {
 }
 
 extension DownloadFilenameTokenOptionsX on DownloadFilenameTokenOptions {
-  int? get index => metadata?['index']?.toIntOrNull();
+  int? get index => metadata?['index'].toIntOrNull();
 }

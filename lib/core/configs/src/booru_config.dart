@@ -4,15 +4,14 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/posts/rating.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/platform.dart';
-import '../../boorus/booru.dart';
-import '../../boorus/booru_factory.dart';
-import '../../boorus/booru_type.dart';
+import '../../../boorus/danbooru/danbooru.dart';
+import '../../boorus/booru/booru.dart';
+import '../../foundation/platform.dart';
+import '../../posts/rating/rating.dart';
+import '../../proxy/proxy.dart';
+import '../../settings/settings.dart';
 import 'data/booru_config_data.dart';
+import 'gestures.dart';
 import 'rating_parser.dart';
 import 'types.dart';
 
@@ -38,6 +37,7 @@ class BooruConfig extends Equatable {
     required this.defaultPreviewImageButtonAction,
     required this.listing,
     required this.alwaysIncludeTags,
+    required this.proxySettings,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -76,13 +76,19 @@ class BooruConfig extends Equatable {
       postGestures: json['postGestures'] == null
           ? null
           : PostGestureConfig.fromJson(
-              json['postGestures'] as Map<String, dynamic>),
+              json['postGestures'] as Map<String, dynamic>,
+            ),
       defaultPreviewImageButtonAction:
           json['defaultPreviewImageButtonAction'] as String?,
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
       alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+      proxySettings: json['proxySettings'] == null
+          ? null
+          : ProxySettings.fromJson(
+              json['proxySettings'] as Map<String, dynamic>,
+            ),
     );
   }
 
@@ -107,8 +113,10 @@ class BooruConfig extends Equatable {
     defaultPreviewImageButtonAction: null,
     listing: null,
     alwaysIncludeTags: null,
+    proxySettings: null,
   );
 
+  // ignore: prefer_constructors_over_static_methods
   static BooruConfig defaultConfig({
     required BooruType booruType,
     required String url,
@@ -135,6 +143,7 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction: null,
         listing: null,
         alwaysIncludeTags: null,
+        proxySettings: null,
       );
 
   final int id;
@@ -157,6 +166,7 @@ class BooruConfig extends Equatable {
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
   final String? alwaysIncludeTags;
+  final ProxySettings? proxySettings;
 
   BooruConfig copyWith({
     String? url,
@@ -185,6 +195,7 @@ class BooruConfig extends Equatable {
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
       alwaysIncludeTags: alwaysIncludeTags,
+      proxySettings: proxySettings,
     );
   }
 
@@ -210,6 +221,7 @@ class BooruConfig extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
         alwaysIncludeTags,
+        proxySettings,
       ];
 
   @override
@@ -241,6 +253,7 @@ class BooruConfig extends Equatable {
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
       'alwaysIncludeTags': alwaysIncludeTags,
+      'proxySettings': proxySettings?.toJson(),
     };
   }
 }
@@ -253,6 +266,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     required this.apiKey,
     required this.login,
     required this.passHash,
+    required this.proxySettings,
   });
 
   factory BooruConfigAuth.fromConfig(BooruConfig config) {
@@ -263,6 +277,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
       apiKey: config.apiKey,
       login: config.login,
       passHash: config.passHash,
+      proxySettings: config.proxySettings,
     );
   }
 
@@ -279,6 +294,9 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
   final String? passHash;
 
   @override
+  final ProxySettings? proxySettings;
+
+  @override
   List<Object?> get props => [
         booruId,
         booruIdHint,
@@ -286,6 +304,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
         apiKey,
         login,
         passHash,
+        proxySettings,
       ];
 }
 
@@ -355,6 +374,8 @@ mixin BooruConfigAuthMixin {
   String? get login;
   String? get apiKey;
   String get url;
+
+  ProxySettings? get proxySettings;
 
   BooruType get booruType => intToBooruType(booruIdHint);
 

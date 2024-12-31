@@ -7,10 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts.dart';
+import '../configs/ref.dart';
+import '../posts/post/post.dart';
+import 'notes.dart';
 
 class NotesControllerState extends Equatable {
   const NotesControllerState({
@@ -83,9 +82,9 @@ extension NotesControllerStateX on NotesControllerState {
 
 class NoteActionButtonWithProvider extends ConsumerWidget {
   const NoteActionButtonWithProvider({
-    super.key,
     required this.post,
     required this.noteState,
+    super.key,
   });
   final Post post;
   final NotesControllerState noteState;

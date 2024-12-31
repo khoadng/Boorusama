@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/ref.dart';
-import '../../users/creator/creators_notifier.dart';
+import '../../../../core/configs/ref.dart';
+import '../../users/creator/providers.dart';
 import 'post_creator_preloadable.dart';
 
 class DanbooruCreatorPreloader extends ConsumerStatefulWidget {
   const DanbooruCreatorPreloader({
-    super.key,
     required this.preloadable,
     required this.child,
+    super.key,
   });
 
   final PostCreatorsPreloadable preloadable;

@@ -1,17 +1,10 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/metatag/extractor.dart';
-import 'package:boorusama/core/tags/tag/providers.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import '../../boorus/danbooru/users/level/colors.dart';
-import '../../boorus/danbooru/users/level/user_level.dart';
+import '../tags/metatag/metatag.dart';
+import '../tags/tag/tag.dart';
 
 export 'autocomplete_repository.dart';
 
@@ -104,8 +97,8 @@ class AutocompleteData extends Equatable {
 
 bool isSfwTag({
   required String value,
-  String? antecedent,
   required Set<String> nsfwTags,
+  String? antecedent,
 }) {
   for (final tag in nsfwTags) {
     if (value.contains(tag)) {
@@ -146,10 +139,12 @@ List<String> filterNsfwRawTagString(
 
   return shouldFilter
       ? tags
-          .where((e) => isSfwTag(
-                value: e,
-                nsfwTags: nsfwTags,
-              ))
+          .where(
+            (e) => isSfwTag(
+              value: e,
+              nsfwTags: nsfwTags,
+            ),
+          )
           .toList()
       : tags;
 }
@@ -161,28 +156,16 @@ IList<AutocompleteData> filterNsfw(
 }) {
   return shouldFilter
       ? data
-          .where((e) => isSfwTag(
-                value: e.value,
-                antecedent: e.antecedent,
-                nsfwTags: nsfwTags,
-              ))
+          .where(
+            (e) => isSfwTag(
+              value: e.value,
+              antecedent: e.antecedent,
+              nsfwTags: nsfwTags,
+            ),
+          )
           .toList()
           .lock
       : data.lock;
-}
-
-Color? generateAutocompleteTagColor(
-  WidgetRef ref,
-  BuildContext context,
-  AutocompleteData tag,
-) {
-  if (tag.hasCategory) {
-    return ref.watch(tagColorProvider(tag.category!));
-  } else if (tag.hasUserLevel) {
-    return Color(getUserHexColor(stringToUserLevel(tag.level)));
-  }
-
-  return null;
 }
 
 extension AutocompleteDataDisplayX on AutocompleteData {

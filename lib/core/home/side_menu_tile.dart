@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class SideMenuTile extends StatelessWidget {
   const SideMenuTile({
-    super.key,
     required this.icon,
     required this.title,
     required this.onTap,
+    super.key,
   });
 
   final Widget icon;

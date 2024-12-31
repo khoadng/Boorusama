@@ -6,9 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../configs/config.dart';
+import '../../foundation/path.dart';
+import '../../settings/settings.dart';
 import 'metadata.dart';
 
 enum FileSystemDownloadErrorType {
@@ -98,11 +98,11 @@ extension DownloadWithSettingsX on DownloadService {
   DownloadPathOrError downloadWithSettings(
     Settings settings, {
     required String url,
-    DownloaderMetadata? metadata,
-    String? folderName,
     required String filename,
     required BooruConfig config,
     required Map<String, String>? headers,
+    DownloaderMetadata? metadata,
+    String? folderName,
     String? path,
   }) {
     final downloadPath = path ??

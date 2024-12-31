@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/core/configs/ref.dart';
+import '../../../../core/configs/ref.dart';
+import '../../moebooru.dart';
 
 CancelToken _cancelToken = CancelToken();
 

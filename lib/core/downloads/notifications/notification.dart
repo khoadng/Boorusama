@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../../foundation/platform.dart';
 
 class NotificationError {
   NotificationError(this.message);
@@ -26,8 +26,7 @@ class DownloadNotifications {
     }
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),
@@ -78,7 +77,7 @@ class DownloadNotifications {
       );
     }
 
-    showProgress();
+    unawaited(showProgress());
   }
 
   Future<void> showFailed(String fileName, String path) {

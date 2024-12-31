@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/device_info.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/permissions.dart';
+import '../foundation/path.dart';
+import '../foundation/permissions.dart';
+import '../info/device_info.dart';
 import 'data_converter.dart';
 import 'types.dart';
 
@@ -69,26 +69,28 @@ class DataIOHandler {
           final jsonString =
               await $(converter.tryEncode(payload: data).toTaskEither());
 
-          return $(TaskEither.tryCatch(
-            () async {
-              await exporter(path, jsonString);
+          return $(
+            TaskEither.tryCatch(
+              () async {
+                await exporter(path, jsonString);
 
-              return unit;
-            },
-            (e, st) {
-              if (e is PathAccessException) {
-                return DataExportNotPermitted(
-                  error: e,
-                  stackTrace: st,
-                );
-              } else {
-                return DataExportError(
-                  error: e,
-                  stackTrace: st,
-                );
-              }
-            },
-          ));
+                return unit;
+              },
+              (e, st) {
+                if (e is PathAccessException) {
+                  return DataExportNotPermitted(
+                    error: e,
+                    stackTrace: st,
+                  );
+                } else {
+                  return DataExportError(
+                    error: e,
+                    stackTrace: st,
+                  );
+                }
+              },
+            ),
+          );
         },
       );
 

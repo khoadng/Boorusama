@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/iap/iap.dart';
+import '../../foundation/iap/iap.dart';
 import 'premiums.dart';
 
 const kPremiumEnabled = true;

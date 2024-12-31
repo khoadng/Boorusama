@@ -6,14 +6,14 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/changelogs/what_news.dart';
-import 'package:boorusama/core/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/widgets/widgets.dart';
+import '../theme.dart';
+import 'what_news.dart';
 
 class ChangelogDialog extends StatelessWidget {
   const ChangelogDialog({
-    super.key,
     required this.data,
+    super.key,
   });
 
   final ChangelogData data;

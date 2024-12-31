@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
+import '../settings/providers.dart';
 
 class BooruTextField extends ConsumerWidget {
   const BooruTextField({
@@ -49,7 +49,7 @@ class BooruTextField extends ConsumerWidget {
     this.cursorOpacityAnimates,
     this.cursorColor,
     this.keyboardAppearance,
-    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.scrollPadding = const EdgeInsets.all(20),
     this.enableInteractiveSelection,
     this.selectionControls,
     this.onTap,

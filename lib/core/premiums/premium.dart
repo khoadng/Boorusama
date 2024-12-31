@@ -2,7 +2,7 @@ final defaultBenefits = <Benefit>[
   (
     title: 'Customized layout for each profile',
     description:
-        'Don\'t like the default layout? Want to see more or less information? Customize it!',
+        "Don't like the default layout? Want to see more or less information? Customize it!",
   ),
   (
     title: 'Customized theme',

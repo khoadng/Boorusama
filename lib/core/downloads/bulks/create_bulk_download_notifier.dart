@@ -3,10 +3,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/search/history.dart';
-import 'package:boorusama/core/settings.dart';
-import 'package:boorusama/core/settings/data.dart';
-import 'package:boorusama/foundation/device_info.dart';
+import '../../info/device_info.dart';
+import '../../search/histories/history.dart';
+import '../../settings/providers.dart';
+import '../../settings/settings.dart';
 import '../manager/download_task.dart';
 import '../manager/download_tasks_notifier.dart';
 import 'bulk_download_notifier.dart';
@@ -102,9 +102,9 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
       }
     }
 
-    final notifier = ref.read(bulkdownloadProvider.notifier);
-    notifier.addTask(state);
-    notifier.startTask(state.id);
+    ref.read(bulkdownloadProvider.notifier)
+      ..addTask(state)
+      ..startTask(state.id);
 
     return true;
   }
@@ -115,7 +115,6 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
   void queue() {
     if (!state.valid(androidSdkInt: androidSdkInt)) return;
 
-    final notifier = ref.read(bulkdownloadProvider.notifier);
-    notifier.addTask(state);
+    ref.read(bulkdownloadProvider.notifier).addTask(state);
   }
 }

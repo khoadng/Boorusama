@@ -3,18 +3,20 @@ import 'package:booru_clients/zerochan.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/core/posts/sources.dart';
-import 'package:boorusama/core/search/query_composer_providers.dart';
-import 'package:boorusama/core/settings/data/listing_provider.dart';
-import 'package:boorusama/core/tags/categories/tag_category.dart';
-import 'package:boorusama/core/tags/tag/tag.dart';
-import 'package:boorusama/foundation/loggers.dart';
-import 'package:boorusama/foundation/path.dart' as path;
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/ref.dart';
+import '../../core/foundation/loggers.dart';
+import '../../core/foundation/path.dart' as path;
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/tag.dart';
 import 'zerochan_post.dart';
 
 final zerochanClientProvider =
@@ -45,35 +47,37 @@ final zerochanPostRepoProvider =
         );
 
         return posts
-            .map((e) => ZerochanPost(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: e.thumbnail ?? '',
-                  sampleImageUrl: e.sampleUrl() ?? '',
-                  originalImageUrl: e.fileUrl() ?? '',
-                  tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
-                  rating: Rating.general,
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.from(e.source),
-                  score: 0,
-                  duration: 0,
-                  fileSize: 0,
-                  format: path.extension(e.thumbnail ?? ''),
-                  hasSound: null,
-                  height: e.height?.toDouble() ?? 0,
-                  md5: '',
-                  videoThumbnailUrl: '',
-                  videoUrl: '',
-                  width: e.width?.toDouble() ?? 0,
-                  uploaderId: null,
-                  uploaderName: null,
-                  createdAt: null,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => ZerochanPost(
+                id: e.id ?? 0,
+                thumbnailImageUrl: e.thumbnail ?? '',
+                sampleImageUrl: e.sampleUrl() ?? '',
+                originalImageUrl: e.fileUrl() ?? '',
+                tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
+                rating: Rating.general,
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.from(e.source),
+                score: 0,
+                duration: 0,
+                fileSize: 0,
+                format: path.extension(e.thumbnail ?? ''),
+                hasSound: null,
+                height: e.height?.toDouble() ?? 0,
+                md5: '',
+                videoThumbnailUrl: '',
+                videoUrl: '',
+                width: e.width?.toDouble() ?? 0,
+                uploaderId: null,
+                uploaderName: null,
+                createdAt: null,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -93,16 +97,18 @@ final zerochanAutoCompleteRepoProvider =
       final tags = await client.getAutocomplete(query: query.toLowerCase());
 
       return tags
-          .where((e) =>
-              e.type !=
-              'Meta') // Can't search posts by meta tags for some reason
-          .map((e) => AutocompleteData(
-                label: e.value?.toLowerCase() ?? '',
-                value: e.value?.toLowerCase() ?? '',
-                postCount: e.total,
-                antecedent: e.alias?.toLowerCase().replaceAll(' ', '_'),
-                category: e.type?.toLowerCase().replaceAll(' ', '_') ?? '',
-              ))
+          .where(
+            (e) => e.type != 'Meta',
+          ) // Can't search posts by meta tags for some reason
+          .map(
+            (e) => AutocompleteData(
+              label: e.value?.toLowerCase() ?? '',
+              value: e.value?.toLowerCase() ?? '',
+              postCount: e.total,
+              antecedent: e.alias?.toLowerCase().replaceAll(' ', '_'),
+              category: e.type?.toLowerCase().replaceAll(' ', '_') ?? '',
+            ),
+          )
           .toList();
     },
   );
@@ -118,10 +124,12 @@ final zerochanTagsFromIdProvider =
 
     return data
         .where((e) => e.value != null)
-        .map((e) => Tag.noCount(
-              name: e.value!.toLowerCase().replaceAll(' ', '_'),
-              category: zerochanStringToTagCategory(e.type),
-            ))
+        .map(
+          (e) => Tag.noCount(
+            name: e.value!.toLowerCase().replaceAll(' ', '_'),
+            category: zerochanStringToTagCategory(e.type),
+          ),
+        )
         .toList();
   },
 );

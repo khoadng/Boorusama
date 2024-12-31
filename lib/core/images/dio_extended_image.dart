@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/dio_extended_image_provider.dart';
+import 'dio_extended_image_provider.dart';
 
 class DioExtendedImage extends ExtendedImage {
   DioExtendedImage.network(
@@ -66,11 +66,26 @@ class DioExtendedImage extends ExtendedImage {
     String? imageCacheName,
     Duration? cacheMaxAge,
     super.layoutInsets = EdgeInsets.zero,
-  })  : assert(cacheWidth == null || cacheWidth > 0),
-        assert(cacheHeight == null || cacheHeight > 0),
-        assert(constraints == null || constraints.debugAssertIsValid()),
-        assert(cacheWidth == null || cacheWidth > 0),
-        assert(cacheHeight == null || cacheHeight > 0),
+  })  : assert(
+          cacheWidth == null || cacheWidth > 0,
+          'cacheWidth must be greater than 0',
+        ),
+        assert(
+          cacheHeight == null || cacheHeight > 0,
+          'cacheHeight must be greater than 0',
+        ),
+        assert(
+          constraints == null || constraints.debugAssertIsValid(),
+          'constraints must be valid',
+        ),
+        assert(
+          cacheWidth == null || cacheWidth > 0,
+          'cacheWidth must be greater than 0',
+        ),
+        assert(
+          cacheHeight == null || cacheHeight > 0,
+          'cacheHeight must be greater than 0',
+        ),
         super(
           image: ExtendedResizeImage.resizeIfNeeded(
             provider: DioExtendedNetworkImageProvider(

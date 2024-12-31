@@ -2,8 +2,8 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/http.dart';
+import '../foundation/error.dart';
+import '../http/http.dart';
 
 abstract class ForumTopic {
   int get id;
@@ -38,9 +38,11 @@ class ForumTopicRepositoryBuilder<T extends ForumTopic>
   @override
   TaskEither<BooruError, List<T>> getForumTopics(int page) =>
       TaskEither.Do(($) async {
-        final value = await $(tryFetchRemoteData(
-          fetcher: () => fetch(page),
-        ));
+        final value = await $(
+          tryFetchRemoteData(
+            fetcher: () => fetch(page),
+          ),
+        );
 
         return value;
       });

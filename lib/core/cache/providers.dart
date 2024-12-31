@@ -17,7 +17,8 @@ final miscDataProvider = NotifierProvider.autoDispose
 
 final cacheSizeProvider =
     NotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
-        CacheSizeNotifier.new);
+  CacheSizeNotifier.new,
+);
 
 class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
   @override

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers.dart';
+import '../../foundation/loggers.dart';
 import 'booru_config.dart';
 import 'booru_config_ref.dart';
 import 'manage/booru_config_provider.dart';
@@ -14,9 +14,9 @@ import 'manage/current_booru_providers.dart';
 
 class BooruConfigDeepLinkResolver extends ConsumerStatefulWidget {
   const BooruConfigDeepLinkResolver({
-    super.key,
     required this.path,
     required this.child,
+    super.key,
   });
 
   final String? path;
@@ -52,9 +52,7 @@ class _BooruConfigDeepLinkResolverState
   void _print(String message) {
     if (!kDebugMode) return;
 
-    final logger = ref.read(loggerProvider);
-
-    logger.logI('Deeplink', message);
+    ref.read(loggerProvider).logI('Deeplink', message);
   }
 
   @override

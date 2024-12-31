@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/data.dart';
+import '../settings/providers.dart';
 
 final globalSoundStateProvider = StateProvider<bool>((ref) {
   final isMuteByDefault =
@@ -21,6 +21,7 @@ final playbackSpeedProvider =
 
 extension VideoStateX on WidgetRef {
   bool get isGlobalVideoSoundOn => watch(globalSoundStateProvider);
+  // ignore: use_setters_to_change_properties
   void setGlobalVideoSound(bool value) =>
       read(globalSoundStateProvider.notifier).state = value;
 
@@ -32,8 +33,8 @@ extension VideoStateX on WidgetRef {
 
 class VideoSoundScope extends ConsumerWidget {
   const VideoSoundScope({
-    super.key,
     required this.builder,
+    super.key,
   });
 
   final Widget Function(BuildContext context, bool soundOn) builder;

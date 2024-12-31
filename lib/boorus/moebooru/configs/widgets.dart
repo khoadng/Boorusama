@@ -8,10 +8,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus.dart';
-import 'package:boorusama/core/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/create.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/create.dart';
 import 'config_hashing.dart';
 
 class MoebooruPasswordField extends ConsumerStatefulWidget {
@@ -71,19 +71,21 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
 
 class MoebooruHashedPasswordField extends ConsumerWidget {
   const MoebooruHashedPasswordField({
-    super.key,
     required this.passwordController,
+    super.key,
   });
 
   final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hashedPassword = ref.watch(editBooruConfigProvider(
-      ref.watch(editBooruConfigIdProvider),
-    ).select((value) => value.apiKey));
+    final hashedPassword = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.apiKey),
+    );
 
-    return hashedPassword.isNotEmpty == true
+    return hashedPassword.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(8),
             child: Row(

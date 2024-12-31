@@ -6,14 +6,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/networking.dart';
+import '../foundation/networking.dart';
 import 'analytics_network_info.dart';
 import 'analytics_providers.dart';
 
 class NetworkListener extends ConsumerWidget {
   const NetworkListener({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

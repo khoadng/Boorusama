@@ -8,16 +8,16 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/blacklists/blacklisted_tag_page.dart';
-import 'package:boorusama/core/bookmarks/widgets/bookmark_page.dart';
-import 'package:boorusama/core/cache/providers.dart';
-import 'package:boorusama/core/downloads/bulks.dart';
-import 'package:boorusama/core/downloads/manager.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/premiums/premiums.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/router.dart';
+import '../blacklists/widgets.dart';
+import '../bookmarks/widgets.dart';
+import '../cache/providers.dart';
+import '../downloads/bulks.dart';
+import '../downloads/manager.dart';
+import '../foundation/display.dart';
+import '../premiums/premiums.dart';
+import '../settings/routes.dart';
+import '../tags/favorites/widgets.dart';
+import '../widgets/widgets.dart';
 import 'booru_desktop_scope.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
@@ -26,10 +26,10 @@ const String kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
-    super.key,
     required this.mobileMenu,
     required this.desktopMenuBuilder,
     required this.desktopViews,
+    super.key,
     this.controller,
   });
 
@@ -66,18 +66,20 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
   Widget build(BuildContext context) {
     final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
     final desktopViews = widget.desktopViews
-        .mapIndexed((i, e) => Scaffold(
-              appBar: !context.isLargeScreen && i > 0
-                  ? AppBar(
-                      leading: BackButton(
-                        onPressed: () {
-                          controller.goToTab(0);
-                        },
-                      ),
-                    )
-                  : null,
-              body: e,
-            ))
+        .mapIndexed(
+          (i, e) => Scaffold(
+            appBar: !context.isLargeScreen && i > 0
+                ? AppBar(
+                    leading: BackButton(
+                      onPressed: () {
+                        controller.goToTab(0);
+                      },
+                    ),
+                  )
+                : null,
+            body: e,
+          ),
+        )
         .toList();
 
     return HomePageSidebarKeyboardListener(
@@ -129,17 +131,6 @@ List<Widget> coreDesktopTabBuilder(
 ) {
   return [
     const Divider(),
-    if (kPremiumEnabled) ...[
-      HomeNavigationTile(
-        value: _v(1),
-        controller: controller,
-        constraints: constraints,
-        selectedIcon: Symbols.star,
-        icon: Symbols.star,
-        title: kPremiumBrandNameFull,
-      ),
-      const Divider(),
-    ],
     HomeNavigationTile(
       value: _v(2),
       controller: controller,

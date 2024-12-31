@@ -5,11 +5,13 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/platform.dart';
+import '../../../foundation/platform.dart';
 
 class BulkDownloadNotifications {
   BulkDownloadNotifications._(
-      this._flutterLocalNotificationsPlugin, this._streamController);
+    this._flutterLocalNotificationsPlugin,
+    this._streamController,
+  );
 
   final StreamController<String>? _streamController;
 
@@ -22,8 +24,7 @@ class BulkDownloadNotifications {
     }
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),
@@ -31,7 +32,8 @@ class BulkDownloadNotifications {
           LinuxInitializationSettings(defaultActionName: 'Open notification'),
     );
 
-    //TODO: dispose?
+    // No need to close cause it is used in the main function
+    // ignore: close_sinks
     final streamController = StreamController<String>.broadcast();
 
     await flutterLocalNotificationsPlugin.initialize(
@@ -40,7 +42,9 @@ class BulkDownloadNotifications {
     );
 
     final notif = BulkDownloadNotifications._(
-        flutterLocalNotificationsPlugin, streamController);
+      flutterLocalNotificationsPlugin,
+      streamController,
+    );
 
     return notif;
   }
@@ -84,5 +88,9 @@ class BulkDownloadNotifications {
       platformChannelSpecifics,
       payload: payload,
     );
+  }
+
+  void dispose() {
+    _streamController?.close();
   }
 }

@@ -2,7 +2,6 @@
 import 'tag_dto.dart';
 
 class PostDto {
-
   PostDto({
     this.id,
     this.rating,
@@ -149,7 +148,6 @@ class PostDto {
 }
 
 class ReactionDto {
-
   ReactionDto({
     this.id,
     this.userId,
@@ -169,7 +167,6 @@ class ReactionDto {
 }
 
 class AuthorDto {
-
   AuthorDto({
     this.id,
     this.name,
@@ -192,7 +189,6 @@ class AuthorDto {
 }
 
 class CreatedAtDto {
-
   CreatedAtDto({
     this.jsonClass,
     this.s,

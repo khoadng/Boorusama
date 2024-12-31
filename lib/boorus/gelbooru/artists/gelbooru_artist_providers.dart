@@ -2,12 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/ref.dart';
-import 'package:boorusama/core/posts.dart';
-import 'package:boorusama/foundation/caching.dart';
+import '../../../core/blacklists/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/foundation/caching.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/providers.dart';
+import '../posts/posts.dart';
 
 final gelbooruArtistPostRepo =
     Provider.family<PostRepository<GelbooruPost>, BooruConfigSearch>(
