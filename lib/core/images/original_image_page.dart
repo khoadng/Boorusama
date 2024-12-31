@@ -18,6 +18,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/mobile.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/networking/networking.dart';
 
 class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({
@@ -192,6 +193,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentGeneratorProvider(config)).generate(),
         ...ref.watch(extraHttpHeaderProvider(config)),
+        ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) => Hero(

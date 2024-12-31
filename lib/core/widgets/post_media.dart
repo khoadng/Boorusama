@@ -17,6 +17,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/networking/networking.dart';
 import '../settings/widgets/image_viewer_page.dart';
 
 class PostMedia extends ConsumerWidget {
@@ -62,8 +63,10 @@ class PostMedia extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
     final useDefault = ref.watch(settingsProvider
         .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk));
+    final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
 
     final media = post.isVideo
         ? !inFocus
@@ -104,6 +107,7 @@ class PostMedia extends ConsumerWidget {
                             speed: ref.watchPlaybackSpeed(post.videoUrl),
                             onZoomUpdated: onImageZoomUpdated,
                             onOpenSettings: () => _openSettings(context),
+                            headers: headers,
                           )
                     : BooruVideo(
                         url: post.videoUrl,
@@ -116,6 +120,7 @@ class PostMedia extends ConsumerWidget {
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         onZoomUpdated: onImageZoomUpdated,
                         onOpenSettings: () => _openSettings(context),
+                        headers: headers,
                       )
                 : PerformanceOrientationBuilder(
                     builder: (context, orientation) => BooruVideo(
@@ -131,6 +136,7 @@ class PostMedia extends ConsumerWidget {
                       customControlsBuilder:
                           orientation.isPortrait ? null : () => null,
                       onOpenSettings: () => _openSettings(context),
+                      headers: headers,
                     ),
                   )
         : InteractiveBooruImage(

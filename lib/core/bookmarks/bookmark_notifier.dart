@@ -25,6 +25,7 @@ import 'package:boorusama/foundation/path.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/functional.dart';
+import '../../foundation/networking/networking.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -225,6 +226,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
                 AppHttpHeaders.userAgentHeader:
                     ref.read(userAgentGeneratorProvider(config)).generate(),
                 ...ref.read(extraHttpHeaderProvider(config)),
+                ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
               },
             ).run())
         .toList();

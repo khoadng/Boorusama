@@ -10,6 +10,7 @@ import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/http/http.dart';
+import 'package:boorusama/foundation/networking/dio.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/toast.dart';
@@ -108,6 +109,7 @@ Future<void> _download(
     AppHttpHeaders.userAgentHeader:
         ref.read(userAgentGeneratorProvider(booruConfig)).generate(),
     ...ref.read(extraHttpHeaderProvider(booruConfig)),
+    ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),
   };
 
   final deviceStoragePermissionNotifier =
