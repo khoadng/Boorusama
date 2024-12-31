@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 
 class ShadowGradientOverlay extends StatelessWidget {
   const ShadowGradientOverlay({
-    super.key,
     required this.alignment,
     required this.colors,
+    super.key,
     this.height,
   }) : assert(
           alignment == Alignment.bottomCenter ||
               alignment == Alignment.topCenter,
+          'Alignment must be either topCenter or bottomCenter',
         );
 
   final List<Color> colors;

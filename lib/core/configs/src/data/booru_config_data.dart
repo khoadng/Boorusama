@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import '../../../boorus/booru/booru.dart';
 import '../../../posts/rating/rating.dart';
+import '../../../proxy/proxy.dart';
 import '../../../settings/settings.dart';
 import '../../../utils/int_utils.dart';
 import '../gestures.dart';
@@ -31,6 +32,7 @@ class BooruConfigData extends Equatable {
     required this.defaultPreviewImageButtonAction,
     required this.listing,
     required this.alwaysIncludeTags,
+    required this.proxySettings,
   });
 
   factory BooruConfigData.anonymous({
@@ -63,6 +65,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction: null,
         listing: null,
         alwaysIncludeTags: null,
+        proxySettings: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -91,6 +94,7 @@ class BooruConfigData extends Equatable {
             json['defaultPreviewImageButtonAction'] as String?,
         listing: json['listing'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+        proxySettings: json['proxySettings'] as String?,
       );
     } catch (e) {
       return null;
@@ -118,6 +122,7 @@ class BooruConfigData extends Equatable {
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing,
       'alwaysIncludeTags': alwaysIncludeTags,
+      'proxySettings': proxySettings,
     };
   }
 
@@ -140,6 +145,7 @@ class BooruConfigData extends Equatable {
   final String? defaultPreviewImageButtonAction;
   final String? listing;
   final String? alwaysIncludeTags;
+  final String? proxySettings;
 
   @override
   List<Object?> get props => [
@@ -162,6 +168,7 @@ class BooruConfigData extends Equatable {
         defaultPreviewImageButtonAction,
         listing,
         alwaysIncludeTags,
+        proxySettings,
       ];
 }
 
@@ -204,6 +211,10 @@ extension BooruConfigDataX on BooruConfigData {
 
     return BooruConfigDeletedItemBehavior.values[deletedItemBehavior];
   }
+
+  ProxySettings? get proxySettingsTyped {
+    return ProxySettings.fromJsonString(proxySettings);
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {
@@ -227,6 +238,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? Function()? defaultPreviewImageButtonAction,
     ListingConfigs? Function()? listing,
     String? Function()? alwaysIncludeTags,
+    ProxySettings? Function()? proxySettings,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -270,6 +282,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       alwaysIncludeTags: alwaysIncludeTags != null
           ? alwaysIncludeTags()
           : this.alwaysIncludeTags,
+      proxySettings: proxySettings != null
+          ? proxySettings()?.toJsonString()
+          : this.proxySettings,
     );
   }
 }

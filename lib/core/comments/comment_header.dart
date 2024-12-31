@@ -9,10 +9,10 @@ import '../theme.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
-    super.key,
     required this.authorName,
     required this.authorTitleColor,
     required this.createdAt,
+    super.key,
     this.onTap,
   });
 

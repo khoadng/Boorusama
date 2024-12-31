@@ -12,13 +12,13 @@ import 'blacklisted_tag_list.dart';
 
 class BlacklistedTagsViewScaffold extends ConsumerWidget {
   const BlacklistedTagsViewScaffold({
-    super.key,
     required this.tags,
     required this.onRemoveTag,
     required this.onEditTap,
     required this.onAddTag,
     required this.title,
     required this.actions,
+    super.key,
   });
 
   final String title;

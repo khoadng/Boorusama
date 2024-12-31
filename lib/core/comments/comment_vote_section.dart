@@ -12,12 +12,12 @@ import 'vote_event.dart';
 
 class CommentVoteSection extends StatelessWidget {
   const CommentVoteSection({
-    super.key,
     required this.onReply,
     required this.moreBuilder,
-    this.onVote,
     required this.score,
     required this.voteState,
+    super.key,
+    this.onVote,
   });
 
   final VoidCallback? onReply;

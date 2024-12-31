@@ -9,9 +9,9 @@ import '../../../widgets/widgets.dart';
 
 class SettingsPageScaffold extends StatelessWidget {
   const SettingsPageScaffold({
-    super.key,
     required this.title,
     required this.children,
+    super.key,
     this.padding,
   });
 
@@ -98,9 +98,9 @@ class SettingsPageDynamicOptions extends Equatable {
 
 class SettingsPageDynamicScope extends InheritedWidget {
   const SettingsPageDynamicScope({
-    super.key,
     required this.options,
     required super.child,
+    super.key,
   });
 
   static SettingsPageDynamicScope of(BuildContext context) {
@@ -126,9 +126,9 @@ class SettingsPageDynamicScope extends InheritedWidget {
 
 class SettingsPageScope extends InheritedWidget {
   const SettingsPageScope({
-    super.key,
     required this.options,
     required super.child,
+    super.key,
   });
 
   static SettingsPageScope of(BuildContext context) {

@@ -13,9 +13,9 @@ import 'result_counter.dart';
 
 class ResultHeaderWithProvider extends ConsumerWidget {
   const ResultHeaderWithProvider({
-    super.key,
     required this.selectedTagsString,
     required this.onRefresh,
+    super.key,
     this.cache = false,
   });
 
@@ -53,9 +53,9 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
 class ResultHeaderFromController extends ConsumerWidget {
   const ResultHeaderFromController({
-    super.key,
     required this.controller,
     required this.onRefresh,
+    super.key,
     this.hasCount = false,
   });
 
@@ -86,9 +86,9 @@ class ResultHeaderFromController extends ConsumerWidget {
 
 class ResultHeader extends StatelessWidget {
   const ResultHeader({
-    super.key,
     required this.count,
     required this.loading,
+    super.key,
     this.onRefresh,
   });
 
@@ -121,9 +121,9 @@ class ResultHeader extends StatelessWidget {
 
 class SliverResultHeader extends StatelessWidget {
   const SliverResultHeader({
-    super.key,
     required this.selectedTagString,
     required this.controller,
+    super.key,
   });
 
   final ValueNotifier<String> selectedTagString;

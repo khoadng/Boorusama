@@ -71,14 +71,11 @@ class ConsoleLogger extends Logger {
     switch (level) {
       case LogLevel.info:
         logI(serviceName, message);
-        break;
       case LogLevel.warning:
         logW(serviceName, message);
-        break;
       case LogLevel.error:
         logE(serviceName, message);
-        break;
-      default:
+      case null:
         logI(serviceName, message);
     }
   }

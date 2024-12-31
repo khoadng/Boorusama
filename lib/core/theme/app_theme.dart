@@ -107,9 +107,9 @@ class AppTheme {
 
   static ColorScheme generateScheme(
     AppThemeMode mode, {
+    required bool systemDarkMode,
     ColorScheme? dynamicDarkScheme,
     ColorScheme? dynamicLightScheme,
-    required bool systemDarkMode,
   }) =>
       switch ((dynamicDarkScheme, dynamicLightScheme)) {
         (final ColorScheme dark, final ColorScheme light) => switch (mode) {

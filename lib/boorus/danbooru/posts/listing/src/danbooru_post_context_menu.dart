@@ -22,8 +22,8 @@ import 'providers.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
-    super.key,
     required this.post,
+    super.key,
     this.onMultiSelect,
   });
 
@@ -122,10 +122,10 @@ class DanbooruPostContextMenu extends ConsumerWidget {
 // ignore: prefer-single-widget-per-file
 class FavoriteGroupsPostContextMenu extends ConsumerWidget {
   const FavoriteGroupsPostContextMenu({
-    super.key,
     required this.post,
     required this.onMultiSelect,
     required this.onRemoveFromFavGroup,
+    super.key,
   });
 
   final Post post;

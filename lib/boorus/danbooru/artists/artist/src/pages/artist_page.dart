@@ -14,8 +14,8 @@ import '../types/artist.dart';
 
 class DanbooruArtistPage extends ConsumerStatefulWidget {
   const DanbooruArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;

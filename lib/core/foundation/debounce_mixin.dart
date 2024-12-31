@@ -28,10 +28,10 @@ mixin DebounceMixin {
 
 class DebounceText extends StatefulWidget {
   const DebounceText({
-    super.key,
     required this.controller,
     required this.builder,
     required this.debounceKey,
+    super.key,
   });
 
   final String debounceKey;

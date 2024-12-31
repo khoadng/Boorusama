@@ -1,6 +1,4 @@
 // Package imports:
-
-// Package imports:
 import 'package:equatable/equatable.dart';
 
 // Project imports:

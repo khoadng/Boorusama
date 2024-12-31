@@ -16,8 +16,8 @@ import 'post_share_state.dart';
 
 class SharePostButton extends ConsumerWidget {
   const SharePostButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;

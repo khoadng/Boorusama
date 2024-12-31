@@ -9,9 +9,9 @@ import '../foundation/display.dart';
 
 class CustomContextMenuOverlay extends StatelessWidget {
   const CustomContextMenuOverlay({
+    required this.child,
     super.key,
     this.backgroundColor,
-    required this.child,
   });
 
   final Color? backgroundColor;
@@ -38,8 +38,8 @@ class CustomContextMenuOverlay extends StatelessWidget {
 
 class ContextMenuTile extends StatefulWidget {
   const ContextMenuTile({
-    super.key,
     required this.config,
+    super.key,
   });
 
   final ContextMenuButtonConfig config;

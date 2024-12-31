@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,10 +9,10 @@ import '../theme.dart';
 
 class MobileConfigTile extends StatelessWidget {
   const MobileConfigTile({
-    super.key,
     required this.value,
     required this.title,
     required this.onTap,
+    super.key,
   });
 
   final String title;

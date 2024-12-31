@@ -19,9 +19,9 @@ import '../widgets/widgets.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
-    super.key,
     required this.controller,
     required this.onSearchTap,
+    super.key,
   });
 
   final HomePageController controller;

@@ -9,10 +9,10 @@ import '../../../../../../core/foundation/display.dart';
 
 class TagEditTagTile extends StatefulWidget {
   const TagEditTagTile({
-    super.key,
     required this.onTap,
     required this.onDeleted,
     required this.title,
+    super.key,
   });
 
   final void Function() onTap;

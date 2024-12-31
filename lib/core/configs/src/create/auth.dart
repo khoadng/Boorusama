@@ -17,9 +17,9 @@ import 'riverpod_widgets.dart';
 
 class DefaultCookieAuthConfigSection extends ConsumerWidget {
   const DefaultCookieAuthConfigSection({
-    super.key,
     required this.loginUrl,
     required this.onGetCookies,
+    super.key,
   });
 
   final String? loginUrl;
@@ -55,14 +55,15 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
                 fontWeight: FontWeight.w400,
               ),
         ),
-        passHash == null
-            ? _buildLoginButton(ref, context, config: config)
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildLoginStatus(ref, context, config),
-                ],
-              ),
+        if (passHash == null)
+          _buildLoginButton(ref, context, config: config)
+        else
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildLoginStatus(ref, context, config),
+            ],
+          ),
       ],
     );
   }

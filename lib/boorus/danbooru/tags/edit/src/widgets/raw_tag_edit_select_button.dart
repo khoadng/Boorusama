@@ -1,13 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-
 class RawTagEditSelectButton extends StatelessWidget {
   const RawTagEditSelectButton({
-    super.key,
     required this.title,
     required this.onPressed,
+    super.key,
   });
 
   final void Function() onPressed;

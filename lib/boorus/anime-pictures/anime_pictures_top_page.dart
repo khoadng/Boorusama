@@ -81,9 +81,9 @@ void goToAnimePicturesDetailsTopPage(
 
 class AnimePicturesDetailsTopPage extends ConsumerWidget {
   const AnimePicturesDetailsTopPage({
-    super.key,
     required this.posts,
     required this.title,
+    super.key,
   });
 
   final List<Post> posts;
@@ -104,8 +104,8 @@ class AnimePicturesDetailsTopPage extends ConsumerWidget {
 
 class EroticsToggleSwitch extends StatelessWidget {
   const EroticsToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(bool erotic) onToggle;

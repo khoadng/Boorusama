@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -20,10 +23,10 @@ const double _kLabelOffset = 0.2;
 
 class PoolPagedSliverGrid extends ConsumerStatefulWidget {
   const PoolPagedSliverGrid({
-    super.key,
     required this.constraints,
     required this.order,
     required this.category,
+    super.key,
     this.name,
     this.description,
   });
@@ -102,7 +105,9 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
       const loadCovers = true;
 
       if (loadCovers) {
-        ref.read(danbooruPoolCoversProvider(config).notifier).load(newItems);
+        unawaited(
+          ref.read(danbooruPoolCoversProvider(config).notifier).load(newItems),
+        );
       }
 
       final isLastPage = newItems.isEmpty;
@@ -164,8 +169,8 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
 
 class DanbooruPoolGridItem extends ConsumerWidget {
   const DanbooruPoolGridItem({
-    super.key,
     required this.pool,
+    super.key,
   });
 
   final DanbooruPool pool;

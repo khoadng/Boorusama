@@ -314,8 +314,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     required int toIndex,
     void Function()? onSuccess,
   }) {
-    final data = [..._items];
-    data.reorder(fromIndex, toIndex);
+    final data = [..._items]..reorder(fromIndex, toIndex);
     onSuccess?.call();
 
     _items = data;
@@ -427,7 +426,7 @@ Map<String, Set<int>> _countInIsolate<T extends Post>(
   Iterable<T> posts,
   Iterable<String> tags,
 ) {
-  final Map<String, Set<int>> tagCounts = {};
+  final tagCounts = <String, Set<int>>{};
   try {
     final preprocessed =
         tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());

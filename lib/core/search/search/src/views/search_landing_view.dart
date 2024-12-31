@@ -15,14 +15,14 @@ import '../widgets/favorite_tags_section.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
+    required this.onHistoryRemoved,
+    required this.onHistoryCleared,
     super.key,
     this.onHistoryTap,
     this.onTagTap,
     this.onRawTagTap,
     this.metatagsBuilder,
     this.trendingBuilder,
-    required this.onHistoryRemoved,
-    required this.onHistoryCleared,
     this.noticeBuilder,
     this.backgroundColor,
     this.scrollController,
@@ -187,10 +187,10 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
 class QueryActionsSection extends StatelessWidget {
   const QueryActionsSection({
-    super.key,
-    this.titleTrailing,
     required this.childrenBuilder,
     required this.onTagAdded,
+    super.key,
+    this.titleTrailing,
   });
 
   final Widget Function()? titleTrailing;

@@ -12,10 +12,10 @@ import 'booru_text_field.dart';
 //FIXME: don't reuse translation keys with favorites tags
 class ImportTagsDialog extends ConsumerStatefulWidget {
   const ImportTagsDialog({
+    required this.onImport,
     super.key,
     this.padding,
     this.hint,
-    required this.onImport,
   });
 
   final double? padding;

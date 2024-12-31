@@ -11,8 +11,8 @@ import '../../../comment/comment.dart';
 
 class ReplyHeader extends StatelessWidget {
   const ReplyHeader({
-    super.key,
     required this.comment,
+    super.key,
   });
 
   final CommentData comment;

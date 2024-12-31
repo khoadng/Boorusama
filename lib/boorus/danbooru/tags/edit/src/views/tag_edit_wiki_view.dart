@@ -17,11 +17,11 @@ import '../../../related/providers.dart';
 
 class TagEditWikiView extends ConsumerStatefulWidget {
   const TagEditWikiView({
-    super.key,
     required this.onRemoved,
     required this.onAdded,
     required this.isSelected,
     required this.tag,
+    super.key,
   });
 
   final String? tag;

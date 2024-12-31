@@ -15,12 +15,12 @@ import '../urls/sanitizer.dart';
 
 class DownloadTileBuilder extends StatelessWidget {
   const DownloadTileBuilder({
+    required this.url,
+    required this.builder,
     super.key,
     this.fileSize,
     this.networkSpeed,
     this.timeRemaining,
-    required this.url,
-    required this.builder,
     this.thumbnailUrl,
     this.onCancel,
     this.siteUrl,
@@ -149,11 +149,11 @@ String _durationToTime(Duration duration) {
 
 class RawDownloadTile extends StatelessWidget {
   const RawDownloadTile({
-    super.key,
     required this.fileName,
     required this.subtitle,
     required this.url,
     required this.trailing,
+    super.key,
     this.strikeThrough = false,
     this.color,
   });

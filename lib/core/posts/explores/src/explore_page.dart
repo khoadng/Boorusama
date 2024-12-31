@@ -20,9 +20,9 @@ import '../../post/widgets.dart';
 
 class ExplorePage extends ConsumerWidget {
   const ExplorePage({
+    required this.sliverOverviews,
     super.key,
     this.useAppBarPadding = true,
-    required this.sliverOverviews,
   });
 
   final bool useAppBarPadding;
@@ -50,9 +50,11 @@ class ExplorePage extends ConsumerWidget {
 class ExplorePageDesktopController extends ChangeNotifier {
   final ValueNotifier<String?> selectedCategory = ValueNotifier(null);
 
-  void changeCategory(String category) {
+  set category(String? category) {
     selectedCategory.value = category;
   }
+
+  String? get category => selectedCategory.value;
 
   void back() {
     selectedCategory.value = null;
@@ -61,9 +63,9 @@ class ExplorePageDesktopController extends ChangeNotifier {
 
 class ExplorePageDesktop extends ConsumerStatefulWidget {
   const ExplorePageDesktop({
-    super.key,
     required this.sliverOverviews,
     required this.details,
+    super.key,
     this.controller,
   });
 
@@ -131,8 +133,8 @@ class _ExplorePageDesktopState extends ConsumerState<ExplorePageDesktop> {
 
 class ExploreList extends ConsumerWidget {
   const ExploreList({
-    super.key,
     required this.posts,
+    super.key,
   });
 
   final List<Post> posts;

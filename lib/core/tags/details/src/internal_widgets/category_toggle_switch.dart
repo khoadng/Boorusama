@@ -10,8 +10,8 @@ import '../../../tag/tag.dart';
 
 class CategoryToggleSwitch extends StatelessWidget {
   const CategoryToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(TagFilterCategory category) onToggle;

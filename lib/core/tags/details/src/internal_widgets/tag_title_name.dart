@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class TagTitleName extends StatelessWidget {
   const TagTitleName({
-    super.key,
     required this.tagName,
+    super.key,
   });
 
   final String tagName;

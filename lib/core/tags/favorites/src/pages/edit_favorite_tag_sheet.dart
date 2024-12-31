@@ -14,9 +14,9 @@ import '../favorite_tag.dart';
 
 class EditFavoriteTagSheet extends ConsumerStatefulWidget {
   const EditFavoriteTagSheet({
-    super.key,
     required this.onSubmit,
     required this.initialValue,
+    super.key,
     this.title,
   });
 

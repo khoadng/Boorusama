@@ -57,8 +57,8 @@ class HydrusFavoritesPage extends ConsumerWidget {
 
 class HydrusFavoritePostButton extends ConsumerWidget {
   const HydrusFavoritePostButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;
@@ -80,8 +80,8 @@ class HydrusFavoritePostButton extends ConsumerWidget {
 
 class HydrusQuickFavoriteButton extends ConsumerWidget {
   const HydrusQuickFavoriteButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;

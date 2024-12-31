@@ -6,14 +6,14 @@ import '../../../widgets/widgets.dart';
 
 class SettingsTile<T> extends StatelessWidget {
   const SettingsTile({
-    super.key,
     required this.title,
-    this.subtitle,
     required this.selectedOption,
     required this.onChanged,
-    this.leading,
     required this.items,
     required this.optionBuilder,
+    super.key,
+    this.subtitle,
+    this.leading,
     this.padding,
   });
 

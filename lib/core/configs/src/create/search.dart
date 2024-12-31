@@ -39,9 +39,9 @@ class DefaultBooruConfigSearchView extends ConsumerWidget {
 
 class BooruConfigSearchView extends ConsumerWidget {
   const BooruConfigSearchView({
-    super.key,
     required this.hasRatingFilter,
     required this.config,
+    super.key,
     this.extras,
   });
 
@@ -219,9 +219,8 @@ class BooruConfigSearchView extends ConsumerWidget {
   }) {
     if (tag.isEmpty) return;
 
-    final tags = queryAsList(alwaysIncludeTags(ref));
-
-    tags.add(exclude ? '-$tag' : tag);
+    final tags = queryAsList(alwaysIncludeTags(ref))
+      ..add(exclude ? '-$tag' : tag);
 
     final json = jsonEncode(tags);
 
@@ -234,9 +233,7 @@ class BooruConfigSearchView extends ConsumerWidget {
   ) {
     if (tag.isEmpty) return;
 
-    final tags = queryAsList(alwaysIncludeTags(ref));
-
-    tags.remove(tag);
+    final tags = queryAsList(alwaysIncludeTags(ref))..remove(tag);
 
     final json = jsonEncode(tags);
 

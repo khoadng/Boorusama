@@ -26,10 +26,10 @@ import 'post_grid_controller.dart';
 
 class SliverPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPostGrid({
-    super.key,
     required this.constraints,
     required this.itemBuilder,
     required this.postController,
+    super.key,
   });
 
   final BoxConstraints? constraints;
@@ -71,16 +71,16 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
 
 class SliverRawPostGrid<T extends Post> extends StatelessWidget {
   const SliverRawPostGrid({
-    super.key,
     required this.constraints,
     required this.postController,
+    required this.itemBuilder,
+    super.key,
     this.padding,
     this.listType,
     this.size,
     this.spacing,
     this.aspectRatio,
     this.borderRadius,
-    required this.itemBuilder,
   });
 
   final BoxConstraints? constraints;
@@ -103,6 +103,7 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
         builder: (_, error, __) {
           if (error != null) {
             final message = translateBooruError(error);
+            final theme = Theme.of(context);
 
             return SliverToBoxAdapter(
               child: switch (error) {
@@ -110,18 +111,33 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                     errorMessage: message.tr(),
                     onRetry: _onErrorRetry,
                   ),
-                final ServerError e => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 48, bottom: 16),
-                          child: Text(
-                            e.httpStatusCode.toString(),
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
+                final ServerError e => Column(
+                    children: [
+                      const SizedBox(height: 24),
+                      Text(
+                        e.httpStatusCode.toString(),
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                        Builder(
+                      ),
+                      Builder(
+                        builder: (context) {
+                          final serverError = translateServerError(e);
+
+                          return serverError != null
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: Text(serverError.tr()),
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: e.isServerError ? 4 : 24,
+                        ),
+                        child: Builder(
                           builder: (context) {
                             try {
                               final data = wrapIntoJsonToCodeBlock(
@@ -129,6 +145,17 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                               );
 
                               return MarkdownBody(
+                                styleSheet: MarkdownStyleSheet(
+                                  codeblockPadding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 8,
+                                  ),
+                                  codeblockDecoration: BoxDecoration(
+                                    color:
+                                        theme.colorScheme.surfaceContainerLow,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
                                 data: data,
                               );
                             } catch (err) {
@@ -138,14 +165,13 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                             }
                           },
                         ),
-                        const SizedBox(height: 16),
-                        if (e.isServerError)
-                          FilledButton(
-                            onPressed: _onErrorRetry,
-                            child: const Text('Retry'),
-                          ),
-                      ],
-                    ),
+                      ),
+                      if (e.isServerError)
+                        FilledButton(
+                          onPressed: _onErrorRetry,
+                          child: const Text('Retry'),
+                        ),
+                    ],
                   ),
                 UnknownError _ => ErrorBox(errorMessage: message),
               },
@@ -289,8 +315,8 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
 class BlockOverlayItem {
   const BlockOverlayItem({
-    this.onTap,
     required this.overlay,
+    this.onTap,
   });
 
   final VoidCallback? onTap;
@@ -299,7 +325,6 @@ class BlockOverlayItem {
 
 class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
   const SliverPostGridImageGridItem({
-    super.key,
     required this.post,
     required this.hideOverlay,
     required this.quickActionButton,
@@ -307,6 +332,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     required this.onTap,
     required this.image,
     required this.score,
+    super.key,
     this.blockOverlay,
   });
 
@@ -371,11 +397,11 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
 
 class DefaultPostListContextMenuRegion extends StatelessWidget {
   const DefaultPostListContextMenuRegion({
-    super.key,
-    this.isEnabled = true,
     required this.gestures,
     required this.contextMenu,
     required this.child,
+    super.key,
+    this.isEnabled = true,
   });
 
   final GestureConfig? gestures;
@@ -394,3 +420,14 @@ class DefaultPostListContextMenuRegion extends StatelessWidget {
     );
   }
 }
+
+String? translateServerError(ServerError error) => switch (error) {
+      final ServerError e => switch (e.httpStatusCode) {
+          null => null,
+          401 => 'search.errors.forbidden',
+          403 => 'search.errors.access_denied',
+          429 => 'search.errors.rate_limited',
+          >= 500 => 'search.errors.down',
+          _ => null,
+        },
+    };

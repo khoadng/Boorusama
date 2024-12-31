@@ -71,8 +71,8 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
 
 class MoebooruHashedPasswordField extends ConsumerWidget {
   const MoebooruHashedPasswordField({
-    super.key,
     required this.passwordController,
+    super.key,
   });
 
   final TextEditingController passwordController;
@@ -85,7 +85,7 @@ class MoebooruHashedPasswordField extends ConsumerWidget {
       ).select((value) => value.apiKey),
     );
 
-    return hashedPassword.isNotEmpty == true
+    return hashedPassword.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(8),
             child: Row(

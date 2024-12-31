@@ -11,10 +11,10 @@ import '../../../../users/user/user.dart';
 
 class ForumPostHeader extends StatelessWidget {
   const ForumPostHeader({
-    super.key,
     required this.authorName,
-    this.authorLevel,
     required this.createdAt,
+    super.key,
+    this.authorLevel,
     this.onTap,
   });
 

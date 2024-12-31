@@ -13,9 +13,9 @@ import '../../../../foundation/display.dart';
 
 class TagDetailsRegion extends ConsumerWidget {
   const TagDetailsRegion({
-    super.key,
     required this.builder,
     required this.detailsBuilder,
+    super.key,
   });
 
   final Widget Function(BuildContext context) builder;

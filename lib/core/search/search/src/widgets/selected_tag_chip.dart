@@ -13,8 +13,8 @@ import '../pages/selected_tag_edit_dialog.dart';
 
 class SelectedTagChip extends StatelessWidget {
   const SelectedTagChip({
-    super.key,
     required this.tagSearchItem,
+    super.key,
     this.onDeleted,
     this.onUpdated,
   });

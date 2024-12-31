@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -27,7 +30,7 @@ Future<void> goToBulkDownloadPage(
       initialValue: tags,
     );
   } else {
-    context.pushNamed(kBulkdownload);
+    unawaited(context.pushNamed(kBulkdownload));
   }
 }
 

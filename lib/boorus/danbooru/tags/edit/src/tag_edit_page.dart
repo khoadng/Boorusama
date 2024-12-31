@@ -17,8 +17,8 @@ import 'widgets/tag_edit_submit_button.dart';
 
 class DanbooruTagEditPage extends ConsumerStatefulWidget {
   const DanbooruTagEditPage({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final DanbooruPost post;

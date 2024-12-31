@@ -35,10 +35,10 @@ import 'package:flutter/widgets.dart';
 ///
 class ConditionalParentWidget extends StatelessWidget {
   const ConditionalParentWidget({
-    super.key,
     required this.condition,
     required this.conditionalBuilder,
     required this.child,
+    super.key,
   });
 
   final Widget child;

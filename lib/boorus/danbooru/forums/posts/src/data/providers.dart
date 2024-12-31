@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,16 +26,17 @@ final danbooruForumPostRepoProvider = Provider.family<
         limit: limit,
       );
 
-      final data = value.map(danbooruForumPostDtoToDanbooruForumPost).toList();
+      final data = value.map(danbooruForumPostDtoToDanbooruForumPost).toList()
+        ..sort((a, b) => a.id.compareTo(b.id));
 
-      data.sort((a, b) => a.id.compareTo(b.id));
-
-      ref.read(danbooruCreatorsProvider(config).notifier).load(
-            {
-              ...data.map((e) => e.creatorId),
-              ...data.expand((e) => e.votes).map((e) => e.creatorId),
-            }.toList(),
-          );
+      unawaited(
+        ref.read(danbooruCreatorsProvider(config).notifier).load(
+              {
+                ...data.map((e) => e.creatorId),
+                ...data.expand((e) => e.votes).map((e) => e.creatorId),
+              }.toList(),
+            ),
+      );
 
       return data;
     },

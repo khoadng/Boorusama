@@ -1,17 +1,10 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../tags/metatag/metatag.dart';
-import '../tags/tag/providers.dart';
 import '../tags/tag/tag.dart';
-import '../users/providers.dart';
-import '../users/user.dart';
 
 export 'autocomplete_repository.dart';
 
@@ -104,8 +97,8 @@ class AutocompleteData extends Equatable {
 
 bool isSfwTag({
   required String value,
-  String? antecedent,
   required Set<String> nsfwTags,
+  String? antecedent,
 }) {
   for (final tag in nsfwTags) {
     if (value.contains(tag)) {
@@ -173,23 +166,6 @@ IList<AutocompleteData> filterNsfw(
           .toList()
           .lock
       : data.lock;
-}
-
-Color? generateAutocompleteTagColor(
-  WidgetRef ref,
-  BuildContext context,
-  AutocompleteData tag, {
-  UserColor? userColor,
-}) {
-  if (tag.hasCategory) {
-    return ref.watch(tagColorProvider(tag.category!));
-  } else if (tag.hasUserLevel) {
-    return userColor != null
-        ? userColor.fromString(tag.label)
-        : DefaultUserColor.of(context).fromString(tag.label);
-  }
-
-  return null;
 }
 
 extension AutocompleteDataDisplayX on AutocompleteData {

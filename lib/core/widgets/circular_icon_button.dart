@@ -6,8 +6,8 @@ import '../theme.dart';
 
 class CircularIconButton extends StatelessWidget {
   const CircularIconButton({
-    super.key,
     required this.icon,
+    super.key,
     this.onPressed,
     this.padding,
     this.backgroundColor,

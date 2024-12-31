@@ -36,9 +36,9 @@ class DefaultInheritedTagList<T extends Post> extends ConsumerWidget {
 
 class BasicTagList extends ConsumerWidget {
   const BasicTagList({
-    super.key,
     required this.tags,
     required this.onTap,
+    super.key,
     this.unknownCategoryColor,
   });
 

@@ -106,8 +106,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       await ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
 
-      final tmp = [...state];
-      tmp.remove(config);
+      final tmp = [...state]..remove(config);
       state = tmp;
       onSuccess?.call(config);
     } catch (e) {

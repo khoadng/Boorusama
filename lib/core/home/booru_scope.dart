@@ -26,10 +26,10 @@ const String kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
-    super.key,
     required this.mobileMenu,
     required this.desktopMenuBuilder,
     required this.desktopViews,
+    super.key,
     this.controller,
   });
 

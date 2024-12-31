@@ -30,8 +30,9 @@ mixin SearchMixin {
   }
 
   void skipToResultWithTag(String tag) {
-    selectedTagController.clear();
-    selectedTagController.addTag(tag);
+    selectedTagController
+      ..clear()
+      ..addTag(tag);
     addHistory(selectedTagController);
   }
 

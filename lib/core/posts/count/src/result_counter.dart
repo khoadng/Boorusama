@@ -10,9 +10,9 @@ import 'package:foundation/foundation.dart';
 
 class ResultCounter extends StatelessWidget {
   const ResultCounter({
-    super.key,
     required this.count,
     required this.loading,
+    super.key,
     this.onRefresh,
   });
 
@@ -110,6 +110,7 @@ class _RotatingIconState extends State<_RotatingIcon>
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: RotationTransition(
+          // ignore: prefer_int_literals
           turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
           child: const Icon(
             FontAwesomeIcons.rotate,

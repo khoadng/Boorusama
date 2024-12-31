@@ -9,10 +9,10 @@ import '../settings/providers.dart';
 
 class BooruAnimatedCrossFade extends ConsumerWidget {
   const BooruAnimatedCrossFade({
-    super.key,
     required this.firstChild,
     required this.secondChild,
     required this.crossFadeState,
+    super.key,
     this.duration,
   });
 

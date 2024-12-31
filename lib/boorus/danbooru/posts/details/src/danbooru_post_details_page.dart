@@ -61,9 +61,9 @@ class _DanbooruPostDetailsPageState
 
 class DanbooruPostStatsTile extends ConsumerWidget {
   const DanbooruPostStatsTile({
-    super.key,
     required this.post,
     required this.commentCount,
+    super.key,
   });
 
   final DanbooruPost post;

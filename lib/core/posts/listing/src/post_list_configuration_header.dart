@@ -23,7 +23,6 @@ const _tagThreshold = 30;
 
 class PostListConfigurationHeader extends StatefulWidget {
   const PostListConfigurationHeader({
-    super.key,
     required this.tags,
     required this.onChanged,
     required this.hiddenCount,
@@ -31,6 +30,7 @@ class PostListConfigurationHeader extends StatefulWidget {
     required this.onDisableAll,
     required this.onEnableAll,
     required this.postCount,
+    super.key,
     this.trailing,
     this.hasBlacklist = false,
     this.initiallyExpanded = false,
@@ -99,9 +99,10 @@ class _PostListConfigurationHeaderState
                 leading: Column(
                   children: [
                     const Spacer(),
-                    !expanded
-                        ? const Icon(Symbols.keyboard_arrow_right)
-                        : const Icon(Symbols.keyboard_arrow_down),
+                    if (!expanded)
+                      const Icon(Symbols.keyboard_arrow_right)
+                    else
+                      const Icon(Symbols.keyboard_arrow_down),
                     const Spacer(),
                   ],
                 ),
@@ -145,11 +146,12 @@ class _PostListConfigurationHeaderState
                                 ),
                               ),
                         const Spacer(),
-                        expanded
-                            ? const SizedBox.shrink()
-                            : FittedBox(
-                                child: widget.trailing,
-                              ),
+                        if (expanded)
+                          const SizedBox.shrink()
+                        else
+                          FittedBox(
+                            child: widget.trailing,
+                          ),
                       ],
                     );
                   },

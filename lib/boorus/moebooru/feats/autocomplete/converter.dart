@@ -13,7 +13,7 @@ List<AutocompleteData> convertTagSummaryToAutocompleteData(
       : null;
   final category = tagSummary.category.toString();
 
-  final List<AutocompleteData> autocompleteDataList = [
+  final autocompleteDataList = <AutocompleteData>[
     AutocompleteData(
       label: label.replaceAll('_', ' '),
       value: value,

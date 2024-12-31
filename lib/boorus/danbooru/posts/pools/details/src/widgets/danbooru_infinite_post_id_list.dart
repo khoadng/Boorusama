@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -21,8 +19,8 @@ import '../../../../post/providers.dart';
 
 class DanbooruInfinitePostIdList extends ConsumerStatefulWidget {
   const DanbooruInfinitePostIdList({
-    super.key,
     required this.ids,
+    super.key,
     this.sliverHeaders,
   });
 
@@ -115,9 +113,9 @@ class _DanbooruInfinitePostIdListState
 // InheritedWidget to provide danbooru post grid controller to its children
 class DanbooruPostGridController extends InheritedWidget {
   const DanbooruPostGridController({
-    super.key,
     required this.controller,
     required super.child,
+    super.key,
   });
 
   final PostGridController<DanbooruPost> controller;

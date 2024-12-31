@@ -12,9 +12,9 @@ import 'booru_config_provider.dart';
 
 class UpdateBooruConfigScope extends ConsumerWidget {
   const UpdateBooruConfigScope({
-    super.key,
     required this.id,
     required this.child,
+    super.key,
   });
 
   final EditBooruConfigId id;

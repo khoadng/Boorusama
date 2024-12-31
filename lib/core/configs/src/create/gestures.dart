@@ -11,6 +11,7 @@ import '../../../theme.dart';
 import '../data/booru_config_data.dart';
 import '../gestures.dart';
 import 'providers.dart';
+import 'widgets.dart';
 
 class DefaultBooruConfigGesturesView extends ConsumerWidget {
   const DefaultBooruConfigGesturesView({super.key});
@@ -25,8 +26,8 @@ class DefaultBooruConfigGesturesView extends ConsumerWidget {
 
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
-    super.key,
     required this.postDetailsGestureActions,
+    super.key,
     this.describePostDetailsAction,
   });
 
@@ -194,29 +195,6 @@ class BooruConfigGesturesView extends ConsumerWidget {
                 ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class BooruConfigSettingsHeader extends StatelessWidget {
-  const BooruConfigSettingsHeader({
-    super.key,
-    required this.label,
-  });
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w500,
-        ),
       ),
     );
   }

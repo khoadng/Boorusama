@@ -10,8 +10,8 @@ import 'conditional_parent_widget.dart';
 
 class BooruPopupMenuButton<T> extends StatelessWidget {
   const BooruPopupMenuButton({
-    super.key,
     required this.itemBuilder,
+    super.key,
     this.onSelected,
     this.iconColor,
     this.offset,

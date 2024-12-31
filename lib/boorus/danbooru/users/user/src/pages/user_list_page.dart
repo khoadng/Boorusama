@@ -12,8 +12,8 @@ import '../types/user.dart';
 
 class DanbooruSliverUserListPage extends ConsumerStatefulWidget {
   const DanbooruSliverUserListPage({
-    super.key,
     required this.fetchUsers,
+    super.key,
   });
 
   final Future<List<DanbooruUser>> Function(int page) fetchUsers;
@@ -42,8 +42,9 @@ class _DanbooruUserListPageState
   @override
   void dispose() {
     super.dispose();
-    pagingController.removePageRequestListener(_onPageChanged);
-    pagingController.dispose();
+    pagingController
+      ..removePageRequestListener(_onPageChanged)
+      ..dispose();
   }
 
   Future<void> _fetchPage(int pageKey) async {

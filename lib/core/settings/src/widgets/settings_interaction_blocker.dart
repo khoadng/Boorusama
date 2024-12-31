@@ -13,15 +13,13 @@ import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/listing_provider.dart';
 
-// Project imports:
-
 class SettingsInteractionBlocker extends ConsumerWidget {
   const SettingsInteractionBlocker({
-    super.key,
-    this.padding,
     required this.description,
     required this.block,
     required this.child,
+    super.key,
+    this.padding,
   });
 
   final Widget child;
@@ -68,10 +66,10 @@ class SettingsInteractionBlocker extends ConsumerWidget {
 
 class ListingSettingsInteractionBlocker extends ConsumerWidget {
   const ListingSettingsInteractionBlocker({
+    required this.child,
     super.key,
     this.padding,
     this.onNavigateAway,
-    required this.child,
   });
 
   final Widget child;

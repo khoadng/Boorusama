@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 class WidthThresholdPopper extends StatefulWidget {
   const WidthThresholdPopper({
-    super.key,
     required this.targetWidth,
+    super.key,
     this.child,
   });
 
@@ -46,10 +46,10 @@ class _WidthThresholdPopperState extends State<WidthThresholdPopper> {
 
 class PreciseLayoutWidthListener extends StatelessWidget {
   const PreciseLayoutWidthListener({
-    super.key,
     required this.child,
     required this.targetWidth,
     required this.onWidthChanged,
+    super.key,
   });
 
   final Widget child;

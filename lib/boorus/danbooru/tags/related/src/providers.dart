@@ -86,11 +86,10 @@ final danbooruRelatedTagsProvider = FutureProvider.family<List<Tag>, String>(
         .map(
           (e) => Tag(name: e.tag, category: e.category, postCount: e.postCount),
         )
-        .toList();
-
-    tags.sort(
-      (a, b) => (a.category.order ?? 0).compareTo(b.category.order ?? 0),
-    );
+        .toList()
+      ..sort(
+        (a, b) => (a.category.order ?? 0).compareTo(b.category.order ?? 0),
+      );
 
     return tags;
   },

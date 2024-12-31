@@ -52,12 +52,12 @@ typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
 
 class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   const PostGrid({
+    required this.controller,
     super.key,
     this.sliverHeaders,
     this.scrollController,
     this.blacklistedIdString,
     this.multiSelectController,
-    required this.controller,
     this.safeArea = true,
     this.itemBuilder,
     this.body,
@@ -202,15 +202,14 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
       return;
     }
 
-    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
-
-    settingsNotifier.updateWith(
-      (s) => s.copyWith(
-        listing: s.listing.copyWith(
-          showPostListConfigHeader: false,
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier)
+      ..updateWith(
+        (s) => s.copyWith(
+          listing: s.listing.copyWith(
+            showPostListConfigHeader: false,
+          ),
         ),
-      ),
-    );
+      );
     showSimpleSnackBar(
       duration: AppDurations.extraLongToast,
       context: context,
@@ -275,6 +274,10 @@ class SliverMasonryGridWarning extends ConsumerWidget {
 
 class RawPostGrid<T extends Post> extends StatefulWidget {
   const RawPostGrid({
+    required this.gridHeader,
+    required this.body,
+    required this.controller,
+    required this.settings,
     super.key,
     this.onLoadMore,
     this.onRefresh,
@@ -284,15 +287,11 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     this.extendBodyHeight,
     this.footer,
     this.header,
-    required this.gridHeader,
     this.blacklistedIdString,
-    required this.body,
     this.multiSelectController,
-    required this.controller,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
     this.safeArea = true,
-    required this.settings,
   });
 
   final VoidCallback? onLoadMore;
@@ -768,8 +767,8 @@ const _kImageCacheThreshold = 1000 * 1024 * 1024;
 
 class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
   const TooMuchCachedImagesWarningBanner({
-    super.key,
     required this.threshold,
+    super.key,
   });
 
   final int threshold;
@@ -832,11 +831,11 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
 
 class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
   const DefaultImageGridItem({
-    super.key,
     required this.index,
     required this.multiSelectController,
     required this.autoScrollController,
     required this.controller,
+    super.key,
   });
 
   final int index;

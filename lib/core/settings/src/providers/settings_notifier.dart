@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../backups/backward_import_alert_dialog.dart';
+import '../../../backups/import/backward_import_alert_dialog.dart';
 import '../../../foundation/loggers/providers.dart';
 import '../../../foundation/toast.dart';
 import '../../../foundation/version.dart';

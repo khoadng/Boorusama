@@ -19,10 +19,10 @@ GoRouterPageBuilder genericMobilePageBuilder({
         );
 
 GoRouterPageBuilder largeScreenCompatPageBuilderWithExtra<T>({
-  String? errorScreenMessage,
-  bool fullScreen = false,
   required Widget Function(BuildContext context, GoRouterState state, T extra)
       pageBuilder,
+  String? errorScreenMessage,
+  bool fullScreen = false,
 }) =>
     (context, state) {
       final extra = state.extra as T?;
@@ -77,8 +77,8 @@ GoRouterPageBuilder largeScreenAwarePageBuilder<T>({
 
 class FastFadePageRoute<T> extends PageRouteBuilder<T> {
   FastFadePageRoute({
-    super.settings,
     required this.child,
+    super.settings,
   }) : super(
           transitionDuration: const Duration(milliseconds: 100),
           reverseTransitionDuration: const Duration(milliseconds: 100),

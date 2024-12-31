@@ -6,8 +6,6 @@ import '../../../configs/current.dart';
 import '../types/settings.dart';
 import 'settings_provider.dart';
 
-// Project imports:
-
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
   final listing = ref.watch(settingsProvider.select((value) => value.listing));
 

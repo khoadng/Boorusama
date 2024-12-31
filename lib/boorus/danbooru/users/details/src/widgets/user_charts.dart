@@ -14,8 +14,8 @@ import '../types/upload_date_range_selector_type.dart';
 
 class UserUploadDailyDeltaChart extends ConsumerWidget {
   const UserUploadDailyDeltaChart({
-    super.key,
     required this.data,
+    super.key,
   });
 
   final List<DanbooruReportDataPoint> data;

@@ -8,8 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-// Project imports:
-
 class ChangelogPage extends ConsumerWidget {
   const ChangelogPage({super.key});
 

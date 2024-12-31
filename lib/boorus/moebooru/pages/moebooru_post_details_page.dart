@@ -68,8 +68,8 @@ class MoebooruPostDetailsPage extends StatelessWidget {
 
 class MoebooruPostDetailsPageInternal extends ConsumerStatefulWidget {
   const MoebooruPostDetailsPageInternal({
-    super.key,
     required this.data,
+    super.key,
   });
 
   final PostDetailsData<MoebooruPost> data;

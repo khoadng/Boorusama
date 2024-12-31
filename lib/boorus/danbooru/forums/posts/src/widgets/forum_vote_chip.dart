@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class ForumVoteChip extends StatelessWidget {
   const ForumVoteChip({
-    super.key,
     required this.icon,
     required this.color,
     required this.borderColor,
-    this.borderRadius,
     required this.label,
+    super.key,
+    this.borderRadius,
   });
 
   final Color color;

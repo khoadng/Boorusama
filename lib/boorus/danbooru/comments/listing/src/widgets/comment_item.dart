@@ -20,11 +20,11 @@ import 'danbooru_comment_header.dart';
 
 class CommentItem extends ConsumerWidget {
   const CommentItem({
-    super.key,
     required this.comment,
     required this.onReply,
     required this.onVoteChanged,
     required this.hasVoteSection,
+    super.key,
     this.moreBuilder,
   });
   final CommentData comment;

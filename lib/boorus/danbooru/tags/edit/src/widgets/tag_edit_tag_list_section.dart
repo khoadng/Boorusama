@@ -255,59 +255,56 @@ class TagEditFilterHeader extends ConsumerWidget {
                   fontSize: 20,
                 ),
           ),
-          filterOn
-              ? Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: BooruSearchBar(
-                            autofocus: true,
-                            dense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                            ),
-                            hintText: 'Filter...',
-                            onChanged: (value) => ref
-                                .read(tagEditCurrentFilterProvider.notifier)
-                                .state = value,
-                          ),
+          if (filterOn)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: BooruSearchBar(
+                        autofocus: true,
+                        dense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8,
                         ),
-                        FilledButton(
-                          style: FilledButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                            shape: const CircleBorder(),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          ),
-                          onPressed: () {
-                            ref
-                                .read(tagEditTagFilterModeProvider.notifier)
-                                .state = false;
-                            ref
-                                .read(tagEditCurrentFilterProvider.notifier)
-                                .state = '';
-                          },
-                          child: Icon(
-                            Symbols.check,
-                            size: 16,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ],
+                        hintText: 'Filter...',
+                        onChanged: (value) => ref
+                            .read(tagEditCurrentFilterProvider.notifier)
+                            .state = value,
+                      ),
                     ),
-                  ),
-                )
-              : IconButton(
-                  splashRadius: 20,
-                  onPressed: () => ref
-                      .read(tagEditTagFilterModeProvider.notifier)
-                      .state = true,
-                  icon: const Icon(
-                    Symbols.filter_list,
-                  ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        shape: const CircleBorder(),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        ref.read(tagEditTagFilterModeProvider.notifier).state =
+                            false;
+                        ref.read(tagEditCurrentFilterProvider.notifier).state =
+                            '';
+                      },
+                      child: Icon(
+                        Symbols.check,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+            )
+          else
+            IconButton(
+              splashRadius: 20,
+              onPressed: () =>
+                  ref.read(tagEditTagFilterModeProvider.notifier).state = true,
+              icon: const Icon(
+                Symbols.filter_list,
+              ),
+            ),
           if (!filterOn) const Spacer(),
           if (!filterOn)
             BooruPopupMenuButton(
@@ -318,7 +315,6 @@ class TagEditFilterHeader extends ConsumerWidget {
                 switch (value) {
                   case 'fetch_category':
                     await _fetch(ref);
-                    break;
                 }
               },
             ),
@@ -329,7 +325,7 @@ class TagEditFilterHeader extends ConsumerWidget {
 
   Future<void> _fetch(WidgetRef ref) async {
     final tags = ref.read(_tagsProvider);
-    ref
+    return ref
         .read(danbooruTagEditColorsProvider(ref.watchConfigAuth).notifier)
         .fetchColors(tags);
   }

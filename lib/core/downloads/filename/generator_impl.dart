@@ -110,8 +110,8 @@ class DownloadFileNameBuilder<T extends Post>
     Settings settings,
     BooruConfig config,
     T post, {
-    Map<String, String>? metadata,
     required String downloadUrl,
+    Map<String, String>? metadata,
   }) =>
       _generate(
         settings,
@@ -127,8 +127,8 @@ class DownloadFileNameBuilder<T extends Post>
     Settings settings,
     BooruConfig config,
     T post, {
-    Map<String, String>? metadata,
     required String downloadUrl,
+    Map<String, String>? metadata,
   }) =>
       _generate(
         settings,

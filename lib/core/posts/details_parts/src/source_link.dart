@@ -10,11 +10,11 @@ import '../../../foundation/url_launcher.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({
-    super.key,
     required this.title,
-    this.url,
     required this.actionBuilder,
     required this.name,
+    super.key,
+    this.url,
   });
 
   final Widget title;

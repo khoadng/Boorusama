@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class MultiSelectionActionBar extends StatelessWidget {
   const MultiSelectionActionBar({
-    super.key,
     required this.children,
+    super.key,
   });
 
   final List<Widget> children;

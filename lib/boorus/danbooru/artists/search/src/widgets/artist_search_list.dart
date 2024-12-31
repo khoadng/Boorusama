@@ -14,12 +14,12 @@ import 'artist_search_info_card.dart';
 
 class DanbooruArtistSearchList extends ConsumerStatefulWidget {
   const DanbooruArtistSearchList({
-    super.key,
     required this.nameController,
     required this.urlController,
     required this.order,
     required this.focusScopeNode,
     required this.pagingController,
+    super.key,
   });
 
   final TextEditingController nameController;

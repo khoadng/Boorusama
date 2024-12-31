@@ -10,10 +10,10 @@ import 'post_vote.dart';
 
 class UpvotePostButton extends StatelessWidget {
   const UpvotePostButton({
-    super.key,
     required this.voteState,
     required this.onUpvote,
     required this.onRemoveUpvote,
+    super.key,
   });
 
   final VoteState voteState;
@@ -38,10 +38,10 @@ class UpvotePostButton extends StatelessWidget {
 
 class DownvotePostButton extends StatelessWidget {
   const DownvotePostButton({
-    super.key,
     required this.voteState,
     required this.onDownvote,
     required this.onRemoveDownvote,
+    super.key,
   });
 
   final VoteState voteState;

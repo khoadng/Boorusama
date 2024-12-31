@@ -10,8 +10,8 @@ import 'analytics_providers.dart';
 
 class AnalyticsScope extends ConsumerWidget {
   const AnalyticsScope({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

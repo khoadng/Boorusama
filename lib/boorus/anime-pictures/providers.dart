@@ -155,7 +155,7 @@ AnimePicturesPost dtoToAnimePicturesPost(
     thumbnailImageUrl: e.mediumPreview ?? '',
     sampleImageUrl: e.bigPreview ?? '',
     originalImageUrl: e.bigPreview ?? '',
-    tags: {},
+    tags: const {},
     rating: switch (e.erotics) {
       EroticLevel.none => Rating.general,
       EroticLevel.light => Rating.sensitive,

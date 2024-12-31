@@ -26,8 +26,7 @@ class DownloadNotifications {
     }
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),
@@ -78,7 +77,7 @@ class DownloadNotifications {
       );
     }
 
-    showProgress();
+    unawaited(showProgress());
   }
 
   Future<void> showFailed(String fileName, String path) {

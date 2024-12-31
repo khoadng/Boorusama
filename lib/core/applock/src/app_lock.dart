@@ -16,9 +16,9 @@ import 'biometrics.dart';
 
 class AppLock extends ConsumerStatefulWidget {
   const AppLock({
+    required this.child,
     super.key,
     this.enable = true,
-    required this.child,
   });
 
   final bool enable;
@@ -36,15 +36,14 @@ class _AppLockState extends ConsumerState<AppLock> {
     super.initState();
     if (widget.enable) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        _authenticate(ref.read(biometricsProvider));
+        unawaited(_authenticate(ref.read(biometricsProvider)));
       });
     }
   }
 
   Future<void> _authenticate(LocalAuthentication localAuth) async {
-    final logger = ref.read(loggerProvider);
-
-    logger.logI('Local Auth', 'Authenticating...');
+    final logger = ref.read(loggerProvider)
+      ..logI('Local Auth', 'Authenticating...');
 
     try {
       final didAuthenticate = await startAuthenticate(localAuth);
@@ -57,8 +56,9 @@ class _AppLockState extends ConsumerState<AppLock> {
       }
     } catch (e) {
       setState(() {
-        logger.logE('Local Auth', 'Failed to authenticate: $e');
-        logger.logI('Local Auth', 'Auto unlocked');
+        logger
+          ..logE('Local Auth', 'Failed to authenticate: $e')
+          ..logI('Local Auth', 'Auto unlocked');
         unlocked = true;
       });
     }
@@ -119,9 +119,9 @@ class _AppLockState extends ConsumerState<AppLock> {
 
 class DelayedRenderWidget extends StatefulWidget {
   const DelayedRenderWidget({
-    super.key,
     required this.delay,
     required this.child,
+    super.key,
     this.placeholder,
   });
 

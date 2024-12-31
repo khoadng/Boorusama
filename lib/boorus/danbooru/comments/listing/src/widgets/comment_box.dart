@@ -17,11 +17,11 @@ import 'reply_header.dart';
 
 class CommentBox extends ConsumerStatefulWidget {
   const CommentBox({
-    super.key,
     required this.commentReply,
     required this.isEditing,
     required this.postId,
     required this.focus,
+    super.key,
   });
 
   final ValueNotifier<CommentData?> commentReply;
@@ -91,7 +91,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                   icon: const Icon(Symbols.fullscreen),
                   onPressed: () {
                     final content = textEditingController.text;
-                    String initialContent = content;
+                    var initialContent = content;
                     if (comment != null) {
                       initialContent =
                           '[quote]\n${comment.authorName} said:\n\n${comment.body}\n[/quote]\n\n$content';

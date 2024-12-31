@@ -219,9 +219,8 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = orders.isEmpty || orders.length != configs.length
         ? [for (final config in configs) config.id]
-        : orders.toList();
-
-    newOrders.reorder(oldIndex, newIndex);
+        : orders.toList()
+      ..reorder(oldIndex, newIndex);
 
     ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
   }

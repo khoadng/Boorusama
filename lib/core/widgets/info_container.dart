@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class InfoContainer extends StatelessWidget {
   const InfoContainer({
-    super.key,
     required this.contentBuilder,
+    super.key,
     this.title,
   });
 
@@ -29,8 +29,8 @@ class InfoContainer extends StatelessWidget {
 
 class WarningContainer extends StatelessWidget {
   const WarningContainer({
-    super.key,
     required this.contentBuilder,
+    super.key,
     this.title,
     this.margin,
   });
@@ -59,8 +59,8 @@ class WarningContainer extends StatelessWidget {
 
 class TemplateContainer extends StatefulWidget {
   const TemplateContainer({
-    super.key,
     required this.contentBuilder,
+    super.key,
     this.borderColor,
     this.titleBackgroundColor,
     this.title,

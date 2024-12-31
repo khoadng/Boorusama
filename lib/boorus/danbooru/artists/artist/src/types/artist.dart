@@ -78,9 +78,8 @@ extension DanbooruArtistX on DanbooruArtist {
       );
 
   List<DanbooruArtistUrl> get activeUrls {
-    final urls = this.urls.filterActive().filterDuplicates().toList();
-
-    urls.sort((a, b) => b.url.compareTo(a.url));
+    final urls = this.urls.filterActive().filterDuplicates().toList()
+      ..sort((a, b) => b.url.compareTo(a.url));
 
     return urls;
   }

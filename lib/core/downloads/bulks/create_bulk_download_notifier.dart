@@ -102,9 +102,9 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
       }
     }
 
-    final notifier = ref.read(bulkdownloadProvider.notifier);
-    notifier.addTask(state);
-    notifier.startTask(state.id);
+    ref.read(bulkdownloadProvider.notifier)
+      ..addTask(state)
+      ..startTask(state.id);
 
     return true;
   }
@@ -115,7 +115,6 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
   void queue() {
     if (!state.valid(androidSdkInt: androidSdkInt)) return;
 
-    final notifier = ref.read(bulkdownloadProvider.notifier);
-    notifier.addTask(state);
+    ref.read(bulkdownloadProvider.notifier).addTask(state);
   }
 }

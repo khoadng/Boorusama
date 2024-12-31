@@ -56,9 +56,9 @@ class NoteStyle extends Equatable {
 
 class PostNote extends StatelessWidget {
   const PostNote({
-    super.key,
     required this.coordinate,
     required this.content,
+    super.key,
     this.style,
   });
 
@@ -84,9 +84,9 @@ class PostNote extends StatelessWidget {
 
 class PostNoteDesktop extends StatefulWidget {
   const PostNoteDesktop({
-    super.key,
     required this.coordinate,
     required this.content,
+    super.key,
     this.style,
   });
 
@@ -189,9 +189,9 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
 
 class PostNoteMobile extends StatefulWidget {
   const PostNoteMobile({
-    super.key,
     required this.coordinate,
     required this.content,
+    super.key,
     this.style,
   });
 

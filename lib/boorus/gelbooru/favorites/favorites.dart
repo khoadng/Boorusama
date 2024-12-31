@@ -31,8 +31,8 @@ class GelbooruFavoritesPage extends ConsumerWidget {
 
 class GelbooruFavoritesPageInternal extends ConsumerWidget {
   const GelbooruFavoritesPageInternal({
-    super.key,
     required this.uid,
+    super.key,
   });
 
   final String uid;

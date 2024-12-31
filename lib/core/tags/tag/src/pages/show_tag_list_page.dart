@@ -23,8 +23,8 @@ final selectedViewTagQueryProvider =
 
 class DefaultShowTagListPage extends ConsumerWidget {
   const DefaultShowTagListPage({
-    super.key,
     required this.tags,
+    super.key,
   });
 
   final List<Tag> tags;
@@ -53,8 +53,8 @@ class DefaultShowTagListPage extends ConsumerWidget {
 
 class ShowTagListPage extends ConsumerWidget {
   const ShowTagListPage({
-    super.key,
     required this.tags,
+    super.key,
     this.onAddToBlacklist,
     this.onAddToGlobalBlacklist,
     this.onAddToFavoriteTags,
@@ -123,10 +123,8 @@ class ShowTagListPage extends ConsumerWidget {
                         switch (value) {
                           case 'add_to_blacklist':
                             onAddToBlacklist?.call(tag);
-                            break;
                           case 'add_to_global_blacklist':
                             onAddToGlobalBlacklist?.call(tag);
-                            break;
                           case 'add_to_favorite_tags':
                             onAddToFavoriteTags?.call(tag);
                           case 'open_wiki':
@@ -136,7 +134,6 @@ class ShowTagListPage extends ConsumerWidget {
                               context,
                               tag.rawName,
                             );
-                            break;
                         }
                       },
                       itemBuilder: {

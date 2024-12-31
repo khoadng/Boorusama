@@ -17,10 +17,10 @@ import '../path/validator.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({
-    super.key,
     required this.storagePath,
     required this.deviceInfo,
     required this.onPathChanged,
+    super.key,
     this.hint,
     this.title,
   });
@@ -151,9 +151,9 @@ class _DownloadFolderSelectorSectionState
 
 class DownloadPathWarning extends StatelessWidget {
   const DownloadPathWarning({
-    super.key,
     required this.releaseName,
     required this.allowedFolders,
+    super.key,
     this.padding,
   });
 

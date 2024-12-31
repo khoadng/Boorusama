@@ -11,9 +11,9 @@ import 'post_creator_preloadable.dart';
 
 class DanbooruCreatorPreloader extends ConsumerStatefulWidget {
   const DanbooruCreatorPreloader({
-    super.key,
     required this.preloadable,
     required this.child,
+    super.key,
   });
 
   final PostCreatorsPreloadable preloadable;

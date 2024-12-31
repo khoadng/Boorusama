@@ -13,8 +13,8 @@ import '../posts/posts_v2.dart';
 
 class GelbooruV2ArtistPage extends ConsumerWidget {
   const GelbooruV2ArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;

@@ -27,8 +27,8 @@ void goToPostDetailsPageFromPosts<T extends Post>({
 void goToPostDetailsPageFromController<T extends Post>({
   required BuildContext context,
   required int initialIndex,
-  AutoScrollController? scrollController,
   required PostGridController<T> controller,
+  AutoScrollController? scrollController,
 }) =>
     goToPostDetailsPageCore(
       context: context,

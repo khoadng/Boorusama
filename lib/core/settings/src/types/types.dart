@@ -113,3 +113,9 @@ extension PageIndicatorPositionX on PageIndicatorPosition {
   bool get isVisibleAtTop =>
       this == PageIndicatorPosition.top || this == PageIndicatorPosition.both;
 }
+
+enum VideoPlayerEngine {
+  auto,
+  videoPlayerPlugin,
+  mdk,
+}

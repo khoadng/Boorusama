@@ -42,23 +42,19 @@ Either<ExportError, String> tryEncodeData({
   required List<dynamic> payload,
 }) =>
     Either.Do(($) {
-      try {
-        final data = ExportDataPayload(
-          version: version,
-          exportDate: exportDate,
-          exportVersion: exportVersion,
-          data: payload,
-        ).toJson();
+      final data = ExportDataPayload(
+        version: version,
+        exportDate: exportDate,
+        exportVersion: exportVersion,
+        data: payload,
+      ).toJson();
 
-        try {
-          final jsonString = jsonEncode(data);
-          return jsonString;
-        } catch (e, st) {
-          throw JsonEncodingError(error: e, stackTrace: st);
-        }
-      } catch (e, st) {
-        throw JsonSerializationError(error: e, stackTrace: st);
-      }
+      return $(
+        Either.tryCatch(
+          () => jsonEncode(data),
+          (e, st) => JsonEncodingError(error: e, stackTrace: st),
+        ),
+      );
     });
 
 Either<ImportError, ExportDataPayload> tryDecodeData({

@@ -7,6 +7,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/display.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
 import '../../../../videos/more_options_control_button.dart';
 import '../../../../videos/play_pause_button.dart';
@@ -18,8 +20,8 @@ import 'post_details_controller.dart';
 
 class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
   const PostDetailsVideoControls({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final PostDetailsController<T> controller;
@@ -48,6 +50,12 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
 
     final isLarge = context.isLargeScreen;
     final surfaceColor = Theme.of(context).colorScheme.surface;
+
+    final useDefaultEngine = ref.watch(
+      settingsProvider.select(
+        (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+      ),
+    );
 
     return Stack(
       children: [
@@ -85,10 +93,18 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                         builder: (_, post, __) => PlayPauseButton(
                           isPlaying: controller.isVideoPlaying,
                           onPlayingChanged: (value) {
-                            if (value == true) {
-                              controller.pauseVideo(post.id, post.isWebm);
-                            } else if (value == false) {
-                              controller.playVideo(post.id, post.isWebm);
+                            if (value) {
+                              controller.pauseVideo(
+                                post.id,
+                                post.isWebm,
+                                useDefaultEngine,
+                              );
+                            } else if (!value) {
+                              controller.playVideo(
+                                post.id,
+                                post.isWebm,
+                                useDefaultEngine,
+                              );
                             } else {
                               // do nothing
                             }
@@ -115,16 +131,25 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                                 buffered: const [],
                                 onDragStart: () {
                                   // pause the video when dragging
-                                  controller.pauseVideo(post.id, post.isWebm);
+                                  controller.pauseVideo(
+                                    post.id,
+                                    post.isWebm,
+                                    useDefaultEngine,
+                                  );
                                 },
                                 onDragEnd: () {
                                   // resume the video when dragging ends
-                                  controller.playVideo(post.id, post.isWebm);
+                                  controller.playVideo(
+                                    post.id,
+                                    post.isWebm,
+                                    useDefaultEngine,
+                                  );
                                 },
                                 seekTo: (position) => controller.onVideoSeekTo(
                                   position,
                                   post.id,
                                   post.isWebm,
+                                  useDefaultEngine,
                                 ),
                                 barHeight: 2,
                                 handleHeight: 6,
@@ -168,8 +193,8 @@ const _kMinWidth = 320.0;
 
 class VideoTimeText extends StatelessWidget {
   const VideoTimeText({
-    super.key,
     required this.duration,
+    super.key,
   });
 
   final Duration duration;

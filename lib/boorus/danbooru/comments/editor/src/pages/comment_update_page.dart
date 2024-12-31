@@ -15,9 +15,9 @@ import '../widgets/editor_spacer.dart';
 
 class CommentUpdatePage extends ConsumerStatefulWidget {
   const CommentUpdatePage({
-    super.key,
     required this.postId,
     required this.commentId,
+    super.key,
     this.initialContent,
   });
 

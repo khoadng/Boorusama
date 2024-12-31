@@ -24,8 +24,7 @@ class BulkDownloadNotifications {
     }
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
+    const initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),
@@ -33,7 +32,8 @@ class BulkDownloadNotifications {
           LinuxInitializationSettings(defaultActionName: 'Open notification'),
     );
 
-    //TODO: dispose?
+    // No need to close cause it is used in the main function
+    // ignore: close_sinks
     final streamController = StreamController<String>.broadcast();
 
     await flutterLocalNotificationsPlugin.initialize(
@@ -88,5 +88,9 @@ class BulkDownloadNotifications {
       platformChannelSpecifics,
       payload: payload,
     );
+  }
+
+  void dispose() {
+    _streamController?.close();
   }
 }

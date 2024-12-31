@@ -11,10 +11,10 @@ import '../utils/color_utils.dart';
 
 class BooruChip extends ConsumerWidget {
   const BooruChip({
+    required this.label,
     super.key,
     this.color,
     this.onPressed,
-    required this.label,
     this.trailing,
     this.contentPadding,
     this.visualDensity,

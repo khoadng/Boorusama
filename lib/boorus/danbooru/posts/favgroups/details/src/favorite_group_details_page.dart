@@ -30,8 +30,8 @@ import 'danbooru_favorite_group_post_mixin.dart';
 
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {
   const FavoriteGroupDetailsPage({
-    super.key,
     required this.group,
+    super.key,
   });
 
   final DanbooruFavoriteGroup group;
@@ -170,9 +170,9 @@ class _FavoriteGroupDetailsPageState
 
 class FavoriteGroupEditPage extends StatefulWidget {
   const FavoriteGroupEditPage({
-    super.key,
     required this.posts,
     required this.onSave,
+    super.key,
   });
 
   final List<DanbooruPost> posts;
@@ -215,7 +215,7 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
       body: SafeArea(
         child: ReorderableListView.builder(
           header: const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8),
             child: Text(
               'Long press and drag to reorder',
             ),

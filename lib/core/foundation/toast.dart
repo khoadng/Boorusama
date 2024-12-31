@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:oktoast/oktoast.dart';
 
-// Project imports:
-
 void showSuccessToast(
   BuildContext context,
   String message, {

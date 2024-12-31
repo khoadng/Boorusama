@@ -6,10 +6,10 @@ import 'package:foundation/foundation.dart';
 
 class ExploreSection extends StatelessWidget {
   const ExploreSection({
-    super.key,
     required this.title,
     required this.builder,
     required this.onPressed,
+    super.key,
   });
 
   final Widget Function(BuildContext context) builder;

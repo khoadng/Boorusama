@@ -30,13 +30,13 @@ final class OptionType<T> extends OptionSelectorItem {
 
 class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
   const ChoiceOptionSelectorList({
-    super.key,
     required this.options,
     required this.selectedOption,
+    required this.optionLabelBuilder,
+    super.key,
     this.icon,
     this.onSelected,
     this.sheetTitle,
-    required this.optionLabelBuilder,
     this.hasNullOption = true,
     this.searchable = true,
     this.padding,

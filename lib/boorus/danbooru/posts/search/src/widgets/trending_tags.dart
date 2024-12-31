@@ -13,10 +13,10 @@ import '../trending_tag.dart';
 
 class TrendingTags extends ConsumerWidget {
   const TrendingTags({
-    super.key,
     required this.onTagTap,
     required this.tags,
     required this.colorBuilder,
+    super.key,
   });
 
   final ValueChanged<String>? onTagTap;
@@ -56,8 +56,8 @@ class TrendingTags extends ConsumerWidget {
 
 class TrendingTagsPlaceholder extends StatelessWidget {
   const TrendingTagsPlaceholder({
-    super.key,
     required this.tags,
+    super.key,
   });
 
   final List<TrendingTag> tags;

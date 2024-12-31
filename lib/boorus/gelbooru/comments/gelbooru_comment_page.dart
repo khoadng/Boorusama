@@ -11,9 +11,9 @@ import 'comments.dart';
 
 class GelbooruCommentPage extends ConsumerWidget {
   const GelbooruCommentPage({
-    super.key,
     required this.postId,
     required this.useAppBar,
+    super.key,
   });
 
   final int postId;

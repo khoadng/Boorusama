@@ -106,12 +106,13 @@ class MockLogger extends Mock implements Logger {}
 final mockAnalytics = MockAnalytics();
 
 class MockCallback extends Mock {
+  // ignore: unreachable_from_main
   void call();
 }
 
 ProviderContainer createBooruConfigContainer({
-  BooruConfigRepository? booruConfigRepository,
   required SettingsRepository settingsRepository,
+  BooruConfigRepository? booruConfigRepository,
 }) {
   final mockLogger = MockLogger();
 

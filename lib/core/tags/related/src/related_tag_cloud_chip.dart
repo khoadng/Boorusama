@@ -14,10 +14,10 @@ class RelatedTagCloudChip extends ConsumerWidget {
   const RelatedTagCloudChip({
     required this.index,
     required this.tag,
-    this.isDummy = false,
     required this.onPressed,
-    super.key,
     required this.color,
+    this.isDummy = false,
+    super.key,
   });
 
   final int index;

@@ -27,8 +27,8 @@ class MoebooruFavoritesPage extends ConsumerWidget {
 
 class MoebooruFavoritesPageInternalPage extends ConsumerWidget {
   const MoebooruFavoritesPageInternalPage({
-    super.key,
     required this.username,
+    super.key,
   });
 
   final String username;

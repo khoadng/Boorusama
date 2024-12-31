@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -86,9 +89,11 @@ class CommentsNotifier
     };
 
     // fetch comment votes, no need to wait
-    ref
-        .read(danbooruCommentVotesProvider(arg).notifier)
-        .fetch(comments.map((e) => e.id).toList());
+    unawaited(
+      ref
+          .read(danbooruCommentVotesProvider(arg).notifier)
+          .fetch(comments.map((e) => e.id).toList()),
+    );
   }
 
   Future<void> send({

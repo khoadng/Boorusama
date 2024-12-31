@@ -6,12 +6,12 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class CenterPlayButton extends StatelessWidget {
   const CenterPlayButton({
-    super.key,
     required this.backgroundColor,
-    this.iconColor,
     required this.show,
     required this.isPlaying,
     required this.isFinished,
+    super.key,
+    this.iconColor,
     this.onPressed,
   });
 
@@ -40,7 +40,7 @@ class CenterPlayButton extends StatelessWidget {
               // https://github.com/flutter/flutter/issues/52980
               child: IconButton(
                 iconSize: 32,
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(12),
                 icon: isFinished
                     ? Icon(Symbols.replay, color: iconColor)
                     : AnimatedPlayPause(
@@ -60,8 +60,8 @@ class CenterPlayButton extends StatelessWidget {
 /// A widget that animates implicitly between a play and a pause icon.
 class AnimatedPlayPause extends StatefulWidget {
   const AnimatedPlayPause({
-    super.key,
     required this.playing,
+    super.key,
     this.size,
     this.color,
   });

@@ -14,9 +14,9 @@ import 'file_detail_tile.dart';
 
 class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({
-    super.key,
     required this.post,
     required this.rating,
+    super.key,
     this.uploader,
     this.customDetails,
     this.initialExpanded = false,

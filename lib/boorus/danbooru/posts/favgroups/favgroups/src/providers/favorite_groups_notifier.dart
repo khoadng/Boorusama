@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,7 +49,9 @@ class FavoriteGroupsNotifier
         .take(200)
         .toList();
 
-    ref.read(danbooruFavoriteGroupPreviewsProvider(arg).notifier).fetch(ids);
+    unawaited(
+      ref.read(danbooruFavoriteGroupPreviewsProvider(arg).notifier).fetch(ids),
+    );
 
     state = groups;
   }
@@ -82,7 +87,7 @@ class FavoriteGroupsNotifier
     );
 
     if (success) {
-      refresh();
+      unawaited(refresh());
     } else {
       onFailure?.call('Fail to create favorite group', false);
     }
@@ -97,7 +102,7 @@ class FavoriteGroupsNotifier
     );
 
     if (success) {
-      refresh();
+      unawaited(refresh());
     }
   }
 
@@ -124,7 +129,7 @@ class FavoriteGroupsNotifier
     );
 
     if (success) {
-      refresh();
+      unawaited(refresh());
       return true;
     } else {
       onFailure?.call('Fail to edit favorite group', false);
@@ -165,7 +170,7 @@ class FavoriteGroupsNotifier
           postIds: items,
         ),
       );
-      refresh();
+      unawaited(refresh());
     } else {
       onFailure?.call('Failed to add posts to favgroup', false);
     }
@@ -187,7 +192,7 @@ class FavoriteGroupsNotifier
 
     if (success) {
       onSuccess?.call(group.copyWith(postIds: items));
-      refresh();
+      unawaited(refresh());
     } else {
       onFailure?.call('Failed to remove posts to favgroup', false);
     }

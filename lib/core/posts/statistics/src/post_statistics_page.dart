@@ -13,9 +13,9 @@ import 'post_stats_display.dart';
 
 class PostStatisticsPage extends StatelessWidget {
   const PostStatisticsPage({
-    super.key,
     required this.totalPosts,
     required this.generalStats,
+    super.key,
     this.customStats,
   });
 
@@ -159,10 +159,10 @@ class PostStatisticsPage extends StatelessWidget {
 
 class StatisticsFromMapPage extends StatefulWidget {
   const StatisticsFromMapPage({
-    super.key,
     required this.total,
     required this.title,
     required this.data,
+    super.key,
     this.keyColor,
     this.titleFormatter,
   });
@@ -226,7 +226,7 @@ class _StatisticsFromMapPageState extends State<StatisticsFromMapPage> {
             return PostStatsTile(
               title: widget.titleFormatter?.call(entry.key) ?? entry.key,
               titleColor: widget.keyColor,
-              value: entry.value.toString(),
+              value: entry.value,
             );
           },
         ),
@@ -237,9 +237,9 @@ class _StatisticsFromMapPageState extends State<StatisticsFromMapPage> {
 
 class PostStatsSectionTitle extends StatelessWidget {
   const PostStatsSectionTitle({
-    super.key,
     required this.title,
     required this.onMore,
+    super.key,
   });
 
   final String title;
@@ -272,9 +272,9 @@ class PostStatsSectionTitle extends StatelessWidget {
 
 class StatisticalSummaryDetailsPage extends StatelessWidget {
   const StatisticalSummaryDetailsPage({
-    super.key,
     required this.title,
     required this.stats,
+    super.key,
     this.formatter,
   });
 
@@ -342,9 +342,9 @@ class StatisticalSummaryDetailsPage extends StatelessWidget {
 
 class PostStatsTile extends StatelessWidget {
   const PostStatsTile({
-    super.key,
     required this.title,
     required this.value,
+    super.key,
     this.titleColor,
   });
 

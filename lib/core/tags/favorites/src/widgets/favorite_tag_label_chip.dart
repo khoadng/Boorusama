@@ -14,8 +14,8 @@ import '../pages/favorite_tag_label_details_page.dart';
 
 class FavoriteTagLabelChip extends ConsumerWidget {
   const FavoriteTagLabelChip({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;

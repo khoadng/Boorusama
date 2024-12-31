@@ -31,6 +31,7 @@ import '../../../router.dart';
 import '../../../scaffolds/scaffolds.dart';
 import '../../../search/search/routes.dart';
 import '../../../search/search/widgets.dart';
+import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../tags/categories/tag_category.dart';
@@ -103,6 +104,24 @@ mixin DefaultTagColorMixin implements BooruBuilder {
           _ => colors.general,
         };
       };
+}
+
+mixin DefaultTagSuggestionsItemBuilderMixin implements BooruBuilder {
+  @override
+  TagSuggestionItemBuilder get tagSuggestionItemBuilder => (
+        config,
+        tag,
+        dense,
+        currentQuery,
+        onItemTap,
+      ) =>
+          DefaultTagSuggestionItem(
+            config: config,
+            tag: tag,
+            onItemTap: onItemTap,
+            currentQuery: currentQuery,
+            dense: dense,
+          );
 }
 
 mixin DefaultPostImageDetailsUrlMixin implements BooruBuilder {
@@ -234,8 +253,8 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
 
 class DefaultSearchPage extends ConsumerWidget {
   const DefaultSearchPage({
-    super.key,
     required this.initialQuery,
+    super.key,
   });
 
   final String? initialQuery;
@@ -279,8 +298,8 @@ String Function(
 
 class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
   const DefaultImagePreviewQuickActionButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;

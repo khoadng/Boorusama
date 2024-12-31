@@ -11,8 +11,8 @@ import 'route_utils.dart';
 
 class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
   const BooruConfigMoreSettingsRedirectCard({
-    super.key,
     required this.initialTab,
+    super.key,
   });
 
   const BooruConfigMoreSettingsRedirectCard.imageViewer({

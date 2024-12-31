@@ -9,7 +9,7 @@ import '../foundation/html.dart';
 import '../foundation/url_launcher.dart';
 
 class NonQuote extends StatelessWidget {
-  const NonQuote({super.key, required this.text});
+  const NonQuote({required this.text, super.key});
   final String text;
 
   @override

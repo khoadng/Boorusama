@@ -15,12 +15,12 @@ import 'selected_tag_chip.dart';
 
 class SelectedTagList extends StatelessWidget {
   const SelectedTagList({
-    super.key,
     required this.tags,
     required this.onClear,
     required this.onDelete,
     required this.onUpdate,
     required this.onBulkDownload,
+    super.key,
     this.extraTagsCount,
     this.onOtherTagsCountTap,
   });
@@ -156,9 +156,9 @@ class SelectedTagList extends StatelessWidget {
 class SelectedTagContextMenu extends ConsumerWidget
     with TagContextMenuButtonConfigMixin {
   const SelectedTagContextMenu({
-    super.key,
     required this.tag,
     required this.child,
+    super.key,
   });
 
   final String tag;

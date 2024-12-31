@@ -17,10 +17,10 @@ import '_internal/preview_post_grid.dart';
 
 class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
   const SliverRelatedPostsSection({
-    super.key,
     required this.posts,
     required this.imageUrl,
     required this.onTap,
+    super.key,
     this.onViewAll,
     this.title,
   });

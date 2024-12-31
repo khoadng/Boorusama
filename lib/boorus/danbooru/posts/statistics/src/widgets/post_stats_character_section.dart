@@ -13,9 +13,9 @@ import '../post_stats.dart';
 
 class PostStatsCharacterSection extends ConsumerWidget {
   const PostStatsCharacterSection({
-    super.key,
     required this.stats,
     required this.totalPosts,
+    super.key,
   });
 
   final DanbooruPostStats stats;

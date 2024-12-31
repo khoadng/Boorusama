@@ -12,10 +12,10 @@ import '../widgets/user_details_section_card.dart';
 
 class UserDetailsInfoView extends ConsumerWidget {
   const UserDetailsInfoView({
-    super.key,
     required this.uid,
     required this.isSelf,
     required this.user,
+    super.key,
   });
 
   final bool isSelf;
@@ -45,8 +45,8 @@ class UserDetailsInfoView extends ConsumerWidget {
 
 class UserFeedbacksGroup extends StatelessWidget {
   const UserFeedbacksGroup({
-    super.key,
     required this.user,
+    super.key,
   });
 
   final DanbooruUser user;
@@ -90,8 +90,8 @@ class UserFeedbacksGroup extends StatelessWidget {
 
 class UserStatsGroup extends StatelessWidget {
   const UserStatsGroup({
-    super.key,
     required this.user,
+    super.key,
   });
 
   final DanbooruUser user;

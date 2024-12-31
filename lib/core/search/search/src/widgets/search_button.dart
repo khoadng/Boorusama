@@ -7,9 +7,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class SearchButton extends ConsumerWidget {
   const SearchButton({
-    super.key,
     required this.onSearch,
     required this.allowSearch,
+    super.key,
   });
 
   final VoidCallback onSearch;
@@ -29,8 +29,8 @@ class SearchButton extends ConsumerWidget {
 
 class SearchButton2 extends StatelessWidget {
   const SearchButton2({
-    super.key,
     required this.onTap,
+    super.key,
   });
 
   final void Function()? onTap;

@@ -12,10 +12,10 @@ import 'widgets/full_history_view.dart';
 
 class FullHistoryPage extends ConsumerStatefulWidget {
   const FullHistoryPage({
-    super.key,
     required this.onClear,
     required this.onRemove,
     required this.onTap,
+    super.key,
     this.scrollController,
   });
 

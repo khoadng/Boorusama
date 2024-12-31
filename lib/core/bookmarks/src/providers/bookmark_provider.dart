@@ -55,8 +55,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
-  }) async {
-    bookmarkRepository.getAllBookmarks().run().then(
+  }) {
+    return bookmarkRepository.getAllBookmarks().run().then(
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
@@ -251,6 +251,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
               AppHttpHeaders.userAgentHeader:
                   ref.read(userAgentProvider(config.auth.booruType)),
               ...ref.read(extraHttpHeaderProvider(config.auth)),
+              ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
             },
           ).run(),
         )

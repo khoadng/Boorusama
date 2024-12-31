@@ -7,8 +7,8 @@ import '../favorite_tags_sort_type.dart';
 
 class FavoriteTagConfigSheet extends StatelessWidget {
   const FavoriteTagConfigSheet({
-    super.key,
     required this.onSorted,
+    super.key,
   });
 
   final void Function(FavoriteTagsSortType) onSorted;

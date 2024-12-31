@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class InteractiveViewerExtended extends StatefulWidget {
   const InteractiveViewerExtended({
-    super.key,
     required this.child,
+    super.key,
     this.onTap,
     this.onDoubleTap,
     this.onLongPress,
@@ -74,8 +74,9 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
 
   @override
   void dispose() {
-    _animationController.removeListener(_onAnimationChanged);
-    _animationController.dispose();
+    _animationController
+      ..removeListener(_onAnimationChanged)
+      ..dispose();
 
     _controller.removeListener(_onChanged);
     if (widget.controller == null) {

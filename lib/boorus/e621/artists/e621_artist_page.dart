@@ -15,8 +15,8 @@ import 'artists.dart';
 
 class E621ArtistPage extends ConsumerStatefulWidget {
   const E621ArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;

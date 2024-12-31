@@ -18,8 +18,8 @@ import '../widgets/saved_search_context_menu.dart';
 
 class SavedSearchFeedContentView extends ConsumerStatefulWidget {
   const SavedSearchFeedContentView({
-    super.key,
     required this.searches,
+    super.key,
   });
 
   final List<SavedSearch> searches;

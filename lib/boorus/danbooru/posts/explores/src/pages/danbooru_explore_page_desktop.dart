@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -41,20 +39,18 @@ class _DanbooruExplorePageDesktopState
       sliverOverviews: [
         SliverToBoxAdapter(
           child: PopularExplore(
-            onPressed: () =>
-                controller.changeCategory(ExploreCategory.popular.name),
+            onPressed: () => controller.category = ExploreCategory.popular.name,
           ),
         ),
         SliverToBoxAdapter(
           child: HotExplore(
-            onPressed: () =>
-                controller.changeCategory(ExploreCategory.hot.name),
+            onPressed: () => controller.category = ExploreCategory.hot.name,
           ),
         ),
         SliverToBoxAdapter(
           child: MostViewedExplore(
             onPressed: () =>
-                controller.changeCategory(ExploreCategory.mostViewed.name),
+                controller.category = ExploreCategory.mostViewed.name,
           ),
         ),
       ],

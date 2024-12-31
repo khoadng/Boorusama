@@ -21,8 +21,8 @@ import '../../post/post.dart';
 
 class DanbooruMultiSelectionActions extends ConsumerWidget {
   const DanbooruMultiSelectionActions({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final MultiSelectController<DanbooruPost> controller;
@@ -109,8 +109,8 @@ final _selectedRatingProvider =
 
 class MassEditRatingSheet extends ConsumerWidget {
   const MassEditRatingSheet({
-    super.key,
     required this.posts,
+    super.key,
   });
 
   final List<DanbooruPost> posts;

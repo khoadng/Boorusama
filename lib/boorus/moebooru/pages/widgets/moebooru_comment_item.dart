@@ -13,8 +13,8 @@ import '../../feats/comments/comments.dart';
 
 class MoebooruCommentItem extends ConsumerWidget {
   const MoebooruCommentItem({
-    super.key,
     required this.comment,
+    super.key,
   });
 
   final MoebooruComment comment;

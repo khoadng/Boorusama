@@ -24,10 +24,10 @@ import 'providers.dart';
 
 class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({
-    super.key,
     required this.title,
     required this.initialValue,
     required this.onSubmitted,
+    super.key,
   });
 
   final List<String>? initialValue;
@@ -50,9 +50,9 @@ class CreateBulkDownloadTaskSheet extends ConsumerWidget {
 
 class CreateBulkDownloadTaskSheetInternal extends ConsumerStatefulWidget {
   const CreateBulkDownloadTaskSheetInternal({
-    super.key,
     required this.title,
     required this.onSubmitted,
+    super.key,
   });
 
   final String title;

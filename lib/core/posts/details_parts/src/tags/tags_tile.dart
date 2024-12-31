@@ -11,13 +11,13 @@ import '../../../post/post.dart';
 
 class TagsTile extends ConsumerWidget {
   const TagsTile({
-    super.key,
     required this.post,
+    required this.tags,
+    super.key,
     this.onExpand,
     this.onCollapse,
     this.onTagTap,
     this.initialExpanded = false,
-    required this.tags,
     this.tagColorBuilder,
     this.padding,
     this.initialCount,

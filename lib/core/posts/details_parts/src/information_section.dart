@@ -182,8 +182,7 @@ String generateCharacterOnlyReadableName(Set<String> characterTags) {
     return index > 0 ? character.substring(0, index - 1) : character;
   }).toSet();
 
-  final buffer = StringBuffer();
-  buffer.write(cleanedCharacterList.take(3).join(', '));
+  final buffer = StringBuffer()..write(cleanedCharacterList.take(3).join(', '));
 
   if (cleanedCharacterList.length > 3) {
     buffer.write(' and ${cleanedCharacterList.length - 3} more');
@@ -210,8 +209,8 @@ String chooseArtistTag(Set<String> artistTags) {
 
 class ArtistNameInfoChip extends ConsumerWidget {
   const ArtistNameInfoChip({
-    super.key,
     required this.artistTags,
+    super.key,
     this.onTap,
   });
 
@@ -242,8 +241,8 @@ class ArtistNameInfoChip extends ConsumerWidget {
 
 class SimpleInformationSection extends ConsumerWidget {
   const SimpleInformationSection({
-    super.key,
     required this.post,
+    super.key,
     this.padding,
     this.showSource = false,
   });

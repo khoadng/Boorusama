@@ -210,7 +210,7 @@ void main() {
       ]
           .map(
             (e) => DanbooruPost.empty().copyWith(
-              hasChildren: e.first as bool,
+              hasChildren: e.first! as bool,
               parentId: e[1] as int?,
             ),
           )

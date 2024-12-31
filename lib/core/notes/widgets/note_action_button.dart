@@ -11,12 +11,12 @@ import '../../widgets/circular_icon_button.dart';
 
 class NoteActionButton extends StatelessWidget {
   const NoteActionButton({
-    super.key,
     required this.post,
     required this.showDownload,
     required this.enableNotes,
     required this.onDownload,
     required this.onToggleNotes,
+    super.key,
   });
 
   final Post post;

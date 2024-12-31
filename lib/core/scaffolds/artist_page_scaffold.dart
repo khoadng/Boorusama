@@ -12,9 +12,9 @@ import '../tags/tag/tag.dart';
 
 class ArtistPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const ArtistPageScaffold({
-    super.key,
     required this.artistName,
     required this.fetcher,
+    super.key,
   });
 
   final String artistName;

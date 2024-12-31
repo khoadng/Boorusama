@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/providers.dart';
 import '../../../posts/rating/rating.dart';
+import '../../../proxy/proxy.dart';
 import '../../../settings/settings.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
@@ -176,4 +177,9 @@ class EditBooruConfigNotifier
             ? BooruConfigDeletedItemBehavior.hide
             : BooruConfigDeletedItemBehavior.show,
       );
+
+  void updateProxySettings(
+    ProxySettings? proxySettings,
+  ) =>
+      state = state.copyWith(proxySettings: () => proxySettings);
 }

@@ -16,8 +16,8 @@ import '../wigdets/add_to_favgroup_list.dart';
 
 class AddToFavoriteGroupPage extends ConsumerWidget {
   const AddToFavoriteGroupPage({
-    super.key,
     required this.posts,
+    super.key,
   });
 
   final List<DanbooruPost> posts;

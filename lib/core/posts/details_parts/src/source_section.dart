@@ -35,8 +35,8 @@ class DefaultInheritedSourceSection<T extends Post> extends StatelessWidget {
 
 class SourceSection extends StatelessWidget {
   const SourceSection({
-    super.key,
     required this.source,
+    super.key,
     this.title,
   });
 
@@ -76,7 +76,7 @@ class SourceSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8),
                   child: Row(
                     children: [
                       WebsiteLogo(url: source.faviconUrl),

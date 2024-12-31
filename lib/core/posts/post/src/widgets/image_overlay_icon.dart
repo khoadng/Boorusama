@@ -6,8 +6,8 @@ import '../../../../theme.dart';
 
 class ImageOverlayIcon extends StatelessWidget {
   const ImageOverlayIcon({
-    super.key,
     required this.icon,
+    super.key,
     this.size,
   });
 

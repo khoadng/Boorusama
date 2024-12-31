@@ -12,8 +12,8 @@ import '../providers/pool_covers_notifier.dart';
 
 class PoolImage extends ConsumerWidget {
   const PoolImage({
-    super.key,
     required this.pool,
+    super.key,
   });
 
   final DanbooruPool pool;

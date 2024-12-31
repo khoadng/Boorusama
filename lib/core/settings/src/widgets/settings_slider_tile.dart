@@ -6,14 +6,14 @@ import 'package:foundation/foundation.dart';
 
 class SettingsSliderTile extends StatelessWidget {
   const SettingsSliderTile({
-    super.key,
     required this.title,
     required this.value,
     required this.divisions,
-    this.min = 0.0,
     required this.max,
     required this.onChanged,
     required this.onChangeEnd,
+    super.key,
+    this.min = 0.0,
     this.padding,
   });
 

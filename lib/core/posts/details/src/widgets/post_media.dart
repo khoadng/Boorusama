@@ -8,11 +8,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/current.dart';
+import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/path.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/interactive_booru_image.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/routes.dart';
+import '../../../../settings/settings.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/video_player.dart';
 import '../../../post/post.dart';
@@ -22,12 +26,12 @@ import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({
-    super.key,
     required this.post,
     required this.imageUrl,
+    required this.controller,
+    super.key,
     this.useHero = false,
     this.imageOverlayBuilder,
-    required this.controller,
   });
 
   final T post;
@@ -36,18 +40,30 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final PostDetailsPageViewController controller;
 
+  void _openSettings(BuildContext context) {
+    openImageViewerSettingsPage(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
     final booruType = ref.watch(
       currentBooruConfigProvider.select((value) => value.auth.booruType),
     );
+    final useDefault = ref.watch(
+      settingsProvider
+          .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk),
+    );
+    final config = ref.watchConfigAuth;
+    final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
 
     return post.isVideo
         ? Stack(
             children: [
               Positioned.fill(
-                child: extension(post.videoUrl) == '.webm' && isAndroid()
+                child: extension(post.videoUrl) == '.webm' &&
+                        isAndroid() &&
+                        useDefault
                     ? EmbeddedWebViewWebm(
                         url: post.videoUrl,
                         onCurrentPositionChanged:
@@ -73,6 +89,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         sound: ref.isGlobalVideoSoundOn,
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         thumbnailUrl: post.videoThumbnailUrl,
+                        onOpenSettings: () => _openSettings(context),
+                        headers: headers,
                       ),
               ),
               if (context.isLargeScreen)

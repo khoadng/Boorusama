@@ -22,10 +22,10 @@ import 'widgets/tag_edit_tag_list_section.dart';
 
 class TagEditContent extends ConsumerWidget {
   const TagEditContent({
-    super.key,
     required this.ratingSelector,
-    this.source,
     required this.scrollController,
+    super.key,
+    this.source,
   });
 
   final ScrollController scrollController;
@@ -54,9 +54,9 @@ class TagEditContent extends ConsumerWidget {
 
 class TagEditExpandContent extends ConsumerWidget {
   const TagEditExpandContent({
-    super.key,
     required this.viewController,
     required this.maxHeight,
+    super.key,
   });
 
   final TagEditViewController viewController;
@@ -142,9 +142,9 @@ class TagEditExpandContent extends ConsumerWidget {
 
 class TagEditModeSelectButton extends ConsumerWidget {
   const TagEditModeSelectButton({
-    super.key,
     required this.title,
     required this.mode,
+    super.key,
   });
 
   final String title;

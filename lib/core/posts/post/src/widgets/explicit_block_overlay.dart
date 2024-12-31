@@ -10,9 +10,9 @@ import '../../../rating/rating.dart';
 
 class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
   const ExplicitContentBlockOverlay({
-    super.key,
     required this.rating,
     required this.child,
+    super.key,
   });
 
   final Rating rating;

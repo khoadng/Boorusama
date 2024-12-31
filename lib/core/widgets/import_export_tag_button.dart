@@ -16,9 +16,9 @@ const _kHint =
 
 class ImportExportTagButton extends ConsumerWidget {
   const ImportExportTagButton({
-    super.key,
     required this.tags,
     required this.onImport,
+    super.key,
   });
 
   final List<String> tags;

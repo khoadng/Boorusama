@@ -24,14 +24,14 @@ final _imageUrlProvider = Provider<String>((ref) {
 
 class DanbooruPostVersionsPage extends ConsumerStatefulWidget {
   const DanbooruPostVersionsPage({
-    super.key,
     required this.postId,
     required this.previewUrl,
+    super.key,
   });
 
   factory DanbooruPostVersionsPage.post({
-    Key? key,
     required DanbooruPost post,
+    Key? key,
   }) =>
       DanbooruPostVersionsPage(
         key: key,

@@ -13,8 +13,8 @@ import '../foundation/widgets/side_sheet.dart';
 Future<T?> showCommentPage<T>(
   BuildContext context, {
   required int postId,
-  RouteSettings? settings,
   required Widget Function(BuildContext context, bool useAppBar) builder,
+  RouteSettings? settings,
 }) =>
     Screen.of(context).size == ScreenSize.small
         ? Navigator.of(context).push(

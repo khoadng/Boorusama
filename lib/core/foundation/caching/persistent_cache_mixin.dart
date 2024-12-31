@@ -24,9 +24,7 @@ mixin PersistentCacheMixin {
     try {
       final dir = await getAppTemporaryDirectory();
 
-      _box = await Hive.openBox(persistentStorageKey, path: dir.path);
-
-      return _box;
+      return await Hive.openBox(persistentStorageKey, path: dir.path);
     } catch (e) {
       _failedToOpenBox = true;
       return null;
@@ -45,20 +43,20 @@ mixin PersistentCacheMixin {
     final timestamp = box.get('${key}_timestamp');
 
     if (timestamp == null) {
-      box.delete(key);
+      await box.delete(key);
       return null;
     }
 
     final parsedTimestamp = DateTime.tryParse(timestamp);
 
     if (parsedTimestamp == null) {
-      box.delete(key);
+      await box.delete(key);
       return null;
     }
 
     if (_isStale(parsedTimestamp, persistentStaleDuration)) {
-      box.delete(key);
-      box.delete('${key}_timestamp');
+      await box.delete(key);
+      await box.delete('${key}_timestamp');
       return null;
     }
 
@@ -70,8 +68,8 @@ mixin PersistentCacheMixin {
 
     if (box == null) return;
 
-    box.put(key, value);
-    box.put('${key}_timestamp', DateTime.now().toIso8601String());
+    await box.put(key, value);
+    await box.put('${key}_timestamp', DateTime.now().toIso8601String());
   }
 
   Future<void> flush() async {
@@ -79,7 +77,7 @@ mixin PersistentCacheMixin {
 
     if (box == null) return;
 
-    box.clear();
+    await box.clear();
   }
 }
 

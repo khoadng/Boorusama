@@ -14,11 +14,11 @@ import 'providers.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
-    super.key,
     required this.useHero,
     required this.heroTag,
     required this.aspectRatio,
     required this.imageUrl,
+    super.key,
     this.placeholderImageUrl,
     this.imageOverlayBuilder,
     this.width,

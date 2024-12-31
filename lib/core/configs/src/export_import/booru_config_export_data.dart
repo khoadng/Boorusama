@@ -1,6 +1,4 @@
 // Package imports:
-
-// Package imports:
 import 'package:version/version.dart';
 
 // Project imports:

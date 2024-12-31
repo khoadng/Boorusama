@@ -6,8 +6,8 @@ import 'package:flutter_html/flutter_html.dart';
 
 class AppHtml extends StatefulWidget {
   const AppHtml({
-    super.key,
     required this.data,
+    super.key,
     this.style,
     this.onLinkTap,
     this.selectable = true,

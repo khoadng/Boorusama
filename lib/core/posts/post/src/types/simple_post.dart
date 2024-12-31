@@ -22,7 +22,6 @@ abstract class SimplePost extends Equatable
     implements Post {
   SimplePost({
     required this.id,
-    this.createdAt,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
@@ -31,10 +30,8 @@ abstract class SimplePost extends Equatable
     required this.hasComment,
     required this.isTranslated,
     required this.hasParentOrChildren,
-    this.parentId,
     required this.source,
     required this.score,
-    this.downvotes,
     required this.duration,
     required this.fileSize,
     required this.format,
@@ -45,8 +42,11 @@ abstract class SimplePost extends Equatable
     required this.videoUrl,
     required this.width,
     required this.uploaderId,
-    this.uploaderName,
     required this.metadata,
+    this.createdAt,
+    this.parentId,
+    this.downvotes,
+    this.uploaderName,
   });
 
   @override

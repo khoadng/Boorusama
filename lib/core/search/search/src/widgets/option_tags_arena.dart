@@ -18,10 +18,10 @@ class OptionTagsArenaController extends ChangeNotifier {
 
 class OptionTagsArena extends StatefulWidget {
   const OptionTagsArena({
-    super.key,
     required this.title,
-    this.titleTrailing,
     required this.children,
+    super.key,
+    this.titleTrailing,
     this.editable = true,
     this.controller,
   });

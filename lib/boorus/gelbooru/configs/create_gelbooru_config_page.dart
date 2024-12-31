@@ -183,22 +183,23 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   fontWeight: FontWeight.w400,
                 ),
           ),
-          passHash == null
-              ? _buildLoginButton(context, config: config)
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildLoginStatus(config),
-                    const SizedBox(height: 8),
-                    WarningContainer(
-                      margin: EdgeInsets.zero,
-                      title: "About the heart button's state",
-                      contentBuilder: (context) => const Text(
-                        "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
-                      ),
-                    ),
-                  ],
+          if (passHash == null)
+            _buildLoginButton(context, config: config)
+          else
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildLoginStatus(config),
+                const SizedBox(height: 8),
+                WarningContainer(
+                  margin: EdgeInsets.zero,
+                  title: "About the heart button's state",
+                  contentBuilder: (context) => const Text(
+                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
+                  ),
                 ),
+              ],
+            ),
         ],
       ),
     );

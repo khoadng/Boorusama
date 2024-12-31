@@ -17,7 +17,6 @@ class SzurubooruPost extends Equatable
     implements Post {
   SzurubooruPost({
     required this.id,
-    this.createdAt,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
@@ -26,10 +25,8 @@ class SzurubooruPost extends Equatable
     required this.hasComment,
     required this.isTranslated,
     required this.hasParentOrChildren,
-    this.parentId,
     required this.source,
     required this.score,
-    this.downvotes,
     required this.duration,
     required this.fileSize,
     required this.format,
@@ -45,6 +42,9 @@ class SzurubooruPost extends Equatable
     required this.commentCount,
     required this.metadata,
     required this.tagDetails,
+    this.createdAt,
+    this.parentId,
+    this.downvotes,
   });
 
   @override

@@ -19,9 +19,9 @@ import 'search_history_section.dart';
 
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
-    super.key,
     required this.onHistoryTap,
     required this.onHistoryRemoved,
+    super.key,
     this.scrollController,
     this.useAppbar = true,
   });

@@ -22,6 +22,8 @@ const supportedLocales = [
   Locale('th', 'TH'), // Thai (Thailand)
   Locale('nb', 'NO'), // Norwegian Bokmål (Norway)
   Locale('ro', 'RO'), // Romanian (Romania)
+  Locale('ta', 'IN'), // Tamil (India)
+  Locale('ko', 'KR'), // Korean (South Korea)
 ];
 
 LookupMessages getMessagesForLocale(Locale locale) =>
@@ -43,5 +45,7 @@ LookupMessages getMessagesForLocale(Locale locale) =>
       'th-TH' => ThMessages(),
       'nb-NO' => NbNoMessages(),
       'ro-RO' => RoMessages(),
+      'ta-IN' => TaMessages(),
+      'ko-KR' => KoMessages(),
       _ => throw Exception('Unsupported locale $locale')
     };

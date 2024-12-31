@@ -15,10 +15,10 @@ import '../../../favorites/providers.dart';
 class GeneralTagContextMenu extends ConsumerWidget
     with TagContextMenuButtonConfigMixin {
   const GeneralTagContextMenu({
-    super.key,
-    this.itemBindings = const {},
     required this.tag,
     required this.child,
+    super.key,
+    this.itemBindings = const {},
   });
 
   final String tag;

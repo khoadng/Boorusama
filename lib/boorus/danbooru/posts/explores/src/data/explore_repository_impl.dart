@@ -17,8 +17,8 @@ class ExploreRepositoryApi implements ExploreRepository {
     required this.client,
     required this.postRepository,
     required this.settings,
-    this.shouldFilter,
     required this.transformer,
+    this.shouldFilter,
   });
 
   final PostRepository<DanbooruPost> postRepository;

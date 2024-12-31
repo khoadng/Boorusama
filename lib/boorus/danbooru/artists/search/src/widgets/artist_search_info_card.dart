@@ -14,9 +14,9 @@ import '../../../urls/widgets.dart';
 
 class ArtistSearchInfoCard extends ConsumerStatefulWidget {
   const ArtistSearchInfoCard({
-    super.key,
     required this.focusScopeNode,
     required this.artist,
+    super.key,
   });
 
   final FocusScopeNode focusScopeNode;

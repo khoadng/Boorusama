@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
 import '../../../home/home_page_controller.dart';
 import '../../../notes/notes.dart';
@@ -114,6 +115,14 @@ typedef PostGestureHandlerBuilder = bool Function(
   WidgetRef ref,
   String? action,
   Post post,
+);
+
+typedef TagSuggestionItemBuilder = Widget Function(
+  BooruConfigAuth config,
+  AutocompleteData tag,
+  bool dense,
+  String currentQuery,
+  ValueChanged<AutocompleteData> onItemTap,
 );
 
 typedef MetatagExtractorBuilder = MetatagExtractor Function(

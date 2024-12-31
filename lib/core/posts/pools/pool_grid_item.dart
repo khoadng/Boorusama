@@ -11,11 +11,11 @@ import '../../theme.dart';
 
 class PoolGridItem extends ConsumerWidget {
   const PoolGridItem({
-    super.key,
     required this.image,
     required this.onTap,
     required this.total,
     required this.name,
+    super.key,
   });
 
   final Widget image;

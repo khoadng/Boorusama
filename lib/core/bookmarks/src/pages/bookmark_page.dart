@@ -42,21 +42,18 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => focusNode.unfocus(),
-      child: CustomContextMenuOverlay(
-        child: Scaffold(
-          floatingActionButton: ScrollToTop(
-            scrollController: scrollController,
-            child: BooruScrollToTopButton(
-              onPressed: () => scrollController.jumpTo(0),
-            ),
+    return CustomContextMenuOverlay(
+      child: Scaffold(
+        floatingActionButton: ScrollToTop(
+          scrollController: scrollController,
+          child: BooruScrollToTopButton(
+            onPressed: () => scrollController.jumpTo(0),
           ),
-          body: BookmarkScrollView(
-            controller: scrollController,
-            focusNode: focusNode,
-            searchController: _searchController,
-          ),
+        ),
+        body: BookmarkScrollView(
+          controller: scrollController,
+          focusNode: focusNode,
+          searchController: _searchController,
         ),
       ),
     );

@@ -21,9 +21,9 @@ class UnimplementedPage extends StatelessWidget {
 
 class LargeScreenAwareInvalidPage extends StatelessWidget {
   const LargeScreenAwareInvalidPage({
+    required this.message,
     super.key,
     this.useDialog = true,
-    required this.message,
   });
 
   final String message;
@@ -40,8 +40,8 @@ class LargeScreenAwareInvalidPage extends StatelessWidget {
 
 class InvalidPage extends StatelessWidget {
   const InvalidPage({
-    super.key,
     required this.message,
+    super.key,
   });
 
   final String message;

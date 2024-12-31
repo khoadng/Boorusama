@@ -1,4 +1,7 @@
 // Dart imports:
+// ignore_for_file: prefer_int_literals
+
+// Dart imports:
 import 'dart:async';
 import 'dart:math';
 
@@ -24,10 +27,10 @@ const _kFullSheetSize = 0.95;
 
 class PostDetailsPageView extends StatefulWidget {
   const PostDetailsPageView({
-    super.key,
     required this.sheetBuilder,
     required this.itemCount,
     required this.itemBuilder,
+    super.key,
     this.minSize = 0.18,
     this.maxSize = 0.7,
     this.controller,
@@ -339,7 +342,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   ),
                 ),
               ),
-              !isLargeScreen ? const SizedBox.shrink() : _buildSide(),
+              if (!isLargeScreen) const SizedBox.shrink() else _buildSide(),
             ],
           ),
         ),
@@ -516,12 +519,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                     ? [
                         ...widget.actions,
                         const SizedBox(width: 8),
-                        !isLargeScreen
-                            ? const SizedBox.shrink()
-                            : CircularIconButton(
-                                onPressed: () => _controller.toggleExpanded(),
-                                icon: const Icon(Symbols.info),
-                              ),
+                        if (!isLargeScreen)
+                          const SizedBox.shrink()
+                        else
+                          CircularIconButton(
+                            onPressed: () => _controller.toggleExpanded(),
+                            icon: const Icon(Symbols.info),
+                          ),
                       ]
                     : const [],
               ),
@@ -563,8 +567,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   Widget _buildDragSheet({
-    bool? forceInitialSizeAsMax,
     required SheetState sheetState,
+    bool? forceInitialSizeAsMax,
   }) {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
@@ -975,12 +979,12 @@ class SheetDragline extends StatelessWidget {
 
 class PageNavButton extends StatelessWidget {
   const PageNavButton({
-    super.key,
     required this.controller,
     required this.visibleWhen,
     required this.icon,
     required this.onPressed,
     required this.alignment,
+    super.key,
   });
 
   final PostDetailsPageViewController controller;
@@ -1021,10 +1025,10 @@ class PageNavButton extends StatelessWidget {
 
 class PointerCountOnScreen extends StatefulWidget {
   const PointerCountOnScreen({
-    super.key,
     required this.enable,
     required this.onCountChanged,
     required this.child,
+    super.key,
   });
 
   final Widget child;
@@ -1151,11 +1155,11 @@ const _kSwipeDownScaleFactor = 0.2;
 
 class HideUIOverlayTransition extends StatelessWidget {
   const HideUIOverlayTransition({
-    super.key,
     required this.controller,
     required this.child,
-    this.slideDown = true,
     required this.pointerCount,
+    super.key,
+    this.slideDown = true,
     this.skipTransition = false,
   });
 
@@ -1389,7 +1393,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
       sheetMaxSize.value = maxSize;
 
       await _sheetController.animateTo(
-        0.0,
+        0,
         duration: duration ?? const Duration(milliseconds: 250),
         curve: curve ?? Curves.easeInOut,
       );

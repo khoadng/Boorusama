@@ -13,8 +13,8 @@ import 'theme_mode.dart';
 
 class ThemeBuilder extends ConsumerWidget {
   const ThemeBuilder({
-    super.key,
     required this.builder,
+    super.key,
   });
 
   final Widget Function(ThemeData theme, ThemeMode themeMode) builder;

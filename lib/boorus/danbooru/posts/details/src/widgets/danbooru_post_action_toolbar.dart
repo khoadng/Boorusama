@@ -32,8 +32,8 @@ class DanbooruInheritedPostActionToolbar extends StatelessWidget {
 
 class DanbooruPostActionToolbar extends ConsumerWidget {
   const DanbooruPostActionToolbar({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final DanbooruPost post;

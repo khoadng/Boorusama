@@ -15,9 +15,9 @@ import 'creator_statistic_sheet.dart';
 
 class PostStatsUploaderSection extends ConsumerWidget {
   const PostStatsUploaderSection({
-    super.key,
     required this.stats,
     required this.totalPosts,
+    super.key,
   });
 
   final DanbooruPostStats stats;

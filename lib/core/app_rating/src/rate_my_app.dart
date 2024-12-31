@@ -10,8 +10,8 @@ import '../../foundation/platform.dart';
 
 class RateMyAppScope extends StatelessWidget {
   const RateMyAppScope({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

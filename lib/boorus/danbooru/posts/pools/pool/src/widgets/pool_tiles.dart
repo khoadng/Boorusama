@@ -12,8 +12,8 @@ import '../danbooru_pool.dart';
 
 class PoolTiles extends StatelessWidget {
   const PoolTiles({
-    super.key,
     required this.pools,
+    super.key,
   });
 
   final List<DanbooruPool> pools;

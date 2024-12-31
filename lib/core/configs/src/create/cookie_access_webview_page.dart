@@ -8,9 +8,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class CookieAccessWebViewPage extends StatefulWidget {
   const CookieAccessWebViewPage({
-    super.key,
     required this.url,
     required this.onGet,
+    super.key,
   });
 
   final String url;
@@ -28,8 +28,9 @@ class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
   void initState() {
     super.initState();
 
-    controller.loadRequest(Uri.parse(widget.url));
-    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller
+      ..loadRequest(Uri.parse(widget.url))
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
   }
 
   @override

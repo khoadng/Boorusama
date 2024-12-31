@@ -12,8 +12,8 @@ import '../widgets/favorite_tag_add_tag_to_label_button.dart';
 
 class FavoriteTagLabelDetailsPage extends ConsumerWidget {
   const FavoriteTagLabelDetailsPage({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;

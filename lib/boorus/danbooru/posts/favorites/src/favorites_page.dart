@@ -34,8 +34,8 @@ class DanbooruFavoritesPage extends ConsumerWidget {
 
 class DanbooruFavoritesPageInternal extends ConsumerWidget {
   const DanbooruFavoritesPageInternal({
-    super.key,
     required this.username,
+    super.key,
   });
 
   final String username;

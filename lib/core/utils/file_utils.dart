@@ -25,9 +25,9 @@ class DirectorySizeInfo {
 }
 
 Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
-  int size = 0;
-  int fileCount = 0;
-  int directoryCount = 0;
+  var size = 0;
+  var fileCount = 0;
+  var directoryCount = 0;
 
   try {
     await for (final entity in dir.list(followLinks: false)) {

@@ -27,11 +27,11 @@ import 'danbooru_post_context_menu.dart';
 
 class DefaultDanbooruImageGridItem extends ConsumerWidget {
   const DefaultDanbooruImageGridItem({
-    super.key,
     required this.index,
     required this.multiSelectController,
     required this.autoScrollController,
     required this.controller,
+    super.key,
     this.blockOverlay,
     this.contextMenu,
     this.onTap,

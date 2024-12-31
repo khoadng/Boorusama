@@ -20,6 +20,7 @@ class HomePageController extends ValueNotifier<int> {
 
   var _isMenuOpen = false;
 
+  // ignore: use_setters_to_change_properties
   void goToTab(int index) {
     value = index;
   }
@@ -61,9 +62,9 @@ class HomePageController extends ValueNotifier<int> {
 
 class HomePageSidebarKeyboardListener extends StatefulWidget {
   const HomePageSidebarKeyboardListener({
-    super.key,
     required this.controller,
     required this.child,
+    super.key,
   });
 
   final HomePageController controller;

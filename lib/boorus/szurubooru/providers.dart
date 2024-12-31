@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:booru_clients/szurubooru.dart';
 import 'package:collection/collection.dart';
@@ -112,9 +115,11 @@ final szurubooruPostRepoProvider =
             .toList();
 
         ref.read(favoritesProvider(config.auth).notifier).preload(data);
-        ref
-            .read(szurubooruPostVotesProvider(config.auth).notifier)
-            .getVotes(data);
+        unawaited(
+          ref
+              .read(szurubooruPostVotesProvider(config.auth).notifier)
+              .getVotes(data),
+        );
 
         return data.toResult(
           total: posts.total,

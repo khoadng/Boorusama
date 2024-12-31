@@ -12,8 +12,8 @@ import 'analytics_providers.dart';
 
 class NetworkListener extends ConsumerWidget {
   const NetworkListener({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;

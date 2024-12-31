@@ -1,5 +1,3 @@
-// Package imports:
-
 // Project imports:
 import '../../../users/creator/creator.dart';
 import '../../../users/user/user.dart';

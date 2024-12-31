@@ -12,9 +12,9 @@ import '../post_stats.dart';
 
 class PostStatsResolutionSection extends ConsumerWidget {
   const PostStatsResolutionSection({
-    super.key,
     required this.stats,
     required this.totalPosts,
+    super.key,
   });
 
   final DanbooruPostStats stats;

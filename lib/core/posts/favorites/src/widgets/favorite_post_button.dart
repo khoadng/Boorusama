@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -12,11 +15,11 @@ import '../../../../theme.dart';
 
 class FavoritePostButton extends StatelessWidget {
   const FavoritePostButton({
-    super.key,
     required this.isFaved,
     required this.isAuthorized,
     required this.addFavorite,
     required this.removeFavorite,
+    super.key,
   });
 
   final bool? isFaved;
@@ -42,9 +45,9 @@ class FavoritePostButton extends StatelessWidget {
                 return;
               }
               if (isFaved!) {
-                removeFavorite();
+                unawaited(removeFavorite());
               } else {
-                addFavorite();
+                unawaited(addFavorite());
               }
             }
           : null,

@@ -1,14 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
-
-// Project imports:
-
 class SettingsHeader extends StatelessWidget {
   const SettingsHeader({
-    super.key,
     required this.label,
+    super.key,
   });
 
   final String label;
