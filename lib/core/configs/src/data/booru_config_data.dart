@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import '../../../boorus/booru/booru.dart';
 import '../../../posts/rating/rating.dart';
+import '../../../proxy/proxy.dart';
 import '../../../settings/settings.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../utils/int_utils.dart';
@@ -35,6 +36,7 @@ class BooruConfigData extends Equatable {
     required this.theme,
     required this.alwaysIncludeTags,
     required this.layout,
+    required this.proxySettings,
   });
 
   factory BooruConfigData.anonymous({
@@ -69,6 +71,7 @@ class BooruConfigData extends Equatable {
         theme: null,
         alwaysIncludeTags: null,
         layout: null,
+        proxySettings: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -99,6 +102,7 @@ class BooruConfigData extends Equatable {
         theme: json['theme'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
         layout: json['layout'] as String?,
+        proxySettings: json['proxySettings'] as String?,
       );
     } catch (e) {
       return null;
@@ -128,6 +132,7 @@ class BooruConfigData extends Equatable {
       'theme': theme,
       'alwaysIncludeTags': alwaysIncludeTags,
       'layout': layout,
+      'proxySettings': proxySettings,
     };
   }
 
@@ -152,6 +157,7 @@ class BooruConfigData extends Equatable {
   final String? theme;
   final String? alwaysIncludeTags;
   final String? layout;
+  final String? proxySettings;
 
   @override
   List<Object?> get props => [
@@ -176,6 +182,7 @@ class BooruConfigData extends Equatable {
         theme,
         alwaysIncludeTags,
         layout,
+        proxySettings,
       ];
 }
 
@@ -226,6 +233,10 @@ extension BooruConfigDataX on BooruConfigData {
 
     return BooruConfigDeletedItemBehavior.values[deletedItemBehavior];
   }
+
+  ProxySettings? get proxySettingsTyped {
+    return ProxySettings.fromJsonString(proxySettings);
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {
@@ -251,6 +262,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     ThemeConfigs? Function()? theme,
     String? Function()? alwaysIncludeTags,
     LayoutConfigs? Function()? layout,
+    ProxySettings? Function()? proxySettings,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -296,6 +308,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           ? alwaysIncludeTags()
           : this.alwaysIncludeTags,
       layout: layout != null ? layout()?.toJsonString() : this.layout,
+      proxySettings: proxySettings != null
+          ? proxySettings()?.toJsonString()
+          : this.proxySettings,
     );
   }
 }

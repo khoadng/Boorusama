@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/providers.dart';
 import '../../../posts/rating/rating.dart';
+import '../../../proxy/proxy.dart';
 import '../../../settings/settings.dart';
 import '../../../theme/theme_configs.dart';
 import '../booru_config.dart';
@@ -187,4 +188,9 @@ class EditBooruConfigNotifier
     ThemeConfigs? theme,
   ) =>
       state = state.copyWith(theme: () => theme);
+
+  void updateProxySettings(
+    ProxySettings? proxySettings,
+  ) =>
+      state = state.copyWith(proxySettings: () => proxySettings);
 }

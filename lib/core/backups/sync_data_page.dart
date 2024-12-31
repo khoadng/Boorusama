@@ -15,7 +15,8 @@ enum TransferMode {
 
 class SyncDataPage extends ConsumerStatefulWidget {
   const SyncDataPage({
-    required this.mode, super.key,
+    required this.mode,
+    super.key,
   });
 
   final TransferMode mode;

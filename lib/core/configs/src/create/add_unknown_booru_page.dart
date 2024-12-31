@@ -189,8 +189,14 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
               ),
             ),
           ),
-          error: (err, _) =>
-              _buildVerifyButton(isValid, ref, engine, url, auth),
+          error: (err, _) => _buildVerifyButton(
+            isValid,
+            ref,
+            engine,
+            url,
+            auth,
+            forceRefresh: true,
+          ),
         );
   }
 
@@ -199,23 +205,32 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     WidgetRef ref,
     BooruType? engine,
     String? url,
-    AuthConfigData auth,
-  ) {
+    AuthConfigData auth, {
+    bool forceRefresh = false,
+  }) {
     return CreateBooruSubmitButton(
       fill: true,
       onSubmit: isValid && engine != null
           ? () {
-              ref.read(_targetConfigToValidateProvider.notifier).state =
-                  BooruConfig.defaultConfig(
-                booruType: engine,
-                url: url!,
-                customDownloadFileNameFormat: null,
-              )
-                      .copyWith(
-                        login: auth.login,
-                        apiKey: auth.apiKey,
-                      )
-                      .auth;
+              final notifier =
+                  ref.read(_targetConfigToValidateProvider.notifier);
+
+              if (forceRefresh) {
+                notifier.state = null;
+              }
+
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                notifier.state = BooruConfig.defaultConfig(
+                  booruType: engine,
+                  url: url!,
+                  customDownloadFileNameFormat: null,
+                )
+                    .copyWith(
+                      login: auth.login,
+                      apiKey: auth.apiKey,
+                    )
+                    .auth;
+              });
             }
           : null,
       child: const Text('Verify'),

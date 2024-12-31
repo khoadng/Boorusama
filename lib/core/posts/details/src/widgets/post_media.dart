@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/current.dart';
+import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/path.dart';
 import '../../../../foundation/platform.dart';
@@ -53,6 +54,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
       settingsProvider
           .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk),
     );
+    final config = ref.watchConfigAuth;
+    final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
 
     return post.isVideo
         ? Stack(
@@ -87,6 +90,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         thumbnailUrl: post.videoThumbnailUrl,
                         onOpenSettings: () => _openSettings(context),
+                        headers: headers,
                       ),
               ),
               if (context.isLargeScreen)

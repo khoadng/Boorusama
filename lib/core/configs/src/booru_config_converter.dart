@@ -1,4 +1,5 @@
 // Project imports:
+import '../../proxy/proxy.dart';
 import '../../settings/settings.dart';
 import '../../theme/theme_configs.dart';
 import 'booru_config.dart';
@@ -52,6 +53,8 @@ extension BooruConfigDataConverter on BooruConfigData? {
       layout: booruConfigData.layout != null
           ? LayoutConfigs.fromJsonString(booruConfigData.layout)
           : null,
+      proxySettings:
+          ProxySettings.fromJsonString(booruConfigData.proxySettings),
     );
   }
 }
@@ -82,6 +85,7 @@ extension BooruConfigConverter on BooruConfig {
       theme: theme?.toJsonString(),
       alwaysIncludeTags: alwaysIncludeTags,
       layout: layout?.toJsonString(),
+      proxySettings: proxySettings?.toJsonString(),
     );
   }
 }

@@ -201,6 +201,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
           dio: dio,
           headers: {
             ...ref.watch(extraHttpHeaderProvider(config)),
+            ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
           },
         ),
       ),

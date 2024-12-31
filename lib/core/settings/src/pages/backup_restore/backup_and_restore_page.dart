@@ -450,7 +450,10 @@ class _Title extends StatelessWidget {
 
 class DataTransferCard extends StatelessWidget {
   const DataTransferCard({
-    required this.icon, required this.title, required this.onPressed, super.key,
+    required this.icon,
+    required this.title,
+    required this.onPressed,
+    super.key,
   });
 
   final Widget icon;

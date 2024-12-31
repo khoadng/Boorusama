@@ -14,6 +14,7 @@ import '../../foundation/platform.dart';
 import '../../home/custom_home.dart';
 import '../../posts/details/custom_details.dart';
 import '../../posts/rating/rating.dart';
+import '../../proxy/proxy.dart';
 import '../../settings/settings.dart';
 import '../../theme/theme_configs.dart';
 import 'data/booru_config_data.dart';
@@ -45,6 +46,7 @@ class BooruConfig extends Equatable {
     required this.theme,
     required this.alwaysIncludeTags,
     required this.layout,
+    required this.proxySettings,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -97,6 +99,11 @@ class BooruConfig extends Equatable {
       layout: json['layout'] == null
           ? null
           : LayoutConfigs.fromJson(json['layout'] as Map<String, dynamic>),
+      proxySettings: json['proxySettings'] == null
+          ? null
+          : ProxySettings.fromJson(
+              json['proxySettings'] as Map<String, dynamic>,
+            ),
     );
   }
 
@@ -123,6 +130,7 @@ class BooruConfig extends Equatable {
     theme: null,
     alwaysIncludeTags: null,
     layout: null,
+    proxySettings: null,
   );
 
   // ignore: prefer_constructors_over_static_methods
@@ -154,6 +162,7 @@ class BooruConfig extends Equatable {
         theme: null,
         alwaysIncludeTags: null,
         layout: null,
+        proxySettings: null,
       );
 
   final int id;
@@ -178,6 +187,7 @@ class BooruConfig extends Equatable {
   final ThemeConfigs? theme;
   final String? alwaysIncludeTags;
   final LayoutConfigs? layout;
+  final ProxySettings? proxySettings;
 
   BooruConfig copyWith({
     String? url,
@@ -209,6 +219,7 @@ class BooruConfig extends Equatable {
       theme: theme,
       alwaysIncludeTags: alwaysIncludeTags,
       layout: layout != null ? layout() : this.layout,
+      proxySettings: proxySettings,
     );
   }
 
@@ -236,6 +247,7 @@ class BooruConfig extends Equatable {
         theme,
         alwaysIncludeTags,
         layout,
+        proxySettings,
       ];
 
   @override
@@ -269,6 +281,7 @@ class BooruConfig extends Equatable {
       'theme': theme?.toJson(),
       'alwaysIncludeTags': alwaysIncludeTags,
       'layout': layout?.toJson(),
+      'proxySettings': proxySettings?.toJson(),
     };
   }
 }
@@ -281,6 +294,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     required this.apiKey,
     required this.login,
     required this.passHash,
+    required this.proxySettings,
   });
 
   factory BooruConfigAuth.fromConfig(BooruConfig config) {
@@ -291,6 +305,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
       apiKey: config.apiKey,
       login: config.login,
       passHash: config.passHash,
+      proxySettings: config.proxySettings,
     );
   }
 
@@ -307,6 +322,9 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
   final String? passHash;
 
   @override
+  final ProxySettings? proxySettings;
+
+  @override
   List<Object?> get props => [
         booruId,
         booruIdHint,
@@ -314,6 +332,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
         apiKey,
         login,
         passHash,
+        proxySettings,
       ];
 }
 
@@ -383,6 +402,8 @@ mixin BooruConfigAuthMixin {
   String? get login;
   String? get apiKey;
   String get url;
+
+  ProxySettings? get proxySettings;
 
   BooruType get booruType => intToBooruType(booruIdHint);
 
