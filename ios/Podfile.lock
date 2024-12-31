@@ -147,6 +147,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
+  - flutter_volume_controller (0.0.1):
+    - Flutter
   - fvp (0.27.0):
     - Flutter
     - FlutterMacOS
@@ -267,6 +269,7 @@ DEPENDENCIES:
   - firebase_performance (from `.symlinks/plugins/firebase_performance/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - flutter_volume_controller (from `.symlinks/plugins/flutter_volume_controller/ios`)
   - fvp (from `.symlinks/plugins/fvp/darwin`)
   - gal (from `.symlinks/plugins/gal/darwin`)
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
@@ -335,6 +338,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  flutter_volume_controller:
+    :path: ".symlinks/plugins/flutter_volume_controller/ios"
   fvp:
     :path: ".symlinks/plugins/fvp/darwin"
   gal:
@@ -394,6 +399,7 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: a4e5dfca3e210633bb3a3dfb94176c019211948b
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
+  flutter_volume_controller: e4d5832f08008180f76e30faf671ffd5a425e529
   fvp: e2a89a4b8c310b01cb81580f37b4cbd10f1cefd7
   gal: 6a522c75909f1244732d4596d11d6a2f86ff37a5
   GoogleAppMeasurement: 987769c4ca6b968f2479fbcc9fe3ce34af454b8e

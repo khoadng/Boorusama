@@ -34,6 +34,7 @@ import 'post_details_page_view.dart';
 import 'post_details_preload_image.dart';
 import 'post_media.dart';
 import 'video_controls.dart';
+import 'volume_key_page_switcher.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
@@ -62,7 +63,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _PostDetailPageScaffoldState<T extends Post>
-    extends ConsumerState<PostDetailsPageScaffold<T>> {
+    extends ConsumerState<PostDetailsPageScaffold<T>>
+    with VolumeKeyPageSwitcher {
   late final _posts = widget.posts;
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
@@ -70,6 +72,12 @@ class _PostDetailPageScaffoldState<T extends Post>
   );
 
   List<T> get posts => _posts;
+
+  @override
+  PostDetailsPageViewController get controller => _controller;
+
+  @override
+  int get totalPosts => posts.length;
 
   @override
   void initState() {
@@ -82,11 +90,15 @@ class _PostDetailPageScaffoldState<T extends Post>
         useDefaultEngine: _isDefaultEngine(settings),
       );
     });
+
+    attachVolumeListener();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    detachVolumeListener();
+
     super.dispose();
   }
 
