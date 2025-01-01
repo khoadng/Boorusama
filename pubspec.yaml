@@ -107,6 +107,7 @@ dependencies:
   shelf: ^1.4.1
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
+  socks5_proxy: ^2.0.0
   stack_trace: ^1.11.0
   timeago: ^3.7.0
   url_launcher: ^6.3.1

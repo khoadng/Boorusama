@@ -12,8 +12,10 @@ import '../../../posts/sources/source.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
+import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
+import '../manage/booru_config_provider.dart';
 import 'appearance.dart';
 import 'download.dart';
 import 'gestures.dart';
@@ -22,6 +24,7 @@ import 'network.dart';
 import 'providers.dart';
 import 'riverpod_widgets.dart';
 import 'search.dart';
+import 'unsaved_alert_dialog.dart';
 import 'viewer.dart';
 
 class CreateBooruConfigScope extends ConsumerWidget {
@@ -113,6 +116,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       body: SafeArea(
         child: Column(
           children: [
+            const BooruConfigPopScope(),
             const SizedBox(height: 8),
             const BooruConfigNameField(),
             Expanded(
@@ -281,6 +285,49 @@ class SelectedBooruChip extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text('using ${booruType.stringify()}'),
+    );
+  }
+}
+
+class BooruConfigPopScope extends ConsumerWidget {
+  const BooruConfigPopScope({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final initialData =
+        ref.watch(initialBooruConfigProvider).toBooruConfigData();
+    final editId = ref.watch(editBooruConfigIdProvider);
+    final configData = ref.watch(
+      editBooruConfigProvider(editId),
+    );
+    final notifier = ref.watch(booruConfigProvider.notifier);
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+
+        if (configData == initialData) {
+          Navigator.of(context).pop();
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => UnsavedAlertDialog(
+              onSave: () {
+                notifier.addOrUpdate(
+                  id: editId,
+                  newConfig: configData,
+                );
+                Navigator.of(context).pop();
+              },
+              onDiscard: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        }
+      },
+      child: const SizedBox.shrink(),
     );
   }
 }
