@@ -39,7 +39,6 @@ class BooruConfigNetworkView extends ConsumerWidget {
           SizedBox(height: 12),
           ProxyPasswordInput(),
           SizedBox(height: 12),
-          ClearAllProxyDataButton(),
         ],
       ),
     );
@@ -239,20 +238,3 @@ class EnableProxySwitch extends ConsumerWidget {
 final _networkConfigKeyProvider = StateProvider<int>((ref) {
   return 0;
 });
-
-class ClearAllProxyDataButton extends ConsumerWidget {
-  const ClearAllProxyDataButton({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentKey = ref.watch(_networkConfigKeyProvider);
-
-    return FilledButton(
-      onPressed: () {
-        ref.editNotifier.updateProxySettings(null);
-        ref.read(_networkConfigKeyProvider.notifier).state = currentKey + 1;
-      },
-      child: const Text('Clear all proxy data'),
-    );
-  }
-}
