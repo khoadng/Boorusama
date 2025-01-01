@@ -151,6 +151,7 @@ class PostDetailsUIBuilder {
     this.full = const {},
     this.previewAllowedParts = const {
       DetailsPart.fileDetails,
+      DetailsPart.source,
     },
   });
 
