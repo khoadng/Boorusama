@@ -1,65 +1,87 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
+import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/config.dart';
 import '../../../configs/current.dart';
+import '../../../configs/ref.dart';
+import '../../../posts/post/post.dart';
 import '../../categories/providers.dart';
 import '../providers.dart';
-import 'tag.dart';
 import 'tag_group_item.dart';
-import 'tag_repository.dart';
 
 final invalidTags = [
   ':&lt;',
 ];
 
-final tagsProvider =
-    NotifierProvider.family<TagsNotifier, List<TagGroupItem>?, BooruConfigAuth>(
-  TagsNotifier.new,
+final tagGroupProvider = AsyncNotifierProvider.autoDispose
+    .family<TagGroupItemNotifier, TagGroup, Post>(
+  TagGroupItemNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
   ],
 );
 
-class TagsNotifier
-    extends FamilyNotifier<List<TagGroupItem>?, BooruConfigAuth> {
+class TagGroup extends Equatable {
+  const TagGroup({
+    required this.characterTags,
+    required this.artistTags,
+    required this.tags,
+  });
+
+  const TagGroup.empty()
+      : characterTags = const {},
+        artistTags = const {},
+        tags = const [];
+
+  final Set<String> characterTags;
+  final Set<String> artistTags;
+  final List<TagGroupItem> tags;
+
   @override
-  List<TagGroupItem>? build(BooruConfigAuth arg) {
-    return null;
-  }
+  List<Object?> get props => [characterTags, artistTags, tags];
+}
 
-  TagRepository get repo => ref.read(tagRepoProvider(arg));
+class TagGroupItemNotifier
+    extends AutoDisposeFamilyAsyncNotifier<TagGroup, Post> {
+  @override
+  FutureOr<TagGroup> build(Post arg) async {
+    final config = ref.watchConfigAuth;
+    final booruTagTypeStore = ref.watch(booruTagTypeStoreProvider);
+    final repo = ref.watch(tagRepoProvider(config));
+    final tagList = arg.tags;
 
-  Future<void> load(
-    Set<String> tagList, {
-    void Function(List<TagGroupItem> tags)? onSuccess,
-  }) async {
-    state = null;
-    final booruTagTypeStore = ref.read(booruTagTypeStoreProvider);
+    // filter tagList to remove invalid tags
+    final filtered = tagList.where((e) => !invalidTags.contains(e)).toSet();
 
-    final tags = await loadTags(tagList: tagList, repo: repo);
+    if (filtered.isEmpty) return const TagGroup.empty();
 
-    await booruTagTypeStore.saveTagIfNotExist(arg.booruType, tags);
+    final tags = await repo.getTagsByName(filtered, 1);
+
+    await booruTagTypeStore.saveTagIfNotExist(config.booruType, tags);
 
     final group = createTagGroupItems(tags);
 
-    onSuccess?.call(group);
-
-    state = group;
+    return TagGroup(
+      characterTags: group
+              .firstWhereOrNull(
+                (tag) => tag.groupName.toLowerCase() == 'character',
+              )
+              ?.extractCharacterTags()
+              .toSet() ??
+          {},
+      artistTags: group
+              .firstWhereOrNull(
+                (tag) => tag.groupName.toLowerCase() == 'artist',
+              )
+              ?.extractArtistTags()
+              .toSet() ??
+          {},
+      tags: group,
+    );
   }
-}
-
-Future<List<Tag>> loadTags({
-  required Set<String> tagList,
-  required TagRepository repo,
-}) async {
-  // filter tagList to remove invalid tags
-  final filtered = tagList.where((e) => !invalidTags.contains(e)).toSet();
-
-  if (filtered.isEmpty) return [];
-
-  final tags = await repo.getTagsByName(filtered, 1);
-
-  return tags;
 }

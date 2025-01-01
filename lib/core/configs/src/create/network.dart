@@ -1,12 +1,13 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:async';
 
-import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+// Flutter imports:
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
