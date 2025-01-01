@@ -22,13 +22,57 @@ import 'dio_ext.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
 
+Dio newGenericDio({
+  required String baseUrl,
+  String? userAgent,
+  Directory? cacheDir,
+  Logger? logger,
+  bool? supportsHttp2,
+  Map<String, dynamic>? headers,
+  ProxySettings? proxySettings,
+}) {
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      headers: {
+        if (userAgent != null) AppHttpHeaders.userAgentHeader: userAgent,
+        ...?headers,
+      },
+    ),
+  )..httpClientAdapter = _createHttpClientAdapter(
+      logger: logger,
+      userAgent: userAgent,
+      supportsHttp2: supportsHttp2,
+      proxy: proxySettings,
+    );
+
+  if (cacheDir != null) {
+    dio.interceptors.add(
+      DioCacheInterceptor(
+        options: CacheOptions(
+          store: HiveCacheStore(cacheDir.path),
+          maxStale: const Duration(days: 7),
+          hitCacheOnErrorExcept: [403, 401],
+        ),
+      ),
+    );
+  }
+
+  if (logger != null) {
+    dio.interceptors.add(
+      LoggingInterceptor(
+        logger: logger,
+      ),
+    );
+  }
+
+  return dio;
+}
+
 Dio newDio({required DioOptions options}) {
   final booruConfig = options.authConfig;
-  final dir = options.cacheDir;
-  final logger = options.loggerService;
-  final userAgent = options.userAgent;
-  final baseUrl = options.baseUrl;
   final booruFactory = options.booruFactory;
+  final baseUrl = options.baseUrl;
 
   final booru = booruFactory.getBooruFromUrl(baseUrl) ??
       booruFactory.getBooruFromId(booruConfig.booruId);
@@ -36,33 +80,16 @@ Dio newDio({required DioOptions options}) {
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
   final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;
 
-  final context = navigatorKey.currentContext;
-
-  final dio = Dio(
-    BaseOptions(
-      // This is a hack to clean the url, if there are more sites that need this we should refactor this into something more generic
-      baseUrl: _cleanUrl(apiUrl),
-      headers: {
-        AppHttpHeaders.userAgentHeader: userAgent,
-      },
-    ),
-  )..httpClientAdapter = _createHttpClientAdapter(
-      logger: logger,
-      userAgent: userAgent,
-      supportsHttp2: supportsHttp2,
-      proxy: options.proxySettings,
-    );
-
-  dio.interceptors.add(
-    DioCacheInterceptor(
-      options: CacheOptions(
-        store: HiveCacheStore(dir.path),
-        maxStale: const Duration(days: 7),
-        hitCacheOnErrorExcept: [403, 401],
-      ),
-    ),
+  final dio = newGenericDio(
+    baseUrl: _cleanUrl(apiUrl),
+    userAgent: options.userAgent,
+    cacheDir: options.cacheDir,
+    logger: options.loggerService,
+    supportsHttp2: supportsHttp2,
+    proxySettings: options.proxySettings,
   );
 
+  final context = navigatorKey.currentContext;
   if (context != null) {
     dio.interceptors.add(
       CloudflareChallengeInterceptor(
@@ -72,19 +99,13 @@ Dio newDio({required DioOptions options}) {
     );
   }
 
-  dio.interceptors.add(
-    LoggingInterceptor(
-      logger: logger,
-    ),
-  );
-
   return dio;
 }
 
 HttpClientAdapter _createHttpClientAdapter({
-  required Logger logger,
-  required String userAgent,
-  required bool supportsHttp2,
+  Logger? logger,
+  String? userAgent,
+  bool? supportsHttp2,
   ProxySettings? proxy,
 }) {
   final proxySettings = proxy != null
@@ -93,14 +114,15 @@ HttpClientAdapter _createHttpClientAdapter({
           : null
       : null;
   final proxyAddress = proxySettings?.getProxyAddress();
+  final hasHttp2Support = supportsHttp2 ?? false;
 
   if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
-    logger.logI('Network', 'Using native adapter');
+    logger?.logI('Network', 'Using native adapter');
     return newNativeAdapter(
       userAgent: userAgent,
     );
-  } else if (supportsHttp2 && proxySettings == null) {
-    logger.logI(
+  } else if (hasHttp2Support && proxySettings == null) {
+    logger?.logI(
       'Network',
       'Using HTTP2 adapter',
     );
@@ -111,7 +133,7 @@ HttpClientAdapter _createHttpClientAdapter({
       ),
     );
   } else {
-    logger.logI('Network', 'Using default adapter');
+    logger?.logI('Network', 'Using default adapter');
     return IOHttpClientAdapter(
       createHttpClient: proxySettings != null && proxyAddress != null
           ? () {
@@ -121,7 +143,7 @@ HttpClientAdapter _createHttpClientAdapter({
               final port = proxySettings.port;
               final host = proxySettings.host;
 
-              logger.logI(
+              logger?.logI(
                 'Network',
                 'Using proxy: ${proxySettings.type.name.toUpperCase()} $host:$port',
               );

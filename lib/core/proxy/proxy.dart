@@ -114,18 +114,18 @@ extension ProxySettingsX on ProxySettings {
       this != ProxySettings.unknown() && (type == ProxyType.http);
 
   String? getProxyAddress() {
-    final type = this.type;
     final host = this.host;
     final port = this.port;
     final username = this.username;
     final password = this.password;
 
-    if (type == ProxyType.unknown || host.isEmpty || port == 0) {
-      return null;
-    }
+    if (!isValid) return null;
 
     return username != null && password != null
         ? '$username:$password@$host:$port'
         : '$host:$port';
   }
+
+  bool get isValid =>
+      host.isNotEmpty && port > 0 && port < 65536 && type != ProxyType.unknown;
 }
