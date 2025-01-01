@@ -7,6 +7,7 @@ import 'package:dio/io.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
+import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
 import '../../../boorus/booru/booru.dart';
@@ -120,27 +121,41 @@ HttpClientAdapter _createHttpClientAdapter({
               final port = proxySettings.port;
               final host = proxySettings.host;
 
-              final credentials = username != null && password != null
-                  ? HttpClientBasicCredentials(username, password)
-                  : null;
-
               logger.logI(
                 'Network',
                 'Using proxy: ${proxySettings.type.name.toUpperCase()} $host:$port',
               );
 
-              client
-                ..badCertificateCallback = (cert, host, port) {
-                  return true;
+              if (proxySettings.type == ProxyType.socks5) {
+                socks.SocksTCPClient.assignToHttpClient(
+                  client,
+                  [
+                    socks.ProxySettings(
+                      InternetAddress(host),
+                      port,
+                      username: username,
+                      password: password,
+                    ),
+                  ],
+                );
+              } else {
+                final credentials = username != null && password != null
+                    ? HttpClientBasicCredentials(username, password)
+                    : null;
+
+                client
+                  ..badCertificateCallback = (cert, host, port) {
+                    return true;
+                  }
+                  ..findProxy = (uri) {
+                    final address = '$host:$port';
+
+                    return 'PROXY $address';
+                  };
+
+                if (credentials != null) {
+                  client.addProxyCredentials(host, port, 'main', credentials);
                 }
-                ..findProxy = (uri) {
-                  final address = '$host:$port';
-
-                  return 'PROXY $address';
-                };
-
-              if (credentials != null) {
-                client.addProxyCredentials(host, port, 'main', credentials);
               }
 
               return client;

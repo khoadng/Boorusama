@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 enum ProxyType {
   unknown,
   http,
-  // socks5,
+  socks5,
 }
 
 class ProxySettings extends Equatable {

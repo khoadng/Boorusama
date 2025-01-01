@@ -67,7 +67,7 @@ class _ProxyHostInputState extends ConsumerState<ProxyHostInput> {
             .updateProxySettings(proxySettings?.copyWith(host: value));
       },
       decoration: const InputDecoration(
-        labelText: 'Host or IP',
+        labelText: 'Host or IP (*)',
         hintText: 'proxy.host.com or 123.456.789.0',
       ),
     );
@@ -105,7 +105,7 @@ class _ProxyPortInputState extends ConsumerState<ProxyPortInput> {
       },
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
-        labelText: 'Port',
+        labelText: 'Port (*)',
         hintText: '8080',
       ),
     );
@@ -137,7 +137,7 @@ class _ProxyUsernameInputState extends ConsumerState<ProxyUsernameInput> {
       },
       decoration: const InputDecoration(
         labelText: 'Username',
-        hintText: 'username',
+        hintText: 'username (optional)',
       ),
     );
   }
@@ -168,7 +168,7 @@ class _ProxyPasswordInputState extends ConsumerState<ProxyPasswordInput> {
       },
       decoration: const InputDecoration(
         labelText: 'Password',
-        hintText: 'password',
+        hintText: 'password (optional)',
       ),
     );
   }
@@ -203,7 +203,8 @@ class ProxyTypeOptionTile extends ConsumerWidget {
                 child: Text(
                   switch (e) {
                     ProxyType.unknown => '<Select>',
-                    _ => e.name.toUpperCase(),
+                    ProxyType.http => 'HTTP(S)',
+                    ProxyType.socks5 => 'SOCKS5',
                   },
                 ),
               ),
