@@ -23,6 +23,7 @@ import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+import '../../../foundation/networking/networking.dart';
 
 const _serviceName = 'Bulk Download Manager';
 
@@ -315,6 +316,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     final settings = ref.read(settingsProvider);
     final downloadFileUrlExtractor =
         ref.read(downloadFileUrlExtractorProvider(config));
+    final headers = ref.read(cachedBypassDdosHeadersProvider(config.url));
 
     final fileNameBuilder =
         ref.readBooruBuilder(config)?.downloadFilenameBuilder;
@@ -414,6 +416,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
                 filename: fileName,
                 skipIfExists: task.options.skipIfExists,
                 headers: {
+                  ...headers,
                   if (urlData.cookie != null)
                     AppHttpHeaders.cookieHeader: urlData.cookie!,
                 },
