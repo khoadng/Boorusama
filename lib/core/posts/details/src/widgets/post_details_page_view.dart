@@ -133,11 +133,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     });
   }
 
-  void _onBackButtonPressed(bool didPop) {
+  void _onPop() {
     _controller.restoreSystemStatus();
-    if (!didPop) {
-      Navigator.of(context).pop();
-    }
     widget.onExit?.call();
   }
 
@@ -272,6 +269,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.verticalPosition.removeListener(_onVerticalPositionChanged);
     _controller._sheetController.removeListener(_onSheetChanged);
 
+    _verticalSheetDragY.removeListener(_onVerticalSheetDragYChanged);
+    hovering.removeListener(_onHover);
+
     stopAutoSlide();
 
     if (widget.controller == null) {
@@ -293,11 +293,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) {
-          _onBackButtonPressed(didPop);
-          return;
+          _onPop();
         }
-
-        _onBackButtonPressed(didPop);
       },
       child: CallbackShortcuts(
         bindings: {
@@ -318,7 +315,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           const SingleActivator(LogicalKeyboardKey.keyO): () =>
               _controller.toggleOverlay(),
           const SingleActivator(LogicalKeyboardKey.escape): () =>
-              _onBackButtonPressed(false),
+              Navigator.of(context).pop(),
         },
         child: Focus(
           autofocus: true,
@@ -503,7 +500,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                               Symbols.arrow_back_ios,
                             ),
                           ),
-                          onPressed: () => _onBackButtonPressed(false),
+                          onPressed: Navigator.of(context).pop,
                         ),
                         const SizedBox(
                           width: 4,
@@ -868,7 +865,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       if (widget.onSwipeDownThresholdReached != null) {
         widget.onSwipeDownThresholdReached?.call();
       } else {
-        _onBackButtonPressed(false);
+        Navigator.of(context).pop();
         return;
       }
       // scale back to 1.0
