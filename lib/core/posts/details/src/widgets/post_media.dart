@@ -30,13 +30,11 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.imageUrl,
     required this.controller,
     super.key,
-    this.useHero = false,
     this.imageOverlayBuilder,
   });
 
   final T post;
   final String imageUrl;
-  final bool useHero;
   final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final PostDetailsPageViewController controller;
 
@@ -56,6 +54,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     );
     final config = ref.watchConfigAuth;
     final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
+    final heroTag = '${post.id}_hero';
 
     return post.isVideo
         ? Stack(
@@ -65,6 +64,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         isAndroid() &&
                         useDefault
                     ? EmbeddedWebViewWebm(
+                        heroTag: heroTag,
                         url: post.videoUrl,
                         onCurrentPositionChanged:
                             details.controller.onCurrentPositionChanged,
@@ -78,6 +78,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         userAgent: ref.watch(userAgentProvider(booruType)),
                       )
                     : BooruVideo(
+                        heroTag: heroTag,
                         url: post.videoUrl,
                         aspectRatio: post.aspectRatio,
                         onCurrentPositionChanged:
@@ -108,7 +109,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             ],
           )
         : InteractiveBooruImage(
-            heroTag: useHero ? '${post.id}_hero' : null,
+            heroTag: heroTag,
             aspectRatio: post.aspectRatio,
             imageUrl: imageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,

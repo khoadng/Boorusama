@@ -120,16 +120,19 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                         );
                                       }
                                     }),
-                      image: BooruImage(
-                        aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                        imageUrl: post
-                            .thumbnailFromImageQuality(settings.imageQuality),
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
+                      image: BooruHero(
+                        tag: '${post.id}_hero',
+                        child: BooruImage(
+                          aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                          imageUrl: post
+                              .thumbnailFromImageQuality(settings.imageQuality),
+                          borderRadius: BorderRadius.circular(
+                            settings.imageBorderRadius,
+                          ),
+                          forceFill:
+                              settings.imageListType == ImageListType.standard,
+                          placeholderUrl: post.thumbnailImageUrl,
                         ),
-                        forceFill:
-                            settings.imageListType == ImageListType.standard,
-                        placeholderUrl: post.thumbnailImageUrl,
                       ),
                       score: post.isBanned ? null : post.score,
                       blockOverlay: blockOverlay ??

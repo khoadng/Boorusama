@@ -179,6 +179,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     return Scaffold(
       body: PostDetailsPageView(
+        disableAnimation: settings.reduceAnimations,
         onPageChanged: (page) {
           widget.controller.setPage(
             page,

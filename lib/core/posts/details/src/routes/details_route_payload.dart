@@ -11,6 +11,7 @@ class DetailsRoutePayload<T extends Post> extends Equatable {
     required this.posts,
     required this.scrollController,
     required this.isDesktop,
+    required this.hero,
   });
 
   DetailsRoutePayload<T> copyWith({
@@ -23,6 +24,7 @@ class DetailsRoutePayload<T extends Post> extends Equatable {
       posts: posts,
       scrollController: scrollController ?? this.scrollController,
       isDesktop: isDesktop ?? this.isDesktop,
+      hero: hero,
     );
   }
 
@@ -30,6 +32,7 @@ class DetailsRoutePayload<T extends Post> extends Equatable {
   final List<T> posts;
   final AutoScrollController? scrollController;
   final bool isDesktop;
+  final bool hero;
 
   @override
   List<Object?> get props => [
@@ -37,5 +40,6 @@ class DetailsRoutePayload<T extends Post> extends Equatable {
         posts,
         scrollController,
         isDesktop,
+        hero,
       ];
 }

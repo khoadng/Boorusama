@@ -46,6 +46,7 @@ class PostDetailsPageView extends StatefulWidget {
     this.bottomSheet,
     this.slideshowOptions = const SlideshowOptions(),
     this.sheetStateStorage,
+    this.disableAnimation = false,
   });
 
   final Widget Function(BuildContext, ScrollController? scrollController)
@@ -72,6 +73,8 @@ class PostDetailsPageView extends StatefulWidget {
   final PostDetailsPageViewController? controller;
   final SheetStateStorage? sheetStateStorage;
 
+  final bool disableAnimation;
+
   @override
   State<PostDetailsPageView> createState() => _PostDetailsPageViewState();
 }
@@ -91,6 +94,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   DraggableScrollableController get _sheetController =>
       _controller._sheetController;
+
+  late final _animationController = !widget.disableAnimation
+      ? AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 350),
+        )
+      : null;
+
+  late final _curvedAnimation = !widget.disableAnimation
+      ? CurvedAnimation(
+          parent: _animationController!,
+          curve: Curves.easeOutCirc,
+        )
+      : null;
 
   @override
   PageController get pageController => _controller.pageController;
@@ -130,10 +147,23 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           _controller.sheetState.value = SheetState.expanded;
         }
       }
+
+      if (!widget.disableAnimation) {
+        Future.delayed(
+          const Duration(milliseconds: 250),
+          () {
+            if (!mounted) return;
+            _animationController?.forward();
+          },
+        );
+      }
     });
   }
 
   void _onPop() {
+    if (!widget.disableAnimation) {
+      _controller.freestyleMoving.value = true;
+    }
     _controller.restoreSystemStatus();
     widget.onExit?.call();
   }
@@ -271,6 +301,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _verticalSheetDragY.removeListener(_onVerticalSheetDragYChanged);
     hovering.removeListener(_onHover);
+
+    _animationController?.dispose();
 
     stopAutoSlide();
 
@@ -432,32 +464,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         if (widget.bottomSheet != null)
           Align(
             alignment: Alignment.bottomCenter,
-            child: ValueListenableBuilder(
-              valueListenable: _controller.sheetState,
-              builder: (_, state, __) => !state.isExpanded
-                  ? isLargeScreen
-                      ? const SizedBox.shrink()
-                      : ValueListenableBuilder(
-                          valueListenable: _controller.freestyleMoving,
-                          builder: (context, moving, child) => _SlideContainer(
-                            shouldSlide: moving,
-                            direction: SlideContainerDirection.down,
-                            child: ValueListenableBuilder(
-                              valueListenable: _controller.overlay,
-                              builder: (_, overlay, child) => overlay
-                                  ? ValueListenableBuilder(
-                                      valueListenable: _controller.displacement,
-                                      builder: (_, dis, __) => _SlideContainer(
-                                        direction: SlideContainerDirection.down,
-                                        shouldSlide: dis > _kMinSlideDistance,
-                                        child: widget.bottomSheet!,
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
-                          ),
-                        )
-                  : const SizedBox.shrink(),
+            child: Builder(
+              builder: (context) {
+                final sheet = _buildBottomSheet();
+
+                return _curvedAnimation != null
+                    ? SlideTransition(
+                        position: Tween(
+                          begin: const Offset(0, 1),
+                          end: Offset.zero,
+                        ).animate(_curvedAnimation),
+                        child: sheet,
+                      )
+                    : sheet;
+              },
             ),
           ),
         Align(
@@ -488,6 +508,36 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildBottomSheet() {
+    return ValueListenableBuilder(
+      valueListenable: _controller.sheetState,
+      builder: (_, state, __) => !state.isExpanded
+          ? isLargeScreen
+              ? const SizedBox.shrink()
+              : ValueListenableBuilder(
+                  valueListenable: _controller.freestyleMoving,
+                  builder: (context, moving, child) => _SlideContainer(
+                    shouldSlide: moving,
+                    direction: SlideContainerDirection.down,
+                    child: ValueListenableBuilder(
+                      valueListenable: _controller.overlay,
+                      builder: (_, overlay, child) => overlay
+                          ? ValueListenableBuilder(
+                              valueListenable: _controller.displacement,
+                              builder: (_, dis, __) => _SlideContainer(
+                                direction: SlideContainerDirection.down,
+                                shouldSlide: dis > _kMinSlideDistance,
+                                child: widget.bottomSheet!,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
+                )
+          : const SizedBox.shrink(),
     );
   }
 

@@ -911,20 +911,23 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
                         index: index,
                       ),
                       score: post.score,
-                      image: BooruImage(
-                        aspectRatio: post.aspectRatio,
-                        imageUrl: gridThumbnailUrlBuilder != null
-                            ? gridThumbnailUrlBuilder(
-                                settings.imageQuality,
-                                post,
-                              )
-                            : post.thumbnailImageUrl,
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
+                      image: BooruHero(
+                        tag: '${post.id}_hero',
+                        child: BooruImage(
+                          aspectRatio: post.aspectRatio,
+                          imageUrl: gridThumbnailUrlBuilder != null
+                              ? gridThumbnailUrlBuilder(
+                                  settings.imageQuality,
+                                  post,
+                                )
+                              : post.thumbnailImageUrl,
+                          borderRadius: BorderRadius.circular(
+                            settings.imageBorderRadius,
+                          ),
+                          forceFill:
+                              settings.imageListType == ImageListType.standard,
+                          placeholderUrl: post.thumbnailImageUrl,
                         ),
-                        forceFill:
-                            settings.imageListType == ImageListType.standard,
-                        placeholderUrl: post.thumbnailImageUrl,
                       ),
                     ),
                   );
