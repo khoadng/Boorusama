@@ -88,15 +88,10 @@ class Routes {
         name: '/artists',
         pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.read(currentBooruBuilderProvider);
-            final builder = booruBuilder?.artistPageBuilder;
-            final artistName = state.uri.queryParameters[kArtistNameKey];
-
-            return builder != null
-                ? artistName != null
-                    ? builder(context, artistName)
-                    : const InvalidPage(message: 'Invalid artist name')
-                : const UnimplementedPage();
+            return InheritedArtistName(
+              artistName: state.uri.queryParameters[kArtistNameKey],
+              child: const ArtistPage(),
+            );
           },
         ),
       );
@@ -106,16 +101,83 @@ class Routes {
         name: '/characters',
         pageBuilder: largeScreenAwarePageBuilder(
           builder: (context, state) {
-            final booruBuilder = ref.read(currentBooruBuilderProvider);
-            final builder = booruBuilder?.characterPageBuilder;
-            final characterName = state.uri.queryParameters[kCharacterNameKey];
-
-            return builder != null
-                ? characterName != null
-                    ? builder(context, characterName)
-                    : const InvalidPage(message: 'Invalid character name')
-                : const UnimplementedPage();
+            return InheritedCharacterName(
+              characterName: state.uri.queryParameters[kCharacterNameKey],
+              child: const CharacterPage(),
+            );
           },
         ),
       );
+}
+
+class ArtistPage extends ConsumerWidget {
+  const ArtistPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final builder = booruBuilder?.artistPageBuilder;
+    final artistName = InheritedArtistName.of(context)?.artistName;
+
+    return builder != null
+        ? artistName != null
+            ? builder(context, artistName)
+            : const InvalidPage(message: 'Invalid artist name')
+        : const UnimplementedPage();
+  }
+}
+
+class InheritedArtistName extends InheritedWidget {
+  const InheritedArtistName({
+    required this.artistName,
+    required super.child,
+    super.key,
+  });
+
+  final String? artistName;
+
+  static InheritedArtistName? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<InheritedArtistName>();
+  }
+
+  @override
+  bool updateShouldNotify(InheritedArtistName oldWidget) {
+    return artistName != oldWidget.artistName;
+  }
+}
+
+class CharacterPage extends ConsumerWidget {
+  const CharacterPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final builder = booruBuilder?.characterPageBuilder;
+    final characterName = InheritedCharacterName.of(context)?.characterName;
+
+    return builder != null
+        ? characterName != null
+            ? builder(context, characterName)
+            : const InvalidPage(message: 'Invalid character name')
+        : const UnimplementedPage();
+  }
+}
+
+class InheritedCharacterName extends InheritedWidget {
+  const InheritedCharacterName({
+    required this.characterName,
+    required super.child,
+    super.key,
+  });
+
+  final String? characterName;
+
+  static InheritedCharacterName? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<InheritedCharacterName>();
+  }
+
+  @override
+  bool updateShouldNotify(InheritedCharacterName oldWidget) {
+    return characterName != oldWidget.characterName;
+  }
 }

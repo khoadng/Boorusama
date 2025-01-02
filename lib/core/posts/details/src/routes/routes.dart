@@ -6,16 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
 import '../../../../router.dart';
+import '../widgets/post_details_page.dart';
 import 'details_route_payload.dart';
 
 GoRoute postDetailsRoutes(Ref ref) => GoRoute(
       path: 'details',
       pageBuilder: (context, state) {
-        final booruBuilder = ref.read(currentBooruBuilderProvider);
-        final builder = booruBuilder?.postDetailsPageBuilder;
-
         final payload = castOrNull<DetailsRoutePayload>(state.extra);
 
         if (payload == null) {
@@ -24,28 +21,23 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
           );
         }
 
+        final widget = InheritedPayload(
+          payload: payload,
+          child: const PostDetailsPage(),
+        );
+
         // must use the value from the payload for orientation
         // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
-        final page = !payload.isDesktop
+        return !payload.isDesktop
             ? MaterialPage(
                 key: state.pageKey,
                 name: state.name,
-                child: builder != null
-                    ? builder(context, payload)
-                    : const UnimplementedPage(),
+                child: widget,
               )
-            : builder != null
-                ? FastFadePage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: builder(context, payload),
-                  )
-                : MaterialPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: const UnimplementedPage(),
-                  );
-
-        return page;
+            : FastFadePage(
+                key: state.pageKey,
+                name: state.name,
+                child: widget,
+              );
       },
     );
