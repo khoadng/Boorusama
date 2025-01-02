@@ -252,8 +252,6 @@ class _Image extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifer = ref.watch(tagEditProvider.notifier);
     return InteractiveBooruImage(
-      useHero: false,
-      heroTag: '',
       aspectRatio: notifer.imageAspectRatio,
       imageUrl: notifer.imageUrl,
     );

@@ -108,8 +108,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             ],
           )
         : InteractiveBooruImage(
-            useHero: useHero,
-            heroTag: '${post.id}_hero',
+            heroTag: useHero ? '${post.id}_hero' : null,
             aspectRatio: post.aspectRatio,
             imageUrl: imageUrl,
             placeholderImageUrl: post.thumbnailImageUrl,

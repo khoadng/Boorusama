@@ -135,8 +135,6 @@ class _Image extends ConsumerWidget {
           child: LayoutBuilder(
             builder: (context, constraints) => constraints.maxHeight > 80
                 ? InteractiveBooruImage(
-                    useHero: false,
-                    heroTag: '',
                     aspectRatio: null,
                     imageUrl: imageUrl,
                   )

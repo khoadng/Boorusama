@@ -179,8 +179,6 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
               children: [
                 Expanded(
                   child: InteractiveBooruImage(
-                    useHero: false,
-                    heroTag: '',
                     aspectRatio: widget.aspectRatio,
                     imageUrl: widget.imageUrl,
                   ),

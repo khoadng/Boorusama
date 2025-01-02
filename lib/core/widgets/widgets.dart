@@ -2,6 +2,7 @@ export 'announcement_banner.dart';
 export 'booru_animated_cross_fade.dart';
 export 'booru_chip.dart';
 export 'booru_dialog.dart';
+export 'booru_hero.dart';
 export 'booru_logo.dart';
 export 'booru_popup_menu_button.dart';
 export 'booru_scroll_to_top_button.dart';
