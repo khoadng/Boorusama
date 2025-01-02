@@ -290,58 +290,68 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) {
-          _onPop();
-        }
-      },
-      child: CallbackShortcuts(
-        bindings: {
-          const SingleActivator(LogicalKeyboardKey.arrowRight): () {
-            if (_cooldown.value) return;
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () {
+          if (_cooldown.value) return;
 
-            _controller.nextPage(
-              duration: isLargeScreen ? Duration.zero : null,
-            );
-          },
-          const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-            if (_cooldown.value) return;
-
-            _controller.previousPage(
-              duration: isLargeScreen ? Duration.zero : null,
-            );
-          },
-          const SingleActivator(LogicalKeyboardKey.keyO): () =>
-              _controller.toggleOverlay(),
-          const SingleActivator(LogicalKeyboardKey.escape): () =>
-              Navigator.of(context).pop(),
+          _controller.nextPage(
+            duration: isLargeScreen ? Duration.zero : null,
+          );
         },
-        child: Focus(
-          autofocus: true,
-          child: Row(
-            children: [
-              Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: _controller.slideshow,
-                  builder: (context, slideshow, child) => GestureDetector(
-                    behavior: slideshow ? HitTestBehavior.opaque : null,
-                    onTap: () => _controller.stopSlideshow(),
-                    child: IgnorePointer(
-                      ignoring: slideshow,
-                      child: child,
-                    ),
-                  ),
-                  child: MouseRegion(
-                    onEnter: (_) => hovering.value = true,
-                    onExit: (_) => hovering.value = false,
-                    child: _buildMain(),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
+          if (_cooldown.value) return;
+
+          _controller.previousPage(
+            duration: isLargeScreen ? Duration.zero : null,
+          );
+        },
+        const SingleActivator(LogicalKeyboardKey.keyO): () =>
+            _controller.toggleOverlay(),
+        const SingleActivator(LogicalKeyboardKey.escape): () =>
+            Navigator.of(context).maybePop(),
+      },
+      child: Focus(
+        autofocus: true,
+        child: Row(
+          children: [
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: _controller.slideshow,
+                builder: (context, slideshow, child) => GestureDetector(
+                  behavior: slideshow ? HitTestBehavior.opaque : null,
+                  onTap: () => _controller.stopSlideshow(),
+                  child: IgnorePointer(
+                    ignoring: slideshow,
+                    child: child,
                   ),
                 ),
+                child: MouseRegion(
+                  onEnter: (_) => hovering.value = true,
+                  onExit: (_) => hovering.value = false,
+                  child: _buildMain(),
+                ),
               ),
-              if (!isLargeScreen) const SizedBox.shrink() else _buildSide(),
-            ],
-          ),
+            ),
+            if (!isLargeScreen) const SizedBox.shrink() else _buildSide(),
+            ValueListenableBuilder(
+              valueListenable: _controller.sheetState,
+              builder: (_, state, __) => PopScope(
+                canPop: !state.isExpanded,
+                onPopInvokedWithResult: (didPop, _) {
+                  if (didPop) {
+                    _onPop();
+                  } else {
+                    if (_controller.isExpanded) {
+                      _controller.resetSheet();
+                      return;
+                    }
+                  }
+                },
+                child: const SizedBox.shrink(),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -500,7 +510,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                               Symbols.arrow_back_ios,
                             ),
                           ),
-                          onPressed: Navigator.of(context).pop,
+                          onPressed: Navigator.of(context).maybePop,
                         ),
                         const SizedBox(
                           width: 4,
@@ -593,8 +603,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             floatingActionButton: ScrollToTop(
               scrollController: scrollController,
               child: BooruScrollToTopButton(
-                onPressed: () async {
-                  await _controller.resetSheet();
+                onPressed: () {
                   if (mounted) {
                     scrollController.jumpTo(0);
                   }
@@ -820,7 +829,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     if (!_controller.isExpanded) {
       _freestyleMoveStartOffset = details.globalPosition;
-      _controller.freestyleMove.value = true;
       _controller.freestyleMoving.value = true;
       _freestyleMoveScale = 1.0;
     }
@@ -830,7 +838,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final dy = details.delta.dy;
     _verticalPosition.value = _verticalPosition.value + dy;
 
-    if (_controller.freestyleMove.value) {
+    if (_controller.freestyleMoving.value) {
       if (_verticalPosition.value <= 0) return;
 
       // Calculate scale first
@@ -865,7 +873,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       if (widget.onSwipeDownThresholdReached != null) {
         widget.onSwipeDownThresholdReached?.call();
       } else {
-        Navigator.of(context).pop();
+        Navigator.of(context).maybePop();
         return;
       }
       // scale back to 1.0
@@ -876,7 +884,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _freestyleMoveScale = 1.0;
     }
 
-    _controller.freestyleMove.value = false;
     _controller.freestyleMoveOffset.value = Offset.zero;
 
     final size = _sheetController.size;
@@ -1318,7 +1325,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final pulling = ValueNotifier(false);
   final zoom = ValueNotifier(false);
   final slideshow = ValueNotifier(false);
-  final freestyleMove = ValueNotifier(false);
   final freestyleMoveOffset = ValueNotifier(Offset.zero);
   final freestyleMoving = ValueNotifier(false);
 
@@ -1380,11 +1386,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
     animating.value = true;
     swipe.value = true;
     verticalPosition.value = 0.0;
-    sheetState.value = switch (sheetState.value) {
-      SheetState.expanded => SheetState.hidden,
-      SheetState.collapsed => SheetState.collapsed,
-      SheetState.hidden => SheetState.hidden,
-    };
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       sheetMaxSize.value = maxSize;
@@ -1394,6 +1395,13 @@ class PostDetailsPageViewController extends ChangeNotifier {
         duration: duration ?? const Duration(milliseconds: 250),
         curve: curve ?? Curves.easeInOut,
       );
+
+      sheetState.value = switch (sheetState.value) {
+        SheetState.expanded => SheetState.hidden,
+        SheetState.collapsed => SheetState.collapsed,
+        SheetState.hidden => SheetState.hidden,
+      };
+
       animating.value = false;
     });
   }
@@ -1412,7 +1420,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   Future<void> expandToSnapPoint() async {
     animating.value = true;
-
     sheetState.value = SheetState.expanded;
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
