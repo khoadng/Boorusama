@@ -71,6 +71,8 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                       cacheMaxAge: kDefaultImageCacheDuration,
                       headers: {
                         ...ref.watch(extraHttpHeaderProvider(config)),
+                        ...ref
+                            .watch(cachedBypassDdosHeadersProvider(config.url)),
                       },
                     ),
                     ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -91,6 +93,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                 fit: BoxFit.contain,
                 headers: {
                   ...ref.watch(extraHttpHeaderProvider(config)),
+                  ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
                 },
               ),
             ),

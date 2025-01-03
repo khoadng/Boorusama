@@ -13,6 +13,7 @@ import '../../configs/ref.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/permissions.dart';
 import '../../http/http.dart';
+import '../../http/providers.dart';
 import '../../info/device_info.dart';
 import '../../posts/filter/filter.dart';
 import '../../posts/post/post.dart';
@@ -136,6 +137,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     final settings = ref.read(settingsProvider);
     final downloadFileUrlExtractor =
         ref.read(downloadFileUrlExtractorProvider(authConfig));
+    final headers = ref.read(cachedBypassDdosHeadersProvider(config.url));
 
     final fileNameBuilder =
         ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
@@ -235,6 +237,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
                 filename: fileName,
                 skipIfExists: task.options.skipIfExists,
                 headers: {
+                  ...headers,
                   if (urlData.cookie != null)
                     AppHttpHeaders.cookieHeader: urlData.cookie!,
                 },
