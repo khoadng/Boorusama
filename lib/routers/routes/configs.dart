@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -53,7 +54,7 @@ class BoorusRoutes {
           final q = state.uri.queryParameters['q'];
           final config = ref
               .read(booruConfigProvider)
-              ?.firstWhere((element) => element.id == id);
+              .firstWhereOrNull((element) => element.id == id);
 
           if (config == null) {
             return const CupertinoPage(
@@ -93,7 +94,7 @@ class BoorusRoutes {
           final id = idParam?.toInt();
           final config = ref
               .read(booruConfigProvider)
-              ?.firstWhere((element) => element.id == id);
+              .firstWhereOrNull((element) => element.id == id);
 
           if (config == null) {
             return DialogPage(

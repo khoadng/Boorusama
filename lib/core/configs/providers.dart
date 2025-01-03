@@ -9,8 +9,8 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/functional.dart';
 
 final booruConfigProvider =
-    NotifierProvider<BooruConfigNotifier, List<BooruConfig>?>(
-  BooruConfigNotifier.new,
+    NotifierProvider<BooruConfigNotifier, List<BooruConfig>>(
+  () => throw UnimplementedError(),
   dependencies: [
     booruConfigRepoProvider,
     settingsProvider,
@@ -21,7 +21,6 @@ final booruConfigProvider =
 
 final configsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
   final configs = ref.watch(booruConfigProvider);
-  if (configs == null) return <BooruConfig>[].lock;
 
   final configMap = {for (final config in configs) config.id: config};
   final orders = ref
