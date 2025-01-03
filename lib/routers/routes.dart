@@ -22,6 +22,7 @@ import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../core/configs/configs.dart';
 import '../core/posts/details/post_details_page.dart';
 import '../core/scaffolds/search_page.dart';
 import '../dart.dart';
@@ -62,13 +63,16 @@ typedef DetailsPayload<T extends Post> = ({
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => const AppLockWithSettings(
-          child: RateMyAppScope(
-            child: BackgroundDownloaderBuilder(
-              child: CustomContextMenuOverlay(
-                child: Focus(
-                  autofocus: true,
-                  child: EntryPage(),
+        builder: (context, state) => BooruConfigDeepLinkResolver(
+          path: state.uri.toString(),
+          child: const AppLockWithSettings(
+            child: RateMyAppScope(
+              child: BackgroundDownloaderBuilder(
+                child: CustomContextMenuOverlay(
+                  child: Focus(
+                    autofocus: true,
+                    child: EntryPage(),
+                  ),
                 ),
               ),
             ),
