@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -31,17 +32,19 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
 
   @override
   Future<void> ensureInitialized() async {
-    if (isPlatformSupported()) {
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(enabled);
-    } else {
-      logger?.logE('FirebaseAnalytics', 'Platform is not supported');
-    }
+    try {
+      if (isPlatformSupported()) {
+        await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(enabled);
 
-    if (isFirebasePerformanceSupported()) {
-      await FirebasePerformance.instance
-          .setPerformanceCollectionEnabled(enabled);
-    } else {
-      logger?.logE('FirebaseAnalytics', 'Platform is not supported');
+        if (isFirebasePerformanceSupported()) {
+          await FirebasePerformance.instance
+              .setPerformanceCollectionEnabled(enabled);
+        }
+      } else {
+        logger?.logE('FirebaseAnalytics', 'Platform is not supported');
+      }
+    } on Exception catch (e) {
+      logger?.logE('FirebaseAnalytics', 'Failed to initialize: $e');
     }
   }
 
@@ -77,7 +80,9 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
     required int totalSites,
     required bool hasLogin,
   }) async {
-    if (enabled) {
+    if (!enabled) return;
+
+    try {
       await FirebaseAnalytics.instance.logEvent(
         name: 'site_add',
         parameters: {
@@ -87,6 +92,10 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
           'has_login': hasLogin,
         },
       );
+    } on Exception catch (e) {
+      if (kDebugMode) {
+        logger?.logE('FirebaseAnalytics', 'Failed to log event: site_add, $e');
+      }
     }
   }
 
@@ -95,11 +104,21 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
     String screenName, {
     Map<String, dynamic>? parameters,
   }) async {
-    if (enabled) {
-      await logScreenView(
-        screenName,
-        parameters: parameters,
+    if (!enabled) return;
+
+    try {
+      await FirebaseAnalytics.instance.logScreenView(
+        screenName: screenName,
+        parameters: parameters != null
+            ? {
+                ...parameters,
+              }
+            : null,
       );
+    } on Exception catch (e) {
+      if (kDebugMode) {
+        logger?.logE('FirebaseAnalytics', 'Failed to log screen view: $e');
+      }
     }
   }
 }
