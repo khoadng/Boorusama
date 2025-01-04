@@ -80,7 +80,10 @@ class BooruVideoProgressBar extends StatelessWidget {
           ),
         ),
         Text(
-          formatDurationForMedia(progress.duration),
+          formatDurationForMedia(
+            progress.duration,
+            forceHigherThanOneSecond: true,
+          ),
           style: const TextStyle(
             fontSize: 16,
           ),
