@@ -45,7 +45,7 @@ class BoorusRoutes {
 
   static GoRoute update(Ref ref) => GoRoute(
         path: 'boorus/:id/update',
-        name: 'booru_update',
+        name: 'booru/update',
         redirect: (context, state) => kPreferredLayout.isMobile
             ? null
             : '/desktop/boorus/${state.pathParameters['id']}/update',
