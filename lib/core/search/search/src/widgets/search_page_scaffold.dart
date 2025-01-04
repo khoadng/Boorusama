@@ -37,6 +37,7 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
   MultiSelectController<T> multiSelectController,
   AutoScrollController autoScrollController,
   PostGridController<T> controller,
+  bool useHero,
 );
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
@@ -271,13 +272,14 @@ class _SearchPageScaffoldState<T extends Post>
       scrollController: _scrollController,
       controller: controller,
       itemBuilder: widget.itemBuilder != null
-          ? (context, index, multiSelectController, scrollController) {
+          ? (context, index, multiSelectController, scrollController, useHero) {
               return widget.itemBuilder!(
                 context,
                 index,
                 multiSelectController,
                 _scrollController,
                 controller,
+                useHero,
               );
             }
           : null,

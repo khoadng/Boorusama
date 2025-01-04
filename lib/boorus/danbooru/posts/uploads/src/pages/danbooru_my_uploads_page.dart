@@ -231,8 +231,9 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   ) {
     return PostGrid(
       controller: controller,
-      itemBuilder: (context, index, multiSelectController, scrollController) =>
-          ValueListenableBuilder(
+      itemBuilder:
+          (context, index, multiSelectController, scrollController, useHero) =>
+              ValueListenableBuilder(
         valueListenable: controller.itemsNotifier,
         builder: (_, posts, __) {
           final post = posts[index];
@@ -245,6 +246,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                 multiSelectController: multiSelectController,
                 autoScrollController: scrollController,
                 controller: controller,
+                useHero: useHero,
                 contextMenu: GenericContextMenu(
                   buttonConfigs: [
                     ContextMenuButtonConfig(

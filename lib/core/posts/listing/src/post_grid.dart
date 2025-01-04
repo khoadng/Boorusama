@@ -48,6 +48,7 @@ typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
   int index,
   MultiSelectController<T> multiSelectController,
   AutoScrollController autoScrollController,
+  bool useHero,
 );
 
 class PostGrid<T extends Post> extends ConsumerStatefulWidget {
@@ -82,6 +83,8 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
   late final _multiSelectController =
       widget.multiSelectController ?? MultiSelectController<T>();
 
+  final ValueNotifier<bool> _disableHero = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
@@ -115,6 +118,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
         sliverHeaders: [
           ...widget.sliverHeaders ?? [],
           const SliverMasonryGridWarning(),
+          DisableGridItemHeroOnPop(disableHero: _disableHero),
         ],
         scrollController: _autoScrollController,
         footer: multiSelectActions,
@@ -128,19 +132,24 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
             SliverPostGrid(
               postController: widget.controller,
               constraints: constraints,
-              itemBuilder: (context, index) =>
-                  widget.itemBuilder?.call(
-                    context,
-                    index,
-                    _multiSelectController,
-                    _autoScrollController,
-                  ) ??
-                  DefaultImageGridItem(
-                    index: index,
-                    multiSelectController: _multiSelectController,
-                    autoScrollController: _autoScrollController,
-                    controller: widget.controller,
-                  ),
+              itemBuilder: (context, index) => ValueListenableBuilder(
+                valueListenable: _disableHero,
+                builder: (_, disableHero, __) =>
+                    widget.itemBuilder?.call(
+                      context,
+                      index,
+                      _multiSelectController,
+                      _autoScrollController,
+                      !disableHero,
+                    ) ??
+                    DefaultImageGridItem(
+                      index: index,
+                      multiSelectController: _multiSelectController,
+                      autoScrollController: _autoScrollController,
+                      controller: widget.controller,
+                      useHero: !disableHero,
+                    ),
+              ),
             ),
       ),
     );
@@ -241,6 +250,27 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
 
   void _disableAll() {
     widget.controller.disableAllTags();
+  }
+}
+
+class DisableGridItemHeroOnPop extends ConsumerWidget {
+  const DisableGridItemHeroOnPop({
+    required this.disableHero,
+    super.key,
+  });
+
+  final ValueNotifier<bool> disableHero;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          disableHero.value = true;
+        }
+      },
+      child: const SliverSizedBox.shrink(),
+    );
   }
 }
 
@@ -835,6 +865,7 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
     required this.multiSelectController,
     required this.autoScrollController,
     required this.controller,
+    required this.useHero,
     super.key,
   });
 
@@ -842,6 +873,7 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
   final MultiSelectController<T> multiSelectController;
   final AutoScrollController autoScrollController;
   final PostGridController<T> controller;
+  final bool useHero;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -912,7 +944,7 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
                       ),
                       score: post.score,
                       image: BooruHero(
-                        tag: '${post.id}_hero',
+                        tag: useHero ? '${post.id}_hero' : null,
                         child: BooruImage(
                           aspectRatio: post.aspectRatio,
                           imageUrl: gridThumbnailUrlBuilder != null

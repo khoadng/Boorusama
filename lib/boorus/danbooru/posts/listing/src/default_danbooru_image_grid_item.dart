@@ -35,6 +35,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
     this.blockOverlay,
     this.contextMenu,
     this.onTap,
+    this.useHero = true,
   });
 
   final int index;
@@ -44,6 +45,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
   final BlockOverlayItem? blockOverlay;
   final Widget? contextMenu;
   final VoidCallback? onTap;
+  final bool useHero;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -121,7 +123,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                       }
                                     }),
                       image: BooruHero(
-                        tag: '${post.id}_hero',
+                        tag: useHero ? '${post.id}_hero' : null,
                         child: BooruImage(
                           aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
                           imageUrl: post
