@@ -100,7 +100,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late final _animationController = !widget.disableAnimation
       ? AnimationController(
           vsync: this,
-          duration: const Duration(milliseconds: 350),
+          duration: const Duration(milliseconds: 150),
         )
       : null;
 
@@ -135,6 +135,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.verticalPosition.addListener(_onVerticalPositionChanged);
     _controller.slideshow.addListener(_onSlideShowChanged);
     _controller.sheetState.addListener(_onSheetStateChanged);
+    _controller.overlay.addListener(_onOverlayChanged);
 
     _verticalSheetDragY.addListener(_onVerticalSheetDragYChanged);
 
@@ -181,6 +182,38 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     } else {
       _controller.overlay.value = false;
     }
+  }
+
+  final ValueNotifier<String?> _pendingSystemStatusChanged =
+      ValueNotifier(null);
+
+  void _onOverlayChanged() {
+    if (_controller.overlay.value) {
+      _pendingSystemStatusChanged.value = 'show';
+      _animationController?.forward();
+    } else {
+      _pendingSystemStatusChanged.value = 'hide';
+      _animationController?.reverse();
+    }
+
+    Future.delayed(
+      const Duration(milliseconds: 350),
+      () async {
+        if (!mounted) return;
+
+        if (_pendingSystemStatusChanged.value != 'show') {
+          await hideSystemStatus();
+          if (mounted) {
+            _pendingSystemStatusChanged.value = null;
+          }
+        } else {
+          await showSystemStatus();
+          if (mounted) {
+            _pendingSystemStatusChanged.value = null;
+          }
+        }
+      },
+    );
   }
 
   void _onPageChanged() {
@@ -487,29 +520,43 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           ),
         Align(
           alignment: Alignment.topCenter,
-          child: ValueListenableBuilder(
-            valueListenable: _controller.sheetState,
-            builder: (_, state, __) => ConditionalParentWidget(
-              condition: !state.isExpanded,
-              conditionalBuilder: (child) => ValueListenableBuilder(
-                valueListenable: _controller.freestyleMoving,
-                builder: (context, moving, child) => _SlideContainer(
-                  shouldSlide: moving,
-                  direction: SlideContainerDirection.up,
-                  child: HideUIOverlayTransition(
-                    controller: _controller,
-                    pointerCount: _pointerCount,
-                    slideDown: false,
-                    child: child!,
+          child: Builder(
+            builder: (context) {
+              final overlay = ValueListenableBuilder(
+                valueListenable: _controller.sheetState,
+                builder: (_, state, __) => ConditionalParentWidget(
+                  condition: !state.isExpanded,
+                  conditionalBuilder: (child) => ValueListenableBuilder(
+                    valueListenable: _controller.freestyleMoving,
+                    builder: (context, moving, child) => _SlideContainer(
+                      shouldSlide: moving,
+                      direction: SlideContainerDirection.up,
+                      child: child!,
+                    ),
+                    child: child,
+                  ),
+                  child: SafeArea(
+                    right: isLargeScreen && !state.isExpanded,
+                    child: _buildOverlay(),
                   ),
                 ),
-                child: child,
-              ),
-              child: SafeArea(
-                right: isLargeScreen && !state.isExpanded,
-                child: _buildOverlay(),
-              ),
-            ),
+              );
+
+              return _curvedAnimation != null
+                  ? SlideTransition(
+                      position: Tween(
+                        begin: const Offset(0, -1),
+                        end: Offset.zero,
+                      ).animate(_curvedAnimation),
+                      child: ValueListenableBuilder(
+                        valueListenable: _pendingSystemStatusChanged,
+                        builder: (_, pending, child) =>
+                            pending != null ? SafeArea(child: child!) : child!,
+                        child: overlay,
+                      ),
+                    )
+                  : overlay;
+            },
           ),
         ),
       ],
@@ -519,81 +566,73 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   Widget _buildBottomSheet() {
     return ValueListenableBuilder(
       valueListenable: _controller.sheetState,
-      builder: (_, state, __) => !state.isExpanded
-          ? isLargeScreen
-              ? const SizedBox.shrink()
-              : ValueListenableBuilder(
-                  valueListenable: _controller.freestyleMoving,
-                  builder: (context, moving, child) => _SlideContainer(
-                    shouldSlide: moving,
-                    direction: SlideContainerDirection.down,
-                    child: ValueListenableBuilder(
-                      valueListenable: _controller.overlay,
-                      builder: (_, overlay, child) => overlay
-                          ? ValueListenableBuilder(
-                              valueListenable: _controller.displacement,
-                              builder: (_, dis, __) => _SlideContainer(
-                                direction: SlideContainerDirection.down,
-                                shouldSlide: dis > _kMinSlideDistance,
-                                child: widget.bottomSheet!,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                  ),
-                )
-          : const SizedBox.shrink(),
+      builder: (_, state, __) => isLargeScreen
+          ? const SizedBox.shrink()
+          : ValueListenableBuilder(
+              valueListenable: _controller.freestyleMoving,
+              builder: (context, moving, child) => _SlideContainer(
+                shouldSlide: switch (moving) {
+                  true => true,
+                  false => state.isExpanded,
+                },
+                direction: SlideContainerDirection.down,
+                child: ValueListenableBuilder(
+                  valueListenable: _controller.displacement,
+                  builder: (_, dis, __) {
+                    return switch (moving) {
+                      true => widget.bottomSheet!,
+                      false =>
+                        dis > 0 ? const SizedBox.shrink() : widget.bottomSheet!,
+                    };
+                    // return !moving ? widget.bottomSheet!;
+                  },
+                ),
+              ),
+            ),
     );
   }
 
   Widget _buildOverlay() {
     return Container(
       margin: const EdgeInsets.all(8),
-      child: ValueListenableBuilder(
-        valueListenable: _controller.overlay,
-        builder: (_, overlay, __) => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: OverflowBar(
-                children: overlay
-                    ? [
-                        CircularIconButton(
-                          icon: const Padding(
-                            padding: EdgeInsets.only(left: 8),
-                            child: Icon(
-                              Symbols.arrow_back_ios,
-                            ),
-                          ),
-                          onPressed: Navigator.of(context).maybePop,
-                        ),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        ...widget.leftActions,
-                      ]
-                    : const [],
-              ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: OverflowBar(
+              children: [
+                CircularIconButton(
+                  icon: const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Icon(
+                      Symbols.arrow_back_ios,
+                    ),
+                  ),
+                  onPressed: Navigator.of(context).maybePop,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                ...widget.leftActions,
+              ],
             ),
-            Flexible(
-              child: OverflowBar(
-                children: overlay
-                    ? [
-                        ...widget.actions,
-                        const SizedBox(width: 8),
-                        if (!isLargeScreen)
-                          const SizedBox.shrink()
-                        else
-                          CircularIconButton(
-                            onPressed: () => _controller.toggleExpanded(),
-                            icon: const Icon(Symbols.info),
-                          ),
-                      ]
-                    : const [],
-              ),
+          ),
+          Flexible(
+            child: OverflowBar(
+              children: [
+                ...widget.actions,
+                const SizedBox(width: 8),
+                if (!isLargeScreen)
+                  const SizedBox.shrink()
+                else
+                  CircularIconButton(
+                    onPressed: () => _controller.toggleExpanded(context),
+                    icon: const Icon(Symbols.info),
+                  ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -606,22 +645,24 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               valueListenable: _controller.sheetState,
               builder: (_, state, __) => ValueListenableBuilder(
                 valueListenable: _displacement,
-                builder: (context, value, child) =>
-                    state.isExpanded && value < 0
-                        ? SizedBox(
-                            height: maxSize * MediaQuery.sizeOf(context).height,
-                          )
-                        : ValueListenableBuilder(
-                            valueListenable: _pointerCount,
-                            builder: (_, count, __) => !state.isExpanded &&
-                                    value >=
-                                        maxSize *
-                                            MediaQuery.sizeOf(context).height &&
-                                    !(count >
-                                        0) // Only hide when there is any interaction
-                                ? const SizedBox.shrink()
-                                : SizedBox(height: value),
+                builder: (context, dis, child) {
+                  final maxSheetSize =
+                      maxSize * MediaQuery.sizeOf(context).longestSide;
+
+                  return state.isExpanded &&
+                          dis >
+                              maxSheetSize -
+                                  0.01 // 0.01 is for rounding error e.g: 419.99999999999
+                      ? SizedBox(
+                          height: maxSheetSize,
+                        )
+                      : ValueListenableBuilder(
+                          valueListenable: _pointerCount,
+                          builder: (_, count, __) => SizedBox(
+                            height: dis,
                           ),
+                        );
+                },
               ),
             ),
           )
@@ -1208,47 +1249,7 @@ class SheetStateStorageBuilder implements SheetStateStorage {
   Future<void> persistExpandedState(bool expanded) => save(expanded);
 }
 
-const _kLargeOffset = 500.0;
-const _kMinSlideDistance = 5.0;
 const _kSwipeDownScaleFactor = 0.2;
-
-class HideUIOverlayTransition extends StatelessWidget {
-  const HideUIOverlayTransition({
-    required this.controller,
-    required this.child,
-    required this.pointerCount,
-    super.key,
-    this.slideDown = true,
-    this.skipTransition = false,
-  });
-
-  final bool slideDown;
-  final PostDetailsPageViewController controller;
-  final Widget child;
-  final ValueNotifier<int> pointerCount;
-  final bool skipTransition;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: pointerCount,
-      builder: (_, count, __) => count > 0
-          ? ValueListenableBuilder(
-              valueListenable: controller.displacement,
-              builder: (context, dis, _) => Transform.translate(
-                offset: skipTransition && dis > _kMinSlideDistance
-                    ? const Offset(0, _kLargeOffset)
-                    : slideDown
-                        ? Offset(0, dis * 0.5)
-                        : Offset(0, -dis * 0.5),
-                child: child,
-              ),
-              child: child,
-            )
-          : child,
-    );
-  }
-}
 
 enum SlideContainerDirection {
   up,
@@ -1298,9 +1299,9 @@ class _SlideContainerState extends State<_SlideContainer>
       _animController.animateTo(
         widget.shouldSlide ? 1 : 0,
         duration: widget.shouldSlide
-            ? const Duration(milliseconds: 200)
-            : const Duration(milliseconds: 100),
-        curve: Curves.easeOut,
+            ? const Duration(milliseconds: 350)
+            : const Duration(milliseconds: 150),
+        curve: Curves.easeOutCirc,
       );
     }
   }
@@ -1475,7 +1476,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   Future<void> expandToSnapPoint() async {
     animating.value = true;
-    sheetState.value = SheetState.expanded;
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
@@ -1483,6 +1483,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
       );
+      sheetState.value = SheetState.expanded;
       animating.value = false;
       verticalPosition.value = 0.0;
     });
@@ -1498,9 +1499,12 @@ class PostDetailsPageViewController extends ChangeNotifier {
     canPull.value = true;
   }
 
-  void toggleExpanded() {
+  void toggleExpanded(BuildContext context) {
     if (sheetState.value.isExpanded) {
       sheetMaxSize.value = maxSize;
+      displacement.value = 0.0;
+    } else {
+      displacement.value = maxSize * MediaQuery.sizeOf(context).longestSide;
     }
 
     sheetState.value = switch (sheetState.value) {
@@ -1521,12 +1525,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   void toggleOverlay() {
     overlay.value = !overlay.value;
-
-    if (!overlay.value) {
-      hideSystemStatus();
-    } else {
-      showSystemStatus();
-    }
   }
 
   void restoreSystemStatus() {
@@ -1537,6 +1535,8 @@ class PostDetailsPageViewController extends ChangeNotifier {
     if (isDesktopPlatform() && context.isLargeScreen) {
       // overlay is handle by hovering
     } else {
+      if (isExpanded) return;
+
       toggleOverlay();
     }
   }
