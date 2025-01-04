@@ -242,7 +242,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       showSystemStatus();
       _controller.overlay.value = true;
     } else {
-      widget.onShrink?.call();
+      if (_controller.sheetState.value == SheetState.hidden) {
+        widget.onShrink?.call();
+      }
     }
 
     if (isLargeScreen) {

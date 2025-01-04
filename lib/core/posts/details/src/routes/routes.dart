@@ -13,6 +13,7 @@ import 'details_route_payload.dart';
 
 GoRoute postDetailsRoutes(Ref ref) => GoRoute(
       path: 'details',
+      name: '/details',
       pageBuilder: (context, state) {
         final payload = castOrNull<DetailsRoutePayload>(state.extra);
         final settings = ref.read(settingsProvider);

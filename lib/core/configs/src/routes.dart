@@ -17,6 +17,7 @@ import 'manage/booru_config_provider.dart';
 
 GoRoute addBooruConfigRoutes(Ref ref) => GoRoute(
       path: 'boorus/add',
+      name: 'boorus/add',
       pageBuilder: largeScreenAwarePageBuilder(
         useDialog: true,
         builder: (context, state) {
