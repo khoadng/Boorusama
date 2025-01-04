@@ -195,6 +195,7 @@ class _BooruVideoState extends State<BooruVideo> {
                         children: [
                           Flexible(
                             child: BooruImage(
+                              borderRadius: BorderRadius.zero,
                               aspectRatio: widget.aspectRatio ??
                                   _videoPlayerController.value.aspectRatio,
                               imageUrl: thumb,
