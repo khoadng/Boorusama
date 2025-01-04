@@ -22,6 +22,9 @@ extension ChangelogWidgetRefX on WidgetRef {
 
       final _ = await showDialog(
         context: context,
+        routeSettings: const RouteSettings(
+          name: 'changelog',
+        ),
         builder: (context) => ChangelogDialog(data: data),
       );
 

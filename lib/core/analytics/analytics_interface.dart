@@ -1,9 +1,14 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 // Project imports:
 import '../configs/config.dart';
 import 'analytics_network_info.dart';
+
+bool defaultBooruRouteFilter(Route<dynamic>? route) =>
+    route is PageRoute ||
+    route is ModalBottomSheetRoute ||
+    route is DialogRoute;
 
 abstract interface class AnalyticsInterface {
   bool get enabled;
@@ -18,6 +23,8 @@ abstract interface class AnalyticsInterface {
     required int totalSites,
     required bool hasLogin,
   });
+
+  Future<void> logScreenView(String screenName);
 }
 
 class NoAnalyticsInterface implements AnalyticsInterface {
@@ -45,5 +52,11 @@ class NoAnalyticsInterface implements AnalyticsInterface {
     required String hintSite,
     required int totalSites,
     required bool hasLogin,
+  }) async {}
+
+  @override
+  Future<void> logScreenView(
+    String screenName, {
+    Map<String, dynamic>? parameters,
   }) async {}
 }

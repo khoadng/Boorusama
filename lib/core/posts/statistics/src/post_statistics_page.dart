@@ -54,6 +54,7 @@ class PostStatisticsPage extends StatelessWidget {
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
+                    settings: const RouteSettings(name: 'posts_score_stats'),
                     builder: (context) => StatisticalSummaryDetailsPage(
                       title: 'Score',
                       stats: stats.scores,
@@ -100,6 +101,7 @@ class PostStatisticsPage extends StatelessWidget {
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
+                    settings: const RouteSettings(name: 'posts_source_stats'),
                     builder: (context) => StatisticsFromMapPage(
                       title: 'Source',
                       total: totalPosts(),
@@ -136,6 +138,7 @@ class PostStatisticsPage extends StatelessWidget {
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
+                    settings: const RouteSettings(name: 'posts_tags_stats'),
                     builder: (context) => StatisticalSummaryDetailsPage(
                       title: 'Tags',
                       stats: stats.tags,

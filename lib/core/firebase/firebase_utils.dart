@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 // Project imports:
 import '../analytics.dart';
+import '../analytics/debug_print_analytics.dart';
 import '../foundation/error.dart';
 import '../foundation/loggers.dart';
 import '../settings/settings.dart';
@@ -60,7 +61,7 @@ Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
       _kServiceName,
       _composeFirebaseDisableLogMessage(dataCollectingStatus),
     );
-    return (null, null);
+    return (DebugPrintAnalyticsImpl(enabled: true), null);
   }
 }
 

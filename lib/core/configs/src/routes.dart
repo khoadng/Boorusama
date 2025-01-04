@@ -44,6 +44,7 @@ GoRoute addBooruConfigRoutes(Ref ref) => GoRoute(
 
 GoRoute updateBooruConfigRoutes(Ref ref) => GoRoute(
       path: 'boorus/:id/update',
+      name: 'booru/update',
       pageBuilder: largeScreenAwarePageBuilder(
         useDialog: true,
         builder: (context, state) {

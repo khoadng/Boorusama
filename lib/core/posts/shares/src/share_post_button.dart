@@ -53,15 +53,21 @@ extension PostShareX on WidgetRef {
       ),
     );
 
+    const routeSettings = RouteSettings(
+      name: 'post_share',
+    );
+
     Screen.of(context).size == ScreenSize.small
         ? showMaterialModalBottomSheet(
             context: context,
+            settings: routeSettings,
             barrierColor: Colors.black45,
             backgroundColor: Colors.transparent,
             builder: (context) => modal,
           )
         : showDialog(
             context: context,
+            routeSettings: routeSettings,
             builder: (context) => AlertDialog(
               contentPadding: EdgeInsets.zero,
               content: modal,

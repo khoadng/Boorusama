@@ -45,6 +45,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
       customBorder: const CircleBorder(),
       onTap: () => showMaterialModalBottomSheet(
         context: context,
+        settings: const RouteSettings(name: 'grid_config'),
         builder: (_) => PostGridActionSheet(
           postController: postController,
           gridSize: gridSize,
@@ -136,6 +137,7 @@ class PostGridActionSheet extends ConsumerWidget {
                 if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
+                  settings: const RouteSettings(name: 'page_mode_select'),
                   builder: (_) => OptionActionSheet(
                     onChanged: onModeChanged,
                     optionName: (option) => option.localize().tr(),
@@ -151,6 +153,7 @@ class PostGridActionSheet extends ConsumerWidget {
                 if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
+                  settings: const RouteSettings(name: 'grid_size_select'),
                   builder: (_) => OptionActionSheet(
                     onChanged: onGridChanged,
                     optionName: (option) => option.localize().tr(),
@@ -166,6 +169,7 @@ class PostGridActionSheet extends ConsumerWidget {
                 if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
+                  settings: const RouteSettings(name: 'image_list_select'),
                   builder: (_) => OptionActionSheet(
                     onChanged: onImageListChanged,
                     optionName: (option) => option.localize().tr(),
@@ -181,6 +185,7 @@ class PostGridActionSheet extends ConsumerWidget {
                 if (popOnSelect) Navigator.of(context).pop();
                 showMaterialModalBottomSheet(
                   context: context,
+                  settings: const RouteSettings(name: 'image_quality_select'),
                   builder: (_) => OptionActionSheet(
                     onChanged: onImageQualityChanged,
                     optionName: (option) => option.localize().tr(),
@@ -201,6 +206,7 @@ class PostGridActionSheet extends ConsumerWidget {
             Navigator.of(context).pop();
             showMaterialModalBottomSheet(
               context: context,
+              settings: const RouteSettings(name: 'post_statistics'),
               duration: AppDurations.bottomSheet,
               builder: (_) => postStatsPageBuilder(
                 context,

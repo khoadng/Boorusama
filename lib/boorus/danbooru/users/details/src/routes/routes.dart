@@ -8,6 +8,7 @@ import '../pages/user_details_page.dart';
 
 final danbooruProfileRoutes = GoRoute(
   path: '/danbooru/profile',
+  name: 'profile',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,
@@ -17,6 +18,7 @@ final danbooruProfileRoutes = GoRoute(
 
 final danbooruUserDetailsRoutes = GoRoute(
   path: '/danbooru/users/:id',
+  name: 'user_details',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,

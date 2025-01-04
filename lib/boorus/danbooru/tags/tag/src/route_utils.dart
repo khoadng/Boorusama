@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +17,9 @@ Future<bool?> goToDanbooruShowTaglistPage(
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
+    settings: const RouteSettings(
+      name: 'view_tag_list',
+    ),
     builder: (context) => DanbooruShowTagListPage(
       tags: tags,
     ),

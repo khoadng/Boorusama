@@ -7,18 +7,26 @@ class SideMenuTile extends StatelessWidget {
     required this.title,
     required this.onTap,
     super.key,
+    this.popOnSelect = true,
   });
 
   final Widget icon;
   final Widget title;
   final VoidCallback onTap;
+  final bool popOnSelect;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          if (popOnSelect) {
+            Navigator.of(context).pop();
+          }
+
+          onTap();
+        },
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

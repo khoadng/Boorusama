@@ -8,6 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../analytics.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
@@ -180,9 +181,15 @@ class _SearchPageScaffoldState<T extends Post>
               ),
             ),
             if (state == SearchState.suggestions)
-              SuggestionView(
-                queryPattern: widget.queryPattern,
-                searchController: searchController,
+              ValueListenableBuilder(
+                valueListenable: _didSearchOnce,
+                builder: (_, searchOnce, __) => SuggestionView(
+                  queryPattern: widget.queryPattern,
+                  searchController: searchController,
+                  previousRoute: !searchOnce
+                      ? ModalRoute.of(context)?.settings
+                      : const RouteSettings(name: '/search_result'),
+                ),
               )
             else
               const SizedBox.shrink(),
@@ -275,6 +282,7 @@ class _SearchPageScaffoldState<T extends Post>
             }
           : null,
       sliverHeaders: [
+        const SearchResultAnalyticsAnchor(),
         SliverSearchAppBar(
           search: () {
             _didSearchOnce.value = true;
@@ -325,15 +333,40 @@ class _SearchPageScaffoldState<T extends Post>
   }
 }
 
+class SearchResultAnalyticsAnchor extends ConsumerStatefulWidget {
+  const SearchResultAnalyticsAnchor({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SearchResultAnalyticsAnchorState();
+}
+
+class _SearchResultAnalyticsAnchorState
+    extends ConsumerState<SearchResultAnalyticsAnchor> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(analyticsProvider).logScreenView('/search_result');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SliverSizedBox.shrink();
+  }
+}
+
 class SuggestionView extends ConsumerStatefulWidget {
   const SuggestionView({
     required this.searchController,
+    required this.previousRoute,
     super.key,
     this.queryPattern,
   });
 
   final Map<RegExp, TextStyle>? queryPattern;
   final SearchPageController searchController;
+  // dirty hack to get the previous route since suggestions are not a route
+  final RouteSettings? previousRoute;
 
   @override
   ConsumerState<SuggestionView> createState() => _SuggestionViewState();
@@ -391,6 +424,10 @@ class _SuggestionViewState extends ConsumerState<SuggestionView> {
       body: SafeArea(
         child: Column(
           children: [
+            SuggestionViewAnalyticsAnchor(
+              previousRoute: widget.previousRoute,
+              analytics: ref.watch(analyticsProvider),
+            ),
             SelectedTagListWithData(
               controller: selectedTagController,
             ),
@@ -417,5 +454,45 @@ class _SuggestionViewState extends ConsumerState<SuggestionView> {
         ),
       ),
     );
+  }
+}
+
+class SuggestionViewAnalyticsAnchor extends ConsumerStatefulWidget {
+  const SuggestionViewAnalyticsAnchor({
+    required this.previousRoute,
+    required this.analytics,
+    super.key,
+  });
+
+  final RouteSettings? previousRoute;
+  final AnalyticsInterface analytics;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SuggestionViewAnalyticsAnchoreState();
+}
+
+class _SuggestionViewAnalyticsAnchoreState
+    extends ConsumerState<SuggestionViewAnalyticsAnchor> {
+  @override
+  void initState() {
+    super.initState();
+    widget.analytics.logScreenView('/search_suggestions');
+  }
+
+  @override
+  void dispose() {
+    final name = widget.previousRoute?.name;
+
+    if (name != null) {
+      widget.analytics.logScreenView(name);
+    }
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
   }
 }

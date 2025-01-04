@@ -11,6 +11,7 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
+import '../../../../analytics.dart';
 import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
@@ -359,7 +360,16 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
           ],
         ],
-        onExpanded: widget.onExpanded,
+        onExpanded: () {
+          widget.onExpanded?.call();
+          ref.read(analyticsProvider).logScreenView('/details/info');
+        },
+        onShrink: () {
+          final routeName = ModalRoute.of(context)?.settings.name;
+          if (routeName != null) {
+            ref.read(analyticsProvider).logScreenView(routeName);
+          }
+        },
       ),
     );
   }

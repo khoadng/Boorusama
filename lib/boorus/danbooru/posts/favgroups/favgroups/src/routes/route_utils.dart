@@ -21,6 +21,9 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     context: context,
     duration: AppDurations.bottomSheet,
     expand: true,
+    settings: const RouteSettings(
+      name: 'add_to_favorite_group',
+    ),
     builder: (_) => AddToFavoriteGroupPage(
       posts: posts,
     ),
@@ -33,6 +36,9 @@ Future<Object?> goToFavoriteGroupCreatePage(
 }) {
   return showGeneralDialog(
     context: context,
+    routeSettings: const RouteSettings(
+      name: 'favorite_group_create',
+    ),
     pageBuilder: (___, _, __) => EditFavoriteGroupDialog(
       padding: kPreferredLayout.isMobile ? 0 : 8,
       title: 'favorite_groups.create_group'.tr(),
@@ -47,6 +53,9 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
+    routeSettings: const RouteSettings(
+      name: 'favorite_group_edit',
+    ),
     pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
       initialData: group,
       padding: kPreferredLayout.isMobile ? 0 : 8,

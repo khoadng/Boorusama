@@ -58,6 +58,7 @@ void goToNewBulkDownloadTaskPage(
 
   showMaterialModalBottomSheet(
     context: context,
+    settings: const RouteSettings(name: 'bulk_download_create'),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(16),

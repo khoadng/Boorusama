@@ -18,9 +18,11 @@ void showFavgroupEditSheet(
 ) {
   showMaterialModalBottomSheet(
     context: context,
+    settings: const RouteSettings(name: 'favorite_groups_action'),
     builder: (_) => ModalFavoriteGroupAction(
       onDelete: () => showDialog(
         context: context,
+        routeSettings: const RouteSettings(name: 'favorite_groups_delete'),
         builder: (context) => FavoriteGroupDeleteConfirmationDialog(
           favGroup: favGroup,
         ),

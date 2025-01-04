@@ -39,6 +39,7 @@ class PostDetailsPageView extends StatefulWidget {
     this.onItemLongPress,
     this.onExit,
     this.onExpanded,
+    this.onShrink,
     this.onPageChanged,
     this.swipeDownThreshold = 20,
     this.actions = const [],
@@ -66,6 +67,7 @@ class PostDetailsPageView extends StatefulWidget {
   final void Function()? onItemLongPress;
   final void Function()? onExit;
   final void Function()? onExpanded;
+  final void Function()? onShrink;
   final void Function(int page)? onPageChanged;
 
   final SlideshowOptions slideshowOptions;
@@ -235,11 +237,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onSheetStateChanged() {
-    widget.onExpanded?.call();
-
     if (_controller.isExpanded) {
+      widget.onExpanded?.call();
       showSystemStatus();
       _controller.overlay.value = true;
+    } else {
+      widget.onShrink?.call();
     }
 
     if (isLargeScreen) {

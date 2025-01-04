@@ -38,6 +38,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           title: const Text('Popular'),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
+              settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
                   title: const Text('Popular'),

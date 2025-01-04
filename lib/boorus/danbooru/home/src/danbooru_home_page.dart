@@ -82,6 +82,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     if (uri != null && isHttp) {
       Navigator.of(context).push(
         CupertinoPageRoute(
+          settings: const RouteSettings(name: 'upload_to_booru_confirmation'),
           builder: (context) {
             return AlertDialog(
               title: Text('Upload to $booruName'),

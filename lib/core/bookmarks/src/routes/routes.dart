@@ -21,7 +21,7 @@ final bookmarkRoutes = GoRoute(
       name: '/bookmarks/details',
       pageBuilder: (context, state) => CupertinoPage(
         key: state.pageKey,
-        name: '${state.name}?index=${state.uri.queryParameters['index']}',
+        name: state.name,
         child: BookmarkDetailsPage(
           initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
         ),

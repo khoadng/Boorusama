@@ -8,6 +8,7 @@ import '../forum_page.dart';
 
 final danbooruForumRoutes = GoRoute(
   path: '/danbooru/forum_topics',
+  name: 'forum',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,
