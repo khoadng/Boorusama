@@ -28,10 +28,11 @@ class SideMenuTile extends StatelessWidget {
         ),
         child: InkWell(
           onTap: () {
-            onTap();
             if (popOnSelect) {
-              Navigator.of(context).maybePop();
+              Navigator.of(context).pop();
             }
+
+            onTap();
           },
           customBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
