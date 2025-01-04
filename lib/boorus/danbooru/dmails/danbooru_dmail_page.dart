@@ -112,6 +112,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                               }
                               Navigator.of(context).push(
                                 CupertinoPageRoute(
+                                  settings: const RouteSettings(
+                                    name: 'dmail_details',
+                                  ),
                                   builder: (context) =>
                                       DanbooruDmailDetailsPage(
                                     dmail: dmail,

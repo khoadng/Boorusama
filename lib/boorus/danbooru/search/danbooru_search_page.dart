@@ -62,6 +62,7 @@ class DanbooruSearchPage extends ConsumerWidget {
           controller: postController,
           errors: errors,
           sliverHeaders: [
+            const SearchResultAnalyticsAnchor(),
             SliverSearchAppBar(
               search: () {
                 didSearchOnce.value = true;

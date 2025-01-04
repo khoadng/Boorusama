@@ -201,6 +201,9 @@ Future<bool?> goToShowTaglistPage(
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
+    settings: RouteSettings(
+      name: 'view_tag_list',
+    ),
     builder: (context) => DefaultShowTagListPage(
       tags: tags,
     ),

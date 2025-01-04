@@ -81,6 +81,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
 Future<void> openDownloadSettingsPage(BuildContext context) {
   return Navigator.of(context).push(
     CupertinoPageRoute(
+      settings: const RouteSettings(name: '/settings/download'),
       builder: (context) => const DownloadPage(),
     ),
   );

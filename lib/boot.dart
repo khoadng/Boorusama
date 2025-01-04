@@ -264,6 +264,10 @@ Future<void> boot(BootLogger bootLogger) async {
     logger: logger,
   );
 
+  if (initialConfig != null && firebaseAnalytics != null) {
+    firebaseAnalytics.changeCurrentAnalyticConfig(initialConfig);
+  }
+
   bootLogger.l('Initialize error handlers');
   initializeErrorHandlers(crashlyticsReporter);
 

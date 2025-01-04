@@ -33,6 +33,9 @@ class FavoriteTagLabelChip extends ConsumerWidget {
         onPressed: () {
           context.navigator.push(
             CupertinoPageRoute(
+              settings: RouteSettings(
+                name: 'favorite_tag_label_details',
+              ),
               builder: (context) => FavoriteTagLabelDetailsPage(
                 label: label,
               ),

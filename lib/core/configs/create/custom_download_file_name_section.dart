@@ -355,6 +355,7 @@ class AvailableTokens extends ConsumerWidget {
 
               showAdaptiveBottomSheet(
                 context,
+                settings: RouteSettings(name: 'download_token_options'),
                 builder: (context) => TokenOptionHelpModal(
                   token: token,
                   tokenOptions: tokenOptions,

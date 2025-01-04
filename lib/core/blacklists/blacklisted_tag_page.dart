@@ -51,6 +51,7 @@ class BlacklistedTagPage extends ConsumerWidget {
           onPressed: () {
             showMaterialModalBottomSheet(
               context: context,
+              settings: const RouteSettings(name: 'blacklisted_tag_sort'),
               backgroundColor: context.colorScheme.secondaryContainer,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

@@ -136,6 +136,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
 Future<void> openImageViewerSettingsPage(BuildContext context) {
   return Navigator.of(context).push(
     CupertinoPageRoute(
+      settings: const RouteSettings(name: '/settings/image_viewer'),
       builder: (context) => const ImageViewerPage(),
     ),
   );

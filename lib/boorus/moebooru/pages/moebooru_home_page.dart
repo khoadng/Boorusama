@@ -41,6 +41,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           title: const Text('Popular'),
           onTap: () => context.navigator.push(
             CupertinoPageRoute(
+              settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
                   title: const Text('Popular'),
@@ -60,6 +61,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           title: const Text('Hot'),
           onTap: () => context.navigator.push(
             CupertinoPageRoute(
+              settings: const RouteSettings(name: 'hot'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
                   title: const Text('Hot'),

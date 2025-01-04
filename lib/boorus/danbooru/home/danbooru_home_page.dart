@@ -74,6 +74,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     if (uri != null && isHttp) {
       context.navigator.push(CupertinoPageRoute(
+        settings: const RouteSettings(name: 'upload_to_booru_confirmation'),
         builder: (context) {
           return AlertDialog(
             title: Text('Upload to $booruName'),
@@ -148,6 +149,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           ),
           title: const Text('explore.explore').tr(),
           onTap: () => context.navigator.push(CupertinoPageRoute(
+              settings: const RouteSettings(name: 'explore'),
               builder: (_) => Scaffold(
                     appBar: AppBar(
                       title: const Text('explore.explore').tr(),

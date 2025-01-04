@@ -44,6 +44,9 @@ import 'versions/danbooru_post_versions_page.dart';
 
 void goToPoolDetailPage(BuildContext context, DanbooruPool pool) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'pool_details',
+    ),
     builder: (_) => PoolDetailPage.of(context, pool: pool),
   ));
 }
@@ -52,6 +55,9 @@ void goToPostVersionPage(BuildContext context, DanbooruPost post) {
   if (kPreferredLayout.isMobile) {
     context.navigator.push(
       CupertinoPageRoute(
+        settings: RouteSettings(
+          name: 'post_versions',
+        ),
         builder: (_) => DanbooruPostVersionsPage(
           postId: post.id,
           previewUrl: post.url720x720,
@@ -120,6 +126,9 @@ void goToExploreMostViewedPage(BuildContext context) {
 
 void goToSavedSearchPage(BuildContext context, String? username) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'saved_search_feed',
+    ),
     builder: (_) => SavedSearchFeedPage.of(context),
   ));
 }
@@ -127,6 +136,9 @@ void goToSavedSearchPage(BuildContext context, String? username) {
 void goToSavedSearchEditPage(BuildContext context) {
   if (kPreferredLayout.isMobile) {
     context.navigator.push(CupertinoPageRoute(
+      settings: const RouteSettings(
+        name: 'saved_search_edit',
+      ),
       builder: (_) {
         return const SavedSearchPage();
       },
@@ -142,24 +154,36 @@ void goToSavedSearchEditPage(BuildContext context) {
 
 void goToPoolPage(BuildContext context, WidgetRef ref) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'pools',
+    ),
     builder: (_) => const DanbooruPoolPage(),
   ));
 }
 
 void goToBlacklistedTagPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'blacklisted_tags',
+    ),
     builder: (_) => const DanbooruBlacklistedTagsPage(),
   ));
 }
 
 void goToDmailPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'dmail',
+    ),
     builder: (_) => const DanbooruDmailPage(),
   ));
 }
 
 void goToArtistSearchPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
+    settings: RouteSettings(
+      name: 'artist_search',
+    ),
     builder: (_) => const DanbooruArtistSearchPage(),
   ));
 }
@@ -217,6 +241,9 @@ void goToUserDetailsPage(
   if (Screen.of(context).size == ScreenSize.small) {
     context.navigator.push(
       CupertinoPageRoute(
+        settings: RouteSettings(
+          name: 'user_details',
+        ),
         builder: (_) => page,
       ),
     );
@@ -339,6 +366,9 @@ Future<Object?> goToFavoriteGroupCreatePage(
 }) {
   return showGeneralDialog(
     context: context,
+    routeSettings: const RouteSettings(
+      name: 'favorite_group_create',
+    ),
     pageBuilder: (___, _, __) => EditFavoriteGroupDialog(
       padding: kPreferredLayout.isMobile ? 0 : 8,
       title: 'favorite_groups.create_group'.tr(),
@@ -353,6 +383,9 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
+    routeSettings: RouteSettings(
+      name: 'favorite_group_edit',
+    ),
     pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
       initialData: group,
       padding: kPreferredLayout.isMobile ? 0 : 8,
@@ -363,6 +396,9 @@ Future<Object?> goToFavoriteGroupEditPage(
 
 void goToFavoriteGroupPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'favorite_groups',
+    ),
     builder: (_) => const FavoriteGroupsPage(),
   ));
 }
@@ -372,6 +408,9 @@ void goToFavoriteGroupDetailsPage(
   DanbooruFavoriteGroup group,
 ) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'favorite_group_details',
+    ),
     builder: (_) => CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
         group: group,
@@ -388,6 +427,9 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
   return showMaterialModalBottomSheet<bool>(
     context: context,
     duration: AppDurations.bottomSheet,
+    settings: const RouteSettings(
+      name: 'add_to_favorite_group',
+    ),
     expand: true,
     builder: (_) => AddToFavoriteGroupPage(
       posts: posts,
@@ -402,6 +444,9 @@ Future<bool?> goToDanbooruShowTaglistPage(
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
+    settings: const RouteSettings(
+      name: 'view_tag_list',
+    ),
     builder: (context) => DanbooruShowTagListPage(
       tags: tags,
     ),
@@ -410,6 +455,9 @@ Future<bool?> goToDanbooruShowTaglistPage(
 
 void goToForumPage(BuildContext context) {
   context.navigator.push(CupertinoPageRoute(
+    settings: const RouteSettings(
+      name: 'forum',
+    ),
     builder: (_) => const DanbooruForumPage(),
   ));
 }
@@ -420,12 +468,18 @@ void goToTagEditPage(
 }) {
   if (Screen.of(context).size == ScreenSize.small) {
     context.navigator.push(CupertinoPageRoute(
+      settings: const RouteSettings(
+        name: 'tag_edit',
+      ),
       builder: (context) => TagEditPage(
         post: post,
       ),
     ));
   } else {
     context.navigator.push(MaterialPageRoute(
+      settings: const RouteSettings(
+        name: 'tag_edit',
+      ),
       builder: (context) => TagEditPage(
         post: post,
       ),

@@ -113,6 +113,7 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
         username: creatorName,
       ),
       onTap: () => context.navigator.push(CupertinoPageRoute(
+        settings: const RouteSettings(name: 'forum_posts'),
         builder: (_) => DanbooruForumPostsPage(
           topicId: topic.id,
           title: topic.title,

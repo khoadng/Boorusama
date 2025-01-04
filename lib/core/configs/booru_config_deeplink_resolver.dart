@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
+import '../../foundation/analytics.dart';
 import 'manage/providers.dart';
 
 class BooruConfigDeepLinkResolver extends ConsumerStatefulWidget {
@@ -39,6 +40,7 @@ class _BooruConfigDeepLinkResolverState
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
+        ref.read(analyticsProvider).logScreenView('/');
         _print('Deep link config updated');
         setState(() {
           _initialized = true;
@@ -65,6 +67,7 @@ class _BooruConfigDeepLinkResolverState
       if (config != null) {
         return WidgetsBinding.instance.addPostFrameCallback((_) async {
           await ref.read(currentBooruConfigProvider.notifier).update(config);
+          ref.read(analyticsProvider).logScreenView('/');
 
           _print('Deep link config updated');
         });

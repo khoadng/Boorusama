@@ -10,7 +10,6 @@ import 'package:reorderables/reorderables.dart';
 // Project imports:
 import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/dart.dart';
 import 'package:boorusama/foundation/display.dart';
@@ -74,9 +73,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                           hideLabel: hideLabel,
                           config: config,
                           show: () => show(config),
-                          onTap: () => ref
-                              .read(currentBooruConfigProvider.notifier)
-                              .update(config),
+                          onTap: () => context.go('/?cid=${config.id}'),
                           selected: currentConfig == config,
                         );
                       },
@@ -148,9 +145,7 @@ class _BooruSelectorHorizontalState
                               hideLabel: hideLabel,
                               config: config,
                               show: () => show(config),
-                              onTap: () => ref
-                                  .read(currentBooruConfigProvider.notifier)
-                                  .update(config),
+                              onTap: () => context.go('/?cid=${config.id}'),
                               selected: currentConfig == config,
                               direction: Axis.horizontal,
                             ),
@@ -196,6 +191,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
               if (kPreferredLayout.isMobile) {
                 showDialog(
                   context: context,
+                  routeSettings: const RouteSettings(name: 'booru/delete'),
                   builder: (context) => Dialog(
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8)),

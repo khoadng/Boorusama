@@ -252,6 +252,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
+        settings: const RouteSettings(name: 'cookie_access_web_view'),
         builder: (context) => CookieAccessWebViewPage(
           url: loginUrl,
           onGet: (cookies) {

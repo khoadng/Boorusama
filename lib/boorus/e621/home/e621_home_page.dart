@@ -39,6 +39,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           icon: const Icon(Symbols.explore),
           title: const Text('Popular'),
           onTap: () => context.navigator.push(CupertinoPageRoute(
+              settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
                     appBar: AppBar(
                       title: const Text('Popular'),

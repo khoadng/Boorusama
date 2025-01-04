@@ -53,6 +53,8 @@ class HomeSearchBar extends ConsumerWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
+                      routeSettings:
+                          const RouteSettings(name: 'app_update_notice'),
                       builder: (context) => Dialog(
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),

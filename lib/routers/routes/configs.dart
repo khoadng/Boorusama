@@ -45,6 +45,7 @@ class BoorusRoutes {
 
   static GoRoute update(Ref ref) => GoRoute(
         path: 'boorus/:id/update',
+        name: 'booru_update',
         redirect: (context, state) => kPreferredLayout.isMobile
             ? null
             : '/desktop/boorus/${state.pathParameters['id']}/update',
@@ -70,6 +71,7 @@ class BoorusRoutes {
 
           return CupertinoPage(
             key: state.pageKey,
+            name: state.name,
             child: booruBuilder?.updateConfigPageBuilder(
                   context,
                   EditBooruConfigId.fromConfig(config),

@@ -34,6 +34,7 @@ class SelectedTagChip extends StatelessWidget {
       onTap: () {
         showDialog(
           context: context,
+          routeSettings: const RouteSettings(name: 'selected_tag_edit'),
           builder: (c) {
             return SelectedTagEditDialog(
               tag: tagSearchItem,

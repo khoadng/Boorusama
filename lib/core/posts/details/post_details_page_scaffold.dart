@@ -22,6 +22,7 @@ import 'package:boorusama/core/tags/tags.dart';
 import 'package:boorusama/core/videos/videos.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/flutter.dart';
+import 'package:boorusama/foundation/analytics.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
@@ -574,7 +575,16 @@ class _PostDetailPageScaffoldState<T extends Post>
                     onStartSlideshow: () => controller.startSlideshow(),
                   ),
                 ],
-      onExpanded: () => widget.onExpanded?.call(posts[currentPage]),
+      onExpanded: () {
+        widget.onExpanded?.call(posts[currentPage]);
+        ref.read(analyticsProvider).logScreenView('/details/info');
+      },
+      onShrink: () {
+        final routeName = ModalRoute.of(context)?.settings.name;
+        if (routeName != null) {
+          ref.read(analyticsProvider).logScreenView(routeName);
+        }
+      },
     );
   }
 }

@@ -66,6 +66,7 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   NavigatorObserver getAnalyticsObserver() => enabled
       ? FirebaseAnalyticsObserver(
           analytics: FirebaseAnalytics.instance,
+          routeFilter: defaultBooruRouteFilter,
         )
       : NavigatorObserver();
 
@@ -85,6 +86,19 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
           'hint_site': hintSite,
           'has_login': hasLogin,
         },
+      );
+    }
+  }
+
+  @override
+  Future<void> logScreenView(
+    String screenName, {
+    Map<String, dynamic>? parameters,
+  }) async {
+    if (enabled) {
+      await logScreenView(
+        screenName,
+        parameters: parameters,
       );
     }
   }
