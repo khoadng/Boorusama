@@ -70,6 +70,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             .select((value) => value.passHash));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

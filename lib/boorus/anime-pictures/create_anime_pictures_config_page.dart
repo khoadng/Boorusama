@@ -83,6 +83,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
     ).select((value) => value.passHash));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
