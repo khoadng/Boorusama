@@ -57,8 +57,8 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
         eventName,
         parameters: {
           'source': source.name,
-          'from': oldValue,
-          'to': newValue,
+          'old_value': oldValue,
+          'new_value': newValue,
         },
       );
     }
