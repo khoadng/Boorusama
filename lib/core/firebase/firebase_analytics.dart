@@ -30,6 +30,8 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
 
   bool isFirebasePerformanceSupported() => isAndroid() || isIOS() || isWeb();
 
+  BooruConfig? _currentConfig;
+
   @override
   Future<void> ensureInitialized() async {
     try {
@@ -50,6 +52,8 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
 
   @override
   Future<void> changeCurrentAnalyticConfig(BooruConfig config) async {
+    _currentConfig = config;
+
     if (enabled) {
       await FirebaseCrashlytics.instance.setCustomKey('url', config.url);
     }
@@ -67,37 +71,11 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
 
   @override
   NavigatorObserver getAnalyticsObserver() => enabled
-      ? FirebaseAnalyticsObserver(
+      ? AppAnalyticsObserver(
           analytics: FirebaseAnalytics.instance,
-          routeFilter: defaultBooruRouteFilter,
+          paramsExtractor: (settings) => defaultParamsExtractor(_currentConfig),
         )
       : NavigatorObserver();
-
-  @override
-  Future<void> sendBooruAddedEvent({
-    required String url,
-    required String hintSite,
-    required int totalSites,
-    required bool hasLogin,
-  }) async {
-    if (!enabled) return;
-
-    try {
-      await FirebaseAnalytics.instance.logEvent(
-        name: 'site_add',
-        parameters: {
-          'url': url,
-          'total_sites': totalSites,
-          'hint_site': hintSite,
-          'has_login': hasLogin,
-        },
-      );
-    } on Exception catch (e) {
-      if (kDebugMode) {
-        logger?.logE('FirebaseAnalytics', 'Failed to log event: site_add, $e');
-      }
-    }
-  }
 
   @override
   Future<void> logScreenView(
@@ -106,10 +84,23 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   }) async {
     if (!enabled) return;
 
+    return FirebaseAnalytics.instance._logScreenView(
+      screenName: screenName,
+      parameters: parameters,
+    );
+  }
+
+  @override
+  Future<void> logEvent(
+    String name, {
+    Map<String, dynamic>? parameters,
+  }) async {
+    if (!enabled) return;
+
     try {
-      await FirebaseAnalytics.instance.logScreenView(
-        screenName: screenName,
-        parameters: parameters != null
+      await FirebaseAnalytics.instance.logEvent(
+        name: name,
+        parameters: parameters != null && parameters.isNotEmpty
             ? {
                 ...parameters,
               }
@@ -117,8 +108,81 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
       );
     } on Exception catch (e) {
       if (kDebugMode) {
-        logger?.logE('FirebaseAnalytics', 'Failed to log screen view: $e');
+        logger?.logE('FirebaseAnalytics', 'Failed to log event: $name, $e');
       }
+    }
+  }
+}
+
+extension FirebaseAnalyticsX on FirebaseAnalytics {
+  Future<void> _logScreenView({
+    required String screenName,
+    Map<String, dynamic>? parameters,
+  }) async {
+    try {
+      await logScreenView(
+        screenName: screenName,
+        parameters: parameters != null && parameters.isNotEmpty
+            ? {
+                ...parameters,
+              }
+            : null,
+      );
+    } on Exception catch (e) {
+      if (kDebugMode) {
+        debugPrint('FirebaseAnalytics: Failed to log screen view: $e');
+      }
+    }
+  }
+}
+
+typedef ScreenNameExtractor = String? Function(RouteSettings settings);
+
+String? defaultNameExtractor(RouteSettings settings) => settings.name;
+
+class AppAnalyticsObserver extends RouteObserver<ModalRoute<dynamic>> {
+  AppAnalyticsObserver({
+    required this.analytics,
+    required this.paramsExtractor,
+  });
+
+  final FirebaseAnalytics analytics;
+  final routeFilter = defaultBooruRouteFilter;
+  final Map<String, dynamic> Function(RouteSettings settings) paramsExtractor;
+
+  void _sendScreenView(Route<dynamic> route) {
+    final screenName = defaultNameExtractor(route.settings);
+    if (screenName != null) {
+      analytics._logScreenView(
+        screenName: screenName,
+        parameters: paramsExtractor(route.settings),
+      );
+    }
+  }
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    if (routeFilter(route)) {
+      _sendScreenView(route);
+    }
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    if (newRoute != null && routeFilter(newRoute)) {
+      _sendScreenView(newRoute);
+    }
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    if (previousRoute != null &&
+        routeFilter(previousRoute) &&
+        routeFilter(route)) {
+      _sendScreenView(previousRoute);
     }
   }
 }

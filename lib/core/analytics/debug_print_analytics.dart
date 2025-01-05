@@ -34,25 +34,14 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   @override
   NavigatorObserver getAnalyticsObserver() => enabled
       ? DebugPrintAnalyticsObserver(
-          paramsExtractor: _extractParams,
+          paramsExtractor: (settings) => defaultParamsExtractor(_currentConfig),
         )
       : NavigatorObserver();
 
   @override
-  Future<void> sendBooruAddedEvent({
-    required String url,
-    required String hintSite,
-    required int totalSites,
-    required bool hasLogin,
-  }) async {
-    if (!enabled) return;
-    debugPrint('BooruAddedEvent: $url, $hintSite, $totalSites, $hasLogin');
-  }
-
-  @override
   Future<void> logScreenView(String screenName) async {
     if (!enabled) return;
-    final params = _extractParams(null);
+    final params = defaultParamsExtractor(_currentConfig);
 
     _printDebugScreenView(
       screenName,
@@ -60,19 +49,13 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
     );
   }
 
-  Map<String, dynamic> _extractParams(RouteSettings? settings) {
-    final config = _currentConfig;
-
-    final params = config != null
-        ? {
-            'hint_site': config.auth.booruType.name,
-            'url': config.url,
-            'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
-            'rating': config.filter.ratingVerdict,
-          }
-        : <String, dynamic>{};
-
-    return params;
+  @override
+  Future<void> logEvent(
+    String name, {
+    Map<String, dynamic>? parameters,
+  }) async {
+    if (!enabled) return;
+    debugPrint('Event: $name with parameters: $parameters');
   }
 }
 
@@ -89,13 +72,11 @@ String? defaultNameExtractor(RouteSettings settings) => settings.name;
 
 typedef RouteFilter = bool Function(Route<dynamic>? route);
 
-Map<String, String> defaultParamsExtractor(RouteSettings settings) => {};
-
 class DebugPrintAnalyticsObserver extends RouteObserver<ModalRoute<dynamic>> {
   DebugPrintAnalyticsObserver({
+    required this.paramsExtractor,
     this.nameExtractor = defaultNameExtractor,
     this.routeFilter = defaultBooruRouteFilter,
-    this.paramsExtractor = defaultParamsExtractor,
   });
 
   final ScreenNameExtractor nameExtractor;

@@ -1,6 +1,10 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../analytics.dart';
@@ -8,6 +12,7 @@ import '../../../foundation/loggers.dart';
 import '../../../settings/providers.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
+import '../booru_config_ref.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
 import '../export_import/export_import_notifer_mixin.dart';
@@ -64,6 +69,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
     return add(
       data: copyData.toBooruConfigData(),
+      initialConfig: config,
+      isCopy: true,
     );
   }
 
@@ -72,6 +79,14 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
+    final analytics = ref.read(analyticsProvider);
+    const eventName = 'config_delete';
+    final baseParams = {
+      'url': config.url,
+      'hint_site': config.auth.booruType.name,
+      'has_login': config.auth.hasLoginDetails(),
+    };
+
     try {
       // check if deleting the last config
       if (state.length == 1) {
@@ -83,17 +98,31 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
         onSuccess?.call(config);
 
+        unawaited(
+          analytics.logEvent(
+            eventName,
+            parameters: {
+              ...baseParams,
+              'type': 'last',
+            },
+          ),
+        );
+
         return;
       }
 
       // check if deleting current config, if so, set current to the first config
       final currentConfig = ref.read(currentBooruConfigProvider);
+      var deleteCurrent = false;
+      var deleteFirst = false;
       if (currentConfig.id == config.id) {
         final firstConfig = state.first;
 
         // check if deleting the first config
-        final targetConfig =
-            firstConfig.id == config.id ? state.skip(1).first : firstConfig;
+        deleteFirst = firstConfig.id == config.id;
+        deleteCurrent = true;
+
+        final targetConfig = deleteFirst ? state.skip(1).first : firstConfig;
 
         await ref
             .read(currentBooruConfigProvider.notifier)
@@ -109,6 +138,20 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       final tmp = [...state]..remove(config);
       state = tmp;
       onSuccess?.call(config);
+
+      unawaited(
+        analytics.logEvent(
+          eventName,
+          parameters: {
+            ...baseParams,
+            'type': deleteCurrent
+                ? deleteFirst
+                    ? 'current_first'
+                    : 'current'
+                : 'normal',
+          },
+        ),
+      );
     } catch (e) {
       onFailure?.call(e.toString());
     }
@@ -136,6 +179,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         return;
       }
 
+      final oldConfig =
+          state.firstWhereOrNull((element) => element.id == oldConfigId);
+
       final updatedConfig = await ref
           .read(booruConfigRepoProvider)
           .update(oldConfigId, booruConfigData);
@@ -153,6 +199,26 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       _logInfo('Updated config: $oldConfigId');
       state = newConfigs;
       onSuccess?.call(updatedConfig);
+
+      unawaited(
+        ref.read(analyticsProvider).logEvent(
+          'config_update',
+          parameters: {
+            'url': updatedConfig.url,
+            'hint_site': updatedConfig.auth.booruType.name,
+            'is_current': ref.readConfigAuth == updatedConfig,
+          },
+        ),
+      );
+
+      if (oldConfig != null) {
+        unawaited(
+          ref.read(analyticsProvider).logConfigChangedEvent(
+                oldValue: oldConfig,
+                newValue: updatedConfig,
+              ),
+        );
+      }
     } catch (e) {
       _logError('Failed to update config: $oldConfigId');
       onFailure?.call(
@@ -163,9 +229,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
   Future<void> add({
     required BooruConfigData data,
+    BooruConfig? initialConfig,
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
     bool setAsCurrent = false,
+    bool? isCopy,
   }) async {
     try {
       final config = await ref.read(booruConfigRepoProvider).add(data);
@@ -179,14 +247,33 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       }
 
       onSuccess?.call(config);
-      ref.read(analyticsProvider).sendBooruAddedEvent(
-            url: config.url,
-            hintSite: config.auth.booruType.name,
-            totalSites: state.length,
-            hasLogin: config.auth.hasLoginDetails(),
-          );
 
       await _add(config);
+
+      unawaited(
+        ref.read(analyticsProvider).logEvent(
+          'site_add',
+          parameters: {
+            'url': config.url,
+            'total_sites': state.length,
+            'hint_site': config.auth.booruType.name,
+            'has_login': config.apiKey.toOption().fold(
+                  () => false,
+                  (a) => a.isNotEmpty,
+                ),
+            'is_copy': isCopy ?? false,
+          },
+        ),
+      );
+
+      if (initialConfig != null) {
+        unawaited(
+          ref.read(analyticsProvider).logConfigChangedEvent(
+                oldValue: initialConfig,
+                newValue: config,
+              ),
+        );
+      }
 
       if (setAsCurrent || state.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
@@ -211,10 +298,12 @@ extension BooruConfigNotifierX on BooruConfigNotifier {
   void addOrUpdate({
     required EditBooruConfigId id,
     required BooruConfigData newConfig,
+    BooruConfig? initialData,
   }) {
     if (id.isNew) {
       ref.read(booruConfigProvider.notifier).add(
             data: newConfig,
+            initialConfig: initialData,
           );
     } else {
       ref.read(booruConfigProvider.notifier).update(
