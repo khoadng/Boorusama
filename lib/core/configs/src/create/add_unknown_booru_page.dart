@@ -131,14 +131,16 @@ final _validateConfigProvider = FutureProvider.autoDispose<bool?>((ref) async {
   final config = ref.watch(_targetConfigToValidateProvider);
   if (config == null) return null;
 
-  unawaited(ref.watch(analyticsProvider).logEvent(
-    'config_verify',
-    parameters: {
-      'url': Uri.tryParse(config.url)?.host,
-      'hint_site': config.booruType.name,
-      'has_login': config.hasLoginDetails(),
-    },
-  ));
+  unawaited(
+    ref.watch(analyticsProvider).logEvent(
+      'config_verify',
+      parameters: {
+        'url': Uri.tryParse(config.url)?.host,
+        'hint_site': config.booruType.name,
+        'has_login': config.hasLoginDetails(),
+      },
+    ),
+  );
 
   final result = await ref.watch(booruSiteValidatorProvider(config).future);
   return result;

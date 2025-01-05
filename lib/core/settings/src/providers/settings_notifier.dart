@@ -60,10 +60,12 @@ class SettingsNotifier extends Notifier<Settings> {
       }
       state = settings;
 
-      ref.read(analyticsProvider).logSettingsChangedEvent(
-            oldValue: currentSettings,
-            newValue: settings,
-          );
+      unawaited(
+        ref.read(analyticsProvider).logSettingsChangedEvent(
+              oldValue: currentSettings,
+              newValue: settings,
+            ),
+      );
     }
   }
 
