@@ -77,6 +77,7 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final editId = ref.watch(editBooruConfigIdProvider);
+    final config = ref.watch(initialBooruConfigProvider);
 
     return BooruConfigDataProvider(
       builder: (data) => TextButton(
@@ -85,6 +86,7 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
                 ref.read(booruConfigProvider.notifier).addOrUpdate(
                       id: editId,
                       newConfig: data,
+                      initialData: config,
                     );
 
                 context.navigator.pop();

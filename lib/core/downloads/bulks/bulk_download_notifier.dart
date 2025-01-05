@@ -23,6 +23,7 @@ import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+import '../../../foundation/analytics.dart';
 import '../../../foundation/networking/networking.dart';
 
 const _serviceName = 'Bulk Download Manager';
@@ -321,6 +322,8 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     final fileNameBuilder =
         ref.readBooruBuilder(config)?.downloadFilenameBuilder;
 
+    final analytics = ref.read(analyticsProvider);
+
     if (fileNameBuilder == null) {
       logger.logE('Bulk Download', 'No file name builder found, aborting...');
       return;
@@ -335,6 +338,15 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       perPage: _perPage,
     );
     var mixedMedia = false;
+
+    analytics.logEvent(
+      'bulk_download_start',
+      parameters: {
+        'quality': task.options.quality?.name,
+        'skip_if_exists': task.options.skipIfExists,
+        'notifications': task.options.notications,
+      },
+    );
 
     try {
       var page = 1;

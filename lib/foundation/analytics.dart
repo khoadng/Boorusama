@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/manage/manage.dart';
+import 'package:boorusama/core/settings/settings.dart';
 
 final analyticsProvider = Provider<AnalyticsInterface>(
   (ref) => NoAnalyticsInterface(),
@@ -48,14 +49,13 @@ abstract interface class AnalyticsInterface {
   Future<void> changeCurrentAnalyticConfig(BooruConfig config);
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info);
   NavigatorObserver getAnalyticsObserver();
-  void sendBooruAddedEvent({
-    required String url,
-    required String hintSite,
-    required int totalSites,
-    required bool hasLogin,
-  });
 
   Future<void> logScreenView(String screenName);
+
+  Future<void> logEvent(
+    String name, {
+    Map<String, dynamic>? parameters,
+  });
 }
 
 class NoAnalyticsInterface implements AnalyticsInterface {
@@ -78,18 +78,147 @@ class NoAnalyticsInterface implements AnalyticsInterface {
   NavigatorObserver getAnalyticsObserver() => NavigatorObserver();
 
   @override
-  Future<void> sendBooruAddedEvent({
-    required String url,
-    required String hintSite,
-    required int totalSites,
-    required bool hasLogin,
-  }) async {}
-
-  @override
   Future<void> logScreenView(
     String screenName, {
     Map<String, dynamic>? parameters,
   }) async {}
+
+  @override
+  Future<void> logEvent(
+    String name, {
+    Map<String, dynamic>? parameters,
+  }) async {}
+}
+
+extension AnalyticsInterfaceX on AnalyticsInterface {
+  Future<void> _logChangedEvent({
+    required String oldValue,
+    required String newValue,
+    required String eventName,
+    required SettingsChangedSource source,
+  }) async {
+    if (!enabled) return;
+
+    if (oldValue != newValue) {
+      await logEvent(
+        eventName,
+        parameters: {
+          'source': source.name,
+          'from': oldValue,
+          'to': newValue,
+        },
+      );
+    }
+  }
+
+  Future<void> logConfigChangedEvent({
+    required BooruConfig oldValue,
+    required BooruConfig newValue,
+  }) async {
+    if (!enabled) return;
+
+    _logChangedEvent(
+      oldValue: oldValue.defaultPreviewImageButtonAction ?? '<none>',
+      newValue: newValue.defaultPreviewImageButtonAction ?? '<none>',
+      eventName: 'preview_image_button_action_changed',
+      source: SettingsChangedSource.configs,
+    );
+
+    _logListingChangedEvent(
+      oldValue: oldValue.listing?.settings,
+      newValue: newValue.listing?.settings,
+      source: SettingsChangedSource.configs,
+    );
+  }
+
+  Future<void> logSettingsChangedEvent({
+    required Settings oldValue,
+    required Settings newValue,
+  }) async {
+    if (!enabled) return;
+
+    _logChangedEvent(
+      oldValue: oldValue.themeMode.name,
+      newValue: newValue.themeMode.name,
+      eventName: 'theme_changed',
+      source: SettingsChangedSource.settings,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue.enableDynamicColoring.toString(),
+      newValue: newValue.enableDynamicColoring.toString(),
+      eventName: 'dynamic_color_changed',
+      source: SettingsChangedSource.settings,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue.videoPlayerEngine.name,
+      newValue: newValue.videoPlayerEngine.name,
+      eventName: 'video_player_engine_changed',
+      source: SettingsChangedSource.settings,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue.booruConfigSelectorPosition.name,
+      newValue: newValue.booruConfigSelectorPosition.name,
+      eventName: 'config_selector_position_changed',
+      source: SettingsChangedSource.settings,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue.booruConfigLabelVisibility.name,
+      newValue: newValue.booruConfigLabelVisibility.name,
+      eventName: 'config_label_visibility_changed',
+      source: SettingsChangedSource.settings,
+    );
+
+    _logListingChangedEvent(
+      oldValue: oldValue.listing,
+      newValue: newValue.listing,
+      source: SettingsChangedSource.settings,
+    );
+  }
+
+  void _logListingChangedEvent({
+    required ImageListingSettings? oldValue,
+    required ImageListingSettings? newValue,
+    required SettingsChangedSource source,
+  }) {
+    if (!enabled) return;
+
+    _logChangedEvent(
+      oldValue: oldValue?.imageListType.name ?? '<none>',
+      newValue: newValue?.imageListType.name ?? '<none>',
+      eventName: 'image_list_type_changed',
+      source: source,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue?.gridSize.name ?? '<none>',
+      newValue: newValue?.gridSize.name ?? '<none>',
+      eventName: 'grid_size_changed',
+      source: source,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue?.pageMode.name ?? '<none>',
+      newValue: newValue?.pageMode.name ?? '<none>',
+      eventName: 'page_mode_changed',
+      source: source,
+    );
+
+    _logChangedEvent(
+      oldValue: oldValue?.imageQuality.name ?? '<none>',
+      newValue: newValue?.imageQuality.name ?? '<none>',
+      eventName: 'image_quality_changed',
+      source: source,
+    );
+  }
+}
+
+enum SettingsChangedSource {
+  settings,
+  configs,
 }
 
 class DebugPrintAnalyticsImpl implements AnalyticsInterface {
@@ -120,25 +249,14 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   @override
   NavigatorObserver getAnalyticsObserver() => enabled
       ? DebugPrintAnalyticsObserver(
-          paramsExtractor: _extractParams,
+          paramsExtractor: (settings) => defaultParamsExtractor(_currentConfig),
         )
       : NavigatorObserver();
 
   @override
-  Future<void> sendBooruAddedEvent({
-    required String url,
-    required String hintSite,
-    required int totalSites,
-    required bool hasLogin,
-  }) async {
-    if (!enabled) return;
-    debugPrint('BooruAddedEvent: $url, $hintSite, $totalSites, $hasLogin');
-  }
-
-  @override
   Future<void> logScreenView(String screenName) async {
     if (!enabled) return;
-    final params = _extractParams(null);
+    final params = defaultParamsExtractor(_currentConfig);
 
     _printDebugScreenView(
       screenName,
@@ -146,20 +264,27 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
     );
   }
 
-  Map<String, dynamic> _extractParams(RouteSettings? settings) {
-    final config = _currentConfig;
-
-    final params = config != null
-        ? {
-            'hint_site': config.booruType.name,
-            'url': config.url,
-            'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
-            'rating': config.ratingVerdict,
-          }
-        : <String, dynamic>{};
-
-    return params;
+  @override
+  Future<void> logEvent(
+    String name, {
+    Map<String, dynamic>? parameters,
+  }) async {
+    if (!enabled) return;
+    debugPrint('Event: $name with parameters: $parameters');
   }
+}
+
+Map<String, dynamic> defaultParamsExtractor(
+  BooruConfig? config,
+) {
+  return config != null
+      ? {
+          'hint_site': config.booruType.name,
+          'url': Uri.tryParse(config.url)?.host,
+          'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
+          'rating': config.ratingVerdict,
+        }
+      : <String, dynamic>{};
 }
 
 class AnalyticsScope extends ConsumerWidget {
@@ -203,13 +328,11 @@ String? defaultNameExtractor(RouteSettings settings) => settings.name;
 
 typedef RouteFilter = bool Function(Route<dynamic>? route);
 
-Map<String, String> defaultParamsExtractor(RouteSettings settings) => {};
-
 class DebugPrintAnalyticsObserver extends RouteObserver<ModalRoute<dynamic>> {
   DebugPrintAnalyticsObserver({
+    required this.paramsExtractor,
     this.nameExtractor = defaultNameExtractor,
     this.routeFilter = defaultBooruRouteFilter,
-    this.paramsExtractor = defaultParamsExtractor,
   });
 
   final ScreenNameExtractor nameExtractor;

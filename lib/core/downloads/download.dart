@@ -15,6 +15,7 @@ import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/router.dart';
+import '../../foundation/analytics.dart';
 
 extension PostDownloadX on WidgetRef {
   Future<PermissionStatus?> _getPermissionStatus() async {
@@ -32,6 +33,7 @@ extension PostDownloadX on WidgetRef {
     final settings = read(settingsProvider);
     final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
     final perm = await _getPermissionStatus();
+    final analytics = read(analyticsProvider);
 
     await _download(
       this,
@@ -44,6 +46,14 @@ extension PostDownloadX on WidgetRef {
         if (c != null) {
           showDownloadStartToast(c);
         }
+
+        analytics.logEvent(
+          'single_download_start',
+          parameters: {
+            'hint_site': readConfig.booruType.name,
+            'url': Uri.tryParse(readConfig.url)?.host,
+          },
+        );
       },
     );
   }
@@ -56,6 +66,7 @@ extension PostDownloadX on WidgetRef {
     final settings = read(settingsProvider);
     final urlExtractor = read(downloadFileUrlExtractorProvider(readConfig));
     final config = readConfig;
+    final analytics = read(analyticsProvider);
 
     // ensure that the booru supports bulk download
     if (!config.booruType.canDownloadMultipleFiles) {
@@ -67,6 +78,15 @@ extension PostDownloadX on WidgetRef {
 
     _showToastIfPossible(
       message: 'Downloading ${posts.length} files...',
+    );
+
+    analytics.logEvent(
+      'multiple_download_start',
+      parameters: {
+        'total': posts.length,
+        'hint_site': config.booruType.name,
+        'url': Uri.tryParse(config.url)?.host,
+      },
     );
 
     for (int i = 0; i < posts.length; i++) {
