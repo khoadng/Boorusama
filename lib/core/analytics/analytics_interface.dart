@@ -74,7 +74,7 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
       _logChangedEvent(
         oldValue: oldValue.defaultPreviewImageButtonAction ?? '<none>',
         newValue: newValue.defaultPreviewImageButtonAction ?? '<none>',
-        eventName: 'preview_image_button_action_changed',
+        eventName: 'preview_img_btn_changed',
         source: SettingsChangedSource.configs,
       ),
     );
@@ -123,7 +123,7 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
       _logChangedEvent(
         oldValue: oldValue.booruConfigSelectorPosition.name,
         newValue: newValue.booruConfigSelectorPosition.name,
-        eventName: 'config_selector_position_changed',
+        eventName: 'configs_pos_changed',
         source: SettingsChangedSource.settings,
       ),
     );
@@ -132,7 +132,7 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
       _logChangedEvent(
         oldValue: oldValue.booruConfigLabelVisibility.name,
         newValue: newValue.booruConfigLabelVisibility.name,
-        eventName: 'config_label_visibility_changed',
+        eventName: 'config_label_vis_changed',
         source: SettingsChangedSource.settings,
       ),
     );
