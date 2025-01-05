@@ -82,7 +82,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
           eventName,
           parameters: {
             ...baseParams,
-            'type': 'last',
+            'delete_type': 'last',
           },
         );
 
@@ -122,7 +122,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         eventName,
         parameters: {
           ...baseParams,
-          'type': deleteCurrent
+          'delete_type': deleteCurrent
               ? deleteFirst
                   ? 'current_first'
                   : 'current'
