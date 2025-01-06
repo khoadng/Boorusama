@@ -18,6 +18,7 @@ import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
@@ -69,6 +70,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
   );
   late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
     pageViewController: _controller,
@@ -93,6 +95,8 @@ class _PostDetailPageScaffoldState<T extends Post>
       );
     });
 
+    widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
+
     _volumeKeyPageNavigator.initialize();
   }
 
@@ -100,6 +104,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   void dispose() {
     _controller.dispose();
     _volumeKeyPageNavigator.dispose();
+    widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
 
     super.dispose();
   }
@@ -108,6 +113,17 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   bool _isDefaultEngine(Settings settings) {
     return settings.videoPlayerEngine != VideoPlayerEngine.mdk;
+  }
+
+  void _isVideoPlayingChanged() {
+    // force overlay to be on when video is not playing
+    if (!widget.controller.isVideoPlaying.value) {
+      _controller.disableHoverToControlOverlay();
+    } else {
+      if (widget.controller.currentPost.value.isVideo) {
+        _controller.enableHoverToControlOverlay();
+      }
+    }
   }
 
   @override
@@ -186,6 +202,12 @@ class _PostDetailPageScaffoldState<T extends Post>
             page,
             useDefaultEngine: _isDefaultEngine(settings),
           );
+
+          if (posts[page].isVideo) {
+            _controller.enableHoverToControlOverlay();
+          } else {
+            _controller.disableHoverToControlOverlay();
+          }
 
           ref
               .read(postShareProvider(posts[page]).notifier)
@@ -360,6 +382,35 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
           ],
         ],
+        onTap: () {
+          final controller = widget.controller;
+
+          if (isDesktopPlatform()) {
+            if (controller.currentPost.value.isVideo) {
+              if (controller.isVideoPlaying.value) {
+                controller.pauseCurrentVideo(
+                  useDefaultEngine: _isDefaultEngine(settings),
+                );
+              } else {
+                controller.playCurrentVideo(
+                  useDefaultEngine: _isDefaultEngine(settings),
+                );
+              }
+
+              // if (isDesktopPlatform()) {
+
+              // } else {}
+            } else {
+              if (_controller.isExpanded) return;
+
+              _controller.toggleOverlay();
+            }
+          } else {
+            if (_controller.isExpanded) return;
+
+            _controller.toggleOverlay();
+          }
+        },
         onExpanded: () {
           widget.onExpanded?.call();
           ref.read(analyticsProvider).logScreenView('/details/info');

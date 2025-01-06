@@ -16,7 +16,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../../foundation/mobile.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
 import '../../../../widgets/widgets.dart';
@@ -40,6 +39,7 @@ class PostDetailsPageView extends StatefulWidget {
     this.onExit,
     this.onExpanded,
     this.onShrink,
+    this.onTap,
     this.onPageChanged,
     this.swipeDownThreshold = 20,
     this.actions = const [],
@@ -68,6 +68,7 @@ class PostDetailsPageView extends StatefulWidget {
   final void Function()? onExit;
   final void Function()? onExpanded;
   final void Function()? onShrink;
+  final void Function()? onTap;
   final void Function(int page)? onPageChanged;
 
   final SlideshowOptions slideshowOptions;
@@ -172,8 +173,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onHover() {
-    if (!isDesktopPlatform() || !isLargeScreen) {
-      // Overlay is handled by touch gestures on mobile
+    if (!_controller.hoverToControlOverlay.value) {
       return;
     }
 
@@ -874,11 +874,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                         valueListenable: _controller.sheetState,
                         builder: (_, state, __) => GestureDetector(
                           // let the user tap the image to toggle overlay
-                          onTap: () => _controller.onImageTap(context),
+                          onTap: widget.onTap,
                           child: InteractiveViewerExtended(
                             enable: !state.isExpanded,
                             onZoomUpdated: _controller.onZoomUpdated,
-                            onTap: () => _controller.onImageTap(context),
+                            onTap: widget.onTap,
                             onDoubleTap: widget.onItemDoubleTap,
                             onLongPress: widget.onItemLongPress,
                             child: widget.itemBuilder(context, index),
@@ -1348,10 +1348,12 @@ class PostDetailsPageViewController extends ChangeNotifier {
   PostDetailsPageViewController({
     required this.initialPage,
     bool hideOverlay = false,
+    bool hoverToControlOverlay = false,
     this.maxSize = 0.7,
     this.threshold = 400.0,
   })  : currentPage = ValueNotifier(initialPage),
         overlay = ValueNotifier(!hideOverlay),
+        hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
         sheetState = ValueNotifier(SheetState.collapsed);
 
   final int initialPage;
@@ -1372,6 +1374,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   late final ValueNotifier<SheetState> sheetState;
   late final ValueNotifier<int> currentPage;
   late final ValueNotifier<bool> overlay;
+  late final ValueNotifier<bool> hoverToControlOverlay;
 
   late final verticalPosition = ValueNotifier(0.0);
   late final displacement = ValueNotifier(0.0);
@@ -1386,6 +1389,19 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final slideshow = ValueNotifier(false);
   final freestyleMoveOffset = ValueNotifier(Offset.zero);
   final freestyleMoving = ValueNotifier(false);
+
+  void enableHoverToControlOverlay() {
+    hoverToControlOverlay.value = true;
+  }
+
+  void disableHoverToControlOverlay() {
+    hoverToControlOverlay.value = false;
+
+    // if overlay is hidden, show it
+    if (!overlay.value) {
+      overlay.value = true;
+    }
+  }
 
   void jumpToPage(int page) {
     _pageController.jumpToPage(page);
@@ -1532,16 +1548,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   void restoreSystemStatus() {
     showSystemStatus();
-  }
-
-  void onImageTap(BuildContext context) {
-    if (isDesktopPlatform() && context.isLargeScreen) {
-      // overlay is handle by hovering
-    } else {
-      if (isExpanded) return;
-
-      toggleOverlay();
-    }
   }
 
   void startSlideshow() {
