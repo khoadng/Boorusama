@@ -31,6 +31,7 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   bool isFirebasePerformanceSupported() => isAndroid() || isIOS() || isWeb();
 
   BooruConfig? _currentConfig;
+  AnalyticsViewInfo? _deviceInfo;
 
   @override
   Future<void> ensureInitialized() async {
@@ -70,10 +71,19 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   }
 
   @override
+  Future<void> updateViewInfo(AnalyticsViewInfo info) async {
+    if (!enabled) return;
+    _deviceInfo = info;
+  }
+
+  @override
   NavigatorObserver getAnalyticsObserver() => enabled
       ? AppAnalyticsObserver(
           analytics: FirebaseAnalytics.instance,
-          paramsExtractor: (settings) => defaultParamsExtractor(_currentConfig),
+          paramsExtractor: (settings) => defaultParamsExtractor(
+            _currentConfig,
+            _deviceInfo,
+          ),
         )
       : NavigatorObserver();
 
@@ -86,7 +96,11 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
 
     return FirebaseAnalytics.instance._logScreenView(
       screenName: screenName,
-      parameters: parameters,
+      parameters: parameters != null && parameters.isNotEmpty
+          ? {
+              ...parameters,
+            }
+          : null,
     );
   }
 
@@ -152,6 +166,7 @@ class AppAnalyticsObserver extends RouteObserver<ModalRoute<dynamic>> {
 
   void _sendScreenView(Route<dynamic> route) {
     final screenName = defaultNameExtractor(route.settings);
+
     if (screenName != null) {
       analytics._logScreenView(
         screenName: screenName,

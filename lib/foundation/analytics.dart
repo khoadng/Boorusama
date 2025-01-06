@@ -42,12 +42,32 @@ class AnalyticsNetworkInfo extends Equatable {
   List<Object> get props => [types, state];
 }
 
+class AnalyticsViewInfo extends Equatable {
+  const AnalyticsViewInfo({
+    required this.aspectRatio,
+  });
+
+  AnalyticsViewInfo copyWith({
+    double? aspectRatio,
+  }) {
+    return AnalyticsViewInfo(
+      aspectRatio: aspectRatio ?? this.aspectRatio,
+    );
+  }
+
+  final double aspectRatio;
+
+  @override
+  List<Object> get props => [aspectRatio];
+}
+
 abstract interface class AnalyticsInterface {
   bool get enabled;
   bool isPlatformSupported();
   Future<void> ensureInitialized();
   Future<void> changeCurrentAnalyticConfig(BooruConfig config);
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info);
+  Future<void> updateViewInfo(AnalyticsViewInfo info);
   NavigatorObserver getAnalyticsObserver();
 
   Future<void> logScreenView(String screenName);
@@ -73,6 +93,9 @@ class NoAnalyticsInterface implements AnalyticsInterface {
 
   @override
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {}
+
+  @override
+  Future<void> updateViewInfo(AnalyticsViewInfo info) async {}
 
   @override
   NavigatorObserver getAnalyticsObserver() => NavigatorObserver();
@@ -227,6 +250,7 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   });
 
   BooruConfig? _currentConfig;
+  AnalyticsViewInfo? _deviceInfo;
 
   @override
   final bool enabled;
@@ -247,16 +271,29 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {}
 
   @override
+  Future<void> updateViewInfo(AnalyticsViewInfo info) async {
+    if (!enabled) return;
+    _deviceInfo = info;
+    debugPrint('Device aspect ratio: ${info.aspectRatio}');
+  }
+
+  @override
   NavigatorObserver getAnalyticsObserver() => enabled
       ? DebugPrintAnalyticsObserver(
-          paramsExtractor: (settings) => defaultParamsExtractor(_currentConfig),
+          paramsExtractor: (settings) => defaultParamsExtractor(
+            _currentConfig,
+            _deviceInfo,
+          ),
         )
       : NavigatorObserver();
 
   @override
   Future<void> logScreenView(String screenName) async {
     if (!enabled) return;
-    final params = defaultParamsExtractor(_currentConfig);
+    final params = defaultParamsExtractor(
+      _currentConfig,
+      _deviceInfo,
+    );
 
     _printDebugScreenView(
       screenName,
@@ -276,18 +313,25 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
 
 Map<String, dynamic> defaultParamsExtractor(
   BooruConfig? config,
+  AnalyticsViewInfo? deviceInfo,
 ) {
+  // only need last two digits of the aspect ratio
+  final aspectRatioString = deviceInfo?.aspectRatio.toStringAsFixed(2);
+  final aspectRatioNum =
+      aspectRatioString != null ? double.tryParse(aspectRatioString) : null;
+
   return config != null
       ? {
           'hint_site': config.booruType.name,
           'url': Uri.tryParse(config.url)?.host,
           'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
           'rating': config.ratingVerdict,
+          'viewport_aspect_ratio': aspectRatioNum,
         }
       : <String, dynamic>{};
 }
 
-class AnalyticsScope extends ConsumerWidget {
+class AnalyticsScope extends ConsumerStatefulWidget {
   const AnalyticsScope({
     super.key,
     required this.builder,
@@ -296,7 +340,51 @@ class AnalyticsScope extends ConsumerWidget {
   final Widget Function(bool analyticsEnabled) builder;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AnalyticsScope> createState() => _AnalyticsScopeState();
+}
+
+class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
+    with WidgetsBindingObserver {
+  double? _lastAspectRatio;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateViewInfo();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    _updateViewInfo();
+  }
+
+  void _updateViewInfo() {
+    final aspectRatio = View.of(context).physicalSize.aspectRatio;
+
+    if (_lastAspectRatio == aspectRatio) return;
+
+    ref.read(analyticsProvider).updateViewInfo(
+          AnalyticsViewInfo(aspectRatio: aspectRatio),
+        );
+
+    _lastAspectRatio = aspectRatio;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final analytics = ref.watch(analyticsProvider);
     final enabled = analytics.enabled;
 
@@ -311,7 +399,7 @@ class AnalyticsScope extends ConsumerWidget {
       },
     );
 
-    return builder(enabled);
+    return widget.builder(enabled);
   }
 }
 
