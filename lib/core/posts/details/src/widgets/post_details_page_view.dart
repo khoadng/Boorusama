@@ -327,8 +327,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   @override
   void dispose() {
-    super.dispose();
-
     _cancelCooldown();
 
     _controller.sheetState.removeListener(_onSheetStateChanged);
@@ -347,6 +345,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (widget.controller == null) {
       _controller.dispose();
     }
+
+    super.dispose();
   }
 
   @override
@@ -407,7 +407,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             ValueListenableBuilder(
               valueListenable: _controller.sheetState,
               builder: (_, state, __) => PopScope(
-                canPop: !state.isExpanded,
+                canPop: switch (isLargeScreen) {
+                  true => true,
+                  false => !state.isExpanded,
+                },
                 onPopInvokedWithResult: (didPop, _) {
                   if (didPop) {
                     _onPop();
