@@ -153,7 +153,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
       if (!widget.disableAnimation) {
         Future.delayed(
-          const Duration(milliseconds: 250),
+          const Duration(milliseconds: 150),
           () {
             if (!mounted) return;
             _animationController?.forward();

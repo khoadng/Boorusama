@@ -33,10 +33,9 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
         // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
         return !payload.isDesktop
             ? payload.hero && !settings.reduceAnimations
-                ? CustomTransitionPage(
+                ? PostDetailsHeroPage(
                     key: state.pageKey,
                     name: state.name,
-                    transitionsBuilder: postDetailsTransitionBuilder(),
                     child: widget,
                   )
                 : MaterialPage(
@@ -44,23 +43,41 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
                     name: state.name,
                     child: widget,
                   )
-            : FastFadePage(
-                key: state.pageKey,
-                name: state.name,
-                child: widget,
-              );
+            : payload.hero && !settings.reduceAnimations
+                ? PostDetailsHeroPage(
+                    key: state.pageKey,
+                    name: state.name,
+                    child: widget,
+                  )
+                : FastFadePage(
+                    key: state.pageKey,
+                    name: state.name,
+                    child: widget,
+                  );
       },
     );
+
+class PostDetailsHeroPage<T> extends CustomTransitionPage<T> {
+  PostDetailsHeroPage({
+    required super.child,
+    super.name,
+    super.key,
+  }) : super(
+          transitionDuration: const Duration(milliseconds: 200),
+          reverseTransitionDuration: const Duration(milliseconds: 200),
+          transitionsBuilder: postDetailsTransitionBuilder(),
+        );
+}
 
 RouteTransitionsBuilder postDetailsTransitionBuilder() =>
     (context, animation, secondaryAnimation, child) => FadeTransition(
           opacity: Tween<double>(
-            begin: 0.2,
+            begin: 0,
             end: 1,
           ).animate(
             CurvedAnimation(
               parent: animation,
-              curve: Curves.fastOutSlowIn,
+              curve: Curves.easeOut,
             ),
           ),
           child: child,

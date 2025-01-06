@@ -26,8 +26,25 @@ class BooruHero extends ConsumerWidget {
     return heroTag != null && !reduceAnimations
         ? Hero(
             tag: heroTag,
+            createRectTween: (begin, end) =>
+                LinearRectTween(begin: begin, end: end),
             child: child,
           )
         : child;
+  }
+}
+
+class LinearRectTween extends RectTween {
+  LinearRectTween({super.begin, super.end});
+
+  @override
+  Rect lerp(double t) {
+    final rect = Rect.lerp(begin, end, t);
+
+    if (rect == null) {
+      return Rect.zero;
+    }
+
+    return rect;
   }
 }
