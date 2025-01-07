@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/home/side_bar_menu.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/router.dart';
+import 'home_page_controller.dart';
 
 class EmptyBooruConfigHomePage extends ConsumerStatefulWidget {
   const EmptyBooruConfigHomePage({
@@ -23,6 +24,15 @@ class EmptyBooruConfigHomePage extends ConsumerStatefulWidget {
 class _EmptyBooruConfigHomePageState
     extends ConsumerState<EmptyBooruConfigHomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late final homeController = HomePageController(
+    scaffoldKey: scaffoldKey,
+  );
+
+  @override
+  void dispose() {
+    homeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +46,12 @@ class _EmptyBooruConfigHomePageState
       child: Scaffold(
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: const SideBarMenu(
-          width: 300,
-          popOnSelect: true,
-          padding: EdgeInsets.zero,
+        drawer: InheritedHomePageController(
+          controller: homeController,
+          child: SideBarMenu(
+            width: 300,
+            padding: EdgeInsets.zero,
+          ),
         ),
         body: SafeArea(
           child: Stack(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/foundation/theme.dart';
+import 'home_page_controller.dart';
 
 class SideMenuTile extends StatelessWidget {
   const SideMenuTile({
@@ -18,6 +19,8 @@ class SideMenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeController = InheritedHomePageController.maybeOf(context);
+
     return Material(
       color: Colors.transparent,
       child: Padding(
@@ -25,7 +28,18 @@ class SideMenuTile extends StatelessWidget {
           horizontal: 4,
         ),
         child: InkWell(
-          onTap: onTap,
+          onTap: () {
+            // Workaround to make the animation smoother
+            Future.delayed(
+              Duration(milliseconds: 100),
+              () {
+                if (context.mounted) {
+                  homeController?.closeMenu();
+                }
+              },
+            );
+            onTap();
+          },
           customBorder: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),

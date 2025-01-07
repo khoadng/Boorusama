@@ -31,11 +31,10 @@ class SzurubooruHomePage extends StatelessWidget {
           ),
         ]
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         if (config.hasLoginDetails()) ...[
           HomeNavigationTile(
             value: 1,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,

@@ -225,10 +225,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           ),
         ]
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         HomeNavigationTile(
           value: 1,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
@@ -236,7 +235,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         HomeNavigationTile(
           value: 2,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.photo_album,
           icon: Symbols.photo_album,
@@ -244,7 +242,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         HomeNavigationTile(
           value: 3,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.forum,
           icon: Symbols.forum,
@@ -252,7 +249,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         ),
         HomeNavigationTile(
           value: 4,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.search,
           icon: Symbols.search,
@@ -262,7 +258,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           if (userId != null)
             HomeNavigationTile(
               value: 5,
-              controller: controller,
               constraints: constraints,
               selectedIcon: Symbols.account_box,
               icon: Symbols.account_box,
@@ -270,7 +265,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             ),
           HomeNavigationTile(
             value: 6,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
@@ -278,7 +272,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           ),
           HomeNavigationTile(
             value: 7,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.collections,
             icon: Symbols.collections,
@@ -286,7 +279,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           ),
           HomeNavigationTile(
             value: 8,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.saved_search,
             icon: Symbols.saved_search,
@@ -294,7 +286,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           ),
           HomeNavigationTile(
             value: 9,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.tag,
             icon: Symbols.tag,
