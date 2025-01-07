@@ -127,7 +127,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late Animation<double> _displacementAnim;
   late Animation<Offset> _sideSheetSlideAnim;
 
-  final _forceHideSheetOnExit = ValueNotifier(false);
+  final _forceHideOnExit = ValueNotifier(false);
 
   bool get isLargeScreen => widget.checkIfLargeScreen();
 
@@ -200,11 +200,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.freestyleMoving.value = true;
     }
 
-    if (isLargeScreen) {
-      if (_controller.isExpanded) {
-        _forceHideSheetOnExit.value = true;
-      }
-    }
+    _forceHideOnExit.value = true;
 
     _controller.restoreSystemStatus();
     widget.onExit?.call();
@@ -492,7 +488,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildSideSheet() {
     return ValueListenableBuilder(
-      valueListenable: _forceHideSheetOnExit,
+      valueListenable: _forceHideOnExit,
       builder: (_, hide, child) => hide ? const SizedBox.shrink() : child!,
       child: SideSheet(
         controller: _controller,
@@ -549,15 +545,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               builder: (context) {
                 final sheet = _buildBottomSheet();
 
-                return _curvedAnimation != null
-                    ? SlideTransition(
-                        position: Tween(
-                          begin: const Offset(0, 1),
-                          end: Offset.zero,
-                        ).animate(_curvedAnimation),
-                        child: sheet,
-                      )
-                    : sheet;
+                return ValueListenableBuilder(
+                  valueListenable: _forceHideOnExit,
+                  builder: (__, hide, _) => hide
+                      ? const SizedBox.shrink()
+                      : _curvedAnimation != null
+                          ? SlideTransition(
+                              position: Tween(
+                                begin: const Offset(0, 1),
+                                end: Offset.zero,
+                              ).animate(_curvedAnimation),
+                              child: sheet,
+                            )
+                          : sheet,
+                );
               },
             ),
           ),
@@ -585,20 +586,26 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 ),
               );
 
-              return _curvedAnimation != null
-                  ? SlideTransition(
-                      position: Tween(
-                        begin: const Offset(0, -1),
-                        end: Offset.zero,
-                      ).animate(_curvedAnimation),
-                      child: ValueListenableBuilder(
-                        valueListenable: _pendingSystemStatusChanged,
-                        builder: (_, pending, child) =>
-                            pending != null ? SafeArea(child: child!) : child!,
-                        child: overlay,
-                      ),
-                    )
-                  : overlay;
+              return ValueListenableBuilder(
+                valueListenable: _forceHideOnExit,
+                builder: (_, hide, __) => hide
+                    ? const SizedBox.shrink()
+                    : _curvedAnimation != null
+                        ? SlideTransition(
+                            position: Tween(
+                              begin: const Offset(0, -1),
+                              end: Offset.zero,
+                            ).animate(_curvedAnimation),
+                            child: ValueListenableBuilder(
+                              valueListenable: _pendingSystemStatusChanged,
+                              builder: (_, pending, child) => pending != null
+                                  ? SafeArea(child: child!)
+                                  : child!,
+                              child: overlay,
+                            ),
+                          )
+                        : overlay,
+              );
             },
           ),
         ),
