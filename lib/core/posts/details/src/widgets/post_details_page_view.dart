@@ -138,7 +138,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     // Single animation controller to sync displacement and side sheet slide
     _sheetAnimController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
     );
 
     // Animate the displacement box width
@@ -230,8 +230,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _animationController?.reverse();
     }
 
+    // check bottom view padding, if it's a lot then we will schedule a system status change
+    // otherwise, we will change it immediately
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
+    final duration =
+        bottomPadding > 16 ? const Duration(milliseconds: 350) : Duration.zero;
+
     Future.delayed(
-      const Duration(milliseconds: 350),
+      duration,
       () async {
         if (!mounted) return;
 
@@ -1671,7 +1677,9 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   Future<void> toggleExpanded(
-      BuildContext context, Future<void> Function() anim) async {
+    BuildContext context,
+    Future<void> Function() anim,
+  ) async {
     if (sheetState.value.isExpanded) {
       sheetMaxSize.value = maxSize;
       displacement.value = 0.0;
