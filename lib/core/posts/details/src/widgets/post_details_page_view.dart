@@ -23,6 +23,7 @@ import 'auto_slide_mixin.dart';
 
 const _kDefaultCooldownDuration = Duration(milliseconds: 750);
 const _kFullSheetSize = 0.95;
+const _kSideSheetWidth = 360.0;
 
 class PostDetailsPageView extends StatefulWidget {
   const PostDetailsPageView({
@@ -403,7 +404,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 ),
               ),
             ),
-            if (!isLargeScreen) const SizedBox.shrink() else _buildSide(),
+            if (!isLargeScreen)
+              const SizedBox.shrink()
+            else
+              SideSheet(
+                controller: _controller,
+                sheetBuilder: widget.sheetBuilder,
+              ),
             ValueListenableBuilder(
               valueListenable: _controller.sheetState,
               builder: (_, state, __) => PopScope(
@@ -425,38 +432,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSide() {
-    return ValueListenableBuilder(
-      valueListenable: _controller.sheetState,
-      builder: (context, state, child) => switch (state) {
-        SheetState.expanded => child!,
-        SheetState.collapsed => const SizedBox.shrink(),
-        SheetState.hidden => Offstage(
-            child: child,
-          ),
-      },
-      child: MediaQuery.removePadding(
-        context: context,
-        removeLeft: true,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 360),
-          color: Theme.of(context).colorScheme.surface,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  width: 0.25,
-                ),
-              ),
-            ),
-            child: widget.sheetBuilder(context, null),
-          ),
         ),
       ),
     );
@@ -1049,6 +1024,8 @@ class SheetDragline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       child: ColoredBox(
         color: Colors.transparent,
@@ -1067,13 +1044,63 @@ class SheetDragline extends StatelessWidget {
                 height: 4,
                 decoration: ShapeDecoration(
                   shape: const StadiumBorder(),
-                  color: isHolding
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSurface,
+                  color:
+                      isHolding ? colorScheme.primary : colorScheme.onSurface,
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SideSheet extends StatefulWidget {
+  const SideSheet({
+    required this.controller,
+    required this.sheetBuilder,
+    super.key,
+  });
+
+  final PostDetailsPageViewController controller;
+  final Widget Function(BuildContext, ScrollController?) sheetBuilder;
+
+  @override
+  State<SideSheet> createState() => _SideSheetState();
+}
+
+class _SideSheetState extends State<SideSheet> {
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ValueListenableBuilder(
+      valueListenable: widget.controller.sheetState,
+      builder: (context, state, child) => switch (state) {
+        SheetState.expanded => child!,
+        SheetState.collapsed => const SizedBox.shrink(),
+        SheetState.hidden => Offstage(
+            child: child,
+          ),
+      },
+      child: MediaQuery.removePadding(
+        context: context,
+        removeLeft: true,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: _kSideSheetWidth),
+          color: colorScheme.surface,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: colorScheme.hintColor,
+                  width: 0.25,
+                ),
+              ),
+            ),
+            child: widget.sheetBuilder(context, null),
+          ),
         ),
       ),
     );
