@@ -200,6 +200,7 @@ class _BooruDesktopScopeState extends ConsumerState<BooruDesktopScope> {
         drawer: !isDesktop
             ? SideBarMenu(
                 width: 300,
+                popOnSelect: true,
                 padding: EdgeInsets.zero,
                 initialContent: widget.mobileMenu,
               )

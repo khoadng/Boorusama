@@ -23,6 +23,7 @@ class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({
     super.key,
     this.width,
+    this.popOnSelect = false,
     this.initialContent,
     this.content,
     this.padding,
@@ -30,6 +31,7 @@ class SideBarMenu extends ConsumerWidget {
 
   final double? width;
   final EdgeInsets? padding;
+  final bool popOnSelect;
   final List<Widget>? initialContent;
   final List<Widget>? content;
 
@@ -88,6 +90,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             context.go('/bookmarks');
                           },
                         ),
@@ -95,6 +98,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             context.go('/global_blacklisted_tags');
                           },
                         ),
@@ -102,6 +106,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.tag),
                           title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             context.go('/favorite_tags');
                           },
                         ),
@@ -109,6 +114,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.sim_card_download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             goToBulkDownloadPage(
                               context,
                               null,
@@ -120,6 +126,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.download),
                           title: const Text('Download manager'),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             context.go('/download_manager');
                           },
                         ),
@@ -133,6 +140,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             context.go('/settings?scrollTo=support');
                           },
                         ),
@@ -143,6 +151,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
+                            if (popOnSelect) context.navigator.pop();
                             context.go('/settings');
                           },
                         ),

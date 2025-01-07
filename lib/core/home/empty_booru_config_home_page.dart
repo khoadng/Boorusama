@@ -38,6 +38,7 @@ class _EmptyBooruConfigHomePageState
         resizeToAvoidBottomInset: false,
         drawer: const SideBarMenu(
           width: 300,
+          popOnSelect: true,
           padding: EdgeInsets.zero,
         ),
         body: SafeArea(
