@@ -30,6 +30,7 @@ class PostDetailsPageView extends StatefulWidget {
     required this.sheetBuilder,
     required this.itemCount,
     required this.itemBuilder,
+    required this.checkIfLargeScreen,
     super.key,
     this.minSize = 0.18,
     this.maxSize = 0.7,
@@ -78,6 +79,7 @@ class PostDetailsPageView extends StatefulWidget {
   final SheetStateStorage? sheetStateStorage;
 
   final bool disableAnimation;
+  final bool Function() checkIfLargeScreen;
 
   @override
   State<PostDetailsPageView> createState() => _PostDetailsPageViewState();
@@ -125,7 +127,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late Animation<double> _displacementAnim;
   late Animation<Offset> _sideSheetSlideAnim;
 
-  bool get isLargeScreen => context.isLargeScreen;
+  final _forceHideSheetOnExit = ValueNotifier(false);
+
+  bool get isLargeScreen => widget.checkIfLargeScreen();
 
   @override
   void initState() {
@@ -167,34 +171,41 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _verticalSheetDragY.addListener(_onVerticalSheetDragYChanged);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final currentExpanded = _controller.sheetState.value.isExpanded;
+    final currentExpanded = _controller.sheetState.value.isExpanded;
 
-      // auto expand side sheet if it was expanded before
-      if (isLargeScreen && !currentExpanded) {
-        final expanded = await widget.sheetStateStorage?.loadExpandedState();
+    // auto expand side sheet if it was expanded before
+    if (isLargeScreen && !currentExpanded) {
+      final expanded = widget.sheetStateStorage?.loadExpandedState();
 
-        if (expanded == true) {
-          _controller.sheetState.value = SheetState.expanded;
-        }
+      if (expanded == true) {
+        _controller.sheetState.value = SheetState.expanded;
+        // Set the controller value immediately to skip the opening animation
+        _sheetAnimController.value = 1;
       }
+    }
 
-      if (!widget.disableAnimation) {
-        Future.delayed(
-          const Duration(milliseconds: 150),
-          () {
-            if (!mounted) return;
-            _animationController?.forward();
-          },
-        );
-      }
-    });
+    if (!widget.disableAnimation) {
+      Future.delayed(
+        const Duration(milliseconds: 150),
+        () {
+          if (!mounted) return;
+          _animationController?.forward();
+        },
+      );
+    }
   }
 
   void _onPop() {
     if (!widget.disableAnimation) {
       _controller.freestyleMoving.value = true;
     }
+
+    if (isLargeScreen) {
+      if (_controller.isExpanded) {
+        _forceHideSheetOnExit.value = true;
+      }
+    }
+
     _controller.restoreSystemStatus();
     widget.onExit?.call();
   }
@@ -480,9 +491,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   Widget _buildSideSheet() {
-    return SideSheet(
-      controller: _controller,
-      sheetBuilder: widget.sheetBuilder,
+    return ValueListenableBuilder(
+      valueListenable: _forceHideSheetOnExit,
+      builder: (_, hide, child) => hide ? const SizedBox.shrink() : child!,
+      child: SideSheet(
+        controller: _controller,
+        sheetBuilder: widget.sheetBuilder,
+        animationController: _sheetAnimController,
+      ),
     );
   }
 
@@ -654,18 +670,21 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 else
                   CircularIconButton(
                     onPressed: () {
-                      if (!widget.disableAnimation) {
-                        // if animation is running, ignore
-                        if (_sheetAnimController.isAnimating) return;
+                      _controller.toggleExpanded(
+                        context,
+                        () async {
+                          if (!widget.disableAnimation) {
+                            // if animation is running, ignore
+                            if (_sheetAnimController.isAnimating) return;
 
-                        if (_controller.isExpanded) {
-                          _sheetAnimController.reverse();
-                        } else {
-                          _sheetAnimController.forward();
-                        }
-                      }
-
-                      _controller.toggleExpanded(context);
+                            if (_controller.isExpanded) {
+                              await _sheetAnimController.reverse();
+                            } else {
+                              await _sheetAnimController.forward();
+                            }
+                          }
+                        },
+                      );
                     },
                     icon: const Icon(Symbols.info),
                   ),
@@ -1122,10 +1141,12 @@ class SideSheet extends StatefulWidget {
   const SideSheet({
     required this.controller,
     required this.sheetBuilder,
+    required this.animationController,
     super.key,
   });
 
   final PostDetailsPageViewController controller;
+  final AnimationController? animationController;
   final Widget Function(BuildContext, ScrollController?) sheetBuilder;
 
   @override
@@ -1133,38 +1154,73 @@ class SideSheet extends StatefulWidget {
 }
 
 class _SideSheetState extends State<SideSheet> {
+  final _animating = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.animationController?.addStatusListener(_onAnimationStatusChanged);
+  }
+
+  @override
+  void dispose() {
+    _animating.dispose();
+    widget.animationController?.removeStatusListener(_onAnimationStatusChanged);
+
+    super.dispose();
+  }
+
+  void _onAnimationStatusChanged(AnimationStatus status) {
+    _animating.value = status.isAnimating;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ValueListenableBuilder(
-      valueListenable: widget.controller.sheetState,
-      builder: (context, state, child) => switch (state) {
-        SheetState.expanded => child!,
-        SheetState.collapsed => const SizedBox.shrink(),
-        SheetState.hidden => Offstage(
-            child: child,
-          ),
-      },
-      child: MediaQuery.removePadding(
-        context: context,
-        removeLeft: true,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: _kSideSheetWidth),
-          color: colorScheme.surface,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: colorScheme.hintColor,
-                  width: 0.25,
-                ),
+    final child = MediaQuery.removePadding(
+      context: context,
+      removeLeft: true,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: _kSideSheetWidth),
+        color: colorScheme.surface,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                color: colorScheme.hintColor,
+                width: 0.25,
               ),
             ),
-            child: widget.sheetBuilder(context, null),
           ),
+          child: widget.sheetBuilder(context, null),
         ),
       ),
+    );
+
+    return ValueListenableBuilder(
+      valueListenable: _animating,
+      builder: (_, animating, __) => animating
+          ? ValueListenableBuilder(
+              valueListenable: widget.controller.sheetState,
+              builder: (__, state, _) => switch (state) {
+                // collapsed -> expanded, don't show the side sheet to prevent building it while animating
+                SheetState.collapsed => const SizedBox.shrink(),
+                _ => child,
+              },
+              child: child,
+            )
+          : ValueListenableBuilder(
+              valueListenable: widget.controller.sheetState,
+              builder: (__, state, _) => switch (state) {
+                SheetState.expanded => child,
+                SheetState.collapsed => const SizedBox.shrink(),
+                SheetState.hidden => Offstage(
+                    child: child,
+                  ),
+              },
+            ),
     );
   }
 }
@@ -1322,7 +1378,7 @@ class SlideshowOptions extends Equatable {
 
 abstract class SheetStateStorage {
   Future<void> persistExpandedState(bool expanded);
-  Future<bool> loadExpandedState();
+  bool loadExpandedState();
 }
 
 class SheetStateStorageBuilder implements SheetStateStorage {
@@ -1332,10 +1388,10 @@ class SheetStateStorageBuilder implements SheetStateStorage {
   });
 
   final Future<void> Function(bool expanded) save;
-  final Future<bool> Function() load;
+  final bool Function() load;
 
   @override
-  Future<bool> loadExpandedState() => load();
+  bool loadExpandedState() => load();
 
   @override
   Future<void> persistExpandedState(bool expanded) => save(expanded);
@@ -1607,13 +1663,16 @@ class PostDetailsPageViewController extends ChangeNotifier {
     canPull.value = true;
   }
 
-  void toggleExpanded(BuildContext context) {
+  Future<void> toggleExpanded(
+      BuildContext context, Future<void> Function() anim) async {
     if (sheetState.value.isExpanded) {
       sheetMaxSize.value = maxSize;
       displacement.value = 0.0;
     } else {
       displacement.value = maxSize * MediaQuery.sizeOf(context).longestSide;
     }
+
+    await anim();
 
     sheetState.value = switch (sheetState.value) {
       SheetState.collapsed => SheetState.expanded,

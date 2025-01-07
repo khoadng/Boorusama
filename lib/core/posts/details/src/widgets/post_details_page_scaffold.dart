@@ -217,9 +217,10 @@ class _PostDetailPageScaffoldState<T extends Post>
           save: (expanded) => ref
               .read(miscDataProvider(kShowInfoStateCacheKey).notifier)
               .put(expanded.toString()),
-          load: () async =>
+          load: () =>
               ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true',
         ),
+        checkIfLargeScreen: () => context.isLargeScreen,
         slideshowOptions: SlideshowOptions(
           duration: settings.slideshowDuration,
           direction: settings.slideshowDirection,
