@@ -45,11 +45,10 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
             },
           ),
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         if (favoritePageBuilder != null && config.hasLoginDetails())
           HomeNavigationTile(
             value: 1,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,

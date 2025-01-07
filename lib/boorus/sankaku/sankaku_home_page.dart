@@ -35,11 +35,10 @@ class SankakuHomePage extends ConsumerWidget {
             },
           ),
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         if (login != null)
           HomeNavigationTile(
             value: 1,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,

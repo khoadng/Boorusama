@@ -81,6 +81,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <meta-data 
+            android:name="google_analytics_automatic_screen_reporting_enabled" 
+            android:value="false" />
+
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

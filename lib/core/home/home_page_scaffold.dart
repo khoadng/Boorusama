@@ -23,7 +23,6 @@ class HomePageScaffold extends ConsumerStatefulWidget {
 
   final List<Widget> Function(
     BuildContext context,
-    HomePageController controller,
     BoxConstraints constraints,
   )? desktopMenuBuilder;
 
@@ -57,32 +56,33 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
       if (widget.desktopViews != null) ...widget.desktopViews!,
     ];
 
-    return BooruScope(
+    return InheritedHomePageController(
       controller: controller,
-      mobileMenu: widget.mobileMenu ?? [],
-      desktopMenuBuilder: (context, controller, constraints) => [
-        HomeNavigationTile(
-          value: 0,
-          controller: controller,
-          constraints: constraints,
-          selectedIcon: Symbols.dashboard,
-          icon: Symbols.dashboard,
-          title: 'Home',
-        ),
-        if (widget.desktopMenuBuilder != null)
-          ...widget.desktopMenuBuilder!(context, controller, constraints),
-        ...coreDesktopTabBuilder(
-          context,
-          constraints,
-          controller,
-        ),
-      ],
-      desktopViews: [
-        ...views,
-        ...coreDesktopViewBuilder(
-          previousItemCount: views.length,
-        ),
-      ],
+      child: BooruScope(
+        controller: controller,
+        mobileMenu: widget.mobileMenu ?? [],
+        desktopMenuBuilder: (context, controller, constraints) => [
+          HomeNavigationTile(
+            value: 0,
+            constraints: constraints,
+            selectedIcon: Symbols.dashboard,
+            icon: Symbols.dashboard,
+            title: 'Home',
+          ),
+          if (widget.desktopMenuBuilder != null)
+            ...widget.desktopMenuBuilder!(context, constraints),
+          ...coreDesktopTabBuilder(
+            context,
+            constraints,
+          ),
+        ],
+        desktopViews: [
+          ...views,
+          ...coreDesktopViewBuilder(
+            previousItemCount: views.length,
+          ),
+        ],
+      ),
     );
   }
 }

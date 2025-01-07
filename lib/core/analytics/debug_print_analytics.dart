@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../configs/config.dart';
 import 'analytics_interface.dart';
 import 'analytics_network_info.dart';
+import 'analytics_view_info.dart';
 
 class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   DebugPrintAnalyticsImpl({
@@ -12,6 +13,7 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   });
 
   BooruConfig? _currentConfig;
+  AnalyticsViewInfo? _deviceInfo;
 
   @override
   final bool enabled;
@@ -32,16 +34,29 @@ class DebugPrintAnalyticsImpl implements AnalyticsInterface {
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {}
 
   @override
+  Future<void> updateViewInfo(AnalyticsViewInfo info) async {
+    if (!enabled) return;
+    _deviceInfo = info;
+    debugPrint('Device aspect ratio: ${info.aspectRatio}');
+  }
+
+  @override
   NavigatorObserver getAnalyticsObserver() => enabled
       ? DebugPrintAnalyticsObserver(
-          paramsExtractor: (settings) => defaultParamsExtractor(_currentConfig),
+          paramsExtractor: (settings) => defaultParamsExtractor(
+            _currentConfig,
+            _deviceInfo,
+          ),
         )
       : NavigatorObserver();
 
   @override
   Future<void> logScreenView(String screenName) async {
     if (!enabled) return;
-    final params = defaultParamsExtractor(_currentConfig);
+    final params = defaultParamsExtractor(
+      _currentConfig,
+      _deviceInfo,
+    );
 
     _printDebugScreenView(
       screenName,

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../configs/config.dart';
 import '../settings/settings.dart';
 import 'analytics_network_info.dart';
+import 'analytics_view_info.dart';
 
 bool defaultBooruRouteFilter(Route<dynamic>? route) =>
     route is PageRoute ||
@@ -16,13 +17,20 @@ bool defaultBooruRouteFilter(Route<dynamic>? route) =>
 
 Map<String, dynamic> defaultParamsExtractor(
   BooruConfig? config,
+  AnalyticsViewInfo? deviceInfo,
 ) {
+  // only need last two digits of the aspect ratio
+  final aspectRatioString = deviceInfo?.aspectRatio.toStringAsFixed(2);
+  final aspectRatioNum =
+      aspectRatioString != null ? double.tryParse(aspectRatioString) : null;
+
   return config != null
       ? {
           'hint_site': config.auth.booruType.name,
           'url': Uri.tryParse(config.url)?.host,
           'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
           'rating': config.filter.ratingVerdict,
+          'viewport_aspect_ratio': aspectRatioNum,
         }
       : <String, dynamic>{};
 }
@@ -33,6 +41,7 @@ abstract interface class AnalyticsInterface {
   Future<void> ensureInitialized();
   Future<void> changeCurrentAnalyticConfig(BooruConfig config);
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info);
+  Future<void> updateViewInfo(AnalyticsViewInfo info);
   NavigatorObserver getAnalyticsObserver();
 
   Future<void> logScreenView(String screenName);
@@ -201,6 +210,9 @@ class NoAnalyticsInterface implements AnalyticsInterface {
 
   @override
   Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {}
+
+  @override
+  Future<void> updateViewInfo(AnalyticsViewInfo info) async {}
 
   @override
   NavigatorObserver getAnalyticsObserver() => NavigatorObserver();

@@ -86,10 +86,9 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           ),
         ],
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         HomeNavigationTile(
           value: 1,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
@@ -97,7 +96,6 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
         ),
         HomeNavigationTile(
           value: 2,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.local_fire_department,
           icon: Symbols.local_fire_department,
