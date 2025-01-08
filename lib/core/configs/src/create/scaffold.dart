@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../foundation/display.dart';
 import '../../../posts/sources/source.dart';
@@ -50,6 +52,61 @@ class CreateBooruConfigScope extends ConsumerWidget {
   }
 }
 
+class CreateBooruConfigCategory extends Equatable {
+  const CreateBooruConfigCategory({
+    required this.id,
+    required this.name,
+    required this.title,
+  });
+
+  const CreateBooruConfigCategory.auth()
+      : title = 'booru.authentication',
+        name = 'config/auth',
+        id = 'auth';
+
+  const CreateBooruConfigCategory.listing()
+      : title = 'Listing',
+        name = 'config/listing',
+        id = 'listing';
+
+  const CreateBooruConfigCategory.download()
+      : title = 'booru.download',
+        name = 'config/download',
+        id = 'download';
+
+  const CreateBooruConfigCategory.search()
+      : title = 'Search',
+        name = 'config/search',
+        id = 'search';
+
+  const CreateBooruConfigCategory.gestures()
+      : title = 'booru.gestures',
+        name = 'config/gestures',
+        id = 'gestures';
+
+  const CreateBooruConfigCategory.viewer()
+      : title = 'settings.image_viewer.image_viewer',
+        name = 'config/viewer',
+        id = 'viewer';
+
+  const CreateBooruConfigCategory.network()
+      : title = 'booru.network',
+        name = 'config/network',
+        id = 'network';
+
+  const CreateBooruConfigCategory.misc()
+      : title = 'booru.misc',
+        name = 'config/misc',
+        id = 'misc';
+
+  final String title;
+  final String id;
+  final String name;
+
+  @override
+  List<Object?> get props => [title, id];
+}
+
 class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     required this.initialTab,
@@ -87,14 +144,19 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': listingTab ?? const DefaultBooruConfigListingView(),
-      'booru.download': downloadTab ?? const BooruConfigDownloadView(),
-      'Search': searchTab ?? const DefaultBooruConfigSearchView(),
-      'booru.gestures': gestureTab ?? const DefaultBooruConfigGesturesView(),
-      'settings.image_viewer.image_viewer':
+      if (authTab != null) const CreateBooruConfigCategory.auth(): authTab!,
+      const CreateBooruConfigCategory.listing():
+          listingTab ?? const DefaultBooruConfigListingView(),
+      const CreateBooruConfigCategory.download():
+          downloadTab ?? const BooruConfigDownloadView(),
+      const CreateBooruConfigCategory.search():
+          searchTab ?? const DefaultBooruConfigSearchView(),
+      const CreateBooruConfigCategory.gestures():
+          gestureTab ?? const DefaultBooruConfigGesturesView(),
+      const CreateBooruConfigCategory.viewer():
           imageViewerTab ?? const BooruConfigViewerView(),
-      'Network': networkTab ?? const BooruConfigNetworkView(),
+      const CreateBooruConfigCategory.network():
+          networkTab ?? const BooruConfigNetworkView(),
     };
 
     return Scaffold(
@@ -135,7 +197,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       ),
                       isScrollable: true,
                       tabs: [
-                        for (final tab in tabMap.keys) Tab(text: tab.tr()),
+                        for (final tab in tabMap.keys)
+                          Tab(text: tab.title.tr()),
                       ],
                     ),
                     Expanded(
@@ -189,7 +252,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
 int _findInitialIndexFromQuery(
   String? query,
-  Map<String, Widget> tabMap,
+  Map<CreateBooruConfigCategory, Widget> tabMap,
 ) {
   final q = query?.toLowerCase();
 
@@ -200,7 +263,7 @@ int _findInitialIndexFromQuery(
   final tabNames = tabMap.keys.toList();
 
   for (var i = 0; i < tabNames.length; i++) {
-    final tabName = tabNames[i].toLowerCase();
+    final tabName = tabNames[i].id.toLowerCase();
 
     if (tabName.contains(q)) {
       return i;
@@ -210,7 +273,7 @@ int _findInitialIndexFromQuery(
   return 0;
 }
 
-class _TabControllerProvider extends StatefulWidget {
+class _TabControllerProvider extends ConsumerStatefulWidget {
   const _TabControllerProvider({
     required this.tabMap,
     required this.animationDuration,
@@ -219,17 +282,18 @@ class _TabControllerProvider extends StatefulWidget {
     this.initialIndex,
   });
 
-  final Map<String, Widget> tabMap;
+  final Map<CreateBooruConfigCategory, Widget> tabMap;
   final Duration? animationDuration;
   final int length;
   final int? initialIndex;
   final Widget Function(TabController controller) builder;
 
   @override
-  State<_TabControllerProvider> createState() => _TabControllerProviderState();
+  ConsumerState<_TabControllerProvider> createState() =>
+      _TabControllerProviderState();
 }
 
-class _TabControllerProviderState extends State<_TabControllerProvider>
+class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
     with SingleTickerProviderStateMixin {
   late final _controller = TabController(
     length: widget.length,
@@ -238,9 +302,33 @@ class _TabControllerProviderState extends State<_TabControllerProvider>
     initialIndex: widget.initialIndex ?? 0,
   );
 
+  int? _lastIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onTabChanged);
+
+    _onTabChanged();
+  }
+
+  void _onTabChanged() {
+    if (_lastIndex != _controller.index) {
+      _lastIndex = _controller.index;
+
+      final item = widget.tabMap.keys.elementAtOrNull(_controller.index);
+
+      if (item != null) {
+        ref.read(analyticsProvider).logScreenView(item.name);
+      }
+    }
+  }
+
   @override
   void dispose() {
-    _controller.dispose();
+    _controller
+      ..removeListener(_onTabChanged)
+      ..dispose();
     super.dispose();
   }
 

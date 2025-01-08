@@ -11,9 +11,9 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
-	<key>FirebaseAutomaticScreenReportingEnabled</key>
-	<false/>
 	<string>6.0</string>
+	<key>FirebaseAutomaticScreenReportingEnabled</key>
+	<true/>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>

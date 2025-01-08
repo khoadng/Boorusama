@@ -96,11 +96,10 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
 
     return FirebaseAnalytics.instance._logScreenView(
       screenName: screenName,
-      parameters: parameters != null && parameters.isNotEmpty
-          ? {
-              ...parameters,
-            }
-          : null,
+      parameters: defaultParamsExtractor(
+        _currentConfig,
+        _deviceInfo,
+      ),
     );
   }
 

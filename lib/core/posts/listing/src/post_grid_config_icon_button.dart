@@ -8,10 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../foundation/animations.dart';
-import '../../../foundation/display.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/routes.dart';
 import '../../../settings/settings.dart';
@@ -30,16 +28,6 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
-    final imageListType = ref.watch(
-      imageListingSettingsProvider.select((value) => value.imageListType),
-    );
-    final pageMode = ref
-        .watch(imageListingSettingsProvider.select((value) => value.pageMode));
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((value) => value.imageQuality),
-    );
 
     return InkWell(
       customBorder: const CircleBorder(),
@@ -48,10 +36,6 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
         settings: const RouteSettings(name: 'grid_config'),
         builder: (_) => PostGridActionSheet(
           postController: postController,
-          gridSize: gridSize,
-          pageMode: pageMode,
-          imageListType: imageListType,
-          imageQuality: imageQuality,
           onModeChanged: (mode) => settingsNotifier.updateWith(
             (s) => s.copyWith(
               listing: s.listing.copyWith(pageMode: mode),
@@ -89,15 +73,10 @@ class PostGridActionSheet extends ConsumerWidget {
   const PostGridActionSheet({
     required this.onModeChanged,
     required this.onGridChanged,
-    required this.pageMode,
-    required this.gridSize,
-    required this.imageListType,
-    required this.imageQuality,
     required this.onImageListChanged,
     required this.onImageQualityChanged,
     required this.postController,
     super.key,
-    this.popOnSelect = true,
   });
 
   final void Function(PageMode mode) onModeChanged;
@@ -105,229 +84,143 @@ class PostGridActionSheet extends ConsumerWidget {
   final void Function(ImageListType imageListType) onImageListChanged;
   final void Function(ImageQuality imageQuality) onImageQualityChanged;
 
-  final PageMode pageMode;
-  final GridSize gridSize;
-  final ImageListType imageListType;
-  final ImageQuality imageQuality;
-  final bool popOnSelect;
   final PostGridController<Post> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postStatsPageBuilder =
         ref.watch(currentBooruBuilderProvider)?.postStatisticsPageBuilder;
-    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
-    final mobileButtons = [
-      ListingSettingsInteractionBlocker(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 4,
-        ),
-        onNavigateAway: () {
-          if (popOnSelect) Navigator.of(context).pop();
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            MobileConfigTile(
-              value: pageMode.localize().tr(),
-              title: 'settings.result_layout.result_layout'.tr(),
-              onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
-                showMaterialModalBottomSheet(
-                  context: context,
-                  settings: const RouteSettings(name: 'page_mode_select'),
-                  builder: (_) => OptionActionSheet(
-                    onChanged: onModeChanged,
-                    optionName: (option) => option.localize().tr(),
-                    options: PageMode.values,
-                  ),
-                );
-              },
-            ),
-            MobileConfigTile(
-              value: gridSize.localize().tr(),
-              title: 'settings.image_grid.image_grid'.tr(),
-              onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
-                showMaterialModalBottomSheet(
-                  context: context,
-                  settings: const RouteSettings(name: 'grid_size_select'),
-                  builder: (_) => OptionActionSheet(
-                    onChanged: onGridChanged,
-                    optionName: (option) => option.localize().tr(),
-                    options: GridSize.values,
-                  ),
-                );
-              },
-            ),
-            MobileConfigTile(
-              value: imageListType.localize().tr(),
-              title: 'settings.image_list.image_list'.tr(),
-              onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
-                showMaterialModalBottomSheet(
-                  context: context,
-                  settings: const RouteSettings(name: 'image_list_select'),
-                  builder: (_) => OptionActionSheet(
-                    onChanged: onImageListChanged,
-                    optionName: (option) => option.localize().tr(),
-                    options: ImageListType.values,
-                  ),
-                );
-              },
-            ),
-            MobileConfigTile(
-              value: imageQuality.localize().tr(),
-              title: 'settings.image_grid.image_quality.image_quality'.tr(),
-              onTap: () {
-                if (popOnSelect) Navigator.of(context).pop();
-                showMaterialModalBottomSheet(
-                  context: context,
-                  settings: const RouteSettings(name: 'image_quality_select'),
-                  builder: (_) => OptionActionSheet(
-                    onChanged: onImageQualityChanged,
-                    optionName: (option) => option.localize().tr(),
-                    options: [...ImageQuality.values]
-                      ..remove(ImageQuality.original),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      if (postStatsPageBuilder != null && postController.items.isNotEmpty) ...[
-        const Divider(),
-        ListTile(
-          title: const Text('Stats for nerds'),
-          onTap: () {
-            Navigator.of(context).pop();
-            showMaterialModalBottomSheet(
-              context: context,
-              settings: const RouteSettings(name: 'post_statistics'),
-              duration: AppDurations.bottomSheet,
-              builder: (_) => postStatsPageBuilder(
-                context,
-                postController.items,
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 12),
-      ],
-      FilledButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-          openAppearancePage(context);
-        },
-        child: const Text('More'),
-      ),
-      SizedBox(
-        height: MediaQuery.viewPaddingOf(context).bottom,
-      ),
-    ];
-
-    final desktopButtons = [
-      DesktopPostGridConfigTile(
-        title: 'settings.result_layout.result_layout'.tr(),
-        value: pageMode,
-        onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(
-            listing: s.listing.copyWith(pageMode: value),
-          ),
-        ),
-        items: PageMode.values,
-        optionNameBuilder: (option) => option.localize().tr(),
-      ),
-      DesktopPostGridConfigTile(
-        title: 'settings.image_grid.image_grid'.tr(),
-        value: gridSize,
-        onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(
-            listing: s.listing.copyWith(gridSize: value),
-          ),
-        ),
-        items: GridSize.values,
-        optionNameBuilder: (option) => option.name.sentenceCase,
-      ),
-      DesktopPostGridConfigTile(
-        title: 'settings.image_list.image_list'.tr(),
-        value: imageListType,
-        onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(
-            listing: s.listing.copyWith(imageListType: value),
-          ),
-        ),
-        items: ImageListType.values,
-        optionNameBuilder: (option) => option.name.sentenceCase,
-      ),
-      DesktopPostGridConfigTile(
-        title: 'settings.image_grid.image_quality.image_quality'.tr(),
-        value: imageQuality,
-        onChanged: (value) => settingsNotifier.updateWith(
-          (s) => s.copyWith(
-            listing: s.listing.copyWith(imageQuality: value),
-          ),
-        ),
-        items: [...ImageQuality.values]..remove(ImageQuality.original),
-        optionNameBuilder: (option) => option.name.sentenceCase,
-      ),
-    ];
-
-    return Material(
-      color: kPreferredLayout.isDesktop
-          ? Theme.of(context).colorScheme.surface
-          : Theme.of(context).colorScheme.surfaceContainer,
-      child: ConditionalParentWidget(
-        condition: kPreferredLayout.isMobile,
-        conditionalBuilder: (child) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: child,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: kPreferredLayout.isMobile ? mobileButtons : desktopButtons,
-        ),
-      ),
+    final gridSize = ref
+        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final imageListType = ref.watch(
+      imageListingSettingsProvider.select((value) => value.imageListType),
     );
-  }
-}
+    final pageMode = ref
+        .watch(imageListingSettingsProvider.select((value) => value.pageMode));
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((value) => value.imageQuality),
+    );
 
-class OptionActionSheet<T> extends StatelessWidget {
-  const OptionActionSheet({
-    required this.onChanged,
-    required this.options,
-    required this.optionName,
-    super.key,
-  });
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-  final void Function(T option) onChanged;
-  final List<T> options;
-  final String Function(T option) optionName;
-
-  @override
-  Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      child: Container(
+      color: colorScheme.surfaceContainer,
+      child: Padding(
         padding: const EdgeInsets.symmetric(
+          horizontal: 8,
           vertical: 8,
-          horizontal: 12,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...options.map(
-              (e) => ListTile(
-                title: Text(optionName(e)),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  onChanged(e);
-                },
+            ListingSettingsInteractionBlocker(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 4,
               ),
+              child: Theme(
+                data: theme.copyWith(
+                  listTileTheme: ListTileTheme.of(context).copyWith(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ),
+                    visualDensity: VisualDensity.comfortable,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SettingsTile<PageMode>(
+                      title: const Text('settings.result_layout.result_layout')
+                          .tr(),
+                      selectedOption: pageMode,
+                      items: const [...PageMode.values],
+                      onChanged: (value) => onModeChanged(value),
+                      optionBuilder: (value) => Text(value.localize()).tr(),
+                    ),
+                    SettingsTile<GridSize>(
+                      title:
+                          const Text('settings.image_grid.grid_size.grid_size')
+                              .tr(),
+                      selectedOption: gridSize,
+                      items: GridSize.values,
+                      onChanged: (value) => onGridChanged(value),
+                      optionBuilder: (value) => Text(value.localize().tr()),
+                    ),
+                    SettingsTile<ImageListType>(
+                      title: const Text('settings.image_list.image_list').tr(),
+                      selectedOption: imageListType,
+                      items: ImageListType.values,
+                      onChanged: (value) => onImageListChanged(value),
+                      optionBuilder: (value) => Text(value.localize()).tr(),
+                    ),
+                    SettingsTile<ImageQuality>(
+                      title: const Text(
+                        'settings.image_grid.image_quality.image_quality',
+                      ).tr(),
+                      selectedOption: imageQuality,
+                      items: [...ImageQuality.values]
+                        ..remove(ImageQuality.original),
+                      onChanged: (value) => onImageQualityChanged(value),
+                      optionBuilder: (value) => Text(value.localize()).tr(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (postStatsPageBuilder != null) ...[
+              const Divider(),
+              ValueListenableBuilder(
+                valueListenable: postController.refreshingNotifier,
+                builder: (_, refreshing, __) => ValueListenableBuilder(
+                  valueListenable: postController.itemsNotifier,
+                  builder: (_, items, __) => !refreshing && items.isEmpty
+                      ? const SizedBox.shrink()
+                      : ListTile(
+                          title: Row(
+                            children: [
+                              const Text('Stats for nerds'),
+                              if (refreshing)
+                                Container(
+                                  margin: const EdgeInsets.only(left: 8),
+                                  width: 12,
+                                  height: 12,
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          onTap: !refreshing
+                              ? () {
+                                  Navigator.of(context).pop();
+                                  showMaterialModalBottomSheet(
+                                    context: context,
+                                    settings: const RouteSettings(
+                                      name: 'post_statistics',
+                                    ),
+                                    duration: AppDurations.bottomSheet,
+                                    builder: (_) => postStatsPageBuilder(
+                                      context,
+                                      postController.items,
+                                    ),
+                                  );
+                                }
+                              : null,
+                        ),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                openAppearancePage(context);
+              },
+              child: const Text('More'),
             ),
             SizedBox(
               height: MediaQuery.viewPaddingOf(context).bottom,
@@ -335,60 +228,6 @@ class OptionActionSheet<T> extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DesktopPostGridConfigTile<T> extends StatelessWidget {
-  const DesktopPostGridConfigTile({
-    required this.value,
-    required this.title,
-    required this.onChanged,
-    required this.items,
-    required this.optionNameBuilder,
-    super.key,
-  });
-
-  final String title;
-  final T value;
-  final void Function(T value) onChanged;
-  final List<T> items;
-  final String Function(T option) optionNameBuilder;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 80,
-          constraints: const BoxConstraints(maxWidth: 100),
-          child: Text(title),
-        ),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Container(
-            constraints: const BoxConstraints(minWidth: 150),
-            child: OptionDropDownButtonDesktop(
-              alignment: AlignmentDirectional.centerStart,
-              onChanged: (value) => value != null ? onChanged(value) : null,
-              value: value,
-              items: items
-                  .map(
-                    (value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(
-                        optionNameBuilder(value),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
