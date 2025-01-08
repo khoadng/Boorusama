@@ -320,15 +320,15 @@ Map<String, dynamic> defaultParamsExtractor(
   final aspectRatioNum =
       aspectRatioString != null ? double.tryParse(aspectRatioString) : null;
 
-  return config != null
-      ? {
-          'hint_site': config.booruType.name,
-          'url': Uri.tryParse(config.url)?.host,
-          'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
-          'rating': config.ratingVerdict,
-          'viewport_aspect_ratio': aspectRatioNum,
-        }
-      : <String, dynamic>{};
+  return {
+    if (config != null) ...{
+      'hint_site': config.booruType.name,
+      'url': Uri.tryParse(config.url)?.host,
+      'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
+      'rating': config.ratingVerdict,
+    },
+    'viewport_aspect_ratio': aspectRatioNum,
+  };
 }
 
 class AnalyticsScope extends ConsumerStatefulWidget {
