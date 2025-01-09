@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -248,10 +249,20 @@ Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
       .toSet();
 }
 
-String? granularRatingFilterToString(Set<Rating>? granularRatingFilters) {
+String? granularRatingFilterToString(
+  Set<Rating>? granularRatingFilters, {
+  bool? sort,
+}) {
   if (granularRatingFilters == null) return null;
 
-  return granularRatingFilters.map((e) => e.toShortString()).join('|');
+  final shouldSort = sort ?? false;
+
+  final ratingStrings = granularRatingFilters.map((e) => e.toShortString());
+
+  final effectiveRatingStrings =
+      shouldSort ? ratingStrings.sorted() : ratingStrings;
+
+  return effectiveRatingStrings.join('|');
 }
 
 enum BooruConfigDeletedItemBehavior {
@@ -312,6 +323,23 @@ extension BooruConfigX on BooruConfig {
 
   bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
   bool get hasSoftSFW => url == kDanbooruSafeUrl;
+
+  String get ratingVerdict => switch (ratingFilter) {
+        BooruConfigRatingFilter.none => 'unfiltered',
+        BooruConfigRatingFilter.hideExplicit => 'questionable',
+        BooruConfigRatingFilter.hideNSFW => 'sfw',
+        BooruConfigRatingFilter.custom => () {
+            final filters = granularRatingFiltersWithoutUnknown;
+
+            if (filters == null) return 'custom';
+
+            final str = granularRatingFilterToString(filters, sort: true);
+
+            if (str == null) return 'custom';
+
+            return 'filtered($str)';
+          }()
+      };
 
   Set<Rating>? get granularRatingFiltersWithoutUnknown {
     if (granularRatingFilters == null) return null;

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -11,6 +13,7 @@ import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
 import 'package:boorusama/foundation/theme.dart';
+import '../../../foundation/analytics.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -20,12 +23,113 @@ const kDefaultPreviewImageButtonAction = {
   kViewArtistAction,
 };
 
+class UpdateBooruConfigScope extends ConsumerWidget {
+  const UpdateBooruConfigScope({
+    super.key,
+    required this.id,
+    required this.child,
+  });
+
+  final EditBooruConfigId id;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configs = ref.watch(booruConfigProvider);
+    final config = configs.firstWhereOrNull((e) => e.id == id.id);
+
+    if (config == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Text('Config not found'),
+        ),
+      );
+    }
+
+    return ProviderScope(
+      overrides: [
+        editBooruConfigIdProvider.overrideWithValue(id),
+        initialBooruConfigProvider.overrideWithValue(config),
+      ],
+      child: child,
+    );
+  }
+}
+
+class CreateBooruConfigScope extends ConsumerWidget {
+  const CreateBooruConfigScope({
+    super.key,
+    required this.config,
+    required this.child,
+    required this.id,
+  });
+
+  final EditBooruConfigId id;
+  final BooruConfig config;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        editBooruConfigIdProvider.overrideWithValue(id),
+        initialBooruConfigProvider.overrideWithValue(config),
+      ],
+      child: child,
+    );
+  }
+}
+
+class CreateBooruConfigCategory extends Equatable {
+  const CreateBooruConfigCategory({
+    required this.id,
+    required this.name,
+    required this.title,
+  });
+
+  const CreateBooruConfigCategory.auth()
+      : title = 'booru.authentication',
+        name = 'config/auth',
+        id = 'auth';
+
+  const CreateBooruConfigCategory.listing()
+      : title = 'Listing',
+        name = 'config/listing',
+        id = 'listing';
+
+  const CreateBooruConfigCategory.download()
+      : title = 'booru.download',
+        name = 'config/download',
+        id = 'download';
+
+  const CreateBooruConfigCategory.search()
+      : title = 'Search',
+        name = 'config/search',
+        id = 'search';
+
+  const CreateBooruConfigCategory.gestures()
+      : title = 'booru.gestures',
+        name = 'config/gestures',
+        id = 'gestures';
+
+  const CreateBooruConfigCategory.misc()
+      : title = 'booru.misc',
+        name = 'config/misc',
+        id = 'misc';
+
+  final String title;
+  final String id;
+  final String name;
+
+  @override
+  List<Object?> get props => [title, id];
+}
+
 class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     super.key,
     this.backgroundColor,
-    this.tabsBuilder,
-    required this.isNewConfig,
     this.authTab,
     this.searchTab,
     this.postDetailsResolution,
@@ -36,13 +140,12 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.postPreviewQuickActionButtonActions = kDefaultPreviewImageButtonAction,
     this.describePostDetailsAction,
     this.describePostPreviewQuickAction,
-    this.submitButtonBuilder,
+    this.canSubmit,
     required this.initialTab,
     this.footer,
   });
 
   final Color? backgroundColor;
-  final Map<String, Widget> Function(BuildContext context)? tabsBuilder;
 
   final Widget? authTab;
   final Widget? searchTab;
@@ -59,42 +162,39 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
-  final bool isNewConfig;
-
-  final Widget Function(BooruConfigData data)? submitButtonBuilder;
 
   final String? initialTab;
 
   final Widget? footer;
 
+  final bool Function(BooruConfigData config)? canSubmit;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
+    final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      if (authTab != null) 'booru.authentication': authTab!,
-      'Listing': BooruConfigListingView(
-        config: config,
-      ),
+      if (authTab != null) CreateBooruConfigCategory.auth(): authTab!,
+      CreateBooruConfigCategory.listing(): const BooruConfigListingView(),
       if (hasDownloadTab)
-        'booru.download': BooruConfigDownloadView(config: config),
-      'Search': searchTab ??
+        CreateBooruConfigCategory.download():
+            BooruConfigDownloadView(config: config),
+      CreateBooruConfigCategory.search(): searchTab ??
           BooruConfigSearchView(
             hasRatingFilter: hasRatingFilter,
             config: config,
           ),
-      if (tabsBuilder != null) ...tabsBuilder!(context),
-      'booru.gestures': BooruConfigGesturesView(
+      CreateBooruConfigCategory.gestures(): BooruConfigGesturesView(
         postDetailsGestureActions: postDetailsGestureActions,
         describePostDetailsAction: describePostDetailsAction,
       ),
-      'booru.misc': BooruConfigMiscView(
+      CreateBooruConfigCategory.misc(): BooruConfigMiscView(
         postDetailsGestureActions: postDetailsGestureActions,
         postPreviewQuickActionButtonActions:
             postPreviewQuickActionButtonActions,
         describePostPreviewQuickAction: describePostPreviewQuickAction,
         describePostDetailsAction: describePostDetailsAction,
-        config: config,
         postDetailsResolution: postDetailsResolution,
         miscOptions: miscOptions,
       ),
@@ -105,16 +205,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       appBar: AppBar(
         titleSpacing: 0,
         title: SelectedBooruChip(
-          config: config,
+          booruType: editId.booruType,
+          url: editId.url,
         ),
         actions: [
-          BooruConfigDataProvider(
-            builder: submitButtonBuilder != null
-                ? submitButtonBuilder!
-                : (data) => DefaultBooruSubmitButton(
-                      data: data,
-                    ),
-          ),
+          CreateOrUpdateBooruConfigButton(canSubmit: canSubmit),
         ],
       ),
       body: SafeArea(
@@ -142,7 +237,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       ),
                       isScrollable: true,
                       tabs: [
-                        for (final tab in tabMap.keys) Tab(text: tab.tr()),
+                        for (final tab in tabMap.keys)
+                          Tab(text: tab.title.tr()),
                       ],
                     ),
                     Expanded(
@@ -150,25 +246,16 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         constraints: const BoxConstraints(
                           maxWidth: 700,
                         ),
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
                         child: TabBarView(
                           controller: controller,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
-                            for (final tab in tabMap.values)
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical:
-                                      Screen.of(context).size.isLarge ? 16 : 8,
-                                ),
-                                child: tab,
-                              ),
+                            for (final tab in tabMap.values) tab,
                           ],
                         ),
                       ),
                     ),
-                    if (isNewConfig)
+                    if (editId.isNew)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -201,7 +288,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
 int _findInitialIndexFromQuery(
   String? query,
-  Map<String, Widget> tabMap,
+  Map<CreateBooruConfigCategory, Widget> tabMap,
 ) {
   final q = query?.toLowerCase();
 
@@ -212,7 +299,7 @@ int _findInitialIndexFromQuery(
   final tabNames = tabMap.keys.toList();
 
   for (var i = 0; i < tabNames.length; i++) {
-    final tabName = tabNames[i].toLowerCase();
+    final tabName = tabNames[i].id.toLowerCase();
 
     if (tabName.contains(q)) {
       return i;
@@ -222,7 +309,7 @@ int _findInitialIndexFromQuery(
   return 0;
 }
 
-class _TabControllerProvider extends StatefulWidget {
+class _TabControllerProvider extends ConsumerStatefulWidget {
   const _TabControllerProvider({
     required this.tabMap,
     required this.animationDuration,
@@ -231,17 +318,18 @@ class _TabControllerProvider extends StatefulWidget {
     required this.builder,
   });
 
-  final Map<String, Widget> tabMap;
+  final Map<CreateBooruConfigCategory, Widget> tabMap;
   final Duration? animationDuration;
   final int length;
   final int? initialIndex;
   final Widget Function(TabController controller) builder;
 
   @override
-  State<_TabControllerProvider> createState() => _TabControllerProviderState();
+  ConsumerState<_TabControllerProvider> createState() =>
+      _TabControllerProviderState();
 }
 
-class _TabControllerProviderState extends State<_TabControllerProvider>
+class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
     with SingleTickerProviderStateMixin {
   late final _controller = TabController(
     length: widget.length,
@@ -250,8 +338,31 @@ class _TabControllerProviderState extends State<_TabControllerProvider>
     initialIndex: widget.initialIndex ?? 0,
   );
 
+  int? _lastIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onTabChanged);
+
+    _onTabChanged();
+  }
+
+  void _onTabChanged() {
+    if (_lastIndex != _controller.index) {
+      _lastIndex = _controller.index;
+
+      final item = widget.tabMap.keys.elementAtOrNull(_controller.index);
+
+      if (item != null) {
+        ref.read(analyticsProvider).logScreenView(item.name);
+      }
+    }
+  }
+
   @override
   void dispose() {
+    _controller.removeListener(_onTabChanged);
     _controller.dispose();
     super.dispose();
   }

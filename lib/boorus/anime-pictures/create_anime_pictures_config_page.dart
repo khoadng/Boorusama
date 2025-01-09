@@ -15,61 +15,53 @@ import 'package:boorusama/foundation/toast.dart';
 class CreateAnimePicturesConfigPage extends ConsumerWidget {
   const CreateAnimePicturesConfigPage({
     super.key,
-    required this.config,
     this.backgroundColor,
-    this.isNewConfig = false,
     this.initialTab,
   });
 
-  final BooruConfig config;
   final Color? backgroundColor;
-  final bool isNewConfig;
   final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        isNewConfig: isNewConfig,
-        backgroundColor: backgroundColor,
-        initialTab: initialTab,
-        authTab: AnimePicturesAuthView(),
-        footer: isNewConfig
-            ? Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+    final editId = ref.watch(editBooruConfigIdProvider);
+
+    return CreateBooruConfigScaffold(
+      backgroundColor: backgroundColor,
+      initialTab: initialTab,
+      authTab: AnimePicturesAuthView(),
+      footer: editId.isNew
+          ? Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: context.theme.colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
                 ),
-                decoration: BoxDecoration(
-                  color: context.theme.colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Symbols.info,
+                    size: 16,
+                    color: context.theme.colorScheme.error,
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Symbols.info,
-                      size: 16,
-                      color: context.theme.colorScheme.error,
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      "Bulk download and blacklist won't work for this booru.",
+                      style: context.textTheme.bodySmall,
                     ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        "Bulk download and blacklist won't work for this booru.",
-                        style: context.textTheme.bodySmall,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : null,
-      ),
+                  ),
+                ],
+              ),
+            )
+          : null,
     );
   }
 }
@@ -86,8 +78,12 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
+    final passHash = ref.watch(editBooruConfigProvider(
+      ref.watch(editBooruConfigIdProvider),
+    ).select((value) => value.passHash));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -110,7 +106,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
               fontWeight: FontWeight.w400,
             ),
           ),
-          ref.watch(authConfigDataProvider).passHash == null
+          passHash == null
               ? _buildLoginButton(context, config: config)
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -160,7 +156,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
               RawChip(
                 backgroundColor: context.colorScheme.secondaryContainer,
                 onPressed: () {
-                  ref.updatePassHash(null);
+                  ref.editNotifier.updatePassHash(null);
                 },
                 label: const Text('Clear'),
               ),
@@ -181,6 +177,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
+        settings: const RouteSettings(name: 'cookie_access_web_view'),
         builder: (context) => CookieAccessWebViewPage(
           url: loginUrl,
           onGet: (cookies) {
@@ -196,7 +193,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
                   .map((e) => '${e.name}=${e.value}')
                   .join('; ');
 
-              ref.updatePassHash(cookiesString);
+              ref.editNotifier.updatePassHash(() => cookiesString);
 
               Navigator.of(context).pop();
             }

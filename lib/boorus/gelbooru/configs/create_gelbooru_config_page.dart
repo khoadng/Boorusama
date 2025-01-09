@@ -20,30 +20,20 @@ import 'widgets.dart';
 class CreateGelbooruConfigPage extends ConsumerWidget {
   const CreateGelbooruConfigPage({
     super.key,
-    required this.config,
     this.backgroundColor,
-    this.isNewConfig = false,
     this.initialTab,
   });
 
-  final BooruConfig config;
   final Color? backgroundColor;
-  final bool isNewConfig;
   final String? initialTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        initialBooruConfigProvider.overrideWithValue(config),
-      ],
-      child: CreateBooruConfigScaffold(
-        isNewConfig: isNewConfig,
-        backgroundColor: backgroundColor,
-        initialTab: initialTab,
-        authTab: const GelbooruAuthView(),
-        hasRatingFilter: true,
-      ),
+    return CreateBooruConfigScaffold(
+      backgroundColor: backgroundColor,
+      initialTab: initialTab,
+      authTab: const GelbooruAuthView(),
+      hasRatingFilter: true,
     );
   }
 }
@@ -57,10 +47,12 @@ class GelbooruAuthView extends ConsumerStatefulWidget {
 
 class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   late final loginController = TextEditingController(
-    text: ref.read(loginProvider),
+    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+        .select((value) => value.login)),
   );
   late final apiKeyController = TextEditingController(
-    text: ref.read(apiKeyProvider),
+    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+        .select((value) => value.apiKey)),
   );
 
   @override
@@ -73,8 +65,12 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
+    final passHash = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.passHash));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +174,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               fontWeight: FontWeight.w400,
             ),
           ),
-          ref.watch(authConfigDataProvider).passHash == null
+          passHash == null
               ? _buildLoginButton(context, config: config)
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -236,7 +232,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               RawChip(
                 backgroundColor: context.colorScheme.secondaryContainer,
                 onPressed: () {
-                  ref.updatePassHash(null);
+                  ref.editNotifier.updatePassHash(null);
                 },
                 label: const Text('Clear'),
               ),
@@ -257,6 +253,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
+        settings: const RouteSettings(name: 'cookie_access_web_view'),
         builder: (context) => CookieAccessWebViewPage(
           url: loginUrl,
           onGet: (cookies) {
@@ -266,11 +263,11 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               final uid = cookies.firstWhereOrNull((e) => e.name == 'user_id');
 
               if (pashHash != null) {
-                ref.updatePassHash(
-                  pashHash.value,
+                ref.editNotifier.updatePassHash(
+                  () => pashHash.value,
                 );
                 if (uid != null) {
-                  ref.updateLogin(uid.value);
+                  ref.editNotifier.updateLogin(uid.value);
                   loginController.text = uid.value;
                 }
               } else {

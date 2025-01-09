@@ -118,8 +118,7 @@ ProviderContainer createBooruConfigContainer({
       settingsRepoProvider.overrideWithValue(settingsRepository),
       settingsProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
-      currentBooruConfigProvider.overrideWith(
-          () => CurrentBooruConfigNotifier(initialConfig: BooruConfig.empty)),
+      initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
       analyticsProvider.overrideWithValue(mockAnalytics),
       loggerProvider.overrideWithValue(mockLogger),
     ],
@@ -240,24 +239,6 @@ void main() {
             currentConfig.id,
             1,
           );
-        },
-      );
-
-      test(
-        'should call the analytics',
-        () async {
-          await getNotifier().add(
-            data: configData,
-          );
-
-          verify(
-            () => mockAnalytics.sendBooruAddedEvent(
-              url: captureAny(named: 'url'),
-              hintSite: captureAny(named: 'hintSite'),
-              totalSites: captureAny(named: 'totalSites'),
-              hasLogin: false,
-            ),
-          ).called(1);
         },
       );
     },

@@ -105,3 +105,32 @@ class _HomePageSidebarKeyboardListenerState
     return widget.child;
   }
 }
+
+class InheritedHomePageController extends InheritedWidget {
+  const InheritedHomePageController({
+    super.key,
+    required this.controller,
+    required super.child,
+  });
+
+  final HomePageController controller;
+
+  static HomePageController of(BuildContext context) {
+    final result = context
+        .dependOnInheritedWidgetOfExactType<InheritedHomePageController>();
+
+    return result!.controller;
+  }
+
+  static HomePageController? maybeOf(BuildContext context) {
+    final result = context
+        .dependOnInheritedWidgetOfExactType<InheritedHomePageController>();
+
+    return result?.controller;
+  }
+
+  @override
+  bool updateShouldNotify(InheritedHomePageController oldWidget) {
+    return oldWidget.controller != controller;
+  }
+}

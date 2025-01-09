@@ -157,7 +157,7 @@ class _Boorus extends ConsumerWidget {
       );
     } else {
       final availableConfigs = ref.watch(booruConfigProvider);
-      return availableConfigs != null && availableConfigs.isNotEmpty
+      return availableConfigs.isNotEmpty
           ? _buildInvalid(availableConfigs, ref)
           : const EmptyBooruConfigHomePage();
     }

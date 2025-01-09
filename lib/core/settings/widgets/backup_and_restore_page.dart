@@ -65,13 +65,13 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Widget _buildProfiles() {
     final configs = ref.watch(booruConfigProvider);
-    final first5Configs = configs?.take(5).toList();
+    final first5Configs = configs.take(5).toList();
 
     return BackupRestoreTile(
       leadingIcon: Symbols.settings,
       title: 'Booru profiles',
-      subtitle: '${configs?.length} profiles',
-      extra: first5Configs != null && first5Configs.isNotEmpty
+      subtitle: '${configs.length} profiles',
+      extra: first5Configs.isNotEmpty
           ? [
               const SizedBox(height: 8),
               Wrap(
@@ -84,7 +84,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                       child: BooruLogo.fromConfig(e),
                     ),
                   ),
-                  if (first5Configs.length < configs!.length)
+                  if (first5Configs.length < configs.length)
                     Text(
                       '+${configs.length - first5Configs.length}',
                       textAlign: TextAlign.center,
@@ -126,10 +126,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
-          if (configs != null && configs.isNotEmpty)
-            'export': const Text('Export'),
+          if (configs.isNotEmpty) 'export': const Text('Export'),
           'import': const Text('Import'),
-          if (configs != null && configs.isNotEmpty)
+          if (configs.isNotEmpty)
             'export_clipboard': const Text('Export to clipboard'),
           'import_clipboard': const Text('Import from clipboard'),
         },
@@ -248,6 +247,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   ) async {
     final result = await showDialog<bool?>(
       context: context,
+      routeSettings: const RouteSettings(name: 'booru_import_overwrite_alert'),
       builder: (context) => ImportBooruConfigsAlertDialog(data: data),
     );
 
@@ -256,7 +256,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   void _onImportSuccess(String message, List<BooruConfig> configs) {
     final config = configs.first;
-    Reboot.start(context, config);
+    Reboot.start(context, config, configs);
   }
 
   Future<void> _pickBookmarkFolder(WidgetRef ref) =>

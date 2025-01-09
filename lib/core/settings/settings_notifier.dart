@@ -14,6 +14,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/package_info.dart';
 import 'package:boorusama/foundation/toast.dart';
 import 'package:boorusama/foundation/version.dart';
+import '../../foundation/analytics.dart';
 
 class SettingsNotifier extends Notifier<Settings> {
   SettingsNotifier(this.initialSettings);
@@ -49,6 +50,11 @@ class SettingsNotifier extends Notifier<Settings> {
         }
       }
       state = settings;
+
+      ref.read(analyticsProvider).logSettingsChangedEvent(
+            oldValue: currentSettings,
+            newValue: settings,
+          );
     }
   }
 

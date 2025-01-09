@@ -22,6 +22,10 @@ import 'package:boorusama/foundation/rating/rating.dart';
 import 'package:boorusama/router.dart';
 import 'package:boorusama/string.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../core/configs/configs.dart';
+import '../core/posts/details/post_details_page.dart';
+import '../core/scaffolds/search_page.dart';
+import '../dart.dart';
 import 'routes/configs.dart';
 import 'routes/downloads.dart';
 import 'routes/settings.dart';
@@ -59,13 +63,16 @@ typedef DetailsPayload<T extends Post> = ({
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
-        builder: (context, state) => const AppLockWithSettings(
-          child: RateMyAppScope(
-            child: BackgroundDownloaderBuilder(
-              child: CustomContextMenuOverlay(
-                child: Focus(
-                  autofocus: true,
-                  child: EntryPage(),
+        builder: (context, state) => BooruConfigDeepLinkResolver(
+          path: state.uri.toString(),
+          child: const AppLockWithSettings(
+            child: RateMyAppScope(
+              child: BackgroundDownloaderBuilder(
+                child: CustomContextMenuOverlay(
+                  child: Focus(
+                    autofocus: true,
+                    child: EntryPage(),
+                  ),
                 ),
               ),
             ),
@@ -96,34 +103,30 @@ class Routes {
         path: 'details',
         name: '/details',
         pageBuilder: (context, state) {
-          final config = ref.read(currentBooruConfigProvider);
-          final booruBuilder = ref.readBooruBuilder(config);
-          final builder = booruBuilder?.postDetailsPageBuilder;
+          final payload = castOrNull<DetailsPayload>(state.extra);
 
-          final payload = state.extra as DetailsPayload;
-
-          if (!payload.isDesktop) {
+          if (payload == null) {
             return MaterialPage(
-              key: state.pageKey,
-              name: state.name,
-              child: builder != null
-                  ? builder(context, config, payload)
-                  : const UnimplementedPage(),
+              child: InvalidPage(message: 'Invalid payload: $payload'),
             );
-          } else {
-            return builder != null
-                ? CustomTransitionPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: builder(context, config, payload),
-                    transitionsBuilder: fadeTransitionBuilder(),
-                  )
-                : MaterialPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: const UnimplementedPage(),
-                  );
           }
+          final widget = InheritedPayload(
+            payload: payload,
+            child: const PostDetailsPage(),
+          );
+
+          return !payload.isDesktop
+              ? MaterialPage(
+                  key: state.pageKey,
+                  name: state.name,
+                  child: widget,
+                )
+              : CustomTransitionPage(
+                  key: state.pageKey,
+                  name: state.name,
+                  transitionsBuilder: fadeTransitionBuilder(),
+                  child: widget,
+                );
         },
       );
 
@@ -131,16 +134,15 @@ class Routes {
         path: 'search',
         name: '/search',
         pageBuilder: (context, state) {
-          final booruBuilder = ref.readCurrentBooruBuilder();
-          final builder = booruBuilder?.searchPageBuilder;
           final query = state.uri.queryParameters[kInitialQueryKey];
 
           return CustomTransitionPage(
             key: state.pageKey,
             name: state.name,
-            child: builder != null
-                ? builder(context, query)
-                : const UnimplementedPage(),
+            child: InheritedInitialSearchQuery(
+              query: query,
+              child: const SearchPage(),
+            ),
             transitionsBuilder: fadeTransitionBuilder(),
           );
         },
@@ -212,7 +214,7 @@ class Routes {
             name: '/bookmarks/details',
             pageBuilder: (context, state) => CupertinoPage(
               key: state.pageKey,
-              name: '${state.name}?index=${state.uri.queryParameters['index']}',
+              name: state.name,
               child: BookmarkDetailsPage(
                 initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
               ),

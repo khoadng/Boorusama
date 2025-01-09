@@ -50,6 +50,8 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                 onPressed: () {
                   showAppModalBarBottomSheet(
                     context: context,
+                    settings:
+                        const RouteSettings(name: 'posts_file_size_stats'),
                     builder: (context) => StatisticalSummaryDetailsPage(
                       title: 'File size',
                       stats: stats.fileSizes,
@@ -74,6 +76,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
             onMore: () {
               showAppModalBarBottomSheet(
                 context: context,
+                settings: const RouteSettings(name: 'posts_resolution_stats'),
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Resolution',
                   total: posts.length,
@@ -98,6 +101,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
             onMore: () {
               showAppModalBarBottomSheet(
                 context: context,
+                settings: const RouteSettings(name: 'posts_copyright_stats'),
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Copyright',
                   total: posts.length,
@@ -124,6 +128,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
             onMore: () {
               showAppModalBarBottomSheet(
                 context: context,
+                settings: const RouteSettings(name: 'posts_character_stats'),
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Character',
                   total: posts.length,
@@ -150,6 +155,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
             onMore: () {
               showAppModalBarBottomSheet(
                 context: context,
+                settings: const RouteSettings(name: 'posts_uploader_stats'),
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Uploader',
                   total: posts.length,
@@ -184,6 +190,7 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
             onMore: () {
               showAppModalBarBottomSheet(
                 context: context,
+                settings: const RouteSettings(name: 'posts_approver_stats'),
                 builder: (context) => StatisticsFromMapPage(
                   title: 'Approver',
                   total: posts.length,

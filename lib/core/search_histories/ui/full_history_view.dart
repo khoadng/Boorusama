@@ -53,6 +53,7 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
           TextButton(
             onPressed: () => showDialog(
               context: context,
+              routeSettings: const RouteSettings(name: 'clear_all_history'),
               builder: (context) => AlertDialog(
                 content: const Text('Are you sure?').tr(),
                 actions: [

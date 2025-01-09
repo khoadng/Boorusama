@@ -23,7 +23,7 @@ class GelbooruApiKeyField extends ConsumerWidget {
       controller: controller,
       hintText:
           'e.g. 2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
-      onChanged: ref.updateApiKey,
+      onChanged: ref.editNotifier.updateApiKey,
     );
   }
 }
@@ -42,7 +42,7 @@ class GelbooruLoginField extends ConsumerWidget {
       controller: controller,
       labelText: 'User ID',
       hintText: 'e.g. 1234567',
-      onChanged: ref.updateLogin,
+      onChanged: ref.editNotifier.updateLogin,
     );
   }
 }
@@ -67,7 +67,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
         (value) {
           if (value == null) return;
           final (uid, key) = extractValues(value);
-          ref.updateLoginAndApiKey(uid, key);
+          ref.editNotifier.updateLoginAndApiKey(uid, key);
 
           login.text = uid;
           apiKey.text = key;

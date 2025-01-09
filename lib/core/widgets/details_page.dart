@@ -31,6 +31,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
     required this.pageCount,
     required this.topRightButtonsBuilder,
     this.onExpanded,
+    this.onShrink,
     this.bottomSheet,
     required this.onExit,
     this.controller,
@@ -49,6 +50,7 @@ class DetailsPage<T> extends ConsumerStatefulWidget {
   final int pageCount;
   final List<Widget> Function(bool expanded) topRightButtonsBuilder;
   final void Function()? onExpanded;
+  final void Function()? onShrink;
   final Widget? bottomSheet;
   final void Function(int index) onExit;
   final DetailsPageController? controller;
@@ -369,6 +371,8 @@ class _DetailsPageState<T> extends ConsumerState<DetailsPage<T>>
           _controller.setExpanded(metrics.isPageExpanded);
           if (isExpanded.value) {
             widget.onExpanded?.call();
+          } else {
+            widget.onShrink?.call();
           }
         },
         physics: _pageSwipe

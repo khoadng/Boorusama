@@ -217,6 +217,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       FontAwesomeIcons.bug,
                     ),
                     onTap: () => context.navigator.push(CupertinoPageRoute(
+                        settings:
+                            const RouteSettings(name: '/settings/debug_logs'),
                         builder: (_) => const DebugLogsPage())),
                   ),
                   SettingTile(
@@ -227,6 +229,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     onTap: () => showDialog(
                       context: context,
+                      routeSettings:
+                          const RouteSettings(name: '/settings/about'),
                       builder: (context) => const AboutPage(),
                     ),
                   ),
@@ -242,6 +246,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     onTap: () => context.navigator.push(
                       CupertinoPageRoute(
+                        settings: const RouteSettings(
+                            name: '/settings/help_us_translate'),
                         builder: (_) => const HelpUseTranslatePage(),
                       ),
                     ),

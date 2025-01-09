@@ -10,11 +10,15 @@ import 'package:boorusama/foundation/theme.dart';
 
 const staticLightScheme = ColorScheme(
   brightness: Brightness.light,
-  secondaryContainer: GreyscaleShades.gray212,
+  secondaryContainer: GreyscaleShades.gray220,
   onSecondaryContainer: kOnSurfaceLightColor,
   tertiaryContainer: GreyscaleShades.gray220,
   onTertiaryContainer: kOnSurfaceLightColor,
-  surfaceContainerHighest: GreyscaleShades.gray226,
+  surfaceContainerLowest: GreyscaleShades.gray226,
+  surfaceContainerLow: GreyscaleShades.gray224,
+  surfaceContainer: GreyscaleShades.gray220,
+  surfaceContainerHigh: GreyscaleShades.gray216,
+  surfaceContainerHighest: GreyscaleShades.gray214,
   primary: kPrimaryLightColor,
   onPrimary: kOnPrimaryLightColor,
   secondary: kPrimaryLightColor,
@@ -23,6 +27,8 @@ const staticLightScheme = ColorScheme(
   onError: kOnErrorLightColor,
   surface: GreyscaleShades.gray242,
   onSurface: kOnSurfaceLightColor,
+  outline: GreyscaleShades.gray110,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticDarkScheme = ColorScheme(
@@ -31,7 +37,11 @@ const staticDarkScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray48,
   onTertiaryContainer: Colors.white,
-  surfaceContainerHighest: GreyscaleShades.gray46,
+  surfaceContainerLowest: GreyscaleShades.gray12,
+  surfaceContainerLow: GreyscaleShades.gray32,
+  surfaceContainer: GreyscaleShades.gray46,
+  surfaceContainerHigh: GreyscaleShades.gray50,
+  surfaceContainerHighest: GreyscaleShades.gray54,
   primary: kPrimaryDarkColor,
   onPrimary: kOnPrimaryDarkColor,
   secondary: kPrimaryDarkColor,
@@ -40,6 +50,8 @@ const staticDarkScheme = ColorScheme(
   onError: kOnErrorDarkColor,
   surface: GreyscaleShades.gray24,
   onSurface: Colors.white,
+  outline: GreyscaleShades.gray160,
+  outlineVariant: GreyscaleShades.gray60,
 );
 
 const staticBlackScheme = ColorScheme(
@@ -48,7 +60,11 @@ const staticBlackScheme = ColorScheme(
   onSecondaryContainer: Colors.white,
   tertiaryContainer: GreyscaleShades.gray28,
   onTertiaryContainer: Colors.white,
-  surfaceContainerHighest: GreyscaleShades.gray24,
+  surfaceContainerLowest: GreyscaleShades.gray8,
+  surfaceContainerLow: GreyscaleShades.gray20,
+  surfaceContainer: GreyscaleShades.gray32,
+  surfaceContainerHigh: GreyscaleShades.gray36,
+  surfaceContainerHighest: GreyscaleShades.gray40,
   primary: kPrimaryAmoledDarkColor,
   onPrimary: kOnPrimaryAmoledDarkColor,
   secondary: kPrimaryAmoledDarkColor,
@@ -57,8 +73,8 @@ const staticBlackScheme = ColorScheme(
   onError: kOnErrorAmoledDarkColor,
   surface: Colors.black,
   onSurface: Colors.white,
-  outline: Colors.white,
-  outlineVariant: GreyscaleShades.gray60,
+  outline: GreyscaleShades.gray120,
+  outlineVariant: GreyscaleShades.gray48,
 );
 
 class AppTheme {

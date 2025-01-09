@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/foundation/gestures.dart';
 import 'package:boorusama/foundation/i18n.dart';
@@ -23,9 +24,12 @@ class BooruConfigGesturesView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final postGesturesConfigTyped = ref.watch(postGesturesConfigDataProvider);
+    final postGesturesConfigTyped = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.postGesturesConfigTyped));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +51,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.swipeDown,
               onChanged: (value) {
-                ref.updateGesturesConfigData(
+                ref.editNotifier.updateGesturesConfigData(
                   postGesturesConfigTyped?.withFulviewSwipeDown(value),
                 );
               },
@@ -69,7 +73,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.doubleTap,
               onChanged: (value) {
-                ref.updateGesturesConfigData(
+                ref.editNotifier.updateGesturesConfigData(
                   postGesturesConfigTyped?.withFulviewDoubleTap(value),
                 );
               },
@@ -92,7 +96,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.longPress,
               onChanged: (value) {
-                ref.updateGesturesConfigData(
+                ref.editNotifier.updateGesturesConfigData(
                   postGesturesConfigTyped?.withFulviewLongPress(value),
                 );
               },
@@ -118,7 +122,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.preview?.tap,
               onChanged: (value) {
-                ref.updateGesturesConfigData(
+                ref.editNotifier.updateGesturesConfigData(
                   postGesturesConfigTyped?.withPreviewTap(value),
                 );
               },
@@ -140,7 +144,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.preview?.longPress,
               onChanged: (value) {
-                ref.updateGesturesConfigData(
+                ref.editNotifier.updateGesturesConfigData(
                   postGesturesConfigTyped?.withPreviewLongPress(value),
                 );
               },

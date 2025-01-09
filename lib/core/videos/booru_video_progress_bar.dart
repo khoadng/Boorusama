@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/flutter.dart';
 import 'package:boorusama/foundation/display.dart';
 import 'package:boorusama/foundation/theme.dart';
@@ -80,7 +79,10 @@ class BooruVideoProgressBar extends StatelessWidget {
           ),
         ),
         Text(
-          formatDurationForMedia(progress.duration),
+          formatDurationForMedia(
+            progress.duration,
+            forceHigherThanOneSecond: true,
+          ),
           style: const TextStyle(
             fontSize: 16,
           ),
@@ -250,6 +252,86 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
                 ),
               )
               .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class MobilePostGridConfigTile extends StatelessWidget {
+  const MobilePostGridConfigTile({
+    super.key,
+    required this.value,
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final String value;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 2,
+      ),
+      child: ListTile(
+        title: Text(title),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: context.theme.hintColor,
+                fontSize: 14,
+              ),
+            ),
+            const Icon(Symbols.chevron_right),
+          ],
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+}
+
+class OptionActionSheet<T> extends StatelessWidget {
+  const OptionActionSheet({
+    super.key,
+    required this.onChanged,
+    required this.options,
+    required this.optionName,
+  });
+
+  final void Function(T option) onChanged;
+  final List<T> options;
+  final String Function(T option) optionName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: context.colorScheme.secondaryContainer,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 12,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...options.map((e) => ListTile(
+                  title: Text(optionName(e)),
+                  onTap: () {
+                    context.navigator.pop();
+                    onChanged(e);
+                  },
+                )),
+            SizedBox(
+              height: MediaQuery.viewPaddingOf(context).bottom,
+            ),
+          ],
         ),
       ),
     );

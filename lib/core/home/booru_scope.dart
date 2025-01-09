@@ -126,13 +126,11 @@ List<Widget> coreDesktopViewBuilder({
 List<Widget> coreDesktopTabBuilder(
   BuildContext context,
   BoxConstraints constraints,
-  HomePageController controller,
 ) {
   return [
     const Divider(),
     HomeNavigationTile(
       value: _v(1),
-      controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.bookmark,
       icon: Symbols.bookmark,
@@ -140,7 +138,6 @@ List<Widget> coreDesktopTabBuilder(
     ),
     HomeNavigationTile(
       value: _v(2),
-      controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.list_alt,
       icon: Symbols.list_alt,
@@ -148,7 +145,6 @@ List<Widget> coreDesktopTabBuilder(
     ),
     HomeNavigationTile(
       value: _v(3),
-      controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.tag,
       icon: Symbols.tag,
@@ -156,7 +152,6 @@ List<Widget> coreDesktopTabBuilder(
     ),
     HomeNavigationTile(
       value: _v(4),
-      controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.sim_card_download,
       icon: Symbols.sim_card_download,
@@ -164,7 +159,6 @@ List<Widget> coreDesktopTabBuilder(
     ),
     HomeNavigationTile(
       value: _v(5),
-      controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.download,
       icon: Symbols.download,
@@ -173,7 +167,6 @@ List<Widget> coreDesktopTabBuilder(
     const Divider(),
     HomeNavigationTile(
       value: 99999,
-      controller: controller,
       constraints: constraints,
       selectedIcon: Symbols.settings,
       icon: Symbols.settings,

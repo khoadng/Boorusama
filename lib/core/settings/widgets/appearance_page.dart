@@ -107,6 +107,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
 Future<void> openAppearancePage(BuildContext context) {
   return Navigator.of(context).push(
     CupertinoPageRoute(
+      settings: const RouteSettings(name: '/settings/appearance'),
       builder: (context) => const AppearancePage(),
     ),
   );

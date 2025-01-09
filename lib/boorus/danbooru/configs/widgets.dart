@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/posts/posts.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
-import 'providers.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {
   const DanbooruHideDeletedSwitch({
@@ -17,13 +16,15 @@ class DanbooruHideDeletedSwitch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
-    final hideDeleted = ref.watch(hideDeletedProvider(config));
+    final hideDeleted = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
+      (value) =>
+          value.deletedItemBehaviorTyped == BooruConfigDeletedItemBehavior.hide,
+    ));
 
     return CreateBooruHideDeletedSwitch(
       value: hideDeleted,
-      onChanged: (value) =>
-          ref.read(hideDeletedProvider(config).notifier).state = value,
+      onChanged: (value) => ref.editNotifier.updateDeletedItemBehavior(value),
       subtitle: const Text(
         'Hide low-quality images, some decent ones might also be hidden.',
       ),
@@ -38,16 +39,15 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bannedVis = ref.watch(bannedPostVisibilityProvider);
+    final bannedVis = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.bannedPostVisibilityTyped));
 
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
       title: const Text('Hide banned posts'),
       value: bannedVis == BooruConfigBannedPostVisibility.hide,
-      onChanged: (value) =>
-          ref.read(bannedPostVisibilityProvider.notifier).state = value
-              ? BooruConfigBannedPostVisibility.hide
-              : BooruConfigBannedPostVisibility.show,
+      onChanged: (value) => ref.editNotifier.updateBannedPostVisibility(value),
       subtitle: const Text(
         'Completely hide banned images from listings.',
       ),
@@ -62,14 +62,14 @@ class DanbooruImageDetailsQualityProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watch(initialBooruConfigProvider);
-    final imageDetailsQuality = ref.watch(imageDetailsQualityProvider(config));
+    final imageDetailsQuality = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.imageDetaisQuality));
 
     return CreateBooruImageDetailsResolutionOptionTile(
       value: imageDetailsQuality,
       items: PostQualityType.values.map((e) => e.stringify()).toList(),
-      onChanged: (value) =>
-          ref.read(imageDetailsQualityProvider(config).notifier).state = value,
+      onChanged: (value) => ref.editNotifier.updateImageDetailsQuality(value),
     );
   }
 }

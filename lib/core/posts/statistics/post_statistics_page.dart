@@ -54,6 +54,7 @@ class PostStatisticsPage extends StatelessWidget {
                   onMore: () {
                     showAppModalBarBottomSheet(
                       context: context,
+                      settings: const RouteSettings(name: 'posts_score_stats'),
                       builder: (context) => StatisticalSummaryDetailsPage(
                         title: 'Score',
                         stats: stats.scores,
@@ -100,6 +101,7 @@ class PostStatisticsPage extends StatelessWidget {
                   onMore: () {
                     showAppModalBarBottomSheet(
                       context: context,
+                      settings: const RouteSettings(name: 'posts_source_stats'),
                       builder: (context) => StatisticsFromMapPage(
                         title: 'Source',
                         total: totalPosts(),
@@ -136,6 +138,7 @@ class PostStatisticsPage extends StatelessWidget {
                   onMore: () {
                     showAppModalBarBottomSheet(
                       context: context,
+                      settings: const RouteSettings(name: 'posts_tags_stats'),
                       builder: (context) => StatisticalSummaryDetailsPage(
                         title: 'Tags',
                         stats: stats.tags,
@@ -378,13 +381,13 @@ class PostStatsTile extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: context.colorScheme.secondaryContainer,
+              color: context.colorScheme.surfaceContainerHigh,
               borderRadius: const BorderRadius.all(Radius.circular(4)),
             ),
             child: Text(
               value,
               style: TextStyle(
-                color: context.colorScheme.onSecondaryContainer,
+                color: context.colorScheme.onSurfaceVariant,
                 fontSize: 14,
               ),
             ),

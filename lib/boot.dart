@@ -181,6 +181,9 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
+  bootLogger.l('Load all configs');
+  final allConfigs = await booruUserRepo.getAll();
+
   Box<String> userMetatagBox;
   bootLogger.l('Initialize user metatag box');
   if (await Hive.boxExists('user_metatags')) {
@@ -261,6 +264,10 @@ Future<void> boot(BootLogger bootLogger) async {
     logger: logger,
   );
 
+  if (initialConfig != null && firebaseAnalytics != null) {
+    firebaseAnalytics.changeCurrentAnalyticConfig(initialConfig);
+  }
+
   bootLogger.l('Initialize error handlers');
   initializeErrorHandlers(crashlyticsReporter);
 
@@ -292,8 +299,9 @@ Future<void> boot(BootLogger bootLogger) async {
   void run() {
     runApp(
       Reboot(
+        initialConfigs: allConfigs,
         initialConfig: initialConfig ?? BooruConfig.empty,
-        builder: (context, config) => BooruLocalization(
+        builder: (context, config, configs) => BooruLocalization(
           child: ProviderScope(
             overrides: [
               favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
@@ -303,8 +311,10 @@ Future<void> boot(BootLogger bootLogger) async {
               settingsRepoProvider.overrideWithValue(settingRepository),
               settingsProvider.overrideWith(() => SettingsNotifier(settings)),
               booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              currentBooruConfigProvider.overrideWith(
-                  () => CurrentBooruConfigNotifier(initialConfig: config)),
+              booruConfigProvider.overrideWith(() => BooruConfigNotifier(
+                    initialConfigs: configs,
+                  )),
+              initialSettingsBooruConfigProvider.overrideWithValue(config),
               globalBlacklistedTagRepoProvider
                   .overrideWithValue(globalBlacklistedTags),
               httpCacheDirProvider.overrideWithValue(tempPath),

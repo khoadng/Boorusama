@@ -21,11 +21,15 @@ class BooruConfigDownloadView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customDownloadFileNameFormat =
-        ref.watch(customDownloadFileNameFormatProvider);
-    final customDownloadLocation = ref.watch(customDownloadLocationProvider);
+    final id = ref.watch(editBooruConfigIdProvider);
+    final customDownloadFileNameFormat = ref.watch(editBooruConfigProvider(id)
+        .select((value) => value.customDownloadFileNameFormat));
+    final customDownloadLocation = ref.watch(
+        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+            .select((value) => value.customDownloadLocation));
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +37,8 @@ class BooruConfigDownloadView extends ConsumerWidget {
           DownloadFolderSelectorSection(
             storagePath: customDownloadLocation,
             deviceInfo: ref.watch(deviceInfoProvider),
-            onPathChanged: (path) => ref.updateCustomDownloadLocation(path),
+            onPathChanged: (path) =>
+                ref.editNotifier.updateCustomDownloadLocation(path),
             title: 'Download location',
           ),
           const SizedBox(height: 4),
@@ -50,9 +55,9 @@ class BooruConfigDownloadView extends ConsumerWidget {
             config: config,
             format: customDownloadFileNameFormat,
             onIndividualDownloadChanged: (value) =>
-                ref.updateCustomDownloadFileNameFormat(value),
+                ref.editNotifier.updateCustomDownloadFileNameFormat(value),
             onBulkDownloadChanged: (value) =>
-                ref.updateCustomBulkDownloadFileNameFormat(value),
+                ref.editNotifier.updateCustomBulkDownloadFileNameFormat(value),
           ),
         ],
       ),

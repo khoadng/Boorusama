@@ -12,6 +12,7 @@ import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/images/images.dart';
 import 'package:boorusama/foundation/http/http.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import '../../foundation/networking/networking.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
@@ -116,6 +117,8 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                         headers: {
                           AppHttpHeaders.userAgentHeader: ua,
                           ...ref.watch(extraHttpHeaderProvider(config)),
+                          ...ref.watch(
+                              cachedBypassDdosHeadersProvider(config.url)),
                         },
                       ),
                       ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -137,6 +140,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                   headers: {
                     AppHttpHeaders.userAgentHeader: ua,
                     ...ref.watch(extraHttpHeaderProvider(config)),
+                    ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
                   },
                 ),
               ),

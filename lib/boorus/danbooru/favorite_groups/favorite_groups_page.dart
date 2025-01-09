@@ -106,8 +106,10 @@ class FavoriteGroupsPage extends ConsumerWidget {
   ) {
     showMaterialModalBottomSheet(
       context: context,
+      settings: const RouteSettings(name: 'favorite_groups_action'),
       builder: (_) => ModalFavoriteGroupAction(
         onDelete: () => showDialog(
+          routeSettings: const RouteSettings(name: 'favorite_groups_delete'),
           context: context,
           builder: (context) => AlertDialog(
             content: const Text('favorite_groups.detete_confirmation').tr(),
