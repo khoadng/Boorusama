@@ -22,7 +22,9 @@ class TagChipsPlaceholder extends StatelessWidget {
       color: backgroundColor,
       height: height ?? 40,
       child: ListView.builder(
-        shrinkWrap: true,
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
+        addSemanticIndexes: false,
         scrollDirection: Axis.horizontal,
         itemCount: itemCount ?? 20,
         itemBuilder: (context, index) {

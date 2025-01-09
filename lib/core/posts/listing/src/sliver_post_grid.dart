@@ -302,6 +302,9 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                   borderRadius: imageBorderRadius,
                 ),
                 childCount: perPage,
+                addRepaintBoundaries: false,
+                addAutomaticKeepAlives: false,
+                addSemanticIndexes: false,
               ),
             ),
           ImageListType.masonry => SliverMasonryGrid.count(
@@ -309,6 +312,9 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
               mainAxisSpacing: imageGridSpacing,
               crossAxisSpacing: imageGridSpacing,
               childCount: perPage,
+              addRepaintBoundaries: false,
+              addAutomaticKeepAlives: false,
+              addSemanticIndexes: false,
               itemBuilder: (context, index) {
                 return createRandomPlaceholderContainer(
                   context,
