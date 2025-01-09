@@ -127,7 +127,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late Animation<double> _displacementAnim;
   late Animation<Offset> _sideSheetSlideAnim;
 
-  final _forceHideOnExit = ValueNotifier(false);
+  final _forceHide = ValueNotifier(false);
 
   bool get isLargeScreen => widget.checkIfLargeScreen();
 
@@ -184,14 +184,24 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       }
     }
 
-    if (!widget.disableAnimation) {
-      Future.delayed(
-        const Duration(milliseconds: 150),
-        () {
-          if (!mounted) return;
-          _animationController?.forward();
-        },
-      );
+    if (widget.controller?.overlay.value ?? true) {
+      if (!widget.disableAnimation) {
+        Future.delayed(
+          const Duration(milliseconds: 150),
+          () {
+            if (!mounted) return;
+            _animationController?.forward();
+          },
+        );
+      } else {
+        _forceHide.value = false;
+      }
+    } else {
+      if (!widget.disableAnimation) {
+        _animationController?.reverse();
+      } else {
+        _forceHide.value = true;
+      }
     }
   }
 
@@ -200,7 +210,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.freestyleMoving.value = true;
     }
 
-    _forceHideOnExit.value = true;
+    _forceHide.value = true;
 
     _controller.restoreSystemStatus();
     widget.onExit?.call();
@@ -224,17 +234,28 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   void _onOverlayChanged() {
     if (_controller.overlay.value) {
       _pendingSystemStatusChanged.value = 'show';
-      _animationController?.forward();
+      if (!widget.disableAnimation) {
+        _animationController?.forward();
+      } else {
+        _forceHide.value = false;
+      }
     } else {
       _pendingSystemStatusChanged.value = 'hide';
-      _animationController?.reverse();
+      if (!widget.disableAnimation) {
+        _animationController?.reverse();
+      } else {
+        _forceHide.value = true;
+      }
     }
 
     // check bottom view padding, if it's a lot then we will schedule a system status change
     // otherwise, we will change it immediately
     final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
-    final duration =
-        bottomPadding > 16 ? const Duration(milliseconds: 350) : Duration.zero;
+    final duration = bottomPadding > 16
+        ? widget.disableAnimation
+            ? Duration.zero
+            : const Duration(milliseconds: 350)
+        : Duration.zero;
 
     Future.delayed(
       duration,
@@ -494,7 +515,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildSideSheet() {
     return ValueListenableBuilder(
-      valueListenable: _forceHideOnExit,
+      valueListenable: _forceHide,
       builder: (_, hide, child) => hide ? const SizedBox.shrink() : child!,
       child: SideSheet(
         controller: _controller,
@@ -552,7 +573,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 final sheet = _buildBottomSheet();
 
                 return ValueListenableBuilder(
-                  valueListenable: _forceHideOnExit,
+                  valueListenable: _forceHide,
                   builder: (__, hide, _) => hide
                       ? const SizedBox.shrink()
                       : _curvedAnimation != null
@@ -593,7 +614,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               );
 
               return ValueListenableBuilder(
-                valueListenable: _forceHideOnExit,
+                valueListenable: _forceHide,
                 builder: (_, hide, __) => hide
                     ? const SizedBox.shrink()
                     : _curvedAnimation != null

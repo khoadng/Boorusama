@@ -128,15 +128,6 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      settingsProvider.select((value) => value.hidePostDetailsOverlay),
-      (previous, next) {
-        if (previous != next && _controller.overlay.value != next) {
-          _controller.overlay.value = !next;
-        }
-      },
-    );
-
     final useDefaultEngine = ref.watch(
       settingsProvider.select(
         (value) => _isDefaultEngine(value),
@@ -203,10 +194,12 @@ class _PostDetailPageScaffoldState<T extends Post>
             useDefaultEngine: _isDefaultEngine(settings),
           );
 
-          if (posts[page].isVideo) {
-            _controller.enableHoverToControlOverlay();
-          } else {
-            _controller.disableHoverToControlOverlay();
+          if (_controller.overlay.value) {
+            if (posts[page].isVideo) {
+              _controller.enableHoverToControlOverlay();
+            } else {
+              _controller.disableHoverToControlOverlay();
+            }
           }
 
           ref
