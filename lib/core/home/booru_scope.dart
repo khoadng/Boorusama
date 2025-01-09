@@ -1,177 +1,339 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:foundation/widgets.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import '../blacklists/widgets.dart';
-import '../bookmarks/widgets.dart';
+import '../app.dart';
 import '../cache/providers.dart';
-import '../downloads/bulks.dart';
-import '../downloads/manager.dart';
+import '../configs/widgets.dart';
 import '../foundation/display.dart';
-import '../settings/routes.dart';
-import '../tags/favorites/widgets.dart';
+import '../foundation/platform.dart';
+import '../settings/providers.dart';
+import '../settings/settings.dart';
+import '../theme.dart';
 import '../widgets/widgets.dart';
-import 'booru_desktop_scope.dart';
-import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
+import 'side_bar_menu.dart';
 
+const double _kDefaultMenuSize = 220;
 const String kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
+    required this.controller,
+    required this.menuBuilder,
     required this.mobileMenu,
-    required this.desktopMenuBuilder,
-    required this.desktopViews,
+    required this.views,
+    required this.menuWidth,
     super.key,
-    this.controller,
   });
 
-  final List<Widget> Function(
-    BuildContext context,
-    HomePageController controller,
-    BoxConstraints constraints,
-  ) desktopMenuBuilder;
+  final HomePageController controller;
+  final List<Widget> Function(BuildContext context, BoxConstraints constraints)
+      menuBuilder;
+
+  final List<Widget> views;
+  final double? menuWidth;
 
   final List<Widget> mobileMenu;
-
-  final List<Widget> desktopViews;
-
-  final HomePageController? controller;
 
   @override
   ConsumerState<BooruScope> createState() => _BooruScopeState();
 }
 
 class _BooruScopeState extends ConsumerState<BooruScope> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  late final controller =
-      widget.controller ?? HomePageController(scaffoldKey: scaffoldKey);
+  late MultiSplitViewController splitController;
+
+  bool get isDesktop => context.isLargeScreen;
+
+  @override
+  void initState() {
+    super.initState();
+
+    menuWidth.addListener(saveWidthToCache);
+
+    widget.controller.addHandler(_onSidebarStateChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    splitController = MultiSplitViewController(
+      areas: [
+        if (isDesktop)
+          Area(
+            id: 'menu',
+            data: 'menu',
+            min: kMinSideBarWidth,
+            max: kMaxSideBarWidth,
+            size: widget.menuWidth ?? _kDefaultMenuSize,
+          ),
+        Area(
+          id: 'content',
+          data: 'content',
+        ),
+      ],
+    );
+  }
+
+  void _onSidebarStateChanged(open) {
+    if (!isDesktop) return;
+
+    if (open) {
+      _setDefaultSplit();
+    } else {
+      _setMinSplit();
+    }
+  }
+
+  void saveWidthToCache() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref
+          .read(miscDataProvider(kMenuWidthCacheKey).notifier)
+          .put(menuWidth.value.toString());
+    });
+  }
 
   @override
   void dispose() {
-    if (widget.controller == null) {
-      controller.dispose();
-    }
+    menuWidth.removeListener(saveWidthToCache);
+    splitController.dispose();
+    menuWidth.dispose();
+    widget.controller.removeHandler(_onSidebarStateChanged);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
-    final desktopViews = widget.desktopViews
-        .mapIndexed(
-          (i, e) => Scaffold(
-            appBar: !context.isLargeScreen && i > 0
-                ? AppBar(
-                    leading: BackButton(
-                      onPressed: () {
-                        controller.goToTab(0);
-                      },
-                    ),
-                  )
-                : null,
-            body: e,
-          ),
-        )
-        .toList();
+    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return HomePageSidebarKeyboardListener(
-      controller: controller,
-      child: CustomContextMenuOverlay(
-        child: BooruDesktopScope(
-          controller: controller,
-          menuBuilder: (context, constraints) => widget.desktopMenuBuilder(
-            context,
-            controller,
-            constraints,
-          ),
-          mobileMenu: widget.mobileMenu,
-          views: desktopViews,
-          menuWidth: double.tryParse(menuWidth),
+    final content = ValueListenableBuilder(
+      valueListenable: widget.controller,
+      builder: (context, value, child) => MediaQuery.removePadding(
+        context: context,
+        removeLeft: true,
+        child: LazyIndexedStack(
+          index: value,
+          children: widget.views,
         ),
+      ),
+    );
+
+    final menu = isDesktop
+        ? SafeArea(
+            bottom: false,
+            left: false,
+            right: false,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerLow,
+                border: Border(
+                  right: BorderSide(
+                    color: colorScheme.hintColor,
+                    width: 0.25,
+                  ),
+                ),
+              ),
+              child: Column(
+                children: [
+                  const CurrentBooruTile(),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (_, constraints) => SingleChildScrollView(
+                        child: Theme(
+                          data: theme.copyWith(
+                            iconTheme: theme.iconTheme.copyWith(size: 20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const SizedBox(height: 8),
+                              ...widget.menuBuilder(
+                                context,
+                                constraints,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : const SizedBox();
+
+    final swipeArea = ref.watch(
+      settingsProvider
+          .select((value) => value.swipeAreaToOpenSidebarPercentage),
+    );
+
+    final position = ref.watch(
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
+
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        statusBarBrightness: theme.brightness,
+        statusBarIconBrightness: context.onBrightness,
+      ),
+      child: Scaffold(
+        key: widget.controller.scaffoldKey,
+        bottomNavigationBar:
+            !isDesktop && position == BooruConfigSelectorPosition.bottom
+                ? const BooruSelectorWithBottomPadding()
+                : null,
+        drawer: !isDesktop
+            ? SideBarMenu(
+                width: 300,
+                padding: EdgeInsets.zero,
+                initialContent: widget.mobileMenu,
+              )
+            : null,
+        backgroundColor: colorScheme.surface,
+        resizeToAvoidBottomInset: !isDesktop ? false : null,
+        drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
+        body: MultiSplitViewTheme(
+          data: MultiSplitViewThemeData(
+            dividerThickness: !isDesktopPlatform()
+                ? Screen.of(context).size.isLarge
+                    ? 24
+                    : 16
+                : 4,
+            dividerPainter: isDesktopPlatform()
+                ? DividerPainters.background(
+                    animationEnabled: false,
+                    color: colorScheme.surface,
+                    highlightedColor: colorScheme.primary,
+                  )
+                : DividerPainters.grooved1(
+                    animationDuration: const Duration(milliseconds: 150),
+                    color: colorScheme.onSurface,
+                    thickness: Screen.of(context).size.isLarge ? 6 : 3,
+                    size: 75,
+                    highlightedColor: colorScheme.primary,
+                  ),
+          ),
+          child: Column(
+            children: [
+              const NetworkUnavailableIndicatorWithState(),
+              Expanded(
+                child: MultiSplitView(
+                  controller: splitController,
+                  onDividerDoubleTap: (divider) {
+                    setState(() {
+                      final width = menuWidth.value;
+
+                      if (width == kMinSideBarWidth) {
+                        _setDefaultSplit();
+                      } else if (width <= _kDefaultMenuSize) {
+                        _setMinSplit();
+                      } else {
+                        _setDefaultSplit();
+                      }
+                    });
+                  },
+                  builder: (context, area) => isDesktop
+                      ? switch (area.data) {
+                          'menu' => LayoutBuilder(
+                              builder: (_, c) {
+                                // no need to set state here, just a quick hack to get the current width of the menu
+                                menuWidth.value = c.maxWidth;
+
+                                return menu;
+                              },
+                            ),
+                          'content' => content,
+                          _ => const SizedBox.shrink(),
+                        }
+                      : switch (area.data) {
+                          'content' => content,
+                          _ => const SizedBox.shrink(),
+                        },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _setMinSplit() {
+    splitController.areas = [
+      Area(
+        id: 'menu',
+        data: 'menu',
+        min: kMinSideBarWidth,
+        max: kMaxSideBarWidth,
+        size: kMinSideBarWidth,
+      ),
+      Area(
+        id: 'content',
+        data: 'content',
+      ),
+    ];
+  }
+
+  void _setDefaultSplit() {
+    splitController.areas = [
+      Area(
+        id: 'menu',
+        data: 'menu',
+        min: kMinSideBarWidth,
+        max: kMaxSideBarWidth,
+        size: _kDefaultMenuSize,
+      ),
+      Area(
+        id: 'content',
+        data: 'content',
+      ),
+    ];
+  }
+
+  late final menuWidth = ValueNotifier(widget.menuWidth ?? _kDefaultMenuSize);
+}
+
+class BooruSelectorWithBottomPadding extends ConsumerWidget {
+  const BooruSelectorWithBottomPadding({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hideLabel = ref
+        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+
+    return Container(
+      color: Colors.transparent,
+      height: kBottomNavigationBarHeight - (hideLabel ? 4 : -8),
+      margin: EdgeInsets.only(
+        bottom: MediaQuery.paddingOf(context).bottom,
+      ),
+      child: const BooruSelector(
+        direction: Axis.horizontal,
       ),
     );
   }
 }
 
-const _kPlaceholderOffset = 100;
-
-int _v(int value) => _kPlaceholderOffset + value;
-
-List<Widget> coreDesktopViewBuilder({
-  required int previousItemCount,
-}) {
-  // skip previousItemCount to prevent access the wrong index
-  final totalPlaceholder = _kPlaceholderOffset - previousItemCount + 1;
-
-  final views = [
-    for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
-    const BookmarkPage(),
-    const BlacklistedTagPage(),
-    const FavoriteTagsPage(),
-    const BulkDownloadPage(),
-    const DownloadManagerGatewayPage(),
-  ];
-
-  return views;
-}
-
-List<Widget> coreDesktopTabBuilder(
+double? _calculateDrawerEdgeDragWidth(
   BuildContext context,
-  BoxConstraints constraints,
+  int areaPercentage,
 ) {
-  return [
-    const Divider(),
-    HomeNavigationTile(
-      value: _v(1),
-      constraints: constraints,
-      selectedIcon: Symbols.bookmark,
-      icon: Symbols.bookmark,
-      title: 'sideMenu.your_bookmarks'.tr(),
-    ),
-    HomeNavigationTile(
-      value: _v(2),
-      constraints: constraints,
-      selectedIcon: Symbols.list_alt,
-      icon: Symbols.list_alt,
-      title: 'sideMenu.your_blacklist'.tr(),
-    ),
-    HomeNavigationTile(
-      value: _v(3),
-      constraints: constraints,
-      selectedIcon: Symbols.tag,
-      icon: Symbols.tag,
-      title: 'favorite_tags.favorite_tags'.tr(),
-    ),
-    HomeNavigationTile(
-      value: _v(4),
-      constraints: constraints,
-      selectedIcon: Symbols.sim_card_download,
-      icon: Symbols.sim_card_download,
-      title: 'sideMenu.bulk_download'.tr(),
-    ),
-    HomeNavigationTile(
-      value: _v(5),
-      constraints: constraints,
-      selectedIcon: Symbols.download,
-      icon: Symbols.download,
-      title: 'Download manager',
-    ),
-    const Divider(),
-    HomeNavigationTile(
-      value: 99999,
-      constraints: constraints,
-      selectedIcon: Symbols.settings,
-      icon: Symbols.settings,
-      title: 'sideMenu.settings'.tr(),
-      onTap: () => goToSettingsPage(context),
-    ),
-    const SizedBox(height: 8),
-  ];
+  const minValue = 20.0;
+  final screenWidth = MediaQuery.sizeOf(context).width;
+  final value = (areaPercentage / 100).clamp(0.05, 1);
+  final width = screenWidth * value;
+
+  // if the width is less than the minimum value, return the minimum value
+  return width < minValue ? minValue : width;
 }
