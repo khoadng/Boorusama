@@ -75,8 +75,8 @@ class _AppLockState extends ConsumerState<AppLock> {
       },
     );
 
-    return Scaffold(
-      body: ref.watch(canUseBiometricLockProvider).when(
+    return Material(
+      child: ref.watch(canUseBiometricLockProvider).when(
             data: (canUse) {
               if (canUse && !unlocked) {
                 return Center(
