@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -12,11 +12,13 @@ import '../blacklists/widgets.dart';
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
 import '../cache/providers.dart';
+import '../configs/widgets.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/widgets.dart';
+import '../theme.dart';
 import '../widgets/widgets.dart';
 import 'booru_scope.dart';
 import 'home_navigation_tile.dart';
@@ -55,69 +57,170 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final customHome = ref.watch(currentBooruBuilderProvider)?.homeViewBuilder;
-
-    final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
-
-    final views = [
-      if (customHome != null)
-        customHome(context, controller)
-      else
-        const Scaffold(
-          body: Center(child: Text('No home view builder found')),
-        ),
-      if (widget.desktopViews != null) ...widget.desktopViews!,
-    ]
-        .mapIndexed(
-          (i, e) => Scaffold(
-            appBar: !context.isLargeScreen && i > 0
-                ? AppBar(
-                    leading: BackButton(
-                      onPressed: () {
-                        controller.goToTab(0);
-                      },
-                    ),
-                  )
-                : null,
-            body: e,
-          ),
-        )
-        .toList();
-
     return InheritedHomePageController(
       controller: controller,
       child: HomePageSidebarKeyboardListener(
         controller: controller,
         child: CustomContextMenuOverlay(
-          child: BooruScope(
-            controller: controller,
-            menuBuilder: (context, constraints) => [
-              HomeNavigationTile(
-                value: 0,
-                constraints: constraints,
-                selectedIcon: Symbols.dashboard,
-                icon: Symbols.dashboard,
-                title: 'Home',
-              ),
-              if (widget.desktopMenuBuilder != null)
-                ...widget.desktopMenuBuilder!(context, constraints),
-              ...coreDesktopTabBuilder(
-                context,
-                constraints,
-              ),
-            ],
-            mobileMenu: widget.mobileMenu ?? [],
-            views: [
+          child: Builder(
+            builder: (context) {
+              final menuWidth = ref.watch(miscDataProvider(kMenuWidthCacheKey));
+
+              return BooruScope(
+                controller: controller,
+                menu: HomeSideMenu(
+                  desktopMenuBuilder: widget.desktopMenuBuilder,
+                ),
+                content: HomeContent(
+                  desktopViews: widget.desktopViews,
+                ),
+                mobileMenu: widget.mobileMenu ?? [],
+                menuWidth: double.tryParse(menuWidth),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeContent extends ConsumerWidget {
+  const HomeContent({
+    required this.desktopViews,
+    super.key,
+  });
+
+  final List<Widget>? desktopViews;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = InheritedHomePageController.of(context);
+
+    final views = [
+      const CustomHomePage(),
+      if (desktopViews != null) ...desktopViews!,
+    ];
+
+    return ValueListenableBuilder(
+      valueListenable: controller,
+      builder: (context, value, child) => MediaQuery.removePadding(
+        context: context,
+        removeLeft: true,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: !context.isLargeScreen && value > 0
+              ? AppBar(
+                  leading: BackButton(
+                    onPressed: () {
+                      controller.goToTab(0);
+                    },
+                  ),
+                )
+              : null,
+          body: LazyIndexedStack(
+            index: value,
+            children: [
               ...views,
               ...coreDesktopViewBuilder(
                 previousItemCount: views.length,
               ),
             ],
-            menuWidth: double.tryParse(menuWidth),
           ),
         ),
       ),
     );
+  }
+}
+
+class HomeSideMenu extends ConsumerWidget {
+  const HomeSideMenu({
+    required this.desktopMenuBuilder,
+    super.key,
+  });
+
+  final List<Widget> Function(
+    BuildContext context,
+    BoxConstraints constraints,
+  )? desktopMenuBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return context.isLargeScreen
+        ? SafeArea(
+            bottom: false,
+            left: false,
+            right: false,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerLow,
+                border: Border(
+                  right: BorderSide(
+                    color: colorScheme.hintColor,
+                    width: 0.25,
+                  ),
+                ),
+              ),
+              child: Column(
+                children: [
+                  const CurrentBooruTile(),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (_, constraints) => SingleChildScrollView(
+                        child: Theme(
+                          data: theme.copyWith(
+                            iconTheme: theme.iconTheme.copyWith(size: 20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const SizedBox(height: 8),
+                              HomeNavigationTile(
+                                value: 0,
+                                constraints: constraints,
+                                selectedIcon: Symbols.dashboard,
+                                icon: Symbols.dashboard,
+                                title: 'Home',
+                              ),
+                              if (desktopMenuBuilder != null)
+                                ...desktopMenuBuilder!(
+                                  context,
+                                  constraints,
+                                ),
+                              ...coreDesktopTabBuilder(
+                                context,
+                                constraints,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : const SizedBox.shrink();
+  }
+}
+
+class CustomHomePage extends ConsumerWidget {
+  const CustomHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = InheritedHomePageController.of(context);
+    final customHome = ref.watch(currentBooruBuilderProvider)?.homeViewBuilder;
+
+    return customHome != null
+        ? customHome(context, controller)
+        : const Scaffold(
+            body: Center(child: Text('No home view builder found')),
+          );
   }
 }
 

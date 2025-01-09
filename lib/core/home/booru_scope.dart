@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
@@ -26,18 +25,17 @@ const String kMenuWidthCacheKey = 'menu_width';
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({
     required this.controller,
-    required this.menuBuilder,
+    required this.menu,
+    required this.content,
     required this.mobileMenu,
-    required this.views,
     required this.menuWidth,
     super.key,
   });
 
   final HomePageController controller;
-  final List<Widget> Function(BuildContext context, BoxConstraints constraints)
-      menuBuilder;
+  final Widget menu;
+  final Widget content;
 
-  final List<Widget> views;
   final double? menuWidth;
 
   final List<Widget> mobileMenu;
@@ -114,63 +112,6 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     final theme = Theme.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
-    final content = ValueListenableBuilder(
-      valueListenable: widget.controller,
-      builder: (context, value, child) => MediaQuery.removePadding(
-        context: context,
-        removeLeft: true,
-        child: LazyIndexedStack(
-          index: value,
-          children: widget.views,
-        ),
-      ),
-    );
-
-    final menu = isDesktop
-        ? SafeArea(
-            bottom: false,
-            left: false,
-            right: false,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerLow,
-                border: Border(
-                  right: BorderSide(
-                    color: colorScheme.hintColor,
-                    width: 0.25,
-                  ),
-                ),
-              ),
-              child: Column(
-                children: [
-                  const CurrentBooruTile(),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (_, constraints) => SingleChildScrollView(
-                        child: Theme(
-                          data: theme.copyWith(
-                            iconTheme: theme.iconTheme.copyWith(size: 20),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(height: 8),
-                              ...widget.menuBuilder(
-                                context,
-                                constraints,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-        : const SizedBox();
-
     final swipeArea = ref.watch(
       settingsProvider
           .select((value) => value.swipeAreaToOpenSidebarPercentage),
@@ -201,7 +142,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
               )
             : null,
         backgroundColor: colorScheme.surface,
-        resizeToAvoidBottomInset: !isDesktop ? false : null,
+        resizeToAvoidBottomInset: false,
         drawerEdgeDragWidth: _calculateDrawerEdgeDragWidth(context, swipeArea),
         body: MultiSplitViewTheme(
           data: MultiSplitViewThemeData(
@@ -250,14 +191,14 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
                                 // no need to set state here, just a quick hack to get the current width of the menu
                                 menuWidth.value = c.maxWidth;
 
-                                return menu;
+                                return widget.menu;
                               },
                             ),
-                          'content' => content,
+                          'content' => widget.content,
                           _ => const SizedBox.shrink(),
                         }
                       : switch (area.data) {
-                          'content' => content,
+                          'content' => widget.content,
                           _ => const SizedBox.shrink(),
                         },
                 ),
