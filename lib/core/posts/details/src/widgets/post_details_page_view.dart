@@ -327,7 +327,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final screenHeight = MediaQuery.sizeOf(context).height;
     final dis = size * screenHeight;
 
-    _controller.displacement.value = dis;
+    _controller.displacement.value = _clampToZero(dis);
   }
 
   void _onSheetStateChanged() {
@@ -1506,6 +1506,14 @@ class _SlideContainerState extends State<_SlideContainer>
       child: widget.child,
     );
   }
+}
+
+double _clampToZero(
+  double value, {
+  double threshold = 0.01,
+}) {
+  if (value.isNaN) return 0.0;
+  return value.abs() < threshold ? 0.0 : value;
 }
 
 enum SheetState {
