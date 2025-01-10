@@ -91,7 +91,7 @@ class CreateBooruConfigCategory extends Equatable {
         id = 'viewer';
 
   const CreateBooruConfigCategory.network()
-      : title = 'booru.network',
+      : title = 'Network',
         name = 'config/network',
         id = 'network';
 

@@ -16,8 +16,9 @@ import 'color_selector_builtin.dart';
 import 'page_preview.dart';
 import 'widgets.dart';
 
-const _kMinSheetSize = 0.24;
-const _kMaxSheetSize = 0.65;
+const _kMinSheetSize = 0.1;
+const _kMiddleSheetSize = 0.4;
+const _kMaxSheetSize = 0.7;
 
 class ThemePreviewApp extends StatefulWidget {
   const ThemePreviewApp({
@@ -84,71 +85,113 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                   padding: EdgeInsets.only(
                     top: MediaQuery.viewPaddingOf(context).top + 20,
                     bottom: MediaQuery.sizeOf(context).height * _kMinSheetSize +
-                        120,
+                        160,
                   ),
-                  child: _buildPageView(colorScheme),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: _buildPageView(colorScheme),
+                      ),
+                    ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Expanded(
-                      child: DraggableScrollableSheet(
-                        snap: true,
-                        minChildSize: switch (_category) {
-                          ThemeCategory.accent => 0.3,
-                          _ => _kMinSheetSize,
-                        },
-                        maxChildSize: _kMaxSheetSize,
-                        initialChildSize: switch (_category) {
-                          ThemeCategory.accent => 0.3,
-                          _ => _kMinSheetSize,
-                        },
-                        builder: (context, scrollController) {
-                          return ColoredBox(
-                            color: Theme.of(context).colorScheme.surface,
-                            child: CustomScrollView(
-                              controller: scrollController,
-                              slivers: [
-                                const SliverDivider(
-                                  height: 1,
-                                ),
-                                const SliverSizedBox(
-                                  height: 8,
-                                ),
-                                SliverToBoxAdapter(
-                                  child: Center(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: colorScheme.hintColor,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10),
+                SafeArea(
+                  child: DraggableScrollableSheet(
+                    snap: true,
+                    snapSizes: const [
+                      _kMinSheetSize,
+                      _kMiddleSheetSize,
+                      _kMaxSheetSize,
+                    ],
+                    snapAnimationDuration: const Duration(milliseconds: 200),
+                    initialChildSize: _kMiddleSheetSize,
+                    maxChildSize: _kMaxSheetSize,
+                    minChildSize: _kMinSheetSize,
+                    builder: (context, scrollController) {
+                      return ColoredBox(
+                        color: Theme.of(context).colorScheme.surface,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 60,
+                              child: CustomScrollView(
+                                controller: scrollController,
+                                slivers: [
+                                  const SliverDivider(
+                                    height: 1,
+                                  ),
+                                  const SliverSizedBox(
+                                    height: 8,
+                                  ),
+                                  SliverToBoxAdapter(
+                                    child: Center(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.hintColor,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
                                         ),
+                                        height: 4,
+                                        width: 40,
                                       ),
-                                      height: 4,
-                                      width: 40,
                                     ),
                                   ),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: _buildOptions(),
-                                ),
-                              ],
+                                  SliverToBoxAdapter(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                      ),
+                                      child: CategoryToggleSwitch(
+                                        initialCategory: _category,
+                                        onToggle: (category) {
+                                          setState(() {
+                                            _category = category;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    CategoryToggleSwitch(
-                      initialCategory: _category,
-                      onToggle: (category) {
-                        setState(() {
-                          _category = category;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      height: MediaQuery.viewPaddingOf(context).bottom,
-                    ),
-                  ],
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                      top: 20,
+                                      left: 12,
+                                      right: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: colorScheme.outlineVariant,
+                                          width: 0.25,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: CustomScrollView(
+                                      slivers: [
+                                        SliverList.list(
+                                          children: [
+                                            _buildOptions(),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -217,23 +260,25 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
             color: colorScheme.onSurface,
           ),
         ),
-        Expanded(
-          child: Transform.scale(
-            scale: 0.88,
-            child: PageView(
-              controller: pageController,
-              children: pages,
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
+          child: SmoothPageIndicator(
+            controller: pageController,
+            count: pages.length,
+            effect: WormEffect(
+              activeDotColor: colorScheme.primary,
+              dotColor: colorScheme.outlineVariant.withValues(alpha: 0.25),
+              dotHeight: 8,
+              dotWidth: 16,
             ),
           ),
         ),
-        SmoothPageIndicator(
-          controller: pageController,
-          count: pages.length,
-          effect: WormEffect(
-            activeDotColor: colorScheme.primary,
-            dotColor: colorScheme.outlineVariant.withValues(alpha: 0.25),
-            dotHeight: 8,
-            dotWidth: 16,
+        Expanded(
+          child: PageView(
+            controller: pageController,
+            children: pages,
           ),
         ),
       ],

@@ -22,7 +22,7 @@ class GelbooruFavoritesPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: GelbooruFavoritesPageInternal(
+      builder: (_) => GelbooruFavoritesPageInternal(
         uid: config.login!,
       ),
     );

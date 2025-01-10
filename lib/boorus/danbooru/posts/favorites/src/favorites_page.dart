@@ -25,7 +25,7 @@ class DanbooruFavoritesPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: DanbooruFavoritesPageInternal(
+      builder: (_) => DanbooruFavoritesPageInternal(
         username: config.login!,
       ),
     );

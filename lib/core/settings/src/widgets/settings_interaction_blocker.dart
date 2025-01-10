@@ -125,7 +125,8 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
 
 class ThemeSettingsInteractionBlocker extends ConsumerWidget {
   const ThemeSettingsInteractionBlocker({
-    required this.child, super.key,
+    required this.child,
+    super.key,
     this.padding,
     this.onNavigateAway,
   });
@@ -160,7 +161,7 @@ class ThemeSettingsInteractionBlocker extends ConsumerWidget {
                   goToUpdateBooruConfigPage(
                     context,
                     config: config,
-                    initialTab: 'theme',
+                    initialTab: 'appearance',
                   );
 
                   onNavigateAway?.call();

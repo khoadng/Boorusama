@@ -30,30 +30,24 @@ class ColorVariantSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OptionDropDownButton(
-      alignment: AlignmentDirectional.centerStart,
-      value: variant,
-      onChanged: onChanged,
-      items: _kVariantsOptions
-          .map(
-            (value) => DropdownMenuItem(
-              value: value,
-              child: Text(
-                switch (value) {
-                  DynamicSchemeVariant.tonalSpot => 'Tonal',
-                  DynamicSchemeVariant.fidelity => 'Fidelity',
-                  DynamicSchemeVariant.monochrome => 'Monochrome',
-                  DynamicSchemeVariant.neutral => 'Neutral',
-                  DynamicSchemeVariant.vibrant => 'Vibrant',
-                  DynamicSchemeVariant.expressive => 'Expressive',
-                  DynamicSchemeVariant.content => 'Content',
-                  DynamicSchemeVariant.rainbow => 'Rainbow',
-                  DynamicSchemeVariant.fruitSalad => 'Fruit Salad',
-                },
-              ),
-            ),
-          )
-          .toList(),
+    return ChoiceOptionSelectorList(
+      searchable: false,
+      options: _kVariantsOptions,
+      selectedOption: variant,
+      onSelected: onChanged,
+      hasNullOption: false,
+      optionLabelBuilder: (value) => switch (value) {
+        DynamicSchemeVariant.tonalSpot => 'Tonal',
+        DynamicSchemeVariant.fidelity => 'Fidelity',
+        DynamicSchemeVariant.monochrome => 'Monochrome',
+        DynamicSchemeVariant.neutral => 'Neutral',
+        DynamicSchemeVariant.vibrant => 'Vibrant',
+        DynamicSchemeVariant.expressive => 'Expressive',
+        DynamicSchemeVariant.content => 'Content',
+        DynamicSchemeVariant.rainbow => 'Rainbow',
+        DynamicSchemeVariant.fruitSalad => 'Fruit Salad',
+        _ => 'Unknown',
+      },
     );
   }
 }

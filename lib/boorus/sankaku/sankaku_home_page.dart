@@ -58,7 +58,7 @@ class SankakuFavoritesPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: SankakuFavoritesPageInternal(
+      builder: (_) => SankakuFavoritesPageInternal(
         username: config.login!,
       ),
     );
