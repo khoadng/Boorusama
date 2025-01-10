@@ -111,7 +111,6 @@ class SideBarMenu extends ConsumerWidget {
                             icon: const Icon(Symbols.search),
                             title: const Text('settings.search.search').tr(),
                             onTap: () {
-                              if (popOnSelect) Navigator.of(context).pop();
                               goToSearchPage(context);
                             },
                           ),
