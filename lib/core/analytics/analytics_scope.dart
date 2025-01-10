@@ -7,8 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../configs/current.dart';
 import 'analytics_providers.dart';
+import 'analytics_view_info.dart';
 
-class AnalyticsScope extends ConsumerWidget {
+class AnalyticsScope extends ConsumerStatefulWidget {
   const AnalyticsScope({
     required this.child,
     super.key,
@@ -17,7 +18,51 @@ class AnalyticsScope extends ConsumerWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AnalyticsScope> createState() => _AnalyticsScopeState();
+}
+
+class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
+    with WidgetsBindingObserver {
+  double? _lastAspectRatio;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _updateViewInfo();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    _updateViewInfo();
+  }
+
+  void _updateViewInfo() {
+    final aspectRatio = View.of(context).physicalSize.aspectRatio;
+
+    if (_lastAspectRatio == aspectRatio) return;
+
+    ref.read(analyticsProvider).updateViewInfo(
+          AnalyticsViewInfo(aspectRatio: aspectRatio),
+        );
+
+    _lastAspectRatio = aspectRatio;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final analytics = ref.watch(analyticsProvider);
     final enabled = analytics.enabled;
 
@@ -32,6 +77,6 @@ class AnalyticsScope extends ConsumerWidget {
       },
     );
 
-    return child;
+    return widget.child;
   }
 }

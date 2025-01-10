@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 3.22.1+125
+version: 3.22.2+127
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
@@ -11,6 +11,7 @@ workspace:
   - packages/foundation
   - packages/booru_clients
   - packages/filename_generator
+  - packages/flutter_staggered_grid_view
 
 dependencies:
   # local packages
@@ -20,6 +21,8 @@ dependencies:
     path: packages/booru_clients
   filename_generator:
     path: packages/filename_generator
+  flutter_staggered_grid_view:
+    path: packages/flutter_staggered_grid_view
 
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
@@ -61,7 +64,6 @@ dependencies:
   flutter_riverpod: ^2.5.1
   flutter_scatter: ^0.2.0
   flutter_spinkit: ^5.2.0
-  flutter_staggered_grid_view: ^0.7.0
   flutter_svg: ^2.0.10+1
   flutter_widget_from_html_core: ^0.15.2
   font_awesome_flutter: ^10.7.0

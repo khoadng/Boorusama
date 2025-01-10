@@ -8,6 +8,7 @@ import '../pages/comment_update_page.dart';
 
 final danbooruCommentEditorRoutes = GoRoute(
   path: '/internal/danbooru/posts/:id/comments/editor',
+  name: 'comments/editor',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,

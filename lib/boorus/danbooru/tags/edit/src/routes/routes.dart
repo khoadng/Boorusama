@@ -5,6 +5,7 @@ import '../tag_edit_page.dart';
 
 final danbooruTagEditRoutes = GoRoute(
   path: '/internal/danbooru/posts/:id/editor',
+  name: 'tag_edit',
   pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruPost>(
     errorScreenMessage: 'Invalid post',
     fullScreen: true,

@@ -30,7 +30,9 @@ class TagChipsPlaceholder extends ConsumerWidget {
       color: backgroundColor,
       height: height ?? 40,
       child: ListView.builder(
-        shrinkWrap: true,
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
+        addSemanticIndexes: false,
         scrollDirection: Axis.horizontal,
         itemCount: itemCount ?? 20,
         itemBuilder: (context, index) {

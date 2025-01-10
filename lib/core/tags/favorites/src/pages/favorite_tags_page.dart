@@ -42,6 +42,9 @@ class FavoriteTagsPage extends ConsumerWidget {
             onPressed: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
+                  settings: const RouteSettings(
+                    name: 'favorite_tag_labels',
+                  ),
                   builder: (context) => const FavoriteTagLabelsPage(),
                 ),
               );
@@ -108,6 +111,8 @@ class FavoriteTagsPage extends ConsumerWidget {
                     onPressed: () {
                       showMaterialModalBottomSheet(
                         context: context,
+                        settings:
+                            const RouteSettings(name: 'favorite_tag_config'),
                         backgroundColor:
                             Theme.of(context).colorScheme.surfaceContainer,
                         shape: RoundedRectangleBorder(
@@ -189,6 +194,7 @@ class FavoriteTagsPage extends ConsumerWidget {
                 case 'edit':
                   showMaterialModalBottomSheet(
                     context: context,
+                    settings: const RouteSettings(name: 'edit_favorite_tag'),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(16),

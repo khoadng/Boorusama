@@ -35,6 +35,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
     this.blockOverlay,
     this.contextMenu,
     this.onTap,
+    this.useHero = true,
   });
 
   final int index;
@@ -44,6 +45,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
   final BlockOverlayItem? blockOverlay;
   final Widget? contextMenu;
   final VoidCallback? onTap;
+  final bool useHero;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,16 +122,19 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                                         );
                                       }
                                     }),
-                      image: BooruImage(
-                        aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                        imageUrl: post
-                            .thumbnailFromImageQuality(settings.imageQuality),
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
+                      image: BooruHero(
+                        tag: useHero ? '${post.id}_hero' : null,
+                        child: BooruImage(
+                          aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                          imageUrl: post
+                              .thumbnailFromImageQuality(settings.imageQuality),
+                          borderRadius: BorderRadius.circular(
+                            settings.imageBorderRadius,
+                          ),
+                          forceFill:
+                              settings.imageListType == ImageListType.standard,
+                          placeholderUrl: post.thumbnailImageUrl,
                         ),
-                        forceFill:
-                            settings.imageListType == ImageListType.standard,
-                        placeholderUrl: post.thumbnailImageUrl,
                       ),
                       score: post.isBanned ? null : post.score,
                       blockOverlay: blockOverlay ??

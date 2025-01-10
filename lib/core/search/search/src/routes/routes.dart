@@ -5,23 +5,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../home/custom_home.dart';
 import '../../../../router.dart';
 import '../../../../widgets/widgets.dart';
+import '../pages/search_page.dart';
 
 GoRoute searchRoutes(Ref ref) => GoRoute(
       path: 'search',
       name: '/search',
       pageBuilder: (context, state) {
-        final booruBuilder = ref.read(currentBooruBuilderProvider);
-        final builder = booruBuilder?.searchPageBuilder;
         final query = state.uri.queryParameters[kInitialQueryKey];
         final customHomeViewKey = ref.readLayoutConfigs?.home;
-        final page = builder != null
-            ? builder(context, query)
-            : const UnimplementedPage();
+        final page = InheritedInitialSearchQuery(
+          query: query,
+          child: const SearchPage(),
+        );
 
         return customHomeViewKey.isAlt
             ? CupertinoPage(

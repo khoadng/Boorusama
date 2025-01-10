@@ -34,6 +34,7 @@ class PostStatsApproverSection extends ConsumerWidget {
           onMore: () {
             showAppModalBarBottomSheet(
               context: context,
+              settings: const RouteSettings(name: 'posts_approver_stats'),
               builder: (context) => CreatorStatisticSheet(
                 totalPosts: totalPosts,
                 stats: stats.approvers,

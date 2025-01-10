@@ -6,17 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
 import '../../../../router.dart';
+import '../../../../settings/providers.dart';
+import '../widgets/post_details_page.dart';
 import 'details_route_payload.dart';
 
 GoRoute postDetailsRoutes(Ref ref) => GoRoute(
       path: 'details',
+      name: '/details',
       pageBuilder: (context, state) {
-        final booruBuilder = ref.read(currentBooruBuilderProvider);
-        final builder = booruBuilder?.postDetailsPageBuilder;
-
         final payload = castOrNull<DetailsRoutePayload>(state.extra);
+        final settings = ref.read(settingsProvider);
 
         if (payload == null) {
           return MaterialPage(
@@ -24,28 +24,61 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
           );
         }
 
+        final widget = InheritedPayload(
+          payload: payload,
+          child: const PostDetailsPage(),
+        );
+
         // must use the value from the payload for orientation
         // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
-        final page = !payload.isDesktop
-            ? MaterialPage(
-                key: state.pageKey,
-                name: state.name,
-                child: builder != null
-                    ? builder(context, payload)
-                    : const UnimplementedPage(),
-              )
-            : builder != null
-                ? FastFadePage(
+        return !payload.isDesktop
+            ? payload.hero && !settings.reduceAnimations
+                ? PostDetailsHeroPage(
                     key: state.pageKey,
                     name: state.name,
-                    child: builder(context, payload),
+                    child: widget,
                   )
                 : MaterialPage(
                     key: state.pageKey,
                     name: state.name,
-                    child: const UnimplementedPage(),
+                    child: widget,
+                  )
+            : payload.hero && !settings.reduceAnimations
+                ? PostDetailsHeroPage(
+                    key: state.pageKey,
+                    name: state.name,
+                    child: widget,
+                  )
+                : FastFadePage(
+                    key: state.pageKey,
+                    name: state.name,
+                    child: widget,
                   );
-
-        return page;
       },
     );
+
+class PostDetailsHeroPage<T> extends CustomTransitionPage<T> {
+  PostDetailsHeroPage({
+    required super.child,
+    super.name,
+    super.key,
+  }) : super(
+          transitionDuration: const Duration(milliseconds: 200),
+          reverseTransitionDuration: const Duration(milliseconds: 200),
+          transitionsBuilder: postDetailsTransitionBuilder(),
+        );
+}
+
+RouteTransitionsBuilder postDetailsTransitionBuilder() =>
+    (context, animation, secondaryAnimation, child) => FadeTransition(
+          opacity: Tween<double>(
+            begin: 0,
+            end: 1,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOut,
+            ),
+          ),
+          child: child,
+        );

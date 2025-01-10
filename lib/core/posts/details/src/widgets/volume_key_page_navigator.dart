@@ -15,6 +15,9 @@ class VolumeKeyPageNavigator with KeyboardListenerMixin {
     required this.getSettings,
   });
 
+  // We only want to bait the keyboard focus once
+  static bool _hasInitialized = false;
+
   final PostDetailsPageViewController pageViewController;
   final int totalPosts;
   final ValueNotifier<bool> visibilityNotifier;
@@ -22,12 +25,17 @@ class VolumeKeyPageNavigator with KeyboardListenerMixin {
   final Settings Function() getSettings;
 
   void initialize() {
-    // Workaround to bring the keyboard focus to the app
-    // https://github.com/flutter/flutter/issues/71144
-    Future.delayed(Duration.zero, () {
-      SystemChannels.textInput.invokeMethod('TextInput.show');
-      SystemChannels.textInput.invokeMethod('TextInput.hide');
-    });
+    if (getSettings().volumeKeyViewerNavigation) {
+      if (!_hasInitialized) {
+        // Workaround to bring the keyboard focus to the app
+        // https://github.com/flutter/flutter/issues/71144
+        Future.delayed(Duration.zero, () {
+          SystemChannels.textInput.invokeMethod('TextInput.show');
+          SystemChannels.textInput.invokeMethod('TextInput.hide');
+          _hasInitialized = true;
+        });
+      }
+    }
 
     registerListener(_handleKeyEvent);
   }

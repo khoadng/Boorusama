@@ -13,7 +13,6 @@ class HomeNavigationTile extends StatelessWidget {
     required this.selectedIcon,
     required this.value,
     required this.constraints,
-    required this.controller,
     super.key,
     this.onTap,
   });
@@ -25,10 +24,11 @@ class HomeNavigationTile extends StatelessWidget {
   final IconData selectedIcon;
   final int value;
   final BoxConstraints constraints;
-  final HomePageController controller;
 
   @override
   Widget build(BuildContext context) {
+    final controller = InheritedHomePageController.of(context);
+
     return ValueListenableBuilder(
       valueListenable: controller,
       builder: (context, index, child) {

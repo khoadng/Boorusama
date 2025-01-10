@@ -64,12 +64,14 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
         multiSelectController,
         scrollController,
         postController,
+        useHero,
       ) =>
           DefaultDanbooruImageGridItem(
         index: index,
         multiSelectController: multiSelectController,
         autoScrollController: scrollController,
         controller: postController,
+        useHero: useHero,
       ),
       extraHeaders: (
         selectedTagString,

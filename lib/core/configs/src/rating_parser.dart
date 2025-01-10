@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:collection/collection.dart';
+
 // Project imports:
 import '../../posts/rating/rating.dart';
 
@@ -10,8 +13,18 @@ Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
       .toSet();
 }
 
-String? granularRatingFilterToString(Set<Rating>? granularRatingFilters) {
+String? granularRatingFilterToString(
+  Set<Rating>? granularRatingFilters, {
+  bool? sort,
+}) {
   if (granularRatingFilters == null) return null;
 
-  return granularRatingFilters.map((e) => e.toShortString()).join('|');
+  final shouldSort = sort ?? false;
+
+  final ratingStrings = granularRatingFilters.map((e) => e.toShortString());
+
+  final effectiveRatingStrings =
+      shouldSort ? ratingStrings.sorted() : ratingStrings;
+
+  return effectiveRatingStrings.join('|');
 }

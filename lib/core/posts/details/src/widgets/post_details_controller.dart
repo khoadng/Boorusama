@@ -41,9 +41,14 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }) {
     currentPage.value = page;
     _videoProgress.value = VideoProgress.zero;
-    _isVideoPlaying.value = false;
 
     final post = posts.getOrNull(page);
+
+    if (post?.isMp4 ?? false) {
+      if (_isVideoPlaying.value) {
+        _isVideoPlaying.value = false;
+      }
+    }
 
     if (post != null) {
       currentPost.value = post;

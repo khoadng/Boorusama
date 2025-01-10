@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../analytics.dart';
 import '../../../backups/import/backward_import_alert_dialog.dart';
 import '../../../foundation/loggers/providers.dart';
 import '../../../foundation/toast.dart';
@@ -58,6 +59,13 @@ class SettingsNotifier extends Notifier<Settings> {
         }
       }
       state = settings;
+
+      unawaited(
+        ref.read(analyticsProvider).logSettingsChangedEvent(
+              oldValue: currentSettings,
+              newValue: settings,
+            ),
+      );
     }
   }
 

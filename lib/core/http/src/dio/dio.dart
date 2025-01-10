@@ -22,6 +22,32 @@ import 'dio_ext.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
 
+// List of HTTP status codes where cached data should NOT be shown
+const List<int> nonCacheableStatusCodes = [
+  // Authentication and Authorization Errors
+  401, // Unauthorized: User credentials are missing, invalid, or expired.
+  403, // Forbidden: User doesn't have permission to access the resource.
+
+  // Client-Side Errors
+  400, // Bad Request: Malformed request (e.g., invalid query parameters).
+  405, // Method Not Allowed: Invalid request method for the resource.
+  406, // Not Acceptable: Response format incompatible with client's "Accept" header.
+
+  // Server Errors Indicating Instability
+  500, // Internal Server Error: Generic server error; data might be unreliable.
+  502, // Bad Gateway: Intermediary issue (e.g., reverse proxy failure).
+  503, // Service Unavailable: Temporary server unavailability (e.g., maintenance).
+  504, // Gateway Timeout: Timeout while waiting for an upstream server.
+
+  // Content Delivery Issues
+  409, // Conflict: Conflicting changes to a resource (e.g., version control).
+  417, // Expectation Failed: Failed "Expect" header condition.
+  422, // Unprocessable Entity: Semantic issues with the request payload.
+
+  // Legal and Rate Limiting Issues
+  451, // Unavailable For Legal Reasons: Resource restricted due to legal policies.
+];
+
 Dio newGenericDio({
   required String baseUrl,
   String? userAgent,
@@ -52,7 +78,7 @@ Dio newGenericDio({
         options: CacheOptions(
           store: HiveCacheStore(cacheDir.path),
           maxStale: const Duration(days: 7),
-          hitCacheOnErrorExcept: [403, 401],
+          hitCacheOnErrorExcept: nonCacheableStatusCodes,
         ),
       ),
     );

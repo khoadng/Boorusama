@@ -188,7 +188,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
 
-    return Hero(
+    return BooruHero(
       tag: '${widget.id}_hero',
       child: InteractiveViewerExtended(
         onZoomUpdated: (value) {

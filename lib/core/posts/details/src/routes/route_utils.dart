@@ -22,6 +22,7 @@ void goToPostDetailsPageFromPosts<T extends Post>({
       posts: posts,
       initialIndex: initialIndex,
       scrollController: scrollController,
+      hero: false,
     );
 
 void goToPostDetailsPageFromController<T extends Post>({
@@ -35,12 +36,14 @@ void goToPostDetailsPageFromController<T extends Post>({
       posts: controller.items.toList(),
       initialIndex: initialIndex,
       scrollController: scrollController,
+      hero: true,
     );
 
 void goToPostDetailsPageCore<T extends Post>({
   required BuildContext context,
   required List<T> posts,
   required int initialIndex,
+  required bool hero,
   AutoScrollController? scrollController,
 }) {
   context.push(
@@ -52,6 +55,7 @@ void goToPostDetailsPageCore<T extends Post>({
       posts: posts,
       scrollController: scrollController,
       isDesktop: context.isLargeScreen,
+      hero: hero,
     ),
   );
 }

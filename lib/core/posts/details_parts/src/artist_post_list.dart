@@ -127,6 +127,9 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverGrid.builder(
       itemCount: itemCount,
+      addRepaintBoundaries: false,
+      addSemanticIndexes: false,
+      addAutomaticKeepAlives: false,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 4,

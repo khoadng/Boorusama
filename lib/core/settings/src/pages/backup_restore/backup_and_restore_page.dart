@@ -283,6 +283,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   ) async {
     final result = await showDialog<bool?>(
       context: context,
+      routeSettings: const RouteSettings(name: 'booru_import_overwrite_alert'),
       builder: (context) => ImportBooruConfigsAlertDialog(data: data),
     );
 

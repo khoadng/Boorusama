@@ -6,12 +6,14 @@ import '../types/danbooru_upload_post.dart';
 
 final danbooruUploadRoutes = GoRoute(
   path: '/danbooru/uploads',
+  name: 'uploads',
   pageBuilder: largeScreenAwarePageBuilder(
     builder: (context, state) => const DanbooruUploadsPage(),
   ),
   routes: [
     GoRoute(
       path: ':id',
+      name: 'upload_edit',
       pageBuilder: largeScreenCompatPageBuilderWithExtra<DanbooruUploadPost>(
         errorScreenMessage: 'Invalid upload',
         fullScreen: true,

@@ -74,6 +74,7 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
           trailingSearchButton: IconButton(
             onPressed: () => showAppModalBarBottomSheet(
               context: context,
+              settings: const RouteSettings(name: '/search_options'),
               builder: (context) => Scaffold(
                 body: SafeArea(
                   child: Container(

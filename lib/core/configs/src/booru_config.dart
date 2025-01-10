@@ -363,6 +363,23 @@ class BooruConfigFilter extends Equatable with BooruConfigFilterMixin {
   @override
   final BooruConfigBannedPostVisibility bannedPostVisibility;
 
+  String get ratingVerdict => switch (ratingFilter) {
+        BooruConfigRatingFilter.none => 'unfiltered',
+        BooruConfigRatingFilter.hideExplicit => 'questionable',
+        BooruConfigRatingFilter.hideNSFW => 'sfw',
+        BooruConfigRatingFilter.custom => () {
+            final filters = granularRatingFiltersWithoutUnknown;
+
+            if (filters == null) return 'custom';
+
+            final str = granularRatingFilterToString(filters, sort: true);
+
+            if (str == null) return 'custom';
+
+            return 'filtered($str)';
+          }()
+      };
+
   @override
   List<Object?> get props => [
         ratingFilter,

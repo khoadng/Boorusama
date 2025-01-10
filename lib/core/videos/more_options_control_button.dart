@@ -138,3 +138,85 @@ String _buildSpeedText(double speed) {
 
   return '${cleanned}x';
 }
+
+class MobilePostGridConfigTile extends StatelessWidget {
+  const MobilePostGridConfigTile({
+    required this.value,
+    required this.title,
+    required this.onTap,
+    super.key,
+  });
+
+  final String title;
+  final String value;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 2,
+      ),
+      child: ListTile(
+        title: Text(title),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: Theme.of(context).hintColor,
+                fontSize: 14,
+              ),
+            ),
+            const Icon(Symbols.chevron_right),
+          ],
+        ),
+        onTap: onTap,
+      ),
+    );
+  }
+}
+
+class OptionActionSheet<T> extends StatelessWidget {
+  const OptionActionSheet({
+    required this.onChanged,
+    required this.options,
+    required this.optionName,
+    super.key,
+  });
+
+  final void Function(T option) onChanged;
+  final List<T> options;
+  final String Function(T option) optionName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+          horizontal: 12,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...options.map(
+              (e) => ListTile(
+                title: Text(optionName(e)),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onChanged(e);
+                },
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.viewPaddingOf(context).bottom,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

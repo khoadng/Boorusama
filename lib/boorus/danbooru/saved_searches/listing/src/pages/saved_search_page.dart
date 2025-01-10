@@ -132,6 +132,7 @@ class _SuccessView extends ConsumerWidget {
   ) {
     showMaterialModalBottomSheet(
       context: context,
+      settings: const RouteSettings(name: 'saved_search_action_select'),
       builder: (_) => SavedSearchQuickEditSheet(
         savedSearch: savedSearch,
       ),

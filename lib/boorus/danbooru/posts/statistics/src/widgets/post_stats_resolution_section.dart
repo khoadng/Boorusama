@@ -31,6 +31,7 @@ class PostStatsResolutionSection extends ConsumerWidget {
           onMore: () {
             showAppModalBarBottomSheet(
               context: context,
+              settings: const RouteSettings(name: 'posts_resolution_stats'),
               builder: (context) => StatisticsFromMapPage(
                 title: 'Resolution',
                 total: totalPosts,

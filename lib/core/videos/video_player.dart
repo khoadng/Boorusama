@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 // Project imports:
 import '../images/booru_image.dart';
 import '../utils/duration_utils.dart';
+import '../widgets/widgets.dart';
 
 //TODO: implement caching video
 class BooruVideo extends StatefulWidget {
@@ -23,6 +24,7 @@ class BooruVideo extends StatefulWidget {
     this.thumbnailUrl,
     this.onOpenSettings,
     this.headers,
+    this.heroTag,
   });
 
   final String url;
@@ -37,6 +39,7 @@ class BooruVideo extends StatefulWidget {
   final String? thumbnailUrl;
   final void Function()? onOpenSettings;
   final Map<String, String>? headers;
+  final String? heroTag;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -132,79 +135,83 @@ class _BooruVideoState extends State<BooruVideo> {
   Widget build(BuildContext context) {
     final thumb = widget.thumbnailUrl;
 
-    return Center(
-      child: _initialized == true
-          ? AspectRatio(
-              aspectRatio: widget.aspectRatio ??
-                  _videoPlayerController.value.aspectRatio,
-              child: VideoPlayer(_videoPlayerController),
-            )
-          : _error != null
-              ? Container(
-                  color: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
+    return BooruHero(
+      tag: widget.heroTag,
+      child: Center(
+        child: _initialized == true
+            ? AspectRatio(
+                aspectRatio: widget.aspectRatio ??
+                    _videoPlayerController.value.aspectRatio,
+                child: VideoPlayer(_videoPlayerController),
+              )
+            : _error != null
+                ? Container(
+                    color: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          child: Text(
+                            _error!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        child: Text(
-                          _error!,
-                          style: const TextStyle(
+                        const SizedBox(height: 24),
+                        const Text(
+                          'If this happens on a regular basis, consider using a different video player engine in the settings.',
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'If this happens on a regular basis, consider using a different video player engine in the settings.',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      FilledButton(
-                        onPressed: widget.onOpenSettings,
-                        child: Text(
-                          'Open settings',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                        const SizedBox(height: 12),
+                        FilledButton(
+                          onPressed: widget.onOpenSettings,
+                          child: Text(
+                            'Open settings',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : thumb != null
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: BooruImage(
-                            aspectRatio: widget.aspectRatio ??
-                                _videoPlayerController.value.aspectRatio,
-                            imageUrl: thumb,
-                          ),
-                        ),
-                        const LinearProgressIndicator(
-                          minHeight: 2,
                         ),
                       ],
-                    )
-                  : const SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(),
                     ),
+                  )
+                : thumb != null
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: BooruImage(
+                              borderRadius: BorderRadius.zero,
+                              aspectRatio: widget.aspectRatio ??
+                                  _videoPlayerController.value.aspectRatio,
+                              imageUrl: thumb,
+                            ),
+                          ),
+                          const LinearProgressIndicator(
+                            minHeight: 2,
+                          ),
+                        ],
+                      )
+                    : const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(),
+                      ),
+      ),
     );
   }
 }

@@ -11,12 +11,14 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
+import '../../../../analytics.dart';
 import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
@@ -73,6 +75,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
   );
   late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
     pageViewController: _controller,
@@ -97,6 +100,8 @@ class _PostDetailPageScaffoldState<T extends Post>
       );
     });
 
+    widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
+
     _volumeKeyPageNavigator.initialize();
   }
 
@@ -104,6 +109,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   void dispose() {
     _controller.dispose();
     _volumeKeyPageNavigator.dispose();
+    widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
 
     super.dispose();
   }
@@ -114,17 +120,19 @@ class _PostDetailPageScaffoldState<T extends Post>
     return settings.videoPlayerEngine != VideoPlayerEngine.mdk;
   }
 
+  void _isVideoPlayingChanged() {
+    // force overlay to be on when video is not playing
+    if (!widget.controller.isVideoPlaying.value) {
+      _controller.disableHoverToControlOverlay();
+    } else {
+      if (widget.controller.currentPost.value.isVideo) {
+        _controller.enableHoverToControlOverlay();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      settingsProvider.select((value) => value.hidePostDetailsOverlay),
-      (previous, next) {
-        if (previous != next && _controller.overlay.value != next) {
-          _controller.overlay.value = !next;
-        }
-      },
-    );
-
     final useDefaultEngine = ref.watch(
       settingsProvider.select(
         (value) => _isDefaultEngine(value),
@@ -187,11 +195,20 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     return Scaffold(
       body: PostDetailsPageView(
+        disableAnimation: settings.reduceAnimations,
         onPageChanged: (page) {
           widget.controller.setPage(
             page,
             useDefaultEngine: _isDefaultEngine(settings),
           );
+
+          if (_controller.overlay.value) {
+            if (posts[page].isVideo) {
+              _controller.enableHoverToControlOverlay();
+            } else {
+              _controller.disableHoverToControlOverlay();
+            }
+          }
 
           ref
               .read(postShareProvider(posts[page]).notifier)
@@ -201,9 +218,10 @@ class _PostDetailPageScaffoldState<T extends Post>
           save: (expanded) => ref
               .read(miscDataProvider(kShowInfoStateCacheKey).notifier)
               .put(expanded.toString()),
-          load: () async =>
+          load: () =>
               ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true',
         ),
+        checkIfLargeScreen: () => context.isLargeScreen,
         slideshowOptions: SlideshowOptions(
           duration: settings.slideshowDuration,
           direction: settings.slideshowDirection,
@@ -368,7 +386,45 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
           ],
         ],
-        onExpanded: widget.onExpanded,
+        onTap: () {
+          final controller = widget.controller;
+
+          if (isDesktopPlatform()) {
+            if (controller.currentPost.value.isVideo) {
+              if (controller.isVideoPlaying.value) {
+                controller.pauseCurrentVideo(
+                  useDefaultEngine: _isDefaultEngine(settings),
+                );
+              } else {
+                controller.playCurrentVideo(
+                  useDefaultEngine: _isDefaultEngine(settings),
+                );
+              }
+
+              // if (isDesktopPlatform()) {
+
+              // } else {}
+            } else {
+              if (_controller.isExpanded) return;
+
+              _controller.toggleOverlay();
+            }
+          } else {
+            if (_controller.isExpanded) return;
+
+            _controller.toggleOverlay();
+          }
+        },
+        onExpanded: () {
+          widget.onExpanded?.call();
+          ref.read(analyticsProvider).logScreenView('/details/info');
+        },
+        onShrink: () {
+          final routeName = ModalRoute.of(context)?.settings.name;
+          if (routeName != null) {
+            ref.read(analyticsProvider).logScreenView(routeName);
+          }
+        },
       ),
     );
   }

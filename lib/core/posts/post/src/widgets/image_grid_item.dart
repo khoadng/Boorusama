@@ -114,6 +114,8 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildOverlayIcon(BuildContext context) {
+    final duration = this.duration;
+
     return IgnorePointer(
       child: Padding(
         padding: const EdgeInsets.all(2),
