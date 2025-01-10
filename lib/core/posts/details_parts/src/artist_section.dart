@@ -52,57 +52,63 @@ class _ArtistSectionState extends State<ArtistSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: [
-        if (artistTags.isNotEmpty)
-          switch (widget.source) {
-            final WebSource source => _Link(
-                commentary: commentary,
-                display: display,
-                artistTags: artistTags,
-                url: source.url,
-                onChanged: onChanged,
-              ),
-            NonWebSource _ => _Link(
-                commentary: commentary,
-                display: display,
-                artistTags: artistTags,
-                onChanged: onChanged,
-              ),
-            _ => const SizedBox.shrink(),
-          }
-        else
-          const SizedBox.shrink(),
-        BooruAnimatedCrossFade(
-          firstChild: const SizedBox.shrink(),
-          secondChild: commentary.isEmpty
-              ? const SizedBox.shrink()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
-                  child: AppHtml(
-                    style: {
-                      'body': Style(
-                        whiteSpace: WhiteSpace.pre,
-                        margin: Margins.zero,
-                      ),
-                      'h2': Style(
-                        margin: Margins.zero,
-                        padding: HtmlPaddings.only(top: 4, bottom: 8),
-                      ),
-                    },
-                    data: getDescriptionText(display, commentary),
-                    onLinkTap: (url, attributes, element) =>
-                        url != null ? launchExternalUrl(Uri.parse(url)) : null,
-                  ),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ),
+      child: Wrap(
+        children: [
+          if (artistTags.isNotEmpty)
+            switch (widget.source) {
+              final WebSource source => _Link(
+                  commentary: commentary,
+                  display: display,
+                  artistTags: artistTags,
+                  url: source.url,
+                  onChanged: onChanged,
                 ),
-          crossFadeState: commentary.isEmpty
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          duration: const Duration(milliseconds: 80),
-        ),
-      ],
+              NonWebSource _ => _Link(
+                  commentary: commentary,
+                  display: display,
+                  artistTags: artistTags,
+                  onChanged: onChanged,
+                ),
+              _ => const SizedBox.shrink(),
+            }
+          else
+            const SizedBox.shrink(),
+          BooruAnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: commentary.isEmpty
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: AppHtml(
+                      style: {
+                        'body': Style(
+                          whiteSpace: WhiteSpace.pre,
+                          margin: Margins.zero,
+                        ),
+                        'h2': Style(
+                          margin: Margins.zero,
+                          padding: HtmlPaddings.only(top: 4, bottom: 8),
+                        ),
+                      },
+                      data: getDescriptionText(display, commentary),
+                      onLinkTap: (url, attributes, element) => url != null
+                          ? launchExternalUrl(Uri.parse(url))
+                          : null,
+                    ),
+                  ),
+            crossFadeState: commentary.isEmpty
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 80),
+          ),
+        ],
+      ),
     );
   }
 }

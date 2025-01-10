@@ -8,6 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../home/custom_home.dart';
 import '../../../posts/details/custom_details.dart';
@@ -36,17 +37,7 @@ class BooruConfigLayoutView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
-    final layout = ref.watch(
-          editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-              .select((value) => value.layoutTyped),
-        ) ??
-        const LayoutConfigs.undefined();
-
     final uiBuilder = ref.watchBooruBuilder(config.auth)?.postDetailsUIBuilder;
-    final details = layout.details ??
-        convertDetailsParts(uiBuilder?.full.keys.toList() ?? []);
-    final previewDetails = layout.previewDetails ??
-        convertDetailsParts(uiBuilder?.preview.keys.toList() ?? []);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -96,14 +87,8 @@ class BooruConfigLayoutView extends ConsumerWidget {
                                   ref.watch(initialBooruConfigProvider),
                                 ),
                               ],
-                              child: DetailsConfigPage(
-                                layout: layout,
-                                details: details,
-                                previewDetails: previewDetails,
+                              child: _DetailsConfigPage(
                                 uiBuilder: uiBuilder,
-                                onLayoutUpdated: (layout) {
-                                  ref.editNotifier.updateLayout(layout);
-                                },
                               ),
                             ),
                           ),
@@ -118,6 +103,38 @@ class BooruConfigLayoutView extends ConsumerWidget {
           const _HomeScreenSection(),
         ],
       ),
+    );
+  }
+}
+
+class _DetailsConfigPage extends ConsumerWidget {
+  const _DetailsConfigPage({
+    required this.uiBuilder,
+  });
+
+  final PostDetailsUIBuilder uiBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layout = ref.watch(
+          editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+              .select((value) => value.layoutTyped),
+        ) ??
+        const LayoutConfigs.undefined();
+
+    final details =
+        layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
+    final previewDetails = layout.previewDetails ??
+        convertDetailsParts(uiBuilder.preview.keys.toList());
+
+    return DetailsConfigPage(
+      layout: layout,
+      details: details,
+      previewDetails: previewDetails,
+      uiBuilder: uiBuilder,
+      onLayoutUpdated: (layout) {
+        ref.editNotifier.updateLayout(layout);
+      },
     );
   }
 }
