@@ -344,6 +344,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (isLargeScreen) {
       widget.sheetStateStorage?.persistExpandedState(_controller.isExpanded);
     }
+
+    // sync the side sheet slide animation with the sheet state
+    _sheetAnimController.value = _controller.isExpanded ? 1 : 0;
   }
 
   Future<void> _onSlideShowChanged() async {
@@ -607,7 +610,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                     child: child,
                   ),
                   child: SafeArea(
-                    right: isLargeScreen && !state.isExpanded,
+                    right: isLargeScreen,
                     child: _buildOverlay(),
                   ),
                 ),
