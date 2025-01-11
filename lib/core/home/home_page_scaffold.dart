@@ -12,15 +12,18 @@ import '../blacklists/widgets.dart';
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
 import '../cache/providers.dart';
+import '../configs/ref.dart';
 import '../configs/widgets.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
+import '../search/search/src/pages/search_page.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/widgets.dart';
 import '../theme.dart';
 import '../widgets/widgets.dart';
 import 'booru_scope.dart';
+import 'custom_home.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
 
@@ -97,6 +100,9 @@ class HomeContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = InheritedHomePageController.of(context);
 
+    final layout = ref.watchLayoutConfigs;
+    final viewKey = layout?.home;
+
     final views = [
       const CustomHomePage(),
       if (desktopViews != null) ...desktopViews!,
@@ -124,6 +130,7 @@ class HomeContent extends ConsumerWidget {
               ...views,
               ...coreDesktopViewBuilder(
                 previousItemCount: views.length,
+                viewKey: viewKey,
               ),
             ],
           ),
@@ -148,6 +155,8 @@ class HomeSideMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final layout = ref.watchLayoutConfigs;
+    final viewKey = layout?.home;
 
     return context.isLargeScreen
         ? SafeArea(
@@ -193,6 +202,7 @@ class HomeSideMenu extends ConsumerWidget {
                               ...coreDesktopTabBuilder(
                                 context,
                                 constraints,
+                                viewKey,
                               ),
                             ],
                           ),
@@ -230,12 +240,14 @@ int _v(int value) => _kPlaceholderOffset + value;
 
 List<Widget> coreDesktopViewBuilder({
   required int previousItemCount,
+  required CustomHomeViewKey? viewKey,
 }) {
   // skip previousItemCount to prevent access the wrong index
   final totalPlaceholder = _kPlaceholderOffset - previousItemCount + 1;
 
   final views = [
     for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
+    if (viewKey.isAlt) const SearchPage(),
     const BookmarkPage(),
     const BlacklistedTagPage(),
     const FavoriteTagsPage(),
@@ -249,39 +261,48 @@ List<Widget> coreDesktopViewBuilder({
 List<Widget> coreDesktopTabBuilder(
   BuildContext context,
   BoxConstraints constraints,
+  CustomHomeViewKey? viewKey,
 ) {
   return [
     const Divider(),
+    if (viewKey.isAlt)
+      HomeNavigationTile(
+        value: _v(1),
+        constraints: constraints,
+        selectedIcon: Symbols.search,
+        icon: Symbols.search,
+        title: 'Search',
+      ),
     HomeNavigationTile(
-      value: _v(1),
+      value: _v(2),
       constraints: constraints,
       selectedIcon: Symbols.bookmark,
       icon: Symbols.bookmark,
       title: 'sideMenu.your_bookmarks'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(2),
+      value: _v(3),
       constraints: constraints,
       selectedIcon: Symbols.list_alt,
       icon: Symbols.list_alt,
       title: 'sideMenu.your_blacklist'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(3),
+      value: _v(4),
       constraints: constraints,
       selectedIcon: Symbols.tag,
       icon: Symbols.tag,
       title: 'favorite_tags.favorite_tags'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(4),
+      value: _v(5),
       constraints: constraints,
       selectedIcon: Symbols.sim_card_download,
       icon: Symbols.sim_card_download,
       title: 'sideMenu.bulk_download'.tr(),
     ),
     HomeNavigationTile(
-      value: _v(5),
+      value: _v(6),
       constraints: constraints,
       selectedIcon: Symbols.download,
       icon: Symbols.download,

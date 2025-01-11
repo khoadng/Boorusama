@@ -4,7 +4,13 @@ import 'dart:math';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-class TagChipsPlaceholder extends StatelessWidget {
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import '../../../../theme.dart';
+
+class TagChipsPlaceholder extends ConsumerWidget {
   const TagChipsPlaceholder({
     super.key,
     this.height,
@@ -17,7 +23,9 @@ class TagChipsPlaceholder extends StatelessWidget {
   final Color? backgroundColor;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = ref.watch(colorSchemeProvider);
+
     return Container(
       color: backgroundColor,
       height: height ?? 40,
@@ -34,7 +42,7 @@ class TagChipsPlaceholder extends StatelessWidget {
               right: 4,
             ),
             child: ChoiceChip(
-              disabledColor: Theme.of(context).colorScheme.surfaceContainer,
+              disabledColor: colorScheme.surfaceContainer,
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
               selected: false,
               padding: const EdgeInsets.all(4),

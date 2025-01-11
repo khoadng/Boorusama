@@ -39,7 +39,7 @@ class DanbooruUploadsPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+      builder: (_) => ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
             data: (data) => data != null
                 ? DanbooruMyUploadsPageInternal(
                     userId: data.id,

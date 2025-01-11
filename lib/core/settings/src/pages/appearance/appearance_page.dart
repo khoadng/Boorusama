@@ -6,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../configs/src/create/appearance_theme.dart';
 import '../../../../foundation/platform.dart';
-import '../../../../theme.dart';
+import '../../../../theme/theme.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
@@ -37,7 +38,26 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
       title: const Text('settings.appearance.appearance').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),
-        _buildSimpleTheme(settings),
+        if (!kHasPremium)
+          _buildSimpleTheme(settings)
+        else
+          ThemeSettingsInteractionBlocker(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ThemeListTile(
+                  colorSettings: settings.colors,
+                  onThemeUpdated: (colors) {
+                    notifier.updateSettings(
+                      settings.copyWith(
+                        colors: colors,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         const Divider(thickness: 1),
         SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
         ListingSettingsInteractionBlocker(

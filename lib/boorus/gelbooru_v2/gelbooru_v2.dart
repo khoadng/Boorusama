@@ -17,6 +17,7 @@ import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -245,6 +246,10 @@ class GelbooruV2Builder
   );
 
   @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kGelbooruV2AltHomeView;
+
+  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
@@ -327,6 +332,15 @@ class GelbooruV2Repository implements BooruRepository {
   }
 }
 
+final kGelbooruV2AltHomeView = {
+  ...kDefaultAltHomeView,
+  // ignore: prefer_const_constructors
+  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const GelbooruV2FavoritesPage(),
+  ),
+};
+
 class GelbooruV2SearchPage extends ConsumerWidget {
   const GelbooruV2SearchPage({
     super.key,
@@ -356,7 +370,7 @@ class GelbooruV2FavoritesPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: GelbooruV2FavoritesPageInternal(
+      builder: (_) => GelbooruV2FavoritesPageInternal(
         uid: config.login!,
       ),
     );

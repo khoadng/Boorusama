@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
+import '../../../theme/theme_configs.dart';
 import '../../../theme/theme_mode.dart';
 import 'types.dart';
 
@@ -40,6 +41,7 @@ class Settings extends Equatable {
     required this.reduceAnimations,
     required this.downloadFileExistedBehavior,
     required this.videoAudioDefaultState,
+    required this.colors,
     required this.videoPlayerEngine,
     required this.volumeKeyViewerNavigation,
   });
@@ -111,6 +113,9 @@ class Settings extends Equatable {
         videoAudioDefaultState = json['videoAudioDefaultState'] != null
             ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
             : VideoAudioDefaultState.unspecified,
+        colors = json['colors'] != null
+            ? ColorSettings.fromJson(json['colors'])
+            : null,
         videoPlayerEngine = json['videoPlayerEngine'] != null
             ? VideoPlayerEngine.values[json['videoPlayerEngine']]
             : VideoPlayerEngine.auto,
@@ -135,6 +140,7 @@ class Settings extends Equatable {
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
     ),
+    colors: null,
     safeMode: true,
     blacklistedTags: '',
     themeMode: AppThemeMode.amoledDark,
@@ -218,6 +224,7 @@ class Settings extends Equatable {
 
   final VideoAudioDefaultState videoAudioDefaultState;
 
+  final ColorSettings? colors;
   final VideoPlayerEngine videoPlayerEngine;
 
   final bool volumeKeyViewerNavigation;
@@ -252,6 +259,7 @@ class Settings extends Equatable {
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
     VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
+    ColorSettings? colors,
     VideoPlayerEngine? videoPlayerEngine,
     bool? volumeKeyViewerNavigation,
   }) =>
@@ -297,6 +305,7 @@ class Settings extends Equatable {
             downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
         videoAudioDefaultState:
             videoAudioDefaultState ?? this.videoAudioDefaultState,
+        colors: colors ?? this.colors,
         videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
         volumeKeyViewerNavigation:
             volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
@@ -335,6 +344,7 @@ class Settings extends Equatable {
       'reduceAnimations': reduceAnimations,
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
       'videoAudioDefaultState': videoAudioDefaultState.index,
+      'colors': colors?.toJson(),
       'videoPlayerEngine': videoPlayerEngine.index,
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
     };
@@ -370,6 +380,7 @@ class Settings extends Equatable {
         reduceAnimations,
         downloadFileExistedBehavior,
         videoAudioDefaultState,
+        colors,
         videoPlayerEngine,
         volumeKeyViewerNavigation,
       ];

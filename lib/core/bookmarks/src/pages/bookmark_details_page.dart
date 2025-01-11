@@ -41,6 +41,20 @@ class BookmarkDetailsPage extends ConsumerWidget {
   }
 }
 
+final bookmarkUiBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+    DetailsPart.source: (context) => const BookmarkSourceSection(),
+    DetailsPart.tags: (context) =>
+        const DefaultInheritedTagList<BookmarkPost>(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<BookmarkPost>(),
+  },
+);
+
 class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
   const BookmarkDetailsPageInternal({
     super.key,
@@ -63,19 +77,9 @@ class _BookmarkDetailsPageState
       controller: controller,
       posts: posts,
       imageUrlBuilder: (post) => post.sampleImageUrl,
-      uiBuilder: PostDetailsUIBuilder(
-        preview: {
-          DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
-        },
-        full: {
-          DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
-          DetailsPart.source: (context) => const BookmarkSourceSection(),
-          DetailsPart.tags: (context) =>
-              const DefaultInheritedTagList<BookmarkPost>(),
-          DetailsPart.fileDetails: (context) =>
-              const DefaultInheritedFileDetailsSection<BookmarkPost>(),
-        },
-      ),
+      uiBuilder: bookmarkUiBuilder,
+      preferredParts: bookmarkUiBuilder.full.keys.toSet(),
+      preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
       topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
           post: InheritedPost.of<BookmarkPost>(context),

@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -6,10 +9,14 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../boorus/danbooru/danbooru.dart';
 import '../../boorus/booru/booru.dart';
+import '../../boorus/engine/engine.dart';
 import '../../foundation/platform.dart';
+import '../../home/custom_home.dart';
+import '../../posts/details/custom_details.dart';
 import '../../posts/rating/rating.dart';
 import '../../proxy/proxy.dart';
 import '../../settings/settings.dart';
+import '../../theme/theme_configs.dart';
 import 'data/booru_config_data.dart';
 import 'gestures.dart';
 import 'rating_parser.dart';
@@ -36,7 +43,9 @@ class BooruConfig extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.theme,
     required this.alwaysIncludeTags,
+    required this.layout,
     required this.proxySettings,
   });
 
@@ -83,7 +92,13 @@ class BooruConfig extends Equatable {
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+      theme: json['theme'] == null
+          ? null
+          : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
       alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+      layout: json['layout'] == null
+          ? null
+          : LayoutConfigs.fromJson(json['layout'] as Map<String, dynamic>),
       proxySettings: json['proxySettings'] == null
           ? null
           : ProxySettings.fromJson(
@@ -112,7 +127,9 @@ class BooruConfig extends Equatable {
     postGestures: null,
     defaultPreviewImageButtonAction: null,
     listing: null,
+    theme: null,
     alwaysIncludeTags: null,
+    layout: null,
     proxySettings: null,
   );
 
@@ -142,7 +159,9 @@ class BooruConfig extends Equatable {
         postGestures: null,
         defaultPreviewImageButtonAction: null,
         listing: null,
+        theme: null,
         alwaysIncludeTags: null,
+        layout: null,
         proxySettings: null,
       );
 
@@ -165,7 +184,9 @@ class BooruConfig extends Equatable {
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
+  final ThemeConfigs? theme;
   final String? alwaysIncludeTags;
+  final LayoutConfigs? layout;
   final ProxySettings? proxySettings;
 
   BooruConfig copyWith({
@@ -173,6 +194,7 @@ class BooruConfig extends Equatable {
     String? apiKey,
     String? login,
     String? name,
+    LayoutConfigs? Function()? layout,
   }) {
     return BooruConfig(
       id: id,
@@ -194,7 +216,9 @@ class BooruConfig extends Equatable {
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
+      theme: theme,
       alwaysIncludeTags: alwaysIncludeTags,
+      layout: layout != null ? layout() : this.layout,
       proxySettings: proxySettings,
     );
   }
@@ -220,7 +244,9 @@ class BooruConfig extends Equatable {
         postGestures,
         defaultPreviewImageButtonAction,
         listing,
+        theme,
         alwaysIncludeTags,
+        layout,
         proxySettings,
       ];
 
@@ -252,7 +278,9 @@ class BooruConfig extends Equatable {
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
+      'theme': theme?.toJson(),
       'alwaysIncludeTags': alwaysIncludeTags,
+      'layout': layout?.toJson(),
       'proxySettings': proxySettings?.toJson(),
     };
   }
@@ -449,6 +477,116 @@ enum ImageQuickActionType {
   download,
   bookmark,
   artist,
+}
+
+class LayoutConfigs extends Equatable {
+  const LayoutConfigs({
+    required this.home,
+    required this.details,
+    required this.previewDetails,
+  });
+  factory LayoutConfigs.fromJson(Map<String, dynamic> json) {
+    final home = json['home'] == null
+        ? const CustomHomeViewKey.defaultValue()
+        : CustomHomeViewKey.fromJson(json['home']);
+
+    final details = json['details'] == null
+        ? null
+        : (json['details'] as List<dynamic>)
+            .map((e) => CustomDetailsPartKey.fromJson(e))
+            .toList();
+
+    final previewDetails = json['previewDetails'] == null
+        ? null
+        : (json['previewDetails'] as List<dynamic>)
+            .map((e) => CustomDetailsPartKey.fromJson(e))
+            .toList();
+
+    return LayoutConfigs(
+      home: home,
+      details: details,
+      previewDetails: previewDetails,
+    );
+  }
+
+  const LayoutConfigs.undefined()
+      : home = const CustomHomeViewKey.defaultValue(),
+        previewDetails = null,
+        details = null;
+
+  final CustomHomeViewKey? home;
+  final List<CustomDetailsPartKey>? details;
+  final List<CustomDetailsPartKey>? previewDetails;
+
+  LayoutConfigs copyWith({
+    CustomHomeViewKey? Function()? home,
+    List<CustomDetailsPartKey>? Function()? details,
+    List<CustomDetailsPartKey>? Function()? previewDetails,
+  }) {
+    return LayoutConfigs(
+      home: home != null ? home() : this.home,
+      details: details != null ? details() : this.details,
+      previewDetails:
+          previewDetails != null ? previewDetails() : this.previewDetails,
+    );
+  }
+
+  static LayoutConfigs? fromJsonString(String? jsonString) {
+    if (jsonString == null) return null;
+
+    return LayoutConfigs.fromJson(
+      jsonDecode(jsonString) as Map<String, dynamic>,
+    );
+  }
+
+  String toJsonString() => jsonEncode(toJson());
+
+  Map<String, dynamic> toJson() {
+    return {
+      'home': home?.toJson(),
+      'details': details?.map((e) => e.toJson()).toList(),
+      'previewDetails': previewDetails?.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [home, details, previewDetails];
+}
+
+extension CustomViewKeyX on LayoutConfigs {
+  Set<DetailsPart>? getParsedParts() {
+    if (details == null) return null;
+    if (details!.isEmpty) return null;
+
+    final parts = <DetailsPart>{};
+
+    for (final part in details!) {
+      final parsedPart = parseDetailsPart(part.name);
+
+      if (parsedPart != null) {
+        parts.add(parsedPart);
+      }
+    }
+
+    return parts;
+  }
+
+  Set<DetailsPart>? getPreviewParsedParts() {
+    if (previewDetails == null) return null;
+    if (previewDetails!.isEmpty) return null;
+
+    final parts = <DetailsPart>{};
+
+    for (final part in previewDetails!) {
+      final parsedPart = parseDetailsPart(part.name);
+
+      if (parsedPart != null) {
+        parts.add(parsedPart);
+      }
+    }
+
+    return parts;
+  }
 }
 
 abstract class BooruConfigRepository {

@@ -16,7 +16,7 @@ class SearchPage extends ConsumerWidget {
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = booruBuilder?.searchPageBuilder;
 
-    final query = InheritedInitialSearchQuery.of(context)?.query;
+    final query = InheritedInitialSearchQuery.maybeOf(context)?.query;
 
     return builder != null
         ? builder(context, query)
@@ -34,6 +34,11 @@ class InheritedInitialSearchQuery extends InheritedWidget {
   final String? query;
 
   static InheritedInitialSearchQuery? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<InheritedInitialSearchQuery>();
+  }
+
+  static InheritedInitialSearchQuery? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<InheritedInitialSearchQuery>();
   }

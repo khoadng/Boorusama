@@ -18,6 +18,7 @@ import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
 import '../edit_booru_config_id.dart';
 import '../manage/booru_config_provider.dart';
+import 'appearance.dart';
 import 'download.dart';
 import 'gestures.dart';
 import 'listing.dart';
@@ -90,9 +91,14 @@ class CreateBooruConfigCategory extends Equatable {
         id = 'viewer';
 
   const CreateBooruConfigCategory.network()
-      : title = 'booru.network',
+      : title = 'Network',
         name = 'config/network',
         id = 'network';
+
+  const CreateBooruConfigCategory.appearance()
+      : title = 'settings.appearance.appearance',
+        name = 'config/appearance',
+        id = 'appearance';
 
   const CreateBooruConfigCategory.misc()
       : title = 'booru.misc',
@@ -118,6 +124,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.gestureTab,
     this.imageViewerTab,
     this.listingTab,
+    this.layoutTab,
     this.networkTab,
     this.canSubmit,
     this.footer,
@@ -131,6 +138,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Widget? gestureTab;
   final Widget? imageViewerTab;
   final Widget? listingTab;
+  final Widget? layoutTab;
   final Widget? networkTab;
 
   final String? initialTab;
@@ -138,7 +146,6 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final Widget? footer;
 
   final bool Function(BooruConfigData config)? canSubmit;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final editId = ref.watch(editBooruConfigIdProvider);
@@ -147,6 +154,8 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       if (authTab != null) const CreateBooruConfigCategory.auth(): authTab!,
       const CreateBooruConfigCategory.listing():
           listingTab ?? const DefaultBooruConfigListingView(),
+      const CreateBooruConfigCategory.appearance():
+          layoutTab ?? const DefaultBooruConfigLayoutView(),
       const CreateBooruConfigCategory.download():
           downloadTab ?? const BooruConfigDownloadView(),
       const CreateBooruConfigCategory.search():

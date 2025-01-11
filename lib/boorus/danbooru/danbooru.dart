@@ -19,6 +19,8 @@ import '../../core/downloads/downloader.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/url_launcher.dart';
+import '../../core/home/custom_home.dart';
+import '../../core/home/user_custom_home_builder.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -40,24 +42,30 @@ import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
 import '../../core/tags/tag/tag.dart';
 import 'artists/artist/widgets.dart';
+import 'artists/search/src/artist_search_page.dart';
 import 'autocompletes/providers.dart';
 import 'autocompletes/widgets.dart';
 import 'blacklist/providers.dart';
 import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
+import 'forums/topics/src/forum_page.dart';
 import 'home/widgets.dart';
 import 'notes/providers.dart';
 import 'posts/count/providers.dart';
 import 'posts/details/widgets.dart';
+import 'posts/explores/src/pages/danbooru_explore_page.dart';
+import 'posts/favgroups/listing/widgets.dart';
 import 'posts/favorites/providers.dart';
 import 'posts/favorites/widgets.dart';
 import 'posts/listing/providers.dart';
 import 'posts/listing/widgets.dart';
+import 'posts/pools/listing/widgets.dart';
 import 'posts/post/post.dart';
 import 'posts/post/providers.dart';
 import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
 import 'posts/votes/providers.dart';
+import 'saved_searches/feed/widgets.dart';
 import 'tags/details/widgets.dart';
 import 'tags/tag/providers.dart';
 import 'tags/tag/routes.dart';
@@ -306,8 +314,11 @@ class DanbooruBuilder
 
   @override
   HomeViewBuilder get homeViewBuilder => (context, controller) {
-        return LatestView(
-          controller: controller,
+        return UserCustomHomeBuilder(
+          homePageController: controller,
+          defaultView: LatestView(
+            controller: controller,
+          ),
         );
       };
 
@@ -338,7 +349,43 @@ class DanbooruBuilder
       };
 
   @override
+  final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders = {
+    ...kDefaultAltHomeView,
+    const CustomHomeViewKey('explore'): CustomHomeDataBuilder(
+      displayName: 'explore.explore',
+      builder: (context, _) => const DanbooruExplorePage(),
+    ),
+    const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+      displayName: 'profile.favorites',
+      builder: (context, _) => const DanbooruFavoritesPage(),
+    ),
+    const CustomHomeViewKey('artists'): CustomHomeDataBuilder(
+      displayName: 'Artists',
+      builder: (context, _) => const DanbooruArtistSearchPage(),
+    ),
+    const CustomHomeViewKey('forum'): CustomHomeDataBuilder(
+      displayName: 'forum.forum',
+      builder: (context, _) => const DanbooruForumPage(),
+    ),
+    const CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
+      displayName: 'favorite_groups.favorite_groups',
+      builder: (context, _) => const FavoriteGroupsPage(),
+    ),
+    const CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
+      displayName: 'saved_search.saved_search',
+      builder: (context, _) => const SavedSearchFeedPage(),
+    ),
+    const CustomHomeViewKey('pools'): CustomHomeDataBuilder(
+      displayName: 'Pools',
+      builder: (context, _) => const DanbooruPoolPage(),
+    ),
+  };
+
+  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    previewAllowedParts: {
+      DetailsPart.tags,
+    },
     preview: {
       DetailsPart.info: (context) => const DanbooruInformationSection(),
       DetailsPart.toolbar: (context) =>
