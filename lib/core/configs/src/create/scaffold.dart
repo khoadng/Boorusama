@@ -11,6 +11,7 @@ import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../foundation/display.dart';
 import '../../../posts/sources/source.dart';
+import '../../../premiums/premium_providers.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
@@ -154,8 +155,9 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       if (authTab != null) const CreateBooruConfigCategory.auth(): authTab!,
       const CreateBooruConfigCategory.listing():
           listingTab ?? const DefaultBooruConfigListingView(),
-      const CreateBooruConfigCategory.appearance():
-          layoutTab ?? const DefaultBooruConfigLayoutView(),
+      if (kPremiumEnabled)
+        const CreateBooruConfigCategory.appearance():
+            layoutTab ?? const DefaultBooruConfigLayoutView(),
       const CreateBooruConfigCategory.download():
           downloadTab ?? const BooruConfigDownloadView(),
       const CreateBooruConfigCategory.search():

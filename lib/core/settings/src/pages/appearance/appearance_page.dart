@@ -69,8 +69,9 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             listing: settings.listing,
             onUpdate: (value) =>
                 notifier.updateSettings(settings.copyWith(listing: value)),
-            extraChildren: const [
-              BooruConfigMoreSettingsRedirectCard.appearance(),
+            extraChildren: [
+              if (kPremiumEnabled)
+                const BooruConfigMoreSettingsRedirectCard.appearance(),
             ],
           ),
         ),
@@ -121,46 +122,47 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             );
           },
         ),
-        Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 4,
-          ),
-          padding: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 4,
-          ),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 0.6),
-              width: 0.5,
+        if (kPremiumEnabled)
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 4,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 4,
+              horizontal: 4,
+            ),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.6),
+                width: 0.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Unlock more themes with $kPremiumBrandName',
+                    style: TextStyle(
+                      color: colorScheme.hintColor,
+                    ),
+                  ).tr(),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const ThemePreviewPreviewView(),
+                      ),
+                    );
+                  },
+                  child: const Text('Preview').tr(),
+                ),
+              ],
             ),
           ),
-          child: Row(
-            children: [
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Unlock more themes with $kPremiumBrandName',
-                  style: TextStyle(
-                    color: colorScheme.hintColor,
-                  ),
-                ).tr(),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const ThemePreviewPreviewView(),
-                    ),
-                  );
-                },
-                child: const Text('Preview').tr(),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

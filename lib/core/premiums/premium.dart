@@ -19,3 +19,15 @@ typedef Benefit = ({
   String title,
   String description,
 });
+
+enum PremiumMode {
+  hidden, // All premium features are hidden
+  free, // All premium features are shown but user can't use them
+  premium, // All premium features are shown and user can use them
+}
+
+PremiumMode parsePremiumMode(String? mode) => switch (mode) {
+      'free' || 'disable' => PremiumMode.free,
+      'premium' || 'enable' => PremiumMode.premium,
+      _ => PremiumMode.hidden,
+    };

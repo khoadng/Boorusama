@@ -5,10 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../foundation/iap/iap.dart';
 import 'premiums.dart';
 
-const kPremiumEnabled = true;
+const _premiumMode = String.fromEnvironment('PREMIUM_MODE');
+final kPremiumMode = parsePremiumMode(_premiumMode);
+final kPremiumEnabled = parsePremiumMode(_premiumMode) != PremiumMode.hidden;
 
 final hasPremiumProvider = Provider<bool>((ref) {
-  if (!kPremiumEnabled) return true;
+  if (kPremiumMode == PremiumMode.hidden) return false;
+  if (kPremiumMode == PremiumMode.premium) return true;
 
   final package = ref.watch(subscriptionNotifierProvider);
 
@@ -20,7 +23,8 @@ final premiumBenefitProvider = FutureProvider<List<Benefit>>((ref) {
 });
 
 final premiumManagementURLProvider = FutureProvider<String?>((ref) {
-  if (!kPremiumEnabled) return Future.value(null);
+  if (kPremiumMode == PremiumMode.hidden) return Future.value(null);
+  if (kPremiumMode == PremiumMode.premium) return Future.value(null);
 
   return ref.watch(subscriptionManagerProvider).managementURL;
 });

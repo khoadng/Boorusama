@@ -12,6 +12,7 @@ import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../home/custom_home.dart';
 import '../../../posts/details/custom_details.dart';
+import '../../../premiums/premiums.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
@@ -153,27 +154,29 @@ class _HomeScreenSection extends ConsumerWidget {
         const LayoutConfigs.undefined();
     final data = booruBuilder?.customHomeViewBuilders ?? kDefaultAltHomeView;
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      title: const Text('Home screen'),
-      subtitle: const Text(
-        'Change the view of the home screen',
-      ),
-      trailing: OptionDropDownButton(
-        alignment: AlignmentDirectional.centerStart,
-        value: layout.home,
-        onChanged: (value) => ref.editNotifier.updateLayout(
-          layout.copyWith(home: () => value),
+    return PremiumInteractionBlock(
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        title: const Text('Home screen'),
+        subtitle: const Text(
+          'Change the view of the home screen',
         ),
-        items: data.keys
-            .map(
-              (value) => DropdownMenuItem(
-                value: value,
-                child: Text(_describeView(data, value)).tr(),
-              ),
-            )
-            .toList(),
+        trailing: OptionDropDownButton(
+          alignment: AlignmentDirectional.centerStart,
+          value: layout.home,
+          onChanged: (value) => ref.editNotifier.updateLayout(
+            layout.copyWith(home: () => value),
+          ),
+          items: data.keys
+              .map(
+                (value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(_describeView(data, value)).tr(),
+                ),
+              )
+              .toList(),
+        ),
       ),
     );
   }

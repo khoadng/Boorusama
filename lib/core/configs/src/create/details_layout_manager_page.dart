@@ -13,6 +13,8 @@ import 'package:reorderables/reorderables.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../foundation/toast.dart';
 import '../../../posts/details/custom_details.dart';
+import '../../../premiums/premiums.dart';
+import '../../../premiums/routes.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';
 
@@ -158,6 +160,8 @@ class _DetailsLayoutManagerPageState
 
   @override
   Widget build(BuildContext context) {
+    final hasPremium = ref.watch(hasPremiumProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manage details layout'),
@@ -180,16 +184,41 @@ class _DetailsLayoutManagerPageState
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _Header(
-                params: widget.params,
-                onDone: widget.onDone,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _Header(
+                      params: widget.params,
+                      onDone: widget.onDone,
+                    ),
+                    _List(controller: controller, params: widget.params),
+                  ],
+                ),
               ),
-              _List(controller: controller, params: widget.params),
-            ],
-          ),
+            ),
+            if (!hasPremium)
+              SafeArea(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 48),
+                    ),
+                    onPressed: () {
+                      goToPremiumPage(context);
+                    },
+                    child: const Text('Upgrade to save'),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -350,20 +379,24 @@ class _Header extends ConsumerWidget {
       detailsLayoutProvider(params).select((value) => value.availableParts),
     );
 
+    final hasPremium = ref.watch(hasPremiumProvider);
+
     return ListTile(
       title: Text(
         '${selectedParts.length}/${availableParts.length} selected',
         style: Theme.of(context).textTheme.titleLarge,
       ),
-      trailing: FilledButton(
-        onPressed: selectedParts.isNotEmpty
-            ? () {
-                onDone(convertDetailsParts(selectedParts.toList()));
-                Navigator.of(context).pop();
-              }
-            : null,
-        child: const Text('Apply'),
-      ),
+      trailing: hasPremium
+          ? FilledButton(
+              onPressed: selectedParts.isNotEmpty
+                  ? () {
+                      onDone(convertDetailsParts(selectedParts.toList()));
+                      Navigator.of(context).pop();
+                    }
+                  : null,
+              child: const Text('Apply'),
+            )
+          : null,
     );
   }
 }
