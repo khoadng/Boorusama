@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../premiums/routes.dart';
 import '../../../theme.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../theme/viewers/theme_viewer.dart';
@@ -112,7 +113,7 @@ class ThemePreviewPreviewView extends StatelessWidget {
       colorSettings: null,
       saveButton: TextButton(
         onPressed: () {
-          Navigator.of(context).pop();
+          goToPremiumPage(context);
         },
         child: const Text('Upgrade'),
       ),

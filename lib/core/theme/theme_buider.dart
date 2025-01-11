@@ -8,14 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../configs/current.dart';
 import '../configs/ref.dart';
+import '../premiums/premiums.dart';
 import '../settings/providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
 import 'theme_configs.dart';
 import 'theme_mode.dart';
-
-//FIXME: remove this when premium is implemented
-const kHasPremium = true;
 
 final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
   final themeConfigs =
@@ -41,6 +39,8 @@ class ThemeBuilder extends ConsumerWidget {
 
     final colors = ref.watch(settingsProvider.select((value) => value.colors));
 
+    final hasPremium = ref.watch(hasPremiumProvider);
+
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
@@ -52,7 +52,7 @@ class ThemeBuilder extends ConsumerWidget {
                 : (null, null)
             : (null, null);
 
-        final customColorScheme = kHasPremium
+        final customColorScheme = hasPremium
             ? ref.watchThemeConfigs?.enable == true
                 ? getSchemeFromColorSettings(
                     ref.watchConfig.theme?.colors,
