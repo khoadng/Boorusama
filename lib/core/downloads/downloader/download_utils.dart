@@ -10,6 +10,7 @@ import 'package:foundation/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
+import '../../analytics.dart';
 import '../../boorus/booru/booru.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
@@ -48,6 +49,7 @@ extension PostDownloadX on WidgetRef {
     final settings = read(settingsProvider);
     final urlExtractor = read(downloadFileUrlExtractorProvider(readConfigAuth));
     final perm = await _getPermissionStatus();
+    final analytics = read(analyticsProvider);
 
     await _download(
       this,
@@ -60,6 +62,14 @@ extension PostDownloadX on WidgetRef {
         if (c != null) {
           showDownloadStartToast(c);
         }
+
+        analytics.logEvent(
+          'single_download_start',
+          parameters: {
+            'hint_site': readConfigAuth.booruType.name,
+            'url': Uri.tryParse(readConfig.url)?.host,
+          },
+        );
       },
     );
   }
@@ -72,6 +82,7 @@ extension PostDownloadX on WidgetRef {
     final settings = read(settingsProvider);
     final config = readConfigAuth;
     final urlExtractor = read(downloadFileUrlExtractorProvider(config));
+    final analytics = read(analyticsProvider);
 
     // ensure that the booru supports bulk download
     if (!config.booruType.canDownloadMultipleFiles) {
@@ -83,6 +94,17 @@ extension PostDownloadX on WidgetRef {
 
     _showToastIfPossible(
       message: 'Downloading ${posts.length} files...',
+    );
+
+    unawaited(
+      analytics.logEvent(
+        'multiple_download_start',
+        parameters: {
+          'total': posts.length,
+          'hint_site': config.booruType.name,
+          'url': Uri.tryParse(config.url)?.host,
+        },
+      ),
     );
 
     for (var i = 0; i < posts.length; i++) {

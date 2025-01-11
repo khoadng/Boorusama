@@ -68,10 +68,9 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
             },
           ),
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         HomeNavigationTile(
           value: 1,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
@@ -80,7 +79,6 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
         if (favoritePageBuilder != null && config.passHash != null)
           HomeNavigationTile(
             value: 2,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,

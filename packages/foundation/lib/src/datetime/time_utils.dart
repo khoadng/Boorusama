@@ -5,7 +5,13 @@ import 'package:intl/intl.dart';
 // Package imports:
 import 'package:timeago/timeago.dart';
 
-String formatDurationForMedia(Duration duration) {
+String formatDurationForMedia(
+  Duration duration, {
+  bool forceHigherThanOneSecond = false,
+}) {
+  // less then 1 second will be shown as 1 second
+  if (forceHigherThanOneSecond && duration.inSeconds < 1) return '0:01';
+
   final seconds = duration.inSeconds % 60;
   final minutes = duration.inMinutes % 60;
   final hours = duration.inHours;

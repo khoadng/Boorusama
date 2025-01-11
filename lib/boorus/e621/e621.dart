@@ -15,6 +15,7 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -30,6 +31,7 @@ import 'configs/configs.dart';
 import 'favorites/favorite_repository_impl.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
+import 'popular/e621_popular_page.dart';
 import 'posts/posts.dart';
 import 'tags/tags.dart';
 
@@ -236,6 +238,10 @@ class E621Builder
   );
 
   @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      ke621AltHomeView;
+
+  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) =>
@@ -319,3 +325,15 @@ class E621Repository implements BooruRepository {
         ).getPosts().then((value) => true);
   }
 }
+
+final ke621AltHomeView = {
+  ...kDefaultAltHomeView,
+  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const E621FavoritesPage(),
+  ),
+  const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
+    displayName: 'Popular',
+    builder: (context, _) => const E621PopularPage(),
+  ),
+};

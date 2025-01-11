@@ -14,19 +14,17 @@ import 'providers.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
-    required this.useHero,
-    required this.heroTag,
     required this.aspectRatio,
     required this.imageUrl,
     super.key,
+    this.heroTag,
     this.placeholderImageUrl,
     this.imageOverlayBuilder,
     this.width,
     this.height,
   });
 
-  final bool useHero;
-  final String heroTag;
+  final String? heroTag;
   final double? aspectRatio;
   final String imageUrl;
   final String? placeholderImageUrl;
@@ -52,12 +50,8 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
       );
     }
 
-    return ConditionalParentWidget(
-      condition: widget.useHero,
-      conditionalBuilder: (child) => Hero(
-        tag: widget.heroTag,
-        child: child,
-      ),
+    return BooruHero(
+      tag: widget.heroTag,
       child: widget.aspectRatio != null
           ? AspectRatio(
               aspectRatio: widget.aspectRatio!,
@@ -77,6 +71,8 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                       cacheMaxAge: kDefaultImageCacheDuration,
                       headers: {
                         ...ref.watch(extraHttpHeaderProvider(config)),
+                        ...ref
+                            .watch(cachedBypassDdosHeadersProvider(config.url)),
                       },
                     ),
                     ...widget.imageOverlayBuilder?.call(constraints) ?? [],
@@ -97,6 +93,7 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                 fit: BoxFit.contain,
                 headers: {
                   ...ref.watch(extraHttpHeaderProvider(config)),
+                  ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
                 },
               ),
             ),

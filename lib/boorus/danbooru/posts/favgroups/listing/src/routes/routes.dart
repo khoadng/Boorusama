@@ -8,6 +8,7 @@ import '../pages/favorite_groups_page.dart';
 
 final danbooruFavgroupRoutes = GoRoute(
   path: '/danbooru/favorite_groups',
+  name: 'favorite_groups',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,

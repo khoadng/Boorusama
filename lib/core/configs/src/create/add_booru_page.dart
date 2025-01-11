@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../boorus/booru/providers.dart';
 import '../../../boorus/engine/providers.dart';
@@ -46,17 +47,20 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
   @override
   Widget build(BuildContext context) {
     return switch (phase) {
-      AddBooruPhase.url => AddBooruPageInternal(
-          backgroundColor: widget.backgroundColor,
-          setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-          onBooruSubmit: (url) => setState(() {
-            final booruFactory = ref.read(booruFactoryProvider);
-            booru = intToBooruType(booruFactory.getBooruFromUrl(url)?.id);
-            phase = booru == BooruType.unknown
-                ? AddBooruPhase.newUnknownBooru
-                : AddBooruPhase.newKnownBooru;
-            this.url = url;
-          }),
+      AddBooruPhase.url => AnalyticsInitStateHook(
+          screenName: 'config/url_input',
+          child: AddBooruPageInternal(
+            backgroundColor: widget.backgroundColor,
+            setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+            onBooruSubmit: (url) => setState(() {
+              final booruFactory = ref.read(booruFactoryProvider);
+              booru = intToBooruType(booruFactory.getBooruFromUrl(url)?.id);
+              phase = booru == BooruType.unknown
+                  ? AddBooruPhase.newUnknownBooru
+                  : AddBooruPhase.newKnownBooru;
+              this.url = url;
+            }),
+          ),
         ),
       AddBooruPhase.newUnknownBooru => CreateBooruConfigScope(
           id: EditBooruConfigId.newId(
@@ -68,9 +72,12 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
             url: url,
             customDownloadFileNameFormat: null,
           ),
-          child: AddUnknownBooruPage(
-            setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-            backgroundColor: widget.backgroundColor,
+          child: AnalyticsInitStateHook(
+            screenName: 'config/create_unknown_booru',
+            child: AddUnknownBooruPage(
+              setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+              backgroundColor: widget.backgroundColor,
+            ),
           ),
         ),
       AddBooruPhase.newKnownBooru => _buildNewKnownBooru(booru!, url),
@@ -87,13 +94,15 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
         ref.watchBooruBuilder(defaultConfig.auth)?.createConfigPageBuilder;
 
     return booruBuilder != null
-        ? booruBuilder(
-            context,
-            EditBooruConfigId.newId(
-              booruType: booruType,
-              url: booruUrl,
+        ? AddKnownBooru(
+            child: booruBuilder(
+              context,
+              EditBooruConfigId.newId(
+                booruType: booruType,
+                url: booruUrl,
+              ),
+              backgroundColor: widget.backgroundColor,
             ),
-            backgroundColor: widget.backgroundColor,
           )
         : Scaffold(
             appBar: AppBar(),
@@ -101,6 +110,59 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
               child: Text('Not implemented'),
             ),
           );
+  }
+}
+
+class AnalyticsInitStateHook extends ConsumerStatefulWidget {
+  const AnalyticsInitStateHook({
+    required this.screenName,
+    required this.child,
+    super.key,
+  });
+
+  final String screenName;
+  final Widget child;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AnalyticsInitStateHookState();
+}
+
+class _AnalyticsInitStateHookState
+    extends ConsumerState<AnalyticsInitStateHook> {
+  @override
+  void initState() {
+    super.initState();
+
+    ref.read(analyticsProvider).logScreenView(widget.screenName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+}
+
+// Need to be stateful to keep the state for analytics
+class AddKnownBooru extends ConsumerStatefulWidget {
+  const AddKnownBooru({
+    required this.child,
+    super.key,
+  });
+
+  final Widget child;
+
+  @override
+  ConsumerState<AddKnownBooru> createState() => _AddKnownBooruState();
+}
+
+class _AddKnownBooruState extends ConsumerState<AddKnownBooru> {
+  @override
+  Widget build(BuildContext context) {
+    return AnalyticsInitStateHook(
+      screenName: 'config/create_known_booru',
+      child: widget.child,
+    );
   }
 }
 

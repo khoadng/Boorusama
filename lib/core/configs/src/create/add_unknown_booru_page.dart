@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -11,6 +14,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../theme.dart';
 import '../booru_config.dart';
@@ -126,6 +130,18 @@ final _targetConfigToValidateProvider =
 final _validateConfigProvider = FutureProvider.autoDispose<bool?>((ref) async {
   final config = ref.watch(_targetConfigToValidateProvider);
   if (config == null) return null;
+
+  unawaited(
+    ref.watch(analyticsProvider).logEvent(
+      'config_verify',
+      parameters: {
+        'url': Uri.tryParse(config.url)?.host,
+        'hint_site': config.booruType.name,
+        'has_login': config.hasLoginDetails(),
+      },
+    ),
+  );
+
   final result = await ref.watch(booruSiteValidatorProvider(config).future);
   return result;
 });
@@ -166,6 +182,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                                   newConfig: data.copyWith(
                                     booruIdHint: () => engine.toBooruId(),
                                   ),
+                                  initialData: config,
                                 );
 
                             Navigator.of(context).pop();

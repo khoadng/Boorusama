@@ -27,6 +27,10 @@ class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
     super.key,
   }) : initialTab = 'search';
 
+  const BooruConfigMoreSettingsRedirectCard.appearance({
+    super.key,
+  }) : initialTab = 'appearance';
+
   final String initialTab;
 
   @override

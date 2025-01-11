@@ -7,6 +7,7 @@ import '../blacklisted_tags_page.dart';
 
 final danbooruBlacklistRoutes = GoRoute(
   path: '/internal/danbooru/settings/blacklist',
+  name: 'blacklisted_tags',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,

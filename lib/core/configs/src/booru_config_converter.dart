@@ -1,6 +1,7 @@
 // Project imports:
 import '../../proxy/proxy.dart';
 import '../../settings/settings.dart';
+import '../../theme/theme_configs.dart';
 import 'booru_config.dart';
 import 'data/booru_config_data.dart';
 import 'gestures.dart';
@@ -45,7 +46,13 @@ extension BooruConfigDataConverter on BooruConfigData? {
       listing: booruConfigData.listing == null
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
+      theme: booruConfigData.theme == null
+          ? null
+          : ThemeConfigs.fromJsonString(booruConfigData.theme),
       alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
+      layout: booruConfigData.layout != null
+          ? LayoutConfigs.fromJsonString(booruConfigData.layout)
+          : null,
       proxySettings:
           ProxySettings.fromJsonString(booruConfigData.proxySettings),
     );
@@ -75,7 +82,9 @@ extension BooruConfigConverter on BooruConfig {
       postGestures: postGestures?.toJsonString(),
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
+      theme: theme?.toJsonString(),
       alwaysIncludeTags: alwaysIncludeTags,
+      layout: layout?.toJsonString(),
       proxySettings: proxySettings?.toJsonString(),
     );
   }

@@ -385,10 +385,9 @@ class HydrusHomePage extends StatelessWidget {
           onTap: () => goToFavoritesPage(context),
         ),
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         HomeNavigationTile(
           value: 1,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.favorite,
           icon: Symbols.favorite,

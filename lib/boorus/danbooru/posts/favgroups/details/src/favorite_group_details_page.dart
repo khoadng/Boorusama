@@ -81,13 +81,19 @@ class _FavoriteGroupDetailsPageState
                 backgroundColor: Theme.of(context).colorScheme.surface,
               ),
             ],
-            itemBuilder:
-                (context, index, multiSelectController, autoScrollController) {
+            itemBuilder: (
+              context,
+              index,
+              multiSelectController,
+              autoScrollController,
+              useHero,
+            ) {
               return DefaultDanbooruImageGridItem(
                 index: index,
                 multiSelectController: multiSelectController,
                 autoScrollController: autoScrollController,
                 controller: controller,
+                useHero: useHero,
               );
             },
           ),

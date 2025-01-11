@@ -226,6 +226,9 @@ class QueryActionsSection extends StatelessWidget {
                     ),
                     onPressed: () {
                       showDialog(
+                        routeSettings: const RouteSettings(
+                          name: 'raw_query_input',
+                        ),
                         context: context,
                         builder: (c) {
                           return SelectedTagEditDialog(

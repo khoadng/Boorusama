@@ -9,17 +9,19 @@ import 'booru_config_ref.dart';
 
 class BooruConfigAuthFailsafe extends ConsumerWidget {
   const BooruConfigAuthFailsafe({
-    required this.child,
+    required this.builder,
     super.key,
   });
 
-  final Widget child;
+  final WidgetBuilder builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
 
-    return config.hasLoginDetails() ? child : const UnauthorizedPage();
+    return config.hasLoginDetails()
+        ? builder(context)
+        : const UnauthorizedPage();
   }
 }
 

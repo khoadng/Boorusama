@@ -47,6 +47,7 @@ class AnimePicturesTopPage extends ConsumerWidget {
               context,
               posts,
               'Daily Top',
+              const RouteSettings(name: 'daily_top'),
             ),
           ),
         ),
@@ -56,6 +57,7 @@ class AnimePicturesTopPage extends ConsumerWidget {
               context,
               posts,
               'Weekly Top',
+              const RouteSettings(name: 'weekly_top'),
             ),
           ),
         ),
@@ -68,9 +70,11 @@ void goToAnimePicturesDetailsTopPage(
   BuildContext context,
   List<Post> posts,
   String title,
+  RouteSettings settings,
 ) {
   Navigator.of(context).push(
     CupertinoPageRoute(
+      settings: settings,
       builder: (_) => AnimePicturesDetailsTopPage(
         posts: posts,
         title: title,

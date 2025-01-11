@@ -18,7 +18,7 @@ class E621FavoritesPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: E621FavoritesPageInternal(
+      builder: (_) => E621FavoritesPageInternal(
         username: config.login!,
       ),
     );

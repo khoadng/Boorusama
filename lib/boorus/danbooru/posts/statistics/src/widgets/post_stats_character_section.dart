@@ -50,6 +50,7 @@ class PostStatsCharacterSection extends ConsumerWidget {
   void _onMore(WidgetRef ref, BuildContext context, Color? characterColor) {
     showAppModalBarBottomSheet(
       context: context,
+      settings: const RouteSettings(name: 'posts_character_stats'),
       builder: (context) => StatisticsFromMapPage(
         title: 'Character',
         total: totalPosts,

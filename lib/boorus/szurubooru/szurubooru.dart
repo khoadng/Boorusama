@@ -286,7 +286,7 @@ class SzurubooruFavoritesPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: SzurubooruFavoritesPageInternal(
+      builder: (_) => SzurubooruFavoritesPageInternal(
         username: config.login!,
       ),
     );

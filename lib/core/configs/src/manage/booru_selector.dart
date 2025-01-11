@@ -11,6 +11,7 @@ import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import '../../../foundation/toast.dart';
+import '../../../router.dart';
 import '../../../settings/providers.dart';
 import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';
@@ -19,7 +20,6 @@ import '../providers.dart';
 import '../route_utils.dart';
 import 'booru_config_provider.dart';
 import 'booru_selector_item.dart';
-import 'current_booru_providers.dart';
 import 'remove_booru_alert_dialog.dart';
 
 class BooruSelector extends ConsumerWidget {
@@ -54,8 +54,6 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
   Widget build(BuildContext context) {
     final currentConfig = ref.watchConfig;
     final notifier = ref.watch(booruConfigProvider.notifier);
-    final currentConfigNotifier =
-        ref.watch(currentBooruConfigProvider.notifier);
 
     return Container(
       width: 68,
@@ -77,7 +75,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                           hideLabel: hideLabel,
                           config: config,
                           show: () => show(config, notifier),
-                          onTap: () => currentConfigNotifier.update(config),
+                          onTap: () => context.go('/?cid=${config.id}'),
                           selected: currentConfig == config,
                         );
                       },
@@ -125,8 +123,6 @@ class _BooruSelectorHorizontalState
   Widget build(BuildContext context) {
     final currentConfig = ref.watchConfig;
     final notifier = ref.watch(booruConfigProvider.notifier);
-    final currentConfigNotifier =
-        ref.watch(currentBooruConfigProvider.notifier);
 
     return Container(
       height: 48,
@@ -153,7 +149,7 @@ class _BooruSelectorHorizontalState
                               hideLabel: hideLabel,
                               config: config,
                               show: () => show(config, notifier),
-                              onTap: () => currentConfigNotifier.update(config),
+                              onTap: () => context.go('/?cid=${config.id}'),
                               selected: currentConfig == config,
                               direction: Axis.horizontal,
                             ),
@@ -196,6 +192,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
             onPressed: () {
               showDialog(
                 context: context,
+                routeSettings: const RouteSettings(name: 'booru/delete'),
                 builder: (context) => RemoveBooruConfigAlertDialog(
                   title: "Delete '${config.name}'",
                   description:

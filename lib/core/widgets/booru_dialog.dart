@@ -5,10 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/app_theme.dart';
-
 // Project imports:
 import '../theme.dart';
+import '../theme/app_theme.dart';
 
 class BooruDialog extends StatelessWidget {
   const BooruDialog({

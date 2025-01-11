@@ -11,12 +11,14 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
+import '../../../../analytics.dart';
 import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
@@ -29,11 +31,13 @@ import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
 import '../../../shares/providers.dart';
+import '../../custom_details.dart';
 import 'post_details_controller.dart';
 import 'post_details_page_view.dart';
 import 'post_details_preload_image.dart';
 import 'post_media.dart';
 import 'video_controls.dart';
+import 'volume_key_page_navigator.dart';
 
 const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
@@ -46,6 +50,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.imageUrlBuilder,
     this.topRightButtonsBuilder,
     this.uiBuilder,
+    this.preferredParts,
+    this.preferredPreviewParts,
   });
 
   final List<T> posts;
@@ -55,6 +61,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
       topRightButtonsBuilder;
   final PostDetailsController<T> controller;
   final PostDetailsUIBuilder? uiBuilder;
+  final Set<DetailsPart>? preferredParts;
+  final Set<DetailsPart>? preferredPreviewParts;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -67,7 +75,16 @@ class _PostDetailPageScaffoldState<T extends Post>
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
     hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
   );
+  late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
+    pageViewController: _controller,
+    totalPosts: _posts.length,
+    visibilityNotifier: visibilityNotifier,
+    getSettings: () => ref.read(settingsProvider),
+  );
+
+  ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
 
   List<T> get posts => _posts;
 
@@ -82,6 +99,19 @@ class _PostDetailPageScaffoldState<T extends Post>
         useDefaultEngine: _isDefaultEngine(settings),
       );
     });
+
+    widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
+
+    _volumeKeyPageNavigator.initialize();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _volumeKeyPageNavigator.dispose();
+    widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
+
+    super.dispose();
   }
 
   var _previouslyPlaying = false;
@@ -90,17 +120,19 @@ class _PostDetailPageScaffoldState<T extends Post>
     return settings.videoPlayerEngine != VideoPlayerEngine.mdk;
   }
 
+  void _isVideoPlayingChanged() {
+    // force overlay to be on when video is not playing
+    if (!widget.controller.isVideoPlaying.value) {
+      _controller.disableHoverToControlOverlay();
+    } else {
+      if (widget.controller.currentPost.value.isVideo) {
+        _controller.enableHoverToControlOverlay();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-      settingsProvider.select((value) => value.hidePostDetailsOverlay),
-      (previous, next) {
-        if (previous != next && _controller.overlay.value != next) {
-          _controller.overlay.value = !next;
-        }
-      },
-    );
-
     final useDefaultEngine = ref.watch(
       settingsProvider.select(
         (value) => _isDefaultEngine(value),
@@ -125,6 +157,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             if (!mounted) return;
 
             if (info.visibleFraction == 0) {
+              visibilityNotifier.value = false;
               _previouslyPlaying = widget.controller.isVideoPlaying.value;
               if (_previouslyPlaying) {
                 widget.controller.pauseCurrentVideo(
@@ -132,6 +165,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 );
               }
             } else if (info.visibleFraction == 1) {
+              visibilityNotifier.value = true;
               if (_previouslyPlaying) {
                 widget.controller.playCurrentVideo(
                   useDefaultEngine: useDefaultEngine,
@@ -149,20 +183,32 @@ class _PostDetailPageScaffoldState<T extends Post>
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.fullview;
+    final layout = ref.watchLayoutConfigs;
     final imageUrlBuilder =
         widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
-
+    final preferredParts = widget.preferredParts ??
+        layout?.getParsedParts() ??
+        uiBuilder?.full.keys.toSet();
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
       body: PostDetailsPageView(
+        disableAnimation: settings.reduceAnimations,
         onPageChanged: (page) {
           widget.controller.setPage(
             page,
             useDefaultEngine: _isDefaultEngine(settings),
           );
+
+          if (_controller.overlay.value) {
+            if (posts[page].isVideo) {
+              _controller.enableHoverToControlOverlay();
+            } else {
+              _controller.disableHoverToControlOverlay();
+            }
+          }
 
           ref
               .read(postShareProvider(posts[page]).notifier)
@@ -172,9 +218,10 @@ class _PostDetailPageScaffoldState<T extends Post>
           save: (expanded) => ref
               .read(miscDataProvider(kShowInfoStateCacheKey).notifier)
               .put(expanded.toString()),
-          load: () async =>
+          load: () =>
               ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true',
         ),
+        checkIfLargeScreen: () => context.isLargeScreen,
         slideshowOptions: SlideshowOptions(
           duration: settings.slideshowDuration,
           direction: settings.slideshowDirection,
@@ -225,6 +272,8 @@ class _PostDetailPageScaffoldState<T extends Post>
               scrollController: scrollController,
               sheetState: state,
               uiBuilder: uiBuilder,
+              preferredParts: preferredParts,
+              canCustomize: widget.uiBuilder == null,
             ),
           );
         },
@@ -337,12 +386,55 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
           ],
         ],
-        onExpanded: widget.onExpanded,
+        onTap: () {
+          final controller = widget.controller;
+
+          if (isDesktopPlatform()) {
+            if (controller.currentPost.value.isVideo) {
+              if (controller.isVideoPlaying.value) {
+                controller.pauseCurrentVideo(
+                  useDefaultEngine: _isDefaultEngine(settings),
+                );
+              } else {
+                controller.playCurrentVideo(
+                  useDefaultEngine: _isDefaultEngine(settings),
+                );
+              }
+
+              // if (isDesktopPlatform()) {
+
+              // } else {}
+            } else {
+              if (_controller.isExpanded) return;
+
+              _controller.toggleOverlay();
+            }
+          } else {
+            if (_controller.isExpanded) return;
+
+            _controller.toggleOverlay();
+          }
+        },
+        onExpanded: () {
+          widget.onExpanded?.call();
+          ref.read(analyticsProvider).logScreenView('/details/info');
+        },
+        onShrink: () {
+          final routeName = ModalRoute.of(context)?.settings.name;
+          if (routeName != null) {
+            ref.read(analyticsProvider).logScreenView(routeName);
+          }
+        },
       ),
     );
   }
 
   Widget _buildCustomPreview(PostDetailsUIBuilder uiBuilder) {
+    final layout = ref.watchLayoutConfigs;
+    final preferredPreviewParts = widget.preferredPreviewParts ??
+        layout?.getPreviewParsedParts() ??
+        uiBuilder.preview.keys.toSet();
+
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
@@ -354,7 +446,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             color: Theme.of(context).colorScheme.surface,
           ),
           sliver: MultiSliver(
-            children: uiBuilder.preview.keys
+            children: preferredPreviewParts
                 .map((p) => uiBuilder.buildPart(context, p))
                 .nonNulls
                 .toList(),
@@ -399,23 +491,46 @@ class _PostDetailPageScaffoldState<T extends Post>
 class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({
     required this.sheetState,
+    required this.uiBuilder,
+    required this.preferredParts,
     super.key,
     this.scrollController,
-    this.uiBuilder,
+    this.canCustomize = true,
   });
 
   final ScrollController? scrollController;
   final SheetState sheetState;
   final PostDetailsUIBuilder? uiBuilder;
+  final Set<DetailsPart>? preferredParts;
+  final bool canCustomize;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final parts = preferredParts;
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
-    if (builder == null) {
-      return DefaultPostDetailsInfoPreview(
+    if (builder == null || parts == null) {
+      return RawPostDetailsInfoSheet(
         scrollController: scrollController,
+        preview: DefaultPostDetailsInfoPreview(
+          scrollController: scrollController,
+        ),
+        slivers: [
+          const SliverSizedBox(height: 12),
+          SliverOffstage(
+            offstage: sheetState == SheetState.hidden,
+            sliver: const SliverToBoxAdapter(
+              child: Center(
+                child: Text('No widgets to display'),
+              ),
+            ),
+          ),
+          SliverSizedBox(
+            height: MediaQuery.paddingOf(context).bottom + 72,
+          ),
+        ],
+        sheetState: sheetState,
       );
     }
 
@@ -424,10 +539,18 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
       preview: DefaultPostDetailsInfoPreview(
         scrollController: scrollController,
       ),
-      slivers: builder.full.keys
-          .map((p) => builder.buildPart(context, p))
-          .nonNulls
-          .toList(),
+      slivers: [
+        ...parts
+            .map(
+              (p) => builder.buildPart(context, p),
+            )
+            .nonNulls,
+        const SliverSizedBox(height: 24),
+        if (canCustomize)
+          const SliverToBoxAdapter(
+            child: AddCustomDetailsButton(),
+          ),
+      ],
       sheetState: sheetState,
     );
   }

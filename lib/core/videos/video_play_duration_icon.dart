@@ -15,7 +15,7 @@ class VideoPlayDurationIcon extends StatelessWidget {
     super.key,
   });
 
-  final double? duration;
+  final double duration;
   final bool? hasSound;
 
   @override
@@ -34,7 +34,11 @@ class VideoPlayDurationIcon extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            formatDurationForMedia(Duration(seconds: duration!.round())),
+            formatDurationForMedia(
+              Duration(
+                seconds: duration < 1 ? 1 : duration.round(),
+              ),
+            ),
             style: TextStyle(
               color: foreground,
               fontSize: 14,

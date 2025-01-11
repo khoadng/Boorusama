@@ -38,6 +38,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           title: const Text('Popular'),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
+              settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
                   title: const Text('Popular'),
@@ -57,10 +58,9 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           ),
         ],
       ],
-      desktopMenuBuilder: (context, controller, constraints) => [
+      desktopMenuBuilder: (context, constraints) => [
         HomeNavigationTile(
           value: 1,
-          controller: controller,
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
@@ -69,7 +69,6 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
         if (config.hasLoginDetails()) ...[
           HomeNavigationTile(
             value: 2,
-            controller: controller,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,

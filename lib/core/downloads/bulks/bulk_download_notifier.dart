@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:isolate';
 
 // Package imports:
@@ -7,12 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
+import '../../analytics.dart';
 import '../../blacklists/providers.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/ref.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/permissions.dart';
 import '../../http/http.dart';
+import '../../http/providers.dart';
 import '../../info/device_info.dart';
 import '../../posts/filter/filter.dart';
 import '../../posts/post/post.dart';
@@ -136,9 +139,12 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     final settings = ref.read(settingsProvider);
     final downloadFileUrlExtractor =
         ref.read(downloadFileUrlExtractorProvider(authConfig));
+    final headers = ref.read(cachedBypassDdosHeadersProvider(config.url));
 
     final fileNameBuilder =
         ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
+
+    final analytics = ref.read(analyticsProvider);
 
     if (fileNameBuilder == null) {
       logger.logE('Bulk Download', 'No file name builder found, aborting...');
@@ -154,6 +160,17 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
       perPage: _perPage,
     );
     var mixedMedia = false;
+
+    unawaited(
+      analytics.logEvent(
+        'bulk_download_start',
+        parameters: {
+          'quality': task.options.quality?.name,
+          'skip_if_exists': task.options.skipIfExists,
+          'notifications': task.options.notications,
+        },
+      ),
+    );
 
     try {
       var page = 1;
@@ -235,6 +252,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
                 filename: fileName,
                 skipIfExists: task.options.skipIfExists,
                 headers: {
+                  ...headers,
                   if (urlData.cookie != null)
                     AppHttpHeaders.cookieHeader: urlData.cookie!,
                 },

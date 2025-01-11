@@ -11,6 +11,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Project imports:
 import '../utils/color_utils.dart';
 import '../utils/object_utils.dart';
+import 'booru_hero.dart';
 
 class WebmVideoController {
   WebmVideoController({
@@ -173,6 +174,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.sound = true,
     this.userAgent,
     this.onZoomUpdated,
+    this.heroTag,
   });
 
   final String url;
@@ -186,6 +188,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final double playbackSpeed;
   final String? userAgent;
   final void Function(bool value)? onZoomUpdated;
+  final String? heroTag;
 
   @override
   State<EmbeddedWebViewWebm> createState() => _EmbeddedWebViewWebmState();
@@ -233,12 +236,15 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: widget.backgroundColor,
-      height: MediaQuery.sizeOf(context).height,
-      child: IgnorePointer(
-        child: WebViewWidget(
-          controller: webmVideoController._webViewController,
+    return BooruHero(
+      tag: widget.heroTag,
+      child: Container(
+        color: widget.backgroundColor,
+        height: MediaQuery.sizeOf(context).height,
+        child: IgnorePointer(
+          child: WebViewWidget(
+            controller: webmVideoController._webViewController,
+          ),
         ),
       ),
     );

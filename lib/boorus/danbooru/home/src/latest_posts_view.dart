@@ -70,7 +70,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
         controller: controller,
         scrollController: _autoScrollController,
         itemBuilder:
-            (context, index, multiSelectController, scrollController) =>
+            (context, index, multiSelectController, scrollController, hero) =>
                 DefaultDanbooruImageGridItem(
           index: index,
           multiSelectController: multiSelectController,

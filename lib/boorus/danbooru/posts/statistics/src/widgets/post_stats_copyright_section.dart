@@ -50,6 +50,7 @@ class PostStatsCopyrightSection extends ConsumerWidget {
   void _onMore(WidgetRef ref, BuildContext context, Color? copyrightColor) {
     showAppModalBarBottomSheet(
       context: context,
+      settings: const RouteSettings(name: 'posts_copyright_stats'),
       builder: (context) => StatisticsFromMapPage(
         title: 'Copyright',
         total: totalPosts,

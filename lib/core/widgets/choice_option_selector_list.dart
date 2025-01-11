@@ -167,6 +167,8 @@ class _ChoiceOptionSelectorListState<T>
                     final items = options.whereType<OptionType<T>>().toList();
                     showBarModalBottomSheet(
                       context: context,
+                      settings:
+                          const RouteSettings(name: 'choice_option_selector'),
                       duration: const Duration(milliseconds: 300),
                       builder: (context) => OptionSearchableSheet(
                         title: widget.sheetTitle,

@@ -53,6 +53,9 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       imageListingSettingsProvider
           .select((value) => value.imageGridAspectRatio),
     );
+    final postsPerPage = ref.watch(
+      imageListingSettingsProvider.select((value) => value.postsPerPage),
+    );
 
     return SliverRawPostGrid(
       constraints: constraints,
@@ -65,6 +68,7 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       size: gridSize,
       spacing: imageGridSpacing,
       aspectRatio: imageGridAspectRatio,
+      postsPerPage: postsPerPage,
     );
   }
 }
@@ -81,6 +85,7 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
     this.spacing,
     this.aspectRatio,
     this.borderRadius,
+    this.postsPerPage,
   });
 
   final BoxConstraints? constraints;
@@ -91,6 +96,7 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
   final double? spacing;
   final double? aspectRatio;
   final BorderRadius? borderRadius;
+  final int? postsPerPage;
 
   final IndexedWidgetBuilder itemBuilder;
 
@@ -190,6 +196,7 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                       spacing: spacing,
                       aspectRatio: aspectRatio,
                       borderRadius: borderRadius,
+                      postsPerPage: postsPerPage,
                     )
                   : _buildGrid(context);
             },
@@ -254,6 +261,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     this.spacing,
     this.aspectRatio,
     this.borderRadius,
+    this.postsPerPage,
   });
 
   final BoxConstraints? constraints;
@@ -263,6 +271,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
   final double? spacing;
   final double? aspectRatio;
   final BorderRadius? borderRadius;
+  final int? postsPerPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -271,7 +280,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridSpacing = spacing ?? 4;
     final imageBorderRadius = borderRadius ?? BorderRadius.zero;
     final imageGridAspectRatio = aspectRatio ?? 1;
-    const postsPerPage = 20;
+    final perPage = postsPerPage ?? 20;
 
     return Builder(
       builder: (context) {
@@ -292,14 +301,20 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 (context, _) => ImagePlaceHolder(
                   borderRadius: imageBorderRadius,
                 ),
-                childCount: postsPerPage,
+                childCount: perPage,
+                addRepaintBoundaries: false,
+                addAutomaticKeepAlives: false,
+                addSemanticIndexes: false,
               ),
             ),
           ImageListType.masonry => SliverMasonryGrid.count(
               crossAxisCount: crossAxisCount,
               mainAxisSpacing: imageGridSpacing,
               crossAxisSpacing: imageGridSpacing,
-              childCount: postsPerPage,
+              childCount: perPage,
+              addRepaintBoundaries: false,
+              addAutomaticKeepAlives: false,
+              addSemanticIndexes: false,
               itemBuilder: (context, index) {
                 return createRandomPlaceholderContainer(
                   context,

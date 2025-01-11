@@ -93,13 +93,19 @@ class _PopularContent extends ConsumerWidget {
               child: PostGrid(
                 controller: controller,
                 safeArea: false,
-                itemBuilder:
-                    (context, index, multiSelectController, scrollController) =>
-                        DefaultDanbooruImageGridItem(
+                itemBuilder: (
+                  context,
+                  index,
+                  multiSelectController,
+                  scrollController,
+                  useHero,
+                ) =>
+                    DefaultDanbooruImageGridItem(
                   index: index,
                   multiSelectController: multiSelectController,
                   autoScrollController: scrollController,
                   controller: controller,
+                  useHero: useHero,
                 ),
                 sliverHeaders: [
                   ExploreSliverAppBar(

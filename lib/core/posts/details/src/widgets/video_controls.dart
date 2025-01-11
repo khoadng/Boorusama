@@ -174,6 +174,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                         valueListenable: controller.videoProgress,
                         builder: (_, progress, __) => VideoTimeText(
                           duration: progress.duration,
+                          forceHigherThanOneSecond: true,
                         ),
                       ),
                       if (constraints.maxWidth >= _kMinWidth) ...rightControls,
@@ -195,9 +196,11 @@ class VideoTimeText extends StatelessWidget {
   const VideoTimeText({
     required this.duration,
     super.key,
+    this.forceHigherThanOneSecond,
   });
 
   final Duration duration;
+  final bool? forceHigherThanOneSecond;
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +211,10 @@ class VideoTimeText extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            formatDurationForMedia(duration),
+            formatDurationForMedia(
+              duration,
+              forceHigherThanOneSecond: true,
+            ),
             style: const TextStyle(
               fontSize: 14,
             ),

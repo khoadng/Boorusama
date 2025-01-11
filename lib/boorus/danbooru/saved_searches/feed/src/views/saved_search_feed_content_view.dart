@@ -44,13 +44,19 @@ class _SavedSearchFeedContentViewState
           .getPosts(_selectedSearch.toQuery(), page),
       builder: (context, controller) => PostGrid(
         controller: controller,
-        itemBuilder:
-            (context, index, multiSelectController, scrollController) =>
-                DefaultDanbooruImageGridItem(
+        itemBuilder: (
+          context,
+          index,
+          multiSelectController,
+          scrollController,
+          useHero,
+        ) =>
+            DefaultDanbooruImageGridItem(
           index: index,
           multiSelectController: multiSelectController,
           autoScrollController: scrollController,
           controller: controller,
+          useHero: useHero,
         ),
         sliverHeaders: [
           SliverAppBar(

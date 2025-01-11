@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'home_page_controller.dart';
+
 class SideMenuTile extends StatelessWidget {
   const SideMenuTile({
     required this.icon,
@@ -15,10 +18,23 @@ class SideMenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeController = InheritedHomePageController.maybeOf(context);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          // Workaround to make the animation smoother
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () {
+              if (context.mounted) {
+                homeController?.closeMenu();
+              }
+            },
+          );
+          onTap();
+        },
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

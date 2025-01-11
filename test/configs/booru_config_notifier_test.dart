@@ -247,24 +247,6 @@ void main() {
           );
         },
       );
-
-      test(
-        'should call the analytics',
-        () async {
-          await getNotifier().add(
-            data: configData,
-          );
-
-          verify(
-            () => mockAnalytics.sendBooruAddedEvent(
-              url: captureAny(named: 'url'),
-              hintSite: captureAny(named: 'hintSite'),
-              totalSites: captureAny(named: 'totalSites'),
-              hasLogin: false,
-            ),
-          ).called(1);
-        },
-      );
     },
   );
 

@@ -171,13 +171,6 @@ class DanbooruCharacterListSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return post.artistTags.isEmpty
-        ? SliverCharacterPostList(tags: post.characterTags)
-        : ref
-            .watch(danbooruPostDetailsArtistProvider(post.artistTags.first))
-            .maybeWhen(
-              data: (_) => SliverCharacterPostList(tags: post.characterTags),
-              orElse: () => const SliverSizedBox.shrink(),
-            );
+    return SliverCharacterPostList(tags: post.characterTags);
   }
 }

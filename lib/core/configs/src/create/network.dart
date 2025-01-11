@@ -1,15 +1,22 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../foundation/toast.dart';
+import '../../../http/src/dio/dio.dart';
 import '../../../proxy/proxy.dart';
 import '../../../widgets/widgets.dart';
 import '../../manage.dart';
 import 'providers.dart';
-import 'widgets.dart';
 
 class BooruConfigNetworkView extends ConsumerWidget {
   const BooruConfigNetworkView({
@@ -18,16 +25,12 @@ class BooruConfigNetworkView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final networkConfigKey = ref.watch(_networkConfigKeyProvider);
-
-    return SingleChildScrollView(
-      key: ValueKey(networkConfigKey),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: const Column(
+    return const SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BooruConfigSettingsHeader(label: 'Proxy'),
           EnableProxySwitch(),
           ProxyTypeOptionTile(),
           SizedBox(height: 12),
@@ -39,7 +42,7 @@ class BooruConfigNetworkView extends ConsumerWidget {
           SizedBox(height: 12),
           ProxyPasswordInput(),
           SizedBox(height: 12),
-          ClearAllProxyDataButton(),
+          TestProxyButton(),
         ],
       ),
     );
@@ -68,7 +71,7 @@ class _ProxyHostInputState extends ConsumerState<ProxyHostInput> {
             .updateProxySettings(proxySettings?.copyWith(host: value));
       },
       decoration: const InputDecoration(
-        labelText: 'Host or IP',
+        labelText: 'Host or IP (*)',
         hintText: 'proxy.host.com or 123.456.789.0',
       ),
     );
@@ -106,7 +109,7 @@ class _ProxyPortInputState extends ConsumerState<ProxyPortInput> {
       },
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
-        labelText: 'Port',
+        labelText: 'Port (*)',
         hintText: '8080',
       ),
     );
@@ -138,7 +141,7 @@ class _ProxyUsernameInputState extends ConsumerState<ProxyUsernameInput> {
       },
       decoration: const InputDecoration(
         labelText: 'Username',
-        hintText: 'username',
+        hintText: 'username (optional)',
       ),
     );
   }
@@ -169,7 +172,7 @@ class _ProxyPasswordInputState extends ConsumerState<ProxyPasswordInput> {
       },
       decoration: const InputDecoration(
         labelText: 'Password',
-        hintText: 'password',
+        hintText: 'password (optional)',
       ),
     );
   }
@@ -188,7 +191,7 @@ class ProxyTypeOptionTile extends ConsumerWidget {
     );
 
     return ListTile(
-      contentPadding: EdgeInsets.zero,
+      contentPadding: const EdgeInsets.only(left: 4),
       visualDensity: VisualDensity.compact,
       title: const Text('Proxy Type'),
       trailing: OptionDropDownButton(
@@ -204,7 +207,8 @@ class ProxyTypeOptionTile extends ConsumerWidget {
                 child: Text(
                   switch (e) {
                     ProxyType.unknown => '<Select>',
-                    _ => e.name.toUpperCase(),
+                    ProxyType.http => 'HTTP(S)',
+                    ProxyType.socks5 => 'SOCKS5',
                   },
                 ),
               ),
@@ -227,7 +231,12 @@ class EnableProxySwitch extends ConsumerWidget {
 
     return SwitchListTile(
       contentPadding: const EdgeInsets.only(left: 4),
-      title: const Text('Use Proxy'),
+      title: const Text(
+        'Proxy',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       value: proxySettings?.enable ?? false,
       onChanged: (value) => ref.editNotifier.updateProxySettings(
         proxySettings?.copyWith(enable: value),
@@ -236,23 +245,184 @@ class EnableProxySwitch extends ConsumerWidget {
   }
 }
 
-final _networkConfigKeyProvider = StateProvider<int>((ref) {
-  return 0;
-});
+enum TestProxyStatus {
+  idle,
+  checking,
+  checkingPendingTimeout,
+}
 
-class ClearAllProxyDataButton extends ConsumerWidget {
-  const ClearAllProxyDataButton({super.key});
+final testProxyProvider =
+    NotifierProvider.autoDispose<TestProxyNotifier, TestProxyState>(
+  TestProxyNotifier.new,
+);
+
+class TestProxyState extends Equatable {
+  const TestProxyState(this.status, {this.cancelToken});
+
+  final TestProxyStatus status;
+  final CancelToken? cancelToken;
+
+  TestProxyState copyWith({
+    TestProxyStatus? status,
+    CancelToken? cancelToken,
+  }) {
+    return TestProxyState(
+      status ?? this.status,
+      cancelToken: cancelToken ?? this.cancelToken,
+    );
+  }
+
+  @override
+  List<Object?> get props => [status, cancelToken];
+}
+
+const _kCheckProxyTimeout = Duration(seconds: 10);
+
+class TestProxyNotifier extends AutoDisposeNotifier<TestProxyState> {
+  @override
+  TestProxyState build() {
+    ref.onDispose(_cancel);
+
+    return const TestProxyState(TestProxyStatus.idle);
+  }
+
+  Future<bool> check(
+    ProxySettings proxySettings,
+  ) async {
+    final token = CancelToken();
+
+    unawaited(
+      Future.delayed(
+        _kCheckProxyTimeout,
+        () {
+          // if still checking after a while, change status
+          if (state.status == TestProxyStatus.checking) {
+            state = state.copyWith(
+              status: TestProxyStatus.checkingPendingTimeout,
+            );
+          }
+        },
+      ),
+    );
+
+    state = state.copyWith(
+      status: TestProxyStatus.checking,
+      cancelToken: token,
+    );
+
+    try {
+      final dio = newGenericDio(
+        baseUrl: 'https://example.com',
+        proxySettings: proxySettings.copyWith(
+          // Enable proxy for testing
+          enable: true,
+        ),
+      );
+
+      final res = await dio.get(
+        '/',
+        cancelToken: token,
+        options: Options(
+          sendTimeout: const Duration(minutes: 5),
+        ),
+      );
+
+      final statusCode = res.statusCode;
+
+      if (statusCode == null) return false;
+
+      return statusCode >= 200 && statusCode < 300;
+    } on Exception catch (_) {
+      return false;
+    } finally {
+      state = const TestProxyState(TestProxyStatus.idle);
+    }
+  }
+
+  void _cancel() {
+    final token = state.cancelToken;
+    if (token != null && !token.isCancelled) {
+      token.cancel();
+    }
+  }
+
+  void cancel() {
+    _cancel();
+
+    state = const TestProxyState(TestProxyStatus.idle);
+  }
+}
+
+class TestProxyButton extends ConsumerWidget {
+  const TestProxyButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentKey = ref.watch(_networkConfigKeyProvider);
+    final proxySettings = ref.watch(
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.proxySettingsTyped),
+    );
 
-    return FilledButton(
-      onPressed: () {
-        ref.editNotifier.updateProxySettings(null);
-        ref.read(_networkConfigKeyProvider.notifier).state = currentKey + 1;
-      },
-      child: const Text('Clear all proxy data'),
+    final notifier = ref.watch(testProxyProvider.notifier);
+    final state = ref.watch(testProxyProvider);
+    final status = state.status;
+
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        FilledButton(
+          onPressed: proxySettings != null &&
+                  proxySettings.isValid &&
+                  status == TestProxyStatus.idle
+              ? () async {
+                  final success = await notifier.check(
+                    proxySettings,
+                  );
+
+                  if (context.mounted) {
+                    showSimpleSnackBar(
+                      context: context,
+                      duration: const Duration(seconds: 3),
+                      content: Text(
+                        success
+                            ? 'Valid proxy settings'
+                            : 'Failed to connect to proxy, please check your settings and try again',
+                      ),
+                    );
+                  }
+                }
+              : null,
+          child: switch (status) {
+            TestProxyStatus.idle => const Text('Test Proxy'),
+            _ => const Text('Checking...'),
+          },
+        ),
+        if (status == TestProxyStatus.checkingPendingTimeout)
+          Container(
+            padding: const EdgeInsets.only(top: 8),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(
+                    text: 'Slow response? ',
+                  ),
+                  TextSpan(
+                    text: 'Cancel',
+                    style: TextStyle(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        notifier.cancel();
+                      },
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

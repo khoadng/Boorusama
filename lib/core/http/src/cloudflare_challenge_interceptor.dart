@@ -98,6 +98,7 @@ class CloudflareChallengeInterceptor extends Interceptor {
         // open webview to solve cloudflare challenge
         Navigator.of(context).push(
           CupertinoPageRoute(
+            settings: const RouteSettings(name: 'challenge_solver'),
             builder: (context) {
               return CloudflareChallengeSolverPage(
                 url: err.requestOptions.uri.toString(),

@@ -55,6 +55,7 @@ class PostStatsUploaderSection extends ConsumerWidget {
   void _onMore(WidgetRef ref, BuildContext context) {
     showAppModalBarBottomSheet(
       context: context,
+      settings: const RouteSettings(name: 'posts_uploader_stats'),
       builder: (context) => CreatorStatisticSheet(
         title: 'Uploader',
         totalPosts: totalPosts,

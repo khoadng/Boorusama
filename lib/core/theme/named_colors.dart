@@ -153,3 +153,80 @@ const Map<String, Color> namedColors = {
   'yellow': Color(0xFFFFFF00),
   'yellowgreen': Color(0xFF9ACD32),
 };
+
+const Map<String, Color> themeAccentColors = {
+  // Reds
+  'crimson': Color(0xFFDC143C), // Deep red
+  'firebrick': Color(0xFFB22222), // Brick red
+  'lightcoral': Color(0xFFF08080), // Soft coral pink
+
+  // Oranges
+  'darkorange': Color(0xFFFF8C00), // Warm orange
+  'coral': Color(0xFFFF7F50), // Soft orange-pink
+  'peachpuff': Color(0xFFFFDAB9), // Gentle peach tone
+
+  // Yellows
+  'goldenrod': Color(0xFFDAA520), // Golden yellow
+  'darkgoldenrod': Color(0xFFB8860B), // Rich gold
+  'lightgoldenrod': Color(0xFFFAFAD2), // Soft pale yellow
+
+  // Greens
+  'forestgreen': Color(0xFF228B22), // Natural green
+  'limegreen': Color(0xFF32CD32), // Bright lime green
+  'chartreuse': Color(0xFF7FFF00), // Neon green
+
+  // Teals
+  'teal': Color(0xFF008080), // Balanced green-blue
+  'darkcyan': Color(0xFF008B8B), // Deep teal
+  'darkturquoise': Color(0xFF00CED1), // Bright teal
+
+  // Blues
+  'dodgerblue': Color(0xFF1E90FF), // Bright blue
+  'royalblue': Color(0xFF4169E1), // Royal blue
+  'midnightblue': Color(0xFF191970), // Deep navy blue
+
+  // Purples
+  'darkviolet': Color(0xFF9400D3), // Deep purple
+  'mediumorchid': Color(0xFFBA55D3), // Bright lavender
+  'indigo': Color(0xFF4B0082), // Rich bluish-purple
+
+  // Pinks
+  'deeppink': Color(0xFFFF1493), // Vibrant pink
+  'hotpink': Color(0xFFFF69B4), // Bright playful pink
+  'pink': Color(0xFFFFC0CB), // Soft pastel pink
+
+  // Earth Tones
+  'saddlebrown': Color(0xFF8B4513), // Deep earthy brown
+  'rosybrown': Color(0xFFBC8F8F), // Subtle dusty rose
+  'burlywood': Color(0xFFDEB887), // Warm sandy brown
+
+  // Neutral Grays
+  'slategray': Color(0xFF708090), // Neutral gray-blue
+  'dimgray': Color(0xFF696969), // Muted dark gray
+  'lightgray': Color(0xFFD3D3D3), // Soft neutral gray
+
+  // Cyan and Aqua
+  'lightcyan': Color(0xFFE0FFFF), // Soft cyan
+  'aquamarine': Color(0xFF7FFFD4), // Bright aqua
+  'powderblue': Color(0xFFB0E0E6), // Soft powdery blue
+
+  // Metallics
+  'silver': Color(0xFFC0C0C0), // Shiny silver
+  'gold': Color(0xFFFFD700), // Bright metallic gold
+  'bronze': Color(0xFFCD7F32), // Warm bronze
+
+  // Pastels
+  'mistyrose': Color(0xFFFFE4E1), // Soft pinkish-rose
+  'lavender': Color(0xFFE6E6FA), // Light lavender
+  'lightblue': Color(0xFFADD8E6), // Soft pale blue
+
+  // Browns
+  'peru': Color(0xFFCD853F), // Warm brown-orange
+  'chocolate': Color(0xFFD2691E), // Rich chocolate brown
+  'sandybrown': Color(0xFFF4A460), // Light sandy brown
+
+  // Vibrants
+  'magenta': Color(0xFFFF00FF), // Bright magenta
+  'electriclime': Color(0xFFCCFF00), // Vibrant lime
+  'cyan': Color(0xFF00FFFF), // Bright cyan
+};

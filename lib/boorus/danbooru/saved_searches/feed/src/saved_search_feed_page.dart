@@ -20,7 +20,7 @@ class SavedSearchFeedPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      child: CustomContextMenuOverlay(
+      builder: (_) => CustomContextMenuOverlay(
         child: ref.watch(danbooruSavedSearchesProvider(config)).when(
               data: (searches) => searches.isNotEmpty
                   ? SavedSearchFeedContentView(

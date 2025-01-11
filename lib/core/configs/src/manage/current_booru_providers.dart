@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../foundation/loggers.dart';
 import '../../../settings/providers.dart';
+import '../../../theme/theme_configs.dart';
 import '../booru_config.dart';
 import '../gestures.dart';
 
@@ -44,6 +45,17 @@ final currentReadOnlyBooruConfigGestureProvider = Provider<PostGestureConfig?>(
   (ref) => ref
       .watch(currentBooruConfigProvider.select((value) => value.postGestures)),
   name: 'currentReadOnlyBooruConfigGestureProvider',
+);
+
+final currentReadOnlyBooruConfigThemeProvider = Provider<ThemeConfigs?>(
+  (ref) => ref.watch(currentBooruConfigProvider.select((value) => value.theme)),
+  name: 'currentReadOnlyBooruConfigThemeProvider',
+);
+
+final currentReadOnlyBooruConfigLayoutProvider = Provider<LayoutConfigs?>(
+  (ref) =>
+      ref.watch(currentBooruConfigProvider.select((value) => value.layout)),
+  name: 'currentReadOnlyBooruConfigLayoutProvider',
 );
 
 class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {

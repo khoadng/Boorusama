@@ -1,8 +1,9 @@
-# 3.22.1
+# 3.22.2
 - Add a new experimental video player engine that has better performance for certain devices and video formats. Can be enabled in settings.
 - Attempt to bypass firewall protection for some sites.
 - Update translations for Turkish, French, Chinese, Ukrainian.
 - Add new languages: Tamil and Korean.
+- Minor bug fixes.
 
 # 3.21.0
 - [Danbooru] Add an option to hide banned posts

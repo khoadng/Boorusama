@@ -8,6 +8,7 @@ import '../pages/danbooru_voter_list_page.dart';
 
 final danbooruFavoriterListRoutes = GoRoute(
   path: '/internal/danbooru/posts/:id/favoriter',
+  name: 'favoriter_list',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,
@@ -29,6 +30,7 @@ final danbooruFavoriterListRoutes = GoRoute(
 
 final danbooruVoterListRoutes = GoRoute(
   path: '/internal/danbooru/posts/:id/voter',
+  name: 'voter_list',
   pageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
     name: state.name,

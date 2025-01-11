@@ -22,8 +22,8 @@ class FavoriteGroupsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const BooruConfigAuthFailsafe(
-      child: FavoriteGroupsPageInternal(),
+    return BooruConfigAuthFailsafe(
+      builder: (_) => const FavoriteGroupsPageInternal(),
     );
   }
 }

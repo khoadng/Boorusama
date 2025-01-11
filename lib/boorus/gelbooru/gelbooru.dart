@@ -16,6 +16,7 @@ import '../../core/configs/manage.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -269,6 +270,10 @@ class GelbooruBuilder
   );
 
   @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kGelbooruAltHomeView;
+
+  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
@@ -346,6 +351,14 @@ class GelbooruRepository implements BooruRepository {
         ).getPosts().then((value) => true);
   }
 }
+
+final kGelbooruAltHomeView = {
+  ...kDefaultAltHomeView,
+  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const GelbooruFavoritesPage(),
+  ),
+};
 
 class GelbooruSearchPage extends ConsumerWidget {
   const GelbooruSearchPage({

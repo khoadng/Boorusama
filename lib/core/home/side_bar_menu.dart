@@ -12,19 +12,21 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
+import '../configs/ref.dart';
 import '../configs/widgets.dart';
 import '../downloads/routes.dart';
+import '../search/search/routes.dart';
 import '../settings/providers.dart';
 import '../settings/routes.dart';
 import '../settings/settings.dart';
 import '../tags/favorites/routes.dart';
+import 'custom_home.dart';
 import 'side_menu_tile.dart';
 
 class SideBarMenu extends ConsumerWidget {
   const SideBarMenu({
     super.key,
     this.width,
-    this.popOnSelect = false,
     this.initialContent,
     this.content,
     this.padding,
@@ -32,7 +34,6 @@ class SideBarMenu extends ConsumerWidget {
 
   final double? width;
   final EdgeInsets? padding;
-  final bool popOnSelect;
   final List<Widget>? initialContent;
   final List<Widget>? content;
 
@@ -41,9 +42,9 @@ class SideBarMenu extends ConsumerWidget {
     final position = ref.watch(
       settingsProvider.select((value) => value.booruConfigSelectorPosition),
     );
+    final viewKey = ref.watchConfig.layout?.home;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final navigator = Navigator.of(context);
     final viewPadding = MediaQuery.viewPaddingOf(context);
 
     return Container(
@@ -105,11 +106,18 @@ class SideBarMenu extends ConsumerWidget {
                       ),
                     ] else
                       ...[
+                        if (viewKey.isAlt)
+                          SideMenuTile(
+                            icon: const Icon(Symbols.search),
+                            title: const Text('settings.search.search').tr(),
+                            onTap: () {
+                              goToSearchPage(context);
+                            },
+                          ),
                         SideMenuTile(
                           icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToBookmarkPage(context);
                           },
                         ),
@@ -117,7 +125,6 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToGlobalBlacklistedTagsPage(context);
                           },
                         ),
@@ -125,7 +132,6 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.tag),
                           title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToFavoriteTagsPage(context);
                           },
                         ),
@@ -133,7 +139,6 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.sim_card_download),
                           title: const Text('sideMenu.bulk_download').tr(),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToBulkDownloadPage(
                               context,
                               null,
@@ -145,7 +150,6 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.download),
                           title: const Text('Download manager'),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToDownloadManagerPage(context);
                           },
                         ),
@@ -160,7 +164,6 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToSettingsPage(context, scrollTo: 'support');
                           },
                         ),
@@ -171,7 +174,6 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
-                            if (popOnSelect) navigator.pop();
                             goToSettingsPage(context);
                           },
                         ),
