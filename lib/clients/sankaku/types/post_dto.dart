@@ -2,7 +2,6 @@
 import 'tag_dto.dart';
 
 class PostDto {
-
   PostDto({
     this.id,
     this.rating,
@@ -102,7 +101,7 @@ class PostDto {
           .toList(),
     );
   }
-  final int? id;
+  final String? id;
   final String? rating;
   final String? status;
   final AuthorDto? author;
@@ -124,7 +123,7 @@ class PostDto {
   final bool? isFavorited;
   // final dynamic userVote; // Change this to the actual type if known
   final String? md5;
-  final int? parentId;
+  final String? parentId;
   final int? change;
   final int? favCount;
   final int? recommendedPosts;
@@ -149,7 +148,6 @@ class PostDto {
 }
 
 class ReactionDto {
-
   ReactionDto({
     this.id,
     this.userId,
@@ -169,7 +167,6 @@ class ReactionDto {
 }
 
 class AuthorDto {
-
   AuthorDto({
     this.id,
     this.name,
@@ -179,20 +176,19 @@ class AuthorDto {
 
   factory AuthorDto.fromJson(Map<String, dynamic> json) {
     return AuthorDto(
-      id: json['id'] as int?,
+      id: json['id'] as String?,
       name: json['name'] as String?,
       avatar: json['avatar'] as String?,
       avatarRating: json['avatar_rating'] as String?,
     );
   }
-  final int? id;
+  final String? id;
   final String? name;
   final String? avatar;
   final String? avatarRating;
 }
 
 class CreatedAtDto {
-
   CreatedAtDto({
     this.jsonClass,
     this.s,

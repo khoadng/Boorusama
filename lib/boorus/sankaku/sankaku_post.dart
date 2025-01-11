@@ -17,6 +17,7 @@ class SankakuPost extends Equatable
     implements Post {
   SankakuPost({
     required this.id,
+    required this.sankakuId,
     this.createdAt,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
@@ -124,6 +125,18 @@ class SankakuPost extends Equatable
   @override
   final int? uploaderId;
 
+  final String sankakuId;
+
   @override
   final PostMetadata? metadata;
+}
+
+class SankakuWorkaroundIdGenerator {
+  final Set<int> _generatedIds = {};
+
+  int generateId() {
+    final id = _generatedIds.length + 1;
+    _generatedIds.add(id);
+    return id;
+  }
 }
