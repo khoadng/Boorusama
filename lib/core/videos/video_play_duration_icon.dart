@@ -43,6 +43,7 @@ class VideoPlayDurationIcon extends StatelessWidget {
               color: foreground,
               fontSize: 14,
               fontWeight: FontWeight.bold,
+              letterSpacing: -0.25,
             ),
           ),
           hasSound.toOption().fold(

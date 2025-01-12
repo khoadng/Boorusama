@@ -1280,6 +1280,8 @@ class PageNavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ValueListenableBuilder(
       valueListenable: controller.overlay,
       builder: (_, overlay, child) =>
@@ -1298,7 +1300,15 @@ class PageNavButton extends StatelessWidget {
                     padding:
                         context.isLargeScreen ? const EdgeInsets.all(8) : null,
                     onPressed: onPressed,
-                    child: icon,
+                    child: Theme(
+                      data: theme.copyWith(
+                        iconTheme: theme.iconTheme.copyWith(
+                          color: context
+                              .extendedColorScheme.onSurfaceContainerOverlay,
+                        ),
+                      ),
+                      child: icon,
+                    ),
                   ),
                 )
               : const SizedBox.shrink(),

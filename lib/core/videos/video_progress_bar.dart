@@ -107,6 +107,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
               builder: (_, dragging, __) {
                 return CustomPaint(
                   painter: _ProgressBarPainter(
+                    barRadius: Radius.zero,
                     position: widget.position,
                     duration: widget.duration,
                     buffered: widget.buffered,
@@ -115,7 +116,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                             ? widget.barHeight * 2
                             : widget.barHeight
                         : dragging
-                            ? widget.barHeight * 1.5
+                            ? widget.barHeight * 1.2
                             : widget.barHeight,
                     handleHeight: isDesktop
                         ? !hovering
@@ -156,6 +157,7 @@ class _ProgressBarPainter extends CustomPainter {
     required this.bufferedColor,
     required this.handleColor,
     required this.useHandle,
+    this.barRadius = const Radius.circular(4),
   });
 
   final Duration position;
@@ -169,6 +171,7 @@ class _ProgressBarPainter extends CustomPainter {
   final Color bufferedColor;
   final Color handleColor;
   final bool useHandle;
+  final Radius barRadius;
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
@@ -185,7 +188,7 @@ class _ProgressBarPainter extends CustomPainter {
           Offset(0, baseOffset),
           Offset(size.width, baseOffset + barHeight),
         ),
-        const Radius.circular(4),
+        barRadius,
       ),
       Paint()..color = backgroundColor,
     );
@@ -204,7 +207,7 @@ class _ProgressBarPainter extends CustomPainter {
             Offset(start, baseOffset),
             Offset(end, baseOffset + barHeight),
           ),
-          const Radius.circular(4),
+          barRadius,
         ),
         Paint()..color = bufferedColor,
       );
@@ -215,7 +218,7 @@ class _ProgressBarPainter extends CustomPainter {
           Offset(0, baseOffset),
           Offset(playedPart, baseOffset + barHeight),
         ),
-        const Radius.circular(4),
+        barRadius,
       ),
       Paint()..color = playedColor,
     );

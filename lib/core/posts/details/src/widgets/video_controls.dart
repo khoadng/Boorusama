@@ -73,114 +73,121 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
             return SafeArea(
               top: false,
               left: isLarge,
-              right: false,
+              right: isLarge,
               bottom: isLarge,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      const Spacer(),
-                      if (constraints.maxWidth < _kMinWidth) ...rightControls,
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      ValueListenableBuilder(
-                        valueListenable: controller.currentPost,
-                        builder: (_, post, __) => PlayPauseButton(
-                          isPlaying: controller.isVideoPlaying,
-                          onPlayingChanged: (value) {
-                            if (value) {
-                              controller.pauseVideo(
-                                post.id,
-                                post.isWebm,
-                                useDefaultEngine,
-                              );
-                            } else if (!value) {
-                              controller.playVideo(
-                                post.id,
-                                post.isWebm,
-                                useDefaultEngine,
-                              );
-                            } else {
-                              // do nothing
-                            }
-                          },
-                        ),
-                      ),
-                      ValueListenableBuilder(
-                        valueListenable: controller.videoProgress,
-                        builder: (_, progress, __) => VideoTimeText(
-                          duration: progress.position,
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          color: Colors.transparent,
-                          height: 28,
-                          child: ValueListenableBuilder(
-                            valueListenable: controller.currentPost,
-                            builder: (_, post, __) => ValueListenableBuilder(
-                              valueListenable: controller.videoProgress,
-                              builder: (_, progress, __) => VideoProgressBar(
-                                duration: progress.duration,
-                                position: progress.position,
-                                buffered: const [],
-                                onDragStart: () {
-                                  // pause the video when dragging
-                                  controller.pauseVideo(
-                                    post.id,
-                                    post.isWebm,
-                                    useDefaultEngine,
-                                  );
-                                },
-                                onDragEnd: () {
-                                  // resume the video when dragging ends
-                                  controller.playVideo(
-                                    post.id,
-                                    post.isWebm,
-                                    useDefaultEngine,
-                                  );
-                                },
-                                seekTo: (position) => controller.onVideoSeekTo(
-                                  position,
+              child: Container(
+                padding: isLarge ? const EdgeInsets.all(8) : null,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        const Spacer(),
+                        if (constraints.maxWidth < _kMinWidth) ...rightControls,
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const SizedBox(width: 4),
+                        ValueListenableBuilder(
+                          valueListenable: controller.currentPost,
+                          builder: (_, post, __) => PlayPauseButton(
+                            padding: !isLarge ? const EdgeInsets.all(8) : null,
+                            isPlaying: controller.isVideoPlaying,
+                            onPlayingChanged: (value) {
+                              if (value) {
+                                controller.pauseVideo(
                                   post.id,
                                   post.isWebm,
                                   useDefaultEngine,
+                                );
+                              } else if (!value) {
+                                controller.playVideo(
+                                  post.id,
+                                  post.isWebm,
+                                  useDefaultEngine,
+                                );
+                              } else {
+                                // do nothing
+                              }
+                            },
+                          ),
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: controller.videoProgress,
+                          builder: (_, progress, __) => VideoTimeText(
+                            duration: progress.position,
+                            forceHigherThanOneSecond: false,
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            color: Colors.transparent,
+                            height: 28,
+                            child: ValueListenableBuilder(
+                              valueListenable: controller.currentPost,
+                              builder: (_, post, __) => ValueListenableBuilder(
+                                valueListenable: controller.videoProgress,
+                                builder: (_, progress, __) => VideoProgressBar(
+                                  duration: progress.duration,
+                                  position: progress.position,
+                                  buffered: const [],
+                                  onDragStart: () {
+                                    // pause the video when dragging
+                                    controller.pauseVideo(
+                                      post.id,
+                                      post.isWebm,
+                                      useDefaultEngine,
+                                    );
+                                  },
+                                  onDragEnd: () {
+                                    // resume the video when dragging ends
+                                    controller.playVideo(
+                                      post.id,
+                                      post.isWebm,
+                                      useDefaultEngine,
+                                    );
+                                  },
+                                  seekTo: (position) =>
+                                      controller.onVideoSeekTo(
+                                    position,
+                                    post.id,
+                                    post.isWebm,
+                                    useDefaultEngine,
+                                  ),
+                                  barHeight: 3,
+                                  handleHeight: 6,
+                                  drawShadow: true,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .hintColor
+                                      .withValues(alpha: 0.2),
+                                  playedColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  bufferedColor:
+                                      Theme.of(context).colorScheme.hintColor,
+                                  handleColor:
+                                      Theme.of(context).colorScheme.primary,
                                 ),
-                                barHeight: 2,
-                                handleHeight: 6,
-                                drawShadow: true,
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .hintColor
-                                    .withValues(alpha: 0.2),
-                                playedColor:
-                                    Theme.of(context).colorScheme.primary,
-                                bufferedColor:
-                                    Theme.of(context).colorScheme.hintColor,
-                                handleColor:
-                                    Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      ValueListenableBuilder(
-                        valueListenable: controller.videoProgress,
-                        builder: (_, progress, __) => VideoTimeText(
-                          duration: progress.duration,
-                          forceHigherThanOneSecond: true,
+                        const SizedBox(width: 4),
+                        ValueListenableBuilder(
+                          valueListenable: controller.videoProgress,
+                          builder: (_, progress, __) => VideoTimeText(
+                            duration: progress.duration,
+                            forceHigherThanOneSecond: true,
+                          ),
                         ),
-                      ),
-                      if (constraints.maxWidth >= _kMinWidth) ...rightControls,
-                    ],
-                  ),
-                ],
+                        if (constraints.maxWidth >= _kMinWidth)
+                          ...rightControls,
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -205,7 +212,7 @@ class VideoTimeText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 44,
+      width: 40,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -213,10 +220,14 @@ class VideoTimeText extends StatelessWidget {
           Text(
             formatDurationForMedia(
               duration,
-              forceHigherThanOneSecond: true,
+              forceHigherThanOneSecond: forceHigherThanOneSecond ?? false,
             ),
             style: const TextStyle(
               fontSize: 14,
+              fontFeatures: [
+                FontFeature.tabularFigures(),
+              ],
+              letterSpacing: -0.25,
             ),
           ),
         ],
