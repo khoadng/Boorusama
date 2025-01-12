@@ -13,7 +13,6 @@ import 'package:reorderables/reorderables.dart';
 import '../../../foundation/toast.dart';
 import '../../../router.dart';
 import '../../../settings/providers.dart';
-import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';
@@ -213,13 +212,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
   void hide() => context.contextMenuOverlay.hide();
 
   void onReorder(int oldIndex, int newIndex, Iterable<BooruConfig> configs) {
-    final orders = ref.read(settingsProvider).booruConfigIdOrderList;
-    final newOrders = orders.isEmpty || orders.length != configs.length
-        ? [for (final config in configs) config.id]
-        : orders.toList()
-      ..reorder(oldIndex, newIndex);
-
-    ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
+    ref.read(booruConfigProvider.notifier).reorder(oldIndex, newIndex, configs);
   }
 
   bool get reverseScroll => ref.watch(

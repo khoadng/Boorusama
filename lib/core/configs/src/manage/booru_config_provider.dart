@@ -10,6 +10,7 @@ import 'package:foundation/foundation.dart';
 import '../../../analytics.dart';
 import '../../../foundation/loggers.dart';
 import '../../../settings/providers.dart';
+import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../booru_config_ref.dart';
@@ -55,7 +56,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
     final newOrders = [...orders, booruConfig.id];
 
-    await ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
+    await updateOrder(newOrders);
 
     state = [...state, booruConfig];
   }
@@ -93,7 +94,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         await ref.read(booruConfigRepoProvider).remove(config);
         await ref.read(booruConfigProvider.notifier).fetch();
         // reset order
-        await ref.read(settingsNotifierProvider.notifier).updateOrder([]);
+        await updateOrder([]);
         await ref.read(currentBooruConfigProvider.notifier).setEmpty();
 
         onSuccess?.call(config);
@@ -133,7 +134,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       final orders = ref.read(settingsProvider).booruConfigIdOrderList;
       final newOrders = [...orders..remove(config.id)];
 
-      await ref.read(settingsNotifierProvider.notifier).updateOrder(newOrders);
+      await updateOrder(newOrders);
 
       final tmp = [...state]..remove(config);
       state = tmp;
@@ -283,6 +284,30 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         'Something went wrong while adding your profile. Please try again',
       );
     }
+  }
+
+  Future<void> updateOrder(List<int> configIds) {
+    final notifier = ref.read(settingsNotifierProvider.notifier);
+
+    return notifier.updateWith(
+      (settings) => settings.copyWith(
+        booruConfigIdOrders: configIds.join(' '),
+      ),
+    );
+  }
+
+  void reorder(
+    int oldIndex,
+    int newIndex,
+    Iterable<BooruConfig> orderedConfigs,
+  ) {
+    final orders = ref.read(settingsProvider).booruConfigIdOrderList;
+    final newOrders = orders.isEmpty || orders.length != orderedConfigs.length
+        ? [for (final config in orderedConfigs) config.id]
+        : orders.toList()
+      ..reorder(oldIndex, newIndex);
+
+    updateOrder(newOrders);
   }
 
   void _logError(String message) {

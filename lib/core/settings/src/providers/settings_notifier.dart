@@ -125,11 +125,3 @@ class SettingsNotifier extends Notifier<Settings> {
         );
   }
 }
-
-extension SettingsNotifierX on SettingsNotifier {
-  Future<void> updateOrder(List<int> configIds) => updateWith(
-        (settings) => settings.copyWith(
-          booruConfigIdOrders: configIds.join(' '),
-        ),
-      );
-}
