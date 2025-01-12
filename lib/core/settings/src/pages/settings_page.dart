@@ -17,6 +17,7 @@ import '../../../configs/routes.dart';
 import '../../../foundation/scrolling.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../info/app_info.dart';
+import '../../../premiums/premiums.dart';
 import '../../../theme.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -34,52 +35,58 @@ import 'language_page.dart';
 import 'privacy_page.dart';
 import 'search_settings_page.dart';
 
-const _entries = [
-  SettingEntry(
+final _entries = [
+  const SettingEntry(
     title: 'settings.appearance.appearance',
     icon: FontAwesomeIcons.paintRoller,
     content: AppearancePage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.language.language',
     icon: Symbols.translate,
     content: LanguagePage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.download.title',
     icon: FontAwesomeIcons.download,
     content: DownloadPage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.data_and_storage.data_and_storage',
     icon: FontAwesomeIcons.database,
     content: DataAndStoragePage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.backup_and_restore.backup_and_restore',
     icon: FontAwesomeIcons.cloudArrowDown,
     content: BackupAndRestorePage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.search.search',
     icon: FontAwesomeIcons.magnifyingGlass,
     content: SearchSettingsPage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.accessibility.accessibility',
     icon: FontAwesomeIcons.universalAccess,
     content: AccessibilityPage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.image_viewer.image_viewer',
     icon: FontAwesomeIcons.image,
     content: ImageViewerPage(),
   ),
-  SettingEntry(
+  const SettingEntry(
     title: 'settings.privacy.privacy',
     icon: FontAwesomeIcons.shieldHalved,
     content: PrivacyPage(),
   ),
+  if (kPremiumEnabled)
+    const SettingEntry(
+      title: kPremiumBrandNameFull,
+      icon: FontAwesomeIcons.solidStar,
+      content: PremiumPage(),
+    ),
 ];
 
 const double _kThresholdWidth = 650;
@@ -124,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
               //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
               return constraints.maxWidth > _kThresholdWidth
                   ? SettingsPageScope(
-                      options: const SettingsPageOptions(
+                      options: SettingsPageOptions(
                         showIcon: false,
                         dense: true,
                         entries: _entries,
@@ -138,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     )
                   : SettingsPageScope(
-                      options: const SettingsPageOptions(
+                      options: SettingsPageOptions(
                         showIcon: true,
                         dense: false,
                         entries: _entries,

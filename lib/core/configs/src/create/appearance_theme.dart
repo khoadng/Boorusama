@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../premiums/premiums.dart';
+import '../../../premiums/routes.dart';
 import '../../../theme.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../theme/viewers/theme_viewer.dart';
@@ -53,16 +55,24 @@ class ThemeListTile extends ConsumerWidget {
     WidgetRef ref,
     BuildContext context,
   ) {
-    return Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => ThemePreviewRealView(
-          colorSettings: colorSettings,
-          onThemeUpdated: (colors) {
-            onThemeUpdated(colors);
-          },
-        ),
-      ),
-    );
+    final hasPremium = ref.watch(hasPremiumProvider);
+
+    return hasPremium
+        ? Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (context) => ThemePreviewRealView(
+                colorSettings: colorSettings,
+                onThemeUpdated: (colors) {
+                  onThemeUpdated(colors);
+                },
+              ),
+            ),
+          )
+        : Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (context) => const ThemePreviewPreviewView(),
+            ),
+          );
   }
 }
 
@@ -112,7 +122,7 @@ class ThemePreviewPreviewView extends StatelessWidget {
       colorSettings: null,
       saveButton: TextButton(
         onPressed: () {
-          Navigator.of(context).pop();
+          goToPremiumPage(context);
         },
         child: const Text('Upgrade'),
       ),

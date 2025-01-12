@@ -2,5 +2,6 @@
     "ENV_NAME": "prod",
     "EXPERIMENTAL_FEATURES": "",
     "PREFERRED_LAYOUT": "platform",
-    "APP_NAME" : "Boorusama"
+    "PREMIUM_MODE": "",
+    "APP_NAME": "Boorusama"
 }

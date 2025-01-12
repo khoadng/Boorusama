@@ -20,6 +20,7 @@ import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
+import '../../../../premiums/premium_providers.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
@@ -273,7 +274,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               sheetState: state,
               uiBuilder: uiBuilder,
               preferredParts: preferredParts,
-              canCustomize: widget.uiBuilder == null,
+              canCustomize: kPremiumEnabled && widget.uiBuilder == null,
             ),
           );
         },

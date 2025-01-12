@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,166 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../configs/redirect.dart';
-import '../../../../configs/src/create/appearance_theme.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../theme/theme.dart';
-import '../../../providers.dart';
 import '../../../widgets.dart';
+import '../../providers/settings_notifier.dart';
+import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
 import '../../types/types.dart';
 import '../../types/types_l10n.dart';
 import '../../types/utils.dart';
 import '../../widgets/settings_header.dart';
-import '../../widgets/settings_page_scaffold.dart';
 import '../../widgets/settings_slider_tile.dart';
-
-class AppearancePage extends ConsumerStatefulWidget {
-  const AppearancePage({
-    super.key,
-  });
-
-  @override
-  ConsumerState<AppearancePage> createState() => _AppearancePageState();
-}
-
-class _AppearancePageState extends ConsumerState<AppearancePage> {
-  @override
-  Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
-    final notifier = ref.watch(settingsNotifierProvider.notifier);
-
-    return SettingsPageScaffold(
-      title: const Text('settings.appearance.appearance').tr(),
-      children: [
-        SettingsHeader(label: 'settings.theme.theme'.tr()),
-        if (!kHasPremium)
-          _buildSimpleTheme(settings)
-        else
-          ThemeSettingsInteractionBlocker(
-            padding: EdgeInsets.zero,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ThemeListTile(
-                  colorSettings: settings.colors,
-                  onThemeUpdated: (colors) {
-                    notifier.updateSettings(
-                      settings.copyWith(
-                        colors: colors,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        const Divider(thickness: 1),
-        SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
-        ListingSettingsInteractionBlocker(
-          child: ImageListingSettingsSection(
-            listing: settings.listing,
-            onUpdate: (value) =>
-                notifier.updateSettings(settings.copyWith(listing: value)),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSimpleTheme(Settings settings) {
-    final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
-    final notifier = ref.watch(settingsNotifierProvider.notifier);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SettingsTile(
-          title: const Text('settings.theme.theme').tr(),
-          selectedOption: settings.themeMode,
-          items: AppThemeMode.values,
-          onChanged: (value) =>
-              notifier.updateSettings(settings.copyWith(themeMode: value)),
-          optionBuilder: (value) => Text(value.localize()).tr(),
-        ),
-        Builder(
-          builder: (context) {
-            return SwitchListTile(
-              title: const Text('settings.theme.dynamic_color').tr(),
-              subtitle: dynamicColorSupported
-                  ? !isDesktopPlatform()
-                      ? const Text(
-                          'settings.theme.dynamic_color_mobile_description',
-                        ).tr()
-                      : const Text(
-                          'settings.theme.dynamic_color_desktop_description',
-                        ).tr()
-                  : Text(
-                      '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
-                    ),
-              value: settings.enableDynamicColoring,
-              onChanged: dynamicColorSupported
-                  ? (value) => notifier.updateSettings(
-                        settings.copyWith(enableDynamicColoring: value),
-                      )
-                  : null,
-            );
-          },
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 8,
-          ),
-          padding: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 4,
-          ),
-          decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .surfaceContainerHigh
-                .withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Theme.of(context)
-                  .colorScheme
-                  .outlineVariant
-                  .withValues(alpha: 0.6),
-              width: 0.5,
-            ),
-          ),
-          child: Row(
-            children: [
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Unlock more themes with Plus',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.hintColor,
-                  ),
-                ).tr(),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const ThemePreviewPreviewView(),
-                    ),
-                  );
-                },
-                child: const Text('Preview').tr(),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class ImageListingSettingsSection extends ConsumerStatefulWidget {
   const ImageListingSettingsSection({
@@ -174,11 +23,13 @@ class ImageListingSettingsSection extends ConsumerStatefulWidget {
     required this.onUpdate,
     super.key,
     this.itemPadding,
+    this.extraChildren = const [],
   });
 
   final ImageListingSettings listing;
   final void Function(ImageListingSettings) onUpdate;
   final EdgeInsetsGeometry? itemPadding;
+  final List<Widget> extraChildren;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -221,6 +72,7 @@ class _ImageListingSettingsSectionState
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SettingsTile(
           title: const Text('settings.image_grid.grid_size.grid_size').tr(),
@@ -333,7 +185,7 @@ class _ImageListingSettingsSectionState
         const SizedBox(height: 10),
         const Divider(thickness: 1),
         const LayoutSection(),
-        const BooruConfigMoreSettingsRedirectCard.appearance(),
+        ...widget.extraChildren,
       ],
     );
   }

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -6,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../configs/redirect.dart';
 import '../../../../configs/src/create/appearance_theme.dart';
 import '../../../../foundation/platform.dart';
+import '../../../../premiums/premiums.dart';
 import '../../../../theme/theme.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
@@ -33,12 +36,13 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
+    final hasPremium = ref.watch(hasPremiumProvider);
 
     return SettingsPageScaffold(
       title: const Text('settings.appearance.appearance').tr(),
       children: [
         SettingsHeader(label: 'settings.general'.tr()),
-        if (!kHasPremium)
+        if (!hasPremium)
           _buildSimpleTheme(settings)
         else
           ThemeSettingsInteractionBlocker(
@@ -65,6 +69,10 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             listing: settings.listing,
             onUpdate: (value) =>
                 notifier.updateSettings(settings.copyWith(listing: value)),
+            extraChildren: [
+              if (kPremiumEnabled)
+                const BooruConfigMoreSettingsRedirectCard.appearance(),
+            ],
           ),
         ),
         const SizedBox(
@@ -77,6 +85,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
   Widget _buildSimpleTheme(Settings settings) {
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +122,47 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             );
           },
         ),
+        if (kPremiumEnabled)
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 4,
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 4,
+              horizontal: 4,
+            ),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.6),
+                width: 0.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Unlock more themes with $kPremiumBrandName',
+                    style: TextStyle(
+                      color: colorScheme.hintColor,
+                    ),
+                  ).tr(),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const ThemePreviewPreviewView(),
+                      ),
+                    );
+                  },
+                  child: const Text('Preview').tr(),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }

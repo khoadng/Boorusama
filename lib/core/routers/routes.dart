@@ -18,6 +18,7 @@ import '../downloads/routes/routes.dart';
 import '../posts/details/routes.dart';
 import '../posts/favorites/routes.dart';
 import '../posts/post/routes.dart';
+import '../premiums/routes.dart';
 import '../router.dart';
 import '../search/search/routes.dart';
 import '../settings/routes.dart';
@@ -80,6 +81,7 @@ class Routes {
           bulkDownloadsRoutes(ref),
           favoriteTags(),
           originalImageRoutes,
+          premiumRoutes,
         ],
       );
 
