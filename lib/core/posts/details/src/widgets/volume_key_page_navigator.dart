@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 // Project imports:
 import '../../../../foundation/keyboard.dart';
 import '../../../../settings/settings.dart';
-import 'post_details_page_view.dart';
+import '../../../details_pageview/widgets.dart';
 
 class VolumeKeyPageNavigator with KeyboardListenerMixin {
   VolumeKeyPageNavigator({

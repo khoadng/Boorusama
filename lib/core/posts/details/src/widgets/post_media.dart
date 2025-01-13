@@ -19,9 +19,9 @@ import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/video_player.dart';
+import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../types/post_details.dart';
-import 'post_details_page_view.dart';
 import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
