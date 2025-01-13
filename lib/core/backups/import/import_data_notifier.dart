@@ -43,14 +43,16 @@ class ServerCheckNotifier extends AutoDisposeNotifier<ServerCheckStatus> {
 
   Future<void> check(String address) async {
     state = ServerCheckStatus.checking;
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: address,
-      ),
-    );
 
     final startTime = DateTime.now();
+
     try {
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: address,
+        ),
+      );
+
       final res = await dio.get('/health').timeout(const Duration(seconds: 10));
       final elapsed = DateTime.now().difference(startTime).inMilliseconds;
 
@@ -63,7 +65,7 @@ class ServerCheckNotifier extends AutoDisposeNotifier<ServerCheckStatus> {
       state = available
           ? ServerCheckStatus.available
           : ServerCheckStatus.unavailable;
-    } on Exception catch (_) {
+    } catch (_) {
       state = ServerCheckStatus.unavailable;
     }
   }

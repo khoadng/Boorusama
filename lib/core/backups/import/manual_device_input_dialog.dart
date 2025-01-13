@@ -33,6 +33,7 @@ class _ManualDeviceInputDialogState extends State<ManualDeviceInputDialog> {
         children: [
           const SizedBox(height: 12),
           BooruTextField(
+            autofocus: true,
             keyboardType: TextInputType.url,
             controller: _ipController,
             decoration: const InputDecoration(
@@ -49,12 +50,15 @@ class _ManualDeviceInputDialogState extends State<ManualDeviceInputDialog> {
                 return;
               }
 
-              if (!ip.contains(RegExp(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'))) {
-                showErrorToast(context, 'Invalid IP address');
+              // check for port
+              if (!ip.contains(RegExp(r':\d{1,5}'))) {
+                showErrorToast(context, 'IP address must contain a port');
                 return;
               }
 
-              final uri = Uri.tryParse(_ipController.text);
+              final address = ip.startsWith('http://') ? ip : 'http://$ip';
+
+              final uri = Uri.tryParse(address);
 
               if (uri == null) {
                 showErrorToast(context, 'Invalid IP address');
