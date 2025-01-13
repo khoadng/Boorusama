@@ -23,7 +23,7 @@ final danbooruExploreRoutes = GoRoute(
       pageBuilder: (context, state) => CupertinoPage(
         key: state.pageKey,
         name: state.name,
-        child: ExplorePopularPage.routeOf(context),
+        child: const ExplorePopularPage(),
       ),
     ),
     GoRoute(
@@ -32,7 +32,7 @@ final danbooruExploreRoutes = GoRoute(
       pageBuilder: (context, state) => CupertinoPage(
         key: state.pageKey,
         name: state.name,
-        child: ExploreMostViewedPage.routeOf(context),
+        child: const ExploreMostViewedPage(),
       ),
     ),
   ],

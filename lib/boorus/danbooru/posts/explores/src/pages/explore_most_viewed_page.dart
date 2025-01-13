@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -11,123 +8,91 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/explores/widgets.dart';
-import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/post.dart';
-import '../../../../../../core/utils/duration_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
 import '../../../post/post.dart';
 import '../providers.dart';
 import '../widgets/explore_sliver_app_bar.dart';
 
-class ExploreMostViewedPage extends ConsumerWidget {
+class ExploreMostViewedPage extends ConsumerStatefulWidget {
   const ExploreMostViewedPage({
-    required this.onBack,
+    this.onBack,
     super.key,
   });
 
   final void Function()? onBack;
 
-  static Widget routeOf(
-    BuildContext context, {
-    void Function()? onBack,
-  }) =>
-      CustomContextMenuOverlay(
-        child: ProviderScope(
-          overrides: [
-            dateProvider.overrideWith((ref) => DateTime.now()),
-          ],
-          child: ExploreMostViewedPage(
-            onBack: onBack,
-          ),
-        ),
-      );
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final date = ref.watch(dateProvider);
-    final config = ref.watchConfigSearch;
-
-    return PostScope(
-      fetcher: (page) => page > 1
-          ? TaskEither.fromEither(Either.of(<DanbooruPost>[].toResult()))
-          : ref
-              .read(danbooruExploreRepoProvider(config))
-              .getMostViewedPosts(date),
-      builder: (context, controller) => _MostViewedContent(
-        controller: controller,
-        onBack: onBack,
-      ),
-    );
-  }
+  ConsumerState<ExploreMostViewedPage> createState() =>
+      _ExploreMostViewedPageState();
 }
 
-class _MostViewedContent extends ConsumerWidget {
-  const _MostViewedContent({
-    required this.controller,
-    required this.onBack,
-  });
-
-  final PostGridController<DanbooruPost> controller;
-  final void Function()? onBack;
+class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
+  final selectedDateNotifier = ValueNotifier(DateTime.now());
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final date = ref.watch(dateProvider);
+  Widget build(BuildContext context) {
+    final config = ref.watchConfigSearch;
 
-    ref.listen(
-      dateProvider,
-      (previous, next) async {
-        if (previous != next) {
-          // Delay 100ms, this is a hack
-          await const Duration(milliseconds: 100).future;
-          unawaited(controller.refresh());
-        }
-      },
-    );
-
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surface,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PostGrid(
-                controller: controller,
-                safeArea: false,
-                itemBuilder: (
-                  context,
-                  index,
-                  multiSelectController,
-                  scrollController,
-                  useHero,
-                ) =>
-                    DefaultDanbooruImageGridItem(
-                  index: index,
-                  multiSelectController: multiSelectController,
-                  autoScrollController: scrollController,
-                  controller: controller,
-                  useHero: useHero,
-                ),
-                sliverHeaders: [
-                  ExploreSliverAppBar(
-                    title: 'explore.most_viewed'.tr(),
-                    onBack: onBack,
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) => page > 1
+            ? TaskEither.fromEither(Either.of(<DanbooruPost>[].toResult()))
+            : ref
+                .read(danbooruExploreRepoProvider(config))
+                .getMostViewedPosts(selectedDateNotifier.value),
+        builder: (context, controller) => ColoredBox(
+          color: Theme.of(context).colorScheme.surface,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: PostGrid(
+                    controller: controller,
+                    safeArea: false,
+                    itemBuilder: (
+                      context,
+                      index,
+                      multiSelectController,
+                      scrollController,
+                      useHero,
+                    ) =>
+                        DefaultDanbooruImageGridItem(
+                      index: index,
+                      multiSelectController: multiSelectController,
+                      autoScrollController: scrollController,
+                      controller: controller,
+                      useHero: useHero,
+                    ),
+                    sliverHeaders: [
+                      ExploreSliverAppBar(
+                        title: 'explore.most_viewed'.tr(),
+                        onBack: widget.onBack,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .backgroundColor,
+                  child: ValueListenableBuilder(
+                    valueListenable: selectedDateNotifier,
+                    builder: (_, date, __) => DateTimeSelector(
+                      onDateChanged: (date) {
+                        selectedDateNotifier.value = date;
+                        controller.refresh();
+                      },
+                      date: date,
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Container(
-              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              child: DateTimeSelector(
-                onDateChanged: (date) =>
-                    ref.read(dateProvider.notifier).state = date,
-                date: date,
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

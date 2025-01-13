@@ -58,12 +58,10 @@ class _DanbooruExplorePageDesktopState
         valueListenable: controller.selectedCategory,
         builder: (context, category, child) {
           return switch (category) {
-            'popular' => ExplorePopularPage.routeOf(
-                context,
+            'popular' => ExplorePopularPage(
                 onBack: controller.back,
               ),
-            'mostViewed' => ExploreMostViewedPage.routeOf(
-                context,
+            'mostViewed' => ExploreMostViewedPage(
                 onBack: controller.back,
               ),
             _ => ExploreHotPage(

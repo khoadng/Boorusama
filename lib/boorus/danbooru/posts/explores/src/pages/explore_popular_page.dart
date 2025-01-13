@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -12,132 +9,104 @@ import 'package:foundation/foundation.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/explores/explore.dart';
 import '../../../../../../core/posts/explores/widgets.dart';
-import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/utils/duration_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
-import '../../../post/post.dart';
 import '../providers.dart';
 import '../widgets/explore_sliver_app_bar.dart';
 
-class ExplorePopularPage extends ConsumerWidget {
+class ExplorePopularPage extends ConsumerStatefulWidget {
   const ExplorePopularPage({
-    required this.onBack,
+    this.onBack,
     super.key,
   });
 
   final void Function()? onBack;
 
-  static Widget routeOf(
-    BuildContext context, {
-    void Function()? onBack,
-  }) =>
-      CustomContextMenuOverlay(
-        child: ProviderScope(
-          overrides: [
-            timeScaleProvider.overrideWith((ref) => TimeScale.day),
-            dateProvider.overrideWith((ref) => DateTime.now()),
-          ],
-          child: ExplorePopularPage(onBack: onBack),
-        ),
-      );
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final timeAndDate = ref.watch(timeAndDateProvider);
-    final config = ref.watchConfigSearch;
-
-    return PostScope(
-      fetcher: (page) => ref
-          .read(danbooruExploreRepoProvider(config))
-          .getPopularPosts(timeAndDate.date, page, timeAndDate.scale),
-      builder: (context, controller) => _PopularContent(
-        controller: controller,
-        onBack: onBack,
-      ),
-    );
-  }
+  ConsumerState<ExplorePopularPage> createState() => _ExplorePopularPageState();
 }
 
-class _PopularContent extends ConsumerWidget {
-  const _PopularContent({
-    required this.controller,
-    required this.onBack,
-  });
-
-  final PostGridController<DanbooruPost> controller;
-  final void Function()? onBack;
+class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
+  final selectedDateNotifier = ValueNotifier(DateTime.now());
+  final selectedTimescale = ValueNotifier(TimeScale.day);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final scaleAndTime = ref.watch(timeAndDateProvider);
+  Widget build(BuildContext context) {
+    final config = ref.watchConfigSearch;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    ref.listen(
-      timeAndDateProvider,
-      (previous, next) async {
-        if (previous != next) {
-          // Delay 100ms, this is a hack
-          await const Duration(milliseconds: 100).future;
-          unawaited(controller.refresh());
-        }
-      },
-    );
-
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surface,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PostGrid(
-                controller: controller,
-                safeArea: false,
-                itemBuilder: (
-                  context,
-                  index,
-                  multiSelectController,
-                  scrollController,
-                  useHero,
-                ) =>
-                    DefaultDanbooruImageGridItem(
-                  index: index,
-                  multiSelectController: multiSelectController,
-                  autoScrollController: scrollController,
-                  controller: controller,
-                  useHero: useHero,
-                ),
-                sliverHeaders: [
-                  ExploreSliverAppBar(
-                    title: 'explore.popular'.tr(),
-                    onBack: onBack,
-                  ),
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        TimeScaleToggleSwitch(
-                          onToggle: (scale) => ref
-                              .read(timeScaleProvider.notifier)
-                              .state = scale,
+    return CustomContextMenuOverlay(
+      child: PostScope(
+        fetcher: (page) => ref
+            .read(danbooruExploreRepoProvider(config))
+            .getPopularPosts(
+                selectedDateNotifier.value, page, selectedTimescale.value),
+        builder: (context, controller) => ColoredBox(
+          color: colorScheme.surface,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: PostGrid(
+                    controller: controller,
+                    safeArea: false,
+                    itemBuilder: (
+                      context,
+                      index,
+                      multiSelectController,
+                      scrollController,
+                      useHero,
+                    ) =>
+                        DefaultDanbooruImageGridItem(
+                      index: index,
+                      multiSelectController: multiSelectController,
+                      autoScrollController: scrollController,
+                      controller: controller,
+                      useHero: useHero,
+                    ),
+                    sliverHeaders: [
+                      ExploreSliverAppBar(
+                        title: 'explore.popular'.tr(),
+                        onBack: widget.onBack,
+                      ),
+                      SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            TimeScaleToggleSwitch(
+                              onToggle: (scale) {
+                                selectedTimescale.value = scale;
+                                controller.refresh();
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                          ],
                         ),
-                        const SizedBox(height: 20),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+                ColoredBox(
+                  color: colorScheme.surfaceContainer,
+                  child: ValueListenableBuilder(
+                    valueListenable: selectedDateNotifier,
+                    builder: (_, date, __) => ValueListenableBuilder(
+                      valueListenable: selectedTimescale,
+                      builder: (_, scale, __) => DateTimeSelector(
+                        onDateChanged: (date) {
+                          selectedDateNotifier.value = date;
+                          controller.refresh();
+                        },
+                        date: date,
+                        scale: scale,
+                        backgroundColor: Colors.transparent,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              child: DateTimeSelector(
-                onDateChanged: (date) =>
-                    ref.read(dateProvider.notifier).state = date,
-                date: scaleAndTime.date,
-                scale: scaleAndTime.scale,
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

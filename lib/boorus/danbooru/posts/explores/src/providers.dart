@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/current.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/explores/explore.dart';
 import '../../../../../core/posts/post/post.dart';
@@ -17,27 +16,6 @@ import '../../post/providers.dart';
 import 'data/explore_repository_cacher.dart';
 import 'data/explore_repository_impl.dart';
 import 'types/explore_repository.dart';
-
-typedef ScaleAndTime = ({
-  TimeScale scale,
-  DateTime date,
-});
-
-final timeScaleProvider = StateProvider<TimeScale>((ref) => TimeScale.day);
-final dateProvider = StateProvider<DateTime>((ref) => DateTime.now());
-
-final timeAndDateProvider = Provider<ScaleAndTime>(
-  (ref) {
-    final timeScale = ref.watch(timeScaleProvider);
-    final date = ref.watch(dateProvider);
-
-    return (scale: timeScale, date: date);
-  },
-  dependencies: [
-    timeScaleProvider,
-    dateProvider,
-  ],
-);
 
 final danbooruExploreRepoProvider =
     Provider.family<ExploreRepository, BooruConfigSearch>(
@@ -68,10 +46,8 @@ final danbooruExploreRepoProvider =
     );
   },
   dependencies: [
-    danbooruClientProvider,
-    danbooruPostRepoProvider,
     settingsRepoProvider,
-    currentBooruConfigProvider,
+    currentBooruBuilderProvider,
   ],
 );
 
