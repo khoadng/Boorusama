@@ -51,9 +51,10 @@ class PreviewFrame extends StatelessWidget {
           ),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: Theme.of(context).colorScheme.outlineVariant,
+          width: 1.5,
         ),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: child,
     );
@@ -132,7 +133,9 @@ class PreviewHome extends StatelessWidget {
               ),
             ),
           ),
-          const SliverPostGridPlaceHolder(),
+          const SliverPostGridPlaceHolder(
+            postsPerPage: 100,
+          ),
         ],
       ),
     );

@@ -72,38 +72,46 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
       ),
     ];
 
+    const padding = EdgeInsets.symmetric(
+      horizontal: 12,
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 8,
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Colors',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+          Container(
+            padding: padding,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Colors',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _viewAllColor = !_viewAllColor;
-                  });
-                },
-                child: !_viewAllColor
-                    ? const Text('Show all')
-                    : const Text('Show less'),
-              ),
-            ],
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _viewAllColor = !_viewAllColor;
+                    });
+                  },
+                  child: !_viewAllColor
+                      ? const Text('Show all')
+                      : const Text('Show less'),
+                ),
+              ],
+            ),
           ),
           if (!_viewAllColor)
             SizedBox(
               height: 52,
               child: ListView(
+                padding: padding,
                 scrollDirection: Axis.horizontal,
                 children: colorWidgets,
               ),
@@ -114,18 +122,22 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
               children: colorWidgets,
             ),
           const SizedBox(height: 16),
-          const Row(
-            children: [
-              Text(
-                'Color Variants',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+          Container(
+            padding: padding,
+            child: const Row(
+              children: [
+                Text(
+                  'Color Variants',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           ColorVariantSelector(
+            padding: padding,
             variant: _variant,
             onChanged: (value) async {
               if (value == null) return;
@@ -145,28 +157,31 @@ class _AccentColorSelectorState extends State<AccentColorSelector> {
             },
           ),
           const SizedBox(height: 16),
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 4,
+          Padding(
+            padding: padding,
+            child: SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 4,
+              ),
+              title: const Text('Dark mode'),
+              value: _isDark,
+              onChanged: (value) {
+                final color = ColorUtils.hexToColor(_currentColor);
+
+                if (color == null) return;
+
+                setState(() {
+                  _isDark = value;
+
+                  _settings = ColorSettings.fromAccentColor(
+                    color,
+                    brightness: value ? Brightness.dark : Brightness.light,
+                    dynamicSchemeVariant: _variant,
+                  );
+                  widget.onSchemeChanged(_settings);
+                });
+              },
             ),
-            title: const Text('Dark mode'),
-            value: _isDark,
-            onChanged: (value) {
-              final color = ColorUtils.hexToColor(_currentColor);
-
-              if (color == null) return;
-
-              setState(() {
-                _isDark = value;
-
-                _settings = ColorSettings.fromAccentColor(
-                  color,
-                  brightness: value ? Brightness.dark : Brightness.light,
-                  dynamicSchemeVariant: _variant,
-                );
-                widget.onSchemeChanged(_settings);
-              });
-            },
           ),
         ],
       ),

@@ -23,10 +23,12 @@ class ColorVariantSelector extends StatelessWidget {
     required this.variant,
     required this.onChanged,
     super.key,
+    this.padding,
   });
 
   final DynamicSchemeVariant variant;
   final void Function(DynamicSchemeVariant? value) onChanged;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class ColorVariantSelector extends StatelessWidget {
       selectedOption: variant,
       onSelected: onChanged,
       hasNullOption: false,
+      padding: padding,
       optionLabelBuilder: (value) => switch (value) {
         DynamicSchemeVariant.tonalSpot => 'Tonal',
         DynamicSchemeVariant.fidelity => 'Fidelity',

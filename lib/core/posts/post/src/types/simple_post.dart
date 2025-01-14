@@ -194,7 +194,7 @@ class DemoPost extends Equatable
   int get fileSize => 1024 * 1024 * 5;
 
   @override
-  String get format => '';
+  String get format => '.jpg';
 
   @override
   bool? get hasSound => null;
