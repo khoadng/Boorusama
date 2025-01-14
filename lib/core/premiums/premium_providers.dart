@@ -18,11 +18,7 @@ final hasPremiumProvider = Provider<bool>((ref) {
   return package != null;
 });
 
-final premiumBenefitProvider = FutureProvider<List<Benefit>>((ref) {
-  return Future.value(defaultBenefits);
-});
-
-final premiumManagementURLProvider = FutureProvider<String?>((ref) {
+final premiumManagementURLProvider = FutureProvider.autoDispose<String?>((ref) {
   if (kPremiumMode == PremiumMode.hidden) return Future.value(null);
   if (kPremiumMode == PremiumMode.premium) return Future.value(null);
 

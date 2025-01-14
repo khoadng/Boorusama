@@ -1,24 +1,40 @@
-final defaultBenefits = <Benefit>[
-  (
-    title: 'Customized layout for each profile',
+import 'package:equatable/equatable.dart';
+
+const defaultBenefits = <Benefit>[
+  Benefit(
+    title: 'Customized layout',
     description:
         "Don't like the default layout? Want to see more or less information? Customize it!",
   ),
-  (
+  Benefit(
     title: 'Customized theme',
     description:
-        'Do you want each profile to have a different theme? You can do it!',
+        'More themes to choose from and customize. Each profile can have its own theme.',
   ),
-  (
+  Benefit(
+    title: 'Widgets',
+    description:
+        'Add widgets to your home screen to quickly access your favorite profiles.',
+  ),
+  Benefit(
     title: 'Support indie developer',
-    description: 'Help me as a solo developer to keep the app improving!',
+    description:
+        'Help me as a solo developer to keep the app updated and improving.',
   ),
 ];
 
-typedef Benefit = ({
-  String title,
-  String description,
-});
+class Benefit extends Equatable {
+  const Benefit({
+    required this.title,
+    required this.description,
+  });
+
+  final String title;
+  final String description;
+
+  @override
+  List<Object?> get props => [title, description];
+}
 
 enum PremiumMode {
   hidden, // All premium features are hidden

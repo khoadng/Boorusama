@@ -145,12 +145,6 @@ class ProductDetails extends Equatable {
       ];
 }
 
-// class IAPUtils {
-//   static double comparePrice(ProductDetails a, ProductDetails b) {
-//     return a.rawPrice - b.rawPrice;
-//   }
-// }
-
 enum PurchaseStatus {
   pending,
   purchased,

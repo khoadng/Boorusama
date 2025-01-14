@@ -268,21 +268,17 @@ class PremiumOffersPage extends ConsumerWidget {
   }
 
   Widget _buildBenefits(WidgetRef ref) {
-    return ref.watch(premiumBenefitProvider).when(
-          data: (benefits) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: benefits
-                .map(
-                  (benefit) => BenefitCard(
-                    title: benefit.title,
-                    description: benefit.description,
-                  ),
-                )
-                .toList(),
-          ),
-          error: (e, st) => Text('Error: $e'),
-          loading: () => const CircularProgressIndicator(),
-        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: defaultBenefits
+          .map(
+            (benefit) => BenefitCard(
+              title: benefit.title,
+              description: benefit.description,
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget _buildTitle() {
@@ -389,7 +385,10 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DecoratedBox(
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+      ),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: const BorderRadius.vertical(
@@ -399,7 +398,13 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DragLine(),
+            ],
+          ),
           ref.watch(subscriptionPackagesProvider).when(
                 data: (products) => SubscriptionPlans(
                   products: products,
@@ -409,7 +414,10 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
                 loading: () => const Center(
                   child: SafeArea(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.only(
+                        top: 32,
+                        bottom: 16,
+                      ),
                       child: SizedBox(
                         height: 20,
                         width: 20,
@@ -444,33 +452,49 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
+      color: colorScheme.surfaceContainer,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          const SizedBox(height: 16),
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Select your plan'),
+              Text(
+                'Select your plan',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           ...widget.products.map(
             (product) => SubscriptionPlanTile(
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+              backgroundColor: colorScheme.surfaceContainer,
               selected: product == selected,
               package: product,
               saveIndicator: product.bestValue?.savings.toOption().fold(
                     () => null,
                     (value) => IgnorePointer(
-                      child: CompactChip(
-                        label: '${(value * 100).toStringAsFixed(0)}% off',
-                        textColor:
-                            Theme.of(context).colorScheme.onPrimaryContainer,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
+                      child: RawCompactChip(
+                        label: Text(
+                          '-${(value * 100).toStringAsFixed(0)}%',
+                          style: TextStyle(
+                            color: colorScheme.onPrimaryContainer,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        backgroundColor: colorScheme.primaryContainer,
                       ),
                     ),
                   ),
@@ -499,7 +523,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                       width: 16,
                       height: 16,
                       child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -517,10 +541,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 11,
                         fontWeight: FontWeight.w400,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                   children: [
                     TextSpan(
@@ -530,7 +551,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
                           //FIXME: open terms of service
                         },
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: colorScheme.primary,
                       ),
                     ),
                     const TextSpan(
@@ -573,32 +594,32 @@ class SubscriptionPlanTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Material(
       color: backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 4,
+          vertical: 8,
           horizontal: 12,
         ),
         child: InkWell(
           onTap: onTap,
           customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Container(
             constraints: const BoxConstraints(
-              minHeight: 60,
+              minHeight: 72,
             ),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
+                width: 2,
                 color: selected
-                    ? Theme.of(context).colorScheme.onSurface
-                    : Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.25),
+                    ? colorScheme.onSurface
+                    : colorScheme.outlineVariant,
               ),
             ),
             child: Row(
@@ -612,6 +633,9 @@ class SubscriptionPlanTile extends StatelessWidget {
                         PackageType.monthly => 'Monthly',
                         PackageType.annual => 'Yearly',
                       },
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     if (saveIndicator != null) ...[
                       const SizedBox(width: 8),
@@ -627,16 +651,15 @@ class SubscriptionPlanTile extends StatelessWidget {
                         text: package.product.price,
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
+                          fontSize: 16,
                         ),
                         children: [
                           TextSpan(
-                            text: ' /${package.typeDurationString}',
+                            text: ' / ${package.typeDurationString}',
                             style: TextStyle(
-                              fontSize: 11,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.6),
+                              fontSize: 14,
+                              color:
+                                  colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                         ],

@@ -38,10 +38,12 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
 
     return CustomContextMenuOverlay(
       child: PostScope(
-        fetcher: (page) => ref
-            .read(danbooruExploreRepoProvider(config))
-            .getPopularPosts(
-                selectedDateNotifier.value, page, selectedTimescale.value),
+        fetcher: (page) =>
+            ref.read(danbooruExploreRepoProvider(config)).getPopularPosts(
+                  selectedDateNotifier.value,
+                  page,
+                  selectedTimescale.value,
+                ),
         builder: (context, controller) => ColoredBox(
           color: colorScheme.surface,
           child: SafeArea(
