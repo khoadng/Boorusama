@@ -231,53 +231,24 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
   }
 
-  final ValueNotifier<String?> _pendingSystemStatusChanged =
-      ValueNotifier(null);
-
   void _onOverlayChanged() {
     if (_controller.overlay.value) {
-      _pendingSystemStatusChanged.value = 'show';
       if (!widget.disableAnimation) {
         _animationController?.forward();
       } else {
         _forceHide.value = false;
       }
+
+      showSystemStatus();
     } else {
-      _pendingSystemStatusChanged.value = 'hide';
       if (!widget.disableAnimation) {
         _animationController?.reverse();
       } else {
         _forceHide.value = true;
       }
+
+      hideSystemStatus();
     }
-
-    // check bottom view padding, if it's a lot then we will schedule a system status change
-    // otherwise, we will change it immediately
-    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
-    final duration = bottomPadding > 16
-        ? widget.disableAnimation
-            ? Duration.zero
-            : const Duration(milliseconds: 350)
-        : Duration.zero;
-
-    Future.delayed(
-      duration,
-      () async {
-        if (!mounted) return;
-
-        if (_pendingSystemStatusChanged.value != 'show') {
-          await hideSystemStatus();
-          if (mounted) {
-            _pendingSystemStatusChanged.value = null;
-          }
-        } else {
-          await showSystemStatus();
-          if (mounted) {
-            _pendingSystemStatusChanged.value = null;
-          }
-        }
-      },
-    );
   }
 
   void _onPageChanged() {
@@ -629,13 +600,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                               begin: const Offset(0, -1),
                               end: Offset.zero,
                             ).animate(_curvedAnimation),
-                            child: ValueListenableBuilder(
-                              valueListenable: _pendingSystemStatusChanged,
-                              builder: (_, pending, child) => pending != null
-                                  ? SafeArea(child: child!)
-                                  : child!,
-                              child: overlay,
-                            ),
+                            child: overlay,
                           )
                         : overlay,
               );

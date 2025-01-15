@@ -75,10 +75,15 @@ RouteTransitionsBuilder postDetailsTransitionBuilder() =>
             begin: 0,
             end: 1,
           ).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOut,
-            ),
+            animation.status == AnimationStatus.reverse
+                ? CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeInQuint,
+                  )
+                : CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutQuint,
+                  ),
           ),
           child: child,
         );

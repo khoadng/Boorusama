@@ -209,10 +209,15 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   void onZoomUpdated(bool value) {
+    // ignore same value
+    if (zoom.value == value) return;
+
     zoom.value = value;
     if (value) {
+      overlay.value = false;
       disableAllSwiping();
     } else {
+      overlay.value = true;
       enableAllSwiping();
     }
   }
