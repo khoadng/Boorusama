@@ -172,11 +172,11 @@ const staticDanbooruLightScheme = ColorScheme(
   secondaryContainer: Color(0xfff2f6fe),
   onSecondaryContainer: Colors.black,
   onTertiaryContainer: Colors.black,
-  surfaceContainerLowest: Color(0xfffafbfe), // Lightest
-  surfaceContainerLow: Color(0xfff6f8fd), // Lighter
-  surfaceContainer: Color(0xfff2f6fe), // Middle
-  surfaceContainerHigh: Color(0xffe4ebf6), // Slightly darker
-  surfaceContainerHighest: Color(0xffd5dfee), // Darkest, but still soft
+  surfaceContainerLowest: Color(0xfffafbfe),
+  surfaceContainerLow: Color(0xfff6f8fd),
+  surfaceContainer: Color(0xfff2f6fe),
+  surfaceContainerHigh: Color(0xffe4ebf6),
+  surfaceContainerHighest: Color(0xffd5dfee),
   primary: Color(0xff0174f9),
   onPrimary: Colors.white,
   secondary: Color(0xff0174f9),
@@ -194,8 +194,8 @@ const staticGreenScheme = ColorScheme(
   secondaryContainer: Color(0xff93c292),
   onSecondaryContainer: Colors.black,
   onTertiaryContainer: Colors.black,
-  surfaceContainerLowest: Color.fromARGB(255, 180, 236, 179),
-  surfaceContainerLow: Color.fromARGB(255, 173, 226, 173),
+  surfaceContainerLowest: Color.fromARGB(255, 185, 245, 184),
+  surfaceContainerLow: Color.fromARGB(255, 181, 235, 181),
   surfaceContainer: Color.fromARGB(255, 165, 219, 164),
   surfaceContainerHigh: Color.fromARGB(255, 158, 207, 157),
   surfaceContainerHighest: Color.fromARGB(255, 151, 200, 150),
@@ -342,7 +342,14 @@ extension DynamicSchemeVariantX on DynamicSchemeVariant {
 class ColorSettings extends Equatable {
   const ColorSettings({
     required this.name,
-    required this.brightness, required this.colorScheme, required this.extendedColorScheme, required String schemeType, required String? dynamicSchemeVariant, required this.enableDynamicColoring, required this.followSystemDarkMode, this.nickname,
+    required this.brightness,
+    required this.colorScheme,
+    required this.extendedColorScheme,
+    required String schemeType,
+    required String? dynamicSchemeVariant,
+    required this.enableDynamicColoring,
+    required this.followSystemDarkMode,
+    this.nickname,
   })  : _schemeType = schemeType,
         _dynamicSchemeVariant = dynamicSchemeVariant;
 

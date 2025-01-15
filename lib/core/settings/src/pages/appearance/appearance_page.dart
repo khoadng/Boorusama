@@ -50,6 +50,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ThemeListTile(
+                  updateMethod: ThemeUpdateMethod.applyDirectly,
                   colorSettings: settings.colors,
                   onThemeUpdated: (colors) {
                     notifier.updateSettings(
@@ -154,7 +155,15 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
-                        builder: (context) => const ThemePreviewPreviewView(),
+                        builder: (context) => ThemePreviewView(
+                          updateMethod: ThemeUpdateMethod.applyDirectly,
+                          colorSettings: settings.colors,
+                          onThemeUpdated: (colors) {
+                            notifier.updateSettings(
+                              settings.copyWith(colors: colors),
+                            );
+                          },
+                        ),
                       ),
                     );
                   },

@@ -14,5 +14,7 @@ class DummyHomeWidgetManager implements HomeWidgetManager {
 
   @override
   Future<void> updateWidget(
-      List<BooruConfig> configs, Settings settings) async {}
+    List<BooruConfig> configs,
+    Settings settings,
+  ) async {}
 }

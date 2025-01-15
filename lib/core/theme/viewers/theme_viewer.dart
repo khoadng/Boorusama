@@ -1,13 +1,16 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:foundation/foundation.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Project imports:
 import '../../foundation/display.dart';
+import '../../widgets/widgets.dart';
 import '../app_theme.dart';
 import '../theme_configs.dart';
 import 'color_selector_accent.dart';
@@ -23,12 +26,17 @@ class ThemePreviewApp extends StatefulWidget {
     required this.defaultScheme,
     required this.currentScheme,
     required this.onSchemeChanged,
+    required this.saveButton,
+    required this.onExit,
     super.key,
   });
 
   final ColorScheme defaultScheme;
   final ColorSettings? currentScheme;
   final void Function(ColorSettings? color) onSchemeChanged;
+  final void Function() onExit;
+
+  final Widget saveButton;
 
   @override
   State<ThemePreviewApp> createState() => _ThemePreviewAppState();
@@ -79,74 +87,114 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
             ) ??
             widget.defaultScheme;
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.themeFrom(
-            null,
-            colorScheme: colorScheme,
-            systemDarkMode: systemDarkMode,
+        return AnnotatedRegion(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            systemNavigationBarColor: Colors.transparent,
+            statusBarBrightness: colorScheme.brightness,
+            statusBarIconBrightness: colorScheme.brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
           ),
-          home: Material(
-            child: Stack(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: viewPadding.top + 20,
-                                bottom: !context.isLargeScreen
-                                    ? MediaQuery.sizeOf(context).height *
-                                            _kMinSheetSize -
-                                        viewPadding.top -
-                                        viewPadding.bottom
-                                    : 0,
-                              ),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: _buildPageView(colorScheme),
-                                  ),
-                                ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.themeFrom(
+              null,
+              colorScheme: colorScheme,
+              systemDarkMode: systemDarkMode,
+            ),
+            home: Material(
+              child: Stack(
+                children: [
+                  // Prevent this route from being popped so pop event is propagated to the parent route
+                  const PopScope(
+                    canPop: false,
+                    child: SizedBox.shrink(),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: viewPadding.top + 20,
+                                  bottom: !context.isLargeScreen
+                                      ? MediaQuery.sizeOf(context).height *
+                                              _kMinSheetSize -
+                                          viewPadding.top -
+                                          viewPadding.bottom
+                                      : 0,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: _buildPageView(colorScheme),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                      if (context.isLargeScreen)
+                        Container(
+                          width: 460,
+                          padding: EdgeInsets.only(
+                            top: viewPadding.top + 40,
                           ),
-                        ],
+                          child: SafeArea(
+                            bottom: false,
+                            child: _buildSheetContent(colorScheme, null),
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (!context.isLargeScreen)
+                    DraggableScrollableSheet(
+                      controller: sheetController,
+                      snap: true,
+                      snapSizes: const [
+                        _kMinSheetSize,
+                        _kMaxSheetSize,
+                      ],
+                      snapAnimationDuration: const Duration(milliseconds: 200),
+                      initialChildSize: _kMinSheetSize,
+                      maxChildSize: _kMaxSheetSize,
+                      minChildSize: _kMinSheetSize,
+                      builder: (context, scrollController) =>
+                          _buildSheetContent(
+                        colorScheme,
+                        scrollController,
                       ),
                     ),
-                    if (context.isLargeScreen)
-                      Container(
-                        width: 460,
-                        padding: EdgeInsets.only(
-                          top: viewPadding.top + 40,
+                  Positioned(
+                    top: 4,
+                    left: 12,
+                    child: SafeArea(
+                      child: CircularIconButton(
+                        icon: const Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: Icon(
+                            Symbols.arrow_back_ios,
+                            color: Colors.white,
+                          ),
                         ),
-                        child: SafeArea(
-                          bottom: false,
-                          child: _buildSheetContent(colorScheme, null),
-                        ),
+                        onPressed: widget.onExit,
                       ),
-                  ],
-                ),
-                if (!context.isLargeScreen)
-                  DraggableScrollableSheet(
-                    controller: sheetController,
-                    snap: true,
-                    snapSizes: const [
-                      _kMinSheetSize,
-                      _kMaxSheetSize,
-                    ],
-                    snapAnimationDuration: const Duration(milliseconds: 200),
-                    initialChildSize: _kMinSheetSize,
-                    maxChildSize: _kMaxSheetSize,
-                    minChildSize: _kMinSheetSize,
-                    builder: (context, scrollController) {
-                      return _buildSheetContent(colorScheme, scrollController);
-                    },
+                    ),
                   ),
-              ],
+                  Positioned(
+                    top: 0,
+                    right: 4,
+                    child: SafeArea(
+                      child: widget.saveButton,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -216,14 +264,6 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                     top: 1,
                     left: 12,
                     right: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: colorScheme.outlineVariant,
-                        width: 0.25,
-                      ),
-                    ),
                   ),
                 ),
                 Expanded(

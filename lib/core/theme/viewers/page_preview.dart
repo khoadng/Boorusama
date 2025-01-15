@@ -43,6 +43,8 @@ class PreviewFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: padding ??
           const EdgeInsets.symmetric(
@@ -50,8 +52,9 @@ class PreviewFrame extends StatelessWidget {
             horizontal: 12,
           ),
       decoration: BoxDecoration(
+        color: colorScheme.surface,
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
+          color: colorScheme.outlineVariant,
           width: 1.5,
         ),
         borderRadius: BorderRadius.circular(16),

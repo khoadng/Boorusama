@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -24,7 +25,7 @@ import 'info/app_info.dart';
 import 'info/device_info.dart';
 import 'router.dart';
 import 'settings/providers.dart';
-import 'theme/theme_buider.dart';
+import 'theme/theme.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
@@ -64,7 +65,16 @@ class _App extends ConsumerWidget {
                   weight: isWindows() ? 200 : 400,
                 ),
           ),
-          child: AppTitleBar(child: child!),
+          child: AnnotatedRegion(
+            // Needed to make the bottom navigation bar transparent
+            value: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              systemNavigationBarColor: Colors.transparent,
+              statusBarBrightness: theme.brightness,
+              statusBarIconBrightness: context.onBrightness,
+            ),
+            child: AppTitleBar(child: child!),
+          ),
         ),
         scrollBehavior: reduceAnimations ? const NoOverscrollBehavior() : null,
         theme: theme,

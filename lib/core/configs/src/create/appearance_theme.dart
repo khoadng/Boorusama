@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../foundation/toast.dart';
 import '../../../premiums/premiums.dart';
 import '../../../premiums/routes.dart';
 import '../../../theme.dart';
@@ -16,15 +16,22 @@ import '../../../widgets/widgets.dart';
 import '../data/booru_config_data.dart';
 import 'providers.dart';
 
+enum ThemeUpdateMethod {
+  applyDirectly,
+  saveAndUpdateLater,
+}
+
 class ThemeListTile extends ConsumerWidget {
   const ThemeListTile({
     required this.colorSettings,
     required this.onThemeUpdated,
+    required this.updateMethod,
     super.key,
   });
 
   final ColorSettings? colorSettings;
   final void Function(ColorSettings? colors) onThemeUpdated;
+  final ThemeUpdateMethod updateMethod;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,76 +62,15 @@ class ThemeListTile extends ConsumerWidget {
     WidgetRef ref,
     BuildContext context,
   ) {
-    final hasPremium = ref.watch(hasPremiumProvider);
-
-    return hasPremium
-        ? Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (context) => ThemePreviewRealView(
-                colorSettings: colorSettings,
-                onThemeUpdated: (colors) {
-                  onThemeUpdated(colors);
-                },
-              ),
-            ),
-          )
-        : Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (context) => const ThemePreviewPreviewView(),
-            ),
-          );
-  }
-}
-
-class ThemePreviewRealView extends StatefulWidget {
-  const ThemePreviewRealView({
-    required this.onThemeUpdated,
-    required this.colorSettings,
-    super.key,
-  });
-
-  final void Function(ColorSettings? colors) onThemeUpdated;
-  final ColorSettings? colorSettings;
-
-  @override
-  State<ThemePreviewRealView> createState() => _ThemePreviewRealViewState();
-}
-
-class _ThemePreviewRealViewState extends State<ThemePreviewRealView> {
-  late var _colors = widget.colorSettings;
-
-  @override
-  Widget build(BuildContext context) {
-    return ThemePreviewView(
-      colorSettings: widget.colorSettings,
-      onColorChanged: (colors) {
-        setState(() {
-          _colors = colors;
-        });
-      },
-      saveButton: TextButton(
-        onPressed: () {
-          widget.onThemeUpdated(_colors);
-          Navigator.of(context).pop();
-        },
-        child: const Text('Save'),
-      ),
-    );
-  }
-}
-
-class ThemePreviewPreviewView extends StatelessWidget {
-  const ThemePreviewPreviewView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ThemePreviewView(
-      colorSettings: null,
-      saveButton: TextButton(
-        onPressed: () {
-          goToPremiumPage(context);
-        },
-        child: const Text('Upgrade'),
+    return Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => ThemePreviewView(
+          colorSettings: colorSettings,
+          onThemeUpdated: (colors) {
+            onThemeUpdated(colors);
+          },
+          updateMethod: updateMethod,
+        ),
       ),
     );
   }
@@ -132,77 +78,56 @@ class ThemePreviewPreviewView extends StatelessWidget {
 
 class ThemePreviewView extends ConsumerStatefulWidget {
   const ThemePreviewView({
+    required this.onThemeUpdated,
     required this.colorSettings,
-    required this.saveButton,
+    required this.updateMethod,
     super.key,
-    this.onColorChanged,
   });
 
-  final Widget saveButton;
+  final void Function(ColorSettings? colors) onThemeUpdated;
   final ColorSettings? colorSettings;
-  final void Function(ColorSettings? colors)? onColorChanged;
+  final ThemeUpdateMethod updateMethod;
 
   @override
   ConsumerState<ThemePreviewView> createState() => _ThemePreviewViewState();
 }
 
 class _ThemePreviewViewState extends ConsumerState<ThemePreviewView> {
-  late ColorSettings? colors = widget.colorSettings;
+  late var _colors = widget.colorSettings;
 
   @override
   Widget build(BuildContext context) {
     final fallback = ref.watch(colorSchemeProvider);
+    final hasPremium = ref.watch(hasPremiumProvider);
 
-    return Material(
-      color: Colors.transparent,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Column(
-              children: [
-                Expanded(
-                  child: ThemePreviewApp(
-                    defaultScheme: fallback,
-                    currentScheme: colors,
-                    onSchemeChanged: (newScheme) {
-                      setState(() {
-                        colors = newScheme;
-                        widget.onColorChanged?.call(newScheme);
-                      });
-                    },
-                  ),
-                ),
-              ],
+    return ThemePreviewApp(
+      onExit: () {
+        Navigator.of(context).pop();
+      },
+      saveButton: hasPremium
+          ? TextButton(
+              onPressed: () {
+                widget.onThemeUpdated(_colors);
+                Navigator.of(context).pop();
+              },
+              child: switch (widget.updateMethod) {
+                ThemeUpdateMethod.applyDirectly => const Text('Apply'),
+                ThemeUpdateMethod.saveAndUpdateLater => const Text('Save'),
+              },
+            )
+          : TextButton(
+              onPressed: () {
+                goToPremiumPage(context);
+              },
+              child: const Text('Upgrade'),
             ),
-          ),
-          // close button
-          Positioned(
-            top: 0,
-            left: 4,
-            child: SafeArea(
-              child: CircularIconButton(
-                icon: const Padding(
-                  padding: EdgeInsets.only(left: 8),
-                  child: Icon(
-                    Symbols.arrow_back_ios,
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ),
-          Positioned(
-            top: 0,
-            right: 4,
-            child: SafeArea(
-              child: widget.saveButton,
-            ),
-          ),
-        ],
-      ),
+      defaultScheme: fallback,
+      currentScheme: _colors,
+      onSchemeChanged: (newScheme) {
+        setState(() {
+          _colors = newScheme;
+        });
+      },
     );
   }
 }
@@ -228,6 +153,13 @@ class ThemeConfigsPage extends ConsumerWidget {
         theme: theme,
         onThemeUpdated: (theme) {
           ref.editNotifier.updateTheme(theme);
+          showSimpleSnackBar(
+            context: context,
+            duration: const Duration(seconds: 3),
+            content: const Text(
+              'Your theme will be applied when you save this profile',
+            ),
+          );
         },
       ),
     );
@@ -266,6 +198,7 @@ class _ThemeSection extends StatelessWidget {
             GrayedOut(
               grayedOut: theme?.enable != true,
               child: ThemeListTile(
+                updateMethod: ThemeUpdateMethod.saveAndUpdateLater,
                 colorSettings: theme?.colors,
                 onThemeUpdated: (colors) {
                   onThemeUpdated(

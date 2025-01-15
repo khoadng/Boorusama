@@ -390,7 +390,7 @@ class SubscriptionPlanSelectModal extends ConsumerWidget {
         horizontal: 4,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(16),
         ),
@@ -455,7 +455,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: colorScheme.surfaceContainer,
+      color: colorScheme.surface,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -476,7 +476,7 @@ class _SubscriptionPlansState extends ConsumerState<SubscriptionPlans> {
           const SizedBox(height: 8),
           ...widget.products.map(
             (product) => SubscriptionPlanTile(
-              backgroundColor: colorScheme.surfaceContainer,
+              backgroundColor: colorScheme.surface,
               selected: product == selected,
               package: product,
               saveIndicator: product.bestValue?.savings.toOption().fold(
@@ -595,31 +595,32 @@ class SubscriptionPlanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final borderRadius = BorderRadius.circular(16);
 
     return Material(
       color: backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 8,
+          vertical: 6,
           horizontal: 12,
         ),
         child: InkWell(
           onTap: onTap,
           customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: borderRadius,
           ),
           child: Container(
             constraints: const BoxConstraints(
               minHeight: 72,
             ),
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12 + (selected ? 0 : 2.25)),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              color: colorScheme.surfaceContainerLow,
+              borderRadius: borderRadius,
               border: Border.all(
-                width: 2,
-                color: selected
-                    ? colorScheme.onSurface
-                    : colorScheme.outlineVariant,
+                width: selected ? 2.5 : 0.25,
+                color:
+                    selected ? colorScheme.primary : colorScheme.outlineVariant,
               ),
             ),
             child: Row(
@@ -649,9 +650,10 @@ class SubscriptionPlanTile extends StatelessWidget {
                     RichText(
                       text: TextSpan(
                         text: package.product.price,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
+                          color: colorScheme.onSurface,
                         ),
                         children: [
                           TextSpan(
