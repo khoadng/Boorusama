@@ -124,6 +124,7 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
                           top: viewPadding.top + 40,
                         ),
                         child: SafeArea(
+                          bottom: false,
                           child: _buildSheetContent(colorScheme, null),
                         ),
                       ),
@@ -159,26 +160,12 @@ class _ThemePreviewAppState extends State<ThemePreviewApp> {
   ) {
     return Container(
       padding: const EdgeInsets.only(
-        top: 8,
+        top: 12,
       ),
       decoration: BoxDecoration(
-        color: colorScheme.surface,
-        border: Border(
-          top: BorderSide(
-            color: colorScheme.hintColor,
-            width: 0.25,
-          ),
-          left: BorderSide(
-            color: colorScheme.hintColor,
-            width: 0.25,
-          ),
-          right: BorderSide(
-            color: colorScheme.hintColor,
-            width: 0.25,
-          ),
-        ),
+        color: colorScheme.surfaceContainerLow,
         borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16),
+          top: Radius.circular(24),
         ),
       ),
       child: Column(

@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:dynamic_color/dynamic_color.dart';
@@ -11,6 +12,7 @@ import 'extended_color_scheme.dart';
 import 'grayscale_shades.dart';
 import 'slider.dart';
 import 'theme_mode.dart';
+import 'theme_utils.dart';
 
 const staticLightScheme = ColorScheme(
   brightness: Brightness.light,
@@ -220,7 +222,11 @@ class AppTheme {
       ThemeData(
         appBarTheme: AppBarTheme(
           scrolledUnderElevation: 0,
-          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          color: Colors.transparent,
+          systemOverlayStyle: colorScheme.brightness.isLight
+              ? SystemUiOverlayStyle.dark
+              : SystemUiOverlayStyle.light,
           shadowColor: Colors.transparent,
           titleSpacing: kPreferredLayout.isDesktop ? 4 : null,
           titleTextStyle: TextStyle(
@@ -244,6 +250,13 @@ class AppTheme {
           backgroundColor: colorScheme.surfaceContainer,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(

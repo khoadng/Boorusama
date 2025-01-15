@@ -32,7 +32,10 @@ class ColorVariantSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ChoiceOptionSelectorList(
+      backgroundColor: colorScheme.surfaceContainerLow,
       searchable: false,
       options: _kVariantsOptions,
       selectedOption: variant,

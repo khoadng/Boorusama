@@ -38,18 +38,18 @@ class TagSuggestionItems extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watchBooruBuilder(config);
     final tagSuggestionItemBuilder = booruBuilder?.tagSuggestionItemBuilder;
+    final viewPadding = MediaQuery.viewPaddingOf(context);
 
     return _tags.isNotEmpty
         ? Material(
             color: backgroundColor ?? Theme.of(context).colorScheme.surface,
-            elevation: elevation ?? 4,
+            elevation: 0,
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(
-                vertical: 12,
                 horizontal: 12,
-              ),
+              ).copyWith(bottom: viewPadding.bottom),
               itemCount: _tags.length,
               itemBuilder: (context, index) {
                 final tag = _tags[index];

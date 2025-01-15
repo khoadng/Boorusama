@@ -362,11 +362,6 @@ class SelectDataStep extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            elevation: 0,
-          ),
           onPressed: () => Navigator.of(context).pop(),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14),

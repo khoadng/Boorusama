@@ -74,6 +74,7 @@ class UnsavedAlertDialog extends StatelessWidget {
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: colorScheme.surfaceContainerHigh,
+                foregroundColor: colorScheme.onSurfaceVariant,
                 shadowColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -81,12 +82,11 @@ class UnsavedAlertDialog extends StatelessWidget {
                 Navigator.pop(context);
                 onDiscard();
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 14),
                 child: Text(
                   "Don't Save",
                   style: TextStyle(
-                    color: colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -94,11 +94,6 @@ class UnsavedAlertDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-              ),
               onPressed: () {
                 Navigator.pop(context);
               },

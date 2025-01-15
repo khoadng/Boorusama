@@ -41,6 +41,7 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
     this.searchable = true,
     this.padding,
     this.scrollController,
+    this.backgroundColor,
   });
 
   final List<T> options;
@@ -52,6 +53,7 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
   final bool hasNullOption;
   final bool searchable;
   final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
   final AutoScrollController? scrollController;
 
   @override
@@ -93,7 +95,7 @@ class _ChoiceOptionSelectorListState<T>
 
     return Container(
       height: 32,
-      color: Theme.of(context).colorScheme.surface,
+      color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListView.builder(
         padding: widget.padding,

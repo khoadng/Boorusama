@@ -122,6 +122,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     );
 
     return AnnotatedRegion(
+      // Needed to make the bottom navigation bar transparent
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,

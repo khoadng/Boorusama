@@ -40,7 +40,6 @@ class SettingsInteractionBlocker extends ConsumerWidget {
           Padding(
             padding: padding ??
                 const EdgeInsets.symmetric(
-                  horizontal: 8,
                   vertical: 8,
                 ),
             child: Row(
