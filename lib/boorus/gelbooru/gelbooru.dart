@@ -75,7 +75,7 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
         return data
             .map(
               (e) => Tag(
-                name: e.name ?? '',
+                name: e.name != null ? decodeHtmlEntities(e.name!) : '',
                 category: TagCategory.fromLegacyId(e.type),
                 postCount: e.count ?? 0,
               ),

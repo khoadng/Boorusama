@@ -18,6 +18,7 @@ class Token {
           : null,
     );
   }
+
   final bool? success;
   final String? tokenType;
   final String? accessToken;
@@ -41,6 +42,7 @@ class Token {
 class CurrentUser {
   CurrentUser({
     required this.id,
+    required this.realId,
     required this.name,
     required this.level,
     required this.createdAt,
@@ -69,6 +71,7 @@ class CurrentUser {
   factory CurrentUser.fromJson(Map<String, dynamic> json) {
     return CurrentUser(
       id: json['id'],
+      realId: json['real_id'],
       name: json['name'],
       level: json['level'],
       createdAt: json['created_at'],
@@ -94,7 +97,8 @@ class CurrentUser {
       receiveDmails: json['receive_dmails'],
     );
   }
-  final int? id;
+  final String? id;
+  final int? realId;
   final String? name;
   final int? level;
   final String? createdAt;
@@ -122,6 +126,7 @@ class CurrentUser {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'real_id': realId,
       'name': name,
       'level': level,
       'created_at': createdAt,

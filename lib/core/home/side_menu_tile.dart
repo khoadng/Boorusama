@@ -26,7 +26,7 @@ class SideMenuTile extends StatelessWidget {
         onTap: () {
           // Workaround to make the animation smoother
           Future.delayed(
-            const Duration(milliseconds: 100),
+            const Duration(milliseconds: 200),
             () {
               if (context.mounted) {
                 homeController?.closeMenu();

@@ -1,9 +1,9 @@
-# 3.22.2
+# 3.22.3
+- [NEW] Fix data loading issue on a certain site
 - Add a new experimental video player engine that has better performance for certain devices and video formats. Can be enabled in settings.
 - Attempt to bypass firewall protection for some sites.
 - Update translations for Turkish, French, Chinese, Ukrainian.
 - Add new languages: Tamil and Korean.
-- Minor bug fixes.
 
 # 3.21.0
 - [Danbooru] Add an option to hide banned posts

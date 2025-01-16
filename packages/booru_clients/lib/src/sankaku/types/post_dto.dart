@@ -101,7 +101,7 @@ class PostDto {
           .toList(),
     );
   }
-  final int? id;
+  final String? id;
   final String? rating;
   final String? status;
   final AuthorDto? author;
@@ -123,7 +123,7 @@ class PostDto {
   final bool? isFavorited;
   // final dynamic userVote; // Change this to the actual type if known
   final String? md5;
-  final int? parentId;
+  final String? parentId;
   final int? change;
   final int? favCount;
   final int? recommendedPosts;
@@ -176,13 +176,13 @@ class AuthorDto {
 
   factory AuthorDto.fromJson(Map<String, dynamic> json) {
     return AuthorDto(
-      id: json['id'] as int?,
+      id: json['id'] as String?,
       name: json['name'] as String?,
       avatar: json['avatar'] as String?,
       avatarRating: json['avatar_rating'] as String?,
     );
   }
-  final int? id;
+  final String? id;
   final String? name;
   final String? avatar;
   final String? avatarRating;

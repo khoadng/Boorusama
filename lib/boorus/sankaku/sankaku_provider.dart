@@ -19,10 +19,15 @@ final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
   },
 );
 
+final sankakuPseudoIdGeneratorProvider = Provider((ref) {
+  return SankakuWorkaroundIdGenerator();
+});
+
 final sankakuPostRepoProvider =
     Provider.family<PostRepository<SankakuPost>, BooruConfigSearch>(
   (ref, config) {
     final client = ref.watch(sankakuClientProvider(config.auth));
+    final idGenerator = ref.watch(sankakuPseudoIdGeneratorProvider);
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
@@ -89,7 +94,10 @@ final sankakuPostRepoProvider =
               final timestamp = e.createdAt?.s;
 
               return SankakuPost(
-                id: e.id ?? 0,
+                // They changed the id to a string, so a workaround is needed until i can figure out a better way
+                // This workaround is just generating an autoincrement id to make the filtering work
+                id: idGenerator.generateId(),
+                sankakuId: e.id ?? '',
                 thumbnailImageUrl: e.previewUrl ?? '',
                 sampleImageUrl: e.sampleUrl ?? '',
                 originalImageUrl: e.fileUrl ?? '',
@@ -115,7 +123,8 @@ final sankakuPostRepoProvider =
                 createdAt: timestamp != null
                     ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
                     : null,
-                uploaderId: e.author?.id,
+                // uploaderId: e.author?.id,
+                uploaderId: 0, // The id is now a string
                 metadata: PostMetadata(
                   page: page,
                   search: tags.join(' '),
