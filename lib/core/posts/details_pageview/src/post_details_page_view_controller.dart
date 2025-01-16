@@ -15,16 +15,17 @@ import 'post_details_page_view.dart';
 class PostDetailsPageViewController extends ChangeNotifier {
   PostDetailsPageViewController({
     required this.initialPage,
-    bool hideOverlay = false,
+    this.initialHideOverlay = false,
     bool hoverToControlOverlay = false,
     this.maxSize = 0.7,
     this.threshold = 400.0,
   })  : currentPage = ValueNotifier(initialPage),
-        overlay = ValueNotifier(!hideOverlay),
+        overlay = ValueNotifier(!initialHideOverlay),
         hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
         sheetState = ValueNotifier(SheetState.collapsed);
 
   final int initialPage;
+  final bool initialHideOverlay;
   final double maxSize;
 
   final double threshold;
@@ -214,10 +215,14 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
     zoom.value = value;
     if (value) {
-      overlay.value = false;
+      if (!initialHideOverlay) {
+        overlay.value = false;
+      }
       disableAllSwiping();
     } else {
-      overlay.value = true;
+      if (!initialHideOverlay) {
+        overlay.value = true;
+      }
       enableAllSwiping();
     }
   }

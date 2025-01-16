@@ -75,7 +75,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   late final _posts = widget.posts;
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
-    hideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    initialHideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
     hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
   );
   late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(

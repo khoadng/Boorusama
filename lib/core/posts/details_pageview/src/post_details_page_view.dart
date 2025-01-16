@@ -131,6 +131,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late Animation<Offset> _sideSheetSlideAnim;
 
   final _forceHide = ValueNotifier(false);
+  final _isItemPushed = ValueNotifier(false);
 
   bool get isLargeScreen => widget.checkIfLargeScreen();
 
@@ -171,6 +172,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.slideshow.addListener(_onSlideShowChanged);
     _controller.sheetState.addListener(_onSheetStateChanged);
     _controller.overlay.addListener(_onOverlayChanged);
+    _controller.displacement.addListener(_onDisplacementChanged);
 
     _verticalSheetDragY.addListener(_onVerticalSheetDragYChanged);
 
@@ -206,6 +208,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         _forceHide.value = true;
       }
     }
+
+    if (_controller.initialHideOverlay) {
+      hideSystemStatus();
+    }
   }
 
   void _onPop() {
@@ -229,6 +235,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     } else {
       _controller.overlay.value = false;
     }
+  }
+
+  void _onDisplacementChanged() {
+    _isItemPushed.value = _controller.displacement.value > 0;
   }
 
   void _onOverlayChanged() {
@@ -304,14 +314,26 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.displacement.value = _clampToZero(dis);
   }
 
+  var _previouslyForceShowOverlay = false;
+
   void _onSheetStateChanged() {
     if (_controller.isExpanded) {
       widget.onExpanded?.call();
-      showSystemStatus();
-      _controller.overlay.value = true;
+
+      // if overlay was hidden, show it
+      if (!_controller.overlay.value) {
+        showSystemStatus();
+        _controller.overlay.value = true;
+        _previouslyForceShowOverlay = true;
+      }
     } else {
       if (_controller.sheetState.value == SheetState.hidden) {
         widget.onShrink?.call();
+      }
+      // hide overlay if it was forced to show during expanded state
+      if (_previouslyForceShowOverlay) {
+        _controller.overlay.value = false;
+        _previouslyForceShowOverlay = false;
       }
     }
 
@@ -372,6 +394,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.slideshow.removeListener(_onSlideShowChanged);
     _controller.verticalPosition.removeListener(_onVerticalPositionChanged);
     _controller.sheetController.removeListener(_onSheetChanged);
+    _controller.overlay.removeListener(_onOverlayChanged);
+    _controller.displacement.removeListener(_onDisplacementChanged);
 
     _verticalSheetDragY.removeListener(_onVerticalSheetDragYChanged);
     hovering.removeListener(_onHover);
@@ -625,12 +649,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 },
                 direction: SlideContainerDirection.down,
                 child: ValueListenableBuilder(
-                  valueListenable: _controller.displacement,
-                  builder: (_, dis, __) {
+                  valueListenable: _isItemPushed,
+                  builder: (_, pushed, __) {
                     return switch (moving) {
                       true => widget.bottomSheet!,
                       false =>
-                        dis > 0 ? const SizedBox.shrink() : widget.bottomSheet!,
+                        pushed ? const SizedBox.shrink() : widget.bottomSheet!,
                     };
                     // return !moving ? widget.bottomSheet!;
                   },
@@ -775,9 +799,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 Positioned.fill(
                   child: widget.sheetBuilder(context, scrollController),
                 ),
-                const Divider(
-                  height: 0,
-                  thickness: 0.75,
+                ValueListenableBuilder(
+                  valueListenable: _isItemPushed,
+                  builder: (_, pushed, __) => pushed
+                      ? const Divider(
+                          height: 0,
+                          thickness: 0.75,
+                        )
+                      : const SizedBox.shrink(),
                 ),
                 Align(
                   alignment: Alignment.topCenter,
