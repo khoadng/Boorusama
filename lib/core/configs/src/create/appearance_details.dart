@@ -129,6 +129,7 @@ class DetailsConfigPage extends StatelessWidget {
                     context,
                     details: previewDetails,
                     availableParts: uiBuilder.buildablePreviewParts.toSet(),
+                    defaultParts: uiBuilder.preview.keys.toSet(),
                     onDone: (parts) {
                       onLayoutUpdated(
                         layout.copyWith(
@@ -180,6 +181,7 @@ class DetailsConfigPage extends StatelessWidget {
                     context,
                     details: details,
                     availableParts: uiBuilder.full.keys.toSet(),
+                    defaultParts: uiBuilder.full.keys.toSet(),
                     onDone: (parts) {
                       onLayoutUpdated(
                         layout.copyWith(

@@ -22,14 +22,15 @@ class DetailsLayoutManagerParams extends Equatable {
   const DetailsLayoutManagerParams({
     required this.details,
     required this.availableParts,
+    required this.defaultParts,
   });
 
   final List<CustomDetailsPartKey> details;
-
   final Set<DetailsPart> availableParts;
+  final Set<DetailsPart> defaultParts;
 
   @override
-  List<Object?> get props => [details, availableParts];
+  List<Object?> get props => [details, availableParts, defaultParts];
 }
 
 final detailsLayoutProvider = NotifierProvider.autoDispose.family<
@@ -41,6 +42,7 @@ void goToDetailsLayoutManagerPage(
   BuildContext context, {
   required List<CustomDetailsPartKey> details,
   required Set<DetailsPart> availableParts,
+  required Set<DetailsPart> defaultParts,
   required void Function(List<CustomDetailsPartKey> parts) onDone,
 }) {
   Navigator.of(context).push(
@@ -50,6 +52,7 @@ void goToDetailsLayoutManagerPage(
           params: DetailsLayoutManagerParams(
             details: details,
             availableParts: availableParts,
+            defaultParts: defaultParts,
           ),
           onDone: onDone,
         );
@@ -65,7 +68,6 @@ class DetailsLayoutState extends Equatable {
   });
 
   final List<CustomDetailsPartKey> details;
-
   final Set<DetailsPart> availableParts;
 
   DetailsLayoutState copyWith({
@@ -130,6 +132,12 @@ class DetailsLayoutNotifier extends AutoDisposeFamilyNotifier<
       ],
     );
   }
+
+  void resetToDefault() {
+    state = state.copyWith(
+      details: arg.defaultParts.map(convertDetailsPart).toList(),
+    );
+  }
 }
 
 class DetailsLayoutManagerPage extends ConsumerStatefulWidget {
@@ -161,10 +169,11 @@ class _DetailsLayoutManagerPageState
   @override
   Widget build(BuildContext context) {
     final hasPremium = ref.watch(hasPremiumProvider);
+    final notifier = ref.watch(detailsLayoutProvider(widget.params).notifier);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage details layout'),
+        title: const Text('Manage widgets'),
         actions: [
           IconButton(
             icon: const Icon(Symbols.add),
@@ -178,6 +187,17 @@ class _DetailsLayoutManagerPageState
                   );
                 },
               );
+            },
+          ),
+          BooruPopupMenuButton(
+            onSelected: (value) {
+              switch (value) {
+                case 'reset_layout':
+                  notifier.resetToDefault();
+              }
+            },
+            itemBuilder: const {
+              'reset_layout': Text('Reset to default'),
             },
           ),
         ],
@@ -298,6 +318,7 @@ class _List extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final notifier = ref.watch(detailsLayoutProvider(params).notifier);
     final details = ref.watch(
       detailsLayoutProvider(params).select((value) => value.details),
@@ -320,16 +341,16 @@ class _List extends ConsumerWidget {
               ),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                  width: 0.75,
+                  color: colorScheme.outlineVariant,
+                  width: 0.1,
                 ),
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
+                color: colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ListTile(
                 leading: Icon(
                   Icons.drag_indicator,
-                  color: Theme.of(context).colorScheme.hintColor,
+                  color: colorScheme.hintColor,
                 ),
                 trailing: BooruPopupMenuButton(
                   onSelected: (value) {
