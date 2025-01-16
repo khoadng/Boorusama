@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/current.dart';
 import '../../../../configs/ref.dart';
@@ -55,6 +56,11 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
     final heroTag = '${post.id}_hero';
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final imageGridQuality =
+        ref.watch(imageListingSettingsProvider.select((v) => v.imageQuality));
+
+    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
 
     return post.isVideo
         ? Stack(
@@ -112,7 +118,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             heroTag: heroTag,
             aspectRatio: post.aspectRatio,
             imageUrl: imageUrl,
-            placeholderImageUrl: post.thumbnailImageUrl,
+            placeholderImageUrl: gridThumbnailUrlBuilder != null
+                ? gridThumbnailUrlBuilder(imageGridQuality, post)
+                : post.thumbnailImageUrl,
             imageOverlayBuilder: (constraints) =>
                 imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,

@@ -877,11 +877,9 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(imageListingSettingsProvider);
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.preview;
-    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
 
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
@@ -945,21 +943,7 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
                       score: post.score,
                       image: BooruHero(
                         tag: useHero ? '${post.id}_hero' : null,
-                        child: BooruImage(
-                          aspectRatio: post.aspectRatio,
-                          imageUrl: gridThumbnailUrlBuilder != null
-                              ? gridThumbnailUrlBuilder(
-                                  settings.imageQuality,
-                                  post,
-                                )
-                              : post.thumbnailImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            settings.imageBorderRadius,
-                          ),
-                          forceFill:
-                              settings.imageListType == ImageListType.standard,
-                          placeholderUrl: post.thumbnailImageUrl,
-                        ),
+                        child: _Image(post: post),
                       ),
                     ),
                   );
@@ -983,6 +967,45 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _Image<T extends Post> extends ConsumerWidget {
+  const _Image({
+    required this.post,
+    super.key,
+  });
+
+  final T post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageQuality),
+    );
+    final imageBorderRadius = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageBorderRadius),
+    );
+    final imageListType = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageListType),
+    );
+
+    return BooruImage(
+      aspectRatio: post.aspectRatio,
+      imageUrl: gridThumbnailUrlBuilder != null
+          ? gridThumbnailUrlBuilder(
+              imageQuality,
+              post,
+            )
+          : post.thumbnailImageUrl,
+      borderRadius: BorderRadius.circular(
+        imageBorderRadius,
+      ),
+      forceFill: imageListType == ImageListType.standard,
+      placeholderUrl: post.thumbnailImageUrl,
     );
   }
 }

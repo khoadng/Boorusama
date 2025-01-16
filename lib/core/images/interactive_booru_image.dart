@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -50,6 +51,38 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
       );
     }
 
+    final placeholderImageUrl = widget.placeholderImageUrl;
+    final headers = {
+      ...ref.watch(extraHttpHeaderProvider(config)),
+      ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
+    };
+
+    Widget buildImage(BoxConstraints constraints) {
+      return DioExtendedImage.network(
+        widget.imageUrl,
+        dio: dio,
+        width: constraints.maxWidth.isFinite ? constraints.maxWidth : null,
+        height: constraints.maxHeight.isFinite ? constraints.maxHeight : null,
+        cacheMaxAge: kDefaultImageCacheDuration,
+        fit: BoxFit.contain,
+        headers: headers,
+        loadStateChanged:
+            placeholderImageUrl != null && placeholderImageUrl.isNotEmpty
+                ? (state) => state.extendedImageLoadState == LoadState.loading
+                    ? DioExtendedImage.network(
+                        placeholderImageUrl,
+                        dio: dio,
+                        width: widget.width,
+                        height: widget.height,
+                        fit: BoxFit.contain,
+                        cacheMaxAge: kDefaultImageCacheDuration,
+                        headers: headers,
+                      )
+                    : null
+                : null,
+      );
+    }
+
     return BooruHero(
       tag: widget.heroTag,
       child: widget.aspectRatio != null
@@ -58,44 +91,14 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
               child: LayoutBuilder(
                 builder: (context, constraints) => Stack(
                   children: [
-                    DioExtendedImage.network(
-                      widget.imageUrl,
-                      dio: dio,
-                      width: constraints.maxWidth.isFinite
-                          ? constraints.maxWidth
-                          : null,
-                      height: constraints.maxHeight.isFinite
-                          ? constraints.maxHeight
-                          : null,
-                      fit: BoxFit.contain,
-                      cacheMaxAge: kDefaultImageCacheDuration,
-                      headers: {
-                        ...ref.watch(extraHttpHeaderProvider(config)),
-                        ...ref
-                            .watch(cachedBypassDdosHeadersProvider(config.url)),
-                      },
-                    ),
+                    buildImage(constraints),
                     ...widget.imageOverlayBuilder?.call(constraints) ?? [],
                   ],
                 ),
               ),
             )
           : LayoutBuilder(
-              builder: (context, constraints) => DioExtendedImage.network(
-                widget.imageUrl,
-                dio: dio,
-                width:
-                    constraints.maxWidth.isFinite ? constraints.maxWidth : null,
-                height: constraints.maxHeight.isFinite
-                    ? constraints.maxHeight
-                    : null,
-                cacheMaxAge: kDefaultImageCacheDuration,
-                fit: BoxFit.contain,
-                headers: {
-                  ...ref.watch(extraHttpHeaderProvider(config)),
-                  ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-                },
-              ),
+              builder: (context, constraints) => buildImage(constraints),
             ),
     );
   }
