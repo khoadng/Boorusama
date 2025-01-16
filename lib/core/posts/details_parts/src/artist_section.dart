@@ -83,7 +83,7 @@ class _ArtistSectionState extends State<ArtistSection> {
                 ? const SizedBox.shrink()
                 : Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
+                      horizontal: 12,
                     ),
                     child: AppHtml(
                       style: {

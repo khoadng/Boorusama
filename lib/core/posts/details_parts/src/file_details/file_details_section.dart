@@ -49,6 +49,9 @@ class FileDetailsSection extends StatelessWidget {
       data: Theme.of(context).copyWith(
         listTileTheme: Theme.of(context).listTileTheme.copyWith(
               visualDensity: VisualDensity.compact,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
             ),
         dividerColor: Colors.transparent,
       ),

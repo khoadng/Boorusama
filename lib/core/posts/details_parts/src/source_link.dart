@@ -26,6 +26,9 @@ class SourceLink extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       visualDensity: VisualDensity.compact,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 12,
+      ),
       title: title,
       subtitle: url != null
           ? InkWell(

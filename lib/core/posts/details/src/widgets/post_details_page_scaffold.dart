@@ -578,18 +578,15 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
       return preview;
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          const SliverSizedBox(height: 24),
-          ...slivers,
-          SliverSizedBox(
-            height: MediaQuery.paddingOf(context).bottom + 72,
-          ),
-        ],
-      ),
+    return CustomScrollView(
+      controller: scrollController,
+      slivers: [
+        const SliverSizedBox(height: 16),
+        ...slivers,
+        SliverSizedBox(
+          height: MediaQuery.paddingOf(context).bottom,
+        ),
+      ],
     );
   }
 }

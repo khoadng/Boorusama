@@ -87,7 +87,7 @@ class _PostListConfigurationHeaderState
         data: Theme.of(context).copyWith(
           dividerColor: Colors.transparent,
           listTileTheme: ListTileTheme.of(context).copyWith(
-            contentPadding: EdgeInsets.only(left: widget.hasBlacklist ? 6 : 0),
+            contentPadding: EdgeInsets.zero,
             horizontalTitleGap: 0,
             minVerticalPadding: 0,
             visualDensity: const ShrinkVisualDensity(),
