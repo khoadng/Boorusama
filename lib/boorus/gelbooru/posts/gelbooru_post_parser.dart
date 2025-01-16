@@ -10,16 +10,28 @@ import 'gelbooru_post.dart';
 GelbooruPost gelbooruPostDtoToGelbooruPostNoMetadata(PostDto dto) =>
     gelbooruPostDtoToGelbooruPost(dto, null);
 
+String decodeHtmlEntities(String input) {
+  return input
+      .replaceAll("&#039;", "'")
+      .replaceAll("&quot;", '"')
+      .replaceAll("&amp;", "&")
+      .replaceAll("&lt;", "<")
+      .replaceAll("&gt;", ">");
+}
+
 GelbooruPost gelbooruPostDtoToGelbooruPost(
   PostDto dto,
   PostMetadata? metadata,
 ) {
+  final decodedTags =
+      dto.tags?.split(' ').map(decodeHtmlEntities).toSet() ?? {};
+
   return GelbooruPost(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',
     sampleImageUrl: dto.sampleUrl ?? dto.fileUrl ?? '',
     originalImageUrl: dto.fileUrl ?? '',
-    tags: dto.tags?.split(' ').toSet() ?? {},
+    tags: decodedTags,
     width: dto.width?.toDouble() ?? 0,
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.fileUrl ?? 'foo.png').substring(1),
