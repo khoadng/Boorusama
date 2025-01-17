@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import '../configs/ref.dart';
 import '../http/providers.dart';
-import '../images/providers.dart';
 
 const _unknownSize = 26.0;
 const _faviconSize = 32.0;
@@ -50,7 +49,6 @@ class WebsiteLogo extends ConsumerWidget {
         url,
         dio: dio,
         clearMemoryCacheIfFailed: false,
-        cacheMaxAge: kDefaultImageCacheDuration,
         fit: BoxFit.cover,
         placeholderWidget: Container(
           padding: const EdgeInsets.all(6),

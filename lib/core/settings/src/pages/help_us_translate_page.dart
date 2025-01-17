@@ -11,7 +11,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../http/providers.dart';
-import '../../../images/providers.dart';
 import '../../../info/app_info.dart';
 
 class HelpUseTranslatePage extends ConsumerWidget {
@@ -65,7 +64,6 @@ class HelpUseTranslatePage extends ConsumerWidget {
                       appInfo.translationBadgeUrl,
                       height: 66,
                       width: 287,
-                      cacheMaxAge: kDefaultImageCacheDuration,
                     ),
                     const SizedBox(height: 24),
                     SvgPicture.network(

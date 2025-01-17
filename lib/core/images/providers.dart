@@ -13,5 +13,3 @@ final extraHttpHeaderProvider =
     _ => {},
   },
 );
-
-const kDefaultImageCacheDuration = Duration(days: 2);

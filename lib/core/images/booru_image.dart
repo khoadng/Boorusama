@@ -11,6 +11,8 @@ import 'package:foundation/foundation.dart';
 import '../configs/ref.dart';
 import '../http/http.dart';
 import '../http/providers.dart';
+import '../settings/providers.dart';
+import '../settings/settings.dart';
 import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
@@ -23,11 +25,8 @@ class BooruImage extends ConsumerWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
-    this.cacheHeight,
-    this.cacheWidth,
     this.forceFill = false,
-    this.width,
-    this.height,
+    this.forceLoadPlaceholder = false,
   });
 
   final String imageUrl;
@@ -35,16 +34,16 @@ class BooruImage extends ConsumerWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
-  final int? cacheWidth;
-  final int? cacheHeight;
   final bool forceFill;
-  final double? width;
-  final double? height;
+  final bool forceLoadPlaceholder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
+    final imageQualitySettings = ref.watch(
+      imageListingSettingsProvider.select((value) => value.imageQuality),
+    );
 
     return BooruRawImage(
       dio: dio,
@@ -53,11 +52,9 @@ class BooruImage extends ConsumerWidget {
       borderRadius: borderRadius,
       fit: fit,
       aspectRatio: aspectRatio,
-      cacheHeight: cacheHeight,
-      cacheWidth: cacheWidth,
       forceFill: forceFill,
-      width: width,
-      height: height,
+      isLargeImage: imageQualitySettings != ImageQuality.low,
+      forceLoadPlaceholder: forceLoadPlaceholder,
       headers: {
         AppHttpHeaders.userAgentHeader:
             ref.watch(userAgentProvider(config.booruType)),
@@ -77,12 +74,10 @@ class BooruRawImage extends StatelessWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
-    this.cacheHeight,
-    this.cacheWidth,
     this.forceFill = false,
-    this.width,
-    this.height,
     this.headers = const {},
+    this.isLargeImage = false,
+    this.forceLoadPlaceholder = false,
   });
 
   final Dio dio;
@@ -91,136 +86,95 @@ class BooruRawImage extends StatelessWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
-  final int? cacheWidth;
-  final int? cacheHeight;
   final bool forceFill;
-  final double? width;
-  final double? height;
   final Map<String, String> headers;
+  final bool isLargeImage;
+  final bool forceLoadPlaceholder;
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl.isEmpty) {
-      return _EmptyImage(
-        borderRadius: borderRadius,
-        forceFill: forceFill,
-        aspectRatio: aspectRatio,
-      );
-    }
+    final imagePlaceHolder = ImagePlaceHolder(
+      borderRadius: borderRadius ?? _defaultRadius,
+    );
 
-    return forceFill ? _builForceFillImage() : _builderNormalImage();
-  }
-
-  Widget _builderNormalImage() {
     return NullableAspectRatio(
-      aspectRatio: aspectRatio,
-      child: ExtendedImage.network(
-        imageUrl,
-        dio: dio,
-        width: width,
-        height: height,
-        cacheHeight: cacheHeight,
-        cacheWidth: cacheWidth,
-        headers: headers,
-        cacheMaxAge: kDefaultImageCacheDuration,
-        borderRadius: borderRadius ?? _defaultRadius,
-        fit: fit ?? BoxFit.fill,
-        placeholderWidget: _buildPlaceholder(),
-        errorWidget: _buildErrorImage(),
+      aspectRatio: forceFill ? null : aspectRatio,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          final height = constraints.maxHeight;
+          final fit = this.fit ?? (forceFill ? BoxFit.cover : BoxFit.contain);
+          final borderRadius = this.borderRadius ?? _defaultRadius;
+
+          return imageUrl.isNotEmpty
+              ? ExtendedImage.network(
+                  imageUrl,
+                  dio: dio,
+                  headers: headers,
+                  borderRadius: borderRadius,
+                  width: width,
+                  height: height,
+                  fit: fit,
+                  placeholderWidget: placeholderUrl.toOption().fold(
+                        () => imagePlaceHolder,
+                        (url) => Builder(
+                          builder: (context) {
+                            final hasNetworkPlaceholder =
+                                _shouldLoadPlaceholderUrl(
+                              placeholderUrl: url,
+                              imageUrl: imageUrl,
+                              isLargeImage: isLargeImage,
+                              forceLoadPlaceholder: forceLoadPlaceholder,
+                            );
+
+                            return hasNetworkPlaceholder
+                                ? ExtendedImage.network(
+                                    url,
+                                    dio: dio,
+                                    headers: headers,
+                                    borderRadius: borderRadius,
+                                    width: width,
+                                    height: height,
+                                    fit: fit,
+                                    placeholderWidget: imagePlaceHolder,
+                                  )
+                                : imagePlaceHolder;
+                          },
+                        ),
+                      ),
+                  errorWidget: ErrorPlaceholder(
+                    borderRadius: borderRadius,
+                  ),
+                )
+              : imagePlaceHolder;
+        },
       ),
     );
   }
-
-  Widget _builForceFillImage() {
-    return Column(
-      children: [
-        Expanded(
-          child: ExtendedImage.network(
-            imageUrl,
-            dio: dio,
-            width: width ?? double.infinity,
-            height: height ?? double.infinity,
-            headers: headers,
-            cacheHeight: cacheHeight,
-            cacheWidth: cacheWidth,
-            cacheMaxAge: kDefaultImageCacheDuration,
-            borderRadius: borderRadius ?? _defaultRadius,
-            fit: BoxFit.cover,
-            placeholderWidget: _buildPlaceholder(),
-            errorWidget: _buildErrorImage(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPlaceholder() {
-    return placeholderUrl.toOption().fold(
-          () => ImagePlaceHolder(
-            borderRadius: borderRadius ?? _defaultRadius,
-          ),
-          (url) => url.isNotEmpty
-              ? ExtendedImage.network(
-                  url,
-                  dio: dio,
-                  width: width ?? double.infinity,
-                  height: height ?? double.infinity,
-                  cacheHeight: cacheHeight,
-                  cacheWidth: cacheWidth,
-                  cacheMaxAge: kDefaultImageCacheDuration,
-                  fit: BoxFit.cover,
-                  borderRadius: borderRadius ?? _defaultRadius,
-                  placeholderWidget: ImagePlaceHolder(
-                    borderRadius: borderRadius ?? _defaultRadius,
-                  ),
-                  headers: headers,
-                )
-              : ImagePlaceHolder(
-                  borderRadius: borderRadius ?? _defaultRadius,
-                ),
-        );
-  }
-
-  Widget? _buildErrorImage() {
-    return ErrorPlaceholder(
-      borderRadius: borderRadius ?? _defaultRadius,
-    );
-  }
 }
 
-class _EmptyImage extends StatelessWidget {
-  const _EmptyImage({
-    required this.borderRadius,
-    required this.forceFill,
-    this.aspectRatio,
-  });
+bool _shouldLoadPlaceholderUrl({
+  required String placeholderUrl,
+  required String imageUrl,
+  required bool isLargeImage,
+  required bool forceLoadPlaceholder,
+}) {
+  if (forceLoadPlaceholder) return true;
 
-  final BorderRadiusGeometry? borderRadius;
-  final bool forceFill;
-  final double? aspectRatio;
+  final placeholder = placeholderUrl;
 
-  @override
-  Widget build(BuildContext context) {
-    final placeholder = ImagePlaceHolder(
-      borderRadius: borderRadius ?? _defaultRadius,
-    );
+  // Small image
+  if (!isLargeImage) return false;
 
-    return forceFill
-        ? Column(
-            children: [
-              Expanded(
-                child: placeholder,
-              ),
-            ],
-          )
-        : NullableAspectRatio(
-            aspectRatio: aspectRatio,
-            child: placeholder,
-          );
-  }
+  // Invalid placeholder URL
+  if (placeholder.isEmpty) return false;
+
+  // Same URL, no point in loading the placeholder
+  if (placeholder == imageUrl) return false;
+
+  return true;
 }
 
-// ignore: prefer-single-widget-per-file
 class ImagePlaceHolder extends StatelessWidget {
   const ImagePlaceHolder({
     super.key,
@@ -245,14 +199,11 @@ class ImagePlaceHolder extends StatelessWidget {
             .withValues(alpha: 0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) => const SizedBox.shrink(),
-      ),
+      child: const SizedBox.shrink(),
     );
   }
 }
 
-// ignore: prefer-single-widget-per-file
 class ErrorPlaceholder extends StatelessWidget {
   const ErrorPlaceholder({
     super.key,

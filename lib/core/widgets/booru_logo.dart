@@ -11,7 +11,6 @@ import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
 import '../configs/ref.dart';
 import '../http/providers.dart';
-import '../images/providers.dart';
 import '../posts/sources/source.dart';
 
 class BooruLogo extends ConsumerWidget {
@@ -68,7 +67,6 @@ class BooruLogo extends ConsumerWidget {
                 height: height ?? 24,
                 fit: BoxFit.cover,
                 clearMemoryCacheIfFailed: false,
-                cacheMaxAge: kDefaultImageCacheDuration,
                 errorWidget: FaIcon(
                   FontAwesomeIcons.globe,
                   size: width,

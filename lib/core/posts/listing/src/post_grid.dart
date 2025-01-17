@@ -14,7 +14,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../boorus/booru/booru.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../cache/providers.dart';
@@ -117,7 +116,6 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
       builder: (context, constraints) => RawPostGrid(
         sliverHeaders: [
           ...widget.sliverHeaders ?? [],
-          const SliverMasonryGridWarning(),
           DisableGridItemHeroOnPop(disableHero: _disableHero),
         ],
         scrollController: _autoScrollController,
@@ -271,34 +269,6 @@ class DisableGridItemHeroOnPop extends ConsumerWidget {
       },
       child: const SliverSizedBox.shrink(),
     );
-  }
-}
-
-class SliverMasonryGridWarning extends ConsumerWidget {
-  const SliverMasonryGridWarning({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final type = ref.watch(
-      imageListingSettingsProvider.select((value) => value.imageListType),
-    );
-    final booruType = ref.watchConfigAuth.booruType;
-
-    return type == ImageListType.masonry && booruType.masonryLayoutUnsupported
-        ? SliverToBoxAdapter(
-            child: WarningContainer(
-              title: 'Layout',
-              contentBuilder: (context) => Text(
-                'Consider switching to the "Standard" layout. "Masonry" is very jumpy for this booru.',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
-          )
-        : const SliverSizedBox.shrink();
   }
 }
 

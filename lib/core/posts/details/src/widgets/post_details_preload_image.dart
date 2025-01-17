@@ -30,7 +30,6 @@ class PostDetailsPreloadImage extends ConsumerWidget {
       height: 1,
       cacheHeight: 10,
       cacheWidth: 10,
-      cacheMaxAge: kDefaultImageCacheDuration,
       headers: {
         ...ref.watch(extraHttpHeaderProvider(config)),
       },

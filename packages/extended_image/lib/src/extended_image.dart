@@ -12,6 +12,8 @@ import 'package:flutter/semantics.dart';
 import 'dio_extended_image_provider.dart';
 import 'utils.dart';
 
+const kDefaultImageCacheDuration = Duration(days: 2);
+
 class ExtendedImageController extends ChangeNotifier {
   ExtendedImageController(
     this.initialLoadState, {
@@ -170,7 +172,7 @@ class ExtendedImage extends StatefulWidget {
             printError: printError,
             cacheRawData: cacheRawData,
             imageCacheName: imageCacheName,
-            cacheMaxAge: cacheMaxAge,
+            cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
           ),
           compressionRatio: compressionRatio,
           maxBytes: maxBytes,
@@ -453,17 +455,16 @@ class _ExtendedImageState extends State<ExtendedImage>
       builder: (_, state, __) => switch (state) {
         LoadState.loading => widget.placeholderWidget ??
             Container(
-              alignment: Alignment.center,
-              child: Theme.of(context).platform == TargetPlatform.iOS
-                  ? const CupertinoActivityIndicator(
-                      animating: true,
-                      radius: 16.0,
-                    )
-                  : CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Theme.of(context).primaryColor),
-                    ),
+              width: widget.width,
+              height: widget.height,
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHigh
+                    .withValues(alpha: 0.5),
+                borderRadius: widget.borderRadius,
+              ),
+              child: const SizedBox.shrink(),
             ),
         LoadState.completed => _getCompletedWidget(),
         LoadState.failed => widget.errorWidget ??

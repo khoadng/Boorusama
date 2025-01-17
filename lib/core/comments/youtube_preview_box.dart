@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../foundation/url_launcher.dart';
-import '../images/providers.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
@@ -66,7 +65,6 @@ class YoutubePreviewBox extends StatelessWidget {
                                 data.previewImage!,
                                 dio: dio,
                                 fit: BoxFit.contain,
-                                cacheMaxAge: kDefaultImageCacheDuration,
                               ),
                             ),
                             if (data.isVideo)

@@ -188,22 +188,19 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
 
-    return BooruHero(
-      tag: '${widget.id}_hero',
-      child: InteractiveViewerExtended(
-        onZoomUpdated: (value) {
-          setState(() {
-            zoom = value;
-          });
+    return InteractiveViewerExtended(
+      onZoomUpdated: (value) {
+        setState(() {
+          zoom = value;
+        });
+      },
+      child: ExtendedImage.network(
+        widget.imageUrl,
+        dio: dio,
+        headers: {
+          ...ref.watch(extraHttpHeaderProvider(config)),
+          ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
         },
-        child: ExtendedImage.network(
-          widget.imageUrl,
-          dio: dio,
-          headers: {
-            ...ref.watch(extraHttpHeaderProvider(config)),
-            ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-          },
-        ),
       ),
     );
   }

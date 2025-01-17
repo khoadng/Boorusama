@@ -2,15 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/ref.dart';
-import '../../../../http/providers.dart';
 import '../../../../images/booru_image.dart';
-import '../../../../images/providers.dart';
 import '../../../../notes/notes.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
@@ -91,12 +87,6 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
   }
 
   Widget _buildImage(String imageUrl) {
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
-    final headers = {
-      ...ref.watch(extraHttpHeaderProvider(config)),
-      ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-    };
     final post = widget.post;
 
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
@@ -108,21 +98,13 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
         ? gridThumbnailUrlBuilder(imageGridQuality, post)
         : post.thumbnailImageUrl;
 
-    return ExtendedImage.network(
-      imageUrl,
-      dio: dio,
-      cacheMaxAge: kDefaultImageCacheDuration,
-      fit: BoxFit.contain,
-      headers: headers,
-      placeholderWidget: placeholderImageUrl.isNotEmpty
-          ? ExtendedImage.network(
-              placeholderImageUrl,
-              dio: dio,
-              fit: BoxFit.contain,
-              cacheMaxAge: kDefaultImageCacheDuration,
-              headers: headers,
-            )
-          : null,
+    return BooruImage(
+      imageUrl: imageUrl,
+      placeholderUrl: placeholderImageUrl,
+      aspectRatio: post.aspectRatio,
+      forceFill: true,
+      borderRadius: BorderRadius.zero,
+      forceLoadPlaceholder: true,
     );
   }
 }

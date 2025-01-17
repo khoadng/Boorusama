@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -56,7 +53,6 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                   image: imageBuilder != null
                       ? imageBuilder!(post)
                       : BooruImage(
-                          width: width ?? max(constraints.maxWidth / 6, 120),
                           forceFill: true,
                           aspectRatio: 0.6,
                           imageUrl: imageUrl(post),
