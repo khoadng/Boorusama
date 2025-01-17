@@ -25,9 +25,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // Don't log image requests
-    final ext = extension(options.uri.toString());
-    if (_kImageExtensions.contains(ext)) {
+    if (_shouldIgnoreRequest(options)) {
       super.onRequest(options, handler);
       return;
     }
@@ -39,8 +37,7 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    final ext = extension(response.requestOptions.uri.toString());
-    if (_kImageExtensions.contains(ext)) {
+    if (_shouldIgnoreRequest(response.requestOptions)) {
       super.onResponse(response, handler);
       return;
     }
@@ -61,8 +58,7 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final response = err.response;
 
-    final ext = extension(response?.requestOptions.uri.toString() ?? '');
-    if (_kImageExtensions.contains(ext)) {
+    if (_shouldIgnoreRequest(response?.requestOptions)) {
       super.onError(err, handler);
       return;
     }
@@ -109,4 +105,22 @@ String _parseRequestDuration(Duration? duration) {
   return duration.inSeconds < 1
       ? ' and took ${duration.inMilliseconds}ms'
       : ' and took ${duration.inMilliseconds / 1000}s';
+}
+
+bool _shouldIgnoreRequest(RequestOptions? options) {
+  final uri = options?.uri;
+
+  if (uri == null) return true;
+
+  final ext = extension(uri.toString());
+  if (_kImageExtensions.contains(ext)) {
+    return true;
+  }
+
+  // ignore favicon requests
+  if (uri.toString().contains('www.google.com/s2/favicons')) {
+    return true;
+  }
+
+  return false;
 }
