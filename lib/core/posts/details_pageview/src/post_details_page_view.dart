@@ -39,12 +39,9 @@ class PostDetailsPageView extends StatefulWidget {
     this.maxSize = 0.7,
     this.controller,
     this.onSwipeDownThresholdReached,
-    this.onItemDoubleTap,
-    this.onItemLongPress,
     this.onExit,
     this.onExpanded,
     this.onShrink,
-    this.onTap,
     this.onPageChanged,
     this.swipeDownThreshold = 20,
     this.actions = const [],
@@ -68,12 +65,9 @@ class PostDetailsPageView extends StatefulWidget {
   final Widget? bottomSheet;
 
   final void Function()? onSwipeDownThresholdReached;
-  final void Function()? onItemDoubleTap;
-  final void Function()? onItemLongPress;
   final void Function()? onExit;
   final void Function()? onExpanded;
   final void Function()? onShrink;
-  final void Function()? onTap;
   final void Function(int page)? onPageChanged;
 
   final SlideshowOptions slideshowOptions;
@@ -958,24 +952,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                         ..scale(_freestyleMoveScale),
                       child: childAb,
                     ),
-                    child: ValueListenableBuilder(
-                      valueListenable: _controller.freestyleMoveOffset,
-                      builder: (_, offset, __) => ValueListenableBuilder(
-                        valueListenable: _controller.sheetState,
-                        builder: (_, state, __) => GestureDetector(
-                          // let the user tap the image to toggle overlay
-                          onTap: widget.onTap,
-                          child: InteractiveViewerExtended(
-                            enable: !state.isExpanded,
-                            onZoomUpdated: _controller.onZoomUpdated,
-                            onTap: widget.onTap,
-                            onDoubleTap: widget.onItemDoubleTap,
-                            onLongPress: widget.onItemLongPress,
-                            child: widget.itemBuilder(context, index),
-                          ),
-                        ),
-                      ),
-                    ),
+                    child: widget.itemBuilder(context, index),
                   ),
                 ),
               ),

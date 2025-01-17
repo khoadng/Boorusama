@@ -194,6 +194,32 @@ class _PostDetailPageScaffoldState<T extends Post>
         uiBuilder?.full.keys.toSet();
     final settings = ref.watch(settingsProvider);
 
+    void onItemTap() {
+      final controller = widget.controller;
+
+      if (isDesktopPlatform()) {
+        if (controller.currentPost.value.isVideo) {
+          if (controller.isVideoPlaying.value) {
+            controller.pauseCurrentVideo(
+              useDefaultEngine: _isDefaultEngine(settings),
+            );
+          } else {
+            controller.playCurrentVideo(
+              useDefaultEngine: _isDefaultEngine(settings),
+            );
+          }
+        } else {
+          if (_controller.isExpanded) return;
+
+          _controller.toggleOverlay();
+        }
+      } else {
+        if (_controller.isExpanded) return;
+
+        _controller.toggleOverlay();
+      }
+    }
+
     return Scaffold(
       body: PostDetailsPageView(
         disableAnimation: settings.reduceAnimations,
@@ -240,20 +266,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             onPressed: () => goToHomePage(context),
           ),
         ],
-        onItemDoubleTap: gestures.canDoubleTap && postGesturesHandler != null
-            ? () => postGesturesHandler(
-                  ref,
-                  gestures?.doubleTap,
-                  posts[_controller.page],
-                )
-            : null,
-        onItemLongPress: gestures.canLongPress && postGesturesHandler != null
-            ? () => postGesturesHandler(
-                  ref,
-                  gestures?.longPress,
-                  posts[_controller.page],
-                )
-            : null,
         onSwipeDownThresholdReached:
             gestures.canSwipeDown && postGesturesHandler != null
                 ? () {
@@ -292,16 +304,44 @@ class _PostDetailPageScaffoldState<T extends Post>
                     url: imageUrlBuilder(nextPost),
                   ),
                 ),
-              PostMedia<T>(
-                post: post,
-                imageUrl: imageUrlBuilder(post),
-                imageOverlayBuilder: (constraints) =>
-                    noteOverlayBuilderDelegate(
-                  constraints,
-                  post,
-                  ref.watch(notesControllerProvider(post)),
+              ValueListenableBuilder(
+                valueListenable: _controller.sheetState,
+                builder: (_, state, __) => GestureDetector(
+                  // let the user tap the image to toggle overlay
+                  onTap: onItemTap,
+                  child: InteractiveViewerExtended(
+                    enable: !state.isExpanded,
+                    onZoomUpdated: _controller.onZoomUpdated,
+                    onTap: onItemTap,
+                    onDoubleTap:
+                        gestures.canDoubleTap && postGesturesHandler != null
+                            ? () => postGesturesHandler(
+                                  ref,
+                                  gestures?.doubleTap,
+                                  posts[_controller.page],
+                                )
+                            : null,
+                    onLongPress:
+                        gestures.canLongPress && postGesturesHandler != null
+                            ? () => postGesturesHandler(
+                                  ref,
+                                  gestures?.longPress,
+                                  posts[_controller.page],
+                                )
+                            : null,
+                    child: PostMedia<T>(
+                      post: post,
+                      imageUrl: imageUrlBuilder(post),
+                      imageOverlayBuilder: (constraints) =>
+                          noteOverlayBuilderDelegate(
+                        constraints,
+                        post,
+                        ref.watch(notesControllerProvider(post)),
+                      ),
+                      controller: _controller,
+                    ),
+                  ),
                 ),
-                controller: _controller,
               ),
               if (previousPost != null && !previousPost.isVideo)
                 Offstage(
@@ -387,35 +427,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
           ],
         ],
-        onTap: () {
-          final controller = widget.controller;
-
-          if (isDesktopPlatform()) {
-            if (controller.currentPost.value.isVideo) {
-              if (controller.isVideoPlaying.value) {
-                controller.pauseCurrentVideo(
-                  useDefaultEngine: _isDefaultEngine(settings),
-                );
-              } else {
-                controller.playCurrentVideo(
-                  useDefaultEngine: _isDefaultEngine(settings),
-                );
-              }
-
-              // if (isDesktopPlatform()) {
-
-              // } else {}
-            } else {
-              if (_controller.isExpanded) return;
-
-              _controller.toggleOverlay();
-            }
-          } else {
-            if (_controller.isExpanded) return;
-
-            _controller.toggleOverlay();
-          }
-        },
         onExpanded: () {
           widget.onExpanded?.call();
           ref.read(analyticsProvider).logScreenView('/details/info');
