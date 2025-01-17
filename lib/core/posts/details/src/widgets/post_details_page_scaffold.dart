@@ -294,103 +294,100 @@ class _PostDetailPageScaffoldState<T extends Post>
           final post = posts[index];
           final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
 
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              // preload next image only, not the post itself
-              if (nextPost != null && !nextPost.isVideo)
-                Offstage(
-                  child: PostDetailsPreloadImage(
-                    url: imageUrlBuilder(nextPost),
-                  ),
-                ),
-              ValueListenableBuilder(
-                valueListenable: _controller.sheetState,
-                builder: (_, state, __) => GestureDetector(
-                  // let the user tap the image to toggle overlay
-                  onTap: onItemTap,
-                  child: InteractiveViewerExtended(
-                    enable: !state.isExpanded,
-                    onZoomUpdated: _controller.onZoomUpdated,
-                    onTap: onItemTap,
-                    onDoubleTap:
-                        gestures.canDoubleTap && postGesturesHandler != null
-                            ? () => postGesturesHandler(
-                                  ref,
-                                  gestures?.doubleTap,
-                                  posts[_controller.page],
-                                )
-                            : null,
-                    onLongPress:
-                        gestures.canLongPress && postGesturesHandler != null
-                            ? () => postGesturesHandler(
-                                  ref,
-                                  gestures?.longPress,
-                                  posts[_controller.page],
-                                )
-                            : null,
-                    child: PostMedia<T>(
+          return ValueListenableBuilder(
+            valueListenable: _controller.sheetState,
+            builder: (_, state, __) => GestureDetector(
+              // let the user tap the image to toggle overlay
+              onTap: onItemTap,
+              child: InteractiveViewerExtended(
+                enable: !state.isExpanded,
+                onZoomUpdated: _controller.onZoomUpdated,
+                onTap: onItemTap,
+                onDoubleTap:
+                    gestures.canDoubleTap && postGesturesHandler != null
+                        ? () => postGesturesHandler(
+                              ref,
+                              gestures?.doubleTap,
+                              posts[_controller.page],
+                            )
+                        : null,
+                onLongPress:
+                    gestures.canLongPress && postGesturesHandler != null
+                        ? () => postGesturesHandler(
+                              ref,
+                              gestures?.longPress,
+                              posts[_controller.page],
+                            )
+                        : null,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // preload next image only, not the post itself
+                    if (nextPost != null && !nextPost.isVideo)
+                      Offstage(
+                        child: PostDetailsPreloadImage(
+                          url: imageUrlBuilder(nextPost),
+                        ),
+                      ),
+                    PostMedia<T>(
                       post: post,
                       imageUrlBuilder: imageUrlBuilder,
                       controller: _controller,
                     ),
-                  ),
+                    if (previousPost != null && !previousPost.isVideo)
+                      Offstage(
+                        child: PostDetailsPreloadImage(
+                          url: imageUrlBuilder(previousPost),
+                        ),
+                      ),
+                    if (post.isVideo)
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: state.isExpanded && !context.isLargeScreen
+                            ? Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Row(
+                                  children: [
+                                    // duplicate codes, maybe refactor later
+                                    PlayPauseButton(
+                                      isPlaying:
+                                          widget.controller.isVideoPlaying,
+                                      onPlayingChanged: (value) {
+                                        if (value) {
+                                          widget.controller.pauseVideo(
+                                            post.id,
+                                            post.isWebm,
+                                            _isDefaultEngine(settings),
+                                          );
+                                        } else if (!value) {
+                                          widget.controller.playVideo(
+                                            post.id,
+                                            post.isWebm,
+                                            _isDefaultEngine(settings),
+                                          );
+                                        } else {
+                                          // do nothing
+                                        }
+                                      },
+                                    ),
+                                    VideoSoundScope(
+                                      builder: (context, soundOn) =>
+                                          SoundControlButton(
+                                        padding: const EdgeInsets.all(8),
+                                        soundOn: soundOn,
+                                        onSoundChanged: (value) =>
+                                            ref.setGlobalVideoSound(value),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                  ],
                 ),
               ),
-              if (previousPost != null && !previousPost.isVideo)
-                Offstage(
-                  child: PostDetailsPreloadImage(
-                    url: imageUrlBuilder(previousPost),
-                  ),
-                ),
-              if (post.isVideo)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: ValueListenableBuilder(
-                    valueListenable: _controller.sheetState,
-                    builder: (_, state, __) => state.isExpanded &&
-                            !context.isLargeScreen
-                        ? Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              children: [
-                                // duplicate codes, maybe refactor later
-                                PlayPauseButton(
-                                  isPlaying: widget.controller.isVideoPlaying,
-                                  onPlayingChanged: (value) {
-                                    if (value) {
-                                      widget.controller.pauseVideo(
-                                        post.id,
-                                        post.isWebm,
-                                        _isDefaultEngine(settings),
-                                      );
-                                    } else if (!value) {
-                                      widget.controller.playVideo(
-                                        post.id,
-                                        post.isWebm,
-                                        _isDefaultEngine(settings),
-                                      );
-                                    } else {
-                                      // do nothing
-                                    }
-                                  },
-                                ),
-                                VideoSoundScope(
-                                  builder: (context, soundOn) =>
-                                      SoundControlButton(
-                                    padding: const EdgeInsets.all(8),
-                                    soundOn: soundOn,
-                                    onSoundChanged: (value) =>
-                                        ref.setGlobalVideoSound(value),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ),
-            ],
+            ),
           );
         },
         bottomSheet: widget.uiBuilder != null
