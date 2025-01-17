@@ -14,7 +14,6 @@ import '../../../../foundation/display.dart';
 import '../../../../foundation/path.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../http/providers.dart';
-import '../../../../images/interactive_booru_image.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
@@ -23,6 +22,7 @@ import '../../../../videos/video_player.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../types/post_details.dart';
+import 'interactive_booru_image.dart';
 import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
@@ -31,12 +31,10 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.imageUrl,
     required this.controller,
     super.key,
-    this.imageOverlayBuilder,
   });
 
   final T post;
   final String imageUrl;
-  final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final PostDetailsPageViewController controller;
 
   void _openSettings(BuildContext context) {
@@ -121,10 +119,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             placeholderImageUrl: gridThumbnailUrlBuilder != null
                 ? gridThumbnailUrlBuilder(imageGridQuality, post)
                 : post.thumbnailImageUrl,
-            imageOverlayBuilder: (constraints) =>
-                imageOverlayBuilder?.call(constraints) ?? [],
             width: post.width,
             height: post.height,
+            post: post,
           );
   }
 }

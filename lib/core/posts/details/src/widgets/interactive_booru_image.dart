@@ -6,21 +6,23 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/widgets/widgets.dart';
-import '../configs/ref.dart';
-import '../http/providers.dart';
-import 'booru_image.dart';
-import 'dio_extended_image.dart';
-import 'providers.dart';
+import '../../../../configs/ref.dart';
+import '../../../../http/providers.dart';
+import '../../../../images/booru_image.dart';
+import '../../../../images/dio_extended_image.dart';
+import '../../../../images/providers.dart';
+import '../../../../notes/notes.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../post/post.dart';
 
 class InteractiveBooruImage extends ConsumerStatefulWidget {
   const InteractiveBooruImage({
     required this.aspectRatio,
     required this.imageUrl,
+    required this.post,
     super.key,
     this.heroTag,
     this.placeholderImageUrl,
-    this.imageOverlayBuilder,
     this.width,
     this.height,
   });
@@ -29,9 +31,9 @@ class InteractiveBooruImage extends ConsumerStatefulWidget {
   final double? aspectRatio;
   final String imageUrl;
   final String? placeholderImageUrl;
-  final List<Widget> Function(BoxConstraints constraints)? imageOverlayBuilder;
   final double? width;
   final double? height;
+  final Post? post;
 
   @override
   ConsumerState<InteractiveBooruImage> createState() =>
@@ -83,6 +85,11 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
       );
     }
 
+    final post = widget.post;
+
+    final noteState =
+        post != null ? ref.watch(notesControllerProvider(post)) : null;
+
     return BooruHero(
       tag: widget.heroTag,
       child: widget.aspectRatio != null
@@ -92,7 +99,23 @@ class _InteractiveBooruImageState extends ConsumerState<InteractiveBooruImage> {
                 builder: (context, constraints) => Stack(
                   children: [
                     buildImage(constraints),
-                    ...widget.imageOverlayBuilder?.call(constraints) ?? [],
+                    if (post != null)
+                      if (noteState?.enableNotes ?? false)
+                        ...noteState?.notes
+                                .map(
+                                  (e) => e.adjustNoteCoordFor(
+                                    post,
+                                    widthConstraint: constraints.maxWidth,
+                                    heightConstraint: constraints.maxHeight,
+                                  ),
+                                )
+                                .map(
+                                  (e) => PostNote(
+                                    coordinate: e.coordinate,
+                                    content: e.content,
+                                  ),
+                                ) ??
+                            [],
                   ],
                 ),
               ),

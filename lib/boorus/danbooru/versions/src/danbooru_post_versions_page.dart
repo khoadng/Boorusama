@@ -8,7 +8,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../core/images/interactive_booru_image.dart';
+import '../../../../core/images/booru_image.dart';
 import '../../posts/post/post.dart';
 import '../../users/details/routes.dart';
 import 'providers/version_providers.dart';
@@ -134,9 +134,12 @@ class _Image extends ConsumerWidget {
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) => constraints.maxHeight > 80
-                ? InteractiveBooruImage(
-                    aspectRatio: null,
-                    imageUrl: imageUrl,
+                ? InteractiveViewerExtended(
+                    child: BooruImage(
+                      imageUrl: imageUrl,
+                      fit: BoxFit.contain,
+                      borderRadius: BorderRadius.zero,
+                    ),
                   )
                 : SizedBox(
                     height: constraints.maxHeight - 4,

@@ -12,9 +12,10 @@ import 'package:multi_split_view/multi_split_view.dart';
 // Project imports:
 import '../../../../../core/foundation/display.dart';
 import '../../../../../core/foundation/scrolling.dart';
-import '../../../../../core/images/interactive_booru_image.dart';
+import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/router.dart';
 import '../../../../../core/settings/providers.dart';
+import '../../../../../core/widgets/widgets.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
 import 'tag_edit_view_controller.dart';
@@ -251,9 +252,13 @@ class _Image extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifer = ref.watch(tagEditProvider.notifier);
-    return InteractiveBooruImage(
-      aspectRatio: notifer.imageAspectRatio,
-      imageUrl: notifer.imageUrl,
+
+    return InteractiveViewerExtended(
+      child: BooruImage(
+        imageUrl: notifer.imageUrl,
+        fit: BoxFit.contain,
+        borderRadius: BorderRadius.zero,
+      ),
     );
   }
 }

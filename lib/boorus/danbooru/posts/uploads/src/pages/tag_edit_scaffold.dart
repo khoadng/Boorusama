@@ -11,7 +11,8 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import '../../../../../../core/foundation/display.dart';
-import '../../../../../../core/images/interactive_booru_image.dart';
+import '../../../../../../core/images/booru_image.dart';
+import '../../../../../../core/widgets/widgets.dart';
 
 //FIXME: Split view is broken, need to fix it later, check tag_edit_page.dart for the correct implementation
 class TagEditUploadScaffold extends ConsumerStatefulWidget {
@@ -178,9 +179,12 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
           ? Column(
               children: [
                 Expanded(
-                  child: InteractiveBooruImage(
-                    aspectRatio: widget.aspectRatio,
-                    imageUrl: widget.imageUrl,
+                  child: InteractiveViewerExtended(
+                    child: BooruImage(
+                      imageUrl: widget.imageUrl,
+                      fit: BoxFit.contain,
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
                 ),
                 widget.imageFooterBuilder(),
