@@ -72,13 +72,14 @@ class ExtendedImageController extends ChangeNotifier {
 /// extended image base on official
 /// [Image]
 class ExtendedImage extends StatefulWidget {
-  const ExtendedImage({
+  ExtendedImage({
     super.key,
     required this.image,
     this.semanticLabel,
     this.excludeFromSemantics = false,
     this.width,
     this.height,
+    BoxConstraints? constraints,
     this.color,
     this.opacity,
     this.colorBlendMode,
@@ -100,7 +101,11 @@ class ExtendedImage extends StatefulWidget {
     this.controller,
     this.placeholderWidget,
     this.errorWidget,
-  });
+  })  : assert(constraints == null || constraints.debugAssertIsValid()),
+        constraints = (width != null || height != null)
+            ? constraints?.tighten(width: width, height: height) ??
+                BoxConstraints.tightFor(width: width, height: height)
+            : constraints;
 
   ExtendedImage.network(
     String url, {
@@ -174,6 +179,10 @@ class ExtendedImage extends StatefulWidget {
           cacheRawData: cacheRawData,
           imageCacheName: imageCacheName,
         ),
+        constraints = (width != null || height != null)
+            ? constraints?.tighten(width: width, height: height) ??
+                BoxConstraints.tightFor(width: width, height: height)
+            : constraints,
         assert(constraints == null || constraints.debugAssertIsValid()),
         assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0);
@@ -236,6 +245,8 @@ class ExtendedImage extends StatefulWidget {
   /// Consider using [fit] to adapt the image's rendering to fit the given width
   /// and height if the exact image dimensions are not known in advance.
   final double? height;
+
+  final BoxConstraints? constraints;
 
   /// If non-null, this color is blended with each image pixel using [colorBlendMode].
   final Color? color;
@@ -467,7 +478,6 @@ class _ExtendedImageState extends State<ExtendedImage>
     );
 
     final borderRadius = widget.borderRadius;
-
     final withShape = switch (widget.shape) {
       BoxShape.circle => ClipOval(
           clipBehavior: widget.clipBehavior,
@@ -482,13 +492,21 @@ class _ExtendedImageState extends State<ExtendedImage>
           : current,
     };
 
+    final constraints = widget.constraints;
+    final withConstraints = constraints != null
+        ? ConstrainedBox(
+            constraints: constraints,
+            child: withShape,
+          )
+        : withShape;
+
     return widget.excludeFromSemantics
-        ? withShape
+        ? withConstraints
         : Semantics(
             container: widget.semanticLabel != null,
             image: true,
             label: widget.semanticLabel ?? '',
-            child: withShape,
+            child: withConstraints,
           );
   }
 
