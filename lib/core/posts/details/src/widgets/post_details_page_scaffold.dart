@@ -85,6 +85,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     getSettings: () => ref.read(settingsProvider),
   );
 
+  final _transformController = TransformationController();
+
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
 
   List<T> get posts => _posts;
@@ -109,6 +111,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   @override
   void dispose() {
     _controller.dispose();
+    _transformController.dispose();
     _volumeKeyPageNavigator.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
 
@@ -300,6 +303,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               // let the user tap the image to toggle overlay
               onTap: onItemTap,
               child: InteractiveViewerExtended(
+                controller: _transformController,
                 enable: !state.isExpanded,
                 onZoomUpdated: _controller.onZoomUpdated,
                 onTap: onItemTap,
@@ -420,6 +424,8 @@ class _PostDetailPageScaffoldState<T extends Post>
         ],
         onExpanded: () {
           widget.onExpanded?.call();
+          // Reset zoom when expanded
+          _transformController.value = Matrix4.identity();
           ref.read(analyticsProvider).logScreenView('/details/info');
         },
         onShrink: () {
