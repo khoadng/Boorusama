@@ -331,7 +331,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                             : null,
                     child: PostMedia<T>(
                       post: post,
-                      imageUrl: imageUrlBuilder(post),
+                      imageUrlBuilder: imageUrlBuilder,
                       controller: _controller,
                     ),
                   ),

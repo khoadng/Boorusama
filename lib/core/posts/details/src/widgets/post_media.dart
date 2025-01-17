@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/current.dart';
 import '../../../../configs/ref.dart';
@@ -22,20 +21,20 @@ import '../../../../videos/video_player.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../types/post_details.dart';
-import 'interactive_booru_image.dart';
+import 'post_details_image.dart';
 import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({
     required this.post,
-    required this.imageUrl,
+    required this.imageUrlBuilder,
     required this.controller,
     super.key,
   });
 
   final T post;
-  final String imageUrl;
   final PostDetailsPageViewController controller;
+  final String Function(T post)? imageUrlBuilder;
 
   void _openSettings(BuildContext context) {
     openImageViewerSettingsPage(context);
@@ -54,11 +53,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
     final heroTag = '${post.id}_hero';
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
-    final imageGridQuality =
-        ref.watch(imageListingSettingsProvider.select((v) => v.imageQuality));
-
-    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
 
     return post.isVideo
         ? Stack(
@@ -112,15 +106,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                 ),
             ],
           )
-        : InteractiveBooruImage(
+        : PostDetailsImage(
             heroTag: heroTag,
-            aspectRatio: post.aspectRatio,
-            imageUrl: imageUrl,
-            placeholderImageUrl: gridThumbnailUrlBuilder != null
-                ? gridThumbnailUrlBuilder(imageGridQuality, post)
-                : post.thumbnailImageUrl,
-            width: post.width,
-            height: post.height,
+            imageUrlBuilder: imageUrlBuilder,
             post: post,
           );
   }
