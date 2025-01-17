@@ -4,17 +4,14 @@ import 'dart:io';
 import 'dart:ui' as ui show Codec;
 
 // Flutter imports:
+import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-
-// Project imports:
-import '../http/http.dart';
 
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>
@@ -25,7 +22,7 @@ class DioExtendedNetworkImageProvider
   /// The arguments must not be null.
   DioExtendedNetworkImageProvider(
     this.url, {
-    this.dio,
+    required this.dio,
     this.scale = 1.0,
     this.headers,
     this.cache = false,
@@ -41,7 +38,7 @@ class DioExtendedNetworkImageProvider
   });
 
   /// The [Dio] client that'll be used to make image fetch requests.
-  final Dio? dio;
+  final Dio dio;
 
   /// The name of [ImageCache], you can define custom [ImageCache] to store this provider.
   @override
@@ -293,7 +290,7 @@ class DioExtendedNetworkImageProvider
       () async {
         return CancellationTokenSource.register(
           cancelToken,
-          (dio ?? globalDio).getUri<List<int>>(
+          dio.getUri<List<int>>(
             resolved,
             options: Options(
               responseType: ResponseType.bytes,
@@ -383,6 +380,4 @@ class DioExtendedNetworkImageProvider
       chunkEvents,
     );
   }
-
-  static final Dio globalDio = Dio()..httpClientAdapter = newNativeAdapter();
 }

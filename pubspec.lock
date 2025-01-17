@@ -463,14 +463,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.1"
-  extended_image:
-    dependency: "direct main"
-    description:
-      name: extended_image
-      sha256: "613875dc319f17546ea07499b5f0774755709a19a36dfde812e5eda9eb7a5c8c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.0.7"
   extended_image_library:
     dependency: transitive
     description:

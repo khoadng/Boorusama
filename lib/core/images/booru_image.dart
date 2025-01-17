@@ -11,7 +11,6 @@ import 'package:foundation/foundation.dart';
 import '../configs/ref.dart';
 import '../http/http.dart';
 import '../http/providers.dart';
-import 'dio_extended_image.dart';
 import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
@@ -115,7 +114,7 @@ class BooruRawImage extends StatelessWidget {
   Widget _builderNormalImage() {
     return NullableAspectRatio(
       aspectRatio: aspectRatio,
-      child: DioExtendedImage.network(
+      child: ExtendedImage.network(
         imageUrl,
         dio: dio,
         width: width,
@@ -142,7 +141,7 @@ class BooruRawImage extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: DioExtendedImage.network(
+          child: ExtendedImage.network(
             imageUrl,
             dio: dio,
             width: width ?? double.infinity,
@@ -170,7 +169,7 @@ class BooruRawImage extends StatelessWidget {
                 borderRadius: borderRadius ?? _defaultRadius,
               ),
               (url) => url.isNotEmpty
-                  ? DioExtendedImage.network(
+                  ? ExtendedImage.network(
                       url,
                       dio: dio,
                       width: width ?? double.infinity,

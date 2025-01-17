@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import '../images/dio_extended_image.dart';
+import '../configs/ref.dart';
+import '../http/providers.dart';
 import '../images/providers.dart';
 
 const _unknownSize = 26.0;
@@ -22,7 +24,7 @@ double? _calcFailedIconSize(
   return size * ratio;
 }
 
-class WebsiteLogo extends StatelessWidget {
+class WebsiteLogo extends ConsumerWidget {
   const WebsiteLogo({
     required this.url,
     super.key,
@@ -33,7 +35,10 @@ class WebsiteLogo extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: size,
@@ -41,8 +46,9 @@ class WebsiteLogo extends StatelessWidget {
         minWidth: size,
         minHeight: size,
       ),
-      child: DioExtendedImage.network(
+      child: ExtendedImage.network(
         url,
+        dio: dio,
         clearMemoryCacheIfFailed: false,
         cacheMaxAge: kDefaultImageCacheDuration,
         fit: BoxFit.cover,

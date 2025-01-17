@@ -12,6 +12,7 @@ workspace:
   - packages/booru_clients
   - packages/filename_generator
   - packages/flutter_staggered_grid_view
+  - packages/extended_image
 
 dependencies:
   # local packages
@@ -23,6 +24,8 @@ dependencies:
     path: packages/filename_generator
   flutter_staggered_grid_view:
     path: packages/flutter_staggered_grid_view
+  extended_image:
+    path: packages/extended_image
 
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
@@ -46,7 +49,6 @@ dependencies:
   dynamic_color: ^1.7.0
   equatable: ^2.0.5
   expandable: ^5.0.1
-  extended_image: ^9.0.4
   fast_immutable_collections: ^11.0.0
   file_picker: 8.1.4
   firebase_analytics: ^11.3.5

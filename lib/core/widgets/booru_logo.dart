@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
-import '../images/dio_extended_image.dart';
+import '../configs/ref.dart';
+import '../http/providers.dart';
 import '../images/providers.dart';
 import '../posts/sources/source.dart';
 
-class BooruLogo extends StatelessWidget {
+class BooruLogo extends ConsumerWidget {
   const BooruLogo({
     required this.source,
     super.key,
@@ -48,15 +50,19 @@ class BooruLogo extends StatelessWidget {
   final bool _isFixedIcon;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (_isFixedIcon) {
       return _buildAssetImage(source);
     }
 
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
+
     return PostSource.from(source).whenWeb(
       (s) => FittedBox(
         child: s.faviconType == FaviconType.network
-            ? DioExtendedImage.network(
+            ? ExtendedImage.network(
+                dio: dio,
                 s.faviconUrl,
                 width: width ?? 24,
                 height: height ?? 24,

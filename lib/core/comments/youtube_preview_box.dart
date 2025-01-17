@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../foundation/url_launcher.dart';
-import '../images/dio_extended_image.dart';
 import '../images/providers.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
@@ -62,7 +62,7 @@ class YoutubePreviewBox extends StatelessWidget {
                             ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(8)),
-                              child: DioExtendedImage.network(
+                              child: ExtendedImage.network(
                                 data.previewImage!,
                                 dio: dio,
                                 fit: BoxFit.contain,

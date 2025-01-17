@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../configs/ref.dart';
 import '../../../../http/providers.dart';
-import '../../../../images/dio_extended_image.dart';
 import '../../../../images/providers.dart';
 
 class PostDetailsPreloadImage extends ConsumerWidget {
@@ -23,7 +23,7 @@ class PostDetailsPreloadImage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
 
-    return DioExtendedImage.network(
+    return ExtendedImage.network(
       url,
       dio: dio,
       width: 1,

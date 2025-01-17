@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -14,7 +15,6 @@ import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/mobile.dart';
 import '../../../../http/providers.dart';
-import '../../../../images/dio_extended_image.dart';
 import '../../../../images/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
@@ -196,7 +196,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
             zoom = value;
           });
         },
-        child: DioExtendedImage.network(
+        child: ExtendedImage.network(
           widget.imageUrl,
           dio: dio,
           headers: {

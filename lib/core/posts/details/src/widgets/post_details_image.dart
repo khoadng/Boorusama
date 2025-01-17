@@ -10,7 +10,6 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/booru_image.dart';
-import '../../../../images/dio_extended_image.dart';
 import '../../../../images/providers.dart';
 import '../../../../notes/notes.dart';
 import '../../../../settings/providers.dart';
@@ -109,7 +108,7 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
         ? gridThumbnailUrlBuilder(imageGridQuality, post)
         : post.thumbnailImageUrl;
 
-    return DioExtendedImage.network(
+    return ExtendedImage.network(
       imageUrl,
       dio: dio,
       cacheMaxAge: kDefaultImageCacheDuration,
@@ -117,7 +116,7 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       headers: headers,
       loadStateChanged: placeholderImageUrl.isNotEmpty
           ? (state) => state.extendedImageLoadState == LoadState.loading
-              ? DioExtendedImage.network(
+              ? ExtendedImage.network(
                   placeholderImageUrl,
                   dio: dio,
                   fit: BoxFit.contain,

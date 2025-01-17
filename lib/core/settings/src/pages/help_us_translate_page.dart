@@ -2,13 +2,15 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../configs/ref.dart';
 import '../../../foundation/url_launcher.dart';
-import '../../../images/dio_extended_image.dart';
+import '../../../http/providers.dart';
 import '../../../images/providers.dart';
 import '../../../info/app_info.dart';
 
@@ -20,6 +22,8 @@ class HelpUseTranslatePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +60,8 @@ class HelpUseTranslatePage extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    DioExtendedImage.network(
+                    ExtendedImage.network(
+                      dio: dio,
                       appInfo.translationBadgeUrl,
                       height: 66,
                       width: 287,
