@@ -556,13 +556,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     _stopListeningToStream();
     _completerHandle?.dispose();
     _scrollAwareContext.dispose();
-    // TODO(zmtzawqlp): Exception has occurred
-    // https://github.com/flutter/flutter/issues/77576
     if (widget.clearMemoryCacheWhenDispose) {
-      // if (widget.image is ExtendedImageProvider) {
-      //   (widget.image as ExtendedImageProvider<dynamic>)
-      //       .evict(includeLive: false);
-      // }
       widget.image
           .obtainCacheStatus(configuration: ImageConfiguration.empty)
           .then((ImageCacheStatus? value) {
