@@ -52,22 +52,19 @@ class WebsiteLogo extends ConsumerWidget {
         clearMemoryCacheIfFailed: false,
         cacheMaxAge: kDefaultImageCacheDuration,
         fit: BoxFit.cover,
-        loadStateChanged: (state) => switch (state.extendedImageLoadState) {
-          LoadState.failed => Card(
-              child: FaIcon(
-                FontAwesomeIcons.globe,
-                size: _calcFailedIconSize(size),
-                color: Colors.blue,
-              ),
-            ),
-          LoadState.loading => Container(
-              padding: const EdgeInsets.all(6),
-              child: const CircularProgressIndicator(
-                strokeWidth: 1,
-              ),
-            ),
-          _ => state.completedWidget,
-        },
+        placeholderWidget: Container(
+          padding: const EdgeInsets.all(6),
+          child: const CircularProgressIndicator(
+            strokeWidth: 1,
+          ),
+        ),
+        errorWidget: Card(
+          child: FaIcon(
+            FontAwesomeIcons.globe,
+            size: _calcFailedIconSize(size),
+            color: Colors.blue,
+          ),
+        ),
       ),
     );
   }

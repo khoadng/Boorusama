@@ -114,16 +114,14 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       cacheMaxAge: kDefaultImageCacheDuration,
       fit: BoxFit.contain,
       headers: headers,
-      loadStateChanged: placeholderImageUrl.isNotEmpty
-          ? (state) => state.extendedImageLoadState == LoadState.loading
-              ? ExtendedImage.network(
-                  placeholderImageUrl,
-                  dio: dio,
-                  fit: BoxFit.contain,
-                  cacheMaxAge: kDefaultImageCacheDuration,
-                  headers: headers,
-                )
-              : null
+      placeholderWidget: placeholderImageUrl.isNotEmpty
+          ? ExtendedImage.network(
+              placeholderImageUrl,
+              dio: dio,
+              fit: BoxFit.contain,
+              cacheMaxAge: kDefaultImageCacheDuration,
+              headers: headers,
+            )
           : null,
     );
   }

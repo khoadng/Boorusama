@@ -122,17 +122,11 @@ class BooruRawImage extends StatelessWidget {
         cacheHeight: cacheHeight,
         cacheWidth: cacheWidth,
         headers: headers,
-        shape: BoxShape.rectangle,
         cacheMaxAge: kDefaultImageCacheDuration,
         borderRadius: borderRadius ?? _defaultRadius,
         fit: fit ?? BoxFit.fill,
-        loadStateChanged: (state) => aspectRatio != null
-            ? _buildImageState(state)
-            : state.extendedImageLoadState == LoadState.loading
-                ? ImagePlaceHolder(
-                    borderRadius: borderRadius ?? _defaultRadius,
-                  )
-                : null,
+        placeholderWidget: _buildPlaceholder(),
+        errorWidget: _buildErrorImage(),
       ),
     );
   }
@@ -149,54 +143,49 @@ class BooruRawImage extends StatelessWidget {
             headers: headers,
             cacheHeight: cacheHeight,
             cacheWidth: cacheWidth,
-            shape: BoxShape.rectangle,
             cacheMaxAge: kDefaultImageCacheDuration,
             borderRadius: borderRadius ?? _defaultRadius,
             fit: BoxFit.cover,
-            loadStateChanged: (state) => _buildImageState(state),
+            placeholderWidget: _buildPlaceholder(),
+            errorWidget: _buildErrorImage(),
           ),
         ),
       ],
     );
   }
 
-  Widget? _buildImageState(
-    ExtendedImageState state,
-  ) =>
-      switch (state.extendedImageLoadState) {
-        LoadState.loading => placeholderUrl.toOption().fold(
-              () => ImagePlaceHolder(
-                borderRadius: borderRadius ?? _defaultRadius,
-              ),
-              (url) => url.isNotEmpty
-                  ? ExtendedImage.network(
-                      url,
-                      dio: dio,
-                      width: width ?? double.infinity,
-                      height: height ?? double.infinity,
-                      cacheHeight: cacheHeight,
-                      cacheWidth: cacheWidth,
-                      shape: BoxShape.rectangle,
-                      cacheMaxAge: kDefaultImageCacheDuration,
-                      fit: BoxFit.cover,
-                      borderRadius: borderRadius ?? _defaultRadius,
-                      loadStateChanged: (state) =>
-                          state.extendedImageLoadState == LoadState.loading
-                              ? ImagePlaceHolder(
-                                  borderRadius: borderRadius ?? _defaultRadius,
-                                )
-                              : null,
-                      headers: headers,
-                    )
-                  : ImagePlaceHolder(
-                      borderRadius: borderRadius ?? _defaultRadius,
-                    ),
-            ),
-        LoadState.failed => ErrorPlaceholder(
+  Widget _buildPlaceholder() {
+    return placeholderUrl.toOption().fold(
+          () => ImagePlaceHolder(
             borderRadius: borderRadius ?? _defaultRadius,
           ),
-        LoadState.completed => null,
-      };
+          (url) => url.isNotEmpty
+              ? ExtendedImage.network(
+                  url,
+                  dio: dio,
+                  width: width ?? double.infinity,
+                  height: height ?? double.infinity,
+                  cacheHeight: cacheHeight,
+                  cacheWidth: cacheWidth,
+                  cacheMaxAge: kDefaultImageCacheDuration,
+                  fit: BoxFit.cover,
+                  borderRadius: borderRadius ?? _defaultRadius,
+                  placeholderWidget: ImagePlaceHolder(
+                    borderRadius: borderRadius ?? _defaultRadius,
+                  ),
+                  headers: headers,
+                )
+              : ImagePlaceHolder(
+                  borderRadius: borderRadius ?? _defaultRadius,
+                ),
+        );
+  }
+
+  Widget? _buildErrorImage() {
+    return ErrorPlaceholder(
+      borderRadius: borderRadius ?? _defaultRadius,
+    );
+  }
 }
 
 class _EmptyImage extends StatelessWidget {

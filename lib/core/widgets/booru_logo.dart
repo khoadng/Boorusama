@@ -69,15 +69,11 @@ class BooruLogo extends ConsumerWidget {
                 fit: BoxFit.cover,
                 clearMemoryCacheIfFailed: false,
                 cacheMaxAge: kDefaultImageCacheDuration,
-                loadStateChanged: (state) =>
-                    switch (state.extendedImageLoadState) {
-                  LoadState.failed => FaIcon(
-                      FontAwesomeIcons.globe,
-                      size: width,
-                      color: Colors.blue,
-                    ),
-                  _ => state.completedWidget,
-                },
+                errorWidget: FaIcon(
+                  FontAwesomeIcons.globe,
+                  size: width,
+                  color: Colors.blue,
+                ),
               )
             : _buildAssetImage(s.faviconUrl),
       ),
