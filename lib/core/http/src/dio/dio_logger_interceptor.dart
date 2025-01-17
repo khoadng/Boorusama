@@ -61,12 +61,11 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final response = err.response;
 
-    // NOTE: Commented out while new image request system is still new
-    // final ext = extension(response?.requestOptions.uri.toString() ?? '');
-    // if (_kImageExtensions.contains(ext)) {
-    //   super.onError(err, handler);
-    //   return;
-    // }
+    final ext = extension(response?.requestOptions.uri.toString() ?? '');
+    if (_kImageExtensions.contains(ext)) {
+      super.onError(err, handler);
+      return;
+    }
 
     final duration = getRequestDuration(response?.requestOptions);
     final durationText = _parseRequestDuration(duration);
