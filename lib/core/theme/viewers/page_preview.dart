@@ -19,6 +19,7 @@ import '../../tags/tag/colors.dart';
 import '../../tags/tag/tag.dart';
 import '../../utils/color_utils.dart';
 import '../../widgets/widgets.dart';
+import 'theme_previewer_notifier.dart';
 
 final _kRandomTags = [
   'outdoors',
@@ -71,9 +72,6 @@ class PreviewHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).colorScheme.brightness == Brightness.dark;
-
     return PreviewFrame(
       child: CustomScrollView(
         physics: const NeverScrollableScrollPhysics(),
@@ -89,48 +87,56 @@ class PreviewHome extends StatelessWidget {
                 vertical: 12,
               ),
               height: 40,
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                ),
-                scrollDirection: Axis.horizontal,
-                itemCount: _kRandomTags.length,
-                itemBuilder: (context, index) {
-                  // first is general, second is artist, third is character, fourth is copyright, fifth is meta then repeat
-                  final colorIndex = index % 5;
-                  final color = switch (colorIndex) {
-                    0 => !isDark
-                        ? TagColors.dark().general
-                        : TagColors.light().general,
-                    1 => !isDark
-                        ? TagColors.dark().artist
-                        : TagColors.light().artist,
-                    2 => !isDark
-                        ? TagColors.dark().character
-                        : TagColors.light().character,
-                    3 => !isDark
-                        ? TagColors.dark().copyright
-                        : TagColors.light().copyright,
-                    4 =>
-                      !isDark ? TagColors.dark().meta : TagColors.light().meta,
-                    _ => !isDark
-                        ? TagColors.dark().general
-                        : TagColors.light().general,
-                  };
+              child: Consumer(
+                builder: (_, ref, __) {
+                  final colorScheme = ref.watch(themePreviewerSchemeProvider);
+                  final isDark = colorScheme.brightness == Brightness.dark;
 
-                  return Padding(
+                  return ListView.builder(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 2,
+                      vertical: 4,
                     ),
-                    child: BooruChip(
-                      label: Text(_kRandomTags[index]),
-                      onPressed: () {},
-                      chipColors: generateChipColorsFromColorScheme(
-                        color,
-                        colorScheme,
-                        true,
-                      ),
-                    ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _kRandomTags.length,
+                    itemBuilder: (context, index) {
+                      // first is general, second is artist, third is character, fourth is copyright, fifth is meta then repeat
+                      final colorIndex = index % 5;
+                      final color = switch (colorIndex) {
+                        0 => !isDark
+                            ? TagColors.dark().general
+                            : TagColors.light().general,
+                        1 => !isDark
+                            ? TagColors.dark().artist
+                            : TagColors.light().artist,
+                        2 => !isDark
+                            ? TagColors.dark().character
+                            : TagColors.light().character,
+                        3 => !isDark
+                            ? TagColors.dark().copyright
+                            : TagColors.light().copyright,
+                        4 => !isDark
+                            ? TagColors.dark().meta
+                            : TagColors.light().meta,
+                        _ => !isDark
+                            ? TagColors.dark().general
+                            : TagColors.light().general,
+                      };
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 2,
+                        ),
+                        child: BooruChip(
+                          label: Text(_kRandomTags[index]),
+                          onPressed: () {},
+                          chipColors: generateChipColorsFromColorScheme(
+                            color,
+                            colorScheme,
+                            true,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -154,8 +160,6 @@ class PreviewDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return PreviewFrame(
       padding: const EdgeInsets.symmetric(
         vertical: 16,
@@ -175,9 +179,11 @@ class PreviewDetails extends StatelessWidget {
             child: PreviewPostActionToolbar(),
           ),
           SliverToBoxAdapter(
-            child: PreviewTagsTile(
-              colorScheme: colorScheme,
-              post: _previewPost,
+            child: Consumer(
+              builder: (__, ref, _) => PreviewTagsTile(
+                colorScheme: ref.watch(themePreviewerSchemeProvider),
+                post: _previewPost,
+              ),
             ),
           ),
           const SliverToBoxAdapter(

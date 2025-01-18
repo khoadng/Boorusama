@@ -245,7 +245,7 @@ class DottedBorderButton extends StatelessWidget {
         child: DottedBorder(
           color: borderColor ?? Theme.of(context).colorScheme.outline,
           radius: const Radius.circular(12),
-          dashPattern: const [12, 6],
+          dashPattern: const [8, 4],
           child: Container(
             padding: const EdgeInsets.symmetric(
               vertical: 8,

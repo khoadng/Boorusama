@@ -66,7 +66,7 @@ final basicColorSettings = [
   ),
 ].nonNulls.toList();
 
-ColorScheme? getSchemeFromBasic(
+ColorScheme getSchemeFromBasic(
   String? name, {
   required bool systemDarkMode,
   required ColorScheme? dynamicLightScheme,
@@ -396,23 +396,7 @@ class ColorSettings extends Equatable {
     );
   }
 
-  final String name;
-  final String? nickname;
-  final Brightness? brightness;
-  final bool enableDynamicColoring;
-  final bool? followSystemDarkMode;
-
-  final ColorScheme? colorScheme;
-  final ExtendedColorScheme? extendedColorScheme;
-
-  final String _schemeType;
-  final String? _dynamicSchemeVariant;
-
-  SchemeType? get schemeType => _parseSchemeType(_schemeType);
-  DynamicSchemeVariant? get dynamicSchemeVariant =>
-      _parseDynamicSchemeVariant(_dynamicSchemeVariant);
-
-  static ColorSettings? fromBasicScheme(
+  factory ColorSettings.fromBasicScheme(
     String name, {
     String? nickname,
     bool? followSystemDarkMode,
@@ -429,6 +413,22 @@ class ColorSettings extends Equatable {
       followSystemDarkMode: followSystemDarkMode,
     );
   }
+
+  final String name;
+  final String? nickname;
+  final Brightness? brightness;
+  final bool enableDynamicColoring;
+  final bool? followSystemDarkMode;
+
+  final ColorScheme? colorScheme;
+  final ExtendedColorScheme? extendedColorScheme;
+
+  final String _schemeType;
+  final String? _dynamicSchemeVariant;
+
+  SchemeType? get schemeType => _parseSchemeType(_schemeType);
+  DynamicSchemeVariant? get dynamicSchemeVariant =>
+      _parseDynamicSchemeVariant(_dynamicSchemeVariant);
 
   static ColorSettings? fromPredefinedScheme(
     String name, {

@@ -7,11 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../foundation/toast.dart';
-import '../../../premiums/premiums.dart';
-import '../../../premiums/routes.dart';
-import '../../../theme.dart';
 import '../../../theme/theme_configs.dart';
-import '../../../theme/viewers/theme_viewer.dart';
+import '../../../theme/viewers/widgets.dart';
 import '../../../widgets/widgets.dart';
 import '../data/booru_config_data.dart';
 import 'providers.dart';
@@ -64,7 +61,7 @@ class ThemeListTile extends ConsumerWidget {
   ) {
     return Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: (context) => ThemePreviewView(
+        builder: (context) => ThemePreviewer(
           colorSettings: colorSettings,
           onThemeUpdated: (colors) {
             onThemeUpdated(colors);
@@ -72,62 +69,6 @@ class ThemeListTile extends ConsumerWidget {
           updateMethod: updateMethod,
         ),
       ),
-    );
-  }
-}
-
-class ThemePreviewView extends ConsumerStatefulWidget {
-  const ThemePreviewView({
-    required this.onThemeUpdated,
-    required this.colorSettings,
-    required this.updateMethod,
-    super.key,
-  });
-
-  final void Function(ColorSettings? colors) onThemeUpdated;
-  final ColorSettings? colorSettings;
-  final ThemeUpdateMethod updateMethod;
-
-  @override
-  ConsumerState<ThemePreviewView> createState() => _ThemePreviewViewState();
-}
-
-class _ThemePreviewViewState extends ConsumerState<ThemePreviewView> {
-  late var _colors = widget.colorSettings;
-
-  @override
-  Widget build(BuildContext context) {
-    final fallback = ref.watch(colorSchemeProvider);
-    final hasPremium = ref.watch(hasPremiumProvider);
-
-    return ThemePreviewApp(
-      onExit: () {
-        Navigator.of(context).pop();
-      },
-      saveButton: hasPremium
-          ? TextButton(
-              onPressed: () {
-                widget.onThemeUpdated(_colors);
-                Navigator.of(context).pop();
-              },
-              child: switch (widget.updateMethod) {
-                ThemeUpdateMethod.applyDirectly => const Text('Apply'),
-                ThemeUpdateMethod.saveAndUpdateLater => const Text('Save'),
-              },
-            )
-          : TextButton(
-              onPressed: () {
-                goToPremiumPage(context);
-              },
-              child: const Text('Upgrade'),
-            ),
-      defaultScheme: fallback,
-      currentScheme: _colors,
-      onSchemeChanged: (newScheme) {
-        setState(() {
-          _colors = newScheme;
-        });
-      },
     );
   }
 }

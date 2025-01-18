@@ -12,6 +12,7 @@ import '../../../../configs/src/create/appearance_theme.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../premiums/premiums.dart';
 import '../../../../theme/theme.dart';
+import '../../../../theme/viewers/widgets.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
@@ -155,7 +156,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   onPressed: () {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
-                        builder: (context) => ThemePreviewView(
+                        builder: (context) => ThemePreviewer(
                           updateMethod: ThemeUpdateMethod.applyDirectly,
                           colorSettings: settings.colors,
                           onThemeUpdated: (colors) {
