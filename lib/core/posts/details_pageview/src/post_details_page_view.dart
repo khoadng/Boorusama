@@ -83,9 +83,6 @@ class PostDetailsPageView extends StatefulWidget {
 
 class _PostDetailsPageViewState extends State<PostDetailsPageView>
     with AutomaticSlideMixin, TickerProviderStateMixin {
-  ValueNotifier<bool> get _swipe => _controller.swipe;
-  ValueNotifier<double> get _verticalPosition => _controller.verticalPosition;
-  ValueNotifier<double> get _displacement => _controller.displacement;
   final _pointerCount = ValueNotifier(0);
   final _interacting = ValueNotifier(false);
   late var _slideshowOptions = widget.slideshowOptions;
@@ -93,9 +90,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   var _freestyleMoveScale = 1.0;
 
   late final PostDetailsPageViewController _controller;
-
-  DraggableScrollableController get _sheetController =>
-      _controller.sheetController;
 
   late final _overlayAnimController = !widget.disableAnimation
       ? AnimationController(
@@ -117,7 +111,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   // Use for large screen when details is on the side to prevent spamming
   Timer? _debounceTimer;
   final _cooldown = ValueNotifier(false);
-  final hovering = ValueNotifier(false);
+  final _hovering = ValueNotifier(false);
 
   late AnimationController _sheetAnimController;
   late Animation<double> _displacementAnim;
@@ -154,13 +148,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       CurvedAnimation(parent: _sheetAnimController, curve: Curves.easeInOut),
     );
 
-    hovering.addListener(_onHover);
+    _hovering.addListener(_onHover);
 
     _controller =
         widget.controller ?? PostDetailsPageViewController(initialPage: 0);
 
     _controller.pageController.addListener(_onPageChanged);
-    _sheetController.addListener(_onSheetChanged);
+    _controller.sheetController.addListener(_onSheetChanged);
     _controller.verticalPosition.addListener(_onVerticalPositionChanged);
     _controller.slideshow.addListener(_onSlideShowChanged);
     _controller.sheetState.addListener(_onSheetStateChanged);
@@ -224,7 +218,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       return;
     }
 
-    if (hovering.value) {
+    if (_hovering.value) {
       _controller.overlay.value = true;
     } else {
       _controller.overlay.value = false;
@@ -296,11 +290,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     final size = min(dy.abs(), _controller.threshold) / _controller.threshold;
 
-    _sheetController.jumpTo(size);
+    _controller.sheetController.jumpTo(size);
   }
 
   void _onSheetChanged() {
-    final size = _sheetController.size;
+    final size = _controller.sheetController.size;
 
     if (size > widget.maxSize) {
       return;
@@ -378,12 +372,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final size =
         (_verticalSheetDragStartSize - percentage).clamp(0.4, kFullSheetSize);
 
-    _sheetController.jumpTo(size);
+    _controller.sheetController.jumpTo(size);
   }
 
   @override
   void dispose() {
     _cancelCooldown();
+    stopAutoSlide();
 
     _controller.sheetState.removeListener(_onSheetStateChanged);
     _controller.pageController.removeListener(_onPageChanged);
@@ -393,13 +388,19 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.overlay.removeListener(_onOverlayChanged);
     _controller.displacement.removeListener(_onDisplacementChanged);
     _controller.freestyleMoving.removeListener(_onFreestyleMovingChanged);
-
     _verticalSheetDragY.removeListener(_onVerticalSheetDragYChanged);
-    hovering.removeListener(_onHover);
+    _hovering.removeListener(_onHover);
 
+    _cooldown.dispose();
+    _hovering.dispose();
+    _pointerCount.dispose();
+    _interacting.dispose();
+    _isItemPushed.dispose();
+    _forceHide.dispose();
+
+    _overlayCurvedAnimation?.dispose();
     _overlayAnimController?.dispose();
-
-    stopAutoSlide();
+    _sheetAnimController.dispose();
 
     if (widget.controller == null) {
       _controller.dispose();
@@ -458,8 +459,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                       ),
                     ),
                     child: MouseRegion(
-                      onEnter: (_) => hovering.value = true,
-                      onExit: (_) => hovering.value = false,
+                      onEnter: (_) => _hovering.value = true,
+                      onExit: (_) => _hovering.value = false,
                       child: _buildMain(),
                     ),
                   ),
@@ -533,7 +534,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 child: ValueListenableBuilder(
                   valueListenable: _interacting,
                   builder: (_, interacting, __) => ValueListenableBuilder(
-                    valueListenable: _swipe,
+                    valueListenable: _controller.swipe,
                     builder: (_, swipe, __) => _buildPageView(
                       swipe,
                       interacting,
@@ -717,7 +718,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             builder: (_, maxSize, __) => ValueListenableBuilder(
               valueListenable: _controller.sheetState,
               builder: (_, state, __) => ValueListenableBuilder(
-                valueListenable: _displacement,
+                valueListenable: _controller.displacement,
                 builder: (context, dis, child) {
                   final maxSheetSize =
                       maxSize * MediaQuery.sizeOf(context).longestSide;
@@ -749,7 +750,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return ValueListenableBuilder(
       valueListenable: _controller.sheetMaxSize,
       builder: (_, maxSize, __) => DraggableScrollableSheet(
-        controller: _sheetController,
+        controller: _controller.sheetController,
         initialChildSize: forceInitialSizeAsMax == true ? maxSize : 0.0,
         minChildSize: 0,
         maxChildSize: maxSize,
@@ -792,7 +793,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                             _controller.sheetMaxSize.value = kFullSheetSize;
                             _verticalSheetDragStartY =
                                 details.globalPosition.dy;
-                            _verticalSheetDragStartSize = _sheetController.size;
+                            _verticalSheetDragStartSize =
+                                _controller.sheetController.size;
                             _verticalSheetDragging.value = true;
                           },
                           onVerticalDragUpdate: state.isExpanded
@@ -804,7 +806,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                               : null,
                           onVerticalDragEnd: state.isExpanded
                               ? (_) {
-                                  final currentSize = _sheetController.size;
+                                  final currentSize =
+                                      _controller.sheetController.size;
 
                                   if (currentSize < widget.maxSize) {
                                     // Collapse if below maxSize
@@ -978,10 +981,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
     final dy = details.delta.dy;
-    _verticalPosition.value = _verticalPosition.value + dy;
+    _controller.verticalPosition.value =
+        _controller.verticalPosition.value + dy;
 
     if (_controller.freestyleMoving.value) {
-      if (_verticalPosition.value <= 0) return;
+      if (_controller.verticalPosition.value <= 0) return;
 
       // Calculate scale first
       final movePercent =
@@ -1028,7 +1032,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _controller.freestyleMoveOffset.value = Offset.zero;
 
-    final size = _sheetController.size;
+    final size = _controller.sheetController.size;
 
     if (size > widget.minSize) {
       _controller.expandToSnapPoint();
@@ -1036,7 +1040,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       return;
     }
 
-    if (_verticalPosition.value.abs() <= _controller.threshold) {
+    if (_controller.verticalPosition.value.abs() <= _controller.threshold) {
       // Animate back to original position
       _controller.resetSheet(
         duration: const Duration(milliseconds: 150),

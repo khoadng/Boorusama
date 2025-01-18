@@ -251,6 +251,24 @@ class PostDetailsPageViewController extends ChangeNotifier {
   void dispose() {
     _pageController.dispose();
     _sheetController.dispose();
+
+    currentPage.dispose();
+    overlay.dispose();
+    hoverToControlOverlay.dispose();
+    sheetState.dispose();
+    verticalPosition.dispose();
+    displacement.dispose();
+    animating.dispose();
+    sheetMaxSize.dispose();
+    precisePage.dispose();
+    swipe.dispose();
+    canPull.dispose();
+    pulling.dispose();
+    zoom.dispose();
+    slideshow.dispose();
+    freestyleMoveOffset.dispose();
+    freestyleMoving.dispose();
+
     super.dispose();
   }
 }
