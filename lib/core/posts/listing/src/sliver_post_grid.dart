@@ -46,6 +46,10 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       imageListingSettingsProvider.select((value) => value.postsPerPage),
     );
 
+    final imageGridBorderRadius = ref.watch(
+      imageListingSettingsProvider.select((value) => value.imageBorderRadius),
+    );
+
     return SliverRawPostGrid(
       constraints: constraints,
       itemBuilder: itemBuilder,
@@ -58,6 +62,7 @@ class SliverPostGrid<T extends Post> extends ConsumerWidget {
       spacing: imageGridSpacing,
       aspectRatio: imageGridAspectRatio,
       postsPerPage: postsPerPage,
+      borderRadius: BorderRadius.circular(imageGridBorderRadius),
     );
   }
 }
