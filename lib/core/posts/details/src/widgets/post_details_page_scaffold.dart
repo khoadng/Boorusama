@@ -171,8 +171,6 @@ class _PostDetailPageScaffoldState<T extends Post>
       },
     );
 
-    print('PostDetailsPageScaffold');
-
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(

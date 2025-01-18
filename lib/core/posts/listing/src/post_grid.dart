@@ -429,11 +429,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   late final AutoScrollController _autoScrollController;
   late final MultiSelectController<T> _multiSelectController;
 
-  var multiSelect = false;
-
   PostGridController<T> get controller => widget.controller;
 
-  var page = 1;
   var hasMore = true;
   final loading = ValueNotifier(false);
   final refreshing = ValueNotifier(false);
@@ -508,7 +505,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       loading.value = controller.loading;
       refreshing.value = controller.refreshing;
       pageMode = controller.pageMode;
-      page = controller.page;
     });
   }
 
@@ -518,195 +514,205 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: !multiSelect,
-      onPopInvokedWithResult: (didPop, _) {
-        if (didPop) return;
-        _onWillPop();
-      },
-      child: ColoredBox(
-        color: Theme.of(context).colorScheme.surface,
-        child: ConditionalParentWidget(
-          condition: widget.safeArea,
-          conditionalBuilder: (child) => SafeArea(
-            bottom: false,
-            child: child,
-          ),
-          child: MultiSelectWidget<T>(
-            footer: widget.footer,
-            multiSelectController: _multiSelectController,
-            onMultiSelectChanged: (p0) => setState(() {
-              multiSelect = p0;
-            }),
-            header: widget.header != null
-                ? widget.header!
-                : AppBar(
-                    leading: IconButton(
-                      onPressed: () =>
-                          _multiSelectController.disableMultiSelect(),
-                      icon: const Icon(Symbols.close),
-                    ),
-                    actions: [
-                      IconButton(
-                        onPressed: () =>
-                            _multiSelectController.selectAll(items),
-                        icon: const Icon(Symbols.select_all),
-                      ),
-                      IconButton(
-                        onPressed: _multiSelectController.clearSelected,
-                        icon: const Icon(Symbols.clear_all),
-                      ),
-                    ],
-                    title: ValueListenableBuilder(
-                      valueListenable:
-                          _multiSelectController.selectedItemsNotifier,
-                      builder: (_, selected, __) => selected.isEmpty
-                          ? const Text('Select items')
-                          : Text('${selected.length} Items selected'),
-                    ),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ColoredBox(
+      color: colorScheme.surface,
+      child: ConditionalParentWidget(
+        condition: widget.safeArea,
+        conditionalBuilder: (child) => SafeArea(
+          bottom: false,
+          child: child,
+        ),
+        child: MultiSelectWidget<T>(
+          footer: widget.footer,
+          multiSelectController: _multiSelectController,
+          header: widget.header != null
+              ? widget.header!
+              : AppBar(
+                  leading: IconButton(
+                    onPressed: () =>
+                        _multiSelectController.disableMultiSelect(),
+                    icon: const Icon(Symbols.close),
                   ),
-            child: Scaffold(
-              extendBody: true,
-              floatingActionButton: ScrollToTop(
-                scrollController: _autoScrollController,
-                onBottomReached: () {
-                  if (controller.pageMode == PageMode.infinite && hasMore) {
-                    widget.onLoadMore?.call();
-                    controller.fetchMore();
-                  }
-                },
-                child: widget.extendBody
-                    ? Padding(
-                        padding: EdgeInsets.only(
-                          bottom: widget.extendBodyHeight ??
-                              kBottomNavigationBarHeight,
-                        ),
-                        child: BooruScrollToTopButton(
-                          onPressed: _onScrollToTop,
-                        ),
-                      )
-                    : BooruScrollToTopButton(
+                  actions: [
+                    IconButton(
+                      onPressed: () => _multiSelectController.selectAll(items),
+                      icon: const Icon(Symbols.select_all),
+                    ),
+                    IconButton(
+                      onPressed: _multiSelectController.clearSelected,
+                      icon: const Icon(Symbols.clear_all),
+                    ),
+                  ],
+                  title: ValueListenableBuilder(
+                    valueListenable:
+                        _multiSelectController.selectedItemsNotifier,
+                    builder: (_, selected, __) => selected.isEmpty
+                        ? const Text('Select items')
+                        : Text('${selected.length} Items selected'),
+                  ),
+                ),
+          child: Scaffold(
+            extendBody: true,
+            floatingActionButton: ScrollToTop(
+              scrollController: _autoScrollController,
+              onBottomReached: () {
+                if (controller.pageMode == PageMode.infinite && hasMore) {
+                  widget.onLoadMore?.call();
+                  controller.fetchMore();
+                }
+              },
+              child: widget.extendBody
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                        bottom: widget.extendBodyHeight ??
+                            kBottomNavigationBarHeight,
+                      ),
+                      child: BooruScrollToTopButton(
                         onPressed: _onScrollToTop,
                       ),
-              ),
-              body: ConditionalParentWidget(
-                condition: kPreferredLayout.isMobile,
-                conditionalBuilder: (child) => RefreshIndicator(
-                  edgeOffset: 60,
-                  displacement: 50,
-                  notificationPredicate:
-                      widget.enablePullToRefresh ? (_) => true : (_) => false,
-                  onRefresh: () async {
-                    widget.onRefresh?.call();
-                    _multiSelectController.clearSelected();
-                    await controller.refresh(
-                      maintainPage: true,
-                    );
-                  },
-                  child: child,
-                ),
-                child: ImprovedScrolling(
-                  scrollController: _autoScrollController,
-                  // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
-                  // ignore: avoid_redundant_argument_values
-                  enableKeyboardScrolling: false,
-                  enableMMBScrolling: true,
-                  child: ConditionalParentWidget(
-                    // Should remove this later
-                    condition: true,
-                    conditionalBuilder: (child) => ValueListenableBuilder(
-                      valueListenable: refreshing,
-                      builder: (_, refreshing, __) =>
-                          _buildPaginatedSwipe(context, child, refreshing),
+                    )
+                  : BooruScrollToTopButton(
+                      onPressed: _onScrollToTop,
                     ),
-                    child: CustomScrollView(
-                      controller: _autoScrollController,
-                      slivers: [
-                        if (widget.sliverHeaders != null)
-                          ...widget.sliverHeaders!.map(
-                            (e) => SliverOffstage(
+            ),
+            body: ConditionalParentWidget(
+              condition: kPreferredLayout.isMobile,
+              conditionalBuilder: (child) => RefreshIndicator(
+                edgeOffset: 60,
+                displacement: 50,
+                notificationPredicate:
+                    widget.enablePullToRefresh ? (_) => true : (_) => false,
+                onRefresh: () async {
+                  widget.onRefresh?.call();
+                  _multiSelectController.clearSelected();
+                  await controller.refresh(
+                    maintainPage: true,
+                  );
+                },
+                child: child,
+              ),
+              child: ImprovedScrolling(
+                scrollController: _autoScrollController,
+                // https://github.com/adrianflutur/flutter_improved_scrolling/issues/5
+                // ignore: avoid_redundant_argument_values
+                enableKeyboardScrolling: false,
+                enableMMBScrolling: true,
+                child: ConditionalParentWidget(
+                  // Should remove this later
+                  condition: true,
+                  conditionalBuilder: (child) => ValueListenableBuilder(
+                    valueListenable: refreshing,
+                    builder: (_, refreshing, __) =>
+                        _buildPaginatedSwipe(child, refreshing),
+                  ),
+                  child: CustomScrollView(
+                    controller: _autoScrollController,
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: ValueListenableBuilder(
+                          valueListenable:
+                              _multiSelectController.multiSelectNotifier,
+                          builder: (_, multiSelect, __) => PopScope(
+                            canPop: !multiSelect,
+                            onPopInvokedWithResult: (didPop, _) {
+                              if (didPop) return;
+                              if (multiSelect) {
+                                _multiSelectController.disableMultiSelect();
+                              }
+                            },
+                            child: const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                      if (widget.sliverHeaders != null)
+                        ...widget.sliverHeaders!.map(
+                          (e) => ValueListenableBuilder(
+                            valueListenable:
+                                _multiSelectController.multiSelectNotifier,
+                            builder: (_, multiSelect, __) => SliverOffstage(
                               offstage: multiSelect,
                               sliver: e,
                             ),
                           ),
-                        ConditionalValueListenableBuilder(
-                          valueListenable: refreshing,
-                          useFalseChildAsCache: true,
-                          trueChild: const SliverSizedBox.shrink(),
-                          falseChild: SliverPinnedHeader(
-                            child: widget.gridHeader,
+                        ),
+                      ConditionalValueListenableBuilder(
+                        valueListenable: refreshing,
+                        useFalseChildAsCache: true,
+                        trueChild: const SliverSizedBox.shrink(),
+                        falseChild: SliverPinnedHeader(
+                          child: widget.gridHeader,
+                        ),
+                      ),
+                      ConditionalValueListenableBuilder(
+                        valueListenable: refreshing,
+                        useFalseChildAsCache: true,
+                        trueChild: const SliverSizedBox.shrink(),
+                        falseChild: const SliverToBoxAdapter(
+                          child: HighresPreviewOnMobileDataWarningBanner(),
+                        ),
+                      ),
+                      ConditionalValueListenableBuilder(
+                        valueListenable: refreshing,
+                        useFalseChildAsCache: true,
+                        trueChild: const SliverSizedBox.shrink(),
+                        falseChild: const SliverToBoxAdapter(
+                          child: TooMuchCachedImagesWarningBanner(
+                            threshold: _kImageCacheThreshold,
                           ),
                         ),
+                      ),
+                      const SliverSizedBox(
+                        height: 4,
+                      ),
+                      if (pageMode == PageMode.paginated)
                         ConditionalValueListenableBuilder(
                           valueListenable: refreshing,
                           useFalseChildAsCache: true,
-                          trueChild: const SliverSizedBox.shrink(),
-                          falseChild: const SliverToBoxAdapter(
-                            child: HighresPreviewOnMobileDataWarningBanner(),
-                          ),
-                        ),
-                        ConditionalValueListenableBuilder(
-                          valueListenable: refreshing,
-                          useFalseChildAsCache: true,
-                          trueChild: const SliverSizedBox.shrink(),
-                          falseChild: const SliverToBoxAdapter(
-                            child: TooMuchCachedImagesWarningBanner(
-                              threshold: _kImageCacheThreshold,
+                          falseChild: SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: widget.topPageIndicator,
                             ),
                           ),
+                          trueChild: const SliverSizedBox.shrink(),
                         ),
-                        const SliverSizedBox(
-                          height: 4,
-                        ),
-                        if (pageMode == PageMode.paginated)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: refreshing,
-                            useFalseChildAsCache: true,
-                            falseChild: SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: widget.topPageIndicator,
-                              ),
-                            ),
-                            trueChild: const SliverSizedBox.shrink(),
-                          ),
-                        widget.body,
-                        if (pageMode == PageMode.infinite)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: loading,
-                            falseChild: const SliverSizedBox.shrink(),
-                            trueChild: SliverPadding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              sliver: SliverToBoxAdapter(
-                                child: Center(
-                                  child: SpinKitPulse(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                  ),
+                      widget.body,
+                      if (pageMode == PageMode.infinite)
+                        ConditionalValueListenableBuilder(
+                          valueListenable: loading,
+                          falseChild: const SliverSizedBox.shrink(),
+                          trueChild: SliverPadding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            sliver: SliverToBoxAdapter(
+                              child: Center(
+                                child: SpinKitPulse(
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
                             ),
                           ),
-                        if (pageMode == PageMode.paginated)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: refreshing,
-                            useFalseChildAsCache: true,
-                            trueChild: const SliverSizedBox.shrink(),
-                            falseChild: SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 40,
-                                  bottom: 20,
-                                ),
-                                child: widget.bottomPageIndicator,
+                        ),
+                      if (pageMode == PageMode.paginated)
+                        ConditionalValueListenableBuilder(
+                          valueListenable: refreshing,
+                          useFalseChildAsCache: true,
+                          trueChild: const SliverSizedBox.shrink(),
+                          falseChild: SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 40,
+                                bottom: 20,
                               ),
+                              child: widget.bottomPageIndicator,
                             ),
                           ),
-                        SliverSizedBox(
-                          height: MediaQuery.viewPaddingOf(context).bottom + 12,
                         ),
-                      ],
-                    ),
+                      SliverSizedBox(
+                        height: MediaQuery.viewPaddingOf(context).bottom + 12,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -718,10 +724,11 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   }
 
   Widget _buildPaginatedSwipe(
-    BuildContext context,
     Widget child,
     bool refreshing,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SwipeTo(
       enabled: pageMode == PageMode.paginated && !refreshing,
       swipeRightEnabled: controller.hasPreviousPage(),
@@ -729,34 +736,40 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       rightSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: Theme.of(context).colorScheme.hintColor,
+          color: colorScheme.hintColor,
         ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: colorScheme.surface,
         label: Row(
           children: [
             Icon(
               Symbols.arrow_back,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: colorScheme.onSurface,
               size: 16,
             ),
             const SizedBox(width: 4),
-            Text('Page ${page - 1}'),
+            ValueListenableBuilder(
+              valueListenable: controller.pageNotifier,
+              builder: (_, page, __) => Text('Page ${page - 1}'),
+            ),
           ],
         ),
       ),
       leftSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
-          color: Theme.of(context).colorScheme.hintColor,
+          color: colorScheme.hintColor,
         ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: colorScheme.surface,
         label: Row(
           children: [
-            Text('Page ${page + 1}'),
+            ValueListenableBuilder(
+              valueListenable: controller.pageNotifier,
+              builder: (_, page, __) => Text('Page ${page + 1}'),
+            ),
             const SizedBox(width: 4),
             Icon(
               Symbols.arrow_forward,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: colorScheme.onSurface,
               size: 16,
             ),
           ],
@@ -766,12 +779,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       onRightSwipe: (_) => widget.onPreviousPage(),
       child: child,
     );
-  }
-
-  void _onWillPop() {
-    if (multiSelect) {
-      _multiSelectController.disableMultiSelect();
-    }
   }
 }
 
