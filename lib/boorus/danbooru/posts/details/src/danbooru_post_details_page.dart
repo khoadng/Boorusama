@@ -16,18 +16,11 @@ import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';
 import 'widgets/danbooru_more_action_button.dart';
 
-class DanbooruPostDetailsPage extends ConsumerStatefulWidget {
+class DanbooruPostDetailsPage extends StatelessWidget {
   const DanbooruPostDetailsPage({
     super.key,
   });
 
-  @override
-  ConsumerState<DanbooruPostDetailsPage> createState() =>
-      _DanbooruPostDetailsPageState();
-}
-
-class _DanbooruPostDetailsPageState
-    extends ConsumerState<DanbooruPostDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final data = PostDetails.of<DanbooruPost>(context);
@@ -43,9 +36,11 @@ class _DanbooruPostDetailsPageState
           final post = InheritedPost.of<DanbooruPost>(context);
 
           return [
-            NoteActionButtonWithProvider(
-              post: post,
-              noteState: ref.watch(notesControllerProvider(post)),
+            Consumer(
+              builder: (_, ref, __) => NoteActionButtonWithProvider(
+                post: post,
+                noteState: ref.watch(notesControllerProvider(post)),
+              ),
             ),
             const SizedBox(width: 8),
             DanbooruMoreActionButton(

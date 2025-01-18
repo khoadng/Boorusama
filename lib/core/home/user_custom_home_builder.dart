@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../boorus/engine/providers.dart';
+import '../configs/current.dart';
 import '../configs/ref.dart';
 import '../configs/routes.dart';
 import '../info/app_info.dart';
@@ -14,10 +15,11 @@ import 'home_page_controller.dart';
 
 // Project imports:
 
-
 class UserCustomHomeBuilder extends ConsumerWidget {
   const UserCustomHomeBuilder({
-    required this.defaultView, required this.homePageController, super.key,
+    required this.defaultView,
+    required this.homePageController,
+    super.key,
   });
 
   final Widget defaultView;
@@ -25,7 +27,9 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewKey = ref.watchLayoutConfigs?.home;
+    final viewKey = ref.watch(
+      currentReadOnlyBooruConfigLayoutProvider.select((value) => value?.home),
+    );
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final data = booruBuilder?.customHomeViewBuilders;
 
@@ -48,7 +52,9 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
 class CustomHomeContainer extends ConsumerWidget {
   const CustomHomeContainer({
-    required this.homePageController, required this.child, super.key,
+    required this.homePageController,
+    required this.child,
+    super.key,
   });
 
   final HomePageController homePageController;

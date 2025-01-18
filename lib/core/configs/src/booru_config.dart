@@ -553,43 +553,47 @@ class LayoutConfigs extends Equatable {
   List<Object?> get props => [home, details, previewDetails];
 }
 
-extension CustomViewKeyX on LayoutConfigs {
-  Set<DetailsPart>? getParsedParts({
-    required bool hasPremium,
-  }) {
-    if (!hasPremium) return null;
-    if (details == null) return null;
-    if (details!.isEmpty) return null;
+Set<DetailsPart>? getLayoutParsedParts({
+  required List<CustomDetailsPartKey>? details,
+  required bool hasPremium,
+}) {
+  if (!hasPremium) return null;
+  if (details == null) return null;
+  if (details.isEmpty) return null;
 
-    final parts = <DetailsPart>{};
+  final parts = <DetailsPart>{};
 
-    for (final part in details!) {
-      final parsedPart = parseDetailsPart(part.name);
+  for (final part in details) {
+    final parsedPart = parseDetailsPart(part.name);
 
-      if (parsedPart != null) {
-        parts.add(parsedPart);
-      }
+    if (parsedPart != null) {
+      parts.add(parsedPart);
     }
-
-    return parts;
   }
 
-  Set<DetailsPart>? getPreviewParsedParts() {
-    if (previewDetails == null) return null;
-    if (previewDetails!.isEmpty) return null;
+  return parts;
+}
 
-    final parts = <DetailsPart>{};
+Set<DetailsPart>? getLayoutPreviewParsedParts({
+  required List<CustomDetailsPartKey>? previewDetails,
+  required bool hasPremium,
+}) {
+  if (!hasPremium) return null;
 
-    for (final part in previewDetails!) {
-      final parsedPart = parseDetailsPart(part.name);
+  if (previewDetails == null) return null;
+  if (previewDetails.isEmpty) return null;
 
-      if (parsedPart != null) {
-        parts.add(parsedPart);
-      }
+  final parts = <DetailsPart>{};
+
+  for (final part in previewDetails) {
+    final parsedPart = parseDetailsPart(part.name);
+
+    if (parsedPart != null) {
+      parts.add(parsedPart);
     }
-
-    return parts;
   }
+
+  return parts;
 }
 
 abstract class BooruConfigRepository {

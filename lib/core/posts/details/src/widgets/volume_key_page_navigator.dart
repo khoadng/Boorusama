@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Project imports:
 import '../../../../foundation/keyboard.dart';
-import '../../../../settings/settings.dart';
 import '../../../details_pageview/widgets.dart';
 
 class VolumeKeyPageNavigator with KeyboardListenerMixin {
@@ -12,7 +11,7 @@ class VolumeKeyPageNavigator with KeyboardListenerMixin {
     required this.pageViewController,
     required this.totalPosts,
     required this.visibilityNotifier,
-    required this.getSettings,
+    required this.enableVolumeKeyViewerNavigation,
   });
 
   // We only want to bait the keyboard focus once
@@ -22,10 +21,10 @@ class VolumeKeyPageNavigator with KeyboardListenerMixin {
   final int totalPosts;
   final ValueNotifier<bool> visibilityNotifier;
 
-  final Settings Function() getSettings;
+  final bool Function() enableVolumeKeyViewerNavigation;
 
   void initialize() {
-    if (getSettings().volumeKeyViewerNavigation) {
+    if (enableVolumeKeyViewerNavigation()) {
       if (!_hasInitialized) {
         // Workaround to bring the keyboard focus to the app
         // https://github.com/flutter/flutter/issues/71144
@@ -42,7 +41,7 @@ class VolumeKeyPageNavigator with KeyboardListenerMixin {
 
   bool _handleKeyEvent(KeyEvent event) {
     // make sure user has enabled the feature
-    if (!getSettings().volumeKeyViewerNavigation) return false;
+    if (!enableVolumeKeyViewerNavigation()) return false;
 
     // only handle key event when the page is visible
     if (!visibilityNotifier.value) return false;
