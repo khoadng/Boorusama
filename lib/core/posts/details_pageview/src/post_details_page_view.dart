@@ -10,15 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../foundation/display.dart';
 import '../../../foundation/mobile.dart';
-import '../../../settings/settings.dart';
 import '../../../widgets/widgets.dart';
-import '../../details/src/widgets/auto_slide_mixin.dart';
 import 'constants.dart';
 import 'page_nav_button.dart';
 import 'pointer_count_on_screen.dart';
@@ -46,7 +43,6 @@ class PostDetailsPageView extends StatefulWidget {
     this.actions = const [],
     this.leftActions = const [],
     this.bottomSheet,
-    this.slideshowOptions = const SlideshowOptions(),
     this.sheetStateStorage,
     this.disableAnimation = false,
   });
@@ -69,8 +65,6 @@ class PostDetailsPageView extends StatefulWidget {
   final void Function()? onShrink;
   final void Function(int page)? onPageChanged;
 
-  final SlideshowOptions slideshowOptions;
-
   final PostDetailsPageViewController? controller;
   final SheetStateStorage? sheetStateStorage;
 
@@ -82,10 +76,9 @@ class PostDetailsPageView extends StatefulWidget {
 }
 
 class _PostDetailsPageViewState extends State<PostDetailsPageView>
-    with AutomaticSlideMixin, TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final _pointerCount = ValueNotifier(0);
   final _interacting = ValueNotifier(false);
-  late var _slideshowOptions = widget.slideshowOptions;
   var _freestyleMoveStartOffset = Offset.zero;
   var _freestyleMoveScale = 1.0;
 
@@ -104,9 +97,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           curve: Curves.easeOutCirc,
         )
       : null;
-
-  @override
-  PageController get pageController => _controller.pageController;
 
   // Use for large screen when details is on the side to prevent spamming
   Timer? _debounceTimer;
@@ -150,13 +140,16 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _hovering.addListener(_onHover);
 
-    _controller =
-        widget.controller ?? PostDetailsPageViewController(initialPage: 0);
+    _controller = widget.controller ??
+        PostDetailsPageViewController(
+          initialPage: 0,
+          checkIfLargeScreen: widget.checkIfLargeScreen,
+          totalPage: widget.itemCount,
+        );
 
     _controller.pageController.addListener(_onPageChanged);
     _controller.sheetController.addListener(_onSheetChanged);
     _controller.verticalPosition.addListener(_onVerticalPositionChanged);
-    _controller.slideshow.addListener(_onSlideShowChanged);
     _controller.sheetState.addListener(_onSheetStateChanged);
     _controller.overlay.addListener(_onOverlayChanged);
     _controller.displacement.addListener(_onDisplacementChanged);
@@ -335,35 +328,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _sheetAnimController.value = _controller.isExpanded ? 1 : 0;
   }
 
-  Future<void> _onSlideShowChanged() async {
-    final slideShow = _controller.slideshow.value;
-
-    if (slideShow) {
-      // if in expanded mode, exit expanded mode first
-      if (_controller.isExpanded) {
-        if (!isLargeScreen) {
-          await _controller.resetSheet();
-        } else {
-          _controller.sheetState.value = SheetState.hidden;
-        }
-      }
-
-      startAutoSlide(
-        _controller.page,
-        widget.itemCount,
-        skipAnimation: _slideshowOptions.skipTransition,
-        direction: switch (_slideshowOptions.direction) {
-          SlideshowDirection.forward => SlideDirection.forward,
-          SlideshowDirection.backward => SlideDirection.backward,
-          SlideshowDirection.random => SlideDirection.random,
-        },
-        duration: _slideshowOptions.duration,
-      );
-    } else {
-      stopAutoSlide();
-    }
-  }
-
   void _onVerticalSheetDragYChanged() {
     final delta = _verticalSheetDragY.value;
     final screenHeight = MediaQuery.sizeOf(context).height;
@@ -378,11 +342,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   @override
   void dispose() {
     _cancelCooldown();
-    stopAutoSlide();
 
     _controller.sheetState.removeListener(_onSheetStateChanged);
     _controller.pageController.removeListener(_onPageChanged);
-    _controller.slideshow.removeListener(_onSlideShowChanged);
     _controller.verticalPosition.removeListener(_onVerticalPositionChanged);
     _controller.sheetController.removeListener(_onSheetChanged);
     _controller.overlay.removeListener(_onOverlayChanged);
@@ -407,15 +369,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant PostDetailsPageView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.slideshowOptions != oldWidget.slideshowOptions) {
-      _slideshowOptions = widget.slideshowOptions;
-    }
   }
 
   @override
@@ -1093,21 +1046,6 @@ class DefaultPageViewScrollPhysics extends ScrollPhysics {
         stiffness: 80,
         damping: 0.8,
       );
-}
-
-class SlideshowOptions extends Equatable {
-  const SlideshowOptions({
-    this.duration = const Duration(seconds: 5),
-    this.direction = SlideshowDirection.forward,
-    this.skipTransition = false,
-  });
-
-  final Duration duration;
-  final SlideshowDirection direction;
-  final bool skipTransition;
-
-  @override
-  List<Object?> get props => [duration, direction, skipTransition];
 }
 
 const _kSwipeDownScaleFactor = 0.2;

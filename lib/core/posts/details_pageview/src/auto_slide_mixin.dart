@@ -4,15 +4,30 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+// Project imports:
+import '../../../settings/settings.dart';
+
 const kDefaultAutoSlideDuration = Duration(seconds: 5);
 
-enum SlideDirection {
-  forward,
-  backward,
-  random,
+class SlideshowOptions extends Equatable {
+  const SlideshowOptions({
+    this.duration = const Duration(seconds: 5),
+    this.direction = SlideshowDirection.forward,
+    this.skipTransition = false,
+  });
+
+  final Duration duration;
+  final SlideshowDirection direction;
+  final bool skipTransition;
+
+  @override
+  List<Object?> get props => [duration, direction, skipTransition];
 }
 
-mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
+mixin AutomaticSlideMixin on ChangeNotifier {
   PageController get pageController;
   Timer? timer;
   int _currentPage = 0;
@@ -25,13 +40,13 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
     return value;
   }
 
-  int _calculateNextPage(SlideDirection direction, int end) {
+  int _calculateNextPage(SlideshowDirection direction, int end) {
     switch (direction) {
-      case SlideDirection.forward:
+      case SlideshowDirection.forward:
         return (_currentPage + 1) % end;
-      case SlideDirection.backward:
+      case SlideshowDirection.backward:
         return (_currentPage - 1) % end;
-      case SlideDirection.random:
+      case SlideshowDirection.random:
         if (_currentRandomPages == null || _currentRandomPages!.isEmpty) {
           _currentRandomPages = _generateRandomPages(end);
         }
@@ -50,11 +65,14 @@ mixin AutomaticSlideMixin<T extends StatefulWidget> on State<T> {
   void startAutoSlide(
     int start,
     int end, {
-    bool skipAnimation = true,
-    SlideDirection direction = SlideDirection.forward,
-    Duration duration = kDefaultAutoSlideDuration,
+    SlideshowOptions options = const SlideshowOptions(),
   }) {
     if (_isSliding) return;
+
+    final duration = options.duration;
+    final direction = options.direction;
+    final skipAnimation = options.skipTransition;
+
     final skip = _shouldSkipAnimation(skipAnimation, duration);
 
     _isSliding = true;

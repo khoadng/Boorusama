@@ -76,7 +76,10 @@ class _PostDetailPageScaffoldState<T extends Post>
   late final _controller = PostDetailsPageViewController(
     initialPage: widget.controller.initialPage,
     initialHideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
+    slideshowOptions: toSlideShowOptions(ref.read(settingsProvider)),
     hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
+    checkIfLargeScreen: () => context.isLargeScreen,
+    totalPage: _posts.length,
   );
   late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
     pageViewController: _controller,
@@ -99,7 +102,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       final settings = ref.read(settingsProvider);
       widget.controller.setPage(
         widget.controller.initialPage,
-        useDefaultEngine: _isDefaultEngine(settings),
+        useDefaultEngine: _isDefaultEngine(settings.videoPlayerEngine),
       );
     });
 
@@ -120,8 +123,16 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   var _previouslyPlaying = false;
 
-  bool _isDefaultEngine(Settings settings) {
-    return settings.videoPlayerEngine != VideoPlayerEngine.mdk;
+  bool _isDefaultEngine(VideoPlayerEngine engine) {
+    return engine != VideoPlayerEngine.mdk;
+  }
+
+  SlideshowOptions toSlideShowOptions(Settings settings) {
+    return SlideshowOptions(
+      duration: settings.slideshowDuration,
+      direction: settings.slideshowDirection,
+      skipTransition: settings.skipSlideshowTransition,
+    );
   }
 
   void _isVideoPlayingChanged() {
@@ -139,8 +150,20 @@ class _PostDetailPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     final useDefaultEngine = ref.watch(
       settingsProvider.select(
-        (value) => _isDefaultEngine(value),
+        (value) => _isDefaultEngine(value.videoPlayerEngine),
       ),
+    );
+
+    // Sync slideshow options with settings
+    ref.listen(
+      settingsProvider.select(
+        toSlideShowOptions,
+      ),
+      (prev, next) {
+        if (prev != next) {
+          _controller.slideshowOptions = next;
+        }
+      },
     );
 
     return CallbackShortcuts(
@@ -195,7 +218,11 @@ class _PostDetailPageScaffoldState<T extends Post>
     final preferredParts = widget.preferredParts ??
         layout?.getParsedParts() ??
         uiBuilder?.full.keys.toSet();
-    final settings = ref.watch(settingsProvider);
+
+    final videoPlayerEngine =
+        ref.watch(settingsProvider.select((value) => value.videoPlayerEngine));
+    final reduceAnimations =
+        ref.watch(settingsProvider.select((value) => value.reduceAnimations));
 
     void onItemTap() {
       final controller = widget.controller;
@@ -204,11 +231,11 @@ class _PostDetailPageScaffoldState<T extends Post>
         if (controller.currentPost.value.isVideo) {
           if (controller.isVideoPlaying.value) {
             controller.pauseCurrentVideo(
-              useDefaultEngine: _isDefaultEngine(settings),
+              useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
             );
           } else {
             controller.playCurrentVideo(
-              useDefaultEngine: _isDefaultEngine(settings),
+              useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
             );
           }
         } else {
@@ -225,11 +252,11 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     return Scaffold(
       body: PostDetailsPageView(
-        disableAnimation: settings.reduceAnimations,
+        disableAnimation: reduceAnimations,
         onPageChanged: (page) {
           widget.controller.setPage(
             page,
-            useDefaultEngine: _isDefaultEngine(settings),
+            useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
           );
 
           if (_controller.overlay.value) {
@@ -252,11 +279,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               ref.read(miscDataProvider(kShowInfoStateCacheKey)) == 'true',
         ),
         checkIfLargeScreen: () => context.isLargeScreen,
-        slideshowOptions: SlideshowOptions(
-          duration: settings.slideshowDuration,
-          direction: settings.slideshowDirection,
-          skipTransition: settings.skipSlideshowTransition,
-        ),
         controller: _controller,
         onExit: widget.controller.onExit,
         itemCount: posts.length,
@@ -361,13 +383,13 @@ class _PostDetailPageScaffoldState<T extends Post>
                                           widget.controller.pauseVideo(
                                             post.id,
                                             post.isWebm,
-                                            _isDefaultEngine(settings),
+                                            _isDefaultEngine(videoPlayerEngine),
                                           );
                                         } else if (!value) {
                                           widget.controller.playVideo(
                                             post.id,
                                             post.isWebm,
-                                            _isDefaultEngine(settings),
+                                            _isDefaultEngine(videoPlayerEngine),
                                           );
                                         } else {
                                           // do nothing

@@ -9,26 +9,34 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../foundation/mobile.dart';
+import 'auto_slide_mixin.dart';
 import 'constants.dart';
 import 'post_details_page_view.dart';
 
-class PostDetailsPageViewController extends ChangeNotifier {
+class PostDetailsPageViewController extends ChangeNotifier
+    with AutomaticSlideMixin {
   PostDetailsPageViewController({
     required this.initialPage,
+    required this.totalPage,
+    required this.checkIfLargeScreen,
     this.initialHideOverlay = false,
     bool hoverToControlOverlay = false,
     this.maxSize = 0.7,
     this.threshold = 400.0,
+    SlideshowOptions slideshowOptions = const SlideshowOptions(),
   })  : currentPage = ValueNotifier(initialPage),
+        _slideshowOptions = slideshowOptions,
         overlay = ValueNotifier(!initialHideOverlay),
         hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
         sheetState = ValueNotifier(SheetState.collapsed);
 
   final int initialPage;
+  final int totalPage;
   final bool initialHideOverlay;
   final double maxSize;
-
   final double threshold;
+
+  late SlideshowOptions _slideshowOptions;
 
   late final _pageController = PageController(
     initialPage: initialPage,
@@ -36,11 +44,20 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
+  final bool Function() checkIfLargeScreen;
+
   int get page => currentPage.value;
   bool get isExpanded => sheetState.value.isExpanded;
+  @override
   PageController get pageController => _pageController;
 
   DraggableScrollableController get sheetController => _sheetController;
+
+  // ignore: unnecessary_getters_setters
+  SlideshowOptions get slideshowOptions => _slideshowOptions;
+  set slideshowOptions(SlideshowOptions value) {
+    _slideshowOptions = value;
+  }
 
   late final ValueNotifier<SheetState> sheetState;
   late final ValueNotifier<int> currentPage;
@@ -235,20 +252,43 @@ class PostDetailsPageViewController extends ChangeNotifier {
     showSystemStatus();
   }
 
-  void startSlideshow() {
+  Future<void> startSlideshow() async {
     slideshow.value = true;
     if (overlay.value) overlay.value = false;
-    hideSystemStatus();
+    unawaited(hideSystemStatus());
+
+    final isLargeScreen = checkIfLargeScreen();
+
+    // if in expanded mode, exit expanded mode first
+    if (isExpanded) {
+      if (!isLargeScreen) {
+        await resetSheet();
+      } else {
+        sheetState.value = SheetState.hidden;
+      }
+    }
+
+    startAutoSlide(
+      page,
+      totalPage,
+      options: _slideshowOptions,
+    );
   }
 
   void stopSlideshow() {
     slideshow.value = false;
-    overlay.value = true;
-    showSystemStatus();
+
+    if (!initialHideOverlay) {
+      overlay.value = true;
+    }
+
+    stopAutoSlide();
   }
 
   @override
   void dispose() {
+    stopAutoSlide();
+
     _pageController.dispose();
     _sheetController.dispose();
 
