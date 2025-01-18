@@ -49,7 +49,7 @@ typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
   bool useHero,
 );
 
-class PostGrid<T extends Post> extends ConsumerStatefulWidget {
+class PostGrid<T extends Post> extends StatefulWidget {
   const PostGrid({
     required this.controller,
     super.key,
@@ -72,22 +72,17 @@ class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   final Widget? body;
 
   @override
-  ConsumerState<PostGrid<T>> createState() => _PostGridState();
+  State<PostGrid<T>> createState() => _PostGridState();
 }
 
-class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
-  final expanded = ValueNotifier<bool?>(null);
-  late final AutoScrollController _autoScrollController;
+class _PostGridState<T extends Post> extends State<PostGrid<T>> {
+  final _expanded = ValueNotifier<bool?>(null);
+  late final AutoScrollController _autoScrollController =
+      widget.scrollController ?? AutoScrollController();
   late final _multiSelectController =
       widget.multiSelectController ?? MultiSelectController<T>();
 
   final ValueNotifier<bool> _disableHero = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-    _autoScrollController = widget.scrollController ?? AutoScrollController();
-  }
 
   @override
   void dispose() {
@@ -99,18 +94,13 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
     if (widget.scrollController == null) {
       _autoScrollController.dispose();
     }
+
+    _disableHero.dispose();
+    _expanded.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(imageListingSettingsProvider);
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
-
-    final multiSelectActions = booruBuilder?.multiSelectionActionsBuilder?.call(
-      context,
-      _multiSelectController,
-    );
-
     return LayoutBuilder(
       builder: (context, constraints) => RawPostGrid(
         sliverHeaders: [
@@ -118,13 +108,61 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
           DisableGridItemHeroOnPop(disableHero: _disableHero),
         ],
         scrollController: _autoScrollController,
-        footer: multiSelectActions,
+        footer: Consumer(
+          builder: (_, ref, __) {
+            final booruBuilder = ref.watch(currentBooruBuilderProvider);
+
+            final multiSelectActions =
+                booruBuilder?.multiSelectionActionsBuilder?.call(
+              context,
+              _multiSelectController,
+            );
+
+            return multiSelectActions ?? const SizedBox.shrink();
+          },
+        ),
         blacklistedIdString: widget.blacklistedIdString,
         multiSelectController: _multiSelectController,
         controller: widget.controller,
         safeArea: widget.safeArea,
-        gridHeader: _buildConfigHeader(ref, Axis.horizontal),
-        settings: settings,
+        gridHeader: Consumer(
+          builder: (_, ref, __) {
+            final showHeader = ref.watch(
+              imageListingSettingsProvider
+                  .select((v) => v.showPostListConfigHeader),
+            );
+
+            return showHeader
+                ? _buildConfigHeader(ref, Axis.horizontal)
+                : const SizedBox.shrink();
+          },
+        ),
+        topPageIndicator: Consumer(
+          builder: (_, ref, __) {
+            final visibleAtTop = ref.watch(
+              imageListingSettingsProvider
+                  .select((v) => v.pageIndicatorPosition.isVisibleAtTop),
+            );
+
+            return visibleAtTop
+                ? _buildPageIndicator(ref)
+                : const SizedBox.shrink();
+          },
+        ),
+        bottomPageIndicator: Consumer(
+          builder: (_, ref, __) {
+            final visibleAtBottom = ref.watch(
+              imageListingSettingsProvider
+                  .select((v) => v.pageIndicatorPosition.isVisibleAtBottom),
+            );
+
+            return visibleAtBottom
+                ? _buildPageIndicator(ref)
+                : const SizedBox.shrink();
+          },
+        ),
+        onNextPage: _goToNextPage,
+        onPreviousPage: _goToPreviousPage,
         body: widget.body ??
             SliverPostGrid(
               postController: widget.controller,
@@ -153,6 +191,10 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
   }
 
   Widget _buildConfigHeader(WidgetRef ref, Axis axis) {
+    final imageGridPadding = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageGridPadding),
+    );
+
     return ValueListenableBuilder(
       valueListenable: widget.controller.hasBlacklist,
       builder: (context, hasBlacklist, _) {
@@ -163,33 +205,77 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
               valueListenable: widget.controller.activeFilters,
               builder: (context, activeFilters, child) {
                 return ValueListenableBuilder(
-                  valueListenable: expanded,
-                  builder: (_, expand, __) => PostListConfigurationHeader(
-                    axis: axis,
-                    postCount: widget.controller.total,
-                    initiallyExpanded: axis == Axis.vertical || expand == true,
-                    onExpansionChanged: (value) => expanded.value = value,
-                    hasBlacklist: hasBlacklist,
-                    tags: activeFilters.keys
-                        .map(
-                          (e) => (
-                            name: e,
-                            count: tagCounts[e]?.length ?? 0,
-                            active: activeFilters[e] ?? false,
-                          ),
-                        )
-                        .where((e) => e.count > 0)
-                        .toList(),
-                    trailing: axis == Axis.horizontal
-                        ? PostGridConfigIconButton(
-                            postController: widget.controller,
+                  valueListenable: _expanded,
+                  builder: (_, expand, __) => Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: imageGridPadding,
+                    ),
+                    child: PostListConfigurationHeader(
+                      axis: axis,
+                      postCount: widget.controller.total,
+                      initiallyExpanded:
+                          axis == Axis.vertical || expand == true,
+                      onExpansionChanged: (value) => _expanded.value = value,
+                      hasBlacklist: hasBlacklist,
+                      tags: activeFilters.keys
+                          .map(
+                            (e) => (
+                              name: e,
+                              count: tagCounts[e]?.length ?? 0,
+                              active: activeFilters[e] ?? false,
+                            ),
                           )
-                        : null,
-                    onClosed: _onClose,
-                    onDisableAll: _disableAll,
-                    onEnableAll: _enableAll,
-                    onChanged: _update,
-                    hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+                          .where((e) => e.count > 0)
+                          .toList(),
+                      trailing: axis == Axis.horizontal
+                          ? PostGridConfigIconButton(
+                              postController: widget.controller,
+                            )
+                          : null,
+                      onClosed: () {
+                        final hasCustomListing =
+                            ref.read(hasCustomListingSettingsProvider);
+
+                        if (hasCustomListing) {
+                          showErrorToast(
+                            context,
+                            'Cannot hide header when using custom listing',
+                          );
+                          return;
+                        }
+
+                        final settingsNotifier =
+                            ref.read(settingsNotifierProvider.notifier)
+                              ..updateWith(
+                                (s) => s.copyWith(
+                                  listing: s.listing.copyWith(
+                                    showPostListConfigHeader: false,
+                                  ),
+                                ),
+                              );
+                        showSimpleSnackBar(
+                          duration: AppDurations.extraLongToast,
+                          context: context,
+                          content: const Text(
+                            'You can always show this header again in Settings.',
+                          ),
+                          action: SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () => settingsNotifier.updateWith(
+                              (s) => s.copyWith(
+                                listing: s.listing.copyWith(
+                                  showPostListConfigHeader: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      onDisableAll: _disableAll,
+                      onEnableAll: _enableAll,
+                      onChanged: _update,
+                      hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+                    ),
                   ),
                 );
               },
@@ -200,37 +286,48 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
     );
   }
 
-  void _onClose() {
-    final hasCustomListing = ref.watch(hasCustomListingSettingsProvider);
+  Widget _buildPageIndicator(WidgetRef ref) {
+    final controller = widget.controller;
+    final postsPerPage = ref.watch(
+      imageListingSettingsProvider.select((v) => v.postsPerPage),
+    );
 
-    if (hasCustomListing) {
-      showErrorToast(context, 'Cannot hide header when using custom listing');
-      return;
-    }
-
-    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier)
-      ..updateWith(
-        (s) => s.copyWith(
-          listing: s.listing.copyWith(
-            showPostListConfigHeader: false,
-          ),
-        ),
-      );
-    showSimpleSnackBar(
-      duration: AppDurations.extraLongToast,
-      context: context,
-      content: const Text('You can always show this header again in Settings.'),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () => settingsNotifier.updateWith(
-          (s) => s.copyWith(
-            listing: s.listing.copyWith(
-              showPostListConfigHeader: true,
-            ),
-          ),
+    return ValueListenableBuilder(
+      valueListenable: controller.count,
+      builder: (_, value, __) => ValueListenableBuilder(
+        valueListenable: controller.pageNotifier,
+        builder: (_, page, __) => PageSelector(
+          totalResults: value,
+          itemPerPage: postsPerPage,
+          currentPage: page,
+          onPrevious:
+              controller.hasPreviousPage() ? () => _goToPreviousPage() : null,
+          onNext: controller.hasNextPage() ? () => _goToNextPage() : null,
+          onPageSelect: (page) => _goToPage(page),
         ),
       ),
     );
+  }
+
+  Future<void> _goToNextPage() async {
+    final controller = widget.controller;
+
+    await controller.goToNextPage();
+    _autoScrollController.jumpTo(0);
+  }
+
+  Future<void> _goToPreviousPage() async {
+    final controller = widget.controller;
+
+    await controller.goToPreviousPage();
+    _autoScrollController.jumpTo(0);
+  }
+
+  Future<void> _goToPage(int page) async {
+    final controller = widget.controller;
+
+    await controller.jumpToPage(page);
+    _autoScrollController.jumpTo(0);
   }
 
   void _update(tag, hide) {
@@ -274,9 +371,12 @@ class DisableGridItemHeroOnPop extends ConsumerWidget {
 class RawPostGrid<T extends Post> extends StatefulWidget {
   const RawPostGrid({
     required this.gridHeader,
+    required this.topPageIndicator,
+    required this.bottomPageIndicator,
     required this.body,
     required this.controller,
-    required this.settings,
+    required this.onNextPage,
+    required this.onPreviousPage,
     super.key,
     this.onLoadMore,
     this.onRefresh,
@@ -295,6 +395,8 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 
   final VoidCallback? onLoadMore;
   final void Function()? onRefresh;
+  final void Function() onNextPage;
+  final void Function() onPreviousPage;
   final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
 
@@ -309,8 +411,8 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
   final Widget? header;
   final Widget body;
   final Widget gridHeader;
-
-  final ImageListingSettings settings;
+  final Widget topPageIndicator;
+  final Widget bottomPageIndicator;
 
   final String? blacklistedIdString;
 
@@ -337,7 +439,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   final refreshing = ValueNotifier(false);
   var items = <T>[];
   late var pageMode = controller.pageMode;
-  late var settings = widget.settings;
 
   @override
   void initState() {
@@ -361,17 +462,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     }
 
     return false;
-  }
-
-  @override
-  void didUpdateWidget(covariant RawPostGrid<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.settings != widget.settings) {
-      setState(() {
-        settings = widget.settings;
-      });
-    }
   }
 
   @override
@@ -539,20 +629,14 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                               sliver: e,
                             ),
                           ),
-                        if (settings.showPostListConfigHeader)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: refreshing,
-                            useFalseChildAsCache: true,
-                            trueChild: const SliverSizedBox.shrink(),
-                            falseChild: SliverPinnedHeader(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: settings.imageGridPadding,
-                                ),
-                                child: widget.gridHeader,
-                              ),
-                            ),
+                        ConditionalValueListenableBuilder(
+                          valueListenable: refreshing,
+                          useFalseChildAsCache: true,
+                          trueChild: const SliverSizedBox.shrink(),
+                          falseChild: SliverPinnedHeader(
+                            child: widget.gridHeader,
                           ),
+                        ),
                         ConditionalValueListenableBuilder(
                           valueListenable: refreshing,
                           useFalseChildAsCache: true,
@@ -574,15 +658,14 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                         const SliverSizedBox(
                           height: 4,
                         ),
-                        if (pageMode == PageMode.paginated &&
-                            settings.pageIndicatorPosition.isVisibleAtTop)
+                        if (pageMode == PageMode.paginated)
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,
                             useFalseChildAsCache: true,
                             falseChild: SliverToBoxAdapter(
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 8),
-                                child: _buildPageIndicator(settings),
+                                child: widget.topPageIndicator,
                               ),
                             ),
                             trueChild: const SliverSizedBox.shrink(),
@@ -604,8 +687,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                               ),
                             ),
                           ),
-                        if (pageMode == PageMode.paginated &&
-                            settings.pageIndicatorPosition.isVisibleAtBottom)
+                        if (pageMode == PageMode.paginated)
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,
                             useFalseChildAsCache: true,
@@ -616,7 +698,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                                   top: 40,
                                   bottom: 20,
                                 ),
-                                child: _buildPageIndicator(settings),
+                                child: widget.bottomPageIndicator,
                               ),
                             ),
                           ),
@@ -631,36 +713,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Future<void> _goToNextPage() async {
-    await controller.goToNextPage();
-    _autoScrollController.jumpTo(0);
-  }
-
-  Future<void> _goToPreviousPage() async {
-    await controller.goToPreviousPage();
-    _autoScrollController.jumpTo(0);
-  }
-
-  Future<void> _goToPage(int page) async {
-    await controller.jumpToPage(page);
-    _autoScrollController.jumpTo(0);
-  }
-
-  Widget _buildPageIndicator(ImageListingSettings settings) {
-    return ValueListenableBuilder(
-      valueListenable: controller.count,
-      builder: (_, value, __) => PageSelector(
-        totalResults: value,
-        itemPerPage: settings.postsPerPage,
-        currentPage: page,
-        onPrevious:
-            controller.hasPreviousPage() ? () => _goToPreviousPage() : null,
-        onNext: controller.hasNextPage() ? () => _goToNextPage() : null,
-        onPageSelect: (page) => _goToPage(page),
       ),
     );
   }
@@ -710,8 +762,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           ],
         ),
       ),
-      onLeftSwipe: (_) => _goToNextPage(),
-      onRightSwipe: (_) => _goToPreviousPage(),
+      onLeftSwipe: (_) => widget.onNextPage(),
+      onRightSwipe: (_) => widget.onPreviousPage(),
       child: child,
     );
   }
