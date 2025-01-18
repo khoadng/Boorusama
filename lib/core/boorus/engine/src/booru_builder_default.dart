@@ -299,7 +299,7 @@ String Function(
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
         : ref.watch(currentBooruBuilderProvider)?.postImageDetailsUrlBuilder(
-                  ref.watch(imageListingSettingsProvider).imageQuality,
+                  ref.watch(imageListingQualityProvider),
                   post,
                   ref.watchConfig,
                 ) ??

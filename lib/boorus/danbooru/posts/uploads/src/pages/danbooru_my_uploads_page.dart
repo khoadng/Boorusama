@@ -16,8 +16,6 @@ import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/sources/source.dart';
-import '../../../../../../core/settings/providers.dart';
-import '../../../../../../core/settings/settings.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
@@ -184,7 +182,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
-    final settings = ref.watch(imageListingSettingsProvider);
 
     return PostScope(
       fetcher: (page) => TaskEither.Do(
@@ -207,7 +204,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
             ref.watch(danbooruUploadHideMapProvider).maybeWhen(
                   data: (data) => _buildGrid(
                     controller,
-                    settings,
                     constraints,
                     data,
                   ),
@@ -225,7 +221,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
 
   Widget _buildGrid(
     PostGridController<DanbooruUploadPost> controller,
-    ImageListingSettings settings,
     BoxConstraints constraints,
     Map<int, bool> hideMap,
   ) {

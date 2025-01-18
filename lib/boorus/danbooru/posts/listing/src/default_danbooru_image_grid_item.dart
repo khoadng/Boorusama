@@ -23,7 +23,7 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../post/post.dart';
 import 'danbooru_post_context_menu.dart';
 
-class DefaultDanbooruImageGridItem extends ConsumerWidget {
+class DefaultDanbooruImageGridItem extends StatelessWidget {
   const DefaultDanbooruImageGridItem({
     required this.index,
     required this.multiSelectController,
@@ -46,10 +46,7 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
   final bool useHero;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(imageListingSettingsProvider);
-    final config = ref.watchConfigAuth;
-
+  Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
       builder: (_, multiSelect, __) => ValueListenableBuilder(
@@ -75,11 +72,17 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                   final item = SliverPostGridImageGridItem(
                     post: post,
                     multiSelectEnabled: multiSelect,
-                    quickActionButton: !post.isBanned &&
-                            !multiSelect &&
-                            config.hasLoginDetails()
-                        ? DefaultImagePreviewQuickActionButton(post: post)
-                        : null,
+                    quickActionButton: Consumer(
+                      builder: (_, ref, __) {
+                        final config = ref.watchConfigAuth;
+
+                        return !post.isBanned &&
+                                !multiSelect &&
+                                config.hasLoginDetails()
+                            ? DefaultImagePreviewQuickActionButton(post: post)
+                            : const SizedBox.shrink();
+                      },
+                    ),
                     autoScrollOptions: AutoScrollOptions(
                       controller: autoScrollController,
                       index: index,
@@ -97,16 +100,34 @@ class DefaultDanbooruImageGridItem extends ConsumerWidget {
                               }),
                     image: BooruHero(
                       tag: useHero ? '${post.id}_hero' : null,
-                      child: BooruImage(
-                        aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-                        imageUrl: post
-                            .thumbnailFromImageQuality(settings.imageQuality),
-                        borderRadius: BorderRadius.circular(
-                          settings.imageBorderRadius,
-                        ),
-                        forceFill:
-                            settings.imageListType == ImageListType.standard,
-                        placeholderUrl: post.thumbnailImageUrl,
+                      child: Consumer(
+                        builder: (_, ref, __) {
+                          final imageQuality =
+                              ref.watch(imageListingQualityProvider);
+
+                          final imageListType = ref.watch(
+                            imageListingSettingsProvider.select(
+                              (value) => value.imageListType,
+                            ),
+                          );
+
+                          final imageBorderRadius = ref.watch(
+                            imageListingSettingsProvider.select(
+                              (value) => value.imageBorderRadius,
+                            ),
+                          );
+
+                          return BooruImage(
+                            aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+                            imageUrl:
+                                post.thumbnailFromImageQuality(imageQuality),
+                            borderRadius: BorderRadius.circular(
+                              imageBorderRadius,
+                            ),
+                            forceFill: imageListType == ImageListType.standard,
+                            placeholderUrl: post.thumbnailImageUrl,
+                          );
+                        },
                       ),
                     ),
                     score: post.isBanned ? null : post.score,

@@ -209,13 +209,21 @@ class _SearchPageScaffoldState<T extends Post>
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
-        child: SearchAppBar(
-          focusNode: focus,
-          autofocus: ref.watch(settingsProvider).autoFocusSearchBar,
-          controller: textController,
-          leading: (parentRoute?.impliesAppBarDismissal ?? false)
-              ? const SearchAppBarBackButton()
-              : null,
+        child: Consumer(
+          builder: (_, ref, __) {
+            final autoFocusSearchBar = ref.watch(
+              settingsProvider.select((value) => value.autoFocusSearchBar),
+            );
+
+            return SearchAppBar(
+              focusNode: focus,
+              autofocus: autoFocusSearchBar,
+              controller: textController,
+              leading: (parentRoute?.impliesAppBarDismissal ?? false)
+                  ? const SearchAppBarBackButton()
+                  : null,
+            );
+          },
         ),
       ),
       floatingActionButton: ValueListenableBuilder(

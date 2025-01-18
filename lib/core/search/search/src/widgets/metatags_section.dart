@@ -81,7 +81,7 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   Widget _buildChip(String tag, bool editMode) {
     final colors = context.generateChipColors(
       Theme.of(context).colorScheme.primary,
-      ref.watch(settingsProvider),
+      ref.watch(enableDynamicColoringProvider),
     );
 
     return RawChip(

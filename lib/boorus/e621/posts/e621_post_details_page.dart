@@ -40,7 +40,7 @@ class E621ArtistPostsSection extends ConsumerWidget {
                             initialIndex: postIdx,
                           ),
                           imageUrl: (item) => item.thumbnailFromSettings(
-                            ref.watch(imageListingSettingsProvider),
+                            ref.watch(imageListingQualityProvider),
                           ),
                         ),
                         orElse: () => const SliverPreviewPostGridPlaceholder(),

@@ -24,7 +24,7 @@ class FavoriteTagLabelChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.generateChipColors(
       Theme.of(context).colorScheme.primary,
-      ref.watch(settingsProvider),
+      ref.watch(enableDynamicColoringProvider),
     );
 
     return SizedBox(

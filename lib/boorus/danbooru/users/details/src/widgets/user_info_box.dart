@@ -26,7 +26,7 @@ class UserInfoBox extends ConsumerWidget {
     final theme = Theme.of(context);
     final colors = context.generateChipColors(
       userColor.fromUser(user),
-      ref.watch(settingsProvider),
+      ref.watch(enableDynamicColoringProvider),
     );
 
     return Row(

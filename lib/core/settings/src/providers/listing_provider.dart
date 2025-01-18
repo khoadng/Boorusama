@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../configs/current.dart';
 import '../types/settings.dart';
+import '../types/types.dart';
 import 'settings_provider.dart';
 
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
@@ -27,4 +28,10 @@ final hasCustomListingSettingsProvider = Provider<bool>((ref) {
       ref.watch(currentBooruConfigProvider.select((value) => value.listing));
 
   return listingConfigs != null && listingConfigs.enable;
+});
+
+final imageListingQualityProvider = Provider<ImageQuality>((ref) {
+  return ref.watch(
+    imageListingSettingsProvider.select((value) => value.imageQuality),
+  );
 });

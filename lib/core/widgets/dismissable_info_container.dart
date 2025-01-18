@@ -74,7 +74,7 @@ class _DismissableInfoContainerState
   Widget _buildContent() {
     final colors = context.generateChipColors(
       widget.mainColor ?? Colors.grey,
-      ref.watch(settingsProvider),
+      ref.watch(enableDynamicColoringProvider),
     );
 
     return Container(

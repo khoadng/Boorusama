@@ -37,7 +37,7 @@ class ImageGridItem extends StatelessWidget {
     this.hideOverlay = false,
     this.duration,
     this.hasSound,
-    this.score,
+    this.scoreWidget,
     this.isAI = false,
     this.isGif = false,
     this.quickActionButton,
@@ -55,7 +55,7 @@ class ImageGridItem extends StatelessWidget {
   final bool hideOverlay;
   final double? duration;
   final bool? hasSound;
-  final int? score;
+  final Widget? scoreWidget;
   final bool isAI;
   final bool isGif;
   final Widget? quickActionButton;
@@ -83,30 +83,11 @@ class ImageGridItem extends StatelessWidget {
               )
             else
               const SizedBox.shrink(),
-          if (score != null)
+          if (scoreWidget != null)
             Positioned(
               bottom: 4,
               left: 4,
-              child: Container(
-                constraints: const BoxConstraints(minWidth: 28),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                child: Text(
-                  NumberFormat.compact().format(score),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: switch (score!) {
-                      > 0 => context.colors.upvoteColor,
-                      < 0 => context.colors.downvoteColor,
-                      _ => Colors.white,
-                    },
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
+              child: scoreWidget!,
             ),
         ],
       ),
@@ -189,6 +170,41 @@ class ImageGridItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ImageScoreWidget extends StatelessWidget {
+  const ImageScoreWidget({
+    required this.score,
+    super.key,
+  });
+
+  final int score;
+
+  @override
+  Widget build(BuildContext context) {
+    if (score == 0) return const SizedBox.shrink();
+
+    return Container(
+      constraints: const BoxConstraints(minWidth: 28),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      decoration: const BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Text(
+        NumberFormat.compact().format(score),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: switch (score) {
+            > 0 => context.colors.upvoteColor,
+            < 0 => context.colors.downvoteColor,
+            _ => Colors.white,
+          },
+          fontWeight: FontWeight.w800,
+        ),
+      ),
     );
   }
 }

@@ -78,7 +78,7 @@ class _Chip extends ConsumerWidget {
               data: (data) => data != null
                   ? context.generateChipColors(
                       ref.watch(tagColorProvider(data.name)),
-                      ref.watch(settingsProvider),
+                      ref.watch(enableDynamicColoringProvider),
                     )
                   : null,
               orElse: () => null,

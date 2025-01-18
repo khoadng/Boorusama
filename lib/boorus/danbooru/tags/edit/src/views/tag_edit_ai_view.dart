@@ -64,7 +64,7 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                   final tag = d.tag;
                   final colors = context.generateChipColors(
                     ref.watch(tagColorProvider(tag.category.name)),
-                    ref.watch(settingsProvider),
+                    ref.watch(enableDynamicColoringProvider),
                   );
                   final selected = widget.isSelected(tag.name);
 

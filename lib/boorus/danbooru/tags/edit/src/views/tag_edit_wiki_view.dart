@@ -134,7 +134,7 @@ class _RelatedTagChips extends ConsumerWidget {
         final selected = isSelected(tag.name);
         final colors = context.generateChipColors(
           ref.watch(tagColorProvider(tag.category.name)),
-          ref.watch(settingsProvider),
+          ref.watch(enableDynamicColoringProvider),
         );
 
         return RawChip(

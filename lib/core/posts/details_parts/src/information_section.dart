@@ -222,7 +222,7 @@ class ArtistNameInfoChip extends ConsumerWidget {
     final artist = chooseArtistTag(artistTags);
     final colors = context.generateChipColors(
       ref.watch(tagColorProvider(TagCategory.artist().name)),
-      ref.watch(settingsProvider),
+      ref.watch(enableDynamicColoringProvider),
     );
 
     return Flexible(

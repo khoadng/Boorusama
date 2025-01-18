@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../settings/providers.dart';
 import '../../../rating/rating.dart';
 
-class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
+class ExplicitContentBlockOverlay extends StatefulWidget {
   const ExplicitContentBlockOverlay({
     required this.rating,
     required this.child,
@@ -19,12 +19,12 @@ class ExplicitContentBlockOverlay extends ConsumerStatefulWidget {
   final Widget child;
 
   @override
-  ConsumerState<ExplicitContentBlockOverlay> createState() =>
+  State<ExplicitContentBlockOverlay> createState() =>
       _ExplicitContentBlockOverlayState();
 }
 
 class _ExplicitContentBlockOverlayState
-    extends ConsumerState<ExplicitContentBlockOverlay> {
+    extends State<ExplicitContentBlockOverlay> {
   late final _block = ValueNotifier(widget.rating.isExplicit);
 
   @override
@@ -38,56 +38,76 @@ class _ExplicitContentBlockOverlayState
 
   @override
   Widget build(BuildContext context) {
-    final enable = ref.watch(
-      imageListingSettingsProvider.select((value) => value.blurExplicitMedia),
-    );
-
     return Stack(
       children: [
         widget.child,
-        if (enable) ...[
-          _buildCover(),
-          _buildButton(),
-        ],
+        _buildCover(),
+        _buildButton(),
       ],
     );
   }
 
   Widget _buildButton() {
-    return ValueListenableBuilder(
-      valueListenable: _block,
-      builder: (_, block, __) => block
-          ? Positioned.fill(
-              child: ActionChip(
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withAlpha(25),
-                ),
-                label: Text(
-                  'Explicit'.toUpperCase(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                onPressed: () {
-                  _block.value = false;
-                },
-              ),
-            )
-          : const SizedBox.shrink(),
+    return Consumer(
+      builder: (_, ref, __) {
+        final enable = ref.watch(
+          imageListingSettingsProvider
+              .select((value) => value.blurExplicitMedia),
+        );
+
+        return enable
+            ? ValueListenableBuilder(
+                valueListenable: _block,
+                builder: (_, block, __) => block
+                    ? Positioned.fill(
+                        child: ActionChip(
+                          side: BorderSide(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withAlpha(25),
+                          ),
+                          label: Text(
+                            'Explicit'.toUpperCase(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          onPressed: () {
+                            _block.value = false;
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              )
+            : const SizedBox.shrink();
+      },
     );
   }
 
   Widget _buildCover() {
-    return ValueListenableBuilder(
-      valueListenable: _block,
-      builder: (_, block, __) => block
-          ? Positioned.fill(
-              child: Container(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-              ),
-            )
-          : const SizedBox.shrink(),
+    return Consumer(
+      builder: (_, ref, __) {
+        final enable = ref.watch(
+          imageListingSettingsProvider
+              .select((value) => value.blurExplicitMedia),
+        );
+
+        return enable
+            ? ValueListenableBuilder(
+                valueListenable: _block,
+                builder: (_, block, __) => block
+                    ? Positioned.fill(
+                        child: Container(
+                          color:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              )
+            : const SizedBox.shrink();
+      },
     );
   }
 }

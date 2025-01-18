@@ -781,11 +781,11 @@ class HighresPreviewOnMobileDataWarningBanner extends ConsumerWidget {
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(imageListingSettingsProvider);
+    final imageQuality = ref.watch(imageListingQualityProvider);
 
     return switch (ref.watch(networkStateProvider)) {
       final NetworkConnectedState s =>
-        s.result.isMobile && settings.imageQuality.isHighres
+        s.result.isMobile && imageQuality.isHighres
             ? DismissableInfoContainer(
                 mainColor: Theme.of(context).colorScheme.error,
                 content:

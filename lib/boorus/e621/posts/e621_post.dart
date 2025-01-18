@@ -149,8 +149,7 @@ class E621Post extends Equatable
 extension PostImageX on E621Post {
   bool get hasFullView => originalImageUrl.isNotEmpty && !isVideo;
 
-  String thumbnailFromSettings(ImageListingSettings settings) =>
-      switch (settings.imageQuality) {
+  String thumbnailFromSettings(ImageQuality settings) => switch (settings) {
         ImageQuality.automatic => sampleImageUrl,
         ImageQuality.low => thumbnailImageUrl,
         ImageQuality.high => sampleImageUrl,

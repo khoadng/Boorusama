@@ -38,7 +38,7 @@ class DanbooruForumCard extends ConsumerWidget {
 
           final colors = context.generateChipColors(
             creatorColor,
-            ref.watch(settingsProvider),
+            ref.watch(enableDynamicColoringProvider),
           );
 
           return CompactChip(

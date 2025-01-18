@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
@@ -100,13 +101,6 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imageBorderRadius = ref.watch(
-      imageListingSettingsProvider.select((value) => value.imageBorderRadius),
-    );
-    final showScoresInGrid = ref.watch(
-      imageListingSettingsProvider.select((value) => value.showScoresInGrid),
-    );
-
     final overlay = blockOverlay;
     final hideOverlay = multiSelectEnabled;
 
@@ -124,34 +118,59 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
           : null,
       child: Stack(
         children: [
-          ImageGridItem(
-            borderRadius: BorderRadius.circular(imageBorderRadius),
-            isGif: post.isGif,
-            isAI: post.isAI,
-            hideOverlay: hideOverlay,
-            quickActionButton: quickActionButton,
-            autoScrollOptions: autoScrollOptions,
-            onTap: multiSelectEnabled
-                ? null
-                : () {
-                    if (gestures.canTap && postGesturesHandler != null) {
-                      postGesturesHandler(
-                        ref,
-                        gestures?.tap,
-                        post,
-                      );
-                    } else {
-                      onTap?.call();
-                    }
+          Consumer(
+            builder: (__, ref, _) {
+              final imageBorderRadius = ref.watch(
+                imageListingSettingsProvider
+                    .select((value) => value.imageBorderRadius),
+              );
+
+              return ImageGridItem(
+                borderRadius: BorderRadius.circular(imageBorderRadius),
+                isGif: post.isGif,
+                isAI: post.isAI,
+                hideOverlay: hideOverlay,
+                quickActionButton: quickActionButton,
+                autoScrollOptions: autoScrollOptions,
+                onTap: multiSelectEnabled
+                    ? null
+                    : () {
+                        if (gestures.canTap && postGesturesHandler != null) {
+                          postGesturesHandler(
+                            ref,
+                            gestures?.tap,
+                            post,
+                          );
+                        } else {
+                          onTap?.call();
+                        }
+                      },
+                image: image,
+                isAnimated: post.isAnimated,
+                isTranslated: post.isTranslated,
+                hasComments: post.hasComment,
+                hasParentOrChildren: post.hasParentOrChildren,
+                hasSound: post.hasSound,
+                duration: post.duration,
+                scoreWidget: Consumer(
+                  builder: (_, ref, __) {
+                    final showScoresInGrid = ref.watch(
+                      imageListingSettingsProvider
+                          .select((value) => value.showScoresInGrid),
+                    );
+
+                    final scoreWidget = showScoresInGrid
+                        ? score.toOption().fold(
+                              () => null,
+                              (s) => ImageScoreWidget(score: s),
+                            )
+                        : null;
+
+                    return scoreWidget ?? const SizedBox.shrink();
                   },
-            image: image,
-            isAnimated: post.isAnimated,
-            isTranslated: post.isTranslated,
-            hasComments: post.hasComment,
-            hasParentOrChildren: post.hasParentOrChildren,
-            hasSound: post.hasSound,
-            duration: post.duration,
-            score: showScoresInGrid ? score : null,
+                ),
+              );
+            },
           ),
           if (overlay != null) ...[
             Positioned.fill(

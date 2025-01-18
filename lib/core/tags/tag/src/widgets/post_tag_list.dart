@@ -103,7 +103,7 @@ class PostTagListChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.generateChipColors(
       color ?? ref.watch(tagColorProvider(tag.category.name)),
-      ref.watch(settingsProvider),
+      ref.watch(enableDynamicColoringProvider),
     );
     final screenWith = MediaQuery.sizeOf(context).width;
 

@@ -10,3 +10,10 @@ final settingsProvider = Provider<Settings>(
   name: 'settingsProvider',
   dependencies: [settingsNotifierProvider],
 );
+
+final enableDynamicColoringProvider = Provider<bool>(
+  (ref) => ref
+      .watch(settingsProvider.select((value) => value.enableDynamicColoring)),
+  name: 'enableDynamicColoringProvider',
+  dependencies: [settingsProvider],
+);

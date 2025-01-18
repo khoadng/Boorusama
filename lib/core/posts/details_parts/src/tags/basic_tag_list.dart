@@ -67,7 +67,7 @@ class BasicTagList extends ConsumerWidget {
                   category != null
                       ? ref.watch(tagColorProvider(category))
                       : unknownCategoryColor,
-                  ref.watch(settingsProvider),
+                  ref.watch(enableDynamicColoringProvider),
                 );
 
                 return Chip(

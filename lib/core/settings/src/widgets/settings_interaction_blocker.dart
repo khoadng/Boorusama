@@ -13,7 +13,7 @@ import '../../../theme/theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/listing_provider.dart';
 
-class SettingsInteractionBlocker extends ConsumerWidget {
+class SettingsInteractionBlocker extends StatelessWidget {
   const SettingsInteractionBlocker({
     required this.description,
     required this.block,
@@ -28,7 +28,7 @@ class SettingsInteractionBlocker extends ConsumerWidget {
   final Widget description;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

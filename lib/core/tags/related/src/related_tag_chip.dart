@@ -29,7 +29,7 @@ class RelatedTagButton extends ConsumerWidget {
     final colors = color != null
         ? context.generateChipColors(
             color,
-            ref.watch(settingsProvider),
+            ref.watch(enableDynamicColoringProvider),
           )
         : null;
 

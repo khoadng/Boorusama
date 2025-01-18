@@ -128,7 +128,11 @@ class BooruTextField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final enableIncognitoModeForKeyboard = ref.watch(
+      settingsProvider.select(
+        (value) => value.enableIncognitoModeForKeyboard,
+      ),
+    );
 
     return TextField(
       key: key,
@@ -184,8 +188,8 @@ class BooruTextField extends ConsumerWidget {
       clipBehavior: clipBehavior,
       restorationId: restorationId,
       scribbleEnabled: scribbleEnabled,
-      enableIMEPersonalizedLearning: enableIMEPersonalizedLearning ??
-          !settings.enableIncognitoModeForKeyboard,
+      enableIMEPersonalizedLearning:
+          enableIMEPersonalizedLearning ?? !enableIncognitoModeForKeyboard,
       canRequestFocus: canRequestFocus,
       spellCheckConfiguration: spellCheckConfiguration,
       magnifierConfiguration: magnifierConfiguration,

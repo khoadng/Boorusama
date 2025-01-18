@@ -43,7 +43,7 @@ class BooruChip extends ConsumerWidget {
         (color != null
             ? context.generateChipColors(
                 color,
-                ref.watch(settingsProvider),
+                ref.watch(enableDynamicColoringProvider),
               )
             : null);
 

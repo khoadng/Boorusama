@@ -90,8 +90,7 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
     final post = widget.post;
 
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
-    final imageGridQuality =
-        ref.watch(imageListingSettingsProvider.select((v) => v.imageQuality));
+    final imageGridQuality = ref.watch(imageListingQualityProvider);
 
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
     final placeholderImageUrl = gridThumbnailUrlBuilder != null
