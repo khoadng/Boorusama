@@ -12,7 +12,9 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../boorus/danbooru/errors.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
+import '../../../configs/ref.dart';
 import '../../../foundation/error.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
@@ -341,24 +343,24 @@ class BlockOverlayItem {
 class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
   const SliverPostGridImageGridItem({
     required this.post,
-    required this.hideOverlay,
     required this.quickActionButton,
     required this.autoScrollOptions,
     required this.onTap,
     required this.image,
     required this.score,
+    required this.multiSelectEnabled,
     super.key,
     this.blockOverlay,
   });
 
   final T post;
-  final bool hideOverlay;
   final Widget? quickActionButton;
   final AutoScrollOptions? autoScrollOptions;
   final VoidCallback? onTap;
   final Widget image;
   final int? score;
   final BlockOverlayItem? blockOverlay;
+  final bool multiSelectEnabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -370,62 +372,88 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     );
 
     final overlay = blockOverlay;
+    final hideOverlay = multiSelectEnabled;
 
-    return Stack(
-      children: [
-        ImageGridItem(
-          borderRadius: BorderRadius.circular(imageBorderRadius),
-          isGif: post.isGif,
-          isAI: post.isAI,
-          hideOverlay: hideOverlay,
-          quickActionButton: quickActionButton,
-          autoScrollOptions: autoScrollOptions,
-          onTap: onTap,
-          image: image,
-          isAnimated: post.isAnimated,
-          isTranslated: post.isTranslated,
-          hasComments: post.hasComment,
-          hasParentOrChildren: post.hasParentOrChildren,
-          hasSound: post.hasSound,
-          duration: post.duration,
-          score: showScoresInGrid ? score : null,
-        ),
-        if (overlay != null) ...[
-          Positioned.fill(
-            child: InkWell(
-              highlightColor: Colors.transparent,
-              splashFactory: FasterInkSplash.splashFactory,
-              splashColor: Colors.black38,
-              onTap: blockOverlay?.onTap,
-            ),
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final gestures = ref.watchPostGestures?.preview;
+
+    return GestureDetector(
+      onLongPress: gestures.canLongPress && postGesturesHandler != null
+          ? () => postGesturesHandler(
+                ref,
+                gestures?.longPress,
+                post,
+              )
+          : null,
+      child: Stack(
+        children: [
+          ImageGridItem(
+            borderRadius: BorderRadius.circular(imageBorderRadius),
+            isGif: post.isGif,
+            isAI: post.isAI,
+            hideOverlay: hideOverlay,
+            quickActionButton: quickActionButton,
+            autoScrollOptions: autoScrollOptions,
+            onTap: multiSelectEnabled
+                ? null
+                : () {
+                    if (gestures.canTap && postGesturesHandler != null) {
+                      postGesturesHandler(
+                        ref,
+                        gestures?.tap,
+                        post,
+                      );
+                    } else {
+                      onTap?.call();
+                    }
+                  },
+            image: image,
+            isAnimated: post.isAnimated,
+            isTranslated: post.isTranslated,
+            hasComments: post.hasComment,
+            hasParentOrChildren: post.hasParentOrChildren,
+            hasSound: post.hasSound,
+            duration: post.duration,
+            score: showScoresInGrid ? score : null,
           ),
-          Positioned.fill(
-            child: Center(
-              child: overlay.overlay,
+          if (overlay != null) ...[
+            Positioned.fill(
+              child: InkWell(
+                highlightColor: Colors.transparent,
+                splashFactory: FasterInkSplash.splashFactory,
+                splashColor: Colors.black38,
+                onTap: blockOverlay?.onTap,
+              ),
             ),
-          ),
+            Positioned.fill(
+              child: Center(
+                child: overlay.overlay,
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
 
-class DefaultPostListContextMenuRegion extends StatelessWidget {
+class DefaultPostListContextMenuRegion extends ConsumerWidget {
   const DefaultPostListContextMenuRegion({
-    required this.gestures,
     required this.contextMenu,
     required this.child,
     super.key,
     this.isEnabled = true,
   });
 
-  final GestureConfig? gestures;
   final bool isEnabled;
   final Widget contextMenu;
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gestures = ref.watchPostGestures?.preview;
+
     if (gestures.canLongPress) return child;
 
     return ContextMenuRegion(

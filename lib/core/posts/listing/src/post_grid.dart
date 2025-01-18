@@ -17,7 +17,6 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../cache/providers.dart';
-import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/animations.dart';
 import '../../../foundation/display.dart';
@@ -847,10 +846,6 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
-    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = ref.watchPostGestures?.preview;
-
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
       builder: (_, multiSelect, __) => ValueListenableBuilder(
@@ -867,54 +862,32 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
               },
               post: post,
             ),
-            gestures: gestures,
             child: ExplicitContentBlockOverlay(
               rating: post.rating,
               child: Builder(
                 builder: (context) {
-                  final item = GestureDetector(
-                    onLongPress:
-                        gestures.canLongPress && postGesturesHandler != null
-                            ? () => postGesturesHandler(
-                                  ref,
-                                  gestures?.longPress,
-                                  post,
-                                )
-                            : null,
-                    child: SliverPostGridImageGridItem(
-                      post: post,
-                      hideOverlay: multiSelect,
-                      onTap: !multiSelect
-                          ? () {
-                              if (gestures.canTap &&
-                                  postGesturesHandler != null) {
-                                postGesturesHandler(
-                                  ref,
-                                  gestures?.tap,
-                                  post,
-                                );
-                              } else {
-                                goToPostDetailsPageFromController(
-                                  context: context,
-                                  controller: controller,
-                                  initialIndex: index,
-                                  scrollController: autoScrollController,
-                                );
-                              }
-                            }
-                          : null,
-                      quickActionButton: !multiSelect
-                          ? DefaultImagePreviewQuickActionButton(post: post)
-                          : null,
-                      autoScrollOptions: AutoScrollOptions(
-                        controller: autoScrollController,
-                        index: index,
-                      ),
-                      score: post.score,
-                      image: BooruHero(
-                        tag: useHero ? '${post.id}_hero' : null,
-                        child: _Image(post: post),
-                      ),
+                  final item = SliverPostGridImageGridItem(
+                    post: post,
+                    multiSelectEnabled: multiSelect,
+                    onTap: () {
+                      goToPostDetailsPageFromController(
+                        context: context,
+                        controller: controller,
+                        initialIndex: index,
+                        scrollController: autoScrollController,
+                      );
+                    },
+                    quickActionButton: !multiSelect
+                        ? DefaultImagePreviewQuickActionButton(post: post)
+                        : null,
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: autoScrollController,
+                      index: index,
+                    ),
+                    score: post.score,
+                    image: BooruHero(
+                      tag: useHero ? '${post.id}_hero' : null,
+                      child: _Image(post: post),
                     ),
                   );
 
