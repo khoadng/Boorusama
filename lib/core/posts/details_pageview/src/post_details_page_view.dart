@@ -26,7 +26,6 @@ import 'post_details_page_view_controller.dart';
 import 'sheet_dragline.dart';
 import 'sheet_state_storage.dart';
 import 'side_sheet.dart';
-import 'slide_details_container.dart';
 
 class PostDetailsPageView extends StatefulWidget {
   const PostDetailsPageView({
@@ -98,16 +97,16 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   DraggableScrollableController get _sheetController =>
       _controller.sheetController;
 
-  late final _animationController = !widget.disableAnimation
+  late final _overlayAnimController = !widget.disableAnimation
       ? AnimationController(
           vsync: this,
           duration: const Duration(milliseconds: 150),
         )
       : null;
 
-  late final _curvedAnimation = !widget.disableAnimation
+  late final _overlayCurvedAnimation = _overlayAnimController != null
       ? CurvedAnimation(
-          parent: _animationController!,
+          parent: _overlayAnimController,
           curve: Curves.easeOutCirc,
         )
       : null;
@@ -167,6 +166,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.sheetState.addListener(_onSheetStateChanged);
     _controller.overlay.addListener(_onOverlayChanged);
     _controller.displacement.addListener(_onDisplacementChanged);
+    _controller.freestyleMoving.addListener(_onFreestyleMovingChanged);
 
     _verticalSheetDragY.addListener(_onVerticalSheetDragYChanged);
 
@@ -189,7 +189,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           const Duration(milliseconds: 150),
           () {
             if (!mounted) return;
-            _animationController?.forward();
+            _overlayAnimController?.forward();
           },
         );
       } else {
@@ -197,7 +197,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       }
     } else {
       if (!widget.disableAnimation) {
-        _animationController?.reverse();
+        _overlayAnimController?.reverse();
       } else {
         _forceHide.value = true;
       }
@@ -231,6 +231,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
   }
 
+  void _onFreestyleMovingChanged() {
+    if (_controller.freestyleMoving.value) {
+      _controller.overlay.value = false;
+    } else {
+      _controller.overlay.value = true;
+    }
+  }
+
   void _onDisplacementChanged() {
     _isItemPushed.value = _controller.displacement.value > 0;
   }
@@ -238,7 +246,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   void _onOverlayChanged() {
     if (_controller.overlay.value) {
       if (!widget.disableAnimation) {
-        _animationController?.forward();
+        _overlayAnimController?.forward();
       } else {
         _forceHide.value = false;
       }
@@ -246,7 +254,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       showSystemStatus();
     } else {
       if (!widget.disableAnimation) {
-        _animationController?.reverse();
+        _overlayAnimController?.reverse();
       } else {
         _forceHide.value = true;
       }
@@ -303,31 +311,25 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final dis = size * screenHeight;
+    final dis = _clampToZero(size * screenHeight);
 
-    _controller.displacement.value = _clampToZero(dis);
+    _controller.displacement.value = dis;
+
+    // Handle case when sheet is closed by dragging down, this is not handled by the controller
+    if (dis <= 0 && _controller.isExpanded) {
+      _controller.sheetState.value = SheetState.hidden;
+    }
   }
-
-  var _previouslyForceShowOverlay = false;
 
   void _onSheetStateChanged() {
     if (_controller.isExpanded) {
       widget.onExpanded?.call();
 
-      // if overlay was hidden, show it
-      if (!_controller.overlay.value) {
-        showSystemStatus();
-        _controller.overlay.value = true;
-        _previouslyForceShowOverlay = true;
-      }
+      showSystemStatus();
+      _controller.overlay.value = true;
     } else {
       if (_controller.sheetState.value == SheetState.hidden) {
         widget.onShrink?.call();
-      }
-      // hide overlay if it was forced to show during expanded state
-      if (_previouslyForceShowOverlay) {
-        _controller.overlay.value = false;
-        _previouslyForceShowOverlay = false;
       }
     }
 
@@ -390,11 +392,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.sheetController.removeListener(_onSheetChanged);
     _controller.overlay.removeListener(_onOverlayChanged);
     _controller.displacement.removeListener(_onDisplacementChanged);
+    _controller.freestyleMoving.removeListener(_onFreestyleMovingChanged);
 
     _verticalSheetDragY.removeListener(_onVerticalSheetDragYChanged);
     hovering.removeListener(_onHover);
 
-    _animationController?.dispose();
+    _overlayAnimController?.dispose();
 
     stopAutoSlide();
 
@@ -571,12 +574,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   valueListenable: _forceHide,
                   builder: (__, hide, _) => hide
                       ? const SizedBox.shrink()
-                      : _curvedAnimation != null
+                      : _overlayCurvedAnimation != null
                           ? SlideTransition(
                               position: Tween(
                                 begin: const Offset(0, 1),
                                 end: Offset.zero,
-                              ).animate(_curvedAnimation),
+                              ).animate(_overlayCurvedAnimation),
                               child: sheet,
                             )
                           : sheet,
@@ -594,12 +597,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   condition: !state.isExpanded,
                   conditionalBuilder: (child) => ValueListenableBuilder(
                     valueListenable: _controller.freestyleMoving,
-                    builder: (context, moving, child) => SlideDetailsContainer(
-                      shouldSlide: moving,
-                      direction: SlideContainerDirection.up,
-                      child: child!,
-                    ),
-                    child: child,
+                    builder: (context, moving, _) => child,
                   ),
                   child: SafeArea(
                     right: isLargeScreen,
@@ -612,12 +610,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 valueListenable: _forceHide,
                 builder: (_, hide, __) => hide
                     ? const SizedBox.shrink()
-                    : _curvedAnimation != null
+                    : _overlayCurvedAnimation != null
                         ? SlideTransition(
                             position: Tween(
                               begin: const Offset(0, -1),
                               end: Offset.zero,
-                            ).animate(_curvedAnimation),
+                            ).animate(_overlayCurvedAnimation),
                             child: overlay,
                           )
                         : overlay,
@@ -630,32 +628,25 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   Widget _buildBottomSheet() {
-    return ValueListenableBuilder(
-      valueListenable: _controller.sheetState,
-      builder: (_, state, __) => isLargeScreen
-          ? const SizedBox.shrink()
-          : ValueListenableBuilder(
+    return isLargeScreen
+        ? const SizedBox.shrink()
+        : ValueListenableBuilder(
+            valueListenable: _controller.sheetState,
+            builder: (_, state, __) => ValueListenableBuilder(
               valueListenable: _controller.freestyleMoving,
-              builder: (context, moving, child) => SlideDetailsContainer(
-                shouldSlide: switch (moving) {
-                  true => true,
-                  false => state.isExpanded,
+              builder: (context, moving, child) => ValueListenableBuilder(
+                valueListenable: _isItemPushed,
+                builder: (_, pushed, __) {
+                  return switch (moving) {
+                    true => widget.bottomSheet!,
+                    false =>
+                      pushed ? const SizedBox.shrink() : widget.bottomSheet!,
+                  };
+                  // return !moving ? widget.bottomSheet!;
                 },
-                direction: SlideContainerDirection.down,
-                child: ValueListenableBuilder(
-                  valueListenable: _isItemPushed,
-                  builder: (_, pushed, __) {
-                    return switch (moving) {
-                      true => widget.bottomSheet!,
-                      false =>
-                        pushed ? const SizedBox.shrink() : widget.bottomSheet!,
-                    };
-                    // return !moving ? widget.bottomSheet!;
-                  },
-                ),
               ),
             ),
-    );
+          );
   }
 
   Widget _buildOverlay() {
@@ -755,105 +746,90 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     required SheetState sheetState,
     bool? forceInitialSizeAsMax,
   }) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        if (_controller.isExpanded) {
-          if (notification is ScrollEndNotification) {
-            if (_sheetController.size < 0.6) {
-              _controller.resetSheet();
-            }
-          }
-        }
-
-        return false;
-      },
-      child: ValueListenableBuilder(
-        valueListenable: _controller.sheetMaxSize,
-        builder: (_, maxSize, __) => DraggableScrollableSheet(
-          controller: _sheetController,
-          initialChildSize: forceInitialSizeAsMax == true ? maxSize : 0.0,
-          minChildSize: 0,
-          maxChildSize: maxSize,
-          shouldCloseOnMinExtent: false,
-          snap: true,
-          snapAnimationDuration: const Duration(milliseconds: 200),
-          builder: (context, scrollController) => Scaffold(
-            floatingActionButton: ScrollToTop(
-              scrollController: scrollController,
-              child: BooruScrollToTopButton(
-                onPressed: () {
-                  if (mounted) {
-                    scrollController.jumpTo(0);
-                  }
-                },
-              ),
+    return ValueListenableBuilder(
+      valueListenable: _controller.sheetMaxSize,
+      builder: (_, maxSize, __) => DraggableScrollableSheet(
+        controller: _sheetController,
+        initialChildSize: forceInitialSizeAsMax == true ? maxSize : 0.0,
+        minChildSize: 0,
+        maxChildSize: maxSize,
+        shouldCloseOnMinExtent: false,
+        snap: true,
+        snapAnimationDuration: const Duration(milliseconds: 200),
+        builder: (context, scrollController) => Scaffold(
+          floatingActionButton: ScrollToTop(
+            scrollController: scrollController,
+            child: BooruScrollToTopButton(
+              onPressed: () {
+                if (mounted) {
+                  scrollController.jumpTo(0);
+                }
+              },
             ),
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: widget.sheetBuilder(context, scrollController),
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _isItemPushed,
-                  builder: (_, pushed, __) => pushed
-                      ? const Divider(
-                          height: 0,
-                          thickness: 0.75,
-                        )
-                      : const SizedBox.shrink(),
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: ValueListenableBuilder(
-                    valueListenable: _controller.sheetState,
-                    builder: (context, state, _) => state ==
-                            SheetState.collapsed
-                        ? const SizedBox.shrink()
-                        : GestureDetector(
-                            onVerticalDragStart: (details) {
-                              _controller.sheetMaxSize.value = kFullSheetSize;
-                              _verticalSheetDragStartY =
-                                  details.globalPosition.dy;
-                              _verticalSheetDragStartSize =
-                                  _sheetController.size;
-                              _verticalSheetDragging.value = true;
-                            },
-                            onVerticalDragUpdate: state.isExpanded
-                                ? (details) {
-                                    _verticalSheetDragY.value =
-                                        details.globalPosition.dy -
-                                            _verticalSheetDragStartY;
-                                  }
-                                : null,
-                            onVerticalDragEnd: state.isExpanded
-                                ? (_) {
-                                    final currentSize = _sheetController.size;
+          ),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: widget.sheetBuilder(context, scrollController),
+              ),
+              ValueListenableBuilder(
+                valueListenable: _isItemPushed,
+                builder: (_, pushed, __) => pushed
+                    ? const Divider(
+                        height: 0,
+                        thickness: 0.75,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: ValueListenableBuilder(
+                  valueListenable: _controller.sheetState,
+                  builder: (context, state, _) => state == SheetState.collapsed
+                      ? const SizedBox.shrink()
+                      : GestureDetector(
+                          onVerticalDragStart: (details) {
+                            _controller.sheetMaxSize.value = kFullSheetSize;
+                            _verticalSheetDragStartY =
+                                details.globalPosition.dy;
+                            _verticalSheetDragStartSize = _sheetController.size;
+                            _verticalSheetDragging.value = true;
+                          },
+                          onVerticalDragUpdate: state.isExpanded
+                              ? (details) {
+                                  _verticalSheetDragY.value =
+                                      details.globalPosition.dy -
+                                          _verticalSheetDragStartY;
+                                }
+                              : null,
+                          onVerticalDragEnd: state.isExpanded
+                              ? (_) {
+                                  final currentSize = _sheetController.size;
 
-                                    if (currentSize < widget.maxSize) {
-                                      // Collapse if below maxSize
-                                      _controller.resetSheet();
-                                    } else {
-                                      // not sure why this is needed, but it is required to force the sheet to expand
-                                      setState(() {
-                                        // Expand if above maxSize
-                                        _controller.expandToFullSheetSize();
-                                      });
-                                    }
-
-                                    _verticalSheetDragging.value = false;
+                                  if (currentSize < widget.maxSize) {
+                                    // Collapse if below maxSize
+                                    _controller.resetSheet();
+                                  } else {
+                                    // not sure why this is needed, but it is required to force the sheet to expand
+                                    setState(() {
+                                      // Expand if above maxSize
+                                      _controller.expandToFullSheetSize();
+                                    });
                                   }
-                                : null,
-                            child: ValueListenableBuilder(
-                              valueListenable: _verticalSheetDragging,
-                              builder: (_, dragging, __) => SheetDragline(
-                                isHolding: dragging,
-                              ),
+
+                                  _verticalSheetDragging.value = false;
+                                }
+                              : null,
+                          child: ValueListenableBuilder(
+                            valueListenable: _verticalSheetDragging,
+                            builder: (_, dragging, __) => SheetDragline(
+                              isHolding: dragging,
                             ),
                           ),
-                  ),
+                        ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1061,13 +1037,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     if (_verticalPosition.value.abs() <= _controller.threshold) {
-      //TODO: for some reasons, setState is needed, should investigate later
-      setState(() {
-        // Animate back to original position
-        _controller.resetSheet(
-          duration: const Duration(milliseconds: 100),
-        );
-      });
+      // Animate back to original position
+      _controller.resetSheet(
+        duration: const Duration(milliseconds: 150),
+      );
     }
   }
 
