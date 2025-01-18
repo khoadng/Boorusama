@@ -63,12 +63,13 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   bool get hasMore => _hasMore;
   bool get loading => _loading;
   bool get refreshing => _refreshing;
-  int get page => _page;
+  int get page => pageNotifier.value;
   int get total => _total;
 
   final ValueNotifier<int?> count = ValueNotifier(null);
   final ValueNotifier<bool> refreshingNotifier = ValueNotifier(false);
   final ValueNotifier<List<T>> itemsNotifier = ValueNotifier(const []);
+  final ValueNotifier<int> pageNotifier = ValueNotifier(_kFirstPage);
 
   Timer? _debounceTimer;
   final Duration debounceDuration;
@@ -196,7 +197,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _loading = false;
     if (newPageMode == PageMode.infinite) {
       _clear();
-      _page = _kFirstPage;
+      _setPage(_kFirstPage);
       refresh();
     } else {
       jumpToPage(_page);
@@ -247,7 +248,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _debounceTimer = Timer(debounceDuration, () async {
       _loading = true;
       if (_pageMode == PageMode.infinite) {
-        _page++;
+        _setPage(_page + 1);
       }
       notifyListeners();
 
@@ -269,7 +270,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     }
 
     // make sure the target page is larger than 0
-    _page = targetPage > 0 ? targetPage : _kFirstPage;
+    _setPage(targetPage > 0 ? targetPage : _kFirstPage);
     _clear();
     _setRefreshing(true);
     notifyListeners();
@@ -378,9 +379,30 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     refreshingNotifier.value = value;
   }
 
+  void _setPage(int page) {
+    _page = page;
+    pageNotifier.value = page;
+  }
+
   void _setFilteringItems(List<T> items) {
     _filteredItems = items;
     itemsNotifier.value = items;
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+
+    itemsNotifier.dispose();
+    count.dispose();
+    refreshingNotifier.dispose();
+    pageNotifier.dispose();
+    activeFilters.dispose();
+    tagCounts.dispose();
+    hasBlacklist.dispose();
+    errors.dispose();
+
+    super.dispose();
   }
 }
 
