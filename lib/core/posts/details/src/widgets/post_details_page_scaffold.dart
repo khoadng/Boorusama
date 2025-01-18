@@ -216,7 +216,9 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
     final preferredParts = widget.preferredParts ??
-        layout?.getParsedParts() ??
+        layout?.getParsedParts(
+          hasPremium: ref.watch(hasPremiumProvider),
+        ) ??
         uiBuilder?.full.keys.toSet();
 
     final videoPlayerEngine =

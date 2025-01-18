@@ -554,7 +554,10 @@ class LayoutConfigs extends Equatable {
 }
 
 extension CustomViewKeyX on LayoutConfigs {
-  Set<DetailsPart>? getParsedParts() {
+  Set<DetailsPart>? getParsedParts({
+    required bool hasPremium,
+  }) {
+    if (!hasPremium) return null;
     if (details == null) return null;
     if (details!.isEmpty) return null;
 
