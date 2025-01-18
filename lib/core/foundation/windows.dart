@@ -18,9 +18,7 @@ Future<void> initialize() async {
   unawaited(
     windowManager.waitUntilReadyToShow(
       const WindowOptions(
-        size: Size(1000, 700),
         minimumSize: Size(350, 350),
-        center: true,
         backgroundColor: Colors.transparent,
         skipTaskbar: false,
         titleBarStyle: TitleBarStyle.hidden,
