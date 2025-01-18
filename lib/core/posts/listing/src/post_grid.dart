@@ -39,6 +39,7 @@ import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
 import 'post_list_configuration_header.dart';
 import 'sliver_post_grid.dart';
+import 'sliver_post_grid_image_grid_item.dart';
 import 'swipe_to.dart';
 
 typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
