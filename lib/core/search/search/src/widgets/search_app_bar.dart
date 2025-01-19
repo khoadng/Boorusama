@@ -9,6 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../router.dart';
 import 'booru_search_bar.dart';
 
+const kSearchAppBarWidth = 400.0;
+
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({
     required this.controller,
@@ -77,19 +79,19 @@ class SearchAppBar extends ConsumerWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (constraints.maxWidth < 600)
-              Expanded(
-                child: searchBar,
-              )
-            else
-              ConstrainedBox(
+            Flexible(
+              child: ConstrainedBox(
                 constraints: const BoxConstraints(
-                  maxWidth: 480,
+                  maxWidth: kSearchAppBarWidth,
                 ),
                 child: searchBar,
               ),
-            if (trailingSearchButton != null) const SizedBox(width: 4),
-            if (trailingSearchButton != null) trailingSearchButton!,
+            ),
+            if (trailingSearchButton != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: trailingSearchButton,
+              ),
           ],
         ),
       ),

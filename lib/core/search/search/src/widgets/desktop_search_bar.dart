@@ -63,7 +63,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 anchor: const Aligned(
                   follower: Alignment.topCenter,
                   target: Alignment.bottomCenter,
-                  offset: Offset(-28, 0),
+                  offset: Offset(-28, -4),
                 ),
                 portalFollower: LayoutBuilder(
                   builder: (context, constraints) => _buildOverlay(constraints),
@@ -128,9 +128,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       constraints: BoxConstraints(
         maxWidth: min(
           MediaQuery.sizeOf(context).width * 0.7,
-          500,
+          kSearchAppBarWidth,
         ),
-        maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 500),
+        maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 400),
       ),
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
