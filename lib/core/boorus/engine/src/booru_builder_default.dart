@@ -31,7 +31,6 @@ import '../../../posts/statistics/stats.dart';
 import '../../../posts/statistics/widgets.dart';
 import '../../../router.dart';
 import '../../../scaffolds/scaffolds.dart';
-import '../../../search/search/routes.dart';
 import '../../../search/search/widgets.dart';
 import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';
@@ -278,12 +277,8 @@ class DefaultSearchPage extends ConsumerWidget {
 mixin DefaultHomeMixin implements BooruBuilder {
   @override
   HomeViewBuilder get homeViewBuilder =>
-      (context, controller) => UserCustomHomeBuilder(
-            homePageController: controller,
-            defaultView: MobileHomePageScaffold(
-              controller: controller,
-              onSearchTap: () => goToSearchPage(context),
-            ),
+      (context) => const UserCustomHomeBuilder(
+            defaultView: MobileHomePageScaffold(),
           );
 
   @override

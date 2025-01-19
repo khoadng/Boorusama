@@ -10,7 +10,6 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../../core/boorus/engine/providers.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/foundation/display.dart';
-import '../../../../core/home/home_page_controller.dart';
 import '../../../../core/home/home_search_bar.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
@@ -23,11 +22,8 @@ import 'most_search_tag_list.dart';
 
 class LatestView extends ConsumerStatefulWidget {
   const LatestView({
-    required this.controller,
     super.key,
   });
-
-  final HomePageController controller;
 
   @override
   ConsumerState<LatestView> createState() => _LatestViewState();
@@ -80,7 +76,6 @@ class _LatestViewState extends ConsumerState<LatestView> {
         sliverHeaders: [
           SliverHomeSearchBar(
             selectedTagController: selectedTagController,
-            controller: widget.controller,
             selectedTagString: selectedTagString,
             onSearch: () {
               controller.refresh();

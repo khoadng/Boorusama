@@ -221,11 +221,10 @@ class CustomHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = InheritedHomePageController.of(context);
     final customHome = ref.watch(currentBooruBuilderProvider)?.homeViewBuilder;
 
     return customHome != null
-        ? customHome(context, controller)
+        ? customHome(context)
         : const Scaffold(
             body: Center(child: Text('No home view builder found')),
           );

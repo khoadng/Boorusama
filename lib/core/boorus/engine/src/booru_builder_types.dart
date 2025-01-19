@@ -8,7 +8,6 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
-import '../../../home/home_page_controller.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/details/routes.dart';
 import '../../../posts/post/post.dart';
@@ -131,7 +130,6 @@ typedef MetatagExtractorBuilder = MetatagExtractor Function(
 
 typedef HomeViewBuilder = Widget Function(
   BuildContext context,
-  HomePageController controller,
 );
 
 const kDefaultPostDetailsPreviewPart = {

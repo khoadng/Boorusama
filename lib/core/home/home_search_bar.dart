@@ -27,15 +27,12 @@ import 'home_page_controller.dart';
 class HomeSearchBar extends ConsumerWidget {
   const HomeSearchBar({
     super.key,
-    this.onMenuTap,
-    this.onTap,
   });
-
-  final VoidCallback? onMenuTap;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeController = InheritedHomePageController.of(context);
+
     return BooruSearchBar(
       enabled: false,
       trailing: ref.watch(appUpdateStatusProvider).maybeWhen(
@@ -156,14 +153,14 @@ class HomeSearchBar extends ConsumerWidget {
             },
             orElse: () => const SizedBox.shrink(),
           ),
-      leading: onMenuTap != null
-          ? IconButton(
-              splashRadius: 16,
-              icon: const Icon(Symbols.menu),
-              onPressed: onMenuTap,
-            )
-          : null,
-      onTap: onTap,
+      leading: IconButton(
+        splashRadius: 16,
+        icon: const Icon(Symbols.menu),
+        onPressed: () {
+          homeController.openMenu();
+        },
+      ),
+      onTap: () => goToSearchPage(context),
     );
   }
 }
@@ -203,14 +200,12 @@ class _VersionChangeVisualizedText extends StatelessWidget {
 
 class SliverHomeSearchBar extends ConsumerWidget {
   const SliverHomeSearchBar({
-    required this.controller,
     required this.onSearch,
     super.key,
     this.selectedTagString,
     this.selectedTagController,
   });
 
-  final HomePageController controller;
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
@@ -220,7 +215,6 @@ class SliverHomeSearchBar extends ConsumerWidget {
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     return SliverHomeSearchBarInternal(
-      controller: controller,
       selectedTagString: selectedTagString,
       onSearch: onSearch,
       selectedTagController: selectedTagController,
@@ -231,7 +225,6 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
 class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
   const SliverHomeSearchBarInternal({
-    required this.controller,
     required this.onSearch,
     required this.booruBuilder,
     super.key,
@@ -239,7 +232,6 @@ class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
     this.selectedTagController,
   });
 
-  final HomePageController controller;
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
@@ -286,20 +278,16 @@ class _SliverHomeSearchBarState
               child: _buildDesktop(),
             );
     } else {
-      final homeSearchBar = HomeSearchBar(
-        onMenuTap: widget.controller.openMenu,
-        onTap: () => goToSearchPage(context),
-      );
       return SliverAppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
-        title: Row(
+        title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: LimitedBox(
                 maxWidth: 500,
-                child: homeSearchBar,
+                child: HomeSearchBar(),
               ),
             ),
           ],

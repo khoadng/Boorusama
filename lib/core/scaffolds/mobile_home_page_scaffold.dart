@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/ref.dart';
 import '../foundation/display.dart';
-import '../home/home_page_controller.dart';
 import '../home/home_search_bar.dart';
 import '../posts/count/widgets.dart';
 import '../posts/listing/widgets.dart';
@@ -19,13 +18,8 @@ import '../widgets/widgets.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
-    required this.controller,
-    required this.onSearchTap,
     super.key,
   });
-
-  final HomePageController controller;
-  final void Function() onSearchTap;
 
   @override
   ConsumerState<MobileHomePageScaffold> createState() =>
@@ -60,7 +54,6 @@ class _MobileHomePageScaffoldState
         sliverHeaders: [
           SliverHomeSearchBar(
             selectedTagController: selectedTagController,
-            controller: widget.controller,
             selectedTagString: selectedTagString,
             onSearch: () {
               postController.refresh();

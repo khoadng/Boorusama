@@ -13,17 +13,13 @@ import '../configs/routes.dart';
 import '../info/app_info.dart';
 import 'home_page_controller.dart';
 
-// Project imports:
-
 class UserCustomHomeBuilder extends ConsumerWidget {
   const UserCustomHomeBuilder({
     required this.defaultView,
-    required this.homePageController,
     super.key,
   });
 
   final Widget defaultView;
-  final HomePageController homePageController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +40,6 @@ class UserCustomHomeBuilder extends ConsumerWidget {
     final view = viewBuilder(context, booruBuilder);
 
     return CustomHomeContainer(
-      homePageController: homePageController,
       child: view,
     );
   }
@@ -52,12 +47,10 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
 class CustomHomeContainer extends ConsumerWidget {
   const CustomHomeContainer({
-    required this.homePageController,
     required this.child,
     super.key,
   });
 
-  final HomePageController homePageController;
   final Widget child;
 
   @override
@@ -65,6 +58,7 @@ class CustomHomeContainer extends ConsumerWidget {
     final appInfo = ref.watch(appInfoProvider);
     final appName = appInfo.appName;
     final config = ref.watchConfig;
+    final homePageController = InheritedHomePageController.of(context);
 
     return Column(
       children: [

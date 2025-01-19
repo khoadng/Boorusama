@@ -313,12 +313,9 @@ class DanbooruBuilder
           };
 
   @override
-  HomeViewBuilder get homeViewBuilder => (context, controller) {
-        return UserCustomHomeBuilder(
-          homePageController: controller,
-          defaultView: LatestView(
-            controller: controller,
-          ),
+  HomeViewBuilder get homeViewBuilder => (context) {
+        return const UserCustomHomeBuilder(
+          defaultView: LatestView(),
         );
       };
 
