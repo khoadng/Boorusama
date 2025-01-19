@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../foundation/display/media_query_utils.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../details/routes.dart';
@@ -41,18 +42,20 @@ class SliverArtistPostList extends ConsumerWidget {
                 customBorder: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  visualDensity: VisualDensity.compact,
-                  minVerticalPadding: 0,
-                  trailing: const Icon(
-                    Symbols.arrow_right_alt,
-                  ),
-                  title: Text(
-                    tag.replaceAll('_', ' '),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
+                child: RemoveLeftPaddingOnLargeScreen(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    visualDensity: VisualDensity.compact,
+                    minVerticalPadding: 0,
+                    trailing: const Icon(
+                      Symbols.arrow_right_alt,
+                    ),
+                    title: Text(
+                      tag.replaceAll('_', ' '),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.5,
+                      ),
                     ),
                   ),
                 ),

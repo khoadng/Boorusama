@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../../../rating/rating.dart';
@@ -55,74 +56,76 @@ class FileDetailsSection extends StatelessWidget {
             ),
         dividerColor: Colors.transparent,
       ),
-      child: ExpansionTile(
-        initiallyExpanded: initialExpanded,
-        title: Text(
-          'post.detail.file_details'.tr(),
-        ),
-        subtitle: Text(
-          '$resolutionText$fileFormatText$fileSizeText • $ratingText',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.hintColor,
+      child: RemoveLeftPaddingOnLargeScreen(
+        child: ExpansionTile(
+          initiallyExpanded: initialExpanded,
+          title: Text(
+            'post.detail.file_details'.tr(),
           ),
-        ),
-        children: [
-          FileDetailTile(
-            title: 'ID',
-            valueLabel: post.id.toString(),
-            valueTrailing: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                child: const Icon(
-                  Symbols.content_copy,
-                  size: 18,
+          subtitle: Text(
+            '$resolutionText$fileFormatText$fileSizeText • $ratingText',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.hintColor,
+            ),
+          ),
+          children: [
+            FileDetailTile(
+              title: 'ID',
+              valueLabel: post.id.toString(),
+              valueTrailing: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  child: const Icon(
+                    Symbols.content_copy,
+                    size: 18,
+                  ),
+                  onTap: () {
+                    AppClipboard.copyWithDefaultToast(
+                      context,
+                      post.id.toString(),
+                    );
+                  },
                 ),
-                onTap: () {
-                  AppClipboard.copyWithDefaultToast(
-                    context,
-                    post.id.toString(),
-                  );
-                },
               ),
             ),
-          ),
-          FileDetailTile(
-            title: 'post.detail.rating'.tr(),
-            valueLabel: rating.name.pascalCase,
-          ),
-          if (post.fileSize > 0)
             FileDetailTile(
-              title: 'post.detail.size'.tr(),
-              valueLabel: Filesize.parse(post.fileSize, round: 1),
+              title: 'post.detail.rating'.tr(),
+              valueLabel: rating.name.pascalCase,
             ),
-          if (post.width > 0 && post.height > 0)
-            FileDetailTile(
-              title: 'post.detail.resolution'.tr(),
-              valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
-            ),
-          FileDetailTile(
-            title: 'post.detail.file_format'.tr(),
-            valueLabel: post.format,
-          ),
-          if (post.isVideo && post.duration > 0)
-            FileDetailTile(
-              title: 'Duration',
-              valueLabel: '${post.duration.toInt()} seconds',
-            ),
-          if (uploader != null)
-            FileDetailTile(
-              title: 'Uploader',
-              value: uploader,
-            ),
-          if (customDetails != null) ...[
-            for (final detail in customDetails!.entries)
+            if (post.fileSize > 0)
               FileDetailTile(
-                title: detail.key,
-                value: detail.value,
+                title: 'post.detail.size'.tr(),
+                valueLabel: Filesize.parse(post.fileSize, round: 1),
               ),
+            if (post.width > 0 && post.height > 0)
+              FileDetailTile(
+                title: 'post.detail.resolution'.tr(),
+                valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
+              ),
+            FileDetailTile(
+              title: 'post.detail.file_format'.tr(),
+              valueLabel: post.format,
+            ),
+            if (post.isVideo && post.duration > 0)
+              FileDetailTile(
+                title: 'Duration',
+                valueLabel: '${post.duration.toInt()} seconds',
+              ),
+            if (uploader != null)
+              FileDetailTile(
+                title: 'Uploader',
+                value: uploader,
+              ),
+            if (customDetails != null) ...[
+              for (final detail in customDetails!.entries)
+                FileDetailTile(
+                  title: detail.key,
+                  value: detail.value,
+                ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

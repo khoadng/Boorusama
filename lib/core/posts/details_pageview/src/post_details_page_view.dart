@@ -200,7 +200,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.freestyleMoving.value = true;
     }
 
-    _forceHide.value = true;
+    if (widget.disableAnimation) {
+      _forceHide.value = true;
+    }
 
     _controller.restoreSystemStatus();
     widget.onExit?.call();

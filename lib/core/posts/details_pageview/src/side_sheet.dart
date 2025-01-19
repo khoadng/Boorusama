@@ -61,11 +61,7 @@ class _SideSheetState extends State<SideSheet> {
             ),
           ),
         ),
-        child: MediaQuery.removePadding(
-          context: context,
-          removeLeft: true,
-          child: widget.sheetBuilder(context, null),
-        ),
+        child: widget.sheetBuilder(context, null),
       ),
     );
 

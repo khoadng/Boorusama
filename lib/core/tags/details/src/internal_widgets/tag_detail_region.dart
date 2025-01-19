@@ -63,11 +63,7 @@ class TagDetailsRegion extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: MediaQuery.removeViewPadding(
-                    context: context,
-                    removeLeft: true,
-                    child: builder(context),
-                  ),
+                  child: builder(context),
                 ),
               ],
             ),
