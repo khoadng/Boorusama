@@ -211,71 +211,75 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                     padding: EdgeInsets.symmetric(
                       horizontal: imageGridPadding,
                     ),
-                    child: PostListConfigurationHeader(
-                      axis: axis,
-                      postCount: widget.controller.total,
-                      initiallyExpanded:
-                          axis == Axis.vertical || expand == true,
-                      onExpansionChanged: (value) => _expanded.value = value,
-                      hasBlacklist: hasBlacklist,
-                      tags: activeFilters.keys
-                          .map(
-                            (e) => (
-                              name: e,
-                              count: tagCounts[e]?.length ?? 0,
-                              active: activeFilters[e] ?? false,
-                            ),
-                          )
-                          .where((e) => e.count > 0)
-                          .toList(),
-                      trailing: axis == Axis.horizontal
-                          ? PostGridConfigIconButton(
-                              postController: widget.controller,
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeLeft: true,
+                      child: PostListConfigurationHeader(
+                        axis: axis,
+                        postCount: widget.controller.total,
+                        initiallyExpanded:
+                            axis == Axis.vertical || expand == true,
+                        onExpansionChanged: (value) => _expanded.value = value,
+                        hasBlacklist: hasBlacklist,
+                        tags: activeFilters.keys
+                            .map(
+                              (e) => (
+                                name: e,
+                                count: tagCounts[e]?.length ?? 0,
+                                active: activeFilters[e] ?? false,
+                              ),
                             )
-                          : null,
-                      onClosed: () {
-                        final hasCustomListing =
-                            ref.read(hasCustomListingSettingsProvider);
+                            .where((e) => e.count > 0)
+                            .toList(),
+                        trailing: axis == Axis.horizontal
+                            ? PostGridConfigIconButton(
+                                postController: widget.controller,
+                              )
+                            : null,
+                        onClosed: () {
+                          final hasCustomListing =
+                              ref.read(hasCustomListingSettingsProvider);
 
-                        if (hasCustomListing) {
-                          showErrorToast(
-                            context,
-                            'Cannot hide header when using custom listing',
-                          );
-                          return;
-                        }
+                          if (hasCustomListing) {
+                            showErrorToast(
+                              context,
+                              'Cannot hide header when using custom listing',
+                            );
+                            return;
+                          }
 
-                        final settingsNotifier =
-                            ref.read(settingsNotifierProvider.notifier)
-                              ..updateWith(
+                          final settingsNotifier =
+                              ref.read(settingsNotifierProvider.notifier)
+                                ..updateWith(
+                                  (s) => s.copyWith(
+                                    listing: s.listing.copyWith(
+                                      showPostListConfigHeader: false,
+                                    ),
+                                  ),
+                                );
+                          showSimpleSnackBar(
+                            duration: AppDurations.extraLongToast,
+                            context: context,
+                            content: const Text(
+                              'You can always show this header again in Settings.',
+                            ),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () => settingsNotifier.updateWith(
                                 (s) => s.copyWith(
                                   listing: s.listing.copyWith(
-                                    showPostListConfigHeader: false,
+                                    showPostListConfigHeader: true,
                                   ),
-                                ),
-                              );
-                        showSimpleSnackBar(
-                          duration: AppDurations.extraLongToast,
-                          context: context,
-                          content: const Text(
-                            'You can always show this header again in Settings.',
-                          ),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () => settingsNotifier.updateWith(
-                              (s) => s.copyWith(
-                                listing: s.listing.copyWith(
-                                  showPostListConfigHeader: true,
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      onDisableAll: _disableAll,
-                      onEnableAll: _enableAll,
-                      onChanged: _update,
-                      hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+                          );
+                        },
+                        onDisableAll: _disableAll,
+                        onEnableAll: _enableAll,
+                        onChanged: _update,
+                        hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+                      ),
                     ),
                   ),
                 );

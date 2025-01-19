@@ -62,6 +62,7 @@ class SelectedTagList extends StatelessWidget {
             child: SizedBox(
               height: 35,
               child: ListView.builder(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: tagItems.length,
