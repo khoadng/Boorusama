@@ -94,6 +94,8 @@ class PostDetailsPageViewController extends ChangeNotifier
   void showOverlay({
     bool includeSystemStatus = true,
   }) {
+    if (overlay.value) return;
+
     overlay.value = true;
 
     if (includeSystemStatus) {
@@ -104,6 +106,8 @@ class PostDetailsPageViewController extends ChangeNotifier
   void hideOverlay({
     bool includeSystemStatus = true,
   }) {
+    if (!overlay.value) return;
+
     overlay.value = false;
 
     if (includeSystemStatus) {

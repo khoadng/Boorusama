@@ -191,21 +191,29 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     if (_controller.initialHideOverlay) {
-      hideSystemStatus();
+      Future.delayed(
+        const Duration(milliseconds: 250),
+        () {
+          if (!mounted) return;
+          hideSystemStatus();
+        },
+      );
     }
   }
 
   void _onPop() {
     if (!widget.disableAnimation) {
-      _controller.freestyleMoving.value = true;
-    }
-
-    if (!widget.disableAnimation) {
       _forceHide.value = true;
     }
 
-    _controller.restoreSystemStatus();
-    widget.onExit?.call();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!widget.disableAnimation) {
+        _controller.freestyleMoving.value = true;
+      }
+
+      _controller.restoreSystemStatus();
+      widget.onExit?.call();
+    });
   }
 
   void _onHover() {
@@ -222,9 +230,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   void _onFreestyleMovingChanged() {
     if (_controller.freestyleMoving.value) {
-      _controller.showOverlay();
+      _controller.hideOverlay(
+        includeSystemStatus: false,
+      );
     } else {
-      _controller.hideOverlay();
+      _controller.showOverlay(
+        includeSystemStatus: false,
+      );
     }
   }
 
