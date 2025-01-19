@@ -47,8 +47,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.initialQuery,
     this.noticeBuilder,
     this.queryPattern,
-    this.metatagsBuilder,
-    this.trendingBuilder,
+    this.metatags,
+    this.trending,
     this.extraHeaders,
     this.itemBuilder,
   });
@@ -58,9 +58,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context)? noticeBuilder;
 
   final List<Widget> Function(
+    BuildContext context,
     ValueNotifier<String> selectedTagString,
-    SelectedTagController selectedTagController,
-    SearchPageController searchController,
     PostGridController<T> postController,
   )? extraHeaders;
 
@@ -73,10 +72,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 
-  final Widget Function(BuildContext context, SearchPageController controller)?
-      metatagsBuilder;
-  final Widget Function(BuildContext context, SearchPageController controller)?
-      trendingBuilder;
+  final Widget? metatags;
+  final Widget? trending;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -151,12 +148,16 @@ class _SearchPageScaffoldState<T extends Post>
   @override
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
-      child: ValueListenableBuilder(
-        valueListenable: searchController.searchState,
-        builder: (_, state, __) => Stack(
+      child: InheritedSearchPageController(
+        controller: searchController,
+        child: Stack(
           children: [
-            Offstage(
-              offstage: state != SearchState.initial,
+            ValueListenableBuilder(
+              valueListenable: searchState,
+              builder: (_, state, child) => Offstage(
+                offstage: state != SearchState.initial,
+                child: child,
+              ),
               child: ValueListenableBuilder(
                 valueListenable: _didSearchOnce,
                 builder: (context, searchOnce, child) {
@@ -175,14 +176,18 @@ class _SearchPageScaffoldState<T extends Post>
                             searchController.selectedTagController,
                           ),
                           builder: (context, controller) =>
-                              _buildDefaultSearchResults(controller),
+                              _buildDefaultSearchResults(context, controller),
                         )
                       : _buildInitial(context, search);
                 },
               ),
             ),
-            if (state == SearchState.suggestions)
-              ValueListenableBuilder(
+            ValueListenableBuilder(
+              valueListenable: searchState,
+              builder: (_, state, child) => state == SearchState.suggestions
+                  ? child!
+                  : const SizedBox.shrink(),
+              child: ValueListenableBuilder(
                 valueListenable: _didSearchOnce,
                 builder: (_, searchOnce, __) => SuggestionView(
                   queryPattern: widget.queryPattern,
@@ -191,9 +196,8 @@ class _SearchPageScaffoldState<T extends Post>
                       ? ModalRoute.of(context)?.settings
                       : const RouteSettings(name: '/search_result'),
                 ),
-              )
-            else
-              const SizedBox.shrink(),
+              ),
+            ),
           ],
         ),
       ),
@@ -207,6 +211,7 @@ class _SearchPageScaffoldState<T extends Post>
     final parentRoute = ModalRoute.of(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 1.2),
         child: Consumer(
@@ -254,18 +259,8 @@ class _SearchPageScaffoldState<T extends Post>
                 value,
                 isRaw: true,
               ),
-              metatagsBuilder: widget.metatagsBuilder != null
-                  ? (context) => widget.metatagsBuilder!(
-                        context,
-                        searchController,
-                      )
-                  : null,
-              trendingBuilder: widget.trendingBuilder != null
-                  ? (context) => widget.trendingBuilder!(
-                        context,
-                        searchController,
-                      )
-                  : null,
+              metatags: widget.metatags,
+              trending: widget.trending,
             ),
           ),
         ],
@@ -274,6 +269,7 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   Widget _buildDefaultSearchResults(
+    BuildContext context,
     PostGridController<T> controller,
   ) {
     return PostGrid<T>(
@@ -302,12 +298,7 @@ class _SearchPageScaffoldState<T extends Post>
           },
           searchController: searchController,
           selectedTagController: selectedTagController,
-          metatagsBuilder: widget.metatagsBuilder != null
-              ? (context, _) => widget.metatagsBuilder!(
-                    context,
-                    searchController,
-                  )
-              : null,
+          metatags: widget.metatags,
         ),
         SliverToBoxAdapter(
           child: SelectedTagListWithData(
@@ -316,9 +307,8 @@ class _SearchPageScaffoldState<T extends Post>
         ),
         if (widget.extraHeaders != null)
           ...widget.extraHeaders!(
+            context,
             selectedTagString,
-            selectedTagController,
-            searchController,
             controller,
           ),
         SliverToBoxAdapter(

@@ -194,17 +194,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                       selectedTagController.addTagFromSearchHistory(value);
                       FocusScope.of(context).unfocus();
                     },
-                    metatagsBuilder:
+                    metatags:
                         ref.watchConfigAuth.booruType == BooruType.danbooru
-                            ? (context) => DanbooruMetatagsSection(
-                                  onOptionTap: (value) {
-                                    textEditingController.text = '$value:';
-                                    // ignore: cascade_invocations
-                                    textEditingController
-                                        .setTextAndCollapseSelection('$value:');
-                                    setState(() {});
-                                  },
-                                )
+                            ? DanbooruMetatagsSection(
+                                onOptionTap: (value) {
+                                  textEditingController.text = '$value:';
+                                  // ignore: cascade_invocations
+                                  textEditingController
+                                      .setTextAndCollapseSelection('$value:');
+                                  setState(() {});
+                                },
+                              )
                             : null,
                   ),
                 ),

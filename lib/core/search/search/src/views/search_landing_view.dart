@@ -21,9 +21,9 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.onHistoryTap,
     this.onTagTap,
     this.onRawTagTap,
-    this.metatagsBuilder,
-    this.trendingBuilder,
-    this.noticeBuilder,
+    this.metatags,
+    this.trending,
+    this.notice,
     this.backgroundColor,
     this.scrollController,
     this.disableAnimation = false,
@@ -35,9 +35,9 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final ValueChanged<String>? onRawTagTap;
   final ValueChanged<SearchHistory> onHistoryRemoved;
   final VoidCallback onHistoryCleared;
-  final Widget Function(BuildContext context)? metatagsBuilder;
-  final Widget Function(BuildContext context)? trendingBuilder;
-  final Widget Function(BuildContext context)? noticeBuilder;
+  final Widget? metatags;
+  final Widget? trending;
+  final Widget? notice;
   final Color? backgroundColor;
   final ScrollController? scrollController;
   final bool disableAnimation;
@@ -87,9 +87,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.noticeBuilder != null) ...[
-            widget.noticeBuilder!.call(context),
-          ],
+          if (widget.notice != null) widget.notice!,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: QueryActionsSection(
@@ -100,10 +98,10 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
             ),
           ),
           const Divider(thickness: 1),
-          if (widget.metatagsBuilder != null) ...[
+          if (widget.metatags != null) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: widget.metatagsBuilder!(context),
+              child: widget.metatags,
             ),
             const SizedBox(
               height: 10,
@@ -120,11 +118,11 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
             ),
           ),
           const SizedBox(height: 8),
-          if (widget.trendingBuilder != null) ...[
+          if (widget.trending != null) ...[
             const Divider(thickness: 1),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: widget.trendingBuilder!.call(context),
+              child: widget.trending,
             ),
             const SizedBox(height: 8),
           ],

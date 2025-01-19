@@ -45,19 +45,8 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: Theme.of(context).colorScheme.primary,
         ),
       },
-      trendingBuilder: (context, controller) => TrendingSection(
-        onTagTap: (value) {
-          controller.tapTag(value);
-        },
-      ),
-      metatagsBuilder: (context, controller) => DanbooruMetatagsSection(
-        onOptionTap: (value) {
-          controller.tapRawMetaTag(value);
-          controller.focus.requestFocus();
-          controller.textEditingController
-              .setTextAndCollapseSelection('$value:');
-        },
-      ),
+      trending: const _Trending(),
+      metatags: const _Metatags(),
       itemBuilder: (
         context,
         index,
@@ -74,47 +63,81 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
         useHero: useHero,
       ),
       extraHeaders: (
+        context,
         selectedTagString,
-        selectedTagController,
-        searchController,
         postController,
-      ) =>
-          [
-        SliverToBoxAdapter(
-          child: ValueListenableBuilder(
-            valueListenable: selectedTagString,
-            builder: (context, selectedTags, _) => RelatedTagSection(
-              query: selectedTags,
-              onAdded: (tag) {
-                selectedTagController.addTag(tag.tag);
-                postController.refresh();
-                selectedTagString.value = selectedTagController.rawTagsString;
-                searchController.search();
-              },
-              onNegated: (tag) {
-                selectedTagController.negateTag(tag.tag);
-                postController.refresh();
-                selectedTagString.value = selectedTagController.rawTagsString;
-                searchController.search();
-              },
+      ) {
+        final searchController = InheritedSearchPageController.of(context);
+        final selectedTagController = searchController.selectedTagController;
+
+        return [
+          SliverToBoxAdapter(
+            child: ValueListenableBuilder(
+              valueListenable: selectedTagString,
+              builder: (context, selectedTags, _) => RelatedTagSection(
+                query: selectedTags,
+                onAdded: (tag) {
+                  selectedTagController.addTag(tag.tag);
+                  postController.refresh();
+                  selectedTagString.value = selectedTagController.rawTagsString;
+                  searchController.search();
+                },
+                onNegated: (tag) {
+                  selectedTagController.negateTag(tag.tag);
+                  postController.refresh();
+                  selectedTagString.value = selectedTagController.rawTagsString;
+                  searchController.search();
+                },
+              ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: Row(
-            children: [
-              ValueListenableBuilder(
-                valueListenable: selectedTagString,
-                builder: (context, selectedTags, _) => ResultHeaderWithProvider(
-                  selectedTagsString: selectedTags,
-                  onRefresh: null,
+          SliverToBoxAdapter(
+            child: Row(
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: selectedTagString,
+                  builder: (context, selectedTags, _) =>
+                      ResultHeaderWithProvider(
+                    selectedTagsString: selectedTags,
+                    onRefresh: null,
+                  ),
                 ),
-              ),
-              const Spacer(),
-            ],
+                const Spacer(),
+              ],
+            ),
           ),
-        ),
-      ],
+        ];
+      },
+    );
+  }
+}
+
+class _Trending extends StatelessWidget {
+  const _Trending();
+
+  @override
+  Widget build(BuildContext context) {
+    return TrendingSection(
+      onTagTap: (value) {
+        InheritedSearchPageController.of(context).tapTag(value);
+      },
+    );
+  }
+}
+
+class _Metatags extends StatelessWidget {
+  const _Metatags();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = InheritedSearchPageController.of(context);
+
+    return DanbooruMetatagsSection(
+      onOptionTap: (value) {
+        controller.tapRawMetaTag(value);
+        controller.focus.requestFocus();
+        controller.textEditingController.setTextAndCollapseSelection('$value:');
+      },
     );
   }
 }

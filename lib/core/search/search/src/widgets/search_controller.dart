@@ -83,3 +83,29 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
   @override
   SetAllowSearch get setAllowSearch => (value) => allowSearch.value = value;
 }
+
+class InheritedSearchPageController extends InheritedWidget {
+  const InheritedSearchPageController({
+    required this.controller,
+    required super.child,
+    super.key,
+  });
+
+  final SearchPageController controller;
+
+  static SearchPageController of(BuildContext context) {
+    final result = context
+        .dependOnInheritedWidgetOfExactType<InheritedSearchPageController>();
+    if (result == null) {
+      throw FlutterError(
+        'InheritedSearchPageController.of was called with a context that does not contain a SearchPageController.',
+      );
+    }
+    return result.controller;
+  }
+
+  @override
+  bool updateShouldNotify(InheritedSearchPageController oldWidget) {
+    return oldWidget.controller != controller;
+  }
+}

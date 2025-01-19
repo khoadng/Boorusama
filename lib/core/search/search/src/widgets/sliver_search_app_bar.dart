@@ -22,13 +22,13 @@ class SliverSearchAppBar extends ConsumerStatefulWidget {
     required this.searchController,
     required this.selectedTagController,
     super.key,
-    this.metatagsBuilder,
+    this.metatags,
   });
 
   final void Function() search;
   final SearchPageController searchController;
   final SelectedTagController selectedTagController;
-  final Widget Function(BuildContext, WidgetRef)? metatagsBuilder;
+  final Widget? metatags;
 
   @override
   ConsumerState<SliverSearchAppBar> createState() => _SliverSearchAppBarState();
@@ -102,9 +102,7 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
                         );
                         context.pop();
                       },
-                      metatagsBuilder: widget.metatagsBuilder != null
-                          ? (context) => widget.metatagsBuilder!(context, ref)
-                          : null,
+                      metatags: widget.metatags,
                     ),
                   ),
                 ),
