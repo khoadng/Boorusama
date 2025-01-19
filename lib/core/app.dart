@@ -26,6 +26,7 @@ import 'info/device_info.dart';
 import 'router.dart';
 import 'settings/providers.dart';
 import 'theme/theme.dart';
+import 'widgets/widgets.dart';
 
 const kMinSideBarWidth = 62.0;
 const kMaxSideBarWidth = 250.0;
@@ -73,7 +74,18 @@ class _App extends ConsumerWidget {
               statusBarBrightness: theme.brightness,
               statusBarIconBrightness: context.onBrightness,
             ),
-            child: AppTitleBar(child: child!),
+            child: AppTitleBar(
+              child: Column(
+                children: [
+                  const NetworkUnavailableIndicatorWithState(),
+                  Expanded(
+                    child: NetworkUnavailableRemovePadding(
+                      child: child!,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         scrollBehavior: reduceAnimations ? const NoOverscrollBehavior() : null,

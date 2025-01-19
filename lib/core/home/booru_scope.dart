@@ -13,7 +13,6 @@ import '../foundation/display.dart';
 import '../foundation/platform.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
-import '../widgets/widgets.dart';
 import 'home_page_controller.dart';
 import 'side_bar_menu.dart';
 
@@ -155,45 +154,38 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
                   highlightedColor: colorScheme.primary,
                 ),
         ),
-        child: Column(
-          children: [
-            const NetworkUnavailableIndicatorWithState(),
-            Expanded(
-              child: MultiSplitView(
-                controller: splitController,
-                onDividerDoubleTap: (divider) {
-                  setState(() {
-                    final width = menuWidth.value;
+        child: MultiSplitView(
+          controller: splitController,
+          onDividerDoubleTap: (divider) {
+            setState(() {
+              final width = menuWidth.value;
 
-                    if (width == kMinSideBarWidth) {
-                      _setDefaultSplit();
-                    } else if (width <= _kDefaultMenuSize) {
-                      _setMinSplit();
-                    } else {
-                      _setDefaultSplit();
-                    }
-                  });
-                },
-                builder: (context, area) => isDesktop
-                    ? switch (area.data) {
-                        'menu' => LayoutBuilder(
-                            builder: (_, c) {
-                              // no need to set state here, just a quick hack to get the current width of the menu
-                              menuWidth.value = c.maxWidth;
+              if (width == kMinSideBarWidth) {
+                _setDefaultSplit();
+              } else if (width <= _kDefaultMenuSize) {
+                _setMinSplit();
+              } else {
+                _setDefaultSplit();
+              }
+            });
+          },
+          builder: (context, area) => isDesktop
+              ? switch (area.data) {
+                  'menu' => LayoutBuilder(
+                      builder: (_, c) {
+                        // no need to set state here, just a quick hack to get the current width of the menu
+                        menuWidth.value = c.maxWidth;
 
-                              return widget.menu;
-                            },
-                          ),
-                        'content' => widget.content,
-                        _ => const SizedBox.shrink(),
-                      }
-                    : switch (area.data) {
-                        'content' => widget.content,
-                        _ => const SizedBox.shrink(),
+                        return widget.menu;
                       },
-              ),
-            ),
-          ],
+                    ),
+                  'content' => widget.content,
+                  _ => const SizedBox.shrink(),
+                }
+              : switch (area.data) {
+                  'content' => widget.content,
+                  _ => const SizedBox.shrink(),
+                },
         ),
       ),
     );
