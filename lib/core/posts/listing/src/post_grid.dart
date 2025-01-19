@@ -523,6 +523,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
         condition: widget.safeArea,
         conditionalBuilder: (child) => SafeArea(
           bottom: false,
+          left: false,
           child: child,
         ),
         child: MultiSelectWidget<T>(

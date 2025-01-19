@@ -111,30 +111,26 @@ class HomeContent extends ConsumerWidget {
 
     return ValueListenableBuilder(
       valueListenable: controller,
-      builder: (context, value, child) => MediaQuery.removePadding(
-        context: context,
-        removeLeft: true,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: !context.isLargeScreen && value > 0
-              ? AppBar(
-                  leading: BackButton(
-                    onPressed: () {
-                      controller.goToTab(0);
-                    },
-                  ),
-                )
-              : null,
-          body: LazyIndexedStack(
-            index: value,
-            children: [
-              ...views,
-              ...coreDesktopViewBuilder(
-                previousItemCount: views.length,
-                viewKey: homeViewKey,
-              ),
-            ],
-          ),
+      builder: (context, value, child) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: !context.isLargeScreen && value > 0
+            ? AppBar(
+                leading: BackButton(
+                  onPressed: () {
+                    controller.goToTab(0);
+                  },
+                ),
+              )
+            : null,
+        body: LazyIndexedStack(
+          index: value,
+          children: [
+            ...views,
+            ...coreDesktopViewBuilder(
+              previousItemCount: views.length,
+              viewKey: homeViewKey,
+            ),
+          ],
         ),
       ),
     );

@@ -32,37 +32,33 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
         height: height ?? 200,
-        child: MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            scrollDirection: Axis.horizontal,
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          scrollDirection: Axis.horizontal,
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            final post = posts[index];
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: ImageGridItem(
-                  isGif: post.isGif,
-                  isAI: post.isAI,
-                  isAnimated: post.isAnimated,
-                  isTranslated: post.isTranslated,
-                  onTap: () => onTap(index),
-                  image: imageBuilder != null
-                      ? imageBuilder!(post)
-                      : BooruImage(
-                          forceFill: true,
-                          aspectRatio: 0.6,
-                          imageUrl: imageUrl(post),
-                          placeholderUrl: post.thumbnailImageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-              );
-            },
-          ),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: ImageGridItem(
+                isGif: post.isGif,
+                isAI: post.isAI,
+                isAnimated: post.isAnimated,
+                isTranslated: post.isTranslated,
+                onTap: () => onTap(index),
+                image: imageBuilder != null
+                    ? imageBuilder!(post)
+                    : BooruImage(
+                        forceFill: true,
+                        aspectRatio: 0.6,
+                        imageUrl: imageUrl(post),
+                        placeholderUrl: post.thumbnailImageUrl,
+                        fit: BoxFit.cover,
+                      ),
+              ),
+            );
+          },
         ),
       ),
     );

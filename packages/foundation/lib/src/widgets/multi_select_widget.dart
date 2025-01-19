@@ -62,6 +62,7 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: multiSelect && widget.header != null

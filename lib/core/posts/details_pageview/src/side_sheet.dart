@@ -49,21 +49,21 @@ class _SideSheetState extends State<SideSheet> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final child = MediaQuery.removePadding(
-      context: context,
-      removeLeft: true,
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: kSideSheetWidth),
-        color: colorScheme.surface,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color: colorScheme.hintColor,
-                width: 0.25,
-              ),
+    final child = Container(
+      constraints: const BoxConstraints(maxWidth: kSideSheetWidth),
+      color: colorScheme.surface,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: colorScheme.hintColor,
+              width: 0.25,
             ),
           ),
+        ),
+        child: MediaQuery.removePadding(
+          context: context,
+          removeLeft: true,
           child: widget.sheetBuilder(context, null),
         ),
       ),
