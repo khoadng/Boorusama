@@ -1,6 +1,4 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,13 +7,13 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../boorus/engine/providers.dart';
-import '../../../configs/config.dart';
-import '../../../configs/ref.dart';
-import '../../../settings/providers.dart';
-import '../../post/post.dart';
-import '../../post/tags.dart';
-import '../../post/widgets.dart';
+import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/config.dart';
+import '../../../../configs/ref.dart';
+import '../../../../settings/providers.dart';
+import '../../../post/post.dart';
+import '../../../post/tags.dart';
+import '../../../post/widgets.dart';
 
 class BlockOverlayItem {
   const BlockOverlayItem({

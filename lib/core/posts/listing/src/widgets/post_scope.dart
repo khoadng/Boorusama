@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../blacklists/providers.dart';
-import '../../../bookmarks/bookmark.dart';
-import '../../../bookmarks/providers.dart';
-import '../../../configs/ref.dart';
-import '../../../settings/providers.dart';
-import '../../post/post.dart';
+import '../../../../blacklists/providers.dart';
+import '../../../../bookmarks/bookmark.dart';
+import '../../../../bookmarks/providers.dart';
+import '../../../../configs/ref.dart';
+import '../../../../settings/providers.dart';
+import '../../../post/post.dart';
 import 'post_grid_controller.dart';
 
 class PostScope<T extends Post> extends ConsumerStatefulWidget {

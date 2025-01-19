@@ -3,23 +3,21 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/danbooru/errors.dart';
-import '../../../foundation/error.dart';
-import '../../../images/booru_image.dart';
-import '../../../images/utils.dart';
-import '../../../settings/settings.dart';
-import '../../../widgets/widgets.dart';
-import '../../post/post.dart';
-import 'grid_utils.dart';
-import 'post_grid_controller.dart';
+import '../../../../../boorus/danbooru/errors.dart';
+import '../../../../foundation/error.dart';
+import '../../../../settings/settings.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../post/post.dart';
+import '../utils/grid_utils.dart';
+import '../widgets/post_grid_controller.dart';
+import '../widgets/sliver_post_grid_place_holder.dart';
 
-class SliverRawPostGrid<T extends Post> extends StatelessWidget {
-  const SliverRawPostGrid({
+class SliverPostGrid<T extends Post> extends StatelessWidget {
+  const SliverPostGrid({
     required this.constraints,
     required this.postController,
     required this.itemBuilder,
@@ -191,83 +189,6 @@ class SliverRawPostGrid<T extends Post> extends StatelessWidget {
                   child: NoDataBox(),
                 ),
               );
-      },
-    );
-  }
-}
-
-class SliverPostGridPlaceHolder extends ConsumerWidget {
-  const SliverPostGridPlaceHolder({
-    super.key,
-    this.constraints,
-    this.padding,
-    this.listType,
-    this.size,
-    this.spacing,
-    this.aspectRatio,
-    this.borderRadius,
-    this.postsPerPage,
-  });
-
-  final BoxConstraints? constraints;
-  final EdgeInsetsGeometry? padding;
-  final ImageListType? listType;
-  final GridSize? size;
-  final double? spacing;
-  final double? aspectRatio;
-  final BorderRadius? borderRadius;
-  final int? postsPerPage;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final imageListType = listType ?? ImageListType.standard;
-    final gridSize = size ?? GridSize.normal;
-    final imageGridSpacing = spacing ?? 4;
-    final imageBorderRadius = borderRadius ?? BorderRadius.zero;
-    final imageGridAspectRatio = aspectRatio ?? 1;
-    final perPage = postsPerPage ?? 20;
-
-    return Builder(
-      builder: (context) {
-        final crossAxisCount = calculateGridCount(
-          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
-          gridSize,
-        );
-
-        return switch (imageListType) {
-          ImageListType.standard => SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: imageGridAspectRatio,
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: imageGridSpacing,
-                crossAxisSpacing: imageGridSpacing,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, _) => ImagePlaceHolder(
-                  borderRadius: imageBorderRadius,
-                ),
-                childCount: perPage,
-                addRepaintBoundaries: false,
-                addAutomaticKeepAlives: false,
-                addSemanticIndexes: false,
-              ),
-            ),
-          ImageListType.masonry => SliverMasonryGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: imageGridSpacing,
-              crossAxisSpacing: imageGridSpacing,
-              childCount: perPage,
-              addRepaintBoundaries: false,
-              addAutomaticKeepAlives: false,
-              addSemanticIndexes: false,
-              itemBuilder: (context, index) {
-                return createRandomPlaceholderContainer(
-                  context,
-                  borderRadius: imageBorderRadius,
-                );
-              },
-            )
-        };
       },
     );
   }

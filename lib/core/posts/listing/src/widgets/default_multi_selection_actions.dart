@@ -7,10 +7,10 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
-import '../../../bookmarks/widgets.dart';
-import '../../../downloads/downloader.dart';
-import '../../post/post.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../bookmarks/widgets.dart';
+import '../../../../downloads/downloader.dart';
+import '../../../post/post.dart';
 
 class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   const DefaultMultiSelectionActions({

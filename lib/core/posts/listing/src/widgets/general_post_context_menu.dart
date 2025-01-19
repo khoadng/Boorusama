@@ -7,16 +7,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../bookmarks/providers.dart';
-import '../../../boorus/engine/providers.dart';
-import '../../../configs/ref.dart';
-import '../../../downloads/downloader.dart';
-import '../../../foundation/url_launcher.dart';
-import '../../../router.dart';
-import '../../../tags/tag/routes.dart';
-import '../../post/post.dart';
-import '../../post/routes.dart';
-import '../../post/tags.dart';
+import '../../../../bookmarks/providers.dart';
+import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
+import '../../../../downloads/downloader.dart';
+import '../../../../foundation/url_launcher.dart';
+import '../../../../router.dart';
+import '../../../../tags/tag/routes.dart';
+import '../../../post/post.dart';
+import '../../../post/routes.dart';
+import '../../../post/tags.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({

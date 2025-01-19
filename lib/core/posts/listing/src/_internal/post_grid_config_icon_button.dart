@@ -8,14 +8,14 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../boorus/engine/providers.dart';
-import '../../../foundation/animations.dart';
-import '../../../settings/providers.dart';
-import '../../../settings/routes.dart';
-import '../../../settings/settings.dart';
-import '../../../settings/widgets.dart';
-import '../../post/post.dart';
-import 'post_grid_controller.dart';
+import '../../../../boorus/engine/providers.dart';
+import '../../../../foundation/animations.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/routes.dart';
+import '../../../../settings/settings.dart';
+import '../../../../settings/widgets.dart';
+import '../../../post/post.dart';
+import '../widgets/post_grid_controller.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({

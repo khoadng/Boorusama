@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
-import '../../post/post.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../post/post.dart';
 import 'post_grid.dart';
 import 'post_scope.dart';
 

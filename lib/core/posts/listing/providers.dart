@@ -1,1 +1,1 @@
-export 'src/post_grid_controller.dart';
+export 'src/widgets/post_grid_controller.dart';
