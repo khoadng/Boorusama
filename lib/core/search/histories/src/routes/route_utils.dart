@@ -12,8 +12,6 @@ import '../search_history.dart';
 
 void goToSearchHistoryPage(
   BuildContext context, {
-  required Function() onClear,
-  required Function(SearchHistory history) onRemove,
   required Function(SearchHistory history) onTap,
 }) {
   showMaterialModalBottomSheet(
@@ -23,8 +21,6 @@ void goToSearchHistoryPage(
     ),
     duration: AppDurations.bottomSheet,
     builder: (context) => FullHistoryPage(
-      onClear: onClear,
-      onRemove: onRemove,
       onTap: onTap,
       scrollController: ModalScrollController.of(context),
     ),

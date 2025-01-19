@@ -9,7 +9,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../../router.dart';
-import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
@@ -81,12 +80,6 @@ class _SliverSearchAppBarState extends ConsumerState<SliverSearchAppBar> {
                     padding: const EdgeInsets.only(top: 8),
                     child: SearchLandingView(
                       scrollController: ModalScrollController.of(context),
-                      onHistoryCleared: () => ref
-                          .read(searchHistoryProvider.notifier)
-                          .clearHistories(),
-                      onHistoryRemoved: (value) => ref
-                          .read(searchHistoryProvider.notifier)
-                          .removeHistory(value),
                       onHistoryTap: (value) {
                         widget.searchController.tapHistoryTag(value);
                         context.pop();

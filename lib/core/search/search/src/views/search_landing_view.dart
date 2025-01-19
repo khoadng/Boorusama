@@ -15,8 +15,6 @@ import '../widgets/favorite_tags_section.dart';
 
 class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
-    required this.onHistoryRemoved,
-    required this.onHistoryCleared,
     super.key,
     this.onHistoryTap,
     this.onTagTap,
@@ -33,8 +31,6 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final ValueChanged<SearchHistory>? onHistoryTap;
   final ValueChanged<String>? onTagTap;
   final ValueChanged<String>? onRawTagTap;
-  final ValueChanged<SearchHistory> onHistoryRemoved;
-  final VoidCallback onHistoryCleared;
   final Widget? metatags;
   final Widget? trending;
   final Widget? notice;
@@ -139,8 +135,6 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                       onFullHistoryRequested: () {
                         goToSearchHistoryPage(
                           context,
-                          onClear: () => _onHistoryCleared(),
-                          onRemove: (value) => _onHistoryRemoved(value),
                           onTap: (value) {
                             Navigator.of(context).pop();
                             _onHistoryTap(value, ref);
@@ -177,10 +171,6 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
   void _onHistoryTap(SearchHistory value, WidgetRef ref) {
     widget.onHistoryTap?.call(value);
   }
-
-  void _onHistoryCleared() => widget.onHistoryCleared();
-
-  void _onHistoryRemoved(SearchHistory value) => widget.onHistoryRemoved(value);
 }
 
 class QueryActionsSection extends StatelessWidget {

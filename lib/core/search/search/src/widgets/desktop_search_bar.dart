@@ -16,7 +16,6 @@ import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../utils/flutter_utils.dart';
-import '../../../histories/providers.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../suggestions/suggestions_notifier.dart';
@@ -173,12 +172,6 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     reverseScheme: true,
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainer,
-                    onHistoryCleared: () => ref
-                        .read(searchHistoryProvider.notifier)
-                        .clearHistories(),
-                    onHistoryRemoved: (value) => ref
-                        .read(searchHistoryProvider.notifier)
-                        .removeHistory(value),
                     onTagTap: (value) {
                       selectedTagController.addTag(
                         value,

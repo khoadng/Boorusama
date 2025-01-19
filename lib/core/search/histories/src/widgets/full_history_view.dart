@@ -20,26 +20,25 @@ import 'search_history_section.dart';
 class FullHistoryView extends ConsumerWidget {
   const FullHistoryView({
     required this.onHistoryTap,
-    required this.onHistoryRemoved,
     super.key,
     this.scrollController,
     this.useAppbar = true,
   });
 
   final ValueChanged<SearchHistory> onHistoryTap;
-  final void Function(SearchHistory item) onHistoryRemoved;
   final bool useAppbar;
   final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.watch(searchHistoryProvider.notifier);
+
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: BooruSearchBar(
-            onChanged: (value) =>
-                ref.read(searchHistoryProvider.notifier).filterHistories(value),
+            onChanged: (value) => notifier.filterHistories(value),
           ),
         ),
         ref.watch(searchHistoryProvider).maybeWhen(
@@ -75,7 +74,7 @@ class FullHistoryView extends ConsumerWidget {
                           : null,
                       minTileHeight: kPreferredLayout.isDesktop ? 0 : null,
                       trailing: IconButton(
-                        onPressed: () => onHistoryRemoved(history),
+                        onPressed: () => notifier.removeHistory(history),
                         icon: Icon(
                           Symbols.close,
                           color: Theme.of(context).colorScheme.hintColor,

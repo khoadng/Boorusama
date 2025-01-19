@@ -12,15 +12,11 @@ import 'widgets/full_history_view.dart';
 
 class FullHistoryPage extends ConsumerStatefulWidget {
   const FullHistoryPage({
-    required this.onClear,
-    required this.onRemove,
     required this.onTap,
     super.key,
     this.scrollController,
   });
 
-  final Function() onClear;
-  final Function(SearchHistory history) onRemove;
   final Function(SearchHistory history) onTap;
   final ScrollController? scrollController;
 
@@ -57,12 +53,19 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text('generic.action.cancel').tr(),
                   ),
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      widget.onClear();
+                  Consumer(
+                    builder: (_, ref, __) {
+                      final notifier =
+                          ref.watch(searchHistoryProvider.notifier);
+
+                      return FilledButton(
+                        onPressed: () {
+                          notifier.clearHistories();
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('generic.action.ok').tr(),
+                      );
                     },
-                    child: const Text('generic.action.ok').tr(),
                   ),
                 ],
               ),
@@ -74,7 +77,6 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
       body: FullHistoryView(
         scrollController: widget.scrollController,
         onHistoryTap: (value) => widget.onTap(value),
-        onHistoryRemoved: (value) => widget.onRemove(value),
       ),
     );
   }
