@@ -101,8 +101,8 @@ class _PostListConfigurationHeaderState
                         children: [
                           const SizedBox(width: 8),
                           const Text(
-                                  'blacklisted_tags.blacklisted_header_title')
-                              .tr(),
+                            'blacklisted_tags.blacklisted_header_title',
+                          ).tr(),
                           if (constraints.maxWidth > 250)
                             const SizedBox(width: 8),
                           if (widget.hiddenCount != null)

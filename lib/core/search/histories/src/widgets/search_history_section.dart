@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../foundation/display.dart';
+import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../foundation/platform.dart';
 import '../search_history.dart';
 
@@ -32,51 +33,53 @@ class SearchHistorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return histories.isNotEmpty
-        ? Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'search.history.history'.tr().toUpperCase(),
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
-                    if (!Screen.of(context).size.isLarge)
-                      if (onFullHistoryRequested != null)
-                        IconButton(
-                          onPressed: onFullHistoryRequested,
-                          icon: const Icon(Symbols.manage_history),
-                        ),
-                  ],
-                ),
-              ),
-              ...histories.take(maxHistory).map(
-                    (item) => ListTile(
-                      visualDensity: VisualDensity.compact,
-                      title: SearchHistoryQueryWidget(
-                        history: item,
-                        reverseScheme: reverseScheme,
+        ? RemoveLeftPaddingOnLargeScreen(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'search.history.history'.tr().toUpperCase(),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
-                      contentPadding: const EdgeInsets.only(left: 8),
-                      onTap: () => onHistoryTap(item),
-                      minTileHeight: isDesktopPlatform() ? 0 : null,
-                      subtitle: showTime
-                          ? DateTooltip(
-                              date: item.createdAt,
-                              child: Text(
-                                item.createdAt.fuzzify(
-                                  locale: Localizations.localeOf(context),
-                                ),
-                              ),
-                            )
-                          : null,
-                    ),
+                      if (!Screen.of(context).size.isLarge)
+                        if (onFullHistoryRequested != null)
+                          IconButton(
+                            onPressed: onFullHistoryRequested,
+                            icon: const Icon(Symbols.manage_history),
+                          ),
+                    ],
                   ),
-            ],
+                ),
+                ...histories.take(maxHistory).map(
+                      (item) => ListTile(
+                        visualDensity: VisualDensity.compact,
+                        title: SearchHistoryQueryWidget(
+                          history: item,
+                          reverseScheme: reverseScheme,
+                        ),
+                        contentPadding: const EdgeInsets.only(left: 8),
+                        onTap: () => onHistoryTap(item),
+                        minTileHeight: isDesktopPlatform() ? 0 : null,
+                        subtitle: showTime
+                            ? DateTooltip(
+                                date: item.createdAt,
+                                child: Text(
+                                  item.createdAt.fuzzify(
+                                    locale: Localizations.localeOf(context),
+                                  ),
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+              ],
+            ),
           )
         : const SizedBox.shrink();
   }

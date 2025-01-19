@@ -63,7 +63,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 anchor: const Aligned(
                   follower: Alignment.topCenter,
                   target: Alignment.bottomCenter,
-                  offset: Offset(-28, -4),
+                  offset: Offset(-28, 0),
                 ),
                 portalFollower: LayoutBuilder(
                   builder: (context, constraints) => _buildOverlay(constraints),
