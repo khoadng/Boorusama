@@ -87,7 +87,43 @@ class PostDetailsPageViewController extends ChangeNotifier
 
     // if overlay is hidden, show it
     if (!overlay.value) {
-      overlay.value = true;
+      showOverlay();
+    }
+  }
+
+  void showOverlay({
+    bool includeSystemStatus = true,
+  }) {
+    overlay.value = true;
+
+    if (includeSystemStatus) {
+      showSystemStatus();
+    }
+  }
+
+  void hideOverlay({
+    bool includeSystemStatus = true,
+  }) {
+    overlay.value = false;
+
+    if (includeSystemStatus) {
+      hideSystemStatus();
+    }
+  }
+
+  void toggleOverlay({
+    bool includeSystemStatus = true,
+  }) {
+    final oldValue = overlay.value;
+
+    overlay.value = !oldValue;
+
+    if (includeSystemStatus) {
+      if (oldValue) {
+        hideSystemStatus();
+      } else {
+        showSystemStatus();
+      }
     }
   }
 
@@ -233,19 +269,15 @@ class PostDetailsPageViewController extends ChangeNotifier
     zoom.value = value;
     if (value) {
       if (!initialHideOverlay) {
-        overlay.value = false;
+        hideOverlay();
       }
       disableAllSwiping();
     } else {
       if (!initialHideOverlay) {
-        overlay.value = true;
+        showOverlay();
       }
       enableAllSwiping();
     }
-  }
-
-  void toggleOverlay() {
-    overlay.value = !overlay.value;
   }
 
   void restoreSystemStatus() {
@@ -254,8 +286,7 @@ class PostDetailsPageViewController extends ChangeNotifier
 
   Future<void> startSlideshow() async {
     slideshow.value = true;
-    if (overlay.value) overlay.value = false;
-    unawaited(hideSystemStatus());
+    if (overlay.value) hideOverlay();
 
     final isLargeScreen = checkIfLargeScreen();
 
@@ -279,7 +310,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     slideshow.value = false;
 
     if (!initialHideOverlay) {
-      overlay.value = true;
+      showOverlay();
     }
 
     stopAutoSlide();

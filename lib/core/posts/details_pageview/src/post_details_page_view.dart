@@ -214,17 +214,17 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     if (_hovering.value) {
-      _controller.overlay.value = true;
+      _controller.showOverlay();
     } else {
-      _controller.overlay.value = false;
+      _controller.hideOverlay();
     }
   }
 
   void _onFreestyleMovingChanged() {
     if (_controller.freestyleMoving.value) {
-      _controller.overlay.value = false;
+      _controller.showOverlay();
     } else {
-      _controller.overlay.value = true;
+      _controller.hideOverlay();
     }
   }
 
@@ -239,16 +239,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       } else {
         _forceHide.value = false;
       }
-
-      showSystemStatus();
     } else {
       if (!widget.disableAnimation) {
         _overlayAnimController?.reverse();
       } else {
         _forceHide.value = true;
       }
-
-      hideSystemStatus();
     }
   }
 
@@ -314,8 +310,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (_controller.isExpanded) {
       widget.onExpanded?.call();
 
-      showSystemStatus();
-      _controller.overlay.value = true;
+      _controller.showOverlay();
     } else {
       if (_controller.sheetState.value == SheetState.hidden) {
         widget.onShrink?.call();
