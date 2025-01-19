@@ -166,7 +166,6 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     required this.url,
     required this.playbackSpeed,
     super.key,
-    this.onVisibilityChanged,
     this.onCurrentPositionChanged,
     this.backgroundColor,
     this.onWebmVideoPlayerCreated,
@@ -179,7 +178,6 @@ class EmbeddedWebViewWebm extends StatefulWidget {
 
   final String url;
   final Color? backgroundColor;
-  final void Function(bool value)? onVisibilityChanged;
   final void Function(double current, double total, String url)?
       onCurrentPositionChanged;
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;

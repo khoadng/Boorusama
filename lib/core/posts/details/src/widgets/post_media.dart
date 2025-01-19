@@ -66,8 +66,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         url: post.videoUrl,
                         onCurrentPositionChanged:
                             details.controller.onCurrentPositionChanged,
-                        onVisibilityChanged: (value) =>
-                            controller.overlay.value = !value,
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         onWebmVideoPlayerCreated: (wvpc) => details.controller
                             .onWebmVideoPlayerCreated(wvpc, post.id),
@@ -81,8 +79,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         aspectRatio: post.aspectRatio,
                         onCurrentPositionChanged:
                             details.controller.onCurrentPositionChanged,
-                        onVisibilityChanged: (value) =>
-                            controller.overlay.value = !value,
                         onVideoPlayerCreated: (vpc) => details.controller
                             .onVideoPlayerCreated(vpc, post.id),
                         sound: ref.isGlobalVideoSoundOn,

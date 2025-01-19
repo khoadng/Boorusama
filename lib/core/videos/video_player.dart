@@ -16,11 +16,9 @@ class BooruVideo extends StatefulWidget {
     required this.aspectRatio,
     super.key,
     this.onCurrentPositionChanged,
-    this.onVisibilityChanged,
     this.onVideoPlayerCreated,
     this.sound = true,
     this.speed = 1.0,
-    this.customControlsBuilder,
     this.thumbnailUrl,
     this.onOpenSettings,
     this.headers,
@@ -31,11 +29,9 @@ class BooruVideo extends StatefulWidget {
   final double? aspectRatio;
   final void Function(double current, double total, String url)?
       onCurrentPositionChanged;
-  final void Function(bool value)? onVisibilityChanged;
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final bool sound;
   final double speed;
-  final Widget? Function()? customControlsBuilder;
   final String? thumbnailUrl;
   final void Function()? onOpenSettings;
   final Map<String, String>? headers;
