@@ -43,7 +43,7 @@ class PostDto {
     // this.sequence,
     this.tags,
     this.videoDuration,
-    this.reactions,
+    // this.reactions,
   });
 
   factory PostDto.fromJson(Map<String, dynamic> json) {
@@ -96,9 +96,9 @@ class PostDto {
         final String v => double.tryParse(v),
         _ => null,
       },
-      reactions: (json['reactions'] as List<dynamic>?)
-          ?.map((e) => ReactionDto.fromJson(e))
-          .toList(),
+      // reactions: (json['reactions'] as List<dynamic>?)
+      //     ?.map((e) => ReactionDto.fromJson(e))
+      //     .toList(),
     );
   }
   final String? id;
@@ -141,30 +141,30 @@ class PostDto {
   // final dynamic sequence; // Change this to the actual type if known
   final List<TagDto>? tags;
   final double? videoDuration;
-  final List<ReactionDto>? reactions;
+  // final List<ReactionDto>? reactions;
 
   @override
   String toString() => '$id: $fileUrl';
 }
 
-class ReactionDto {
-  ReactionDto({
-    this.id,
-    this.userId,
-    this.reaction,
-  });
+// class ReactionDto {
+//   ReactionDto({
+//     this.id,
+//     this.userId,
+//     this.reaction,
+//   });
 
-  factory ReactionDto.fromJson(Map<String, dynamic> json) {
-    return ReactionDto(
-      id: json['id'] as int?,
-      userId: json['user_id'] as int?,
-      reaction: json['reaction'] as String?,
-    );
-  }
-  final int? id;
-  final int? userId;
-  final String? reaction;
-}
+//   factory ReactionDto.fromJson(Map<String, dynamic> json) {
+//     return ReactionDto(
+//       id: json['id'] as int?,
+//       userId: json['user_id'] as int?,
+//       reaction: json['reaction'] as String?,
+//     );
+//   }
+//   final int? id;
+//   final int? userId;
+//   final String? reaction;
+// }
 
 class AuthorDto {
   AuthorDto({

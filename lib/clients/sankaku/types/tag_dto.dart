@@ -36,7 +36,7 @@ class TagDto {
       name: json['name'],
     );
   }
-  final int? id;
+  final String? id;
   final String? nameEn;
   final String? nameJa;
   final int? type;
