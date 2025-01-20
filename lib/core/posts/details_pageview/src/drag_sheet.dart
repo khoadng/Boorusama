@@ -7,6 +7,11 @@ import 'post_details_page_view.dart';
 import 'post_details_page_view_controller.dart';
 import 'sheet_dragline.dart';
 
+const _kOverscrollThreshold = -6.0;
+const _kFullSheetSize = 0.9;
+const _kMinSheetSize = 0.0;
+const _kSnapAnimationDuration = Duration(milliseconds: 200);
+
 class DragSheet extends StatefulWidget {
   const DragSheet({
     required this.sheetBuilder,
@@ -24,6 +29,7 @@ class DragSheet extends StatefulWidget {
 
 class _DragSheetState extends State<DragSheet> {
   final _contentScrollController = ScrollController();
+  var _closing = false;
 
   @override
   void dispose() {
@@ -35,46 +41,67 @@ class _DragSheetState extends State<DragSheet> {
   @override
   Widget build(BuildContext context) {
     final maxSize = widget.pageViewController.maxSize;
-    return ValueListenableBuilder(
-      valueListenable: widget.pageViewController.sheetState,
-      builder: (_, state, __) {
-        return DraggableScrollableSheet(
-          controller: widget.pageViewController.sheetController,
-          // force maxSize when expanded
-          initialChildSize: state.isExpanded ? maxSize : 0.0,
-          minChildSize: 0,
-          maxChildSize: 0.9,
-          snapSizes: [
-            0,
-            maxSize,
-            0.9,
-          ],
-          shouldCloseOnMinExtent: false,
-          snap: true,
-          snapAnimationDuration: const Duration(milliseconds: 200),
-          builder: (context, scrollController) => Scaffold(
-            floatingActionButton: _buildScrollToTop(),
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: Column(
-                    children: [
-                      _buildDivider(),
-                      Expanded(
-                        child: _buildSheetContent(),
-                      ),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: _buildDrag(scrollController),
-                ),
-              ],
-            ),
-          ),
-        );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        // Auto close sheet when overscroll past a certain threshold
+        if (notification is OverscrollNotification) {
+          // Too fast, only close when sheet is still
+          if (notification.velocity < 0) return false;
+
+          // Prevent multiple close
+          if (_closing) return false;
+
+          if (notification.overscroll < _kOverscrollThreshold) {
+            _closing = true;
+            widget.pageViewController
+                .resetSheet()
+                .then((value) => _closing = false);
+          }
+        }
+
+        return false;
       },
+      child: ValueListenableBuilder(
+        valueListenable: widget.pageViewController.sheetState,
+        builder: (_, state, __) {
+          return DraggableScrollableSheet(
+            controller: widget.pageViewController.sheetController,
+            // force maxSize when expanded
+            initialChildSize: state.isExpanded ? maxSize : _kMinSheetSize,
+            minChildSize: _kMinSheetSize,
+            maxChildSize: _kFullSheetSize,
+            snapSizes: [
+              _kMinSheetSize,
+              maxSize,
+              _kFullSheetSize,
+            ],
+            shouldCloseOnMinExtent: false,
+            snap: true,
+            snapAnimationDuration: _kSnapAnimationDuration,
+            builder: (context, scrollController) => Scaffold(
+              floatingActionButton: _buildScrollToTop(),
+              body: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Column(
+                      children: [
+                        _buildDivider(),
+                        Expanded(
+                          child: _buildSheetContent(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: _buildDrag(scrollController),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
