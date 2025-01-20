@@ -1,4 +1,4 @@
-# 3.22.3
+# 3.22.4
 - [NEW] Fix data loading issue on a certain site
 - Add a new experimental video player engine that has better performance for certain devices and video formats. Can be enabled in settings.
 - Attempt to bypass firewall protection for some sites.
