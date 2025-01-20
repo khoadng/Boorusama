@@ -12,6 +12,7 @@ import '../configs/ref.dart';
 import '../configs/routes.dart';
 import '../foundation/networking.dart';
 import '../info/app_info.dart';
+import '../premiums/providers.dart';
 import 'home_page_controller.dart';
 
 class UserCustomHomeBuilder extends ConsumerWidget {
@@ -24,6 +25,10 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hasPremium = ref.watch(hasPremiumProvider);
+
+    if (!hasPremium) return defaultView;
+
     final viewKey = ref.watch(
       currentReadOnlyBooruConfigLayoutProvider.select((value) => value?.home),
     );
