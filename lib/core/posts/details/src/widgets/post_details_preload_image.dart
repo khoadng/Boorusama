@@ -23,15 +23,29 @@ class PostDetailsPreloadImage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
 
-    return ExtendedImage.network(
-      url,
-      dio: dio,
-      width: 1,
-      height: 1,
-      cacheHeight: 10,
-      cacheWidth: 10,
-      headers: {
-        ...ref.watch(extraHttpHeaderProvider(config)),
+    return FutureBuilder(
+      // Delay to prevent the image from loading too early
+      future: Future.delayed(const Duration(milliseconds: 500)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox.shrink();
+        }
+
+        if (snapshot.hasError) {
+          return const SizedBox.shrink();
+        }
+
+        return ExtendedImage.network(
+          url,
+          dio: dio,
+          width: 1,
+          height: 1,
+          cacheHeight: 10,
+          cacheWidth: 10,
+          headers: {
+            ...ref.watch(extraHttpHeaderProvider(config)),
+          },
+        );
       },
     );
   }
