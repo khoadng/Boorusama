@@ -238,17 +238,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   void _onOverlayChanged() {
     if (_controller.overlay.value) {
-      if (!widget.disableAnimation) {
-        _overlayAnimController?.forward();
-      } else {
-        _forceHide.value = false;
-      }
+      _showOverlayAnim();
     } else {
-      if (!widget.disableAnimation) {
-        _overlayAnimController?.reverse();
-      } else {
-        _forceHide.value = true;
-      }
+      _hideOverlayAnim();
     }
   }
 
@@ -327,6 +319,22 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     // sync the side sheet slide animation with the sheet state
     _sheetAnimController.value = _controller.isExpanded ? 1 : 0;
+  }
+
+  void _showOverlayAnim() {
+    if (!widget.disableAnimation) {
+      _overlayAnimController?.forward();
+    } else {
+      _forceHide.value = false;
+    }
+  }
+
+  void _hideOverlayAnim() {
+    if (!widget.disableAnimation) {
+      _overlayAnimController?.reverse();
+    } else {
+      _forceHide.value = true;
+    }
   }
 
   @override
@@ -465,6 +473,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   Widget _buildMain() {
+    final bottomSheet = widget.bottomSheet;
+
     return Stack(
       children: [
         Positioned.fill(
@@ -486,22 +496,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             ],
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: !isLargeScreen
-              ? DragSheet(
-                  sheetBuilder: widget.sheetBuilder,
-                  pageViewController: _controller,
-                )
-              : const SizedBox.shrink(),
-        ),
-        if (widget.bottomSheet != null)
+        if (bottomSheet != null && !isLargeScreen)
           Align(
             alignment: Alignment.bottomCenter,
             child: Builder(
               builder: (context) {
-                final sheet = _buildBottomSheet();
-
                 return ValueListenableBuilder(
                   valueListenable: _forceHide,
                   builder: (__, hide, _) => hide
@@ -512,13 +511,22 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                                 begin: const Offset(0, 1),
                                 end: Offset.zero,
                               ).animate(_overlayCurvedAnimation),
-                              child: sheet,
+                              child: bottomSheet,
                             )
-                          : sheet,
+                          : bottomSheet,
                 );
               },
             ),
           ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: !isLargeScreen
+              ? DragSheet(
+                  sheetBuilder: widget.sheetBuilder,
+                  pageViewController: _controller,
+                )
+              : const SizedBox.shrink(),
+        ),
         Align(
           alignment: Alignment.topCenter,
           child: Builder(
@@ -557,28 +565,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         ),
       ],
     );
-  }
-
-  Widget _buildBottomSheet() {
-    return isLargeScreen
-        ? const SizedBox.shrink()
-        : ValueListenableBuilder(
-            valueListenable: _controller.sheetState,
-            builder: (_, state, __) => ValueListenableBuilder(
-              valueListenable: _controller.freestyleMoving,
-              builder: (context, moving, child) => ValueListenableBuilder(
-                valueListenable: _controller.isItemPushed,
-                builder: (_, pushed, __) {
-                  return switch (moving) {
-                    true => widget.bottomSheet!,
-                    false =>
-                      pushed ? const SizedBox.shrink() : widget.bottomSheet!,
-                  };
-                  // return !moving ? widget.bottomSheet!;
-                },
-              ),
-            ),
-          );
   }
 
   Widget _buildOverlay() {

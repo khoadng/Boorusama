@@ -30,8 +30,8 @@ class SheetDragline extends StatelessWidget {
             Container(
               padding: padding ??
                   const EdgeInsets.only(
-                    top: 12,
-                    bottom: 24,
+                    top: 6,
+                    bottom: 28,
                   ),
               color: Colors.transparent,
               child: AnimatedContainer(
