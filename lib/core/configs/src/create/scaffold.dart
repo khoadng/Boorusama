@@ -11,7 +11,7 @@ import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../foundation/display.dart';
 import '../../../posts/sources/source.dart';
-import '../../../premiums/premium_providers.dart';
+import '../../../premiums/providers.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';

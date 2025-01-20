@@ -18,6 +18,7 @@ import '../../../foundation/scrolling.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../info/app_info.dart';
 import '../../../premiums/premiums.dart';
+import '../../../premiums/providers.dart';
 import '../../../theme.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';

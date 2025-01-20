@@ -12,7 +12,7 @@ import 'package:reorderables/reorderables.dart';
 // Project imports:
 import '../../../foundation/toast.dart';
 import '../../../home_widgets/home_widget_providers.dart';
-import '../../../premiums/premiums.dart';
+import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';
 import '../../../router.dart';
 import '../../../settings/providers.dart';

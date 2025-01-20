@@ -13,7 +13,7 @@ import 'package:reorderables/reorderables.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../foundation/toast.dart';
 import '../../../posts/details/custom_details.dart';
-import '../../../premiums/premiums.dart';
+import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';

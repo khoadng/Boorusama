@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../configs/src/create/appearance_theme.dart';
 import '../../foundation/display.dart';
-import '../../premiums/premiums.dart';
+import '../../premiums/providers.dart';
 import '../../premiums/routes.dart';
 import '../../widgets/widgets.dart';
 import 'theme_previewer_notifier.dart';

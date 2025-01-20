@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../theme.dart';
+import '../../../theme.dart';
 
 class PremiumThanksDialog extends StatelessWidget {
   const PremiumThanksDialog({super.key});

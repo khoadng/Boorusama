@@ -21,7 +21,7 @@ import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
-import '../../../../premiums/premium_providers.dart';
+import '../../../../premiums/providers.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';

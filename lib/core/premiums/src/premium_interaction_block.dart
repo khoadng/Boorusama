@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'premiums.dart';
-import 'routes.dart';
+import '../premiums.dart';
+import 'providers/premium_providers.dart';
+import 'routes/routes.dart';
 
 class PremiumInteractionBlock extends ConsumerWidget {
   const PremiumInteractionBlock({

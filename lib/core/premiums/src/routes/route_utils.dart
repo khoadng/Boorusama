@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import '../router.dart';
+import '../../../router.dart';
 
 void goToPremiumPage(BuildContext context) {
   context.push('/premium');

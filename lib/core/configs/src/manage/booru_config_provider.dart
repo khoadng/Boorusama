@@ -10,7 +10,7 @@ import 'package:foundation/foundation.dart';
 import '../../../analytics.dart';
 import '../../../foundation/loggers.dart';
 import '../../../home_widgets/providers.dart';
-import '../../../premiums/premiums.dart';
+import '../../../premiums/providers.dart';
 import '../../../settings/providers.dart';
 import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';

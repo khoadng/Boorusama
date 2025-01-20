@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../configs/current.dart';
 import '../configs/ref.dart';
-import '../premiums/premiums.dart';
+import '../premiums/providers.dart';
 import '../settings/providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
