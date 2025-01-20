@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/iap/iap.dart';
+import '../../../foundation/iap/iap.dart';
 import '../../../widgets/widgets.dart';
 import '../internal_widgets/subscription_plan_tile.dart';
 import '../providers/premium_purchase_provider.dart';

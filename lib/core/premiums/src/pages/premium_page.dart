@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/iap/iap.dart';
+import '../../../foundation/iap/iap.dart';
 import 'premium_manage_page.dart';
 import 'premium_offers_page.dart';
 

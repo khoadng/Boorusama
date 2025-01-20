@@ -31,6 +31,7 @@ import 'core/configs/manage.dart';
 import 'core/downloads/bulks/notifications.dart';
 import 'core/downloads/notifications.dart';
 import 'core/foundation/error.dart';
+import 'core/foundation/iap/iap.dart';
 import 'core/foundation/loggers.dart';
 import 'core/foundation/mobile.dart';
 import 'core/foundation/path.dart';
@@ -50,7 +51,6 @@ import 'core/tags/favorites/providers.dart';
 import 'core/tracking.dart';
 import 'core/utils/file_utils.dart';
 import 'core/widgets/widgets.dart';
-import 'foundation/iap/iap.dart';
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =

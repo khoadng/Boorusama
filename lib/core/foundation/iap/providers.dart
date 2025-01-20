@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/foundation/loggers.dart';
+import '../loggers.dart';
 import 'dummy.dart';
 import 'in_app_purchase.dart';
 import 'subscription.dart';

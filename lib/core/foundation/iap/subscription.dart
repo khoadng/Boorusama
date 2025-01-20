@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/foundation/loggers.dart';
+import '../loggers.dart';
 import 'iap.dart';
 
 abstract class SubscriptionManager {
@@ -44,15 +44,15 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
 
       final notifier = ref.read(subscriptionNotifierProvider.notifier);
 
-      await notifier.purchasePackage(package);
+      final success = await notifier.purchasePackage(package);
 
       logger.logI(
         _kServiceName,
-        'Purchase successful for package: ${package.id}',
+        'Purchase result for package: ${package.id}, $success',
       );
 
-      state = const AsyncData(true);
-    } catch (e, st) {
+      state = AsyncData(success);
+    } on Exception catch (e, st) {
       logger.logE(
         _kServiceName,
         'Failed to purchase package: ${package.id}, $e',
@@ -79,19 +79,21 @@ class SubscriptionNotifier extends Notifier<Package?> {
     return initialPackage;
   }
 
-  Future<void> purchasePackage(Package package) async {
+  Future<bool> purchasePackage(Package package) async {
     try {
       final success = await iap.purchasePackage(package);
       if (success) {
         state = package;
       }
-    } on Exception catch (e) {
+
+      return success;
+    } on Exception catch (e, st) {
       final error = iap.describePurchaseError(e);
 
       if (error == null) {
-        rethrow;
+        Error.throwWithStackTrace(e, st);
       } else {
-        throw Exception(error);
+        Error.throwWithStackTrace(Exception(error), st);
       }
     }
   }
