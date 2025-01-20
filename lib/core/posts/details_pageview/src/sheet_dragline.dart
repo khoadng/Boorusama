@@ -6,12 +6,16 @@ class SheetDragline extends StatelessWidget {
     super.key,
     this.maxWidth = 120,
     this.minWidth = 80,
+    this.height = 4,
     this.isHolding = false,
+    this.padding,
   });
 
   final double maxWidth;
   final double minWidth;
+  final double height;
   final bool isHolding;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +28,16 @@ class SheetDragline extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.only(
-                top: 12,
-                bottom: 24,
-              ),
+              padding: padding ??
+                  const EdgeInsets.only(
+                    top: 12,
+                    bottom: 24,
+                  ),
               color: Colors.transparent,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width: isHolding ? maxWidth : minWidth,
-                height: 4,
+                height: height,
                 decoration: ShapeDecoration(
                   shape: const StadiumBorder(),
                   color:

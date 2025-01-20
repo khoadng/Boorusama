@@ -77,6 +77,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final slideshow = ValueNotifier(false);
   final freestyleMoveOffset = ValueNotifier(Offset.zero);
   final freestyleMoving = ValueNotifier(false);
+  final isItemPushed = ValueNotifier(false);
 
   void enableHoverToControlOverlay() {
     hoverToControlOverlay.value = true;
@@ -106,6 +107,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   void hideOverlay({
     bool includeSystemStatus = true,
   }) {
+    // ignore if overlay is already hidden
     if (!overlay.value) return;
 
     overlay.value = false;

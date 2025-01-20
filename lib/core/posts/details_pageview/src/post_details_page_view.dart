@@ -17,10 +17,10 @@ import '../../../foundation/display.dart';
 import '../../../foundation/mobile.dart';
 import '../../../widgets/widgets.dart';
 import 'constants.dart';
+import 'drag_sheet.dart';
 import 'page_nav_button.dart';
 import 'pointer_count_on_screen.dart';
 import 'post_details_page_view_controller.dart';
-import 'sheet_dragline.dart';
 import 'sheet_state_storage.dart';
 import 'side_sheet.dart';
 
@@ -154,8 +154,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.overlay.addListener(_onOverlayChanged);
     _controller.displacement.addListener(_onDisplacementChanged);
     _controller.freestyleMoving.addListener(_onFreestyleMovingChanged);
-
-    _verticalSheetDragY.addListener(_onVerticalSheetDragYChanged);
 
     final currentExpanded = _controller.sheetState.value.isExpanded;
 
@@ -337,17 +335,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _sheetAnimController.value = _controller.isExpanded ? 1 : 0;
   }
 
-  void _onVerticalSheetDragYChanged() {
-    final delta = _verticalSheetDragY.value;
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final percentage = delta / screenHeight;
-
-    final size =
-        (_verticalSheetDragStartSize - percentage).clamp(0.4, kFullSheetSize);
-
-    _controller.sheetController.jumpTo(size);
-  }
-
   @override
   void dispose() {
     _cancelCooldown();
@@ -359,7 +346,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.overlay.removeListener(_onOverlayChanged);
     _controller.displacement.removeListener(_onDisplacementChanged);
     _controller.freestyleMoving.removeListener(_onFreestyleMovingChanged);
-    _verticalSheetDragY.removeListener(_onVerticalSheetDragYChanged);
     _hovering.removeListener(_onHover);
 
     _cooldown.dispose();
@@ -511,18 +497,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         Align(
           alignment: Alignment.bottomCenter,
           child: !isLargeScreen
-              ? ValueListenableBuilder(
-                  valueListenable: _controller.sheetState,
-                  builder: (_, state, __) => state.isExpanded
-                      // If expanded, show the drag sheet
-                      ? _buildDragSheet(
-                          forceInitialSizeAsMax: true,
-                          sheetState: state,
-                        )
-                      // If not expanded, hide it and let the user pull it up
-                      : _buildDragSheet(
-                          sheetState: state,
-                        ),
+              ? DragSheet(
+                  isItemPushed: _isItemPushed,
+                  sheetBuilder: widget.sheetBuilder,
+                  pageViewController: _controller,
+                  sheetController: _controller.sheetController,
                 )
               : const SizedBox.shrink(),
         ),
@@ -704,107 +683,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           )
         : const SizedBox.shrink();
   }
-
-  Widget _buildDragSheet({
-    required SheetState sheetState,
-    bool? forceInitialSizeAsMax,
-  }) {
-    return ValueListenableBuilder(
-      valueListenable: _controller.sheetMaxSize,
-      builder: (_, maxSize, __) => DraggableScrollableSheet(
-        controller: _controller.sheetController,
-        initialChildSize: forceInitialSizeAsMax == true ? maxSize : 0.0,
-        minChildSize: 0,
-        maxChildSize: maxSize,
-        shouldCloseOnMinExtent: false,
-        snap: true,
-        snapAnimationDuration: const Duration(milliseconds: 200),
-        builder: (context, scrollController) => Scaffold(
-          floatingActionButton: ScrollToTop(
-            scrollController: scrollController,
-            child: BooruScrollToTopButton(
-              onPressed: () {
-                if (mounted) {
-                  scrollController.jumpTo(0);
-                }
-              },
-            ),
-          ),
-          body: Stack(
-            children: [
-              Positioned.fill(
-                child: widget.sheetBuilder(context, scrollController),
-              ),
-              ValueListenableBuilder(
-                valueListenable: _isItemPushed,
-                builder: (_, pushed, __) => pushed
-                    ? const Divider(
-                        height: 0,
-                        thickness: 0.75,
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: ValueListenableBuilder(
-                  valueListenable: _controller.sheetState,
-                  builder: (context, state, _) => state == SheetState.collapsed
-                      ? const SizedBox.shrink()
-                      : GestureDetector(
-                          onVerticalDragStart: (details) {
-                            _controller.sheetMaxSize.value = kFullSheetSize;
-                            _verticalSheetDragStartY =
-                                details.globalPosition.dy;
-                            _verticalSheetDragStartSize =
-                                _controller.sheetController.size;
-                            _verticalSheetDragging.value = true;
-                          },
-                          onVerticalDragUpdate: state.isExpanded
-                              ? (details) {
-                                  _verticalSheetDragY.value =
-                                      details.globalPosition.dy -
-                                          _verticalSheetDragStartY;
-                                }
-                              : null,
-                          onVerticalDragEnd: state.isExpanded
-                              ? (_) {
-                                  final currentSize =
-                                      _controller.sheetController.size;
-
-                                  if (currentSize < widget.maxSize) {
-                                    // Collapse if below maxSize
-                                    _controller.resetSheet();
-                                  } else {
-                                    // not sure why this is needed, but it is required to force the sheet to expand
-                                    setState(() {
-                                      // Expand if above maxSize
-                                      _controller.expandToFullSheetSize();
-                                    });
-                                  }
-
-                                  _verticalSheetDragging.value = false;
-                                }
-                              : null,
-                          child: ValueListenableBuilder(
-                            valueListenable: _verticalSheetDragging,
-                            builder: (_, dragging, __) => SheetDragline(
-                              isHolding: dragging,
-                            ),
-                          ),
-                        ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  final _verticalSheetDragY = ValueNotifier(0.0);
-  var _verticalSheetDragStartY = 0.0;
-  var _verticalSheetDragStartSize = 0.0;
-  final _verticalSheetDragging = ValueNotifier(false);
 
   Widget _buildPageView(
     bool swipe,
