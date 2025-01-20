@@ -81,9 +81,10 @@ class _ScrollToTopState extends State<ScrollToTop>
           break;
       }
       _isOnTop.value = _scrollController.isTop;
-      if (_scrollController.isBottom) {
-        widget.onBottomReached?.call();
-      }
+    }
+
+    if (_scrollController.isBottom) {
+      widget.onBottomReached?.call();
     }
   }
 
@@ -99,7 +100,6 @@ class _ScrollToTopState extends State<ScrollToTop>
   }
 }
 
-// scroll to bottom
 class ScrollToBottom extends StatefulWidget {
   const ScrollToBottom({
     required this.child,
@@ -177,9 +177,10 @@ class _ScrollToBottomState extends State<ScrollToBottom>
           break;
       }
       _isOnBottom.value = _scrollController.isBottom;
-      if (_scrollController.isTop) {
-        widget.onTopReached?.call();
-      }
+    }
+
+    if (_scrollController.isTop) {
+      widget.onTopReached?.call();
     }
   }
 

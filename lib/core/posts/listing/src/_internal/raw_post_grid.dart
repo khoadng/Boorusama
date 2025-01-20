@@ -365,9 +365,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                             ),
                           ),
                         ),
-                      // SliverSizedBox(
-                      //   height: MediaQuery.viewPaddingOf(context).bottom + 12,
-                      // ),
+                      const _SliverBottomGridPadding(),
                     ],
                   ),
                 ),
@@ -434,6 +432,17 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       onLeftSwipe: (_) => widget.onNextPage(),
       onRightSwipe: (_) => widget.onPreviousPage(),
       child: child,
+    );
+  }
+}
+
+class _SliverBottomGridPadding extends StatelessWidget {
+  const _SliverBottomGridPadding();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverSizedBox(
+      height: MediaQuery.viewPaddingOf(context).bottom + 12,
     );
   }
 }
