@@ -13,17 +13,24 @@ const _kOverscrollFullSheetSnapbackThreshold = -6.0;
 const _kFullSheetSize = 0.9;
 const _kMinSheetSize = 0.0;
 const _kSnapAnimationDuration = Duration(milliseconds: 200);
+const _kEpsilon = 1e-6;
+
+bool _isClose(double a, double b) {
+  return (a - b).abs() < _kEpsilon;
+}
 
 class DragSheet extends StatefulWidget {
   const DragSheet({
     required this.sheetBuilder,
     required this.pageViewController,
     super.key,
+    this.isSheetAnimating,
   });
 
   final Widget Function(BuildContext, ScrollController? scrollController)
       sheetBuilder;
   final PostDetailsPageViewController pageViewController;
+  final ValueNotifier<bool>? isSheetAnimating;
 
   @override
   State<DragSheet> createState() => _DragSheetState();
@@ -63,73 +70,91 @@ class _DragSheetState extends State<DragSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      // Handles overscroll behavior based on the sheet's current state:
-      // - Fully Expanded: Closes the sheet if overscroll exceeds the close threshold or snaps back if within snapback threshold.
-      // - Partially Expanded: Closes the sheet if overscroll exceeds the close threshold.
+    return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
-        if (notification is OverscrollNotification) {
-          // Too fast, only close when sheet is still
-          if (notification.velocity < 0) return false;
+        final atMinExtent =
+            _isClose(notification.extent, notification.minExtent);
+        final atFullExtent =
+            _isClose(notification.extent, notification.maxExtent);
+        final atInitialExtent =
+            _isClose(notification.extent, notification.initialExtent);
+        // direct comparison is needed here, to make sure when the sheet is animating pass the maxSize it won't be considered as atMaxExtent
+        final atMaxExtent = notification.extent == maxSize;
 
-          final overscrollAmount = notification.overscroll;
+        final animating =
+            !(atMinExtent || atFullExtent || atInitialExtent || atMaxExtent);
 
-          if (isFullyExpanded) {
-            if (overscrollAmount < _kOverscrollFullSheetCloseThreshold) {
-              _closeSheet();
-            } else if (overscrollAmount <
-                _kOverscrollFullSheetSnapbackThreshold) {
-              _snapSheetToMaxSize();
-            }
-          } else {
-            if (overscrollAmount < _kOverscrollSheetCloseThreshold) {
-              _closeSheet();
-            }
-          }
-        }
+        widget.isSheetAnimating?.value = animating;
 
         return false;
       },
-      child: ValueListenableBuilder(
-        valueListenable: widget.pageViewController.sheetState,
-        builder: (_, state, __) {
-          return DraggableScrollableSheet(
-            controller: sheetController,
-            // force maxSize when expanded
-            initialChildSize: state.isExpanded ? maxSize : _kMinSheetSize,
-            minChildSize: _kMinSheetSize,
-            maxChildSize: _kFullSheetSize,
-            snapSizes: [
-              _kMinSheetSize,
-              maxSize,
-              _kFullSheetSize,
-            ],
-            shouldCloseOnMinExtent: false,
-            snap: true,
-            snapAnimationDuration: _kSnapAnimationDuration,
-            builder: (context, scrollController) => Scaffold(
-              floatingActionButton: _buildScrollToTop(),
-              body: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Column(
-                      children: [
-                        _buildDivider(),
-                        Expanded(
-                          child: _buildSheetContent(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: _buildDrag(scrollController),
-                  ),
-                ],
-              ),
-            ),
-          );
+      child: NotificationListener<ScrollNotification>(
+        // Handles overscroll behavior based on the sheet's current state:
+        // - Fully Expanded: Closes the sheet if overscroll exceeds the close threshold or snaps back if within snapback threshold.
+        // - Partially Expanded: Closes the sheet if overscroll exceeds the close threshold.
+        onNotification: (notification) {
+          if (notification is OverscrollNotification) {
+            // Too fast, only close when sheet is still
+            if (notification.velocity < 0) return false;
+
+            final overscrollAmount = notification.overscroll;
+
+            if (isFullyExpanded) {
+              if (overscrollAmount < _kOverscrollFullSheetCloseThreshold) {
+                _closeSheet();
+              } else if (overscrollAmount <
+                  _kOverscrollFullSheetSnapbackThreshold) {
+                _snapSheetToMaxSize();
+              }
+            } else {
+              if (overscrollAmount < _kOverscrollSheetCloseThreshold) {
+                _closeSheet();
+              }
+            }
+          }
+
+          return false;
         },
+        child: ValueListenableBuilder(
+          valueListenable: widget.pageViewController.sheetState,
+          builder: (_, state, __) {
+            return DraggableScrollableSheet(
+              controller: sheetController,
+              // force maxSize when expanded
+              initialChildSize: state.isExpanded ? maxSize : _kMinSheetSize,
+              minChildSize: _kMinSheetSize,
+              maxChildSize: _kFullSheetSize,
+              snapSizes: [
+                _kMinSheetSize,
+                maxSize,
+                _kFullSheetSize,
+              ],
+              snap: true,
+              snapAnimationDuration: _kSnapAnimationDuration,
+              builder: (context, scrollController) => Scaffold(
+                floatingActionButton: _buildScrollToTop(),
+                body: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Column(
+                        children: [
+                          _buildDivider(),
+                          Expanded(
+                            child: _buildSheetContent(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: _buildDrag(scrollController),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

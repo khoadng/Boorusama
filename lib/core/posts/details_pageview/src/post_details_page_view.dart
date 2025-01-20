@@ -103,6 +103,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   final _cooldown = ValueNotifier(false);
   final _hovering = ValueNotifier(false);
 
+  final _isSheetAnimating = ValueNotifier(false);
+
   late AnimationController _sheetAnimController;
   late Animation<double> _displacementAnim;
   late Animation<Offset> _sideSheetSlideAnim;
@@ -152,6 +154,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.sheetState.addListener(_onSheetStateChanged);
     _controller.overlay.addListener(_onOverlayChanged);
     _controller.freestyleMoving.addListener(_onFreestyleMovingChanged);
+    _isSheetAnimating.addListener(_onSheetAnimatingChanged);
 
     final currentExpanded = _controller.sheetState.value.isExpanded;
 
@@ -221,6 +224,21 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.showOverlay();
     } else {
       _controller.hideOverlay();
+    }
+  }
+
+  void _onSheetAnimatingChanged() {
+    // Only control overlay when in expanded state
+    if (!_controller.sheetState.value.isExpanded) return;
+
+    if (_isSheetAnimating.value) {
+      _controller.hideOverlay(
+        includeSystemStatus: false,
+      );
+    } else {
+      _controller.showOverlay(
+        includeSystemStatus: false,
+      );
     }
   }
 
@@ -299,6 +317,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     // Handle case when sheet is closed by dragging down, this is not handled by the controller
     if (dis <= 0 && _controller.isExpanded) {
       _controller.sheetState.value = SheetState.hidden;
+
+      // Delay to next frame to wait for the sheet state to change before showing the overlay
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.showOverlay(
+          includeSystemStatus: false,
+        );
+      });
     }
   }
 
@@ -348,12 +373,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.overlay.removeListener(_onOverlayChanged);
     _controller.freestyleMoving.removeListener(_onFreestyleMovingChanged);
     _hovering.removeListener(_onHover);
+    _isSheetAnimating.removeListener(_onSheetAnimatingChanged);
 
     _cooldown.dispose();
     _hovering.dispose();
     _pointerCount.dispose();
     _interacting.dispose();
     _forceHide.dispose();
+    _isSheetAnimating.dispose();
 
     _overlayCurvedAnimation?.dispose();
     _overlayAnimController?.dispose();
@@ -499,23 +526,19 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         if (bottomSheet != null && !isLargeScreen)
           Align(
             alignment: Alignment.bottomCenter,
-            child: Builder(
-              builder: (context) {
-                return ValueListenableBuilder(
-                  valueListenable: _forceHide,
-                  builder: (__, hide, _) => hide
-                      ? const SizedBox.shrink()
-                      : _overlayCurvedAnimation != null
-                          ? SlideTransition(
-                              position: Tween(
-                                begin: const Offset(0, 1),
-                                end: Offset.zero,
-                              ).animate(_overlayCurvedAnimation),
-                              child: bottomSheet,
-                            )
-                          : bottomSheet,
-                );
-              },
+            child: ValueListenableBuilder(
+              valueListenable: _forceHide,
+              builder: (__, hide, _) => hide
+                  ? const SizedBox.shrink()
+                  : _overlayCurvedAnimation != null
+                      ? SlideTransition(
+                          position: Tween(
+                            begin: const Offset(0, 1),
+                            end: Offset.zero,
+                          ).animate(_overlayCurvedAnimation),
+                          child: bottomSheet,
+                        )
+                      : bottomSheet,
             ),
           ),
         Align(
@@ -524,6 +547,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               ? DragSheet(
                   sheetBuilder: widget.sheetBuilder,
                   pageViewController: _controller,
+                  isSheetAnimating: _isSheetAnimating,
                 )
               : const SizedBox.shrink(),
         ),
