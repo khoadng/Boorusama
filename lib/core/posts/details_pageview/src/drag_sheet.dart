@@ -9,17 +9,13 @@ import 'sheet_dragline.dart';
 
 class DragSheet extends StatefulWidget {
   const DragSheet({
-    required this.isItemPushed,
     required this.sheetBuilder,
     required this.pageViewController,
-    required this.sheetController,
     super.key,
   });
 
-  final ValueNotifier<bool> isItemPushed;
   final Widget Function(BuildContext, ScrollController? scrollController)
       sheetBuilder;
-  final DraggableScrollableController sheetController;
   final PostDetailsPageViewController pageViewController;
 
   @override
@@ -43,7 +39,7 @@ class _DragSheetState extends State<DragSheet> {
       valueListenable: widget.pageViewController.sheetState,
       builder: (_, state, __) {
         return DraggableScrollableSheet(
-          controller: widget.sheetController,
+          controller: widget.pageViewController.sheetController,
           // force maxSize when expanded
           initialChildSize: state.isExpanded ? maxSize : 0.0,
           minChildSize: 0,
@@ -102,7 +98,7 @@ class _DragSheetState extends State<DragSheet> {
 
   Widget _buildDivider() {
     return ValueListenableBuilder(
-      valueListenable: widget.isItemPushed,
+      valueListenable: widget.pageViewController.isItemPushed,
       builder: (_, pushed, __) => pushed
           ? const Divider(
               height: 0,

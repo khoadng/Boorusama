@@ -248,15 +248,20 @@ class PostDetailsPageViewController extends ChangeNotifier
     canPull.value = true;
   }
 
+  void setDisplacement(double value) {
+    displacement.value = value;
+    isItemPushed.value = value > 0;
+  }
+
   Future<void> toggleExpanded(
     BuildContext context,
     Future<void> Function() anim,
   ) async {
     if (sheetState.value.isExpanded) {
       sheetMaxSize.value = maxSize;
-      displacement.value = 0.0;
+      setDisplacement(0.0);
     } else {
-      displacement.value = maxSize * MediaQuery.sizeOf(context).longestSide;
+      setDisplacement(maxSize * MediaQuery.sizeOf(context).longestSide);
     }
 
     await anim();
@@ -345,6 +350,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     slideshow.dispose();
     freestyleMoveOffset.dispose();
     freestyleMoving.dispose();
+    isItemPushed.dispose();
 
     super.dispose();
   }

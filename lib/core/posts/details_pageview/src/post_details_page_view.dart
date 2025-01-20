@@ -108,7 +108,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late Animation<Offset> _sideSheetSlideAnim;
 
   final _forceHide = ValueNotifier(false);
-  final _isItemPushed = ValueNotifier(false);
 
   bool get isLargeScreen => widget.checkIfLargeScreen();
 
@@ -152,7 +151,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.verticalPosition.addListener(_onVerticalPositionChanged);
     _controller.sheetState.addListener(_onSheetStateChanged);
     _controller.overlay.addListener(_onOverlayChanged);
-    _controller.displacement.addListener(_onDisplacementChanged);
     _controller.freestyleMoving.addListener(_onFreestyleMovingChanged);
 
     final currentExpanded = _controller.sheetState.value.isExpanded;
@@ -238,10 +236,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
   }
 
-  void _onDisplacementChanged() {
-    _isItemPushed.value = _controller.displacement.value > 0;
-  }
-
   void _onOverlayChanged() {
     if (_controller.overlay.value) {
       if (!widget.disableAnimation) {
@@ -308,7 +302,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final screenHeight = MediaQuery.sizeOf(context).height;
     final dis = _clampToZero(size * screenHeight);
 
-    _controller.displacement.value = dis;
+    _controller.setDisplacement(dis);
 
     // Handle case when sheet is closed by dragging down, this is not handled by the controller
     if (dis <= 0 && _controller.isExpanded) {
@@ -344,7 +338,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.verticalPosition.removeListener(_onVerticalPositionChanged);
     _controller.sheetController.removeListener(_onSheetChanged);
     _controller.overlay.removeListener(_onOverlayChanged);
-    _controller.displacement.removeListener(_onDisplacementChanged);
     _controller.freestyleMoving.removeListener(_onFreestyleMovingChanged);
     _hovering.removeListener(_onHover);
 
@@ -352,7 +345,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _hovering.dispose();
     _pointerCount.dispose();
     _interacting.dispose();
-    _isItemPushed.dispose();
     _forceHide.dispose();
 
     _overlayCurvedAnimation?.dispose();
@@ -498,10 +490,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           alignment: Alignment.bottomCenter,
           child: !isLargeScreen
               ? DragSheet(
-                  isItemPushed: _isItemPushed,
                   sheetBuilder: widget.sheetBuilder,
                   pageViewController: _controller,
-                  sheetController: _controller.sheetController,
                 )
               : const SizedBox.shrink(),
         ),
@@ -577,7 +567,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             builder: (_, state, __) => ValueListenableBuilder(
               valueListenable: _controller.freestyleMoving,
               builder: (context, moving, child) => ValueListenableBuilder(
-                valueListenable: _isItemPushed,
+                valueListenable: _controller.isItemPushed,
                 builder: (_, pushed, __) {
                   return switch (moving) {
                     true => widget.bottomSheet!,
