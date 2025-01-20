@@ -27,6 +27,7 @@ class BooruImage extends ConsumerWidget {
     this.aspectRatio = 1,
     this.forceFill = false,
     this.forceLoadPlaceholder = false,
+    this.gaplessPlayback = false,
   });
 
   final String imageUrl;
@@ -36,6 +37,7 @@ class BooruImage extends ConsumerWidget {
   final double? aspectRatio;
   final bool forceFill;
   final bool forceLoadPlaceholder;
+  final bool gaplessPlayback;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,6 +80,7 @@ class BooruRawImage extends StatelessWidget {
     this.headers = const {},
     this.isLargeImage = false,
     this.forceLoadPlaceholder = false,
+    this.gaplessPlayback = false,
   });
 
   final Dio dio;
@@ -90,6 +93,7 @@ class BooruRawImage extends StatelessWidget {
   final Map<String, String> headers;
   final bool isLargeImage;
   final bool forceLoadPlaceholder;
+  final bool gaplessPlayback;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +119,7 @@ class BooruRawImage extends StatelessWidget {
                   width: width,
                   height: height,
                   fit: fit,
+                  gaplessPlayback: gaplessPlayback,
                   placeholderWidget: placeholderUrl.toOption().fold(
                         () => imagePlaceHolder,
                         (url) => Builder(

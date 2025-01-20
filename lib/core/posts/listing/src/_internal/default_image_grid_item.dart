@@ -143,6 +143,7 @@ class _Image<T extends Post> extends ConsumerWidget {
       ),
       forceFill: imageListType == ImageListType.standard,
       placeholderUrl: post.thumbnailImageUrl,
+      gaplessPlayback: true,
     );
   }
 }

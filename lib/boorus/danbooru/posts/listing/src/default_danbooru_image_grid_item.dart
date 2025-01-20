@@ -126,6 +126,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                             ),
                             forceFill: imageListType == ImageListType.standard,
                             placeholderUrl: post.thumbnailImageUrl,
+                            gaplessPlayback: true,
                           );
                         },
                       ),
