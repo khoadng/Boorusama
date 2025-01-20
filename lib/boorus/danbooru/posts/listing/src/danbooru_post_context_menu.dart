@@ -12,7 +12,6 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/downloads/downloader.dart';
 import '../../../../../core/foundation/url_launcher.dart';
 import '../../../../../core/posts/post/post.dart';
-import '../../../../../core/posts/post/routes.dart';
 import '../../../../../core/router.dart';
 import '../../../tags/tag/routes.dart';
 import '../../../versions/routes.dart';
@@ -40,10 +39,6 @@ class DanbooruPostContextMenu extends ConsumerWidget {
 
     return GenericContextMenu(
       buttonConfigs: [
-        ContextMenuButtonConfig(
-          'post.action.preview'.tr(),
-          onPressed: () => goToImagePreviewPage(ref, context, post),
-        ),
         if (post.hasComment)
           ContextMenuButtonConfig(
             'post.action.view_comments'.tr(),
@@ -138,10 +133,6 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
 
     return GenericContextMenu(
       buttonConfigs: [
-        ContextMenuButtonConfig(
-          'Preview',
-          onPressed: () => goToImagePreviewPage(ref, context, post),
-        ),
         ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
