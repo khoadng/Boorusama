@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
 import '../../../../home/custom_home.dart';
 import '../../../../router.dart';
 import '../../../../widgets/widgets.dart';
@@ -16,13 +15,13 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
       name: '/search',
       pageBuilder: (context, state) {
         final query = state.uri.queryParameters[kInitialQueryKey];
-        final customHomeViewKey = ref.readLayoutConfigs?.home;
+        final customHomeViewKey = ref.read(customHomeViewKeyProvider);
         final page = InheritedInitialSearchQuery(
           query: query,
           child: const SearchPage(),
         );
 
-        return customHomeViewKey.isAlt
+        return customHomeViewKey != null && customHomeViewKey.isAlt
             ? CupertinoPage(
                 key: state.pageKey,
                 name: state.name,

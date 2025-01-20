@@ -7,12 +7,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../boorus/engine/providers.dart';
-import '../configs/current.dart';
 import '../configs/ref.dart';
 import '../configs/routes.dart';
 import '../foundation/networking.dart';
 import '../info/app_info.dart';
-import '../premiums/providers.dart';
+import 'custom_home.dart';
 import 'home_page_controller.dart';
 
 class UserCustomHomeBuilder extends ConsumerWidget {
@@ -25,13 +24,7 @@ class UserCustomHomeBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasPremium = ref.watch(hasPremiumProvider);
-
-    if (!hasPremium) return defaultView;
-
-    final viewKey = ref.watch(
-      currentReadOnlyBooruConfigLayoutProvider.select((value) => value?.home),
-    );
+    final viewKey = ref.watch(customHomeViewKeyProvider);
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final data = booruBuilder?.customHomeViewBuilders;
 

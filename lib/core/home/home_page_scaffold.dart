@@ -12,7 +12,6 @@ import '../blacklists/widgets.dart';
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
 import '../cache/providers.dart';
-import '../configs/current.dart';
 import '../configs/widgets.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';
@@ -100,9 +99,7 @@ class HomeContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = InheritedHomePageController.of(context);
 
-    final homeViewKey = ref.watch(
-      currentReadOnlyBooruConfigLayoutProvider.select((value) => value?.home),
-    );
+    final homeViewKey = ref.watch(customHomeViewKeyProvider);
 
     final views = [
       const CustomHomePage(),
@@ -152,9 +149,7 @@ class HomeSideMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = Theme.of(context).colorScheme;
-    final viewKey = ref.watch(
-      currentReadOnlyBooruConfigLayoutProvider.select((value) => value?.home),
-    );
+    final viewKey = ref.watch(customHomeViewKeyProvider);
 
     return context.isLargeScreen
         ? SafeArea(
@@ -244,7 +239,7 @@ List<Widget> coreDesktopViewBuilder({
 
   final views = [
     for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
-    if (viewKey.isAlt) const SearchPage(),
+    if (viewKey != null && viewKey.isAlt) const SearchPage(),
     const BookmarkPage(),
     const BlacklistedTagPage(),
     const FavoriteTagsPage(),
@@ -262,7 +257,7 @@ List<Widget> coreDesktopTabBuilder(
 ) {
   return [
     const Divider(),
-    if (viewKey.isAlt)
+    if (viewKey != null && viewKey.isAlt)
       HomeNavigationTile(
         value: _v(1),
         constraints: constraints,

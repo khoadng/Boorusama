@@ -12,7 +12,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
-import '../configs/ref.dart';
 import '../configs/widgets.dart';
 import '../downloads/routes.dart';
 import '../search/search/routes.dart';
@@ -42,7 +41,7 @@ class SideBarMenu extends ConsumerWidget {
     final position = ref.watch(
       settingsProvider.select((value) => value.booruConfigSelectorPosition),
     );
-    final viewKey = ref.watchConfig.layout?.home;
+    final viewKey = ref.watch(customHomeViewKeyProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final viewPadding = MediaQuery.viewPaddingOf(context);
@@ -106,7 +105,7 @@ class SideBarMenu extends ConsumerWidget {
                       ),
                     ] else
                       ...[
-                        if (viewKey.isAlt)
+                        if (viewKey != null && viewKey.isAlt)
                           SideMenuTile(
                             icon: const Icon(Symbols.search),
                             title: const Text('settings.search.search').tr(),

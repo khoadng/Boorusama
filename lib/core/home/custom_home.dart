@@ -3,13 +3,28 @@ import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/engine.dart';
+import '../configs/current.dart';
 import '../downloads/bulks.dart';
+import '../premiums/providers.dart';
 
 const _kDefaultView = 'default';
+
+final customHomeViewKeyProvider = Provider<CustomHomeViewKey?>((ref) {
+  final hasPremium = ref.watch(hasPremiumProvider);
+
+  if (!hasPremium) return null;
+
+  final viewKey = ref.watch(
+    currentReadOnlyBooruConfigLayoutProvider.select((value) => value?.home),
+  );
+
+  return viewKey;
+});
 
 class CustomHomeViewKey extends Equatable {
   const CustomHomeViewKey(
@@ -41,9 +56,9 @@ class CustomHomeViewKey extends Equatable {
   List<Object?> get props => [name];
 }
 
-extension CustomViewKeyX on CustomHomeViewKey? {
+extension CustomViewKeyX on CustomHomeViewKey {
   bool get isDefault => this == const CustomHomeViewKey.defaultValue();
-  bool get isAlt => this != null && !isDefault;
+  bool get isAlt => !isDefault;
 }
 
 class CustomHomeDataBuilder extends Equatable {
