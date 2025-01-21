@@ -63,7 +63,7 @@ extension GelbooruV2ClientX on GelbooruV2Client {
       limit: limit,
     );
 
-    return posts
+    return posts.posts
         .map((e) => gelbooruV2PostDtoToGelbooruPost(
               e,
               PostMetadata(
@@ -72,6 +72,6 @@ extension GelbooruV2ClientX on GelbooruV2Client {
               ),
             ))
         .toList()
-        .toResult();
+        .toResult(total: posts.count);
   }
 }
