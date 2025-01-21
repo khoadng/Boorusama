@@ -11,8 +11,9 @@ import 'post_details_page_view_controller.dart';
 import 'sheet_dragline.dart';
 
 const _kOverscrollSheetCloseThreshold = -6.0;
-const _kOverscrollFullSheetCloseThreshold = -24.0;
 const _kOverscrollFullSheetSnapbackThreshold = -6.0;
+const _kOverscrollSheetSnapToFullThreshold = _kOverscrollSheetCloseThreshold;
+const _kOverscrollFullSheetCloseThreshold = _kOverscrollSheetCloseThreshold * 2;
 const _kFullSheetSize = 0.9;
 const _kMinSheetSize = 0.0;
 const _kSnapAnimationDuration = Duration(milliseconds: 200);
@@ -66,6 +67,14 @@ class _DragSheetState extends State<DragSheet> {
     );
   }
 
+  void _snapSheetToFullSize() {
+    sheetController.animateTo(
+      _kFullSheetSize,
+      duration: _kSnapAnimationDuration,
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return NotificationListener<DraggableScrollableNotification>(
@@ -92,8 +101,10 @@ class _DragSheetState extends State<DragSheet> {
         // - Partially Expanded: Closes the sheet if overscroll exceeds the close threshold.
         onNotification: (notification) {
           if (notification is OverscrollNotification) {
-            // Too fast, only close when sheet is still
-            if (notification.velocity < 0) return false;
+            // only close when sheet is still
+            if (notification.velocity < 0 || notification.velocity > 0) {
+              return false;
+            }
 
             // prevent other scrollable widgets from closing the sheet
             if (notification.depth != 0) return false;
@@ -110,6 +121,9 @@ class _DragSheetState extends State<DragSheet> {
             } else {
               if (overscrollAmount < _kOverscrollSheetCloseThreshold) {
                 _closeSheet();
+              } else if (overscrollAmount >
+                  -_kOverscrollSheetSnapToFullThreshold) {
+                _snapSheetToFullSize();
               }
             }
           }
@@ -193,12 +207,16 @@ class _DragSheetState extends State<DragSheet> {
   Widget _buildDrag(
     ScrollController scrollController,
   ) {
-    return ColoredBox(
-      color: Colors.transparent,
-      // The sheet will be draggable only from the top, the content will be scrollable on its own
-      child: SingleChildScrollView(
-        controller: scrollController,
-        child: const SheetDragline(),
+    return NotificationListener<ScrollNotification>(
+      // Prevent events from bubbling up to not interfere with the sheet's scroll
+      onNotification: (_) => true,
+      child: ColoredBox(
+        color: Colors.transparent,
+        // The sheet will be draggable only from the top, the content will be scrollable on its own
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: const SheetDragline(),
+        ),
       ),
     );
   }

@@ -194,8 +194,10 @@ class _ThemeSheetControllerListener extends StatelessWidget {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is OverscrollNotification) {
-          // Too fast, only close when sheet is still
-          if (notification.velocity < 0) return false;
+          // only close when sheet is still
+          if (notification.velocity < 0 || notification.velocity > 0) {
+            return false;
+          }
 
           if (notification.depth != 0) return false;
 
