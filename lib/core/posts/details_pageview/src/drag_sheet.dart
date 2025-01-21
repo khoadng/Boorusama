@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
 import '../../../widgets/widgets.dart';
 import 'post_details_page_view.dart';
@@ -13,11 +16,6 @@ const _kOverscrollFullSheetSnapbackThreshold = -6.0;
 const _kFullSheetSize = 0.9;
 const _kMinSheetSize = 0.0;
 const _kSnapAnimationDuration = Duration(milliseconds: 200);
-const _kEpsilon = 1e-6;
-
-bool _isClose(double a, double b) {
-  return (a - b).abs() < _kEpsilon;
-}
 
 class DragSheet extends StatefulWidget {
   const DragSheet({
@@ -73,11 +71,11 @@ class _DragSheetState extends State<DragSheet> {
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
         final atMinExtent =
-            _isClose(notification.extent, notification.minExtent);
+            notification.extent.isApproximatelyEqual(notification.minExtent);
         final atFullExtent =
-            _isClose(notification.extent, notification.maxExtent);
-        final atInitialExtent =
-            _isClose(notification.extent, notification.initialExtent);
+            notification.extent.isApproximatelyEqual(notification.maxExtent);
+        final atInitialExtent = notification.extent
+            .isApproximatelyEqual(notification.initialExtent);
         // direct comparison is needed here, to make sure when the sheet is animating pass the maxSize it won't be considered as atMaxExtent
         final atMaxExtent = notification.extent == maxSize;
 
