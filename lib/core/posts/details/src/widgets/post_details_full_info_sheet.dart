@@ -102,6 +102,9 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
 
     return CustomScrollView(
       controller: scrollController,
+      // We need the overscroll notifications for closing/collapsing the sheet
+      // the default BouncingScrollPhysics on iOS doesn't provide them
+      physics: const ClampingScrollPhysics(),
       slivers: [
         const SliverSizedBox(height: 16),
         ...slivers,

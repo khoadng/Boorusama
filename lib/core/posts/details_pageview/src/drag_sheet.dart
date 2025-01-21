@@ -194,6 +194,7 @@ class _DragSheetState extends State<DragSheet> {
   ) {
     return ColoredBox(
       color: Colors.transparent,
+      // The sheet will be draggable only from the top, the content will be scrollable on its own
       child: SingleChildScrollView(
         controller: scrollController,
         child: const SheetDragline(),
