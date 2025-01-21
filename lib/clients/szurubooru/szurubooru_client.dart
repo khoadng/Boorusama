@@ -53,10 +53,16 @@ class SzurubooruClient
   @override
   Dio get dio => _dio;
 
+  // Only a single global autocomplete request per client is allowed for now
+  CancelToken? _autocompleteCancelToken;
+
   Future<List<TagDto>> autocomplete({
     required String query,
     int limit = 15,
   }) async {
+    _autocompleteCancelToken?.cancel('Cancelled due to new request being made');
+    _autocompleteCancelToken = CancelToken();
+
     try {
       final q = query.length < 3 ? '$query*' : '*$query*';
 
@@ -69,13 +75,20 @@ class SzurubooruClient
           ].join(' '),
           'limit': limit,
         },
+        cancelToken: _autocompleteCancelToken,
       );
 
       final results = response.data['results'] as List;
 
       return results.map((e) => TagDto.fromJson(e)).toList();
-    } on Exception catch (_) {
-      return [];
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
+        return [];
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        // Too slow, return empty list, don't throw
+        return [];
+      }
+      rethrow;
     }
   }
 
