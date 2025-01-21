@@ -97,6 +97,9 @@ class _DragSheetState extends State<DragSheet> {
             // Too fast, only close when sheet is still
             if (notification.velocity < 0) return false;
 
+            // prevent other scrollable widgets from closing the sheet
+            if (notification.depth != 0) return false;
+
             final overscrollAmount = notification.overscroll;
 
             if (isFullyExpanded) {
