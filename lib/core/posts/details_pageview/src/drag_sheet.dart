@@ -182,8 +182,13 @@ class _DragSheetState extends State<DragSheet> {
             ? ScrollToTop(
                 scrollController: _contentScrollController,
                 child: BooruScrollToTopButton(
-                  onPressed: () {
-                    widget.pageViewController.resetSheet();
+                  onPressed: () async {
+                    await widget.pageViewController.resetSheet();
+
+                    if (context.mounted &&
+                        _contentScrollController.hasClients) {
+                      _contentScrollController.jumpTo(0);
+                    }
                   },
                 ),
               )
