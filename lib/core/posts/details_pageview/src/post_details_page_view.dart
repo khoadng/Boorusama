@@ -305,12 +305,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       return;
     }
 
-    if (!context.mounted) {
-      return;
-    }
-
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final dis = _clampToZero(size * screenHeight);
+    final dis = _clampToZero(_controller.sheetController.sizeToPixels(size));
 
     _controller.setDisplacement(dis);
 
@@ -627,7 +622,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   CircularIconButton(
                     onPressed: () {
                       _controller.toggleExpanded(
-                        context,
+                        MediaQuery.sizeOf(context).longestSide,
                         () async {
                           if (!widget.disableAnimation) {
                             // if animation is running, ignore

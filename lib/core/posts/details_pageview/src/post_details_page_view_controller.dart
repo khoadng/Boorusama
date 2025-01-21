@@ -254,14 +254,14 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   Future<void> toggleExpanded(
-    BuildContext context,
+    double longestSide,
     Future<void> Function() anim,
   ) async {
     if (sheetState.value.isExpanded) {
       sheetMaxSize.value = maxSize;
       setDisplacement(0.0);
     } else {
-      setDisplacement(maxSize * MediaQuery.sizeOf(context).longestSide);
+      setDisplacement(maxSize * longestSide);
     }
 
     await anim();
