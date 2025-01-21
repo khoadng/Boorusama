@@ -335,14 +335,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  custom_sliding_segmented_control:
-    dependency: "direct main"
-    description:
-      name: custom_sliding_segmented_control
-      sha256: eca54f37c999351522a6aa82bf451241df05ae4e231d593f77034615251034eb
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.8.4"
   dart_style:
     dependency: transitive
     description:

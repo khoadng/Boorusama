@@ -39,7 +39,6 @@ dependencies:
       ref: 7a310fa2aacfaa95339ee2535f0797fcf84efeca
   cookie_jar: ^4.0.8
   crypto: ^3.0.5
-  custom_sliding_segmented_control: ^1.8.3
   device_info_plus: ^11.1.0
   dio: ^5.7.0
   dio_cache_interceptor: ^3.5.0
