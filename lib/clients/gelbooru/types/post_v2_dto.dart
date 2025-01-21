@@ -2,7 +2,6 @@
 import 'package:path/path.dart' as path;
 
 class PostV2Dto {
-
   PostV2Dto({
     this.previewUrl,
     this.sampleUrl,
@@ -78,7 +77,7 @@ class PostV2Dto {
       sampleUrl: sampleUrl,
       fileUrl: fileUrl,
       directory: json['directory']?.toString(),
-      hash: json['hash'],
+      hash: json['hash'] ?? json['md5'],
       width: json['width'],
       height: json['height'],
       id: json['id'],
