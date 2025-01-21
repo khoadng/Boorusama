@@ -108,16 +108,36 @@ class SankakuClient {
     return (data as List).map((e) => PostDto.fromJson(e)).toList();
   }
 
+  // Only a single global autocomplete request per client is allowed for now
+  CancelToken? _autocompleteCancelToken;
+
   Future<List<TagDto>> getAutocomplete({
     required String query,
   }) async {
-    final response = await _dio.get(
-      '/tags',
-      queryParameters: {
-        'name': query,
-      },
-    );
+    _autocompleteCancelToken?.cancel('Cancelled due to new request being made');
+    _autocompleteCancelToken = CancelToken();
 
-    return (response.data as List).map((e) => TagDto.fromJson(e)).toList();
+    try {
+      final response = await _dio.get(
+        '/tags',
+        queryParameters: {
+          'name': query,
+        },
+        options: Options(
+          receiveTimeout: Duration(seconds: 15),
+        ),
+        cancelToken: _autocompleteCancelToken,
+      );
+
+      return (response.data as List).map((e) => TagDto.fromJson(e)).toList();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
+        return [];
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        // Too slow, return empty list, don't throw
+        return [];
+      }
+      rethrow;
+    }
   }
 }

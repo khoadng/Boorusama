@@ -11,6 +11,11 @@ import 'package:xml/xml.dart';
 import 'gelbooru_client_favorites.dart';
 import 'types/types.dart';
 
+typedef GelbooruV2Posts = ({
+  List<PostV2Dto> posts,
+  int? count,
+});
+
 class GelbooruV2Client with GelbooruClientFavorites {
   GelbooruV2Client({
     String? baseUrl,
@@ -51,7 +56,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
   @override
   Dio get dio => _dio;
 
-  Future<List<PostV2Dto>> getPosts({
+  Future<GelbooruV2Posts> getPosts({
     int? page,
     int? limit,
     List<String>? tags,
@@ -76,17 +81,40 @@ class GelbooruV2Client with GelbooruClientFavorites {
     final data = response.data;
 
     final result = switch (data) {
-      final List l =>
-        l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
-      final String s => (jsonDecode(s) as List<dynamic>)
-          .map<PostV2Dto>((item) => PostV2Dto.fromJson(item, baseUrl))
-          .toList(),
-      _ => <PostV2Dto>[],
+      final Map m => () {
+          final count = m['@attributes']['count'] as int?;
+
+          return (
+            posts: m.containsKey('post')
+                ? (m['post'] as List)
+                    .map((item) => PostV2Dto.fromJson(item, baseUrl))
+                    .toList()
+                : <PostV2Dto>[],
+            count: count,
+          );
+        }(),
+      final List l => (
+          posts: l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
+          count: null,
+        ),
+      final String s => (
+          posts: (jsonDecode(s) as List<dynamic>)
+              .map<PostV2Dto>((item) => PostV2Dto.fromJson(item, baseUrl))
+              .toList(),
+          count: null,
+        ),
+      _ => (
+          posts: <PostV2Dto>[],
+          count: null,
+        ),
     };
 
-    final filterNulls = result.where((e) => e.hash != null).toList();
+    final filterNulls = result.posts.where((e) => e.hash != null).toList();
 
-    return filterNulls;
+    return (
+      posts: filterNulls,
+      count: result.count,
+    );
   }
 
   Future<List<AutocompleteDto>> autocomplete({
