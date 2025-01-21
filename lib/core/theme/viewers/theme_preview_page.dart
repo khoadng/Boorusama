@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -18,10 +19,24 @@ import 'theme_previewer_sheet.dart';
 const _kMinSheetSize = 0.3;
 const _kMaxSheetSize = 0.75;
 
-class ThemePreviewPage extends StatelessWidget {
+class ThemePreviewPage extends StatefulWidget {
   const ThemePreviewPage({
     super.key,
   });
+
+  @override
+  State<ThemePreviewPage> createState() => _ThemePreviewPageState();
+}
+
+class _ThemePreviewPageState extends State<ThemePreviewPage> {
+  final _sheetController = DraggableScrollableController();
+
+  @override
+  void dispose() {
+    _sheetController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +93,7 @@ class ThemePreviewPage extends StatelessWidget {
           ),
           if (!context.isLargeScreen)
             DraggableScrollableSheet(
+              controller: _sheetController,
               snap: true,
               snapSizes: const [
                 _kMinSheetSize,
@@ -87,8 +103,12 @@ class ThemePreviewPage extends StatelessWidget {
               initialChildSize: _kMinSheetSize,
               maxChildSize: _kMaxSheetSize,
               minChildSize: _kMinSheetSize,
-              builder: (context, scrollController) => ThemePreviewerSheet(
-                scrollController: scrollController,
+              builder: (context, scrollController) =>
+                  _ThemeSheetControllerListener(
+                sheetController: _sheetController,
+                child: ThemePreviewerSheet(
+                  scrollController: scrollController,
+                ),
               ),
             ),
           Positioned(
@@ -147,6 +167,62 @@ class ThemePreviewPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+const _kOverscrollSheetSnapToMaxThreshold = -6.0;
+const _kOverscrollSheetSnapToMinThreshold = -6.0;
+
+class _ThemeSheetControllerListener extends StatelessWidget {
+  const _ThemeSheetControllerListener({
+    required this.child,
+    required this.sheetController,
+  });
+
+  final Widget child;
+  final DraggableScrollableController sheetController;
+
+  bool get isFullyExpanded =>
+      sheetController.size.isApproximatelyEqual(_kMaxSheetSize);
+
+  bool get isFullyCollapsed =>
+      sheetController.size.isApproximatelyEqual(_kMinSheetSize);
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification is OverscrollNotification) {
+          // Too fast, only close when sheet is still
+          if (notification.velocity < 0) return false;
+
+          if (notification.depth != 0) return false;
+
+          final overscrollAmount = notification.overscroll;
+
+          if (isFullyExpanded) {
+            if (overscrollAmount < _kOverscrollSheetSnapToMinThreshold) {
+              sheetController.animateTo(
+                _kMinSheetSize,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+              );
+            }
+          } else if (isFullyCollapsed) {
+            if (overscrollAmount > -_kOverscrollSheetSnapToMaxThreshold) {
+              sheetController.animateTo(
+                _kMaxSheetSize,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+              );
+            }
+          }
+        }
+
+        return false;
+      },
+      child: child,
     );
   }
 }

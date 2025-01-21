@@ -39,33 +39,37 @@ class ThemePreviewerSheet extends ConsumerWidget {
         children: [
           SizedBox(
             height: 60,
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                if (!context.isLargeScreen)
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: colorScheme.hintColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
+            child: NotificationListener<ScrollNotification>(
+              // Prevent notification from being propagated to the parent to avoid conflicts with the content scroll
+              onNotification: (_) => true,
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  if (!context.isLargeScreen)
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: colorScheme.hintColor,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
                           ),
+                          height: 4,
+                          width: 40,
                         ),
-                        height: 4,
-                        width: 40,
                       ),
                     ),
-                  ),
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 8,
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 8,
+                      ),
+                      child: ThemeCategoryToggleSwitch(),
                     ),
-                    child: ThemeCategoryToggleSwitch(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -79,34 +83,38 @@ class ThemePreviewerSheet extends ConsumerWidget {
                   ),
                 ),
                 Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverList.list(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Consumer(
-                                builder: (_, ref, __) {
-                                  final state =
-                                      ref.watch(themePreviewerProvider);
+                  child: ScrollConfiguration(
+                    // Force MaterialScrollBehavior to make sure overscroll effect is enabled
+                    behavior: const MaterialScrollBehavior(),
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverList.list(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Consumer(
+                                  builder: (_, ref, __) {
+                                    final state =
+                                        ref.watch(themePreviewerProvider);
 
-                                  return switch (state.category) {
-                                    ThemeCategory.basic =>
-                                      const BasicColorSelector(),
-                                    ThemeCategory.builtIn =>
-                                      const BuiltInColorSelector(),
-                                    ThemeCategory.accent =>
-                                      const AccentColorSelector(),
-                                  };
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                                    return switch (state.category) {
+                                      ThemeCategory.basic =>
+                                        const BasicColorSelector(),
+                                      ThemeCategory.builtIn =>
+                                        const BuiltInColorSelector(),
+                                      ThemeCategory.accent =>
+                                        const AccentColorSelector(),
+                                    };
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
