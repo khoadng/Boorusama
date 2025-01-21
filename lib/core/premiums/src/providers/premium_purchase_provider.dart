@@ -39,9 +39,7 @@ class PremiumPurchaseNotifier
     final selected = state.value?.selectedPackage;
 
     if (selected != null) {
-      await ref.read(packagePurchaseProvider.notifier).startPurchase(selected);
-
-      return true;
+      return ref.read(packagePurchaseProvider.notifier).startPurchase(selected);
     }
 
     return false;

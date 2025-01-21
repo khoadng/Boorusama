@@ -31,7 +31,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
 
   static const _kServiceName = 'Purchaser';
 
-  Future<void> startPurchase(Package package) async {
+  Future<bool> startPurchase(Package package) async {
     final logger = ref.read(loggerProvider);
 
     try {
@@ -52,6 +52,8 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
       );
 
       state = AsyncData(success);
+
+      return success;
     } on Exception catch (e, st) {
       logger.logE(
         _kServiceName,
@@ -59,6 +61,8 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
       );
 
       state = AsyncError(e, st);
+
+      return false;
     }
   }
 }

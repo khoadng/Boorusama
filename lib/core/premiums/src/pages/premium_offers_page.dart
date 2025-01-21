@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../foundation/iap/iap.dart';
 import '../../../foundation/toast.dart';
+import '../../../router.dart';
 import '../internal_widgets/benefit_card.dart';
 import '../types/premium.dart';
 import '../types/strings.dart';
@@ -26,27 +27,35 @@ class PremiumOffersPage extends ConsumerWidget {
     ref.listen(
       packagePurchaseProvider,
       (prev, cur) {
-        cur.when(
-          data: (success) {
-            if (success == true) {
-              showDialog(
-                context: context,
-                builder: (context) => const Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+        // Wait for the next frame to show the dialog to make sure the purchase dialog is closed first
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          cur.when(
+            data: (success) {
+              // When purchase is successful, this page is replaced with the manage page so we need a global context to show the dialog
+              final context = navigatorKey.currentContext;
+
+              if (context == null) return;
+
+              if (success == true) {
+                showDialog(
+                  context: context,
+                  builder: (context) => const Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: PremiumThanksDialog(),
                   ),
-                  child: PremiumThanksDialog(),
-                ),
-              );
-            } else if (success == false) {
+                );
+              } else if (success == false) {
+                _showFailedPurchase(context);
+              }
+            },
+            loading: () {},
+            error: (_, __) {
               _showFailedPurchase(context);
-            }
-          },
-          loading: () {},
-          error: (_, __) {
-            _showFailedPurchase(context);
-          },
-        );
+            },
+          );
+        });
       },
     );
 
@@ -65,19 +74,19 @@ class PremiumOffersPage extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const SizedBox(height: 36),
-                        _buildTitle(),
+                        const _Title(),
                         const SizedBox(height: 12),
                         _buildBenefits(ref),
                       ],
                     ),
                   ),
                 ),
-                Column(
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildRestoreButton(context, ref),
-                    _buildPurchaseButton(ref, context),
+                    _RestorePremiumButton(),
+                    _GetPremiumButton(),
                   ],
                 ),
               ],
@@ -99,7 +108,73 @@ class PremiumOffersPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPurchaseButton(WidgetRef ref, BuildContext context) {
+  Widget _buildBenefits(WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: defaultBenefits
+          .map(
+            (benefit) => BenefitCard(
+              title: benefit.title,
+              description: benefit.description,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  void _showFailedPurchase(BuildContext context) {
+    return showSimpleSnackBar(
+      context: context,
+      content: const Text(
+        'There was a problem purchasing your subscription. Please try again later.',
+      ),
+      duration: const Duration(seconds: 2),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: Image.asset(
+              'assets/images/logo.png',
+              width: 36,
+              height: 36,
+              isAntiAlias: true,
+              filterQuality: FilterQuality.none,
+            ),
+          ),
+          const Expanded(
+            child: Text(
+              kPremiumBrandNameFull,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 26,
+                letterSpacing: -1,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GetPremiumButton extends ConsumerWidget {
+  const _GetPremiumButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 32,
@@ -132,7 +207,23 @@ class PremiumOffersPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildRestoreButton(BuildContext context, WidgetRef ref) {
+  Future<dynamic> _showPlans(BuildContext context, WidgetRef ref) {
+    return showModalBottomSheet(
+      enableDrag: false,
+      context: context,
+      routeSettings: const RouteSettings(name: 'select_subscription_plan'),
+      builder: (modalContext) {
+        return const PremiumPurchaseModal();
+      },
+    );
+  }
+}
+
+class _RestorePremiumButton extends ConsumerWidget {
+  const _RestorePremiumButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 12,
@@ -149,62 +240,6 @@ class PremiumOffersPage extends ConsumerWidget {
             ),
         child: const Text('Restore subscription'),
       ),
-    );
-  }
-
-  Widget _buildBenefits(WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: defaultBenefits
-          .map(
-            (benefit) => BenefitCard(
-              title: benefit.title,
-              description: benefit.description,
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Widget _buildTitle() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-      child: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: 36,
-              height: 36,
-              isAntiAlias: true,
-              filterQuality: FilterQuality.none,
-            ),
-          ),
-          const Expanded(
-            child: Text(
-              kPremiumBrandNameFull,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 26,
-                letterSpacing: -1,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showFailedPurchase(BuildContext context) {
-    return showSimpleSnackBar(
-      context: context,
-      content: const Text(
-        'There was a problem purchasing your subscription. Please try again later.',
-      ),
-      duration: const Duration(seconds: 2),
     );
   }
 
@@ -239,16 +274,6 @@ class PremiumOffersPage extends ConsumerWidget {
         'There was a problem restoring your subscription. Please try again later.',
       ),
       duration: const Duration(seconds: 2),
-    );
-  }
-
-  Future<dynamic> _showPlans(BuildContext context, WidgetRef ref) {
-    return showModalBottomSheet(
-      context: context,
-      routeSettings: const RouteSettings(name: 'select_subscription_plan'),
-      builder: (modalContext) {
-        return const PremiumPurchaseModal();
-      },
     );
   }
 }
