@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
+import '../../../downloads/urls.dart';
 import '../../../foundation/loggers.dart';
-import '../../../foundation/path.dart';
 import 'dio_response.dart';
 
 const _kImageExtensions = {
@@ -112,7 +112,7 @@ bool _shouldIgnoreRequest(RequestOptions? options) {
 
   if (uri == null) return true;
 
-  final ext = extension(uri.toString());
+  final ext = sanitizedExtension(uri.toString());
   if (_kImageExtensions.contains(ext)) {
     return true;
   }
