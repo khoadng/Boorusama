@@ -28,6 +28,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   })  : currentPage = ValueNotifier(initialPage),
         _slideshowOptions = slideshowOptions,
         overlay = ValueNotifier(!initialHideOverlay),
+        bottomSheet = ValueNotifier(!initialHideOverlay),
         hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
         sheetState = ValueNotifier(SheetState.collapsed);
 
@@ -67,6 +68,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   late final ValueNotifier<SheetState> sheetState;
   late final ValueNotifier<int> currentPage;
   late final ValueNotifier<bool> overlay;
+  late final ValueNotifier<bool> bottomSheet;
   late final ValueNotifier<bool> hoverToControlOverlay;
 
   late final verticalPosition = ValueNotifier(0.0);
@@ -93,18 +95,21 @@ class PostDetailsPageViewController extends ChangeNotifier
       _showOverlayAnim(
         animationDelay: const Duration(milliseconds: 150),
       );
-      showBottomSheet(
-        animationDelay: const Duration(milliseconds: 150),
-      );
     } else {
       _hideOverlayAnim();
-      hideBottomSheet();
     }
   }
 
-  // ignore: use_setters_to_change_properties
   void attachBottomSheetAnimController(AnimationController? controller) {
     _bottomSheetAnimController = controller;
+
+    if (!initialHideOverlay) {
+      _showBottomSheetAnim(
+        animationDelay: const Duration(milliseconds: 150),
+      );
+    } else {
+      _hideBottomSheetAnim();
+    }
   }
 
   void detachOverlayAnimController() {
@@ -179,6 +184,18 @@ class PostDetailsPageViewController extends ChangeNotifier
   void showBottomSheet({
     Duration? animationDelay,
   }) {
+    if (bottomSheet.value) return;
+
+    bottomSheet.value = true;
+
+    _showBottomSheetAnim(
+      animationDelay: animationDelay,
+    );
+  }
+
+  void _showBottomSheetAnim({
+    Duration? animationDelay,
+  }) {
     if (!disableAnimation) {
       if (animationDelay != null) {
         Future.delayed(
@@ -196,6 +213,14 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   void hideBottomSheet() {
+    if (!bottomSheet.value) return;
+
+    bottomSheet.value = false;
+
+    _hideBottomSheetAnim();
+  }
+
+  void _hideBottomSheetAnim() {
     if (!disableAnimation) {
       _bottomSheetAnimController?.reverse();
     } else {
