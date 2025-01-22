@@ -291,11 +291,13 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     required this.booruId,
     required this.booruIdHint,
     required this.url,
-    required this.apiKey,
-    required this.login,
-    required this.passHash,
+    required String? apiKey,
+    required String? login,
+    required String? passHash,
     required this.proxySettings,
-  });
+  })  : _apiKey = apiKey,
+        _login = login,
+        _passHash = passHash;
 
   factory BooruConfigAuth.fromConfig(BooruConfig config) {
     return BooruConfigAuth(
@@ -309,6 +311,10 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     );
   }
 
+  final String? _apiKey;
+  final String? _login;
+  final String? _passHash;
+
   @override
   final int booruId;
   @override
@@ -316,13 +322,20 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
   @override
   final String url;
   @override
-  final String? apiKey;
+  String? get apiKey => _emptyAsNull(_apiKey);
   @override
-  final String? login;
-  final String? passHash;
+  String? get login => _emptyAsNull(_login);
+  String? get passHash => _emptyAsNull(_passHash);
 
   @override
   final ProxySettings? proxySettings;
+
+  String? _emptyAsNull(String? value) {
+    if (value == null) return null;
+    if (value.isEmpty) return null;
+
+    return value;
+  }
 
   @override
   List<Object?> get props => [
