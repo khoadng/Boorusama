@@ -37,10 +37,6 @@ class DanbooruPostContextMenu extends ConsumerWidget {
 
     return GenericContextMenu(
       buttonConfigs: [
-        ContextMenuButtonConfig(
-          'post.action.preview'.tr(),
-          onPressed: () => goToImagePreviewPage(ref, context, post),
-        ),
         if (post.hasComment)
           ContextMenuButtonConfig(
             'post.action.view_comments'.tr(),
