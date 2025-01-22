@@ -401,6 +401,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 SliverOffstage(
                   sliver: SliverToBoxAdapter(
                     child: PostDetailsPreloadImage(
+                      post: nextPost,
                       url: widget.swipeImageUrlBuilder(nextPost),
                     ),
                   ),
@@ -409,6 +410,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 SliverOffstage(
                   sliver: SliverToBoxAdapter(
                     child: PostDetailsPreloadImage(
+                      post: previousPost,
                       url: widget.swipeImageUrlBuilder(previousPost),
                     ),
                   ),

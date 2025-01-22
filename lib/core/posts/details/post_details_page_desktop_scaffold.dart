@@ -258,10 +258,12 @@ class _PostDetailsDesktopScaffoldState<T extends Post>
                 children: [
                   if (nextPost != null && !nextPost.isVideo)
                     PostDetailsPreloadImage(
+                      post: nextPost,
                       url: widget.imageUrlBuilder(nextPost),
                     ),
                   if (prevPost != null && !prevPost.isVideo)
                     PostDetailsPreloadImage(
+                      post: prevPost,
                       url: widget.imageUrlBuilder(prevPost),
                     ),
                   PostMedia(
