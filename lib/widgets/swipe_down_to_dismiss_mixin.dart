@@ -30,7 +30,8 @@ mixin SwipeDownToDismissMixin<T extends StatefulWidget> on State<T> {
 
   void handlePointerUp(PointerUpEvent event) {
     if (_isSwipingDown.value) {
-      if (_dragDistance.value.abs() > MediaQuery.sizeOf(context).height * 0.2) {
+      if (_dragDistance.value.abs() >
+          MediaQuery.sizeOf(context).height * 0.15) {
         popper();
       } else {
         dragDistance.value = 0.0;
