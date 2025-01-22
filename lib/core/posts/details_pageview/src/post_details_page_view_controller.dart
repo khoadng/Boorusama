@@ -93,12 +93,12 @@ class PostDetailsPageViewController extends ChangeNotifier
       _showOverlayAnim(
         animationDelay: const Duration(milliseconds: 150),
       );
-      showBottomSheetAnim(
+      showBottomSheet(
         animationDelay: const Duration(milliseconds: 150),
       );
     } else {
       _hideOverlayAnim();
-      hideBottomSheetAnim();
+      hideBottomSheet();
     }
   }
 
@@ -176,7 +176,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     }
   }
 
-  void showBottomSheetAnim({
+  void showBottomSheet({
     Duration? animationDelay,
   }) {
     if (!disableAnimation) {
@@ -195,7 +195,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     }
   }
 
-  void hideBottomSheetAnim() {
+  void hideBottomSheet() {
     if (!disableAnimation) {
       _bottomSheetAnimController?.reverse();
     } else {
@@ -220,12 +220,12 @@ class PostDetailsPageViewController extends ChangeNotifier
       hideOverlay(
         includeSystemStatus: includeSystemStatus,
       );
-      hideBottomSheetAnim();
+      hideBottomSheet();
     } else {
       showOverlay(
         includeSystemStatus: includeSystemStatus,
       );
-      showBottomSheetAnim();
+      showBottomSheet();
     }
   }
 
@@ -241,7 +241,7 @@ class PostDetailsPageViewController extends ChangeNotifier
       hideOverlay(
         includeSystemStatus: false,
       );
-      hideBottomSheetAnim();
+      hideBottomSheet();
     } else {
       showOverlay(
         includeSystemStatus: false,
@@ -249,7 +249,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     }
 
     if (verticalPosition.value < 0) {
-      hideBottomSheetAnim();
+      hideBottomSheet();
     }
   }
 
@@ -261,7 +261,7 @@ class PostDetailsPageViewController extends ChangeNotifier
       );
     }
 
-    showBottomSheetAnim();
+    showBottomSheet();
   }
 
   void jumpToPage(int page) {
@@ -415,11 +415,13 @@ class PostDetailsPageViewController extends ChangeNotifier
     if (value) {
       if (!initialHideOverlay) {
         hideOverlay();
+        hideBottomSheet();
       }
       disableAllSwiping();
     } else {
       if (!initialHideOverlay) {
         showOverlay();
+        showBottomSheet();
       }
       enableAllSwiping();
     }

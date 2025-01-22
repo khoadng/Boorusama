@@ -251,7 +251,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       if (_controller.initialHideOverlay && !isLargeScreen) {
         _controller
           ..hideOverlay()
-          ..hideBottomSheetAnim();
+          ..hideBottomSheet();
       }
     }
   }
@@ -287,7 +287,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
       // Delay to next frame to wait for the sheet state to change before showing the overlay
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _controller.showBottomSheetAnim();
+        _controller.showBottomSheet();
       });
     }
   }
