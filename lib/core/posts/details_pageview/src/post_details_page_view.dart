@@ -98,6 +98,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         )
       : null;
 
+  late final _bottomInfoAnimController = !widget.disableAnimation
+      ? AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 100),
+        )
+      : null;
+
+  late final _bottomInfoCurvedAnimation = _bottomInfoAnimController != null
+      ? CurvedAnimation(
+          parent: _bottomInfoAnimController,
+          curve: Curves.easeOutCirc,
+        )
+      : null;
+
   // Use for large screen when details is on the side to prevent spamming
   Timer? _debounceTimer;
   final _cooldown = ValueNotifier(false);
@@ -108,8 +122,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late AnimationController _sheetAnimController;
   late Animation<double> _displacementAnim;
   late Animation<Offset> _sideSheetSlideAnim;
-
-  final _forceHide = ValueNotifier(false);
 
   bool get isLargeScreen => widget.checkIfLargeScreen();
 
@@ -139,8 +151,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       CurvedAnimation(parent: _sheetAnimController, curve: Curves.easeInOut),
     );
 
-    _hovering.addListener(_onHover);
-
     _controller = widget.controller ??
         PostDetailsPageViewController(
           initialPage: 0,
@@ -152,8 +162,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _controller.sheetController.addListener(_onSheetChanged);
     _controller.verticalPosition.addListener(_onVerticalPositionChanged);
     _controller.sheetState.addListener(_onSheetStateChanged);
-    _controller.overlay.addListener(_onOverlayChanged);
-    _controller.freestyleMoving.addListener(_onFreestyleMovingChanged);
+    _controller
+      ..attachOverlayAnimController(_overlayAnimController)
+      ..attachBottomSheetAnimController(_bottomInfoAnimController);
+
     _isSheetAnimating.addListener(_onSheetAnimatingChanged);
 
     final currentExpanded = _controller.sheetState.value.isExpanded;
@@ -169,14 +181,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       }
     }
 
-    if (widget.controller?.overlay.value ?? true) {
-      _showOverlayAnim(
-        animationDelay: const Duration(milliseconds: 150),
-      );
-    } else {
-      _hideOverlayAnim();
-    }
-
     if (_controller.initialHideOverlay) {
       Future.delayed(
         const Duration(milliseconds: 250),
@@ -190,64 +194,37 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   void _onPop() {
     if (!widget.disableAnimation) {
-      _forceHide.value = true;
+      _controller.forceHideOverlay.value = true;
+      _controller.forceHideBottomSheet.value = true;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.disableAnimation) {
-        _controller.freestyleMoving.value = true;
-      }
-
       _controller.restoreSystemStatus();
       widget.onExit?.call();
     });
   }
 
-  void _onHover() {
+  void _onHover(bool value) {
+    _hovering.value = value;
+
     if (!_controller.hoverToControlOverlay.value) {
       return;
     }
 
-    if (_hovering.value) {
-      _controller.showOverlay();
+    if (value) {
+      _controller.showOverlay(
+        includeSystemStatus: false,
+      );
     } else {
-      _controller.hideOverlay();
+      _controller.hideOverlay(
+        includeSystemStatus: false,
+      );
     }
   }
 
   void _onSheetAnimatingChanged() {
     // Only control overlay when in expanded state
     if (!_controller.sheetState.value.isExpanded) return;
-
-    if (_isSheetAnimating.value) {
-      _controller.hideOverlay(
-        includeSystemStatus: false,
-      );
-    } else {
-      _controller.showOverlay(
-        includeSystemStatus: false,
-      );
-    }
-  }
-
-  void _onFreestyleMovingChanged() {
-    if (_controller.freestyleMoving.value) {
-      _controller.hideOverlay(
-        includeSystemStatus: false,
-      );
-    } else {
-      _controller.showOverlay(
-        includeSystemStatus: false,
-      );
-    }
-  }
-
-  void _onOverlayChanged() {
-    if (_controller.overlay.value) {
-      _showOverlayAnim();
-    } else {
-      _hideOverlayAnim();
-    }
   }
 
   void _onPageChanged() {
@@ -269,6 +246,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       };
 
       widget.onPageChanged?.call(pageNum);
+
+      // Hide UI elements when page changes
+      if (_controller.initialHideOverlay && !isLargeScreen) {
+        _controller
+          ..hideOverlay()
+          ..hideBottomSheetAnim();
+      }
     }
   }
 
@@ -303,9 +287,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
       // Delay to next frame to wait for the sheet state to change before showing the overlay
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _controller.showOverlay(
-          includeSystemStatus: false,
-        );
+        _controller.showBottomSheetAnim();
       });
     }
   }
@@ -313,8 +295,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   void _onSheetStateChanged() {
     if (_controller.isExpanded) {
       widget.onExpanded?.call();
-
-      _controller.showOverlay();
     } else {
       if (_controller.sheetState.value == SheetState.hidden) {
         widget.onShrink?.call();
@@ -329,57 +309,31 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _sheetAnimController.value = _controller.isExpanded ? 1 : 0;
   }
 
-  void _showOverlayAnim({
-    Duration? animationDelay,
-  }) {
-    if (!widget.disableAnimation) {
-      if (animationDelay != null) {
-        Future.delayed(
-          animationDelay,
-          () {
-            if (!mounted) return;
-            _overlayAnimController?.forward();
-          },
-        );
-      } else {
-        _overlayAnimController?.forward();
-      }
-    } else {
-      _forceHide.value = false;
-    }
-  }
-
-  void _hideOverlayAnim() {
-    if (!widget.disableAnimation) {
-      _overlayAnimController?.reverse();
-    } else {
-      _forceHide.value = true;
-    }
-  }
-
   @override
   void dispose() {
     _cancelCooldown();
 
     _controller.sheetState.removeListener(_onSheetStateChanged);
     _controller.pageController.removeListener(_onPageChanged);
-    _controller.verticalPosition.removeListener(_onVerticalPositionChanged);
     _controller.sheetController.removeListener(_onSheetChanged);
-    _controller.overlay.removeListener(_onOverlayChanged);
-    _controller.freestyleMoving.removeListener(_onFreestyleMovingChanged);
-    _hovering.removeListener(_onHover);
+
+    _controller
+      ..detachOverlayAnimController()
+      ..detachBottomSheetAnimController();
+
     _isSheetAnimating.removeListener(_onSheetAnimatingChanged);
 
     _cooldown.dispose();
     _hovering.dispose();
     _pointerCount.dispose();
     _interacting.dispose();
-    _forceHide.dispose();
     _isSheetAnimating.dispose();
 
     _overlayCurvedAnimation?.dispose();
     _overlayAnimController?.dispose();
     _sheetAnimController.dispose();
+    _bottomInfoAnimController?.dispose();
+    _bottomInfoCurvedAnimation?.dispose();
 
     if (widget.controller == null) {
       _controller.dispose();
@@ -429,8 +383,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                       ),
                     ),
                     child: MouseRegion(
-                      onEnter: (_) => _hovering.value = true,
-                      onExit: (_) => _hovering.value = false,
+                      onEnter: (_) => _onHover(true),
+                      onExit: (_) => _onHover(false),
                       child: _buildMain(),
                     ),
                   ),
@@ -484,7 +438,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildSideSheet() {
     return ValueListenableBuilder(
-      valueListenable: _forceHide,
+      valueListenable: _controller.forceHideOverlay,
       builder: (_, hide, child) => hide ? const SizedBox.shrink() : child!,
       child: SideSheet(
         controller: _controller,
@@ -522,15 +476,15 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           Align(
             alignment: Alignment.bottomCenter,
             child: ValueListenableBuilder(
-              valueListenable: _forceHide,
+              valueListenable: _controller.forceHideBottomSheet,
               builder: (__, hide, _) => hide
                   ? const SizedBox.shrink()
-                  : _overlayCurvedAnimation != null
+                  : _bottomInfoAnimController != null
                       ? SlideTransition(
                           position: Tween(
                             begin: const Offset(0, 1),
                             end: Offset.zero,
-                          ).animate(_overlayCurvedAnimation),
+                          ).animate(_bottomInfoAnimController),
                           child: bottomSheet,
                         )
                       : bottomSheet,
@@ -566,7 +520,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               );
 
               return ValueListenableBuilder(
-                valueListenable: _forceHide,
+                valueListenable: _controller.forceHideOverlay,
                 builder: (_, hide, __) => hide
                     ? const SizedBox.shrink()
                     : _overlayCurvedAnimation != null
@@ -809,15 +763,12 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     if (!_controller.isExpanded) {
       _freestyleMoveStartOffset = details.globalPosition;
-      _controller.freestyleMoving.value = true;
       _freestyleMoveScale = 1.0;
     }
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
-    final dy = details.delta.dy;
-    _controller.verticalPosition.value =
-        _controller.verticalPosition.value + dy;
+    _controller.dragUpdate(details);
 
     if (_controller.freestyleMoving.value) {
       if (_controller.verticalPosition.value <= 0) return;
@@ -846,7 +797,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   void _onVerticalDragEnd(DragEndDetails details) {
     _controller.pulling.value = false;
-    _controller.freestyleMoving.value = false;
 
     // Check if drag distance exceeds threshold for dismissal
     if (_controller.freestyleMoveOffset.value.dy.abs() >
@@ -875,12 +825,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       return;
     }
 
-    if (_controller.verticalPosition.value.abs() <= _controller.threshold) {
-      // Animate back to original position
-      _controller.resetSheet(
-        duration: const Duration(milliseconds: 150),
-      );
-    }
+    _controller.dragEnd();
   }
 
   void _animateBackToPosition() {

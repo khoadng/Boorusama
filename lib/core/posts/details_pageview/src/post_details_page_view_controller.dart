@@ -19,6 +19,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     required this.initialPage,
     required this.totalPage,
     required this.checkIfLargeScreen,
+    this.disableAnimation = false,
     this.initialHideOverlay = false,
     bool hoverToControlOverlay = false,
     this.maxSize = 0.7,
@@ -35,6 +36,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final bool initialHideOverlay;
   final double maxSize;
   final double threshold;
+  final bool disableAnimation;
 
   late SlideshowOptions _slideshowOptions;
 
@@ -52,6 +54,9 @@ class PostDetailsPageViewController extends ChangeNotifier
   PageController get pageController => _pageController;
 
   DraggableScrollableController get sheetController => _sheetController;
+
+  AnimationController? _overlayAnimController;
+  AnimationController? _bottomSheetAnimController;
 
   // ignore: unnecessary_getters_setters
   SlideshowOptions get slideshowOptions => _slideshowOptions;
@@ -78,6 +83,37 @@ class PostDetailsPageViewController extends ChangeNotifier
   final freestyleMoveOffset = ValueNotifier(Offset.zero);
   final freestyleMoving = ValueNotifier(false);
   final isItemPushed = ValueNotifier(false);
+  final forceHideOverlay = ValueNotifier(false);
+  final forceHideBottomSheet = ValueNotifier(false);
+
+  void attachOverlayAnimController(AnimationController? controller) {
+    _overlayAnimController = controller;
+
+    if (!initialHideOverlay) {
+      _showOverlayAnim(
+        animationDelay: const Duration(milliseconds: 150),
+      );
+      showBottomSheetAnim(
+        animationDelay: const Duration(milliseconds: 150),
+      );
+    } else {
+      _hideOverlayAnim();
+      hideBottomSheetAnim();
+    }
+  }
+
+  // ignore: use_setters_to_change_properties
+  void attachBottomSheetAnimController(AnimationController? controller) {
+    _bottomSheetAnimController = controller;
+  }
+
+  void detachOverlayAnimController() {
+    _overlayAnimController = null;
+  }
+
+  void detachBottomSheetAnimController() {
+    _bottomSheetAnimController = null;
+  }
 
   void enableHoverToControlOverlay() {
     hoverToControlOverlay.value = true;
@@ -99,6 +135,8 @@ class PostDetailsPageViewController extends ChangeNotifier
 
     overlay.value = true;
 
+    _showOverlayAnim();
+
     if (includeSystemStatus) {
       showSystemStatus();
     }
@@ -112,8 +150,64 @@ class PostDetailsPageViewController extends ChangeNotifier
 
     overlay.value = false;
 
+    _hideOverlayAnim();
+
     if (includeSystemStatus) {
       hideSystemStatus();
+    }
+  }
+
+  void _showOverlayAnim({
+    Duration? animationDelay,
+  }) {
+    if (!disableAnimation) {
+      if (animationDelay != null) {
+        Future.delayed(
+          animationDelay,
+          () {
+            _overlayAnimController?.forward();
+          },
+        );
+      } else {
+        _overlayAnimController?.forward();
+      }
+    } else {
+      forceHideOverlay.value = false;
+    }
+  }
+
+  void showBottomSheetAnim({
+    Duration? animationDelay,
+  }) {
+    if (!disableAnimation) {
+      if (animationDelay != null) {
+        Future.delayed(
+          animationDelay,
+          () {
+            _bottomSheetAnimController?.forward();
+          },
+        );
+      } else {
+        _bottomSheetAnimController?.forward();
+      }
+    } else {
+      forceHideBottomSheet.value = false;
+    }
+  }
+
+  void hideBottomSheetAnim() {
+    if (!disableAnimation) {
+      _bottomSheetAnimController?.reverse();
+    } else {
+      forceHideBottomSheet.value = true;
+    }
+  }
+
+  void _hideOverlayAnim() {
+    if (!disableAnimation) {
+      _overlayAnimController?.reverse();
+    } else {
+      forceHideOverlay.value = true;
     }
   }
 
@@ -122,15 +216,52 @@ class PostDetailsPageViewController extends ChangeNotifier
   }) {
     final oldValue = overlay.value;
 
-    overlay.value = !oldValue;
-
-    if (includeSystemStatus) {
-      if (oldValue) {
-        hideSystemStatus();
-      } else {
-        showSystemStatus();
-      }
+    if (oldValue) {
+      hideOverlay(
+        includeSystemStatus: includeSystemStatus,
+      );
+      hideBottomSheetAnim();
+    } else {
+      showOverlay(
+        includeSystemStatus: includeSystemStatus,
+      );
+      showBottomSheetAnim();
     }
+  }
+
+  void dragUpdate(DragUpdateDetails details) {
+    if (isExpanded) return;
+
+    final dy = details.delta.dy;
+    verticalPosition.value = verticalPosition.value + dy;
+
+    freestyleMoving.value = verticalPosition.value > 0;
+
+    if (freestyleMoving.value) {
+      hideOverlay(
+        includeSystemStatus: false,
+      );
+      hideBottomSheetAnim();
+    } else {
+      showOverlay(
+        includeSystemStatus: false,
+      );
+    }
+
+    if (verticalPosition.value < 0) {
+      hideBottomSheetAnim();
+    }
+  }
+
+  Future<void> dragEnd() async {
+    if (verticalPosition.value.abs() <= threshold) {
+      // Animate back to original position
+      await resetSheet(
+        duration: const Duration(milliseconds: 150),
+      );
+    }
+
+    showBottomSheetAnim();
   }
 
   void jumpToPage(int page) {
@@ -191,6 +322,9 @@ class PostDetailsPageViewController extends ChangeNotifier
     animating.value = true;
     swipe.value = true;
     verticalPosition.value = 0.0;
+    showOverlay(
+      includeSystemStatus: false,
+    );
 
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       sheetMaxSize.value = maxSize;
@@ -351,6 +485,8 @@ class PostDetailsPageViewController extends ChangeNotifier
     freestyleMoveOffset.dispose();
     freestyleMoving.dispose();
     isItemPushed.dispose();
+    forceHideOverlay.dispose();
+    forceHideBottomSheet.dispose();
 
     super.dispose();
   }

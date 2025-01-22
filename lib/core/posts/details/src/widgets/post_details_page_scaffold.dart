@@ -82,6 +82,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
     checkIfLargeScreen: () => context.isLargeScreen,
     totalPage: _posts.length,
+    disableAnimation:
+        ref.read(settingsProvider.select((value) => value.reduceAnimations)),
   );
   late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
     pageViewController: _controller,
