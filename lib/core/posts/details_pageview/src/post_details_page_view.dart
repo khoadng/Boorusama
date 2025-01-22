@@ -170,23 +170,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     if (widget.controller?.overlay.value ?? true) {
-      if (!widget.disableAnimation) {
-        Future.delayed(
-          const Duration(milliseconds: 150),
-          () {
-            if (!mounted) return;
-            _overlayAnimController?.forward();
-          },
-        );
-      } else {
-        _forceHide.value = false;
-      }
+      _showOverlayAnim(
+        animationDelay: const Duration(milliseconds: 150),
+      );
     } else {
-      if (!widget.disableAnimation) {
-        _overlayAnimController?.reverse();
-      } else {
-        _forceHide.value = true;
-      }
+      _hideOverlayAnim();
     }
 
     if (_controller.initialHideOverlay) {
@@ -341,9 +329,21 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     _sheetAnimController.value = _controller.isExpanded ? 1 : 0;
   }
 
-  void _showOverlayAnim() {
+  void _showOverlayAnim({
+    Duration? animationDelay,
+  }) {
     if (!widget.disableAnimation) {
-      _overlayAnimController?.forward();
+      if (animationDelay != null) {
+        Future.delayed(
+          animationDelay,
+          () {
+            if (!mounted) return;
+            _overlayAnimController?.forward();
+          },
+        );
+      } else {
+        _overlayAnimController?.forward();
+      }
     } else {
       _forceHide.value = false;
     }
