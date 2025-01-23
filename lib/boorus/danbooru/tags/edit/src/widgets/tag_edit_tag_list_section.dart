@@ -99,7 +99,7 @@ final danbooruTagEditColorsProvider = NotifierProvider.family<
     settingsProvider,
     tagColorProvider,
     tagEditFilteredListProvider,
-    currentBooruConfigProvider,
+    booruChipColorsProvider,
   ],
   name: 'danbooruTagEditColorsProvider',
 );
