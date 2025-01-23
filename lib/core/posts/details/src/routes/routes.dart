@@ -8,6 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
+import '../../../../widgets/widgets.dart';
 import '../widgets/post_details_page.dart';
 import 'details_route_payload.dart';
 
@@ -29,10 +30,12 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
           child: const PostDetailsPage(),
         );
 
+        final hero = kEnableHeroTransition && payload.hero;
+
         // must use the value from the payload for orientation
         // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
         return !payload.isDesktop
-            ? payload.hero && !settings.reduceAnimations
+            ? hero && !settings.reduceAnimations
                 ? PostDetailsHeroPage(
                     key: state.pageKey,
                     name: state.name,
@@ -43,7 +46,7 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
                     name: state.name,
                     child: widget,
                   )
-            : payload.hero && !settings.reduceAnimations
+            : hero && !settings.reduceAnimations
                 ? PostDetailsHeroPage(
                     key: state.pageKey,
                     name: state.name,

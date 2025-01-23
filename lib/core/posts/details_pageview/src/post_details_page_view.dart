@@ -194,7 +194,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onPop() {
-    if (!widget.disableAnimation) {
+    if (kEnableHeroTransition && !widget.disableAnimation) {
       _controller.forceHideOverlay.value = true;
       _controller.forceHideBottomSheet.value = true;
     }

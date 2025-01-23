@@ -12,6 +12,7 @@ import '../../../../foundation/animations.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
+import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../_internal/default_image_grid_item.dart';
 import '../_internal/post_grid_config_icon_button.dart';
@@ -424,6 +425,10 @@ class _DisableGridItemHeroOnPop extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!kEnableHeroTransition) {
+      return const SliverSizedBox.shrink();
+    }
+
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {

@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../settings/providers.dart';
 
+const kEnableHeroTransition = false;
+
 class BooruHero extends ConsumerWidget {
   const BooruHero({
     required this.tag,
@@ -23,7 +25,7 @@ class BooruHero extends ConsumerWidget {
         ref.watch(settingsProvider.select((value) => value.reduceAnimations));
     final heroTag = tag;
 
-    return heroTag != null && !reduceAnimations
+    return kEnableHeroTransition && heroTag != null && !reduceAnimations
         ? Hero(
             tag: heroTag,
             createRectTween: (begin, end) =>

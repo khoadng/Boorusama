@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../foundation/mobile.dart';
+import '../../../widgets/widgets.dart';
 import 'auto_slide_mixin.dart';
 import 'constants.dart';
 import 'post_details_page_view.dart';
@@ -91,24 +92,40 @@ class PostDetailsPageViewController extends ChangeNotifier
   void attachOverlayAnimController(AnimationController? controller) {
     _overlayAnimController = controller;
 
-    if (!initialHideOverlay) {
-      _showOverlayAnim(
-        animationDelay: const Duration(milliseconds: 150),
-      );
+    if (kEnableHeroTransition) {
+      if (!initialHideOverlay) {
+        _showOverlayAnim(
+          animationDelay: const Duration(milliseconds: 150),
+        );
+      } else {
+        _hideOverlayAnim();
+      }
     } else {
-      _hideOverlayAnim();
+      if (!initialHideOverlay) {
+        controller?.value = 1.0;
+      } else {
+        controller?.value = 0.0;
+      }
     }
   }
 
   void attachBottomSheetAnimController(AnimationController? controller) {
     _bottomSheetAnimController = controller;
 
-    if (!initialHideOverlay) {
-      _showBottomSheetAnim(
-        animationDelay: const Duration(milliseconds: 150),
-      );
+    if (kEnableHeroTransition) {
+      if (!initialHideOverlay) {
+        _showBottomSheetAnim(
+          animationDelay: const Duration(milliseconds: 150),
+        );
+      } else {
+        _hideBottomSheetAnim();
+      }
     } else {
-      _hideBottomSheetAnim();
+      if (!initialHideOverlay) {
+        controller?.value = 1.0;
+      } else {
+        controller?.value = 0.0;
+      }
     }
   }
 
