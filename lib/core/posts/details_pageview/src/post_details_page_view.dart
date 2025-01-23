@@ -643,9 +643,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return ValueListenableBuilder(
       valueListenable: _controller.sheetState,
       builder: (_, state, __) {
-        final blockSwipe = !swipe ||
-            (!isDesktopPlatform() ? false : state.isExpanded) ||
-            interacting;
+        final blockSwipe = !swipe || state.isExpanded || interacting;
 
         return PageView.builder(
           onPageChanged:

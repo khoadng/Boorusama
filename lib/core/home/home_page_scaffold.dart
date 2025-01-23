@@ -235,7 +235,8 @@ List<Widget> coreDesktopViewBuilder({
   required CustomHomeViewKey? viewKey,
 }) {
   // skip previousItemCount to prevent access the wrong index
-  final totalPlaceholder = _kPlaceholderOffset - previousItemCount + 1;
+  final totalPlaceholder =
+      _kPlaceholderOffset - previousItemCount + (viewKey != null ? 1 : 2);
 
   final views = [
     for (int i = 0; i < totalPlaceholder; i++) const SizedBox.shrink(),
