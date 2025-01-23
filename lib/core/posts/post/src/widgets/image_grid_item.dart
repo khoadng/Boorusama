@@ -71,25 +71,28 @@ class ImageGridItem extends StatelessWidget {
         key: ValueKey(autoScrollOptions!.index),
         child: child,
       ),
-      child: Stack(
-        children: [
-          _buildImage(context),
-          if (!hideOverlay)
-            if (quickActionButton != null)
+      child: Material(
+        color: Colors.transparent,
+        child: Stack(
+          children: [
+            _buildImage(context),
+            if (!hideOverlay)
+              if (quickActionButton != null)
+                Positioned(
+                  bottom: 4,
+                  right: 4,
+                  child: quickActionButton!,
+                )
+              else
+                const SizedBox.shrink(),
+            if (scoreWidget != null)
               Positioned(
                 bottom: 4,
-                right: 4,
-                child: quickActionButton!,
-              )
-            else
-              const SizedBox.shrink(),
-          if (scoreWidget != null)
-            Positioned(
-              bottom: 4,
-              left: 4,
-              child: scoreWidget!,
-            ),
-        ],
+                left: 4,
+                child: scoreWidget!,
+              ),
+          ],
+        ),
       ),
     );
   }
