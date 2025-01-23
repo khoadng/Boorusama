@@ -15,6 +15,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../foundation/display.dart';
 import '../../../foundation/mobile.dart';
+import '../../../foundation/platform.dart';
 import '../../../widgets/widgets.dart';
 import 'constants.dart';
 import 'drag_sheet.dart';
@@ -642,7 +643,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return ValueListenableBuilder(
       valueListenable: _controller.sheetState,
       builder: (_, state, __) {
-        final blockSwipe = !swipe || state.isExpanded || interacting;
+        final blockSwipe = !swipe ||
+            (!isDesktopPlatform() ? false : state.isExpanded) ||
+            interacting;
 
         return PageView.builder(
           onPageChanged:
@@ -684,7 +687,37 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   final _dummyAlwaysFalse = ValueNotifier(false);
 
   Widget _buildItem(int index, bool blockSwipe) {
-    final isSmall = !context.isLargeScreen;
+    List<Widget> buildNavButtons() {
+      return [
+        ValueListenableBuilder(
+          valueListenable: _cooldown,
+          builder: (_, cooldown, __) => PageNavButton(
+            alignment: Alignment.centerRight,
+            controller: _controller,
+            visibleWhen: (page) => page < widget.itemCount - 1,
+            icon: const Icon(Symbols.arrow_forward),
+            onPressed: !cooldown
+                ? () => _controller.nextPage(duration: Duration.zero)
+                : null,
+          ),
+        ),
+        ValueListenableBuilder(
+          valueListenable: _cooldown,
+          builder: (_, cooldown, __) => PageNavButton(
+            alignment: Alignment.centerLeft,
+            controller: _controller,
+            visibleWhen: (page) => page > 0,
+            icon: const Icon(Symbols.arrow_back),
+            onPressed: !cooldown
+                ? () => _controller.previousPage(duration: Duration.zero)
+                : null,
+          ),
+        ),
+      ];
+    }
+
+    final isSmall = !isLargeScreen;
+
     return Stack(
       children: [
         Positioned.fill(
@@ -727,33 +760,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             ),
           ),
         ),
-        if (!isSmall)
-          if (blockSwipe) ...[
-            ValueListenableBuilder(
-              valueListenable: _cooldown,
-              builder: (_, cooldown, __) => PageNavButton(
-                alignment: Alignment.centerRight,
-                controller: _controller,
-                visibleWhen: (page) => page < widget.itemCount - 1,
-                icon: const Icon(Symbols.arrow_forward),
-                onPressed: !cooldown
-                    ? () => _controller.nextPage(duration: Duration.zero)
-                    : null,
-              ),
-            ),
-            ValueListenableBuilder(
-              valueListenable: _cooldown,
-              builder: (_, cooldown, __) => PageNavButton(
-                alignment: Alignment.centerLeft,
-                controller: _controller,
-                visibleWhen: (page) => page > 0,
-                icon: const Icon(Symbols.arrow_back),
-                onPressed: !cooldown
-                    ? () => _controller.previousPage(duration: Duration.zero)
-                    : null,
-              ),
-            ),
-          ],
+        if (isDesktopPlatform())
+          ...buildNavButtons()
+        else if (!isSmall)
+          if (blockSwipe) ...buildNavButtons(),
       ],
     );
   }
