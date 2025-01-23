@@ -10,6 +10,7 @@ resolution: workspace
 
 dependencies:
   dio: ^5.7.0
+  equatable: ^2.0.7
   extended_image_library: ^4.0.1
   flutter:
     sdk: flutter

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:extended_image/src/image/raw_image.dart';
 import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,55 +14,6 @@ import 'dio_extended_image_provider.dart';
 import 'utils.dart';
 
 const kDefaultImageCacheDuration = Duration(days: 2);
-
-class ExtendedImageController extends ChangeNotifier {
-  ExtendedImageController(
-    this.initialLoadState,
-  );
-
-  final LoadState initialLoadState;
-  late final loadState = ValueNotifier(initialLoadState);
-  late final imageInfo = ValueNotifier<ImageInfo?>(null);
-
-  void changeLoadState(LoadState state) {
-    loadState.value = state;
-  }
-
-  void clearImage() {
-    final oldImageInfo = imageInfo.value;
-
-    SchedulerBinding.instance
-        .addPostFrameCallback((_) => oldImageInfo?.dispose());
-
-    imageInfo.value = null;
-  }
-
-  void replaceImage({required ImageInfo info}) {
-    final oldImageInfo = imageInfo.value;
-
-    if (oldImageInfo?.scale == info.scale &&
-        oldImageInfo?.isCloneOf(info) == true &&
-        oldImageInfo?.debugLabel == info.debugLabel) {
-      // Same image, no need to replace
-      return;
-    }
-
-    if (oldImageInfo != null) {
-      SchedulerBinding.instance
-          .addPostFrameCallback((_) => oldImageInfo.dispose());
-    }
-
-    imageInfo.value = info;
-  }
-
-  @override
-  void dispose() {
-    clearImage();
-    loadState.dispose();
-
-    super.dispose();
-  }
-}
 
 /// extended image base on official
 /// [Image]
@@ -82,7 +34,6 @@ class ExtendedImage extends StatefulWidget {
     this.clipBehavior = Clip.antiAlias,
     this.clearMemoryCacheIfFailed = true,
     this.clearMemoryCacheWhenDispose = false,
-    this.extendedImageGestureKey,
     this.controller,
     this.placeholderWidget,
     this.errorWidget,
@@ -115,7 +66,6 @@ class ExtendedImage extends StatefulWidget {
     double scale = 1.0,
     Duration timeRetry = const Duration(milliseconds: 100),
     this.clearMemoryCacheWhenDispose = false,
-    this.extendedImageGestureKey,
     int? cacheWidth,
     int? cacheHeight,
     String? cacheKey,
@@ -162,9 +112,6 @@ class ExtendedImage extends StatefulWidget {
         assert(constraints == null || constraints.debugAssertIsValid()),
         assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0);
-
-  /// key of ExtendedImageGesture
-  final Key? extendedImageGestureKey;
 
   /// when image is removed from the tree permanently, whether clear memory cache
   final bool clearMemoryCacheWhenDispose;
@@ -325,8 +272,7 @@ class ExtendedImage extends StatefulWidget {
 
 class _ExtendedImageState extends State<ExtendedImage>
     with WidgetsBindingObserver {
-  late final _controller =
-      widget.controller ?? ExtendedImageController(LoadState.loading);
+  late final _controller = widget.controller ?? ExtendedImageController();
 
   ImageStream? _imageStream;
   bool _isListeningToStream = false;
@@ -466,27 +412,23 @@ class _ExtendedImageState extends State<ExtendedImage>
     _resolveImage(true);
   }
 
-  Widget _buildExtendedRawImage() {
-    return ValueListenableBuilder(
-      valueListenable: _controller.imageInfo,
-      builder: (_, imageInfo, __) => ExtendedRawImage(
-        // Do not clone the image, because RawImage is a stateless wrapper.
-        // The image will be disposed by this state object when it is not needed
-        // anymore, such as when it is unmounted or when the image stream pushes
-        // a new image.
-        image: imageInfo?.image,
-        debugImageLabel: imageInfo?.debugLabel,
+  Widget _getCompletedWidget() {
+    return _InheritedImageOptions(
+      options: _ImageOptions(
         width: widget.width,
         height: widget.height,
-        scale: imageInfo?.scale ?? 1.0,
         fit: widget.fit,
         alignment: widget.alignment,
       ),
+      child: ValueListenableBuilder(
+        valueListenable: _controller.imageInfo,
+        builder: (_, info, child) => _InheritedImageInfo(
+          imageInfo: info,
+          child: child!,
+        ),
+        child: const _RawImage(),
+      ),
     );
-  }
-
-  Widget _getCompletedWidget() {
-    return _buildExtendedRawImage();
   }
 
   ImageStreamListener _getListener({bool recreateListener = false}) {
@@ -588,5 +530,156 @@ class _ExtendedImageState extends State<ExtendedImage>
     if (_isListeningToStream) {
       _imageStream!.addListener(_getListener());
     }
+  }
+}
+
+class _ImageOptions extends Equatable {
+  const _ImageOptions({
+    this.width,
+    this.height,
+    this.fit,
+    this.alignment,
+  });
+
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+  final AlignmentGeometry? alignment;
+
+  @override
+  List<Object?> get props => [width, height, fit, alignment];
+}
+
+class ExtendedImageController extends ChangeNotifier {
+  ExtendedImageController({
+    this.initialLoadState = LoadState.loading,
+  });
+
+  final LoadState initialLoadState;
+  late final loadState = ValueNotifier(initialLoadState);
+  late final imageInfo = ValueNotifier<ImageInfo?>(null);
+
+  void changeLoadState(LoadState state) {
+    loadState.value = state;
+  }
+
+  void clearImage() {
+    final oldImageInfo = imageInfo.value;
+
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => oldImageInfo?.dispose());
+
+    imageInfo.value = null;
+  }
+
+  void replaceImage({required ImageInfo info}) {
+    final oldImageInfo = imageInfo.value;
+
+    if (oldImageInfo?.scale == info.scale &&
+        oldImageInfo?.isCloneOf(info) == true &&
+        oldImageInfo?.debugLabel == info.debugLabel) {
+      // Same image, no need to replace
+      return;
+    }
+
+    if (oldImageInfo != null) {
+      SchedulerBinding.instance
+          .addPostFrameCallback((_) => oldImageInfo.dispose());
+    }
+
+    imageInfo.value = info;
+  }
+
+  @override
+  void dispose() {
+    clearImage();
+    loadState.dispose();
+
+    super.dispose();
+  }
+}
+
+class _InheritedImageInfo extends InheritedWidget {
+  const _InheritedImageInfo({
+    required this.imageInfo,
+    required super.child,
+  });
+
+  final ImageInfo? imageInfo;
+
+  static ImageInfo? of(BuildContext context) {
+    final result =
+        context.dependOnInheritedWidgetOfExactType<_InheritedImageInfo>();
+
+    return result?.imageInfo;
+  }
+
+  @override
+  bool updateShouldNotify(_InheritedImageInfo oldWidget) {
+    return imageInfo != oldWidget.imageInfo;
+  }
+}
+
+class _InheritedImageOptions extends InheritedWidget {
+  const _InheritedImageOptions({
+    required this.options,
+    required super.child,
+  });
+
+  final _ImageOptions options;
+
+  static _ImageOptions of(BuildContext context) {
+    final _InheritedImageOptions? result =
+        context.dependOnInheritedWidgetOfExactType<_InheritedImageOptions>();
+
+    if (result == null) {
+      throw FlutterError(
+          '_ImageOptions.of() called with a context that does not contain an _ImageOptions.\n'
+          'No _ImageOptions ancestor could be found starting from the context that was passed to _ImageOptions.of(). '
+          'This can happen because you do not have a _ImageOptions widget above the Image widget building your image.\n'
+          'The context used was:\n'
+          '  $context');
+    }
+
+    return result.options;
+  }
+
+  @override
+  bool updateShouldNotify(_InheritedImageOptions oldWidget) {
+    return options != oldWidget.options;
+  }
+}
+
+class _RawImage extends StatelessWidget {
+  const _RawImage();
+
+  @override
+  Widget build(BuildContext context) {
+    final options = _InheritedImageOptions.of(context);
+    final imageInfo = _InheritedImageInfo.of(context);
+
+    _print(
+      'raw image build: ${imageInfo?.image.width}x${imageInfo?.image.height} hashcode: ${imageInfo?.image.hashCode}, scale: ${imageInfo?.scale}, options: $options',
+    );
+
+    return ExtendedRawImage(
+      // Do not clone the image, because RawImage is a stateless wrapper.
+      // The image will be disposed by this state object when it is not needed
+      // anymore, such as when it is unmounted or when the image stream pushes
+      // a new image.
+      image: imageInfo?.image,
+      debugImageLabel: imageInfo?.debugLabel,
+      width: options.width,
+      height: options.height,
+      scale: imageInfo?.scale ?? 1.0,
+      fit: options.fit,
+      alignment: options.alignment ?? Alignment.center,
+    );
+  }
+}
+
+void _print(String message) {
+  if (kDebugMode) {
+    // debugPrint('[ExtendedImage] $message');
   }
 }
