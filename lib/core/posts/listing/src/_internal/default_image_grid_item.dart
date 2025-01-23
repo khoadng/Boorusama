@@ -56,48 +56,51 @@ class DefaultImageGridItem<T extends Post> extends ConsumerWidget {
               },
               post: post,
             ),
-            child: BooruHero(
-              tag: useHero ? '${post.id}_hero' : null,
-              child: ExplicitContentBlockOverlay(
-                rating: post.rating,
-                child: Builder(
-                  builder: (context) {
-                    final item = SliverPostGridImageGridItem(
-                      post: post,
-                      multiSelectEnabled: multiSelect,
-                      onTap: () {
-                        goToPostDetailsPageFromController(
-                          context: context,
-                          controller: controller,
-                          initialIndex: index,
-                          scrollController: autoScrollController,
-                        );
-                      },
-                      quickActionButton: !multiSelect
-                          ? DefaultImagePreviewQuickActionButton(post: post)
-                          : null,
-                      autoScrollOptions: AutoScrollOptions(
-                        controller: autoScrollController,
-                        index: index,
-                      ),
-                      score: post.score,
-                      image: _Image(post: post),
-                    );
+            child: HeroMode(
+              enabled: useHero,
+              child: BooruHero(
+                tag: '${post.id}_hero',
+                child: ExplicitContentBlockOverlay(
+                  rating: post.rating,
+                  child: Builder(
+                    builder: (context) {
+                      final item = SliverPostGridImageGridItem(
+                        post: post,
+                        multiSelectEnabled: multiSelect,
+                        onTap: () {
+                          goToPostDetailsPageFromController(
+                            context: context,
+                            controller: controller,
+                            initialIndex: index,
+                            scrollController: autoScrollController,
+                          );
+                        },
+                        quickActionButton: !multiSelect
+                            ? DefaultImagePreviewQuickActionButton(post: post)
+                            : null,
+                        autoScrollOptions: AutoScrollOptions(
+                          controller: autoScrollController,
+                          index: index,
+                        ),
+                        score: post.score,
+                        image: _Image(post: post),
+                      );
 
-                    return multiSelect
-                        ? ValueListenableBuilder(
-                            valueListenable:
-                                multiSelectController.selectedItemsNotifier,
-                            builder: (_, selectedItems, __) => SelectableItem(
-                              index: index,
-                              isSelected: selectedItems.contains(post),
-                              onTap: () =>
-                                  multiSelectController.toggleSelection(post),
-                              itemBuilder: (context, isSelected) => item,
-                            ),
-                          )
-                        : item;
-                  },
+                      return multiSelect
+                          ? ValueListenableBuilder(
+                              valueListenable:
+                                  multiSelectController.selectedItemsNotifier,
+                              builder: (_, selectedItems, __) => SelectableItem(
+                                index: index,
+                                isSelected: selectedItems.contains(post),
+                                onTap: () =>
+                                    multiSelectController.toggleSelection(post),
+                                itemBuilder: (context, isSelected) => item,
+                              ),
+                            )
+                          : item;
+                    },
+                  ),
                 ),
               ),
             ),
