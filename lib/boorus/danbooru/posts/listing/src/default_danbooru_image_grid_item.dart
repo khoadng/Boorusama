@@ -65,42 +65,42 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                   },
                   post: post,
                 ),
-            child: ExplicitContentBlockOverlay(
-              rating: post.rating,
-              child: Builder(
-                builder: (context) {
-                  final item = SliverPostGridImageGridItem(
-                    post: post,
-                    multiSelectEnabled: multiSelect,
-                    quickActionButton: Consumer(
-                      builder: (_, ref, __) {
-                        final config = ref.watchConfigAuth;
+            child: BooruHero(
+              tag: useHero ? '${post.id}_hero' : null,
+              child: ExplicitContentBlockOverlay(
+                rating: post.rating,
+                child: Builder(
+                  builder: (context) {
+                    final item = SliverPostGridImageGridItem(
+                      post: post,
+                      multiSelectEnabled: multiSelect,
+                      quickActionButton: Consumer(
+                        builder: (_, ref, __) {
+                          final config = ref.watchConfigAuth;
 
-                        return !post.isBanned &&
-                                !multiSelect &&
-                                config.hasLoginDetails()
-                            ? DefaultImagePreviewQuickActionButton(post: post)
-                            : const SizedBox.shrink();
-                      },
-                    ),
-                    autoScrollOptions: AutoScrollOptions(
-                      controller: autoScrollController,
-                      index: index,
-                    ),
-                    onTap: onTap ??
-                        (post.isBanned
-                            ? null
-                            : () {
-                                goToPostDetailsPageFromController(
-                                  context: context,
-                                  controller: controller,
-                                  initialIndex: index,
-                                  scrollController: autoScrollController,
-                                );
-                              }),
-                    image: BooruHero(
-                      tag: useHero ? '${post.id}_hero' : null,
-                      child: Consumer(
+                          return !post.isBanned &&
+                                  !multiSelect &&
+                                  config.hasLoginDetails()
+                              ? DefaultImagePreviewQuickActionButton(post: post)
+                              : const SizedBox.shrink();
+                        },
+                      ),
+                      autoScrollOptions: AutoScrollOptions(
+                        controller: autoScrollController,
+                        index: index,
+                      ),
+                      onTap: onTap ??
+                          (post.isBanned
+                              ? null
+                              : () {
+                                  goToPostDetailsPageFromController(
+                                    context: context,
+                                    controller: controller,
+                                    initialIndex: index,
+                                    scrollController: autoScrollController,
+                                  );
+                                }),
+                      image: Consumer(
                         builder: (_, ref, __) {
                           final imageQuality =
                               ref.watch(imageListingQualityProvider);
@@ -130,100 +130,100 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           );
                         },
                       ),
-                    ),
-                    score: post.isBanned ? null : post.score,
-                    blockOverlay: blockOverlay ??
-                        (post.isBanned
-                            ? BlockOverlayItem(
-                                overlay: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(
-                                          width: 18,
-                                          height: 18,
-                                          child: switch (post.source) {
-                                            final WebSource source =>
-                                              WebsiteLogo(
-                                                url: source.faviconUrl,
-                                              ),
-                                            _ => const SizedBox.shrink(),
-                                          },
-                                        ),
-                                        const SizedBox(width: 4),
-                                        const Text(
-                                          maxLines: 1,
-                                          'Banned post',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                      score: post.isBanned ? null : post.score,
+                      blockOverlay: blockOverlay ??
+                          (post.isBanned
+                              ? BlockOverlayItem(
+                                  overlay: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            width: 18,
+                                            height: 18,
+                                            child: switch (post.source) {
+                                              final WebSource source =>
+                                                WebsiteLogo(
+                                                  url: source.faviconUrl,
+                                                ),
+                                              _ => const SizedBox.shrink(),
+                                            },
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const Text(
+                                            maxLines: 1,
+                                            'Banned post',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (artistTags.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          child: Wrap(
+                                            children: [
+                                              for (final tag in artistTags)
+                                                ActionChip(
+                                                  visualDensity:
+                                                      VisualDensity.compact,
+                                                  label: Text(
+                                                    tag.replaceAll('_', ' '),
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .onErrorContainer,
+                                                    ),
+                                                  ),
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .errorContainer,
+                                                  onPressed: () {
+                                                    AppClipboard.copyAndToast(
+                                                      context,
+                                                      artistTags.join(' '),
+                                                      message:
+                                                          'Tag copied to clipboard',
+                                                    );
+                                                  },
+                                                ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    if (artistTags.isNotEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                        child: Wrap(
-                                          children: [
-                                            for (final tag in artistTags)
-                                              ActionChip(
-                                                visualDensity:
-                                                    VisualDensity.compact,
-                                                label: Text(
-                                                  tag.replaceAll('_', ' '),
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onErrorContainer,
-                                                  ),
-                                                ),
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .errorContainer,
-                                                onPressed: () {
-                                                  AppClipboard.copyAndToast(
-                                                    context,
-                                                    artistTags.join(' '),
-                                                    message:
-                                                        'Tag copied to clipboard',
-                                                  );
-                                                },
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                onTap: switch (post.source) {
-                                  final WebSource source => () =>
-                                      launchExternalUrlString(source.url),
-                                  _ => null,
-                                },
-                              )
-                            : null),
-                  );
+                                    ],
+                                  ),
+                                  onTap: switch (post.source) {
+                                    final WebSource source => () =>
+                                        launchExternalUrlString(source.url),
+                                    _ => null,
+                                  },
+                                )
+                              : null),
+                    );
 
-                  return multiSelect
-                      ? ValueListenableBuilder(
-                          valueListenable:
-                              multiSelectController.selectedItemsNotifier,
-                          builder: (_, selectedItems, __) => SelectableItem(
-                            index: index,
-                            isSelected: selectedItems.contains(post),
-                            onTap: () =>
-                                multiSelectController.toggleSelection(post),
-                            itemBuilder: (context, isSelected) => item,
-                          ),
-                        )
-                      : item;
-                },
+                    return multiSelect
+                        ? ValueListenableBuilder(
+                            valueListenable:
+                                multiSelectController.selectedItemsNotifier,
+                            builder: (_, selectedItems, __) => SelectableItem(
+                              index: index,
+                              isSelected: selectedItems.contains(post),
+                              onTap: () =>
+                                  multiSelectController.toggleSelection(post),
+                              itemBuilder: (context, isSelected) => item,
+                            ),
+                          )
+                        : item;
+                  },
+                ),
               ),
             ),
           );
