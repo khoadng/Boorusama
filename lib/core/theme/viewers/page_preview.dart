@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../images/booru_image.dart';
@@ -18,6 +19,7 @@ import '../../tags/categories/tag_category.dart';
 import '../../tags/tag/colors.dart';
 import '../../tags/tag/tag.dart';
 import '../../widgets/widgets.dart';
+import '../providers.dart';
 import '../utils.dart';
 import 'theme_previewer_notifier.dart';
 
@@ -72,81 +74,112 @@ class PreviewHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hiddenTags = [
+      (active: true, count: 3, name: 'tag_1'),
+      (active: true, count: 5, name: 'tag_2'),
+      (active: true, count: 2, name: 'tag_3'),
+      (active: true, count: 6, name: 'tag_4'),
+      (active: true, count: 1, name: 'tag_5'),
+    ];
+
     return PreviewFrame(
-      child: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        slivers: [
-          const SliverToBoxAdapter(
-            child: BooruSearchBar(
-              enabled: false,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 12,
-              ),
-              height: 40,
-              child: Consumer(
-                builder: (_, ref, __) {
-                  final colorScheme = ref.watch(themePreviewerSchemeProvider);
-                  final booruChipColors = BooruChipColors.colorScheme(
-                    colorScheme,
-                    harmonizeWithPrimary: true,
-                  );
-
-                  final isDark = colorScheme.brightness == Brightness.dark;
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _kRandomTags.length,
-                    itemBuilder: (context, index) {
-                      // first is general, second is artist, third is character, fourth is copyright, fifth is meta then repeat
-                      final colorIndex = index % 5;
-                      final color = switch (colorIndex) {
-                        0 => !isDark
-                            ? TagColors.dark().general
-                            : TagColors.light().general,
-                        1 => !isDark
-                            ? TagColors.dark().artist
-                            : TagColors.light().artist,
-                        2 => !isDark
-                            ? TagColors.dark().character
-                            : TagColors.light().character,
-                        3 => !isDark
-                            ? TagColors.dark().copyright
-                            : TagColors.light().copyright,
-                        4 => !isDark
-                            ? TagColors.dark().meta
-                            : TagColors.light().meta,
-                        _ => !isDark
-                            ? TagColors.dark().general
-                            : TagColors.light().general,
-                      };
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 2,
-                        ),
-                        child: BooruChip(
-                          label: Text(_kRandomTags[index]),
-                          onPressed: () {},
-                          chipColors: booruChipColors.fromColor(color),
-                        ),
-                      );
-                    },
-                  );
-                },
+      child: Scaffold(
+        floatingActionButton: BooruScrollToTopButton(
+          onPressed: () {},
+        ),
+        extendBody: true,
+        body: CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(
+              child: BooruSearchBar(
+                enabled: false,
               ),
             ),
-          ),
-          const SliverPostGridPlaceHolder(
-            postsPerPage: 100,
-          ),
-        ],
+            const SliverSizedBox(height: 8),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 40,
+                child: Consumer(
+                  builder: (_, ref, __) {
+                    final colorScheme = ref.watch(themePreviewerSchemeProvider);
+                    final colors = ref.watch(themePreviewerColorsProvider);
+                    final booruChipColors = BooruChipColors.colorScheme(
+                      colorScheme,
+                      harmonizeWithPrimary: colors.harmonizeWithPrimary,
+                    );
+
+                    final isDark = colorScheme.brightness == Brightness.dark;
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                      ),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _kRandomTags.length,
+                      itemBuilder: (context, index) {
+                        // first is general, second is artist, third is character, fourth is copyright, fifth is meta then repeat
+                        final colorIndex = index % 5;
+                        final color = switch (colorIndex) {
+                          0 => !isDark
+                              ? TagColors.dark().general
+                              : TagColors.light().general,
+                          1 => !isDark
+                              ? TagColors.dark().artist
+                              : TagColors.light().artist,
+                          2 => !isDark
+                              ? TagColors.dark().character
+                              : TagColors.light().character,
+                          3 => !isDark
+                              ? TagColors.dark().copyright
+                              : TagColors.light().copyright,
+                          4 => !isDark
+                              ? TagColors.dark().meta
+                              : TagColors.light().meta,
+                          _ => !isDark
+                              ? TagColors.dark().general
+                              : TagColors.light().general,
+                        };
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                          ),
+                          child: BooruChip(
+                            label: Text(_kRandomTags[index]),
+                            onPressed: () {},
+                            chipColors: booruChipColors.fromColor(color),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: PostListConfigurationHeader(
+                blacklistControls: BlacklistControls(
+                  hiddenTags: hiddenTags,
+                  onChanged: (_, __) {},
+                  onEnableAll: () {},
+                  onDisableAll: () {},
+                  axis: Axis.horizontal,
+                ),
+                hasBlacklist: true,
+                hiddenCount: hiddenTags.fold<int>(
+                  0,
+                  (previousValue, element) => previousValue + element.count,
+                ),
+                postCount: 100,
+                onClosed: () => {},
+                onExpansionChanged: (value) => {},
+              ),
+            ),
+            const SliverPostGridPlaceHolder(
+              postsPerPage: 100,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -166,46 +199,71 @@ class PreviewDetails extends StatelessWidget {
         vertical: 16,
         horizontal: 4,
       ),
-      child: CustomScrollView(
-        slivers: [
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8,
-              ),
-              child: BooruImage(imageUrl: ''),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: PreviewPostActionToolbar(),
-          ),
-          SliverToBoxAdapter(
-            child: Consumer(
-              builder: (__, ref, _) => PreviewTagsTile(
-                colorScheme: ref.watch(themePreviewerSchemeProvider),
-                post: _previewPost,
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: Column(
-              children: [
-                DefaultFileDetailsSection(
-                  post: _previewPost,
+      child: Scaffold(
+        extendBody: true,
+        floatingActionButton: BooruScrollToTopButton(
+          onPressed: () {},
+        ),
+        body: CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8,
                 ),
-                Divider(thickness: 0.5),
-              ],
-            ),
-          ),
-          SliverIgnorePointer(
-            sliver: SliverArtistPostList(
-              tag: _previewPost.tags.first,
-              child: const SliverPreviewPostGridPlaceholder(
-                itemCount: 6,
+                child: BooruImage(imageUrl: ''),
               ),
             ),
-          ),
-        ],
+            const SliverToBoxAdapter(
+              child: PreviewPostActionToolbar(),
+            ),
+            SliverToBoxAdapter(
+              child: Consumer(
+                builder: (__, ref, _) {
+                  final colorScheme = ref.watch(themePreviewerSchemeProvider);
+
+                  return ProviderScope(
+                    overrides: [
+                      booruChipColorsProvider.overrideWithValue(
+                        BooruChipColors.colorScheme(
+                          colorScheme,
+                          harmonizeWithPrimary: ref.watch(
+                            themePreviewerProvider.select(
+                              (value) => value.colors.harmonizeWithPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    child: PreviewTagsTile(
+                      colorScheme: colorScheme,
+                      post: _previewPost,
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  DefaultFileDetailsSection(
+                    post: _previewPost,
+                    initialExpanded: true,
+                  ),
+                  Divider(thickness: 0.5),
+                ],
+              ),
+            ),
+            SliverIgnorePointer(
+              sliver: SliverArtistPostList(
+                tag: _previewPost.tags.first,
+                child: const SliverPreviewPostGridPlaceholder(
+                  itemCount: 6,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -267,6 +325,7 @@ class PreviewTagsTile extends ConsumerWidget {
 
     return TagsTile(
       post: post,
+      initialExpanded: true,
       tagColorBuilder: (tag) => switch (tag.category.id) {
         0 => !isDark ? TagColors.dark().general : TagColors.light().general,
         1 => !isDark ? TagColors.dark().artist : TagColors.light().artist,

@@ -30,36 +30,9 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
 
   @override
   Widget build(BuildContext context) {
-    final padding = !context.isLargeScreen
-        ? const EdgeInsets.symmetric(
-            horizontal: 42,
-          )
-        : const EdgeInsets.symmetric(
-            horizontal: 60,
-          );
-
     final pages = [
-      Transform.scale(
-        alignment: Alignment.topCenter,
-        scale: 0.8,
-        child: Padding(
-          padding: padding,
-          child: const PreviewHome(),
-        ),
-      ),
-      Transform.scale(
-        alignment: Alignment.topCenter,
-        scale: 0.8,
-        child: Padding(
-          padding: padding,
-          child: MediaQuery.removePadding(
-            context: context,
-            removeLeft: true,
-            removeRight: true,
-            child: const PreviewDetails(),
-          ),
-        ),
-      ),
+      const PreviewHome(),
+      const PreviewDetails(),
     ];
 
     return Column(
@@ -95,6 +68,13 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
               final colorScheme = ref.watch(themePreviewerSchemeProvider);
 
               return SmoothPageIndicator(
+                onDotClicked: (index) {
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                },
                 controller: _pageController,
                 count: pages.length,
                 effect: WormEffect(
@@ -110,7 +90,36 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
         Expanded(
           child: PageView(
             controller: _pageController,
-            children: pages,
+            children: pages
+                .map(
+                  (e) => Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: 450,
+                        maxHeight: 1000,
+                      ),
+                      child: Transform.scale(
+                        alignment: Alignment.topCenter,
+                        scale: 0.75,
+                        child: Padding(
+                          padding: !context.isLargeScreen
+                              ? const EdgeInsets.symmetric(
+                                  horizontal: 46,
+                                )
+                              : EdgeInsets.zero,
+                          child: MediaQuery.removePadding(
+                            context: context,
+                            removeLeft: true,
+                            removeRight: true,
+                            removeBottom: true,
+                            child: e,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
           ),
         ),
       ],

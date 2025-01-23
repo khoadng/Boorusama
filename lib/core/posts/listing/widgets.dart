@@ -6,3 +6,5 @@ export 'src/widgets/single_page_post_gird.dart';
 export 'src/widgets/sliver_post_grid_place_holder.dart';
 export 'src/widgets/sliver_post_grid_image_grid_item.dart';
 export 'src/widgets/default_post_list_context_menu_region.dart';
+export 'src/widgets/post_list_configuration_header.dart';
+export 'src/widgets/blacklist_controls.dart';

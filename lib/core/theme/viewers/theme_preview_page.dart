@@ -16,7 +16,7 @@ import 'theme_previewer_notifier.dart';
 import 'theme_previewer_page_view.dart';
 import 'theme_previewer_sheet.dart';
 
-const _kMinSheetSize = 0.3;
+const _kMinSheetSize = 0.35;
 const _kMaxSheetSize = 0.75;
 
 class ThemePreviewPage extends StatefulWidget {
@@ -171,7 +171,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
   }
 }
 
-const _kOverscrollSheetSnapToMaxThreshold = -6.0;
+const _kOverscrollSheetSnapToMaxThreshold = -12.0;
 const _kOverscrollSheetSnapToMinThreshold = -6.0;
 
 class _ThemeSheetControllerListener extends StatelessWidget {

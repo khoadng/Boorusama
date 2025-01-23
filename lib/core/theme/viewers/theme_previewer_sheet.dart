@@ -27,7 +27,7 @@ class ThemePreviewerSheet extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.only(
-        top: 12,
+        top: 8,
       ),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
@@ -38,7 +38,7 @@ class ThemePreviewerSheet extends ConsumerWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 60,
+            height: 56,
             child: NotificationListener<ScrollNotification>(
               // Prevent notification from being propagated to the parent to avoid conflicts with the content scroll
               onNotification: (_) => true,
@@ -77,10 +77,8 @@ class ThemePreviewerSheet extends ConsumerWidget {
             child: Column(
               children: [
                 Container(
-                  margin: const EdgeInsets.only(
-                    top: 1,
-                    left: 12,
-                    right: 12,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
                   ),
                 ),
                 Expanded(

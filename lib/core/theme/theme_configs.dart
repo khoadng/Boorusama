@@ -349,6 +349,7 @@ class ColorSettings extends Equatable {
     required String? dynamicSchemeVariant,
     required this.enableDynamicColoring,
     required this.followSystemDarkMode,
+    required this.harmonizeWithPrimary,
     this.nickname,
   })  : _schemeType = schemeType,
         _dynamicSchemeVariant = dynamicSchemeVariant;
@@ -357,6 +358,7 @@ class ColorSettings extends Equatable {
     Color color, {
     required Brightness brightness,
     required DynamicSchemeVariant dynamicSchemeVariant,
+    required bool harmonizeWithPrimary,
   }) {
     final name = color.hexWithoutAlpha;
     final nickname = namedColors.entries
@@ -373,6 +375,7 @@ class ColorSettings extends Equatable {
       brightness: brightness,
       dynamicSchemeVariant: dynamicSchemeVariant.value,
       enableDynamicColoring: false,
+      harmonizeWithPrimary: harmonizeWithPrimary,
       followSystemDarkMode: null,
     );
   }
@@ -392,6 +395,7 @@ class ColorSettings extends Equatable {
       brightness: colorScheme.brightness,
       dynamicSchemeVariant: null,
       enableDynamicColoring: false,
+      harmonizeWithPrimary: false,
       followSystemDarkMode: null,
     );
   }
@@ -410,6 +414,7 @@ class ColorSettings extends Equatable {
       schemeType: SchemeType.basic.value,
       dynamicSchemeVariant: null,
       enableDynamicColoring: false,
+      harmonizeWithPrimary: false,
       followSystemDarkMode: followSystemDarkMode,
     );
   }
@@ -418,6 +423,7 @@ class ColorSettings extends Equatable {
   final String? nickname;
   final Brightness? brightness;
   final bool enableDynamicColoring;
+  final bool harmonizeWithPrimary;
   final bool? followSystemDarkMode;
 
   final ColorScheme? colorScheme;
@@ -443,6 +449,7 @@ class ColorSettings extends Equatable {
       schemeType: SchemeType.builtIn.value,
       dynamicSchemeVariant: null,
       enableDynamicColoring: false,
+      harmonizeWithPrimary: true,
       followSystemDarkMode: null,
     );
   }
@@ -451,6 +458,7 @@ class ColorSettings extends Equatable {
     Brightness? brightness,
     ColorScheme? colorScheme,
     bool? enableDynamicColoring,
+    bool? harmonizeWithPrimary,
   }) {
     return ColorSettings(
       brightness: brightness ?? this.brightness,
@@ -462,6 +470,7 @@ class ColorSettings extends Equatable {
       dynamicSchemeVariant: _dynamicSchemeVariant,
       enableDynamicColoring:
           enableDynamicColoring ?? this.enableDynamicColoring,
+      harmonizeWithPrimary: harmonizeWithPrimary ?? this.harmonizeWithPrimary,
       followSystemDarkMode: followSystemDarkMode,
     );
   }
@@ -478,6 +487,7 @@ class ColorSettings extends Equatable {
             json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
         dynamicSchemeVariant: json['dynamicSchemeVariant'],
         enableDynamicColoring: json['enableDynamicColoring'],
+        harmonizeWithPrimary: json['harmonizeWithPrimary'],
         followSystemDarkMode: json['followSystemDarkMode'],
       );
     } catch (e) {
@@ -496,6 +506,7 @@ class ColorSettings extends Equatable {
       'brightness': brightness == Brightness.dark ? 'dark' : 'light',
       'dynamicSchemeVariant': _dynamicSchemeVariant,
       'enableDynamicColoring': enableDynamicColoring,
+      'harmonizeWithPrimary': harmonizeWithPrimary,
       'followSystemDarkMode': followSystemDarkMode,
     };
   }
@@ -510,6 +521,7 @@ class ColorSettings extends Equatable {
         brightness,
         _dynamicSchemeVariant,
         enableDynamicColoring,
+        harmonizeWithPrimary,
         followSystemDarkMode,
       ];
 }

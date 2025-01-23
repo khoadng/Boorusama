@@ -88,6 +88,14 @@ class ThemePreviewerNotifier extends AutoDisposeNotifier<ThemePreviewerState> {
     );
   }
 
+  void updateHarmonize(bool value) {
+    final newColors = state.colors.copyWith(
+      harmonizeWithPrimary: value,
+    );
+
+    state = state.copyWith(colors: newColors);
+  }
+
   void updateCategory(ThemeCategory category) {
     final newColors = switch (category) {
       ThemeCategory.basic => state.basicColors.first,
@@ -97,6 +105,7 @@ class ThemePreviewerNotifier extends AutoDisposeNotifier<ThemePreviewerState> {
           brightness: state.colors.brightness ?? Brightness.dark,
           dynamicSchemeVariant: state.colors.dynamicSchemeVariant ??
               DynamicSchemeVariant.tonalSpot,
+          harmonizeWithPrimary: state.colors.harmonizeWithPrimary,
         ),
     };
 

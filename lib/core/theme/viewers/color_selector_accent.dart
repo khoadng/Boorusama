@@ -10,6 +10,8 @@ import 'color_selector_accent_notifier.dart';
 import 'theme_previewer_notifier.dart';
 import 'theme_widgets.dart';
 
+final _viewAllColorProvider = StateProvider.autoDispose<bool>((ref) => false);
+
 class AccentColorSelector extends StatelessWidget {
   const AccentColorSelector({
     super.key,
@@ -20,35 +22,32 @@ class AccentColorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-      ),
-      child: Column(
-        children: [
-          _buildColorSelectorHeader(),
-          const SizedBox(height: 4),
-          _buildColorSelector(),
-          const SizedBox(height: 16),
-          Container(
-            padding: padding,
-            child: const Row(
-              children: [
-                Text(
-                  'Color Variants',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+    return Column(
+      children: [
+        _buildColorSelectorHeader(),
+        const SizedBox(height: 4),
+        _buildColorSelector(),
+        const SizedBox(height: 16),
+        Container(
+          padding: padding,
+          child: const Row(
+            children: [
+              Text(
+                'Color Variants',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          _buildVariantSelector(),
-          const SizedBox(height: 16),
-          _buildDarkThemeToggle(),
-        ],
-      ),
+        ),
+        _buildVariantSelector(),
+        const SizedBox(height: 16),
+        _buildDarkThemeToggle(),
+        _buildHarmonizeToggle(),
+        const SizedBox(height: 48),
+      ],
     );
   }
 
@@ -70,6 +69,34 @@ class AccentColorSelector extends StatelessWidget {
             value: isDark,
             onChanged: (value) {
               notifier.updateIsDark(value);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHarmonizeToggle() {
+    return Consumer(
+      builder: (_, ref, __) {
+        final harmonize = ref.watch(
+          accentColorSelectorProvider.select((value) => value.harmonize),
+        );
+        final notifier = ref.watch(accentColorSelectorProvider.notifier);
+
+        return Padding(
+          padding: padding,
+          child: SwitchListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 4,
+            ),
+            title: const Text('Harmonize colors'),
+            subtitle: const Text(
+              'Adjusts tag colors to match the accent color',
+            ),
+            value: harmonize,
+            onChanged: (value) {
+              notifier.updateHarmonize(value);
             },
           ),
         );
@@ -112,16 +139,12 @@ class AccentColorSelector extends StatelessWidget {
           ),
           Consumer(
             builder: (_, ref, __) {
-              final viewAllColor = ref.watch(
-                accentColorSelectorProvider.select(
-                  (value) => value.viewAllColor,
-                ),
-              );
-              final notifier = ref.watch(accentColorSelectorProvider.notifier);
+              final viewAllColor = ref.watch(_viewAllColorProvider);
 
               return TextButton(
                 onPressed: () {
-                  notifier.toggleViewAllColor();
+                  ref.read(_viewAllColorProvider.notifier).state =
+                      !viewAllColor;
                 },
                 child: !viewAllColor
                     ? const Text('Show all')
@@ -137,11 +160,7 @@ class AccentColorSelector extends StatelessWidget {
   Widget _buildColorSelector() {
     return Consumer(
       builder: (_, ref, __) {
-        final viewAllColor = ref.watch(
-          accentColorSelectorProvider.select(
-            (value) => value.viewAllColor,
-          ),
-        );
+        final viewAllColor = ref.watch(_viewAllColorProvider);
 
         final notifier = ref.watch(accentColorSelectorProvider.notifier);
 

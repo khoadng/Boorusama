@@ -41,7 +41,6 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
     this.searchable = true,
     this.padding,
     this.scrollController,
-    this.backgroundColor,
   });
 
   final List<T> options;
@@ -53,7 +52,6 @@ class ChoiceOptionSelectorList<T> extends ConsumerStatefulWidget {
   final bool hasNullOption;
   final bool searchable;
   final EdgeInsetsGeometry? padding;
-  final Color? backgroundColor;
   final AutoScrollController? scrollController;
 
   @override
@@ -93,9 +91,10 @@ class _ChoiceOptionSelectorListState<T>
       ...widget.options.map((e) => OptionType(data: e)),
     ];
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       height: 32,
-      color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListView.builder(
         padding: widget.padding,
@@ -121,8 +120,8 @@ class _ChoiceOptionSelectorListState<T>
                     borderRadius: BorderRadius.circular(8),
                     disabled: !selected,
                     color: selected
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Theme.of(context).colorScheme.hintColor,
+                        ? colorScheme.onSurface
+                        : colorScheme.hintColor,
                     onPressed: () => _onSelect(
                       null,
                       index,
@@ -131,9 +130,7 @@ class _ChoiceOptionSelectorListState<T>
                     label: Text(
                       widget.optionLabelBuilder(null),
                       style: TextStyle(
-                        color: selected
-                            ? null
-                            : Theme.of(context).colorScheme.onSurface,
+                        color: selected ? null : colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -146,8 +143,8 @@ class _ChoiceOptionSelectorListState<T>
                     borderRadius: BorderRadius.circular(8),
                     disabled: !selected,
                     color: selected
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Theme.of(context).colorScheme.hintColor,
+                        ? colorScheme.onSurface
+                        : colorScheme.hintColor,
                     onPressed: () => _onSelect(
                       o.data,
                       index,
@@ -156,9 +153,7 @@ class _ChoiceOptionSelectorListState<T>
                     label: Text(
                       widget.optionLabelBuilder(o.data),
                       style: TextStyle(
-                        color: selected
-                            ? null
-                            : Theme.of(context).colorScheme.onSurface,
+                        color: selected ? null : colorScheme.onSurface,
                       ),
                     ),
                   ),

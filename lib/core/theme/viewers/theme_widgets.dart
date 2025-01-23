@@ -7,6 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../widgets/widgets.dart';
+import '../providers.dart';
+import '../utils.dart';
 import 'theme_previewer_notifier.dart';
 
 const _kVariantsOptions = [
@@ -18,7 +20,7 @@ const _kVariantsOptions = [
   DynamicSchemeVariant.rainbow,
 ];
 
-class ColorVariantSelector extends StatelessWidget {
+class ColorVariantSelector extends ConsumerWidget {
   const ColorVariantSelector({
     required this.variant,
     required this.onChanged,
@@ -31,29 +33,46 @@ class ColorVariantSelector extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = ref.watch(themePreviewerSchemeProvider);
 
-    return ChoiceOptionSelectorList(
-      backgroundColor: colorScheme.surfaceContainerLow,
-      searchable: false,
-      options: _kVariantsOptions,
-      selectedOption: variant,
-      onSelected: onChanged,
-      hasNullOption: false,
-      padding: padding,
-      optionLabelBuilder: (value) => switch (value) {
-        DynamicSchemeVariant.tonalSpot => 'Tonal',
-        DynamicSchemeVariant.fidelity => 'Fidelity',
-        DynamicSchemeVariant.monochrome => 'Monochrome',
-        DynamicSchemeVariant.neutral => 'Neutral',
-        DynamicSchemeVariant.vibrant => 'Vibrant',
-        DynamicSchemeVariant.expressive => 'Expressive',
-        DynamicSchemeVariant.content => 'Content',
-        DynamicSchemeVariant.rainbow => 'Rainbow',
-        DynamicSchemeVariant.fruitSalad => 'Fruit Salad',
-        _ => 'Unknown',
-      },
+    return ProviderScope(
+      overrides: [
+        booruChipColorsProvider.overrideWithValue(
+          BooruChipColors.colorScheme(
+            colorScheme,
+            harmonizeWithPrimary: ref.watch(
+              themePreviewerProvider
+                  .select((value) => value.colors.harmonizeWithPrimary),
+            ),
+          ),
+        ),
+      ],
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: colorScheme,
+        ),
+        child: ChoiceOptionSelectorList(
+          searchable: false,
+          options: _kVariantsOptions,
+          selectedOption: variant,
+          onSelected: onChanged,
+          hasNullOption: false,
+          padding: padding,
+          optionLabelBuilder: (value) => switch (value) {
+            DynamicSchemeVariant.tonalSpot => 'Tonal',
+            DynamicSchemeVariant.fidelity => 'Fidelity',
+            DynamicSchemeVariant.monochrome => 'Monochrome',
+            DynamicSchemeVariant.neutral => 'Neutral',
+            DynamicSchemeVariant.vibrant => 'Vibrant',
+            DynamicSchemeVariant.expressive => 'Expressive',
+            DynamicSchemeVariant.content => 'Content',
+            DynamicSchemeVariant.rainbow => 'Rainbow',
+            DynamicSchemeVariant.fruitSalad => 'Fruit Salad',
+            _ => 'Unknown',
+          },
+        ),
+      ),
     );
   }
 }

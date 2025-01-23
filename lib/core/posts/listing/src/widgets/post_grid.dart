@@ -13,13 +13,13 @@ import '../../../../foundation/toast.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../post/post.dart';
-import '../_internal/blacklist_controls.dart';
 import '../_internal/default_image_grid_item.dart';
 import '../_internal/post_grid_config_icon_button.dart';
-import '../_internal/post_list_configuration_header.dart';
 import '../_internal/raw_post_grid.dart';
 import '../_internal/sliver_post_grid.dart';
+import 'blacklist_controls.dart';
 import 'post_grid_controller.dart';
+import 'post_list_configuration_header.dart';
 
 typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
   BuildContext context,
