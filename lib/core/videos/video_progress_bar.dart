@@ -93,49 +93,39 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   Widget _buildBar() {
     final isDesktop = isDesktopPlatform();
 
-    return Center(
-      child: Container(
-        height: MediaQuery.sizeOf(context).height,
-        width: MediaQuery.sizeOf(context).width,
-        color: Colors.transparent,
-        child: ValueListenableBuilder(
-          valueListenable: isDragging,
-          builder: (_, dragging, __) => ValueListenableBuilder(
-            valueListenable: isHovering,
-            builder: (_, hovering, __) => ValueListenableBuilder(
-              valueListenable: isDragging,
-              builder: (_, dragging, __) {
-                return CustomPaint(
-                  painter: _ProgressBarPainter(
-                    barRadius: Radius.zero,
-                    position: widget.position,
-                    duration: widget.duration,
-                    buffered: widget.buffered,
-                    barHeight: isDesktop
-                        ? hovering
-                            ? widget.barHeight * 2
-                            : widget.barHeight
-                        : dragging
-                            ? widget.barHeight * 1.2
-                            : widget.barHeight,
-                    handleHeight: isDesktop
-                        ? !hovering
-                            ? 0
-                            : dragging
-                                ? widget.handleHeight * 1.2
-                                : widget.handleHeight
-                        : !dragging
-                            ? widget.handleHeight
-                            : widget.handleHeight * 1.5,
-                    drawShadow: widget.drawShadow,
-                    backgroundColor: widget.backgroundColor,
-                    playedColor: widget.playedColor,
-                    bufferedColor: widget.bufferedColor,
-                    handleColor: widget.handleColor,
-                    useHandle: true,
-                  ),
-                );
-              },
+    return ValueListenableBuilder(
+      valueListenable: isHovering,
+      builder: (_, hovering, __) => ValueListenableBuilder(
+        valueListenable: isDragging,
+        builder: (_, dragging, __) => RepaintBoundary(
+          child: CustomPaint(
+            painter: _ProgressBarPainter(
+              barRadius: Radius.zero,
+              position: widget.position,
+              duration: widget.duration,
+              buffered: widget.buffered,
+              barHeight: isDesktop
+                  ? hovering
+                      ? widget.barHeight * 1.5
+                      : widget.barHeight
+                  : dragging
+                      ? widget.barHeight * 1.2
+                      : widget.barHeight,
+              handleHeight: isDesktop
+                  ? !hovering
+                      ? 0
+                      : dragging
+                          ? widget.handleHeight * 1.2
+                          : widget.handleHeight
+                  : !dragging
+                      ? widget.handleHeight
+                      : widget.handleHeight * 1.5,
+              drawShadow: widget.drawShadow,
+              backgroundColor: widget.backgroundColor,
+              playedColor: widget.playedColor,
+              bufferedColor: widget.bufferedColor,
+              handleColor: widget.handleColor,
+              useHandle: true,
             ),
           ),
         ),
@@ -174,8 +164,18 @@ class _ProgressBarPainter extends CustomPainter {
   final Radius barRadius;
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(_ProgressBarPainter oldDelegate) {
+    return oldDelegate.position != position ||
+        oldDelegate.duration != duration ||
+        oldDelegate.buffered != buffered ||
+        oldDelegate.barHeight != barHeight ||
+        oldDelegate.handleHeight != handleHeight ||
+        oldDelegate.drawShadow != drawShadow ||
+        oldDelegate.backgroundColor != backgroundColor ||
+        oldDelegate.playedColor != playedColor ||
+        oldDelegate.bufferedColor != bufferedColor ||
+        oldDelegate.handleColor != handleColor ||
+        oldDelegate.useHandle != useHandle;
   }
 
   @override
