@@ -9,13 +9,11 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/ref.dart';
-import '../../../../settings/providers.dart';
 import '../../../../theme.dart';
-import '../../../../theme/utils.dart';
+import '../../../../theme/providers.dart';
 import '../tag.dart';
 import '../tag_display.dart';
 import '../tag_group_item.dart';
-import '../tag_providers.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -101,10 +99,9 @@ class PostTagListChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.generateChipColors(
-      color ?? ref.watch(tagColorProvider(tag.category.name)),
-      ref.watch(enableDynamicColoringProvider),
-    );
+    final colors = color != null
+        ? ref.watch(booruChipColorsProvider).fromColor(color)
+        : ref.watch(chipColorsFromTagStringProvider(tag.category.name));
     final screenWith = MediaQuery.sizeOf(context).width;
 
     return RawCompactChip(

@@ -7,8 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/display.dart';
-import '../../../../settings/providers.dart';
-import '../../../../theme/utils.dart';
+import '../../../../theme/providers.dart';
 import '../../../../utils/flutter_utils.dart';
 import '../pages/favorite_tag_label_details_page.dart';
 
@@ -22,10 +21,9 @@ class FavoriteTagLabelChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.generateChipColors(
-      Theme.of(context).colorScheme.primary,
-      ref.watch(enableDynamicColoringProvider),
-    );
+    final colors = ref.watch(booruChipColorsProvider).fromColor(
+          Theme.of(context).colorScheme.primary,
+        );
 
     return SizedBox(
       height: 28,

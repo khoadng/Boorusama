@@ -4,68 +4,8 @@ import 'dart:math';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:dynamic_color/dynamic_color.dart';
-
 // Project imports:
 import '../theme.dart';
-
-typedef ChipColors = ({
-  Color foregroundColor,
-  Color backgroundColor,
-  Color borderColor,
-});
-
-ChipColors? generateChipColorsFromColorScheme(
-  Color? color,
-  ColorScheme colorScheme,
-  bool harmonizeWithPrimary,
-) {
-  if (color == null) return null;
-
-  final legacyColor = LegacyColor(color);
-
-  if (colorScheme.brightness == Brightness.light) {
-    final backgroundColor = harmonizeWithPrimary
-        ? legacyColor.harmonizeWith(colorScheme.primary)
-        : legacyColor;
-    return (
-      backgroundColor: backgroundColor,
-      foregroundColor: backgroundColor.computeLuminance() > 0.7
-          ? Colors.black
-          : Colors.white,
-      borderColor: harmonizeWithPrimary
-          ? legacyColor.harmonizeWith(colorScheme.primary)
-          : legacyColor,
-    );
-  }
-
-  final darkColor = LegacyColor.fromRGBO(
-    (legacyColor.red * 0.3).round(),
-    (legacyColor.green * 0.3).round(),
-    (legacyColor.blue * 0.3).round(),
-    1,
-  );
-
-  final neutralDarkColor = LegacyColor.fromRGBO(
-    (legacyColor.red * 0.5).round(),
-    (legacyColor.green * 0.5).round(),
-    (legacyColor.blue * 0.5).round(),
-    1,
-  );
-
-  return (
-    foregroundColor: harmonizeWithPrimary
-        ? legacyColor.harmonizeWith(colorScheme.primary)
-        : legacyColor,
-    backgroundColor: harmonizeWithPrimary
-        ? darkColor.harmonizeWith(colorScheme.primary)
-        : darkColor,
-    borderColor: harmonizeWithPrimary
-        ? neutralDarkColor.harmonizeWith(colorScheme.primary)
-        : neutralDarkColor,
-  );
-}
 
 extension type LegacyColor(Color color) implements Color {
   LegacyColor.fromRGBO(

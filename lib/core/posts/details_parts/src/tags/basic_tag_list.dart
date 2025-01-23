@@ -7,10 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../search/search/routes.dart';
-import '../../../../settings/providers.dart';
 import '../../../../tags/categories/providers.dart';
 import '../../../../tags/tag/providers.dart';
-import '../../../../theme/utils.dart';
+import '../../../../theme/providers.dart';
 import '../../../../utils/flutter_utils.dart';
 import '../../../details/details.dart';
 import '../../../post/post.dart';
@@ -63,12 +62,11 @@ class BasicTagList extends ConsumerWidget {
             onTap: () => onTap(tag),
             child: categoryAsync.maybeWhen(
               data: (category) {
-                final colors = context.generateChipColors(
-                  category != null
-                      ? ref.watch(tagColorProvider(category))
-                      : unknownCategoryColor,
-                  ref.watch(enableDynamicColoringProvider),
-                );
+                final colors = category != null
+                    ? ref.watch(chipColorsFromTagStringProvider(category))
+                    : ref
+                        .watch(booruChipColorsProvider)
+                        .fromColor(unknownCategoryColor);
 
                 return Chip(
                   visualDensity: const ShrinkVisualDensity(),

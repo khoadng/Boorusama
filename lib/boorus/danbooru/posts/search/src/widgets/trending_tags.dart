@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/theme.dart';
+import '../../../../../../core/theme/utils.dart';
 import '../../../../../../core/widgets/booru_chip.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../trending_tag.dart';
@@ -69,7 +70,7 @@ class TrendingTagsPlaceholder extends StatelessWidget {
       runSpacing: isMobilePlatform() ? -2 : 8,
       children: tags.map((e) {
         return BooruChip(
-          chipColors: (
+          chipColors: ChipColors(
             backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
             borderColor: Colors.transparent,
             foregroundColor: Colors.transparent,

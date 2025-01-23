@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/foundation/platform.dart';
-import '../../../../../../core/settings/providers.dart';
-import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/theme/utils.dart';
+import '../../../../../../core/theme/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../ai/providers.dart';
 
@@ -62,9 +60,8 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                 runSpacing: isDesktopPlatform() ? 4 : 0,
                 children: tags.map((d) {
                   final tag = d.tag;
-                  final colors = context.generateChipColors(
-                    ref.watch(tagColorProvider(tag.category.name)),
-                    ref.watch(enableDynamicColoringProvider),
+                  final colors = ref.watch(
+                    chipColorsFromTagStringProvider(tag.category.name),
                   );
                   final selected = widget.isSelected(tag.name);
 

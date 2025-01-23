@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
-import '../../../configs/current.dart';
 import '../../../configs/ref.dart';
 import '../../../settings/providers.dart';
 import '../../../theme.dart';
@@ -42,8 +41,7 @@ final tagColorProvider = Provider.family<Color?, String>(
     return color?.harmonizeWith(colorScheme.primary);
   },
   dependencies: [
-    currentBooruConfigProvider,
-    settingsProvider,
+    enableDynamicColoringProvider,
     colorSchemeProvider,
   ],
 );

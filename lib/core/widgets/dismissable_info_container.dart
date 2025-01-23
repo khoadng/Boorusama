@@ -8,10 +8,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../foundation/html.dart';
-import '../settings/providers.dart';
-import '../theme/utils.dart';
+import '../theme/providers.dart';
 
-class DismissableInfoContainer extends ConsumerStatefulWidget {
+class DismissableInfoContainer extends StatefulWidget {
   const DismissableInfoContainer({
     required this.content,
     super.key,
@@ -28,12 +27,11 @@ class DismissableInfoContainer extends ConsumerStatefulWidget {
   final EdgeInsetsGeometry? padding;
 
   @override
-  ConsumerState<DismissableInfoContainer> createState() =>
+  State<DismissableInfoContainer> createState() =>
       _DismissableInfoContainerState();
 }
 
-class _DismissableInfoContainerState
-    extends ConsumerState<DismissableInfoContainer> {
+class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
   var _isDismissed = false;
 
   @override
@@ -72,66 +70,69 @@ class _DismissableInfoContainerState
   }
 
   Widget _buildContent() {
-    final colors = context.generateChipColors(
-      widget.mainColor ?? Colors.grey,
-      ref.watch(enableDynamicColoringProvider),
-    );
+    return Consumer(
+      builder: (_, ref, __) {
+        final colors = ref
+            .watch(booruChipColorsProvider)
+            .fromColor(widget.mainColor ?? Colors.grey);
 
-    return Container(
-      margin: widget.padding ??
-          const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
+        return Container(
+          margin: widget.padding ??
+              const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
           ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        color: colors?.backgroundColor,
-        border: colors != null
-            ? Border.all(
-                color: colors.borderColor,
-              )
-            : null,
-      ),
-      width: MediaQuery.sizeOf(context).width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            color: colors?.backgroundColor,
+            border: colors != null
+                ? Border.all(
+                    color: colors.borderColor,
+                  )
+                : null,
+          ),
+          width: MediaQuery.sizeOf(context).width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: AppHtml(
-                    style: {
-                      'body': Style(
-                        color: colors?.foregroundColor,
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: AppHtml(
+                        style: {
+                          'body': Style(
+                            color: colors?.foregroundColor,
+                          ),
+                        },
+                        data: widget.content,
                       ),
-                    },
-                    data: widget.content,
+                    ),
                   ),
-                ),
+                  Container(
+                    width: 20,
+                  ),
+                ],
               ),
               Container(
-                width: 20,
+                padding: widget.actions.isNotEmpty
+                    ? const EdgeInsets.only(
+                        left: 4,
+                        bottom: 8,
+                      )
+                    : null,
+                child: OverflowBar(
+                  children: widget.actions,
+                ),
               ),
             ],
           ),
-          Container(
-            padding: widget.actions.isNotEmpty
-                ? const EdgeInsets.only(
-                    left: 4,
-                    bottom: 8,
-                  )
-                : null,
-            child: OverflowBar(
-              children: widget.actions,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

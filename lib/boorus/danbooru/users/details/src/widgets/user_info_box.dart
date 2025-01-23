@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/theme/utils.dart';
+import '../../../../../../core/theme/providers.dart';
 import '../../../user/providers.dart';
 import '../../../user/user.dart';
 
@@ -24,10 +23,9 @@ class UserInfoBox extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userColor = DanbooruUserColor.of(context);
     final theme = Theme.of(context);
-    final colors = context.generateChipColors(
-      userColor.fromUser(user),
-      ref.watch(enableDynamicColoringProvider),
-    );
+    final colors = ref.watch(booruChipColorsProvider).fromColor(
+          userColor.fromUser(user),
+        );
 
     return Row(
       children: [

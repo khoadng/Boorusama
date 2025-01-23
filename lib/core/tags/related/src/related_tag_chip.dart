@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../settings/providers.dart';
-import '../../../theme/utils.dart';
+import '../../../theme/providers.dart';
 
 class RelatedTagButton extends ConsumerWidget {
   const RelatedTagButton({
@@ -27,10 +26,7 @@ class RelatedTagButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final color = backgroundColor;
     final colors = color != null
-        ? context.generateChipColors(
-            color,
-            ref.watch(enableDynamicColoringProvider),
-          )
+        ? ref.watch(booruChipColorsProvider).fromColor(color)
         : null;
 
     return Container(

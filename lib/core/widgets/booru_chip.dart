@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../settings/providers.dart';
+import '../theme/providers.dart';
 import '../theme/utils.dart';
-import '../utils/color_utils.dart';
 
 class BooruChip extends ConsumerWidget {
   const BooruChip({
@@ -41,10 +40,7 @@ class BooruChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = chipColors ??
         (color != null
-            ? context.generateChipColors(
-                color,
-                ref.watch(enableDynamicColoringProvider),
-              )
+            ? ref.watch(booruChipColorsProvider).fromColor(color)
             : null);
 
     return trailing != null

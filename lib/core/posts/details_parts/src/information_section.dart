@@ -11,11 +11,9 @@ import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../router.dart';
-import '../../../settings/providers.dart';
 import '../../../tags/categories/tag_category.dart';
-import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/widgets.dart';
-import '../../../theme/utils.dart';
+import '../../../theme/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../../details/details.dart';
 import '../../post/post.dart';
@@ -220,9 +218,8 @@ class ArtistNameInfoChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final artist = chooseArtistTag(artistTags);
-    final colors = context.generateChipColors(
-      ref.watch(tagColorProvider(TagCategory.artist().name)),
-      ref.watch(enableDynamicColoringProvider),
+    final colors = ref.watch(
+      chipColorsFromTagStringProvider(TagCategory.artist().name),
     );
 
     return Flexible(

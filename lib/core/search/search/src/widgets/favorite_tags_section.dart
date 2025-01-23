@@ -11,10 +11,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../cache/providers.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../router.dart';
-import '../../../../settings/providers.dart';
 import '../../../../tags/favorites/favorited.dart';
 import '../../../../tags/favorites/widgets.dart';
-import '../../../../theme/utils.dart';
+import '../../../../theme/providers.dart';
 import 'constants.dart';
 
 class FavoriteTagsSection extends ConsumerWidget {
@@ -53,10 +52,9 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors = ref.context.generateChipColors(
-          Theme.of(ref.context).colorScheme.onSurface,
-          ref.watch(enableDynamicColoringProvider),
-        );
+        final colors = ref.watch(booruChipColorsProvider).fromColor(
+              Theme.of(ref.context).colorScheme.onSurface,
+            );
 
         return RawChip(
           visualDensity: VisualDensity.compact,

@@ -15,7 +15,8 @@ import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/tags/categories/providers.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/utils/color_utils.dart';
+import '../../../../../../core/theme/providers.dart';
+import '../../../../../../core/theme/utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../providers/tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';
@@ -61,8 +62,7 @@ class DanbooruTagEditColorNotifier
   Future<void> _load(List<String> tags) async {
     final colors = <String, ChipColors?>{};
     final tagTypeStore = ref.read(booruTagTypeStoreProvider);
-    final colorScheme = ref.read(colorSchemeProvider);
-    final enableDynamicColoring = ref.read(enableDynamicColoringProvider);
+    final booruChipColors = ref.read(booruChipColorsProvider);
 
     for (final tag in tags) {
       final tagType = await tagTypeStore.get(arg.booruType, tag);
@@ -73,11 +73,7 @@ class DanbooruTagEditColorNotifier
         final color = ref.read(tagColorProvider(tagType));
 
         final chipColors = color != null && color != Colors.white
-            ? generateChipColorsFromColorScheme(
-                color,
-                colorScheme,
-                enableDynamicColoring,
-              )
+            ? booruChipColors.fromColor(color)
             : null;
 
         colors[tag] = chipColors;

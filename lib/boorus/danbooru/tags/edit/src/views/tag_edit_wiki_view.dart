@@ -7,11 +7,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/foundation/platform.dart';
-import '../../../../../../core/settings/providers.dart';
-import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/theme/utils.dart';
+import '../../../../../../core/theme/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../related/providers.dart';
 
@@ -132,9 +130,8 @@ class _RelatedTagChips extends ConsumerWidget {
       runSpacing: isDesktopPlatform() ? 4 : 0,
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
-        final colors = context.generateChipColors(
-          ref.watch(tagColorProvider(tag.category.name)),
-          ref.watch(enableDynamicColoringProvider),
+        final colors = ref.watch(
+          chipColorsFromTagStringProvider(tag.category.name),
         );
 
         return RawChip(

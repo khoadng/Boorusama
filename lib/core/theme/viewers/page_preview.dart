@@ -17,8 +17,8 @@ import '../../search/search/widgets.dart';
 import '../../tags/categories/tag_category.dart';
 import '../../tags/tag/colors.dart';
 import '../../tags/tag/tag.dart';
-import '../../utils/color_utils.dart';
 import '../../widgets/widgets.dart';
+import '../utils.dart';
 import 'theme_previewer_notifier.dart';
 
 final _kRandomTags = [
@@ -90,6 +90,11 @@ class PreviewHome extends StatelessWidget {
               child: Consumer(
                 builder: (_, ref, __) {
                   final colorScheme = ref.watch(themePreviewerSchemeProvider);
+                  final booruChipColors = BooruChipColors.colorScheme(
+                    colorScheme,
+                    harmonizeWithPrimary: true,
+                  );
+
                   final isDark = colorScheme.brightness == Brightness.dark;
 
                   return ListView.builder(
@@ -129,11 +134,7 @@ class PreviewHome extends StatelessWidget {
                         child: BooruChip(
                           label: Text(_kRandomTags[index]),
                           onPressed: () {},
-                          chipColors: generateChipColorsFromColorScheme(
-                            color,
-                            colorScheme,
-                            true,
-                          ),
+                          chipColors: booruChipColors.fromColor(color),
                         ),
                       );
                     },

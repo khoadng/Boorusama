@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../core/configs/ref.dart';
-import '../../../../core/settings/providers.dart';
-import '../../../../core/tags/tag/providers.dart';
 import '../../../../core/tags/tag/widgets.dart';
-import '../../../../core/theme/utils.dart';
+import '../../../../core/theme/providers.dart';
 import '../../tags/tag/providers.dart';
 import '../../tags/tag/widgets.dart';
 import '../../tags/trending/providers.dart';
@@ -76,10 +74,7 @@ class _Chip extends ConsumerWidget {
     final colors =
         ref.watch(danbooruTagCategoryProvider(search.keyword)).maybeWhen(
               data: (data) => data != null
-                  ? context.generateChipColors(
-                      ref.watch(tagColorProvider(data.name)),
-                      ref.watch(enableDynamicColoringProvider),
-                    )
+                  ? ref.watch(chipColorsFromTagStringProvider(data.name))
                   : null,
               orElse: () => null,
             );

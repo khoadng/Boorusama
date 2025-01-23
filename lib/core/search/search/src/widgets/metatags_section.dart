@@ -7,10 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../settings/providers.dart';
 import '../../../../tags/metatag/metatag.dart';
 import '../../../../tags/metatag/routes.dart';
-import '../../../../theme/utils.dart';
+import '../../../../theme/providers.dart';
 import 'add_tag_button.dart';
 import 'option_tags_arena.dart';
 
@@ -79,10 +78,9 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   }
 
   Widget _buildChip(String tag, bool editMode) {
-    final colors = context.generateChipColors(
-      Theme.of(context).colorScheme.primary,
-      ref.watch(enableDynamicColoringProvider),
-    );
+    final colors = ref.watch(booruChipColorsProvider).fromColor(
+          Theme.of(context).colorScheme.primary,
+        );
 
     return RawChip(
       visualDensity: VisualDensity.compact,
