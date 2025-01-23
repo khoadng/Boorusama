@@ -105,8 +105,8 @@ class BooruRawImage extends StatelessWidget {
       aspectRatio: forceFill ? null : aspectRatio,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final width = constraints.maxWidth;
-          final height = constraints.maxHeight;
+          final width = constraints.maxWidth.roundToDouble();
+          final height = constraints.maxHeight.roundToDouble();
           final fit = this.fit ?? (forceFill ? BoxFit.cover : BoxFit.contain);
           final borderRadius = this.borderRadius ?? _defaultRadius;
 
