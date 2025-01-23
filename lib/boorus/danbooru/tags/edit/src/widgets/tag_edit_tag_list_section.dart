@@ -62,8 +62,7 @@ class DanbooruTagEditColorNotifier
     final colors = <String, ChipColors?>{};
     final tagTypeStore = ref.read(booruTagTypeStoreProvider);
     final colorScheme = ref.read(colorSchemeProvider);
-    final enableDynamicColoring = ref
-        .read(settingsProvider.select((value) => value.enableDynamicColoring));
+    final enableDynamicColoring = ref.read(enableDynamicColoringProvider);
 
     for (final tag in tags) {
       final tagType = await tagTypeStore.get(arg.booruType, tag);

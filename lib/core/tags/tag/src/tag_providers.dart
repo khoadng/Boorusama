@@ -34,8 +34,7 @@ final tagColorProvider = Provider.family<Color?, String>(
 
     final color = colorBuilder(colorScheme.brightness, tag);
 
-    final dynamicColors = ref
-        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+    final dynamicColors = ref.watch(enableDynamicColoringProvider);
 
     // If dynamic colors are disabled, return the color as is
     if (!dynamicColors) return color;

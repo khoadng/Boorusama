@@ -19,14 +19,14 @@ typedef ChipColors = ({
 ChipColors? generateChipColorsFromColorScheme(
   Color? color,
   ColorScheme colorScheme,
-  bool enableDynamicColoring,
+  bool harmonizeWithPrimary,
 ) {
   if (color == null) return null;
 
   final legacyColor = LegacyColor(color);
 
   if (colorScheme.brightness == Brightness.light) {
-    final backgroundColor = enableDynamicColoring
+    final backgroundColor = harmonizeWithPrimary
         ? legacyColor.harmonizeWith(colorScheme.primary)
         : legacyColor;
     return (
@@ -34,7 +34,7 @@ ChipColors? generateChipColorsFromColorScheme(
       foregroundColor: backgroundColor.computeLuminance() > 0.7
           ? Colors.black
           : Colors.white,
-      borderColor: enableDynamicColoring
+      borderColor: harmonizeWithPrimary
           ? legacyColor.harmonizeWith(colorScheme.primary)
           : legacyColor,
     );
@@ -55,13 +55,13 @@ ChipColors? generateChipColorsFromColorScheme(
   );
 
   return (
-    foregroundColor: enableDynamicColoring
+    foregroundColor: harmonizeWithPrimary
         ? legacyColor.harmonizeWith(colorScheme.primary)
         : legacyColor,
-    backgroundColor: enableDynamicColoring
+    backgroundColor: harmonizeWithPrimary
         ? darkColor.harmonizeWith(colorScheme.primary)
         : darkColor,
-    borderColor: enableDynamicColoring
+    borderColor: harmonizeWithPrimary
         ? neutralDarkColor.harmonizeWith(colorScheme.primary)
         : neutralDarkColor,
   );

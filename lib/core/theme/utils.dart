@@ -7,11 +7,11 @@ import '../utils/color_utils.dart';
 extension DynamicColorX on BuildContext {
   ChipColors? generateChipColors(
     Color? color,
-    bool enableDynamicColoring,
+    bool harmonizeWithPrimary,
   ) =>
       generateChipColorsFromColorScheme(
         color,
         Theme.of(this).colorScheme,
-        enableDynamicColoring,
+        harmonizeWithPrimary,
       );
 }

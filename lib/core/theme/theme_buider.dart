@@ -34,8 +34,7 @@ class ThemeBuilder extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme =
         ref.watch(settingsProvider.select((value) => value.themeMode));
-    final enableDynamicColor = ref
-        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+    final enableDynamicColor = ref.watch(enableDynamicColoringProvider);
 
     final colors = ref.watch(settingsProvider.select((value) => value.colors));
 
