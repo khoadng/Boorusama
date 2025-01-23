@@ -19,6 +19,7 @@ import '../cloudflare_challenge_interceptor.dart';
 import '../http_utils.dart';
 import '../network_protocol.dart';
 import 'dio_ext.dart';
+import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
 
@@ -83,6 +84,8 @@ Dio newGenericDio({
       ),
     );
   }
+
+  dio.interceptors.add(ImageRequestDeduplicateInterceptor());
 
   if (logger != null) {
     dio.interceptors.add(
