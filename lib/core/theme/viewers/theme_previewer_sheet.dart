@@ -43,6 +43,7 @@ class ThemePreviewerSheet extends ConsumerWidget {
               // Prevent notification from being propagated to the parent to avoid conflicts with the content scroll
               onNotification: (_) => true,
               child: CustomScrollView(
+                physics: const ClampingScrollPhysics(),
                 controller: scrollController,
                 slivers: [
                   if (!context.isLargeScreen)
@@ -87,6 +88,9 @@ class ThemePreviewerSheet extends ConsumerWidget {
                     // Force MaterialScrollBehavior to make sure overscroll effect is enabled
                     behavior: const MaterialScrollBehavior(),
                     child: CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: ClampingScrollPhysics(),
+                      ),
                       slivers: [
                         SliverList.list(
                           children: [
