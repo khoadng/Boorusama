@@ -27,15 +27,9 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
     this.colorBlendMode,
     this.fit,
     this.alignment = Alignment.center,
-    this.repeat = ImageRepeat.noRepeat,
-    this.centerSlice,
-    this.matchTextDirection = false,
-    this.invertColors = false,
     this.filterQuality = FilterQuality.low,
-    this.sourceRect,
     this.isAntiAlias = false,
     this.debugImageLabel,
-    this.layoutInsets = EdgeInsets.zero,
   });
 
   /// The image to display.
@@ -120,55 +114,6 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
   ///    relative to text direction.
   final AlignmentGeometry alignment;
 
-  /// How to paint any portions of the layout bounds not covered by the image.
-  final ImageRepeat repeat;
-
-  /// The center slice for a nine-patch image.
-  ///
-  /// The region of the image inside the center slice will be stretched both
-  /// horizontally and vertically to fit the image into its destination. The
-  /// region of the image above and below the center slice will be stretched
-  /// only horizontally and the region of the image to the left and right of
-  /// the center slice will be stretched only vertically.
-  final Rect? centerSlice;
-
-  /// Whether to paint the image in the direction of the [TextDirection].
-  ///
-  /// If this is true, then in [TextDirection.ltr] contexts, the image will be
-  /// drawn with its origin in the top left (the "normal" painting direction for
-  /// images); and in [TextDirection.rtl] contexts, the image will be drawn with
-  /// a scaling factor of -1 in the horizontal direction so that the origin is
-  /// in the top right.
-  ///
-  /// This is occasionally used with images in right-to-left environments, for
-  /// images that were designed for left-to-right locales. Be careful, when
-  /// using this, to not flip images with integral shadows, text, or other
-  /// effects that will look incorrect when flipped.
-  ///
-  /// If this is true, there must be an ambient [Directionality] widget in
-  /// scope.
-  final bool matchTextDirection;
-
-  /// Whether the colors of the image are inverted when drawn.
-  ///
-  /// inverting the colors of an image applies a new color filter to the paint.
-  /// If there is another specified color filter, the invert will be applied
-  /// after it. This is primarily used for implementing smart invert on iOS.
-  ///
-  /// See also:
-  ///
-  ///  * [Paint.invertColors], for the dart:ui implementation.
-  final bool invertColors;
-
-  ///input Rect, you can use this to crop image.
-  ///it work when centerSlice==null
-  final Rect? sourceRect;
-
-  /// Insets to apply before laying out the image.
-  ///
-  /// The image will still be painted in the full area.
-  final EdgeInsets layoutInsets;
-
   /// Whether to paint the image with anti-aliasing.
   ///
   /// Anti-aliasing alleviates the sawtooth artifact when the image is rotated.
@@ -176,8 +121,6 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
 
   @override
   ExtendedRenderImage createRenderObject(BuildContext context) {
-    assert((!matchTextDirection && alignment is Alignment) ||
-        debugCheckHasDirectionality(context));
     assert(
       image?.debugGetOpenHandleStackTraces()?.isNotEmpty ?? true,
       'Creator of a RawImage disposed of the image when the RawImage still '
@@ -194,17 +137,8 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
       colorBlendMode: colorBlendMode,
       fit: fit,
       alignment: alignment,
-      repeat: repeat,
-      centerSlice: centerSlice,
-      matchTextDirection: matchTextDirection,
-      textDirection: matchTextDirection || alignment is! Alignment
-          ? Directionality.of(context)
-          : null,
-      invertColors: invertColors,
       isAntiAlias: isAntiAlias,
       filterQuality: filterQuality,
-      sourceRect: sourceRect,
-      layoutInsets: layoutInsets,
     );
   }
 
@@ -226,17 +160,8 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
       ..colorBlendMode = colorBlendMode
       ..fit = fit
       ..alignment = alignment
-      ..repeat = repeat
-      ..centerSlice = centerSlice
-      ..matchTextDirection = matchTextDirection
-      ..textDirection = matchTextDirection || alignment is! Alignment
-          ? Directionality.of(context)
-          : null
-      ..invertColors = invertColors
       ..isAntiAlias = isAntiAlias
-      ..filterQuality = filterQuality
-      ..layoutInsets = layoutInsets
-      ..sourceRect = sourceRect;
+      ..filterQuality = filterQuality;
   }
 
   @override
@@ -261,15 +186,6 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
     properties.add(DiagnosticsProperty<AlignmentGeometry>(
         'alignment', alignment,
         defaultValue: null));
-    properties.add(EnumProperty<ImageRepeat>('repeat', repeat,
-        defaultValue: ImageRepeat.noRepeat));
-    properties.add(DiagnosticsProperty<Rect>('centerSlice', centerSlice,
-        defaultValue: null));
-    properties.add(FlagProperty('matchTextDirection',
-        value: matchTextDirection, ifTrue: 'match text direction'));
-    properties.add(DiagnosticsProperty<bool>('invertColors', invertColors));
     properties.add(EnumProperty<FilterQuality>('filterQuality', filterQuality));
-    properties
-        .add(DiagnosticsProperty<EdgeInsets>('layoutInsets', layoutInsets));
   }
 }

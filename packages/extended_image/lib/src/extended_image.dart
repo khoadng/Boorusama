@@ -16,22 +16,15 @@ const kDefaultImageCacheDuration = Duration(days: 2);
 
 class ExtendedImageController extends ChangeNotifier {
   ExtendedImageController(
-    this.initialLoadState, {
-    this.initialInvertColors = false,
-  });
+    this.initialLoadState,
+  );
 
   final LoadState initialLoadState;
-  final bool initialInvertColors;
   late final loadState = ValueNotifier(initialLoadState);
-  late final invertColors = ValueNotifier(initialInvertColors);
   late final imageInfo = ValueNotifier<ImageInfo?>(null);
 
   void changeLoadState(LoadState state) {
     loadState.value = state;
-  }
-
-  void changeInvertColors(bool invert) {
-    invertColors.value = invert;
   }
 
   void clearImage() {
@@ -65,7 +58,6 @@ class ExtendedImageController extends ChangeNotifier {
   void dispose() {
     clearImage();
     loadState.dispose();
-    invertColors.dispose();
 
     super.dispose();
   }
@@ -82,24 +74,15 @@ class ExtendedImage extends StatefulWidget {
     this.width,
     this.height,
     BoxConstraints? constraints,
-    this.color,
-    this.opacity,
-    this.colorBlendMode,
     this.fit,
     this.alignment = Alignment.center,
-    this.repeat = ImageRepeat.noRepeat,
-    this.centerSlice,
-    this.matchTextDirection = false,
     this.gaplessPlayback = false,
-    this.filterQuality = FilterQuality.low,
     this.shape,
     this.borderRadius,
     this.clipBehavior = Clip.antiAlias,
     this.clearMemoryCacheIfFailed = true,
     this.clearMemoryCacheWhenDispose = false,
     this.extendedImageGestureKey,
-    this.isAntiAlias = false,
-    this.layoutInsets = EdgeInsets.zero,
     this.controller,
     this.placeholderWidget,
     this.errorWidget,
@@ -116,16 +99,9 @@ class ExtendedImage extends StatefulWidget {
     this.excludeFromSemantics = false,
     this.width,
     this.height,
-    this.color,
-    this.opacity,
-    this.colorBlendMode,
     this.fit,
     this.alignment = Alignment.center,
-    this.repeat = ImageRepeat.noRepeat,
-    this.centerSlice,
-    this.matchTextDirection = false,
     this.gaplessPlayback = false,
-    this.filterQuality = FilterQuality.low,
     this.shape,
     this.borderRadius,
     this.clipBehavior = Clip.antiAlias,
@@ -142,7 +118,6 @@ class ExtendedImage extends StatefulWidget {
     this.extendedImageGestureKey,
     int? cacheWidth,
     int? cacheHeight,
-    this.isAntiAlias = false,
     String? cacheKey,
     bool printError = true,
     double? compressionRatio,
@@ -150,7 +125,6 @@ class ExtendedImage extends StatefulWidget {
     bool cacheRawData = false,
     String? imageCacheName,
     Duration? cacheMaxAge,
-    this.layoutInsets = EdgeInsets.zero,
     required Dio dio,
     this.controller,
     this.placeholderWidget,
@@ -250,40 +224,6 @@ class ExtendedImage extends StatefulWidget {
 
   final BoxConstraints? constraints;
 
-  /// If non-null, this color is blended with each image pixel using [colorBlendMode].
-  final Color? color;
-
-  /// If non-null, the value from the [Animation] is multiplied with the opacity
-  /// of each image pixel before painting onto the canvas.
-  ///
-  /// This is more efficient than using [FadeTransition] to change the opacity
-  /// of an image, since this avoids creating a new composited layer. Composited
-  /// layers may double memory usage as the image is painted onto an offscreen
-  /// render target.
-  ///
-  /// See also:
-  ///
-  ///  * [AlwaysStoppedAnimation], which allows you to create an [Animation]
-  ///    from a single opacity value.
-  final Animation<double>? opacity;
-
-  /// Used to set the [FilterQuality] of the image.
-  ///
-  /// Use the [FilterQuality.low] quality setting to scale the image with
-  /// bilinear interpolation, or the [FilterQuality.none] which corresponds
-  /// to nearest-neighbor.
-  final FilterQuality filterQuality;
-
-  /// Used to combine [color] with this image.
-  ///
-  /// The default is [BlendMode.srcIn]. In terms of the blend mode, [color] is
-  /// the source and this image is the destination.
-  ///
-  /// See also:
-  ///
-  ///  * [BlendMode], which includes an illustration of the effect of each blend mode.
-  final BlendMode? colorBlendMode;
-
   /// How to inscribe the image into the space allocated during layout.
   ///
   /// The default varies based on the other fields. See the discussion at
@@ -316,35 +256,6 @@ class ExtendedImage extends StatefulWidget {
   ///  * [AlignmentDirectional], like [Alignment] for specifying alignments
   ///    relative to text direction.
   final AlignmentGeometry alignment;
-
-  /// How to paint any portions of the layout bounds not covered by the image.
-  final ImageRepeat repeat;
-
-  /// The center slice for a nine-patch image.
-  ///
-  /// The region of the image inside the center slice will be stretched both
-  /// horizontally and vertically to fit the image into its destination. The
-  /// region of the image above and below the center slice will be stretched
-  /// only horizontally and the region of the image to the left and right of
-  /// the center slice will be stretched only vertically.
-  final Rect? centerSlice;
-
-  /// Whether to paint the image in the direction of the [TextDirection].
-  ///
-  /// If this is true, then in [TextDirection.ltr] contexts, the image will be
-  /// drawn with its origin in the top left (the 'normal' painting direction for
-  /// images); and in [TextDirection.rtl] contexts, the image will be drawn with
-  /// a scaling factor of -1 in the horizontal direction so that the origin is
-  /// in the top right.
-  ///
-  /// This is occasionally used with images in right-to-left environments, for
-  /// images that were designed for left-to-right locales. Be careful, when
-  /// using this, to not flip images with integral shadows, text, or other
-  /// effects that will look incorrect when flipped.
-  ///
-  /// If this is true, there must be an ambient [Directionality] widget in
-  /// scope.
-  final bool matchTextDirection;
 
   /// Whether to continue showing the old image (true), or briefly show nothing
   /// (false), when the image provider changes. The default value is false.
@@ -388,16 +299,6 @@ class ExtendedImage extends StatefulWidget {
   /// application.
   final bool excludeFromSemantics;
 
-  /// Whether to paint the image with anti-aliasing.
-  ///
-  /// Anti-aliasing alleviates the sawtooth artifact when the image is rotated.
-  final bool isAntiAlias;
-
-  /// Insets to apply before laying out the image.
-  ///
-  /// The image will still be painted in the full area.
-  final EdgeInsets layoutInsets;
-
   final ExtendedImageController? controller;
 
   final Widget? placeholderWidget;
@@ -411,28 +312,14 @@ class ExtendedImage extends StatefulWidget {
     properties.add(DiagnosticsProperty<ImageProvider>('image', image));
     properties.add(DoubleProperty('width', width, defaultValue: null));
     properties.add(DoubleProperty('height', height, defaultValue: null));
-    properties.add(ColorProperty('color', color, defaultValue: null));
-    properties.add(DiagnosticsProperty<Animation<double>?>('opacity', opacity,
-        defaultValue: null));
-    properties.add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode,
-        defaultValue: null));
     properties.add(EnumProperty<BoxFit>('fit', fit, defaultValue: null));
     properties.add(DiagnosticsProperty<AlignmentGeometry>(
         'alignment', alignment,
         defaultValue: null));
-    properties.add(EnumProperty<ImageRepeat>('repeat', repeat,
-        defaultValue: ImageRepeat.noRepeat));
-    properties.add(DiagnosticsProperty<Rect>('centerSlice', centerSlice,
-        defaultValue: null));
-    properties.add(FlagProperty('matchTextDirection',
-        value: matchTextDirection, ifTrue: 'match text direction'));
     properties.add(
         StringProperty('semanticLabel', semanticLabel, defaultValue: null));
     properties.add(DiagnosticsProperty<bool>(
         'this.excludeFromSemantics', excludeFromSemantics));
-    properties.add(EnumProperty<FilterQuality>('filterQuality', filterQuality));
-    properties
-        .add(DiagnosticsProperty<EdgeInsets>('layoutInsets', layoutInsets));
   }
 }
 
@@ -512,14 +399,7 @@ class _ExtendedImageState extends State<ExtendedImage>
   }
 
   @override
-  void didChangeAccessibilityFeatures() {
-    super.didChangeAccessibilityFeatures();
-    _updateInvertColors();
-  }
-
-  @override
   void didChangeDependencies() {
-    _updateInvertColors();
     _resolveImage();
 
     if (TickerMode.of(context)) {
@@ -588,32 +468,19 @@ class _ExtendedImageState extends State<ExtendedImage>
 
   Widget _buildExtendedRawImage() {
     return ValueListenableBuilder(
-      valueListenable: _controller.invertColors,
-      builder: (_, invertColors, __) => ValueListenableBuilder(
-        valueListenable: _controller.imageInfo,
-        builder: (_, imageInfo, __) => ExtendedRawImage(
-          // Do not clone the image, because RawImage is a stateless wrapper.
-          // The image will be disposed by this state object when it is not needed
-          // anymore, such as when it is unmounted or when the image stream pushes
-          // a new image.
-          image: imageInfo?.image,
-          debugImageLabel: imageInfo?.debugLabel,
-          width: widget.width,
-          height: widget.height,
-          scale: imageInfo?.scale ?? 1.0,
-          color: widget.color,
-          opacity: widget.opacity,
-          colorBlendMode: widget.colorBlendMode,
-          fit: widget.fit,
-          alignment: widget.alignment,
-          repeat: widget.repeat,
-          centerSlice: widget.centerSlice,
-          matchTextDirection: widget.matchTextDirection,
-          invertColors: invertColors,
-          isAntiAlias: widget.isAntiAlias,
-          filterQuality: widget.filterQuality,
-          layoutInsets: widget.layoutInsets,
-        ),
+      valueListenable: _controller.imageInfo,
+      builder: (_, imageInfo, __) => ExtendedRawImage(
+        // Do not clone the image, because RawImage is a stateless wrapper.
+        // The image will be disposed by this state object when it is not needed
+        // anymore, such as when it is unmounted or when the image stream pushes
+        // a new image.
+        image: imageInfo?.image,
+        debugImageLabel: imageInfo?.debugLabel,
+        width: widget.width,
+        height: widget.height,
+        scale: imageInfo?.scale ?? 1.0,
+        fit: widget.fit,
+        alignment: widget.alignment,
       ),
     );
   }
@@ -701,12 +568,6 @@ class _ExtendedImageState extends State<ExtendedImage>
     }
     _imageStream!.removeListener(_getListener());
     _isListeningToStream = false;
-  }
-
-  void _updateInvertColors() {
-    final invertColors = MediaQuery.maybeInvertColorsOf(context) ??
-        SemanticsBinding.instance.accessibilityFeatures.invertColors;
-    _controller.changeInvertColors(invertColors);
   }
 
   void _updateSourceStream(ImageStream newStream, {bool rebuild = false}) {
