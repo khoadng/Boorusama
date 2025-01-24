@@ -14,39 +14,17 @@ import '../../../../premiums/routes.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../providers/details_layout_provider.dart';
-import '../types/custom_details.dart';
+import '../routes/routes.dart';
 import 'available_widget_selector_sheet.dart';
 
-class DetailsLayoutManagerPage extends ConsumerStatefulWidget {
+class DetailsLayoutManagerPage extends StatelessWidget {
   const DetailsLayoutManagerPage({
-    required this.params,
-    required this.onDone,
     super.key,
   });
 
-  final DetailsLayoutManagerParams params;
-  final void Function(List<CustomDetailsPartKey> parts) onDone;
-
-  @override
-  ConsumerState<DetailsLayoutManagerPage> createState() =>
-      _DetailsLayoutManagerPageState();
-}
-
-class _DetailsLayoutManagerPageState
-    extends ConsumerState<DetailsLayoutManagerPage> {
-  final ScrollController controller = ScrollController();
-
-  @override
-  void dispose() {
-    controller.dispose();
-
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final hasPremium = ref.watch(hasPremiumProvider);
-    final notifier = ref.watch(detailsLayoutProvider(widget.params).notifier);
+    final params = InheritedDetailsLayoutManagerParams.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -59,22 +37,29 @@ class _DetailsLayoutManagerPageState
                 context: context,
                 builder: (context) {
                   return AvailableWidgetSelectorSheet(
-                    params: widget.params,
+                    params: params,
                     controller: ModalScrollController.of(context),
                   );
                 },
               );
             },
           ),
-          BooruPopupMenuButton(
-            onSelected: (value) {
-              switch (value) {
-                case 'reset_layout':
-                  notifier.resetToDefault();
-              }
-            },
-            itemBuilder: const {
-              'reset_layout': Text('Reset to default'),
+          Consumer(
+            builder: (_, ref, __) {
+              final notifier =
+                  ref.watch(detailsLayoutProvider(params).notifier);
+
+              return BooruPopupMenuButton(
+                onSelected: (value) {
+                  switch (value) {
+                    case 'reset_layout':
+                      notifier.resetToDefault();
+                  }
+                },
+                itemBuilder: const {
+                  'reset_layout': Text('Reset to default'),
+                },
+              );
             },
           ),
         ],
@@ -89,32 +74,38 @@ class _DetailsLayoutManagerPageState
                 child: Column(
                   children: [
                     _Header(
-                      params: widget.params,
-                      onDone: widget.onDone,
+                      params: params,
                     ),
-                    _List(controller: controller, params: widget.params),
+                    _List(params: params),
                   ],
                 ),
               ),
             ),
-            if (!hasPremium)
-              SafeArea(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
-                  ),
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(0, 48),
-                    ),
-                    onPressed: () {
-                      goToPremiumPage(context);
-                    },
-                    child: const Text('Upgrade to save'),
-                  ),
-                ),
-              ),
+            Consumer(
+              builder: (_, ref, __) {
+                final hasPremium = ref.watch(hasPremiumProvider);
+
+                return !hasPremium
+                    ? SafeArea(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size(0, 48),
+                            ),
+                            onPressed: () {
+                              goToPremiumPage(context);
+                            },
+                            child: const Text('Upgrade to save'),
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink();
+              },
+            ),
           ],
         ),
       ),
@@ -124,11 +115,9 @@ class _DetailsLayoutManagerPageState
 
 class _List extends ConsumerWidget {
   const _List({
-    required this.controller,
     required this.params,
   });
 
-  final ScrollController controller;
   final DetailsLayoutManagerParams params;
 
   @override
@@ -140,7 +129,6 @@ class _List extends ConsumerWidget {
     );
 
     return ReorderableColumn(
-      scrollController: controller,
       onReorder: (oldIndex, newIndex) {
         notifier.reorder(oldIndex, newIndex);
       },
@@ -197,42 +185,52 @@ class _List extends ConsumerWidget {
   }
 }
 
-class _Header extends ConsumerWidget {
+class _Header extends StatelessWidget {
   const _Header({
     required this.params,
-    required this.onDone,
   });
 
   final DetailsLayoutManagerParams params;
-  final void Function(List<CustomDetailsPartKey> parts) onDone;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedParts = ref.watch(
-      detailsLayoutProvider(params).select((value) => value.selectedParts),
-    );
-    final availableParts = ref.watch(
-      detailsLayoutProvider(params).select((value) => value.availableParts),
-    );
-
-    final hasPremium = ref.watch(hasPremiumProvider);
-
+  Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        '${selectedParts.length}/${availableParts.length} selected',
-        style: Theme.of(context).textTheme.titleLarge,
+      title: Consumer(
+        builder: (_, ref, __) {
+          final (selected, available) = ref.watch(
+            detailsLayoutProvider(params)
+                .select((value) => value.selectedPartsCount),
+          );
+
+          return Text(
+            '$selected/$available selected',
+            style: Theme.of(context).textTheme.titleLarge,
+          );
+        },
       ),
-      trailing: hasPremium
-          ? FilledButton(
-              onPressed: selectedParts.isNotEmpty
-                  ? () {
-                      onDone(convertDetailsParts(selectedParts.toList()));
-                      Navigator.of(context).pop();
-                    }
-                  : null,
-              child: const Text('Apply'),
-            )
-          : null,
+      trailing: Consumer(
+        builder: (_, ref, __) {
+          final hasPremium = ref.watch(hasPremiumProvider);
+
+          final canApply = ref.watch(
+            detailsLayoutProvider(params).select((value) => value.canApply),
+          );
+
+          final notifier = ref.watch(detailsLayoutProvider(params).notifier);
+
+          return hasPremium
+              ? FilledButton(
+                  onPressed: canApply
+                      ? () {
+                          notifier.save();
+                          Navigator.of(context).pop();
+                        }
+                      : null,
+                  child: const Text('Apply'),
+                )
+              : const SizedBox.shrink();
+        },
+      ),
     );
   }
 }

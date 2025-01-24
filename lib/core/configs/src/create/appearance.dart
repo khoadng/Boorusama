@@ -11,7 +11,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../home/custom_home.dart';
-import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_manager/widgets.dart';
 import '../../../premiums/premiums.dart';
 import '../../../theme.dart';
@@ -123,15 +122,8 @@ class _DetailsConfigPage extends ConsumerWidget {
         ) ??
         const LayoutConfigs.undefined();
 
-    final details =
-        layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
-    final previewDetails = layout.previewDetails ??
-        convertDetailsParts(uiBuilder.preview.keys.toList());
-
     return DetailsConfigPage(
       layout: layout,
-      details: details,
-      previewDetails: previewDetails,
       uiBuilder: uiBuilder,
       onLayoutUpdated: (layout) {
         ref.editNotifier.updateLayout(layout);

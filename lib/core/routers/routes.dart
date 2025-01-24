@@ -16,6 +16,7 @@ import '../configs/routes.dart';
 import '../downloads/downloader.dart';
 import '../downloads/routes/routes.dart';
 import '../posts/details/routes.dart';
+import '../posts/details_manager/routes.dart';
 import '../posts/favorites/routes.dart';
 import '../posts/post/routes.dart';
 import '../premiums/routes.dart';
@@ -82,6 +83,7 @@ class Routes {
           favoriteTags(),
           originalImageRoutes,
           premiumRoutes,
+          detailsManagerRoutes,
         ],
       );
 

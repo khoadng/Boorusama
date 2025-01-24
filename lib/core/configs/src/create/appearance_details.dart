@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../boorus/engine/providers.dart';
-import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_manager/widgets.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
@@ -21,13 +20,8 @@ class QuickEditDetailsConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layout = ref.watchLayoutConfigs ?? const LayoutConfigs.undefined();
-
     final uiBuilder =
         ref.watchBooruBuilder(ref.watchConfigAuth)?.postDetailsUIBuilder;
-    final details = layout.details ??
-        convertDetailsParts(uiBuilder?.full.keys.toList() ?? []);
-    final previewDetails = layout.previewDetails ??
-        convertDetailsParts(uiBuilder?.preview.keys.toList() ?? []);
 
     if (uiBuilder == null) {
       return Scaffold(
@@ -47,8 +41,6 @@ class QuickEditDetailsConfigPage extends ConsumerWidget {
 
     return DetailsConfigPage(
       layout: layout,
-      details: details,
-      previewDetails: previewDetails,
       uiBuilder: uiBuilder,
       onLayoutUpdated: (layout) {
         notifier.update(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../boorus/engine/engine.dart';
 import '../../../../configs/config.dart';
 import '../../../../widgets/widgets.dart';
+import '../providers/details_layout_provider.dart';
 import '../routes/route_utils.dart';
 import '../types/custom_details.dart';
 
@@ -12,20 +13,21 @@ class DetailsConfigPage extends StatelessWidget {
   const DetailsConfigPage({
     required this.uiBuilder,
     required this.layout,
-    required this.details,
-    required this.previewDetails,
     required this.onLayoutUpdated,
     super.key,
   });
 
   final LayoutConfigs layout;
-  final List<CustomDetailsPartKey> details;
-  final List<CustomDetailsPartKey> previewDetails;
   final PostDetailsUIBuilder uiBuilder;
   final void Function(LayoutConfigs layout) onLayoutUpdated;
 
   @override
   Widget build(BuildContext context) {
+    final details =
+        layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
+    final previewDetails = layout.previewDetails ??
+        convertDetailsParts(uiBuilder.preview.keys.toList());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Widgets'),
@@ -56,16 +58,18 @@ class DetailsConfigPage extends StatelessWidget {
                   child: const Text('Customize'),
                   onPressed: () => goToDetailsLayoutManagerPage(
                     context,
-                    details: previewDetails,
-                    availableParts: uiBuilder.buildablePreviewParts.toSet(),
-                    defaultParts: uiBuilder.preview.keys.toSet(),
-                    onDone: (parts) {
-                      onLayoutUpdated(
-                        layout.copyWith(
-                          previewDetails: () => parts,
-                        ),
-                      );
-                    },
+                    params: DetailsLayoutManagerParams(
+                      details: previewDetails,
+                      availableParts: uiBuilder.buildablePreviewParts.toSet(),
+                      defaultParts: uiBuilder.preview.keys.toSet(),
+                      onUpdate: (parts) {
+                        onLayoutUpdated(
+                          layout.copyWith(
+                            previewDetails: () => parts,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -108,16 +112,18 @@ class DetailsConfigPage extends StatelessWidget {
                   child: const Text('Customize'),
                   onPressed: () => goToDetailsLayoutManagerPage(
                     context,
-                    details: details,
-                    availableParts: uiBuilder.full.keys.toSet(),
-                    defaultParts: uiBuilder.full.keys.toSet(),
-                    onDone: (parts) {
-                      onLayoutUpdated(
-                        layout.copyWith(
-                          details: () => parts,
-                        ),
-                      );
-                    },
+                    params: DetailsLayoutManagerParams(
+                      details: details,
+                      availableParts: uiBuilder.full.keys.toSet(),
+                      defaultParts: uiBuilder.full.keys.toSet(),
+                      onUpdate: (parts) {
+                        onLayoutUpdated(
+                          layout.copyWith(
+                            details: () => parts,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
