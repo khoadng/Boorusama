@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../router.dart';
 import 'booru_search_bar.dart';
 
-const kSearchAppBarWidth = 400.0;
+const kSearchAppBarWidth = 450.0;
 
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({

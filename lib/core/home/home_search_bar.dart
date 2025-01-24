@@ -18,6 +18,7 @@ import '../foundation/display.dart';
 import '../foundation/url_launcher.dart';
 import '../search/histories/providers.dart';
 import '../search/search/routes.dart';
+import '../search/search/src/widgets/search_app_bar.dart';
 import '../search/search/widgets.dart';
 import '../search/selected_tags/providers.dart';
 import '../tags/configs/providers.dart';
@@ -271,41 +272,43 @@ class _SliverHomeSearchBarState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (context.isLargeScreen) {
       return MediaQuery.sizeOf(context).height >= 550
-          ? _buildPinned(context)
+          ? SliverPinnedHeader(
+              child: ColoredBox(
+                color: colorScheme.surface,
+                child: _buildDesktop(),
+              ),
+            )
           : SliverToBoxAdapter(
               child: _buildDesktop(),
             );
     } else {
       return SliverAppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: LimitedBox(
-                maxWidth: 500,
-                child: HomeSearchBar(),
+        title: LayoutBuilder(
+          builder: (context, constraints) => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: kSearchAppBarWidth,
+                  ),
+                  child: const HomeSearchBar(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         floating: true,
         snap: true,
         automaticallyImplyLeading: false,
       );
     }
-  }
-
-  Widget _buildPinned(BuildContext context) {
-    return SliverPinnedHeader(
-      child: ColoredBox(
-        color: Theme.of(context).colorScheme.surface,
-        child: _buildDesktop(),
-      ),
-    );
   }
 
   Widget _buildDesktop() {
