@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -18,6 +19,7 @@ import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../settings/providers.dart';
 import '../../../../tags/configs/providers.dart';
+import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
@@ -58,7 +60,6 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final List<Widget> Function(
     BuildContext context,
-    ValueNotifier<String> selectedTagString,
     PostGridController<T> postController,
   )? extraHeaders;
 
@@ -71,8 +72,8 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 
-  final Widget? metatags;
-  final Widget? trending;
+  final Widget? Function(BuildContext)? metatags;
+  final Widget? Function(BuildContext)? trending;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -81,48 +82,44 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
-  var selectedTagString = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
     builder: ref.read(currentBooruBuilderProvider),
     tagInfo: ref.read(tagInfoProvider),
   );
   final _scrollController = AutoScrollController();
   final _didSearchOnce = ValueNotifier(false);
-  late final textController = RichTextController(
-    patternMatchMap: widget.queryPattern ??
-        {
-          RegExp(''): const TextStyle(color: Colors.white),
-        },
-    onMatch: (match) {},
-  );
-  final focus = FocusNode();
 
-  final searchState = ValueNotifier(SearchState.initial);
-  late final allowSearch = ValueNotifier(false);
-
-  late final searchController = SearchPageController(
-    textEditingController: textController,
-    searchHistory: ref.read(searchHistoryProvider.notifier),
-    selectedTagController: selectedTagController,
-    suggestions:
-        ref.read(suggestionsNotifierProvider(ref.readConfigAuth).notifier),
-    focus: focus,
-    searchState: searchState,
-    allowSearch: allowSearch,
-  );
+  final CompositeSubscription _subscriptions = CompositeSubscription();
+  late final SearchPageController searchController;
 
   @override
   void initState() {
     super.initState();
 
+    searchController = SearchPageController(
+      queryPattern: widget.queryPattern,
+      searchHistory: ref.read(searchHistoryProvider.notifier),
+      selectedTagController: selectedTagController,
+      suggestions:
+          ref.read(suggestionsNotifierProvider(ref.readConfigAuth).notifier),
+    );
+
     if (widget.initialQuery != null) {
-      selectedTagString.value = widget.initialQuery!;
+      searchController.selectedTagString.value = widget.initialQuery!;
       selectedTagController.addTag(widget.initialQuery!);
       _didSearchOnce.value = true;
       searchController.skipToResultWithTag(widget.initialQuery!);
     }
 
-    selectedTagString.addListener(_onTagChanged);
+    searchController.textEditingController
+        .textAsStream()
+        .pairwise()
+        .listen((pair) {
+      searchController.onQueryChanged(pair.first, pair.last);
+    }).addTo(_subscriptions);
+
+    selectedTagController.addListener(_onSelectedTagChanged);
+    searchController.selectedTagString.addListener(_onTagChanged);
   }
 
   void _onTagChanged() {
@@ -133,15 +130,22 @@ class _SearchPageScaffoldState<T extends Post>
     }
   }
 
+  void _onSelectedTagChanged() {
+    searchController.allowSearch.value =
+        selectedTagController.rawTags.isNotEmpty;
+  }
+
   @override
   void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-    selectedTagString.dispose();
-    textController.dispose();
-    searchController.dispose();
+    selectedTagController.removeListener(_onSelectedTagChanged);
+    searchController.selectedTagString.removeListener(_onTagChanged);
 
-    focus.dispose();
+    _scrollController.dispose();
+    _subscriptions.dispose();
+    searchController.dispose();
+    selectedTagController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -152,7 +156,7 @@ class _SearchPageScaffoldState<T extends Post>
         child: Stack(
           children: [
             ValueListenableBuilder(
-              valueListenable: searchState,
+              valueListenable: searchController.searchState,
               builder: (_, state, child) => Offstage(
                 offstage: state != SearchState.initial,
                 child: child,
@@ -164,7 +168,7 @@ class _SearchPageScaffoldState<T extends Post>
                   void search() {
                     _didSearchOnce.value = true;
                     searchController.search();
-                    selectedTagString.value =
+                    searchController.selectedTagString.value =
                         selectedTagController.rawTagsString;
                   }
 
@@ -182,7 +186,7 @@ class _SearchPageScaffoldState<T extends Post>
               ),
             ),
             ValueListenableBuilder(
-              valueListenable: searchState,
+              valueListenable: searchController.searchState,
               builder: (_, state, child) => state == SearchState.suggestions
                   ? child!
                   : const SizedBox.shrink(),
@@ -220,9 +224,9 @@ class _SearchPageScaffoldState<T extends Post>
             );
 
             return SearchAppBar(
-              focusNode: focus,
+              focusNode: searchController.focus,
               autofocus: autoFocusSearchBar,
-              controller: textController,
+              controller: searchController.textEditingController,
               leading: (parentRoute?.impliesAppBarDismissal ?? false)
                   ? const SearchAppBarBackButton()
                   : null,
@@ -254,8 +258,8 @@ class _SearchPageScaffoldState<T extends Post>
                 value,
                 isRaw: true,
               ),
-              metatags: widget.metatags,
-              trending: widget.trending,
+              metatags: widget.metatags?.call(context),
+              trending: widget.trending?.call(context),
             ),
           ),
         ],
@@ -289,11 +293,12 @@ class _SearchPageScaffoldState<T extends Post>
             _didSearchOnce.value = true;
             searchController.search();
             controller.refresh();
-            selectedTagString.value = selectedTagController.rawTagsString;
+            searchController.selectedTagString.value =
+                selectedTagController.rawTagsString;
           },
           searchController: searchController,
           selectedTagController: selectedTagController,
-          metatags: widget.metatags,
+          metatags: widget.metatags?.call(context),
         ),
         SliverToBoxAdapter(
           child: SelectedTagListWithData(
@@ -303,7 +308,6 @@ class _SearchPageScaffoldState<T extends Post>
         if (widget.extraHeaders != null)
           ...widget.extraHeaders!(
             context,
-            selectedTagString,
             controller,
           ),
         SliverToBoxAdapter(
@@ -311,7 +315,7 @@ class _SearchPageScaffoldState<T extends Post>
             mainAxisSize: MainAxisSize.min,
             children: [
               ValueListenableBuilder(
-                valueListenable: selectedTagString,
+                valueListenable: searchController.selectedTagString,
                 builder: (context, value, _) => ResultHeaderFromController(
                   controller: controller,
                   onRefresh: null,

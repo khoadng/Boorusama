@@ -45,8 +45,12 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: Theme.of(context).colorScheme.primary,
         ),
       },
-      trending: const _Trending(),
-      metatags: const _Metatags(),
+      trending: (context) => _Trending(
+        InheritedSearchPageController.of(context),
+      ),
+      metatags: (context) => _Metatags(
+        InheritedSearchPageController.of(context),
+      ),
       itemBuilder: (
         context,
         index,
@@ -64,11 +68,11 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
       ),
       extraHeaders: (
         context,
-        selectedTagString,
         postController,
       ) {
         final searchController = InheritedSearchPageController.of(context);
         final selectedTagController = searchController.selectedTagController;
+        final selectedTagString = searchController.selectedTagString;
 
         return [
           SliverToBoxAdapter(
@@ -113,25 +117,31 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
 }
 
 class _Trending extends StatelessWidget {
-  const _Trending();
+  const _Trending(
+    this.controller,
+  );
+
+  final SearchPageController controller;
 
   @override
   Widget build(BuildContext context) {
     return TrendingSection(
       onTagTap: (value) {
-        InheritedSearchPageController.of(context).tapTag(value);
+        controller.tapTag(value);
       },
     );
   }
 }
 
 class _Metatags extends StatelessWidget {
-  const _Metatags();
+  const _Metatags(
+    this.controller,
+  );
+
+  final SearchPageController controller;
 
   @override
   Widget build(BuildContext context) {
-    final controller = InheritedSearchPageController.of(context);
-
     return DanbooruMetatagsSection(
       onOptionTap: (value) {
         controller.tapRawMetaTag(value);

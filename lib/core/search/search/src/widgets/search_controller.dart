@@ -2,10 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:rxdart/rxdart.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../histories/history.dart';
 import '../../../histories/providers.dart';
 import '../../../queries/query.dart';
@@ -15,47 +14,28 @@ import '../../../suggestions/suggestions_notifier.dart';
 
 class SearchPageController extends ChangeNotifier {
   SearchPageController({
-    required this.textEditingController,
     required this.searchHistory,
     required this.selectedTagController,
     required this.suggestions,
-    required this.focus,
-    required this.searchState,
-    required this.allowSearch,
-  }) : super() {
-    textEditingController.textAsStream().pairwise().listen((pair) {
-      onQueryChanged(pair.first, pair.last);
-    }).addTo(_subscriptions);
+    required this.queryPattern,
+  });
 
-    selectedTagController.addListener(_onSelectedTagChanged);
-  }
-
-  final ValueNotifier<bool> allowSearch;
-
-  final ValueNotifier<SearchState> searchState;
-
-  final FocusNode focus;
+  final searchState = ValueNotifier(SearchState.initial);
+  final allowSearch = ValueNotifier(false);
+  final selectedTagString = ValueNotifier('');
+  final focus = FocusNode();
+  late final RichTextController textEditingController = RichTextController(
+    patternMatchMap: queryPattern ??
+        {
+          RegExp(''): const TextStyle(color: Colors.white),
+        },
+    onMatch: (match) {},
+  );
 
   final SuggestionsNotifier suggestions;
-
-  final TextEditingController textEditingController;
-
   final SearchHistoryNotifier searchHistory;
-
   final SelectedTagController selectedTagController;
-
-  final CompositeSubscription _subscriptions = CompositeSubscription();
-
-  @override
-  void dispose() {
-    _subscriptions.dispose();
-    selectedTagController.removeListener(_onSelectedTagChanged);
-    super.dispose();
-  }
-
-  void _onSelectedTagChanged() {
-    allowSearch.value = selectedTagController.rawTags.isNotEmpty;
-  }
+  final Map<RegExp, TextStyle>? queryPattern;
 
   void tapTag(String tag) {
     selectedTagController.addTag(
@@ -111,6 +91,16 @@ class SearchPageController extends ChangeNotifier {
 
   FilterOperator get filterOperator =>
       getFilterOperator(textEditingController.text);
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    focus.dispose();
+
+    selectedTagString.dispose();
+
+    super.dispose();
+  }
 }
 
 enum SearchState {
