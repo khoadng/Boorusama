@@ -13,6 +13,9 @@ import 'package:boorusama/core/posts/posts.dart';
 import 'package:boorusama/core/widgets/widgets.dart';
 import 'package:boorusama/foundation/theme.dart';
 import 'package:boorusama/widgets/widgets.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+import '../../../router.dart';
 
 class CurrentBooruTile extends ConsumerWidget {
   const CurrentBooruTile({
@@ -21,65 +24,107 @@ class CurrentBooruTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfig;
-    final source = PostSource.from(booruConfig.url);
-    final logo = BooruLogo.fromConfig(booruConfig);
-
     return LayoutBuilder(
-      builder: (context, constraints) => constraints.maxWidth > kMinSideBarWidth
-          ? Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 4,
-                horizontal: 6,
-              ),
-              child: Row(
-                children: [
-                  logo,
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          source.whenWeb(
-                            (source) => source.uri.host,
-                            () => booruConfig.url,
-                          ),
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        booruConfig.hasLoginDetails()
-                            ? Text(
-                                booruConfig.login ?? 'Unknown',
-                                maxLines: 1,
-                                softWrap: false,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: context.colorScheme.outline,
-                                ),
-                              )
-                            : const SizedBox.shrink(),
-                      ],
-                    ),
-                  ),
-                  if (constraints.maxWidth > 100)
-                    if (booruConfig.ratingFilter !=
-                        BooruConfigRatingFilter.none) ...[
-                      const SizedBox(width: 12),
-                      CurrentBooruRatingChip(config: booruConfig),
-                    ],
-                ],
-              ),
-            )
-          : Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: logo,
+      builder: (context, constraints) => Row(
+        mainAxisAlignment: constraints.maxWidth <= kMinSideBarWidth
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.start,
+        children: [
+          const _Logo(),
+          if (constraints.maxWidth > kMinSideBarWidth)
+            const Expanded(
+              child: _Tile(),
             ),
+          if (constraints.maxWidth > 200) const _EditConfigButton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _Logo extends ConsumerWidget {
+  const _Logo();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: BooruLogo.fromConfig(config),
+    );
+  }
+}
+
+class _Tile extends ConsumerWidget {
+  const _Tile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          PostSource.from(config.url).whenWeb(
+            (source) => source.uri.host,
+            () => config.url,
+          ),
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+        if (config.hasLoginDetails())
+          Text(
+            config.login ?? 'Unknown',
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.outline,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _EditConfigButton extends ConsumerWidget {
+  const _EditConfigButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfig;
+    final configs = ref.watch(booruConfigProvider);
+
+    final hasConfigs = configs.isNotEmpty;
+
+    if (!hasConfigs) {
+      return const SizedBox.shrink();
+    }
+
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: () => goToUpdateBooruConfigPage(
+          context,
+          config: config,
+        ),
+        child: Container(
+          margin: const EdgeInsets.all(4),
+          child: const Icon(
+            Symbols.more_vert,
+            fill: 1,
+          ),
+        ),
+      ),
     );
   }
 }
