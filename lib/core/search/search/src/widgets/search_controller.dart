@@ -6,18 +6,15 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../histories/history.dart';
-import '../../../histories/providers.dart';
 import '../../../queries/query.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
-import '../../../suggestions/suggestions_notifier.dart';
 
 class SearchPageController extends ChangeNotifier {
   SearchPageController({
-    required this.searchHistory,
     required this.selectedTagController,
-    required this.suggestions,
     required this.queryPattern,
+    this.onSearch,
   });
 
   final searchState = ValueNotifier(SearchState.initial);
@@ -32,10 +29,10 @@ class SearchPageController extends ChangeNotifier {
     onMatch: (match) {},
   );
 
-  final SuggestionsNotifier suggestions;
-  final SearchHistoryNotifier searchHistory;
   final SelectedTagController selectedTagController;
   final Map<RegExp, TextStyle>? queryPattern;
+
+  final void Function()? onSearch;
 
   void tapTag(String tag) {
     selectedTagController.addTag(
@@ -50,11 +47,11 @@ class SearchPageController extends ChangeNotifier {
     selectedTagController
       ..clear()
       ..addTag(tag);
-    searchHistory.addHistoryFromController(selectedTagController);
   }
 
   void search() {
-    searchHistory.addHistoryFromController(selectedTagController);
+    selectedTagString.value = selectedTagController.rawTagsString;
+    onSearch?.call();
   }
 
   void submit(String value) {
@@ -67,22 +64,6 @@ class SearchPageController extends ChangeNotifier {
   }
 
   void tapRawMetaTag(String tag) => textEditingController.text = '$tag:';
-
-  void onQueryChanged(String previous, String current) {
-    if (previous == current) {
-      return;
-    }
-
-    final currentState = searchState.value;
-    final nextState =
-        current.isEmpty ? SearchState.initial : SearchState.suggestions;
-
-    if (currentState != nextState) {
-      searchState.value = nextState;
-    }
-
-    suggestions.getSuggestions(current);
-  }
 
   // ignore: use_setters_to_change_properties
   void updateQuery(String query) {

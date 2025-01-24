@@ -83,13 +83,11 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
                 onAdded: (tag) {
                   selectedTagController.addTag(tag.tag);
                   postController.refresh();
-                  selectedTagString.value = selectedTagController.rawTagsString;
                   searchController.search();
                 },
                 onNegated: (tag) {
                   selectedTagController.negateTag(tag.tag);
                   postController.refresh();
-                  selectedTagString.value = selectedTagController.rawTagsString;
                   searchController.search();
                 },
               ),

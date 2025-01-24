@@ -97,11 +97,13 @@ class _SearchPageScaffoldState<T extends Post>
     super.initState();
 
     searchController = SearchPageController(
+      onSearch: () {
+        ref
+            .read(searchHistoryProvider.notifier)
+            .addHistoryFromController(selectedTagController);
+      },
       queryPattern: widget.queryPattern,
-      searchHistory: ref.read(searchHistoryProvider.notifier),
       selectedTagController: selectedTagController,
-      suggestions:
-          ref.read(suggestionsNotifierProvider(ref.readConfigAuth).notifier),
     );
 
     if (widget.initialQuery != null) {
@@ -109,13 +111,16 @@ class _SearchPageScaffoldState<T extends Post>
       selectedTagController.addTag(widget.initialQuery!);
       _didSearchOnce.value = true;
       searchController.skipToResultWithTag(widget.initialQuery!);
+      ref
+          .read(searchHistoryProvider.notifier)
+          .addHistoryFromController(selectedTagController);
     }
 
     searchController.textEditingController
         .textAsStream()
         .pairwise()
         .listen((pair) {
-      searchController.onQueryChanged(pair.first, pair.last);
+      _onQueryChanged(pair.first, pair.last);
     }).addTo(_subscriptions);
 
     selectedTagController.addListener(_onSelectedTagChanged);
@@ -128,6 +133,24 @@ class _SearchPageScaffoldState<T extends Post>
       // scroll to top when tag is added
       _scrollController.jumpTo(0);
     }
+  }
+
+  void _onQueryChanged(String previous, String current) {
+    if (previous == current) {
+      return;
+    }
+
+    final currentState = searchController.searchState.value;
+    final nextState =
+        current.isEmpty ? SearchState.initial : SearchState.suggestions;
+
+    if (currentState != nextState) {
+      searchController.searchState.value = nextState;
+    }
+
+    ref
+        .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
+        .getSuggestions(current);
   }
 
   void _onSelectedTagChanged() {
@@ -168,8 +191,6 @@ class _SearchPageScaffoldState<T extends Post>
                   void search() {
                     _didSearchOnce.value = true;
                     searchController.search();
-                    searchController.selectedTagString.value =
-                        selectedTagController.rawTagsString;
                   }
 
                   return searchOnce
@@ -293,8 +314,6 @@ class _SearchPageScaffoldState<T extends Post>
             _didSearchOnce.value = true;
             searchController.search();
             controller.refresh();
-            searchController.selectedTagString.value =
-                selectedTagController.rawTagsString;
           },
           searchController: searchController,
           selectedTagController: selectedTagController,
