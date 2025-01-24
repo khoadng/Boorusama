@@ -188,6 +188,9 @@ class _MoebooruPostDetailsPageState
       topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
         GeneralMoreActionButton(
           post: post,
+          onStartSlideshow: config.hasLoginDetails()
+              ? null
+              : () => controller.startSlideshow(),
         ),
       ],
       infoBuilder: (context, post) =>
