@@ -27,7 +27,6 @@ import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
 import 'search_button.dart';
 import 'search_controller.dart';
-import 'search_mixin.dart';
 import 'selected_tag_list_with_data.dart';
 import 'sliver_search_app_bar.dart';
 

@@ -6,12 +6,14 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import '../../../../utils/stream/text_editing_controller_utils.dart';
+import '../../../histories/history.dart';
 import '../../../histories/providers.dart';
+import '../../../queries/query.dart';
+import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../suggestions/suggestions_notifier.dart';
-import 'search_mixin.dart';
 
-class SearchPageController extends ChangeNotifier with SearchMixin {
+class SearchPageController extends ChangeNotifier {
   SearchPageController({
     required this.textEditingController,
     required this.searchHistory,
@@ -40,7 +42,6 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
 
   final SearchHistoryNotifier searchHistory;
 
-  @override
   final SelectedTagController selectedTagController;
 
   final CompositeSubscription _subscriptions = CompositeSubscription();
@@ -56,32 +57,65 @@ class SearchPageController extends ChangeNotifier with SearchMixin {
     allowSearch.value = selectedTagController.rawTags.isNotEmpty;
   }
 
-  @override
-  HistoryAdder get addHistory => searchHistory.addHistoryFromController;
+  void tapTag(String tag) {
+    selectedTagController.addTag(
+      tag,
+      operator: filterOperator,
+    );
 
-  @override
-  QueryClearer get clearQuery => () => textEditingController.clear();
+    textEditingController.clear();
+  }
 
-  @override
-  QueryGetter get getQuery => () => textEditingController.text;
+  void skipToResultWithTag(String tag) {
+    selectedTagController
+      ..clear()
+      ..addTag(tag);
+    searchHistory.addHistoryFromController(selectedTagController);
+  }
 
-  @override
-  QueryUpdater get updateQuery => (query) => textEditingController.text = query;
+  void search() {
+    searchHistory.addHistoryFromController(selectedTagController);
+  }
 
-  @override
-  SearchStateGetter get getSearchState => () => searchState.value;
+  void submit(String value) {
+    selectedTagController.addTag(value);
+    textEditingController.clear();
+  }
 
-  @override
-  SearchStateSetter get setSearchState => (state) => searchState.value = state;
+  void tapHistoryTag(SearchHistory history) {
+    selectedTagController.addTagFromSearchHistory(history);
+  }
 
-  @override
-  SuggestionFetcher get fetchSuggestions => suggestions.getSuggestions;
+  void tapRawMetaTag(String tag) => textEditingController.text = '$tag:';
 
-  @override
-  GetAllowedSearch get getAllowedSearch => () => allowSearch.value;
+  void onQueryChanged(String previous, String current) {
+    if (previous == current) {
+      return;
+    }
 
-  @override
-  SetAllowSearch get setAllowSearch => (value) => allowSearch.value = value;
+    final currentState = searchState.value;
+    final nextState =
+        current.isEmpty ? SearchState.initial : SearchState.suggestions;
+
+    if (currentState != nextState) {
+      searchState.value = nextState;
+    }
+
+    suggestions.getSuggestions(current);
+  }
+
+  // ignore: use_setters_to_change_properties
+  void updateQuery(String query) {
+    textEditingController.text = query;
+  }
+
+  FilterOperator get filterOperator =>
+      getFilterOperator(textEditingController.text);
+}
+
+enum SearchState {
+  initial,
+  suggestions,
 }
 
 class InheritedSearchPageController extends InheritedWidget {

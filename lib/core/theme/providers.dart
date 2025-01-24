@@ -15,8 +15,9 @@ final enableDynamicColoringProvider = Provider<bool>(
     final settingsValue = ref
         .watch(settingsProvider.select((value) => value.enableDynamicColoring));
 
-    final settingsColorsValue = ref.watch(settingsProvider
-        .select((value) => value.colors?.enableDynamicColoring));
+    final settingsColorsValue = ref.watch(
+      settingsProvider.select((value) => value.colors?.enableDynamicColoring),
+    );
 
     final hasPremium = ref.watch(hasPremiumProvider);
 
