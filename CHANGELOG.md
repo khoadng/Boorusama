@@ -1,9 +1,10 @@
 # 3.22.6
+- Minor scrolling/swiping tweaks.
 - Fix data loading issue on certain sites
 - Add a new experimental video player engine that has better performance for certain devices and video formats. Can be enabled in settings.
 - Attempt to bypass firewall protection for some sites.
-- Update translations.
-- Minor scrolling/swiping tweaks.
+- Update translations for Turkish, French, Chinese, Ukrainian.
+- Add new languages: Tamil and Korean.
 
 # 3.21.0
 - [Danbooru] Add an option to hide banned posts
