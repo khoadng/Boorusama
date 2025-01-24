@@ -11,6 +11,7 @@ import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
+import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';

@@ -10,6 +10,7 @@ import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/details/routes.dart';
+import '../../../posts/details_manager/types.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
@@ -175,19 +176,4 @@ class PostDetailsUIBuilder {
 
     return null;
   }
-}
-
-enum DetailsPart {
-  pool,
-  info,
-  toolbar,
-  artistInfo,
-  source,
-  tags,
-  stats,
-  fileDetails,
-  comments,
-  artistPosts,
-  relatedPosts,
-  characterList,
 }

@@ -196,7 +196,7 @@ class PreviewDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return PreviewFrame(
       padding: const EdgeInsets.symmetric(
-        vertical: 16,
+        vertical: 8,
         horizontal: 4,
       ),
       child: Scaffold(

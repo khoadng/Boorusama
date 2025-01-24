@@ -8,8 +8,9 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
+import '../../../details_manager/types.dart';
+import '../../../details_manager/widgets.dart';
 import '../../../details_pageview/widgets.dart';
-import '../../custom_details.dart';
 
 class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({

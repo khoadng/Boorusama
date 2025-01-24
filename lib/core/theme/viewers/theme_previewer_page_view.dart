@@ -100,7 +100,7 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
                       ),
                       child: Transform.scale(
                         alignment: Alignment.topCenter,
-                        scale: 0.75,
+                        scale: 0.8,
                         child: Padding(
                           padding: !context.isLargeScreen
                               ? const EdgeInsets.symmetric(

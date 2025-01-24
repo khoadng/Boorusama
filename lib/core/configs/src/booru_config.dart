@@ -9,10 +9,9 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../boorus/danbooru/danbooru.dart';
 import '../../boorus/booru/booru.dart';
-import '../../boorus/engine/engine.dart';
 import '../../foundation/platform.dart';
 import '../../home/custom_home.dart';
-import '../../posts/details/custom_details.dart';
+import '../../posts/details_manager/types.dart';
 import '../../posts/rating/rating.dart';
 import '../../proxy/proxy.dart';
 import '../../settings/settings.dart';

@@ -171,7 +171,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
   }
 }
 
-const _kOverscrollSheetSnapToMaxThreshold = -12.0;
+const _kOverscrollSheetSnapToMaxThreshold = -6.0;
 const _kOverscrollSheetSnapToMinThreshold = -6.0;
 
 class _ThemeSheetControllerListener extends StatelessWidget {

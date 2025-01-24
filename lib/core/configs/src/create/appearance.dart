@@ -11,13 +11,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../home/custom_home.dart';
-import '../../../posts/details/custom_details.dart';
+import '../../../posts/details_manager/types.dart';
+import '../../../posts/details_manager/widgets.dart';
 import '../../../premiums/premiums.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
-import 'appearance_details.dart';
 import 'appearance_theme.dart';
 import 'providers.dart';
 

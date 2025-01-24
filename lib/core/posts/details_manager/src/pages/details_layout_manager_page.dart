@@ -1,144 +1,21 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import '../../../boorus/engine/engine.dart';
-import '../../../foundation/toast.dart';
-import '../../../posts/details/custom_details.dart';
-import '../../../premiums/providers.dart';
-import '../../../premiums/routes.dart';
-import '../../../theme/app_theme.dart';
-import '../../../widgets/widgets.dart';
-
-class DetailsLayoutManagerParams extends Equatable {
-  const DetailsLayoutManagerParams({
-    required this.details,
-    required this.availableParts,
-    required this.defaultParts,
-  });
-
-  final List<CustomDetailsPartKey> details;
-  final Set<DetailsPart> availableParts;
-  final Set<DetailsPart> defaultParts;
-
-  @override
-  List<Object?> get props => [details, availableParts, defaultParts];
-}
-
-final detailsLayoutProvider = NotifierProvider.autoDispose.family<
-    DetailsLayoutNotifier, DetailsLayoutState, DetailsLayoutManagerParams>(
-  DetailsLayoutNotifier.new,
-);
-
-void goToDetailsLayoutManagerPage(
-  BuildContext context, {
-  required List<CustomDetailsPartKey> details,
-  required Set<DetailsPart> availableParts,
-  required Set<DetailsPart> defaultParts,
-  required void Function(List<CustomDetailsPartKey> parts) onDone,
-}) {
-  Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) {
-        return DetailsLayoutManagerPage(
-          params: DetailsLayoutManagerParams(
-            details: details,
-            availableParts: availableParts,
-            defaultParts: defaultParts,
-          ),
-          onDone: onDone,
-        );
-      },
-    ),
-  );
-}
-
-class DetailsLayoutState extends Equatable {
-  const DetailsLayoutState({
-    required this.details,
-    required this.availableParts,
-  });
-
-  final List<CustomDetailsPartKey> details;
-  final Set<DetailsPart> availableParts;
-
-  DetailsLayoutState copyWith({
-    List<CustomDetailsPartKey>? details,
-    Set<DetailsPart>? availableParts,
-  }) {
-    return DetailsLayoutState(
-      details: details ?? this.details,
-      availableParts: availableParts ?? this.availableParts,
-    );
-  }
-
-  @override
-  List<Object?> get props => [details, availableParts];
-}
-
-extension DetailsLayoutStateX on DetailsLayoutState {
-  List<DetailsPart> get selectableParts {
-    return availableParts.difference(selectedParts).toList();
-  }
-
-  Set<DetailsPart> get selectedParts {
-    return details.map((e) => parseDetailsPart(e.name)).nonNulls.toSet();
-  }
-}
-
-class DetailsLayoutNotifier extends AutoDisposeFamilyNotifier<
-    DetailsLayoutState, DetailsLayoutManagerParams> {
-  @override
-  DetailsLayoutState build(DetailsLayoutManagerParams arg) {
-    return DetailsLayoutState(
-      details: arg.details,
-      availableParts: arg.availableParts,
-    );
-  }
-
-  void reorder(int oldIndex, int newIndex) {
-    final newDetails = state.details.toList();
-
-    final item = newDetails.removeAt(oldIndex);
-    newDetails.insert(newIndex, item);
-
-    state = state.copyWith(
-      details: newDetails,
-    );
-  }
-
-  void remove(CustomDetailsPartKey key) {
-    final newDetails =
-        state.details.where((element) => element != key).toList();
-
-    state = state.copyWith(
-      details: newDetails,
-    );
-  }
-
-  void add(DetailsPart part) {
-    state = state.copyWith(
-      details: [
-        ...state.details,
-        convertDetailsPart(part),
-      ],
-    );
-  }
-
-  void resetToDefault() {
-    state = state.copyWith(
-      details: arg.defaultParts.map(convertDetailsPart).toList(),
-    );
-  }
-}
+import '../../../../foundation/toast.dart';
+import '../../../../premiums/providers.dart';
+import '../../../../premiums/routes.dart';
+import '../../../../theme/app_theme.dart';
+import '../../../../widgets/widgets.dart';
+import '../providers/details_layout_provider.dart';
+import '../types/custom_details.dart';
+import 'available_widget_selector_sheet.dart';
 
 class DetailsLayoutManagerPage extends ConsumerStatefulWidget {
   const DetailsLayoutManagerPage({
@@ -161,9 +38,9 @@ class _DetailsLayoutManagerPageState
 
   @override
   void dispose() {
-    super.dispose();
-
     controller.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -241,68 +118,6 @@ class _DetailsLayoutManagerPageState
           ],
         ),
       ),
-    );
-  }
-}
-
-class AvailableWidgetSelectorSheet extends ConsumerWidget {
-  const AvailableWidgetSelectorSheet({
-    required this.params,
-    required this.controller,
-    super.key,
-  });
-
-  final DetailsLayoutManagerParams params;
-  final ScrollController? controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final availableParts = ref.watch(
-      detailsLayoutProvider(params).select((value) => value.selectableParts),
-    );
-
-    final notifer = ref.watch(detailsLayoutProvider(params).notifier);
-
-    return Scaffold(
-      body: availableParts.isEmpty
-          ? const Center(
-              child: Text('No available widgets, all are selected'),
-            )
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 20,
-                    horizontal: 12,
-                  ),
-                  child: const Text(
-                    'Available widgets',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    controller: controller,
-                    children: availableParts
-                        .map(
-                          (e) => ListTile(
-                            title: Text(e.name),
-                            onTap: () {
-                              notifer.add(e);
-                              Navigator.of(context).pop(e);
-                            },
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-              ],
-            ),
     );
   }
 }

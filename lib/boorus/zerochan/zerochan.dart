@@ -20,6 +20,7 @@ import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';

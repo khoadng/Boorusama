@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
 
 // Package imports:
 import 'package:scroll_to_index/scroll_to_index.dart';
