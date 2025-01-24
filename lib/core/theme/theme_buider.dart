@@ -12,6 +12,7 @@ import '../settings/providers.dart';
 import 'app_theme.dart';
 import 'colors.dart';
 import 'dynamic_color.dart';
+import 'providers.dart';
 import 'theme_configs.dart';
 import 'theme_mode.dart';
 

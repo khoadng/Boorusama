@@ -10,6 +10,22 @@ import 'colors.dart';
 import 'theme_configs.dart';
 import 'utils.dart';
 
+final enableDynamicColoringProvider = Provider<bool>(
+  (ref) {
+    final settingsValue = ref
+        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+
+    final settingsColorsValue = ref.watch(settingsProvider
+        .select((value) => value.colors?.enableDynamicColoring));
+
+    final hasPremium = ref.watch(hasPremiumProvider);
+
+    return !hasPremium ? settingsValue : settingsColorsValue ?? settingsValue;
+  },
+  name: 'enableDynamicColoringProvider',
+  dependencies: [settingsProvider],
+);
+
 final booruChipColorsProvider = Provider<BooruChipColors>(
   (ref) {
     final customColors = ref.watch(customColorsProvider);

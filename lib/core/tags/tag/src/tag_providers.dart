@@ -9,8 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
-import '../../../settings/providers.dart';
 import '../../../theme.dart';
+import '../../../theme/providers.dart';
 import 'tag_repository.dart';
 import 'tag_repository_impl.dart';
 
