@@ -39,114 +39,110 @@ class DetailsConfigPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-                title: const Text(
-                  'Preview widgets',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                trailing: TextButton(
-                  child: const Text('Customize'),
-                  onPressed: () => goToDetailsLayoutManagerPage(
-                    context,
-                    params: DetailsLayoutManagerParams(
-                      details: previewDetails,
-                      availableParts: uiBuilder.buildablePreviewParts.toSet(),
-                      defaultParts: uiBuilder.preview.keys.toSet(),
-                      onUpdate: (parts) {
-                        onLayoutUpdated(
-                          layout.copyWith(
-                            previewDetails: () => parts,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: previewDetails
-                  .map(
-                    (part) => CompactChip(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
+            _Title(
+              title: 'Preview widgets',
+              onPressed: () => goToDetailsLayoutManagerPage(
+                context,
+                params: DetailsLayoutManagerParams(
+                  details: previewDetails,
+                  availableParts: uiBuilder.buildablePreviewParts.toSet(),
+                  defaultParts: uiBuilder.preview.keys.toSet(),
+                  onUpdate: (parts) {
+                    onLayoutUpdated(
+                      layout.copyWith(
+                        previewDetails: () => parts,
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                      label: part.name,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.surfaceContainer,
-                    ),
-                  )
-                  .toList(),
+                    );
+                  },
+                ),
+              ),
             ),
+            _WidgetList(parts: previewDetails),
             const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-                title: const Text(
-                  'Full informaton widgets',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                trailing: TextButton(
-                  child: const Text('Customize'),
-                  onPressed: () => goToDetailsLayoutManagerPage(
-                    context,
-                    params: DetailsLayoutManagerParams(
-                      details: details,
-                      availableParts: uiBuilder.full.keys.toSet(),
-                      defaultParts: uiBuilder.full.keys.toSet(),
-                      onUpdate: (parts) {
-                        onLayoutUpdated(
-                          layout.copyWith(
-                            details: () => parts,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: details
-                  .map(
-                    (part) => CompactChip(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 12,
+            _Title(
+              title: 'Full informaton widgets',
+              onPressed: () => goToDetailsLayoutManagerPage(
+                context,
+                params: DetailsLayoutManagerParams(
+                  details: details,
+                  availableParts: uiBuilder.full.keys.toSet(),
+                  defaultParts: uiBuilder.full.keys.toSet(),
+                  onUpdate: (parts) {
+                    onLayoutUpdated(
+                      layout.copyWith(
+                        details: () => parts,
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                      label: part.name,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.surfaceContainer,
-                    ),
-                  )
-                  .toList(),
+                    );
+                  },
+                ),
+              ),
             ),
+            _WidgetList(parts: details),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WidgetList extends StatelessWidget {
+  const _WidgetList({
+    required this.parts,
+  });
+
+  final List<CustomDetailsPartKey> parts;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: parts
+          .map(
+            (part) => CompactChip(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 12,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              label: part.name,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title({
+    required this.title,
+    required this.onPressed,
+  });
+
+  final String title;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+        trailing: TextButton(
+          onPressed: onPressed,
+          child: const Text('Customize'),
         ),
       ),
     );

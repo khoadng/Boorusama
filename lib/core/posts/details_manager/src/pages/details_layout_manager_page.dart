@@ -129,6 +129,16 @@ class _List extends ConsumerWidget {
     );
 
     return ReorderableColumn(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      header: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Text(
+          'Long press and drag to reorder',
+          style: TextStyle(
+            color: colorScheme.hintColor,
+          ),
+        ),
+      ),
       onReorder: (oldIndex, newIndex) {
         notifier.reorder(oldIndex, newIndex);
       },
