@@ -22,6 +22,7 @@ class TagSuggestionItems extends ConsumerWidget {
     this.dense = false,
     this.borderRadius,
     this.elevation,
+    this.emptyBuilder,
   }) : _tags = tags;
 
   // This is needed cause this one can be used outside of config scope
@@ -33,6 +34,7 @@ class TagSuggestionItems extends ConsumerWidget {
   final bool dense;
   final BorderRadiusGeometry? borderRadius;
   final double? elevation;
+  final Widget Function()? emptyBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,6 +73,8 @@ class TagSuggestionItems extends ConsumerWidget {
               },
             ),
           )
-        : const SizedBox.shrink();
+        : emptyBuilder != null
+            ? emptyBuilder!()
+            : const SizedBox.shrink();
   }
 }

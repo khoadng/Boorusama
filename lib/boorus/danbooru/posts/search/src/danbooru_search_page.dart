@@ -45,12 +45,8 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           color: Theme.of(context).colorScheme.primary,
         ),
       },
-      trending: (context) => _Trending(
-        InheritedSearchPageController.of(context),
-      ),
-      metatags: (context) => _Metatags(
-        InheritedSearchPageController.of(context),
-      ),
+      trending: (context, controller) => _Trending(controller),
+      metatags: (context, controller) => _Metatags(controller),
       itemBuilder: (
         context,
         index,

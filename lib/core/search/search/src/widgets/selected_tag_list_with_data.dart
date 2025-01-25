@@ -32,31 +32,32 @@ class SelectedTagListWithData extends ConsumerWidget {
         builder: (context, tags, child) {
           return Column(
             children: [
-              SelectedTagList(
-                extraTagsCount: tagComposer.compose([]).length,
-                onOtherTagsCountTap: () {
-                  goToUpdateBooruConfigPage(
+              if (tags.isNotEmpty)
+                SelectedTagList(
+                  extraTagsCount: tagComposer.compose([]).length,
+                  onOtherTagsCountTap: () {
+                    goToUpdateBooruConfigPage(
+                      context,
+                      config: config,
+                      initialTab: 'search',
+                    );
+                  },
+                  tags: tags,
+                  onClear: () {
+                    controller.clear();
+                  },
+                  onDelete: (tag) {
+                    controller.removeTag(tag);
+                  },
+                  onUpdate: (oldTag, newTag) {
+                    controller.updateTag(oldTag, newTag);
+                  },
+                  onBulkDownload: (tags) => goToBulkDownloadPage(
                     context,
-                    config: config,
-                    initialTab: 'search',
-                  );
-                },
-                tags: tags,
-                onClear: () {
-                  controller.clear();
-                },
-                onDelete: (tag) {
-                  controller.removeTag(tag);
-                },
-                onUpdate: (oldTag, newTag) {
-                  controller.updateTag(oldTag, newTag);
-                },
-                onBulkDownload: (tags) => goToBulkDownloadPage(
-                  context,
-                  tags.map((e) => e.toString()).toList(),
-                  ref: ref,
+                    tags.map((e) => e.toString()).toList(),
+                    ref: ref,
+                  ),
                 ),
-              ),
               if (tags.isNotEmpty) const Divider(height: 15, thickness: 1),
             ],
           );

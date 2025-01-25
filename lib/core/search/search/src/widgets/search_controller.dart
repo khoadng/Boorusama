@@ -17,7 +17,7 @@ class SearchPageController extends ChangeNotifier {
     this.onSearch,
   });
 
-  final searchState = ValueNotifier(SearchState.initial);
+  final state = ValueNotifier(SearchState.initial);
   final allowSearch = ValueNotifier(false);
   final selectedTagString = ValueNotifier('');
   final focus = FocusNode();
@@ -34,6 +34,10 @@ class SearchPageController extends ChangeNotifier {
 
   final void Function()? onSearch;
 
+  final didSearchOnce = ValueNotifier(false);
+
+  SearchState? _previousState;
+
   void tapTag(String tag) {
     selectedTagController.addTag(
       tag,
@@ -43,15 +47,37 @@ class SearchPageController extends ChangeNotifier {
     textEditingController.clear();
   }
 
+  void changeState(SearchState newState) {
+    _previousState = state.value;
+    state.value = newState;
+  }
+
   void skipToResultWithTag(String tag) {
+    selectedTagString.value = tag;
+    didSearchOnce.value = true;
     selectedTagController
       ..clear()
       ..addTag(tag);
   }
 
   void search() {
+    didSearchOnce.value = true;
+    changeState(SearchState.initial);
     selectedTagString.value = selectedTagController.rawTagsString;
     onSearch?.call();
+  }
+
+  void onQueryChanged(String query) {
+    final currentState = state.value;
+    final nextState = query.isEmpty
+        ? _previousState == SearchState.options
+            ? SearchState.options
+            : SearchState.initial
+        : SearchState.suggestions;
+
+    if (currentState != nextState) {
+      changeState(nextState);
+    }
   }
 
   void submit(String value) {
@@ -87,6 +113,7 @@ class SearchPageController extends ChangeNotifier {
 enum SearchState {
   initial,
   suggestions,
+  options,
 }
 
 class InheritedSearchPageController extends InheritedWidget {
