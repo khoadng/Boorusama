@@ -132,10 +132,6 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
     return GenericContextMenu(
       buttonConfigs: [
         ContextMenuButtonConfig(
-          'Preview',
-          onPressed: () => goToImagePreviewPage(ref, context, post),
-        ),
-        ContextMenuButtonConfig(
           'download.download'.tr(),
           onPressed: () {
             ref.download(post);
