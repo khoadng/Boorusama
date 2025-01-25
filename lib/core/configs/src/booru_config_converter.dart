@@ -55,6 +55,10 @@ extension BooruConfigDataConverter on BooruConfigData? {
           : null,
       proxySettings:
           ProxySettings.fromJsonString(booruConfigData.proxySettings),
+      viewerNotesFetchBehavior: booruConfigData.viewerNotesFetchBehavior != null
+          ? BooruConfigViewerNotesFetchBehavior
+              .values[booruConfigData.viewerNotesFetchBehavior!]
+          : null,
     );
   }
 }
@@ -86,6 +90,7 @@ extension BooruConfigConverter on BooruConfig {
       alwaysIncludeTags: alwaysIncludeTags,
       layout: layout?.toJsonString(),
       proxySettings: proxySettings?.toJsonString(),
+      viewerNotesFetchBehavior: viewerNotesFetchBehavior?.index,
     );
   }
 }

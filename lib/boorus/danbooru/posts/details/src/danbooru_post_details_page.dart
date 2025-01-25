@@ -36,11 +36,8 @@ class DanbooruPostDetailsPage extends StatelessWidget {
           final post = InheritedPost.of<DanbooruPost>(context);
 
           return [
-            Consumer(
-              builder: (_, ref, __) => NoteActionButtonWithProvider(
-                post: post,
-                noteState: ref.watch(notesControllerProvider(post)),
-              ),
+            NoteActionButtonWithProvider(
+              post: post,
             ),
             const SizedBox(width: 8),
             DanbooruMoreActionButton(

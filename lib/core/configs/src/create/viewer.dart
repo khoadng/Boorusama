@@ -11,9 +11,11 @@ class BooruConfigViewerView extends ConsumerWidget {
   const BooruConfigViewerView({
     super.key,
     this.postDetailsResolution,
+    this.autoLoadNotes,
   });
 
   final Widget? postDetailsResolution;
+  final Widget? autoLoadNotes;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,6 +29,7 @@ class BooruConfigViewerView extends ConsumerWidget {
             postDetailsResolution!
           else
             const DefaultImageDetailsQualityTile(),
+          if (autoLoadNotes != null) autoLoadNotes!,
         ],
       ),
     );

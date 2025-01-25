@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -65,10 +66,11 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
     final post = widget.post;
 
     final noteState = ref.watch(notesControllerProvider(post));
+    final notes = ref.watch(currentNotesProvider(post)) ?? <Note>[].lock;
 
     return [
       if (noteState.enableNotes)
-        ...noteState.notes.map(
+        ...notes.map(
           (e) => LayoutBuilder(
             builder: (context, constraints) {
               final effectiveNote = e.adjustNoteCoordFor(

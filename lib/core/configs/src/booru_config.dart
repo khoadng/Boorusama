@@ -46,6 +46,7 @@ class BooruConfig extends Equatable {
     required this.alwaysIncludeTags,
     required this.layout,
     required this.proxySettings,
+    required this.viewerNotesFetchBehavior,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -103,6 +104,10 @@ class BooruConfig extends Equatable {
           : ProxySettings.fromJson(
               json['proxySettings'] as Map<String, dynamic>,
             ),
+      viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] == null
+          ? null
+          : BooruConfigViewerNotesFetchBehavior
+              .values[json['viewerNotesFetchBehavior'] as int],
     );
   }
 
@@ -130,6 +135,7 @@ class BooruConfig extends Equatable {
     alwaysIncludeTags: null,
     layout: null,
     proxySettings: null,
+    viewerNotesFetchBehavior: null,
   );
 
   // ignore: prefer_constructors_over_static_methods
@@ -162,6 +168,7 @@ class BooruConfig extends Equatable {
         alwaysIncludeTags: null,
         layout: null,
         proxySettings: null,
+        viewerNotesFetchBehavior: null,
       );
 
   final int id;
@@ -187,6 +194,7 @@ class BooruConfig extends Equatable {
   final String? alwaysIncludeTags;
   final LayoutConfigs? layout;
   final ProxySettings? proxySettings;
+  final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
 
   BooruConfig copyWith({
     String? url,
@@ -219,6 +227,7 @@ class BooruConfig extends Equatable {
       alwaysIncludeTags: alwaysIncludeTags,
       layout: layout != null ? layout() : this.layout,
       proxySettings: proxySettings,
+      viewerNotesFetchBehavior: viewerNotesFetchBehavior,
     );
   }
 
@@ -247,6 +256,7 @@ class BooruConfig extends Equatable {
         alwaysIncludeTags,
         layout,
         proxySettings,
+        viewerNotesFetchBehavior,
       ];
 
   @override
@@ -281,6 +291,7 @@ class BooruConfig extends Equatable {
       'alwaysIncludeTags': alwaysIncludeTags,
       'layout': layout?.toJson(),
       'proxySettings': proxySettings?.toJson(),
+      'viewerNotesFetchBehavior': viewerNotesFetchBehavior?.index,
     };
   }
 }
@@ -481,6 +492,9 @@ extension BooruConfigX on BooruConfig {
   BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
   BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
   BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
+
+  bool get autoFetchNotes =>
+      viewerNotesFetchBehavior == BooruConfigViewerNotesFetchBehavior.auto;
 }
 
 enum ImageQuickActionType {

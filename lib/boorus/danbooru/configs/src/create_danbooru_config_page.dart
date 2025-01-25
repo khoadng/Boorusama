@@ -80,6 +80,7 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
       ),
       imageViewerTab: const BooruConfigViewerView(
         postDetailsResolution: DanbooruImageDetailsQualityProvider(),
+        autoLoadNotes: DefaultAutoFetchNotesSwitch(),
       ),
       searchTab: BooruConfigSearchView(
         hasRatingFilter: true,

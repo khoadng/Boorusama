@@ -32,6 +32,7 @@ import 'configs/configs.dart';
 import 'favorites/favorite_repository_impl.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
+import 'notes/notes.dart';
 import 'popular/e621_popular_page.dart';
 import 'posts/posts.dart';
 import 'tags/tags.dart';
@@ -291,7 +292,7 @@ class E621Repository implements BooruRepository {
 
   @override
   NoteRepository note(BooruConfigAuth config) {
-    return ref.read(emptyNoteRepoProvider);
+    return ref.read(e621NoteRepoProvider(config));
   }
 
   @override

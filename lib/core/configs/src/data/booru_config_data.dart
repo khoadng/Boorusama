@@ -37,6 +37,7 @@ class BooruConfigData extends Equatable {
     required this.alwaysIncludeTags,
     required this.layout,
     required this.proxySettings,
+    required this.viewerNotesFetchBehavior,
   });
 
   factory BooruConfigData.anonymous({
@@ -72,6 +73,7 @@ class BooruConfigData extends Equatable {
         alwaysIncludeTags: null,
         layout: null,
         proxySettings: null,
+        viewerNotesFetchBehavior: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -103,6 +105,7 @@ class BooruConfigData extends Equatable {
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
         layout: json['layout'] as String?,
         proxySettings: json['proxySettings'] as String?,
+        viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] as int?,
       );
     } catch (e) {
       return null;
@@ -133,6 +136,7 @@ class BooruConfigData extends Equatable {
       'alwaysIncludeTags': alwaysIncludeTags,
       'layout': layout,
       'proxySettings': proxySettings,
+      'viewerNotesFetchBehavior': viewerNotesFetchBehavior,
     };
   }
 
@@ -158,6 +162,7 @@ class BooruConfigData extends Equatable {
   final String? alwaysIncludeTags;
   final String? layout;
   final String? proxySettings;
+  final int? viewerNotesFetchBehavior;
 
   @override
   List<Object?> get props => [
@@ -183,6 +188,7 @@ class BooruConfigData extends Equatable {
         alwaysIncludeTags,
         layout,
         proxySettings,
+        viewerNotesFetchBehavior,
       ];
 }
 
@@ -237,6 +243,18 @@ extension BooruConfigDataX on BooruConfigData {
   ProxySettings? get proxySettingsTyped {
     return ProxySettings.fromJsonString(proxySettings);
   }
+
+  BooruConfigViewerNotesFetchBehavior? get viewerNotesFetchBehaviorTyped {
+    final behavior = viewerNotesFetchBehavior;
+
+    if (behavior == null ||
+        behavior < 0 ||
+        behavior >= BooruConfigViewerNotesFetchBehavior.values.length) {
+      return null;
+    }
+
+    return BooruConfigViewerNotesFetchBehavior.values[behavior];
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {
@@ -263,6 +281,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? Function()? alwaysIncludeTags,
     LayoutConfigs? Function()? layout,
     ProxySettings? Function()? proxySettings,
+    BooruConfigViewerNotesFetchBehavior? Function()? viewerNotesFetchBehavior,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -311,6 +330,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       proxySettings: proxySettings != null
           ? proxySettings()?.toJsonString()
           : this.proxySettings,
+      viewerNotesFetchBehavior: viewerNotesFetchBehavior != null
+          ? viewerNotesFetchBehavior()?.index
+          : this.viewerNotesFetchBehavior,
     );
   }
 }

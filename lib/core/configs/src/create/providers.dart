@@ -193,4 +193,13 @@ class EditBooruConfigNotifier
     ProxySettings? proxySettings,
   ) =>
       state = state.copyWith(proxySettings: () => proxySettings);
+
+  void updateViewerNotesFetchBehavior(
+    bool autoFetch,
+  ) =>
+      state = state.copyWith(
+        viewerNotesFetchBehavior: () => autoFetch
+            ? BooruConfigViewerNotesFetchBehavior.auto
+            : BooruConfigViewerNotesFetchBehavior.manual,
+      );
 }

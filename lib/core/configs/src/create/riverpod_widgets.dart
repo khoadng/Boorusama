@@ -278,6 +278,32 @@ class DefaultBooruInstructionText extends StatelessWidget {
   }
 }
 
+class DefaultAutoFetchNotesSwitch extends ConsumerWidget {
+  const DefaultAutoFetchNotesSwitch({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final autoLoadNotes = ref.watch(
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
+        (value) =>
+            value.viewerNotesFetchBehaviorTyped ==
+            BooruConfigViewerNotesFetchBehavior.auto,
+      ),
+    );
+
+    return SwitchListTile(
+      title: const Text('Auto-fetch notes'),
+      subtitle: const Text(
+        'Automatically fetch and display notes whenever possible.',
+      ),
+      value: autoLoadNotes,
+      onChanged: (value) =>
+          ref.editNotifier.updateViewerNotesFetchBehavior(value),
+      contentPadding: EdgeInsets.zero,
+    );
+  }
+}
+
 class CreateBooruConfigGranularRatingOptions extends ConsumerStatefulWidget {
   const CreateBooruConfigGranularRatingOptions({
     required this.config,

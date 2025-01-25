@@ -37,6 +37,9 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
       ),
+      imageViewerTab: const BooruConfigViewerView(
+        autoLoadNotes: DefaultAutoFetchNotesSwitch(),
+      ),
     );
   }
 }

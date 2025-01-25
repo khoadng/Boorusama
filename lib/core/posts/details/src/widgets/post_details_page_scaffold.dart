@@ -112,6 +112,12 @@ class _PostDetailPageScaffoldState<T extends Post>
         widget.controller.initialPage,
         useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
       );
+
+      if (ref.readConfig.autoFetchNotes) {
+        ref.read(notesProvider(ref.readConfigAuth).notifier).load(
+              posts[widget.controller.initialPage],
+            );
+      }
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
@@ -275,6 +281,12 @@ class _PostDetailPageScaffoldState<T extends Post>
           ref
               .read(postShareProvider(posts[page]).notifier)
               .updateInformation(posts[page]);
+
+          final config = ref.readConfig;
+
+          if (config.autoFetchNotes) {
+            ref.read(notesProvider(config.auth).notifier).load(posts[page]);
+          }
         },
         sheetStateStorage: SheetStateStorageBuilder(
           save: (expanded) => ref
@@ -285,7 +297,11 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         checkIfLargeScreen: () => context.isLargeScreen,
         controller: _controller,
-        onExit: widget.controller.onExit,
+        onExit: () {
+          ref.invalidate(notesProvider(ref.readConfigAuth));
+
+          widget.controller.onExit();
+        },
         itemCount: posts.length,
         leftActions: [
           CircularIconButton(
@@ -460,7 +476,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               valueListenable: widget.controller.currentPost,
               builder: (context, post, _) => NoteActionButtonWithProvider(
                 post: post,
-                noteState: ref.watch(notesControllerProvider(post)),
               ),
             ),
             const SizedBox(width: 8),

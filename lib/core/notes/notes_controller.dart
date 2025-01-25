@@ -13,41 +13,30 @@ import 'notes.dart';
 
 class NotesControllerState extends Equatable {
   const NotesControllerState({
-    required this.notes,
     required this.enableNotes,
-    this.alreadyLoaded = false,
   });
 
-  factory NotesControllerState.initial() => NotesControllerState(
-        notes: <Note>[].lock,
+  factory NotesControllerState.initial() => const NotesControllerState(
         enableNotes: true,
       );
 
-  final IList<Note> notes;
   final bool enableNotes;
-  final bool alreadyLoaded;
 
   NotesControllerState copyWith({
-    IList<Note>? notes,
     bool? enableNotes,
-    bool? alreadyLoaded,
   }) =>
       NotesControllerState(
-        notes: notes ?? this.notes,
         enableNotes: enableNotes ?? this.enableNotes,
-        alreadyLoaded: alreadyLoaded ?? this.alreadyLoaded,
       );
 
   @override
-  List<Object?> get props => [notes, enableNotes, alreadyLoaded];
+  List<Object?> get props => [enableNotes];
 }
 
 class NotesControllerNotifier
     extends AutoDisposeFamilyNotifier<NotesControllerState, Post> {
   @override
   NotesControllerState build(Post arg) {
-    ref.watchConfigAuth;
-
     return NotesControllerState.initial();
   }
 
@@ -56,48 +45,32 @@ class NotesControllerNotifier
       enableNotes: !state.enableNotes,
     );
   }
-
-  Future<void> load() async {
-    if (state.isInvalidNoteState(arg)) return;
-
-    if (state.notes.isEmpty && arg.isTranslated) {
-      final noteRepo = ref.read(noteRepoProvider(ref.readConfigAuth));
-
-      final notes = await noteRepo.getNotes(arg.id);
-
-      if (notes.isEmpty) return;
-
-      state = state.copyWith(
-        notes: notes.lock,
-        alreadyLoaded: true,
-      );
-    }
-  }
-}
-
-extension NotesControllerStateX on NotesControllerState {
-  bool isInvalidNoteState(Post post) =>
-      notes.isEmpty && post.isTranslated && alreadyLoaded;
 }
 
 class NoteActionButtonWithProvider extends ConsumerWidget {
   const NoteActionButtonWithProvider({
     required this.post,
-    required this.noteState,
     super.key,
   });
+
   final Post post;
-  final NotesControllerState noteState;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (noteState.isInvalidNoteState(post)) return const SizedBox.shrink();
+    final config = ref.watchConfigAuth;
+    final noteState = ref.watch(notesControllerProvider(post));
+    final allNotes = ref.watch(notesProvider(config));
+    final notes = allNotes[post.id] ?? const <Note>[].lock;
+
+    if (allNotes.containsKey(post.id) && notes.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return NoteActionButton(
       post: post,
-      showDownload: noteState.notes.isEmpty,
+      showDownload: notes.isEmpty,
       enableNotes: noteState.enableNotes,
-      onDownload: () => ref.read(notesControllerProvider(post).notifier).load(),
+      onDownload: () => ref.read(notesProvider(config).notifier).load(post),
       onToggleNotes: () => ref
           .read(notesControllerProvider(post).notifier)
           .toggleNoteVisibility(),

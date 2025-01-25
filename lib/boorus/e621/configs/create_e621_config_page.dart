@@ -23,6 +23,9 @@ class CreateE621ConfigPage extends StatelessWidget {
       searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
       ),
+      imageViewerTab: const BooruConfigViewerView(
+        autoLoadNotes: DefaultAutoFetchNotesSwitch(),
+      ),
     );
   }
 }

@@ -15,6 +15,11 @@ enum BooruConfigBannedPostVisibility {
   hide,
 }
 
+enum BooruConfigViewerNotesFetchBehavior {
+  manual,
+  auto,
+}
+
 extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
   String getRatingTerm() => switch (this) {
         BooruConfigRatingFilter.none => 'None',
