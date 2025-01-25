@@ -145,6 +145,7 @@ class _MoebooruPostDetailsPageState
       topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
           post: InheritedPost.of<MoebooruPost>(context),
+          onStartSlideshow: () => controller.startSlideshow(),
         ),
       ],
     );

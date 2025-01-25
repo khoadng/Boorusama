@@ -388,6 +388,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                     if (nextPost != null && !nextPost.isVideo)
                       Offstage(
                         child: PostDetailsPreloadImage(
+                          post: nextPost,
                           url: imageUrlBuilder(nextPost),
                         ),
                       ),
@@ -399,6 +400,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                     if (previousPost != null && !previousPost.isVideo)
                       Offstage(
                         child: PostDetailsPreloadImage(
+                          post: previousPost,
                           url: imageUrlBuilder(previousPost),
                         ),
                       ),
