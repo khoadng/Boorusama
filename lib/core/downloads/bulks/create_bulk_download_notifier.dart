@@ -109,6 +109,10 @@ extension BulkDownloadTaskXX on BulkDownloadTask {
     int? androidSdkInt,
   }) {
     if (tags.isEmpty) return false;
+
+    // Default to application directory
+    if (isApple()) return true;
+
     if (path.isEmpty) return false;
 
     if (!isAndroid()) return true;

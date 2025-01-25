@@ -64,6 +64,11 @@ class SuggestionsNotifier
     final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
     final tagInfo = ref.read(tagInfoProvider);
 
+    // if we already have the suggestions, don't fetch again
+    if (state.containsKey(sanitized)) {
+      return;
+    }
+
     debounce(
       'suggestions',
       () async {

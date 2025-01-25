@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/providers.dart';
 import 'package:boorusama/core/configs/configs.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/theme.dart';
 
 class BooruConfigDownloadView extends ConsumerWidget {
@@ -34,22 +35,24 @@ class BooruConfigDownloadView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          DownloadFolderSelectorSection(
-            storagePath: customDownloadLocation,
-            deviceInfo: ref.watch(deviceInfoProvider),
-            onPathChanged: (path) =>
-                ref.editNotifier.updateCustomDownloadLocation(path),
-            title: 'Download location',
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Leave empty to use the download location in settings.',
-            style: ref.context.textTheme.titleSmall?.copyWith(
-              color: ref.context.theme.hintColor,
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
+          if (!isApple()) ...[
+            DownloadFolderSelectorSection(
+              storagePath: customDownloadLocation,
+              deviceInfo: ref.watch(deviceInfoProvider),
+              onPathChanged: (path) =>
+                  ref.editNotifier.updateCustomDownloadLocation(path),
+              title: 'Download location',
             ),
-          ),
+            const SizedBox(height: 4),
+            Text(
+              'Leave empty to use the download location in settings.',
+              style: ref.context.textTheme.titleSmall?.copyWith(
+                color: ref.context.theme.hintColor,
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
           const SizedBox(height: 8),
           CustomDownloadFileNameSection(
             config: config,
