@@ -6,8 +6,8 @@ import '../configs/current.dart';
 import '../premiums/providers.dart';
 import '../settings/providers.dart';
 import '../tags/tag/providers.dart';
+import 'color_settings.dart';
 import 'colors.dart';
-import 'theme_configs.dart';
 import 'utils.dart';
 
 final enableDynamicColoringProvider = Provider<bool>(
