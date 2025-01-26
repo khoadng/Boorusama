@@ -41,7 +41,7 @@ typedef SearchPageBuilder = Widget Function(
 
 typedef PostDetailsPageBuilder = Widget Function(
   BuildContext context,
-  DetailsRoutePayload payload,
+  DetailsRouteContext detailsContext,
 );
 
 typedef FavoritesPageBuilder = Widget Function(

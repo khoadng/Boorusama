@@ -15,7 +15,7 @@ class PostDetailsPage<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final payload = InheritedPayload.of<T>(context);
+    final payload = InheritedDetailsContext.of<T>(context);
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = booruBuilder?.postDetailsPageBuilder;
 
@@ -25,25 +25,25 @@ class PostDetailsPage<T extends Post> extends ConsumerWidget {
   }
 }
 
-class InheritedPayload<T extends Post> extends InheritedWidget {
-  const InheritedPayload({
-    required this.payload,
+class InheritedDetailsContext<T extends Post> extends InheritedWidget {
+  const InheritedDetailsContext({
+    required this.context,
     required super.child,
     super.key,
   });
 
-  final DetailsRoutePayload<T> payload;
+  final DetailsRouteContext<T> context;
 
-  static DetailsRoutePayload<T> of<T extends Post>(BuildContext context) {
-    final widget =
-        context.dependOnInheritedWidgetOfExactType<InheritedPayload<T>>();
+  static DetailsRouteContext<T> of<T extends Post>(BuildContext context) {
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<InheritedDetailsContext<T>>();
 
-    return widget?.payload ??
-        (throw Exception('No InheritedPayload found in context'));
+    return widget?.context ??
+        (throw Exception('No InheritedDetailsContext found in context'));
   }
 
   @override
-  bool updateShouldNotify(InheritedPayload<T> oldWidget) {
-    return payload != oldWidget.payload;
+  bool updateShouldNotify(InheritedDetailsContext<T> oldWidget) {
+    return context != oldWidget.context;
   }
 }

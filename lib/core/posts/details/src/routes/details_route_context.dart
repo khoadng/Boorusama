@@ -5,8 +5,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import '../../../post/post.dart';
 
-class DetailsRoutePayload<T extends Post> extends Equatable {
-  const DetailsRoutePayload({
+class DetailsRouteContext<T extends Post> extends Equatable {
+  const DetailsRouteContext({
     required this.initialIndex,
     required this.posts,
     required this.scrollController,
@@ -14,12 +14,12 @@ class DetailsRoutePayload<T extends Post> extends Equatable {
     required this.hero,
   });
 
-  DetailsRoutePayload<T> copyWith({
+  DetailsRouteContext<T> copyWith({
     int? initialIndex,
     AutoScrollController? scrollController,
     bool? isDesktop,
   }) {
-    return DetailsRoutePayload<T>(
+    return DetailsRouteContext<T>(
       initialIndex: initialIndex ?? this.initialIndex,
       posts: posts,
       scrollController: scrollController ?? this.scrollController,

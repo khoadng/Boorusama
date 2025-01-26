@@ -9,7 +9,7 @@ import '../../../../foundation/display.dart';
 import '../../../../router.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';
-import 'details_route_payload.dart';
+import 'details_route_context.dart';
 
 void goToPostDetailsPageFromPosts<T extends Post>({
   required BuildContext context,
@@ -50,7 +50,7 @@ void goToPostDetailsPageCore<T extends Post>({
     Uri(
       path: '/details',
     ).toString(),
-    extra: DetailsRoutePayload(
+    extra: DetailsRouteContext(
       initialIndex: initialIndex,
       posts: posts,
       scrollController: scrollController,

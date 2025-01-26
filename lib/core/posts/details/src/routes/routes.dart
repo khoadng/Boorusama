@@ -10,31 +10,31 @@ import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../widgets/post_details_page.dart';
-import 'details_route_payload.dart';
+import 'details_route_context.dart';
 
 GoRoute postDetailsRoutes(Ref ref) => GoRoute(
       path: 'details',
       name: '/details',
       pageBuilder: (context, state) {
-        final payload = castOrNull<DetailsRoutePayload>(state.extra);
+        final context = castOrNull<DetailsRouteContext>(state.extra);
         final settings = ref.read(settingsProvider);
 
-        if (payload == null) {
+        if (context == null) {
           return MaterialPage(
-            child: InvalidPage(message: 'Invalid payload: $payload'),
+            child: InvalidPage(message: 'Invalid context: $context'),
           );
         }
 
-        final widget = InheritedPayload(
-          payload: payload,
+        final widget = InheritedDetailsContext(
+          context: context,
           child: const PostDetailsPage(),
         );
 
-        final hero = kEnableHeroTransition && payload.hero;
+        final hero = kEnableHeroTransition && context.hero;
 
         // must use the value from the payload for orientation
         // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
-        return !payload.isDesktop
+        return !context.isDesktop
             ? hero && !settings.reduceAnimations
                 ? PostDetailsHeroPage(
                     key: state.pageKey,

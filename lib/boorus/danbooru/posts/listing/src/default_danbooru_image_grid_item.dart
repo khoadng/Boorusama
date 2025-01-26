@@ -73,147 +73,58 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                   rating: post.rating,
                   child: Builder(
                     builder: (context) {
-                      final item = SliverPostGridImageGridItem(
-                        post: post,
-                        multiSelectEnabled: multiSelect,
-                        quickActionButton: Consumer(
-                          builder: (_, ref, __) {
-                            final config = ref.watchConfigAuth;
+                      final item = Consumer(
+                        builder: (_, ref, __) {
+                          final imageQuality =
+                              ref.watch(imageListingQualityProvider);
 
-                            return !post.isBanned &&
-                                    !multiSelect &&
-                                    config.hasLoginDetails()
-                                ? DefaultImagePreviewQuickActionButton(
-                                    post: post,
-                                  )
-                                : const SizedBox.shrink();
-                          },
-                        ),
-                        autoScrollOptions: AutoScrollOptions(
-                          controller: autoScrollController,
-                          index: index,
-                        ),
-                        onTap: onTap ??
-                            (post.isBanned
-                                ? null
-                                : () {
-                                    goToPostDetailsPageFromController(
-                                      context: context,
-                                      controller: controller,
-                                      initialIndex: index,
-                                      scrollController: autoScrollController,
-                                    );
-                                  }),
-                        image: Consumer(
-                          builder: (_, ref, __) {
-                            final imageQuality =
-                                ref.watch(imageListingQualityProvider);
+                          final imgUrl =
+                              post.thumbnailFromImageQuality(imageQuality);
 
-                            final imageListType = ref.watch(
-                              imageListingSettingsProvider.select(
-                                (value) => value.imageListType,
-                              ),
-                            );
+                          return SliverPostGridImageGridItem(
+                            post: post,
+                            multiSelectEnabled: multiSelect,
+                            quickActionButton: Consumer(
+                              builder: (_, ref, __) {
+                                final config = ref.watchConfigAuth;
 
-                            final imageBorderRadius = ref.watch(
-                              imageListingSettingsProvider.select(
-                                (value) => value.imageBorderRadius,
-                              ),
-                            );
-
-                            return BooruImage(
-                              aspectRatio:
-                                  post.isBanned ? 0.8 : post.aspectRatio,
-                              imageUrl:
-                                  post.thumbnailFromImageQuality(imageQuality),
-                              borderRadius: BorderRadius.circular(
-                                imageBorderRadius,
-                              ),
-                              forceFill:
-                                  imageListType == ImageListType.standard,
-                              placeholderUrl: post.thumbnailImageUrl,
-                              gaplessPlayback: true,
-                            );
-                          },
-                        ),
-                        score: post.isBanned ? null : post.score,
-                        blockOverlay: blockOverlay ??
-                            (post.isBanned
-                                ? BlockOverlayItem(
-                                    overlay: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            SizedBox(
-                                              width: 18,
-                                              height: 18,
-                                              child: switch (post.source) {
-                                                final WebSource source =>
-                                                  WebsiteLogo(
-                                                    url: source.faviconUrl,
-                                                  ),
-                                                _ => const SizedBox.shrink(),
-                                              },
-                                            ),
-                                            const SizedBox(width: 4),
-                                            const Text(
-                                              maxLines: 1,
-                                              'Banned post',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        if (artistTags.isNotEmpty)
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                            ),
-                                            child: Wrap(
-                                              children: [
-                                                for (final tag in artistTags)
-                                                  ActionChip(
-                                                    visualDensity:
-                                                        VisualDensity.compact,
-                                                    label: Text(
-                                                      tag.replaceAll('_', ' '),
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onErrorContainer,
-                                                      ),
-                                                    ),
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .errorContainer,
-                                                    onPressed: () {
-                                                      AppClipboard.copyAndToast(
-                                                        context,
-                                                        artistTags.join(' '),
-                                                        message:
-                                                            'Tag copied to clipboard',
-                                                      );
-                                                    },
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    onTap: switch (post.source) {
-                                      final WebSource source => () =>
-                                          launchExternalUrlString(source.url),
-                                      _ => null,
-                                    },
-                                  )
-                                : null),
+                                return !post.isBanned &&
+                                        !multiSelect &&
+                                        config.hasLoginDetails()
+                                    ? DefaultImagePreviewQuickActionButton(
+                                        post: post,
+                                      )
+                                    : const SizedBox.shrink();
+                              },
+                            ),
+                            autoScrollOptions: AutoScrollOptions(
+                              controller: autoScrollController,
+                              index: index,
+                            ),
+                            onTap: onTap ??
+                                (post.isBanned
+                                    ? null
+                                    : () {
+                                        goToPostDetailsPageFromController(
+                                          context: context,
+                                          controller: controller,
+                                          initialIndex: index,
+                                          scrollController:
+                                              autoScrollController,
+                                        );
+                                      }),
+                            image: _buildImage(post, imgUrl),
+                            score: post.isBanned ? null : post.score,
+                            blockOverlay: blockOverlay ??
+                                (post.isBanned
+                                    ? _buildBlockOverlayItem(
+                                        post,
+                                        artistTags,
+                                        context,
+                                      )
+                                    : null),
+                          );
+                        },
                       );
 
                       return multiSelect
@@ -237,6 +148,107 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  BlockOverlayItem _buildBlockOverlayItem(
+    DanbooruPost post,
+    List<String> artistTags,
+    BuildContext context,
+  ) {
+    return BlockOverlayItem(
+      overlay: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 18,
+                height: 18,
+                child: switch (post.source) {
+                  final WebSource source => WebsiteLogo(
+                      url: source.faviconUrl,
+                    ),
+                  _ => const SizedBox.shrink(),
+                },
+              ),
+              const SizedBox(width: 4),
+              const Text(
+                maxLines: 1,
+                'Banned post',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          if (artistTags.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              child: Wrap(
+                children: [
+                  for (final tag in artistTags)
+                    ActionChip(
+                      visualDensity: VisualDensity.compact,
+                      label: Text(
+                        tag.replaceAll('_', ' '),
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                        ),
+                      ),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.errorContainer,
+                      onPressed: () {
+                        AppClipboard.copyAndToast(
+                          context,
+                          artistTags.join(' '),
+                          message: 'Tag copied to clipboard',
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+      onTap: switch (post.source) {
+        final WebSource source => () => launchExternalUrlString(source.url),
+        _ => null,
+      },
+    );
+  }
+
+  Widget _buildImage(DanbooruPost post, String imgUrl) {
+    return Consumer(
+      builder: (_, ref, __) {
+        final imageListType = ref.watch(
+          imageListingSettingsProvider.select(
+            (value) => value.imageListType,
+          ),
+        );
+
+        final imageBorderRadius = ref.watch(
+          imageListingSettingsProvider.select(
+            (value) => value.imageBorderRadius,
+          ),
+        );
+
+        return BooruImage(
+          aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
+          imageUrl: imgUrl,
+          borderRadius: BorderRadius.circular(
+            imageBorderRadius,
+          ),
+          forceFill: imageListType == ImageListType.standard,
+          placeholderUrl: post.thumbnailImageUrl,
+          gaplessPlayback: true,
+        );
+      },
     );
   }
 }
