@@ -6,6 +6,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
@@ -31,7 +32,12 @@ final tagColorProvider = Provider.family<Color?, String>(
 
     final colorScheme = ref.watch(colorSchemeProvider);
 
-    final color = colorBuilder(colorScheme.brightness, tag);
+    final color = colorBuilder(
+      TagColorOptions(
+        tagType: tag,
+        brightness: colorScheme.brightness,
+      ),
+    );
 
     final dynamicColors = ref.watch(enableDynamicColoringProvider);
 

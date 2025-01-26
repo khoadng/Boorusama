@@ -205,18 +205,17 @@ class E621Builder
           );
 
   @override
-  TagColorBuilder get tagColorBuilder =>
-      (brightness, tagType) => switch (tagType) {
-            'general' => const Color(0xffb4c7d8),
-            'artist' => const Color(0xfff2ad04),
-            'copyright' => const Color(0xffd60ad8),
-            'character' => const Color(0xff05a903),
-            'species' => const Color(0xffed5d1f),
-            'invalid' => const Color(0xfffe3c3d),
-            'meta' => const Color(0xfffefffe),
-            'lore' => const Color(0xff218923),
-            _ => const Color(0xffb4c7d8),
-          };
+  TagColorBuilder get tagColorBuilder => (options) => switch (options.tagType) {
+        'general' => const Color(0xffb4c7d8),
+        'artist' => const Color(0xfff2ad04),
+        'copyright' => const Color(0xffd60ad8),
+        'character' => const Color(0xff05a903),
+        'species' => const Color(0xffed5d1f),
+        'invalid' => const Color(0xfffe3c3d),
+        'meta' => const Color(0xfffefffe),
+        'lore' => const Color(0xff218923),
+        _ => const Color(0xffb4c7d8),
+      };
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =

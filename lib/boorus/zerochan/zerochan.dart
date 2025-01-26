@@ -104,11 +104,11 @@ class ZerochanBuilder
       };
 
   @override
-  TagColorBuilder get tagColorBuilder => (brightness, tagType) {
+  TagColorBuilder get tagColorBuilder => (options) {
         final colors =
-            brightness.isLight ? TagColors.dark() : TagColors.light();
+            options.brightness.isLight ? TagColors.dark() : TagColors.light();
 
-        return switch (tagType) {
+        return switch (options.tagType) {
           'mangaka' ||
           'studio' ||
           // This is from a fallback in case the tag is already searched in other boorus

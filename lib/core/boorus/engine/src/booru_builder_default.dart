@@ -93,11 +93,11 @@ mixin DefaultThumbnailUrlMixin implements BooruBuilder {
 
 mixin DefaultTagColorMixin implements BooruBuilder {
   @override
-  TagColorBuilder get tagColorBuilder => (brightness, tagType) {
+  TagColorBuilder get tagColorBuilder => (options) {
         final colors =
-            brightness.isLight ? TagColors.dark() : TagColors.light();
+            options.brightness.isLight ? TagColors.dark() : TagColors.light();
 
-        return switch (tagType) {
+        return switch (options.tagType) {
           '0' || 'general' || 'tag' => colors.general,
           '1' || 'artist' || 'creator' || 'studio' => colors.artist,
           '3' || 'copyright' || 'series' => colors.copyright,

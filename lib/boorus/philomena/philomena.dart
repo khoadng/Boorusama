@@ -102,36 +102,35 @@ class PhilomenaBuilder
       };
 
   @override
-  TagColorBuilder get tagColorBuilder =>
-      (brightness, tagType) => switch (tagType) {
-            'error' => brightness.isDark
-                ? const Color.fromARGB(255, 212, 84, 96)
-                : const Color.fromARGB(255, 173, 38, 63),
-            'rating' => brightness.isDark
-                ? const Color.fromARGB(255, 64, 140, 217)
-                : const Color.fromARGB(255, 65, 124, 169),
-            'origin' => brightness.isDark
-                ? const Color.fromARGB(255, 111, 100, 224)
-                : const Color.fromARGB(255, 56, 62, 133),
-            'oc' => brightness.isDark
-                ? const Color.fromARGB(255, 176, 86, 182)
-                : const Color.fromARGB(255, 176, 86, 182),
-            'character' => brightness.isDark
-                ? const Color.fromARGB(255, 73, 170, 190)
-                : const Color.fromARGB(255, 46, 135, 119),
-            'species' => brightness.isDark
-                ? const Color.fromARGB(255, 176, 106, 80)
-                : const Color.fromARGB(255, 131, 87, 54),
-            'content-official' => brightness.isDark
-                ? const Color.fromARGB(255, 185, 180, 65)
-                : const Color.fromARGB(255, 151, 142, 27),
-            'content-fanmade' => brightness.isDark
-                ? const Color.fromARGB(255, 204, 143, 180)
-                : const Color.fromARGB(255, 174, 90, 147),
-            _ => brightness.isDark
-                ? Colors.green
-                : const Color.fromARGB(255, 111, 143, 13),
-          };
+  TagColorBuilder get tagColorBuilder => (options) => switch (options.tagType) {
+        'error' => options.brightness.isDark
+            ? const Color.fromARGB(255, 212, 84, 96)
+            : const Color.fromARGB(255, 173, 38, 63),
+        'rating' => options.brightness.isDark
+            ? const Color.fromARGB(255, 64, 140, 217)
+            : const Color.fromARGB(255, 65, 124, 169),
+        'origin' => options.brightness.isDark
+            ? const Color.fromARGB(255, 111, 100, 224)
+            : const Color.fromARGB(255, 56, 62, 133),
+        'oc' => options.brightness.isDark
+            ? const Color.fromARGB(255, 176, 86, 182)
+            : const Color.fromARGB(255, 176, 86, 182),
+        'character' => options.brightness.isDark
+            ? const Color.fromARGB(255, 73, 170, 190)
+            : const Color.fromARGB(255, 46, 135, 119),
+        'species' => options.brightness.isDark
+            ? const Color.fromARGB(255, 176, 106, 80)
+            : const Color.fromARGB(255, 131, 87, 54),
+        'content-official' => options.brightness.isDark
+            ? const Color.fromARGB(255, 185, 180, 65)
+            : const Color.fromARGB(255, 151, 142, 27),
+        'content-fanmade' => options.brightness.isDark
+            ? const Color.fromARGB(255, 204, 143, 180)
+            : const Color.fromARGB(255, 174, 90, 147),
+        _ => options.brightness.isDark
+            ? Colors.green
+            : const Color.fromARGB(255, 111, 143, 13),
+      };
 
   @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =

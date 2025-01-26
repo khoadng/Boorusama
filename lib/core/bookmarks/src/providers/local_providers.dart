@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../boorus/booru/booru.dart';
+import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/display.dart';
@@ -88,9 +89,12 @@ final bookmarkTagColorProvider =
     final tagType = await tagTypeStore.get(config.booruType, tag);
     final colorScheme = ref.watch(colorSchemeProvider);
 
-    final color = ref
-        .watch(currentBooruBuilderProvider)
-        ?.tagColorBuilder(colorScheme.brightness, tagType);
+    final color = ref.watch(currentBooruBuilderProvider)?.tagColorBuilder(
+          TagColorOptions(
+            tagType: tagType,
+            brightness: colorScheme.brightness,
+          ),
+        );
 
     return color;
   },

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
@@ -96,8 +97,7 @@ typedef GridThumbnailUrlBuilder = String Function(
 );
 
 typedef TagColorBuilder = Color? Function(
-  Brightness brightness,
-  String? tagType,
+  TagColorOptions options,
 );
 
 typedef PostImageDetailsUrlBuilder = String Function(
@@ -176,4 +176,17 @@ class PostDetailsUIBuilder {
 
     return null;
   }
+}
+
+class TagColorOptions extends Equatable {
+  const TagColorOptions({
+    required this.tagType,
+    required this.brightness,
+  });
+
+  final String? tagType;
+  final Brightness brightness;
+
+  @override
+  List<Object?> get props => [tagType, brightness];
 }
