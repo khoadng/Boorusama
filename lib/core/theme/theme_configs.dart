@@ -32,6 +32,10 @@ final preDefinedColorSettings = [
     nickname: 'Light Green',
   ),
   ColorSettings.fromPredefinedScheme(
+    'dark_green',
+    nickname: 'Dark Green',
+  ),
+  ColorSettings.fromPredefinedScheme(
     'coral_pink',
     nickname: 'Coral Pink',
   ),
@@ -101,6 +105,7 @@ ColorScheme? getSchemeFromPredefined(String? name) {
     'danbooru_dark' => staticDanbooruDarkScheme,
     'danbooru_light' => staticDanbooruLightScheme,
     'green' => staticGreenScheme,
+    'dark_green' => staticDarkGreenScheme,
     'coral_pink' => staticCoralPinkScheme,
     'hacker' => staticHackerScheme,
     'cyberpunk' => staticCyberpunkScheme,
@@ -208,6 +213,28 @@ const staticGreenScheme = ColorScheme(
   onSurface: Colors.black,
   outline: GreyscaleShades.gray110,
   outlineVariant: GreyscaleShades.gray60,
+);
+
+const staticDarkGreenScheme = ColorScheme(
+  brightness: Brightness.dark,
+  secondaryContainer: Color(0xff505b51),
+  onSecondaryContainer: Color(0xffc0c1c1),
+  onTertiaryContainer: Color(0xff93b393),
+  surfaceContainerLowest: Color.fromARGB(255, 26, 30, 25),
+  surfaceContainerLow: Color.fromARGB(255, 32, 37, 31),
+  surfaceContainer: Color(0xff293028),
+  surfaceContainerHigh: Color.fromARGB(255, 55, 64, 53),
+  surfaceContainerHighest: Color.fromARGB(255, 66, 77, 64),
+  primary: Color(0xffa9d6a9),
+  onPrimary: Color(0xff313b30),
+  secondary: Color(0xffa9d6a9),
+  onSecondary: Color(0xff313b30),
+  error: Color(0xffe36d5e),
+  onError: kOnErrorDarkColor,
+  surface: Color(0xff313b30),
+  onSurface: Color(0xffc0c1c1),
+  outline: Color.fromARGB(255, 91, 104, 92),
+  outlineVariant: Color(0xff505b51),
 );
 
 const staticCoralPinkScheme = ColorScheme(
