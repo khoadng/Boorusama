@@ -16,7 +16,8 @@ List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
   final filtered = <T>[];
   final nonFiltered = <T>[];
   final preprocessedBlacklist = blacklistedTags
-      .map((tag) => tag.split(' ').map(TagExpression.parse).toList());
+      .map((tag) => tag.split(' ').map(TagExpression.parse).toList())
+      .toList();
 
   for (final post in posts) {
     // Check precomputed filter if there is a post Id, it means it has been checked before, so we can use the result instead of rechecking

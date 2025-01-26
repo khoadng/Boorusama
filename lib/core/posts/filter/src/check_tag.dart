@@ -24,12 +24,22 @@ bool checkIfTagsContainsTagExpression(
   final tags = filterData.tags;
   final source = filterData.source;
 
+  var hasOrExpressions = false;
+  var anyOrSatisfied = false;
+
   // Process each tag in the expression
   for (final expression in expressions) {
     final type = expression.type;
     final isNegative = expression.isNegative;
     final isOr = expression.isOr;
     final value = expression.expression;
+
+    if (isOr) {
+      hasOrExpressions = true;
+      if (tags.contains(value)) {
+        anyOrSatisfied = true;
+      }
+    }
 
     // Handle metatag "rating"
     if (type is RatingType && !isNegative) {
@@ -96,10 +106,7 @@ bool checkIfTagsContainsTagExpression(
   }
 
   // OR operation check
-  if (expressions.any((exp) => exp.isOr) &&
-      !expressions
-          .where((exp) => exp.isOr)
-          .any((orExp) => tags.contains(orExp.expression))) {
+  if (hasOrExpressions && !anyOrSatisfied) {
     return false;
   }
 
