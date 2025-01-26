@@ -24,43 +24,50 @@ class SelectedTagListWithData extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
     final tagComposer = ref.watch(currentTagQueryComposerProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surface,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: colorScheme.outlineVariant,
+            width: 1,
+          ),
+        ),
+      ),
       child: ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, tags, child) {
-          return Column(
-            children: [
-              if (tags.isNotEmpty)
-                SelectedTagList(
-                  extraTagsCount: tagComposer.compose([]).length,
-                  onOtherTagsCountTap: () {
-                    goToUpdateBooruConfigPage(
+          return tags.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SelectedTagList(
+                    extraTagsCount: tagComposer.compose([]).length,
+                    onOtherTagsCountTap: () {
+                      goToUpdateBooruConfigPage(
+                        context,
+                        config: config,
+                        initialTab: 'search',
+                      );
+                    },
+                    tags: tags,
+                    onClear: () {
+                      controller.clear();
+                    },
+                    onDelete: (tag) {
+                      controller.removeTag(tag);
+                    },
+                    onUpdate: (oldTag, newTag) {
+                      controller.updateTag(oldTag, newTag);
+                    },
+                    onBulkDownload: (tags) => goToBulkDownloadPage(
                       context,
-                      config: config,
-                      initialTab: 'search',
-                    );
-                  },
-                  tags: tags,
-                  onClear: () {
-                    controller.clear();
-                  },
-                  onDelete: (tag) {
-                    controller.removeTag(tag);
-                  },
-                  onUpdate: (oldTag, newTag) {
-                    controller.updateTag(oldTag, newTag);
-                  },
-                  onBulkDownload: (tags) => goToBulkDownloadPage(
-                    context,
-                    tags.map((e) => e.toString()).toList(),
-                    ref: ref,
+                      tags.map((e) => e.toString()).toList(),
+                      ref: ref,
+                    ),
                   ),
-                ),
-              if (tags.isNotEmpty) const Divider(height: 15, thickness: 1),
-            ],
-          );
+                )
+              : const SizedBox.shrink();
         },
       ),
     );

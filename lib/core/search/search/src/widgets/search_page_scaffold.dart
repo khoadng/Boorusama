@@ -42,6 +42,8 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
 );
 
 const _kSearchBarHeight = kToolbarHeight * 1.2;
+const _kSelectedTagHeight = 56;
+const _kViewTopPadding = 8;
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -87,53 +89,54 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>>
     with SingleTickerProviderStateMixin {
-  late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.read(currentBooruBuilderProvider),
-    tagInfo: ref.read(tagInfoProvider),
-  );
+  late final SelectedTagController _tagsController;
   final _scrollController = AutoScrollController();
 
   final CompositeSubscription _subscriptions = CompositeSubscription();
   late final SearchPageController _controller;
 
-  late final _searchBarAnimationController = AnimationController(
+  late final _searchBarAnimController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 250),
+    duration: const Duration(milliseconds: 300),
   );
 
   late final _searchBarCurve = CurvedAnimation(
-    parent: _searchBarAnimationController,
-    curve: Curves.easeOut,
-    reverseCurve: Curves.easeIn,
+    parent: _searchBarAnimController,
+    curve: Curves.easeInOut,
   );
 
   @override
   void initState() {
     super.initState();
 
+    _tagsController = SelectedTagController.fromBooruBuilder(
+      builder: ref.read(currentBooruBuilderProvider),
+      tagInfo: ref.read(tagInfoProvider),
+    );
+
     _controller = SearchPageController(
       onSearch: () {
         ref
             .read(searchHistoryProvider.notifier)
-            .addHistoryFromController(selectedTagController);
+            .addHistoryFromController(_tagsController);
       },
       queryPattern: widget.queryPattern,
-      selectedTagController: selectedTagController,
+      tagsController: _tagsController,
     );
 
     if (widget.initialQuery != null) {
       _controller.skipToResultWithTag(widget.initialQuery!);
       ref
           .read(searchHistoryProvider.notifier)
-          .addHistoryFromController(selectedTagController);
+          .addHistoryFromController(_tagsController);
     }
 
-    _controller.textEditingController.textAsStream().pairwise().listen((pair) {
+    _controller.textController.textAsStream().pairwise().listen((pair) {
       _onQueryChanged(pair.first, pair.last);
     }).addTo(_subscriptions);
 
-    selectedTagController.addListener(_onSelectedTagChanged);
-    _controller.selectedTagString.addListener(_onTagChanged);
+    _tagsController.addListener(_onSelectedTagChanged);
+    _controller.tagString.addListener(_onTagChanged);
   }
 
   var _searchBarOffset = 0.0;
@@ -159,19 +162,19 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   void _onSelectedTagChanged() {
-    _controller.allowSearch.value = selectedTagController.rawTags.isNotEmpty;
+    _controller.allowSearch.value = _tagsController.rawTags.isNotEmpty;
   }
 
   @override
   void dispose() {
-    selectedTagController.removeListener(_onSelectedTagChanged);
-    _controller.selectedTagString.removeListener(_onTagChanged);
+    _tagsController.removeListener(_onSelectedTagChanged);
+    _controller.tagString.removeListener(_onTagChanged);
 
     _subscriptions.dispose();
     _controller.dispose();
-    selectedTagController.dispose();
+    _tagsController.dispose();
     _scrollController.dispose();
-    _searchBarAnimationController.dispose();
+    _searchBarAnimController.dispose();
     _searchBarCurve.dispose();
 
     super.dispose();
@@ -201,17 +204,17 @@ class _SearchPageScaffoldState<T extends Post>
                               if (notification.depth != 0) return false;
 
                               final hasSelectedTag =
-                                  selectedTagController.value.isNotEmpty;
+                                  _tagsController.value.isNotEmpty;
 
-                              final searchRegionHeight =
-                                  _kSearchBarHeight + (hasSelectedTag ? 64 : 0);
+                              final searchRegionHeight = _kSearchBarHeight +
+                                  (hasSelectedTag ? _kSelectedTagHeight : 0);
+
+                              final pixels = notification.metrics.pixels;
 
                               if (notification is ScrollUpdateNotification) {
-                                final pixels = notification.metrics.pixels;
-
                                 // Ignore overscroll
                                 // Also must scroll pass the search bar
-                                if (pixels < searchRegionHeight) {
+                                if (pixels <= 0) {
                                   return false;
                                 }
 
@@ -221,7 +224,7 @@ class _SearchPageScaffoldState<T extends Post>
                                 _searchBarOffset =
                                     newValue.clamp(0, searchRegionHeight);
 
-                                _searchBarAnimationController.value =
+                                _searchBarAnimController.value =
                                     _searchBarOffset / searchRegionHeight;
                               } else if (notification
                                   is ScrollEndNotification) {
@@ -236,11 +239,14 @@ class _SearchPageScaffoldState<T extends Post>
 
                                 // Handle case where user taps on jump to top button
                                 if (pixels < searchRegionHeight) {
-                                  _searchBarAnimationController.value = 0;
+                                  _searchBarAnimController.reverse();
+                                  _searchBarOffset = 0;
                                 } else if (isHalf) {
-                                  _searchBarAnimationController.forward();
+                                  _searchBarAnimController.forward();
+                                  _searchBarOffset = searchRegionHeight;
                                 } else {
-                                  _searchBarAnimationController.reverse();
+                                  _searchBarAnimController.reverse();
+                                  _searchBarOffset = 0;
                                 }
                               }
 
@@ -249,7 +255,7 @@ class _SearchPageScaffoldState<T extends Post>
                             child: PostScope(
                               fetcher: (page) => widget.fetcher(
                                 page,
-                                _controller.selectedTagController,
+                                _controller.tagsController,
                               ),
                               builder: (context, controller) {
                                 // Hacky way to get the controller
@@ -281,11 +287,11 @@ class _SearchPageScaffoldState<T extends Post>
                           return ValueListenableBuilder(
                             valueListenable: _controller.state,
                             builder: (_, state, __) => ValueListenableBuilder(
-                              valueListenable: selectedTagController,
+                              valueListenable: _tagsController,
                               builder: (_, selectedTags, __) {
                                 final hasSelectedTag = selectedTags.isNotEmpty;
                                 final searchRegionHeight = _kSearchBarHeight +
-                                    (hasSelectedTag ? 64 : 0);
+                                    (hasSelectedTag ? _kSelectedTagHeight : 0);
 
                                 return Positioned(
                                   top: searchOnce
@@ -316,23 +322,19 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   Widget _buildSearchRegion(BuildContext context) {
-    return Column(
-      children: [
-        ColoredBox(
-          color: Theme.of(context).colorScheme.surface,
-          child: Column(
-            children: [
-              SizedBox(
-                height: _kSearchBarHeight,
-                child: _buildSearchBar(context),
-              ),
-              SelectedTagListWithData(
-                controller: selectedTagController,
-              ),
-            ],
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: Column(
+        children: [
+          SizedBox(
+            height: _kSearchBarHeight,
+            child: _buildSearchBar(context),
           ),
-        ),
-      ],
+          SelectedTagListWithData(
+            controller: _tagsController,
+          ),
+        ],
+      ),
     );
   }
 
@@ -361,7 +363,7 @@ class _SearchPageScaffoldState<T extends Post>
                               duration: const Duration(milliseconds: 150),
                               turns: state == SearchState.options ? 0.13 : 0,
                               child: IconButton(
-                                iconSize: 32,
+                                iconSize: 28,
                                 onPressed: state != SearchState.options
                                     ? () {
                                         _controller
@@ -395,8 +397,8 @@ class _SearchPageScaffoldState<T extends Post>
             },
           ),
           focusNode: _controller.focus,
-          autofocus: autoFocusSearchBar,
-          controller: _controller.textEditingController,
+          autofocus: widget.initialQuery == null ? autoFocusSearchBar : false,
+          controller: _controller.textController,
           leading: (parentRoute?.impliesAppBarDismissal ?? false)
               ? const SearchAppBarBackButton()
               : null,
@@ -406,6 +408,8 @@ class _SearchPageScaffoldState<T extends Post>
   }
 
   Widget _buildSuggestions(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ValueListenableBuilder(
       valueListenable: _controller.state,
       builder: (_, state, child) =>
@@ -413,7 +417,7 @@ class _SearchPageScaffoldState<T extends Post>
       child: ValueListenableBuilder(
         valueListenable: _controller.didSearchOnce,
         builder: (_, searchOnce, __) => ColoredBox(
-          color: Theme.of(context).colorScheme.surface,
+          color: colorScheme.surface,
           child: Container(
             padding: const EdgeInsets.only(
               top: _kSearchBarHeight,
@@ -428,11 +432,11 @@ class _SearchPageScaffoldState<T extends Post>
                   analytics: ref.watch(analyticsProvider),
                 ),
                 SelectedTagListWithData(
-                  controller: selectedTagController,
+                  controller: _tagsController,
                 ),
                 Expanded(
                   child: ValueListenableBuilder(
-                    valueListenable: _controller.textEditingController,
+                    valueListenable: _controller.textController,
                     builder: (context, query, child) {
                       final suggestionTags =
                           ref.watch(suggestionProvider(query.text));
@@ -442,12 +446,11 @@ class _SearchPageScaffoldState<T extends Post>
                         tags: suggestionTags,
                         currentQuery: query.text,
                         onItemTap: (tag) {
-                          FocusManager.instance.primaryFocus?.unfocus();
                           _controller.tapTag(tag.value);
                         },
                         emptyBuilder: () => Center(
                           child: ColoredBox(
-                            color: Theme.of(context).colorScheme.surface,
+                            color: colorScheme.surface,
                           ),
                         ),
                       );
@@ -480,10 +483,12 @@ class _SearchPageScaffoldState<T extends Post>
         child: Column(
           children: [
             ValueListenableBuilder(
-              valueListenable: selectedTagController,
+              valueListenable: _tagsController,
               builder: (_, value, __) {
                 return SizedBox(
-                  height: _kSearchBarHeight + (value.isNotEmpty ? 64 : 0),
+                  height: _kSearchBarHeight +
+                      _kViewTopPadding +
+                      (value.isNotEmpty ? _kSelectedTagHeight : 0),
                 );
               },
             ),
@@ -495,7 +500,7 @@ class _SearchPageScaffoldState<T extends Post>
                 onTagTap: (value) {
                   _controller.tapTag(value);
                 },
-                onRawTagTap: (value) => selectedTagController.addTag(
+                onRawTagTap: (value) => _tagsController.addTag(
                   value,
                   isRaw: true,
                 ),
@@ -540,10 +545,12 @@ class _SearchPageScaffoldState<T extends Post>
               : null,
           sliverHeaders: [
             ValueListenableBuilder(
-              valueListenable: selectedTagController,
+              valueListenable: _tagsController,
               builder: (_, value, __) {
                 return SliverSizedBox(
-                  height: _kSearchBarHeight + (value.isNotEmpty ? 64 : 0),
+                  height: _kSearchBarHeight +
+                      _kViewTopPadding +
+                      (value.isNotEmpty ? _kSelectedTagHeight : 0),
                 );
               },
             ),
@@ -558,7 +565,7 @@ class _SearchPageScaffoldState<T extends Post>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ValueListenableBuilder(
-                    valueListenable: _controller.selectedTagString,
+                    valueListenable: _controller.tagString,
                     builder: (context, value, _) => ResultHeaderFromController(
                       controller: controller,
                       onRefresh: null,
@@ -607,11 +614,12 @@ class _SearchOptionsView extends ConsumerWidget {
                       analytics: ref.watch(analyticsProvider),
                     ),
                     ValueListenableBuilder(
-                      valueListenable: controller.selectedTagController,
+                      valueListenable: controller.tagsController,
                       builder: (_, value, __) {
                         return SizedBox(
-                          height:
-                              _kSearchBarHeight + (value.isNotEmpty ? 64 : 0),
+                          height: _kSearchBarHeight +
+                              _kViewTopPadding +
+                              (value.isNotEmpty ? _kSelectedTagHeight : 0),
                         );
                       },
                     ),
@@ -637,7 +645,7 @@ class _SearchOptionsView extends ConsumerWidget {
             controller.tapTag(value);
           },
           onRawTagTap: (value) {
-            controller.selectedTagController.addTag(
+            controller.tagsController.addTag(
               value,
               isRaw: true,
             );

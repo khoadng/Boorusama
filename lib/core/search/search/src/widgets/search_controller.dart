@@ -12,16 +12,16 @@ import '../../../selected_tags/selected_tag_controller.dart';
 
 class SearchPageController extends ChangeNotifier {
   SearchPageController({
-    required this.selectedTagController,
+    required this.tagsController,
     required this.queryPattern,
     this.onSearch,
   });
 
   final state = ValueNotifier(SearchState.initial);
   final allowSearch = ValueNotifier(false);
-  final selectedTagString = ValueNotifier('');
+  final tagString = ValueNotifier('');
   final focus = FocusNode();
-  late final RichTextController textEditingController = RichTextController(
+  late final RichTextController textController = RichTextController(
     patternMatchMap: queryPattern ??
         {
           RegExp(''): const TextStyle(color: Colors.white),
@@ -29,7 +29,7 @@ class SearchPageController extends ChangeNotifier {
     onMatch: (match) {},
   );
 
-  final SelectedTagController selectedTagController;
+  final SelectedTagController tagsController;
   final Map<RegExp, TextStyle>? queryPattern;
 
   final void Function()? onSearch;
@@ -39,12 +39,12 @@ class SearchPageController extends ChangeNotifier {
   SearchState? _previousState;
 
   void tapTag(String tag) {
-    selectedTagController.addTag(
+    tagsController.addTag(
       tag,
       operator: filterOperator,
     );
 
-    textEditingController.clear();
+    textController.clear();
   }
 
   void changeState(SearchState newState) {
@@ -53,9 +53,9 @@ class SearchPageController extends ChangeNotifier {
   }
 
   void skipToResultWithTag(String tag) {
-    selectedTagString.value = tag;
+    tagString.value = tag;
     didSearchOnce.value = true;
-    selectedTagController
+    tagsController
       ..clear()
       ..addTag(tag);
   }
@@ -63,7 +63,7 @@ class SearchPageController extends ChangeNotifier {
   void search() {
     didSearchOnce.value = true;
     changeState(SearchState.initial);
-    selectedTagString.value = selectedTagController.rawTagsString;
+    tagString.value = tagsController.rawTagsString;
     onSearch?.call();
   }
 
@@ -81,30 +81,29 @@ class SearchPageController extends ChangeNotifier {
   }
 
   void submit(String value) {
-    selectedTagController.addTag(value);
-    textEditingController.clear();
+    tagsController.addTag(value);
+    textController.clear();
   }
 
   void tapHistoryTag(SearchHistory history) {
-    selectedTagController.addTagFromSearchHistory(history);
+    tagsController.addTagFromSearchHistory(history);
   }
 
-  void tapRawMetaTag(String tag) => textEditingController.text = '$tag:';
+  void tapRawMetaTag(String tag) => textController.text = '$tag:';
 
   // ignore: use_setters_to_change_properties
   void updateQuery(String query) {
-    textEditingController.text = query;
+    textController.text = query;
   }
 
-  FilterOperator get filterOperator =>
-      getFilterOperator(textEditingController.text);
+  FilterOperator get filterOperator => getFilterOperator(textController.text);
 
   @override
   void dispose() {
-    textEditingController.dispose();
+    textController.dispose();
     focus.dispose();
 
-    selectedTagString.dispose();
+    tagString.dispose();
 
     super.dispose();
   }

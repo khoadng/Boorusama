@@ -67,8 +67,8 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
         postController,
       ) {
         final searchController = InheritedSearchPageController.of(context);
-        final selectedTagController = searchController.selectedTagController;
-        final selectedTagString = searchController.selectedTagString;
+        final selectedTagController = searchController.tagsController;
+        final selectedTagString = searchController.tagString;
 
         return [
           SliverToBoxAdapter(
@@ -140,7 +140,7 @@ class _Metatags extends StatelessWidget {
       onOptionTap: (value) {
         controller.tapRawMetaTag(value);
         controller.focus.requestFocus();
-        controller.textEditingController.setTextAndCollapseSelection('$value:');
+        controller.textController.setTextAndCollapseSelection('$value:');
       },
     );
   }

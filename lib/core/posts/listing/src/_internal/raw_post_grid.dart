@@ -263,7 +263,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     builder: (_, refreshing, __) =>
                         _buildPaginatedSwipe(child, refreshing),
                   ),
-                  child: CustomScrollView(
+                  child: _CustomScrollView(
                     controller: _autoScrollController,
                     slivers: [
                       SliverToBoxAdapter(
@@ -432,6 +432,31 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       onLeftSwipe: (_) => widget.onNextPage(),
       onRightSwipe: (_) => widget.onPreviousPage(),
       child: child,
+    );
+  }
+}
+
+class _CustomScrollView extends StatelessWidget {
+  const _CustomScrollView({
+    required this.slivers,
+    required this.controller,
+  });
+
+  final List<Widget> slivers;
+  final ScrollController? controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ScrollConfiguration(
+      // Material scroll make it easier to pull to refresh
+      behavior: const MaterialScrollBehavior(),
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: ClampingScrollPhysics(),
+        ),
+        controller: controller,
+        slivers: slivers,
+      ),
     );
   }
 }
