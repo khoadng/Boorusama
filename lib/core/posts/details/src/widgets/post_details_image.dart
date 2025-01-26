@@ -16,6 +16,7 @@ import '../../../post/post.dart';
 class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsImage({
     required this.imageUrlBuilder,
+    required this.thumbnailUrlBuilder,
     required this.post,
     super.key,
     this.heroTag,
@@ -23,6 +24,7 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
 
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
+  final String Function(T post)? thumbnailUrlBuilder;
   final Post post;
 
   @override
@@ -95,9 +97,11 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
     final imageGridQuality = ref.watch(imageListingQualityProvider);
 
     final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
-    final placeholderImageUrl = gridThumbnailUrlBuilder != null
-        ? gridThumbnailUrlBuilder(imageGridQuality, post)
-        : post.thumbnailImageUrl;
+    final placeholderImageUrl = widget.thumbnailUrlBuilder != null
+        ? widget.thumbnailUrlBuilder!(post)
+        : gridThumbnailUrlBuilder != null
+            ? gridThumbnailUrlBuilder(imageGridQuality, post)
+            : post.thumbnailImageUrl;
 
     return BooruImage(
       imageUrl: imageUrl,

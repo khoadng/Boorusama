@@ -93,6 +93,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                                 controller: controller,
                                 initialIndex: index,
                                 scrollController: autoScrollController,
+                                initialThumbnailUrl: imgUrl,
                               );
                             },
                             quickActionButton: !multiSelect

@@ -97,6 +97,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   final _transformController = TransformationController();
 
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
+  final _isInitPage = ValueNotifier(true);
 
   List<T> get posts => _posts;
 
@@ -270,6 +271,8 @@ class _PostDetailPageScaffoldState<T extends Post>
             useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
           );
 
+          _isInitPage.value = false;
+
           if (_controller.overlay.value) {
             if (posts[page].isVideo) {
               _controller.enableHoverToControlOverlay();
@@ -392,10 +395,25 @@ class _PostDetailPageScaffoldState<T extends Post>
                           url: imageUrlBuilder(nextPost),
                         ),
                       ),
-                    PostMedia<T>(
-                      post: post,
-                      imageUrlBuilder: imageUrlBuilder,
-                      controller: _controller,
+                    ValueListenableBuilder(
+                      valueListenable: _isInitPage,
+                      builder: (_, isInitPage, __) {
+                        final initialThumbnailUrl =
+                            widget.controller.initialThumbnailUrl;
+
+                        return PostMedia<T>(
+                          post: post,
+                          imageUrlBuilder: imageUrlBuilder,
+                          // This is used to make sure we have a thumbnail to show instead of a black placeholder
+                          thumbnailUrlBuilder: isInitPage &&
+                                  initialThumbnailUrl != null
+                              // Need to specify the type here to avoid type inference error
+                              // ignore: avoid_types_on_closure_parameters
+                              ? (Post _) => initialThumbnailUrl
+                              : null,
+                          controller: _controller,
+                        );
+                      },
                     ),
                     if (previousPost != null && !previousPost.isVideo)
                       Offstage(

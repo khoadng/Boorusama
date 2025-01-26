@@ -38,6 +38,10 @@ class E621ArtistPostsSection extends ConsumerWidget {
                             context: context,
                             posts: data,
                             initialIndex: postIdx,
+                            initialThumbnailUrl:
+                                data[postIdx].thumbnailFromSettings(
+                              ref.watch(imageListingQualityProvider),
+                            ),
                           ),
                           imageUrl: (item) => item.thumbnailFromSettings(
                             ref.watch(imageListingQualityProvider),

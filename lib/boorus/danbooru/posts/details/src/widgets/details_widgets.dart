@@ -136,6 +136,7 @@ class DanbooruArtistPostsSection extends ConsumerWidget {
                             context: context,
                             posts: data,
                             initialIndex: postIdx,
+                            initialThumbnailUrl: data[postIdx].url360x360,
                           ),
                           imageUrl: (item) => item.url360x360,
                         ),

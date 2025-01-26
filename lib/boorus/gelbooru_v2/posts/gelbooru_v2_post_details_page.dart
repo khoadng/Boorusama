@@ -62,6 +62,7 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
                   context: context,
                   posts: data,
                   initialIndex: index,
+                  initialThumbnailUrl: data[index].sampleImageUrl,
                 ),
               ),
               orElse: () => const SliverSizedBox.shrink(),
@@ -117,6 +118,8 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
                                   context: context,
                                   posts: data,
                                   initialIndex: postIdx,
+                                  initialThumbnailUrl:
+                                      data[postIdx].sampleImageUrl,
                                 ),
                                 imageUrl: (item) => item.sampleImageUrl,
                               ),

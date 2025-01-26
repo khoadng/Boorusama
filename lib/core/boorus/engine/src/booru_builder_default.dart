@@ -228,6 +228,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         return PostDetailsScope(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: payload.posts,
           scrollController: payload.scrollController,
           child: const DefaultPostDetailsPage(),

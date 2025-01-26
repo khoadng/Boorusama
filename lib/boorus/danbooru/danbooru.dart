@@ -168,6 +168,7 @@ class DanbooruBuilder
 
         return PostDetailsScope<DanbooruPost>(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
           child: const DanbooruPostDetailsPage(),

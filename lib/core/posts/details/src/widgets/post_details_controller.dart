@@ -20,6 +20,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.scrollController,
     required int initialPage,
     required this.posts,
+    required this.initialThumbnailUrl,
     required this.reduceAnimations,
   })  : currentPage = ValueNotifier(initialPage),
         _initialPage = initialPage,
@@ -28,6 +29,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final bool reduceAnimations;
   final List<T> posts;
   final int _initialPage;
+  final String? initialThumbnailUrl;
 
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;

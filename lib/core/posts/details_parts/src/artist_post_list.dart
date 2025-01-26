@@ -103,6 +103,7 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
             context: context,
             posts: posts,
             initialIndex: index,
+            initialThumbnailUrl: post.thumbnailImageUrl,
           ),
           isAnimated: post.isAnimated,
           isTranslated: post.isTranslated,

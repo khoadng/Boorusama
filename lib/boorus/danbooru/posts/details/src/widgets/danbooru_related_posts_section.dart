@@ -34,6 +34,7 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
         context: context,
         posts: posts,
         initialIndex: index,
+        initialThumbnailUrl: posts[index].url720x720,
       ),
     );
   }

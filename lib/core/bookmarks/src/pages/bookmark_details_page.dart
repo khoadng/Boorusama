@@ -23,10 +23,12 @@ import '../providers/local_providers.dart';
 class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({
     required this.initialIndex,
+    required this.initialThumbnailUrl,
     super.key,
   });
 
   final int initialIndex;
+  final String? initialThumbnailUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +37,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
 
     return PostDetailsScope(
       initialIndex: initialIndex,
+      initialThumbnailUrl: initialThumbnailUrl,
       posts: posts,
       scrollController: null,
       child: const BookmarkDetailsPageInternal(),

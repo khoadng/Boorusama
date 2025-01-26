@@ -12,6 +12,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
     required this.scrollController,
     required this.isDesktop,
     required this.hero,
+    required this.initialThumbnailUrl,
   });
 
   DetailsRouteContext<T> copyWith({
@@ -25,6 +26,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
       scrollController: scrollController ?? this.scrollController,
       isDesktop: isDesktop ?? this.isDesktop,
       hero: hero,
+      initialThumbnailUrl: initialThumbnailUrl,
     );
   }
 
@@ -33,6 +35,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
   final AutoScrollController? scrollController;
   final bool isDesktop;
   final bool hero;
+  final String? initialThumbnailUrl;
 
   @override
   List<Object?> get props => [
@@ -41,5 +44,6 @@ class DetailsRouteContext<T extends Post> extends Equatable {
         scrollController,
         isDesktop,
         hero,
+        initialThumbnailUrl,
       ];
 }

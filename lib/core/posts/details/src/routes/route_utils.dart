@@ -15,6 +15,7 @@ void goToPostDetailsPageFromPosts<T extends Post>({
   required BuildContext context,
   required List<T> posts,
   required int initialIndex,
+  required String? initialThumbnailUrl,
   AutoScrollController? scrollController,
 }) =>
     goToPostDetailsPageCore(
@@ -22,6 +23,7 @@ void goToPostDetailsPageFromPosts<T extends Post>({
       posts: posts,
       initialIndex: initialIndex,
       scrollController: scrollController,
+      initialThumbnailUrl: initialThumbnailUrl,
       hero: false,
     );
 
@@ -29,6 +31,7 @@ void goToPostDetailsPageFromController<T extends Post>({
   required BuildContext context,
   required int initialIndex,
   required PostGridController<T> controller,
+  required String? initialThumbnailUrl,
   AutoScrollController? scrollController,
 }) =>
     goToPostDetailsPageCore(
@@ -36,6 +39,7 @@ void goToPostDetailsPageFromController<T extends Post>({
       posts: controller.items.toList(),
       initialIndex: initialIndex,
       scrollController: scrollController,
+      initialThumbnailUrl: initialThumbnailUrl,
       hero: true,
     );
 
@@ -44,6 +48,7 @@ void goToPostDetailsPageCore<T extends Post>({
   required List<T> posts,
   required int initialIndex,
   required bool hero,
+  required String? initialThumbnailUrl,
   AutoScrollController? scrollController,
 }) {
   context.push(
@@ -56,6 +61,7 @@ void goToPostDetailsPageCore<T extends Post>({
       scrollController: scrollController,
       isDesktop: context.isLargeScreen,
       hero: hero,
+      initialThumbnailUrl: initialThumbnailUrl,
     ),
   );
 }

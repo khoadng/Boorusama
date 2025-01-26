@@ -111,6 +111,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                                           initialIndex: index,
                                           scrollController:
                                               autoScrollController,
+                                          initialThumbnailUrl: imgUrl,
                                         );
                                       }),
                             image: _buildImage(post, imgUrl),

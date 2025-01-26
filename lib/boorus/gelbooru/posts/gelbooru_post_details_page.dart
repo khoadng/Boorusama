@@ -107,6 +107,10 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                                   context: context,
                                   posts: data,
                                   initialIndex: postIdx,
+                                  initialThumbnailUrl:
+                                      getGelbooruPostPreviewImageUrl(
+                                    data[postIdx],
+                                  ),
                                 ),
                                 imageUrl: getGelbooruPostPreviewImageUrl,
                               ),

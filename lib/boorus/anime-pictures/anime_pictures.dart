@@ -114,6 +114,7 @@ class AnimePicturesBuilder
 
         return PostDetailsScope(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
           child: const DefaultPostDetailsPage<AnimePicturesPost>(),
@@ -421,6 +422,9 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
                     context: context,
                     posts: posts,
                     initialIndex: index,
+                    initialThumbnailUrl: defaultPostImageUrlBuilder(ref)(
+                      posts[index],
+                    ),
                   ),
                 )
               : const SliverSizedBox.shrink(),

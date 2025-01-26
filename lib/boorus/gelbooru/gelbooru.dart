@@ -218,6 +218,7 @@ class GelbooruBuilder
 
         return PostDetailsScope(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
           child: const DefaultPostDetailsPage<GelbooruPost>(),

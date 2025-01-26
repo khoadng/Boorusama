@@ -116,21 +116,31 @@ class SliverBookmarkGrid extends ConsumerWidget {
       ),
       child: Stack(
         children: [
-          ImageGridItem(
-            borderRadius: BorderRadius.circular(
-              borderRadius,
-            ),
-            isAnimated: bookmark.isVideo,
-            isAI: bookmark.isAI,
-            onTap: () => goToBookmarkDetailsPage(context, index),
-            image: BooruImage(
-              borderRadius: BorderRadius.circular(borderRadius),
-              aspectRatio: bookmark.aspectRatio,
-              fit: BoxFit.cover,
-              imageUrl:
-                  bookmark.isVideo ? bookmark.thumbnailUrl : bookmark.sampleUrl,
-              placeholderUrl: bookmark.thumbnailUrl,
-            ),
+          Builder(
+            builder: (context) {
+              final imageUrl =
+                  bookmark.isVideo ? bookmark.thumbnailUrl : bookmark.sampleUrl;
+
+              return ImageGridItem(
+                borderRadius: BorderRadius.circular(
+                  borderRadius,
+                ),
+                isAnimated: bookmark.isVideo,
+                isAI: bookmark.isAI,
+                onTap: () => goToBookmarkDetailsPage(
+                  context,
+                  index,
+                  initialThumbnailUrl: imageUrl,
+                ),
+                image: BooruImage(
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  aspectRatio: bookmark.aspectRatio,
+                  fit: BoxFit.cover,
+                  imageUrl: imageUrl,
+                  placeholderUrl: bookmark.thumbnailUrl,
+                ),
+              );
+            },
           ),
           Positioned(
             top: 4,

@@ -16,8 +16,9 @@ Future<void> goToBookmarkPage(
 
 Future<void> goToBookmarkDetailsPage(
   BuildContext context,
-  int index,
-) {
+  int index, {
+  required String initialThumbnailUrl,
+}) {
   return context.push(
     Uri(
       path: '/bookmarks/details',
@@ -25,5 +26,6 @@ Future<void> goToBookmarkDetailsPage(
         'index': index.toString(),
       },
     ).toString(),
+    extra: initialThumbnailUrl,
   );
 }

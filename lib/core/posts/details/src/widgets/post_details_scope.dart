@@ -15,6 +15,7 @@ import 'post_details_controller.dart';
 class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsScope({
     required this.initialIndex,
+    required this.initialThumbnailUrl,
     required this.posts,
     required this.child,
     required this.scrollController,
@@ -22,6 +23,7 @@ class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   });
 
   final int initialIndex;
+  final String? initialThumbnailUrl;
   final List<T> posts;
   final AutoScrollController? scrollController;
   final Widget child;
@@ -36,6 +38,7 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
   late PostDetailsController<T> controller = PostDetailsController<T>(
     scrollController: widget.scrollController,
     initialPage: widget.initialIndex,
+    initialThumbnailUrl: widget.initialThumbnailUrl,
     posts: widget.posts,
     reduceAnimations: ref.read(settingsProvider).reduceAnimations,
   );

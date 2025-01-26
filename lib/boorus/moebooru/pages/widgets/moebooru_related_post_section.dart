@@ -37,6 +37,7 @@ class MoebooruRelatedPostsSection extends ConsumerWidget {
                 context: context,
                 posts: posts,
                 initialIndex: index,
+                initialThumbnailUrl: posts[index].sampleImageUrl,
               ),
             )
           : const SliverSizedBox(),

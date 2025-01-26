@@ -24,6 +24,7 @@ final bookmarkRoutes = GoRoute(
         name: state.name,
         child: BookmarkDetailsPage(
           initialIndex: state.uri.queryParameters['index']?.toInt() ?? 0,
+          initialThumbnailUrl: state.extra as String?,
         ),
       ),
     ),

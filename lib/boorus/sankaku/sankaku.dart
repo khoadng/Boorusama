@@ -111,6 +111,7 @@ class SankakuBuilder
 
         return PostDetailsScope(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
           child: const DefaultPostDetailsPage<SankakuPost>(),
@@ -255,6 +256,7 @@ class SankakuArtistPostsSection extends ConsumerWidget {
                             context: context,
                             posts: data,
                             initialIndex: postIdx,
+                            initialThumbnailUrl: data[postIdx].sampleImageUrl,
                           ),
                           imageUrl: (item) => item.sampleImageUrl,
                         ),

@@ -28,6 +28,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({
     required this.post,
     required this.imageUrlBuilder,
+    required this.thumbnailUrlBuilder,
     required this.controller,
     super.key,
   });
@@ -35,6 +36,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final T post;
   final PostDetailsPageViewController controller;
   final String Function(T post)? imageUrlBuilder;
+  final String Function(T post)? thumbnailUrlBuilder;
 
   void _openSettings(BuildContext context) {
     openImageViewerSettingsPage(context);
@@ -105,6 +107,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
         : PostDetailsImage(
             heroTag: heroTag,
             imageUrlBuilder: imageUrlBuilder,
+            thumbnailUrlBuilder: thumbnailUrlBuilder,
             post: post,
           );
   }

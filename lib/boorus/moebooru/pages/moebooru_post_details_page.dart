@@ -258,6 +258,8 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
                                     context: context,
                                     posts: data,
                                     initialIndex: postIdx,
+                                    initialThumbnailUrl:
+                                        data[postIdx].thumbnailImageUrl,
                                   ),
                                   imageUrl: (item) => item.thumbnailImageUrl,
                                 ),

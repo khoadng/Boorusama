@@ -183,6 +183,7 @@ class ExploreList extends ConsumerWidget {
                   context: context,
                   posts: filteredPosts,
                   initialIndex: index,
+                  initialThumbnailUrl: defaultPostImageUrlBuilder(ref)(post),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
