@@ -271,6 +271,9 @@ class AppTheme {
           ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
+          fillColor: colorScheme.brightness.isDark
+              ? colorScheme.surfaceContainer
+              : null,
           enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide.none,

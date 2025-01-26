@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../theme/theme.dart';
 import '../../../../widgets/widgets.dart';
 
 class BooruSearchBar extends StatefulWidget {
@@ -64,8 +65,13 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      color: colorScheme.brightness.isDark
+          ? colorScheme.surfaceContainer
+          : colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -74,7 +80,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
           borderRadius: BorderRadius.circular(8),
         ),
         focusColor: Colors.transparent,
-        hoverColor: Theme.of(context).hoverColor,
+        hoverColor: theme.hoverColor,
         onTap: () => widget.onTap?.call(),
         child: Row(
           children: [
@@ -114,10 +120,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                       ),
                   hintText: widget.hintText ?? 'search.hint'.tr(),
                   hintStyle: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurfaceVariant
-                        .withValues(alpha: 0.5),
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                   ),
                 ),
                 autofocus: widget.autofocus,
