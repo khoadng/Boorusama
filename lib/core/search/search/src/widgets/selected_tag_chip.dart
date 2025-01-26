@@ -29,6 +29,9 @@ class SelectedTagChip extends StatelessWidget {
     final hasMeta = tagSearchItem.metatag != null;
     final isRaw = tagSearchItem.isRaw;
 
+    final colorScheme = Theme.of(context).colorScheme;
+    final tagColors = TagColors.fromBrightness(colorScheme.brightness);
+
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -53,10 +56,10 @@ class SelectedTagChip extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        backgroundColor: colorScheme.secondaryContainer,
         deleteIcon: Icon(
           Symbols.close,
-          color: Theme.of(context).colorScheme.error,
+          color: colorScheme.error,
           size: 18,
           weight: 600,
         ),
@@ -72,9 +75,7 @@ class SelectedTagChip extends StatelessWidget {
                 TextSpan(
                   text: 'RAW   ',
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? TagColors.dark().character
-                        : TagColors.light().character,
+                    color: tagColors.character,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -1,
                     fontSize: 13,
@@ -88,18 +89,14 @@ class SelectedTagChip extends StatelessWidget {
                     FilterOperator.or => '⁓',
                   },
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? TagColors.dark().copyright
-                        : TagColors.light().copyright,
+                    color: tagColors.copyright,
                   ),
                 ),
               if (hasMeta)
                 TextSpan(
                   text: '${tagSearchItem.metatag}: ',
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? TagColors.dark().meta
-                        : TagColors.light().meta,
+                    color: tagColors.meta,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.5,
                     fontSize: 15,
@@ -110,7 +107,7 @@ class SelectedTagChip extends StatelessWidget {
                     ? tagSearchItem.tag
                     : tagSearchItem.tag.replaceAll('_', ' '),
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSecondaryContainer,
+                  color: colorScheme.onSecondaryContainer,
                 ),
               ),
               const TextSpan(

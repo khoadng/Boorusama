@@ -26,6 +26,12 @@ class TagColors {
         meta: _orange3,
       );
 
+  factory TagColors.fromBrightness(Brightness brightness) {
+    return brightness == Brightness.light
+        ? TagColors.dark()
+        : TagColors.light();
+  }
+
   // light theme
   static const _red3 = Color.fromARGB(255, 255, 138, 139);
   static const _purple3 = Color.fromARGB(255, 199, 151, 255);

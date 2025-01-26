@@ -37,7 +37,6 @@ import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../tags/categories/tag_category.dart';
-import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/routes.dart';
 import '../../../tags/tag/tag.dart';
 import '../../../tags/tag/widgets.dart';
@@ -94,8 +93,7 @@ mixin DefaultThumbnailUrlMixin implements BooruBuilder {
 mixin DefaultTagColorMixin implements BooruBuilder {
   @override
   TagColorBuilder get tagColorBuilder => (options) {
-        final colors =
-            options.brightness.isLight ? TagColors.dark() : TagColors.light();
+        final colors = options.defaultTagColors;
 
         return switch (options.tagType) {
           '0' || 'general' || 'tag' => colors.general,

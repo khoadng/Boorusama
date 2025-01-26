@@ -17,6 +17,7 @@ import '../../../posts/rating/rating.dart';
 import '../../../settings/settings.dart';
 import '../../../tags/configs/configs.dart';
 import '../../../tags/metatag/metatag.dart';
+import '../../../tags/tag/colors.dart';
 
 typedef CreateConfigPageBuilder = Widget Function(
   BuildContext context,
@@ -182,11 +183,17 @@ class TagColorOptions extends Equatable {
   const TagColorOptions({
     required this.tagType,
     required this.brightness,
+    required this.defaultTagColors,
   });
 
   final String? tagType;
   final Brightness brightness;
+  final TagColors defaultTagColors;
 
   @override
-  List<Object?> get props => [tagType, brightness];
+  List<Object?> get props => [
+        tagType,
+        brightness,
+        defaultTagColors,
+      ];
 }

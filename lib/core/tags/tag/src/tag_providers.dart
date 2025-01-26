@@ -12,6 +12,7 @@ import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
+import 'tag_colors.dart';
 import 'tag_repository.dart';
 import 'tag_repository_impl.dart';
 
@@ -36,6 +37,7 @@ final tagColorProvider = Provider.family<Color?, String>(
       TagColorOptions(
         tagType: tag,
         brightness: colorScheme.brightness,
+        defaultTagColors: TagColors.fromBrightness(colorScheme.brightness),
       ),
     );
 

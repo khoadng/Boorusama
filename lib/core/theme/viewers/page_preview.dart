@@ -108,7 +108,9 @@ class PreviewHome extends StatelessWidget {
                       harmonizeWithPrimary: colors.harmonizeWithPrimary,
                     );
 
-                    final isDark = colorScheme.brightness == Brightness.dark;
+                    final tagColors = TagColors.fromBrightness(
+                      colorScheme.brightness,
+                    );
 
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(
@@ -119,25 +121,14 @@ class PreviewHome extends StatelessWidget {
                       itemBuilder: (context, index) {
                         // first is general, second is artist, third is character, fourth is copyright, fifth is meta then repeat
                         final colorIndex = index % 5;
+
                         final color = switch (colorIndex) {
-                          0 => !isDark
-                              ? TagColors.dark().general
-                              : TagColors.light().general,
-                          1 => !isDark
-                              ? TagColors.dark().artist
-                              : TagColors.light().artist,
-                          2 => !isDark
-                              ? TagColors.dark().character
-                              : TagColors.light().character,
-                          3 => !isDark
-                              ? TagColors.dark().copyright
-                              : TagColors.light().copyright,
-                          4 => !isDark
-                              ? TagColors.dark().meta
-                              : TagColors.light().meta,
-                          _ => !isDark
-                              ? TagColors.dark().general
-                              : TagColors.light().general,
+                          0 => tagColors.general,
+                          1 => tagColors.artist,
+                          2 => tagColors.character,
+                          3 => tagColors.copyright,
+                          4 => tagColors.meta,
+                          _ => tagColors.general,
                         };
 
                         return Padding(
@@ -321,18 +312,18 @@ class PreviewTagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = colorScheme.brightness == Brightness.dark;
+    final tagColors = TagColors.fromBrightness(colorScheme.brightness);
 
     return TagsTile(
       post: post,
       initialExpanded: true,
       tagColorBuilder: (tag) => switch (tag.category.id) {
-        0 => !isDark ? TagColors.dark().general : TagColors.light().general,
-        1 => !isDark ? TagColors.dark().artist : TagColors.light().artist,
-        4 => !isDark ? TagColors.dark().character : TagColors.light().character,
-        3 => !isDark ? TagColors.dark().copyright : TagColors.light().copyright,
-        5 => !isDark ? TagColors.dark().meta : TagColors.light().meta,
-        _ => !isDark ? TagColors.dark().general : TagColors.light().general,
+        0 => tagColors.general,
+        1 => tagColors.artist,
+        4 => tagColors.copyright,
+        3 => tagColors.character,
+        5 => tagColors.meta,
+        _ => tagColors.general,
       },
       tags: createTagGroupItems(
         [

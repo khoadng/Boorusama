@@ -12,6 +12,7 @@ import '../../../boorus/engine/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/display.dart';
 import '../../../tags/categories/providers.dart';
+import '../../../tags/tag/colors.dart';
 import '../../../theme.dart';
 import '../types/bookmark.dart';
 import 'bookmark_provider.dart';
@@ -93,6 +94,7 @@ final bookmarkTagColorProvider =
           TagColorOptions(
             tagType: tagType,
             brightness: colorScheme.brightness,
+            defaultTagColors: TagColors.fromBrightness(colorScheme.brightness),
           ),
         );
 

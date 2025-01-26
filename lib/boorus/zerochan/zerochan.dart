@@ -26,10 +26,8 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/search/routes.dart';
-import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
-import '../../core/theme.dart';
 import '../danbooru/danbooru.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';
@@ -105,8 +103,7 @@ class ZerochanBuilder
 
   @override
   TagColorBuilder get tagColorBuilder => (options) {
-        final colors =
-            options.brightness.isLight ? TagColors.dark() : TagColors.light();
+        final colors = options.defaultTagColors;
 
         return switch (options.tagType) {
           'mangaka' ||
