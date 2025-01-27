@@ -299,13 +299,8 @@ class AppTheme {
           ),
           contentPadding: const EdgeInsets.all(12),
         ),
-        popupMenuTheme: PopupMenuThemeData(
-          color: colorScheme.secondaryContainer,
-          labelTextStyle: WidgetStateProperty.all(
-            TextStyle(
-              color: colorScheme.onSecondaryContainer,
-            ),
-          ),
+        popupMenuTheme: const PopupMenuThemeData(
+          surfaceTintColor: Colors.transparent,
         ),
         listTileTheme: ListTileThemeData(
           subtitleTextStyle: TextStyle(

@@ -70,7 +70,7 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
 
     return Material(
       color: colorScheme.brightness.isDark
-          ? colorScheme.surfaceContainer
+          ? colorScheme.surfaceContainerHigh
           : colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),

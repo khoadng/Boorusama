@@ -21,8 +21,8 @@ class CustomContextMenuOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return ContextMenuOverlay(
       cardBuilder: (context, children) => Material(
-        color: backgroundColor ??
-            Theme.of(context).colorScheme.surfaceContainerHighest,
+        color:
+            backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(4),
         elevation: 4,
         child: Container(
