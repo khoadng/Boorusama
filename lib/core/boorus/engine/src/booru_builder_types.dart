@@ -101,6 +101,10 @@ typedef TagColorBuilder = Color? Function(
   TagColorOptions options,
 );
 
+typedef TagColorsBuilder = TagColors Function(
+  TagColorsOptions options,
+);
+
 typedef PostImageDetailsUrlBuilder = String Function(
   ImageQuality imageQuality,
   Post post,
@@ -182,18 +186,28 @@ class PostDetailsUIBuilder {
 class TagColorOptions extends Equatable {
   const TagColorOptions({
     required this.tagType,
-    required this.brightness,
-    required this.defaultTagColors,
+    required this.colors,
   });
 
   final String? tagType;
-  final Brightness brightness;
-  final TagColors defaultTagColors;
+  final TagColors colors;
 
   @override
   List<Object?> get props => [
         tagType,
+        colors,
+      ];
+}
+
+class TagColorsOptions extends Equatable {
+  const TagColorsOptions({
+    required this.brightness,
+  });
+
+  final Brightness brightness;
+
+  @override
+  List<Object?> get props => [
         brightness,
-        defaultTagColors,
       ];
 }

@@ -46,6 +46,7 @@ class ZerochanBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         UnknownMetatagsMixin,
+        DefaultTagColorsMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
@@ -103,7 +104,7 @@ class ZerochanBuilder
 
   @override
   TagColorBuilder get tagColorBuilder => (options) {
-        final colors = options.defaultTagColors;
+        final colors = options.colors;
 
         return switch (options.tagType) {
           'mangaka' ||

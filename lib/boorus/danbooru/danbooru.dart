@@ -117,7 +117,10 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
+    with
+        DefaultTagColorMixin,
+        DefaultTagColorsMixin,
+        NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
   DanbooruBuilder();
 

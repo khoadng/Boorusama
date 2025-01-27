@@ -93,8 +93,7 @@ final bookmarkTagColorProvider =
     final color = ref.watch(currentBooruBuilderProvider)?.tagColorBuilder(
           TagColorOptions(
             tagType: tagType,
-            brightness: colorScheme.brightness,
-            defaultTagColors: TagColors.fromBrightness(colorScheme.brightness),
+            colors: TagColors.fromBrightness(colorScheme.brightness),
           ),
         );
 

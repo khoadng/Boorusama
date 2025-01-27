@@ -28,16 +28,27 @@ final tagColorProvider = Provider.family<Color?, String>(
         .getBuilder(config.booruType)
         ?.tagColorBuilder;
 
+    final colorsBuilder = ref
+        .watch(booruEngineRegistryProvider)
+        .getBuilder(config.booruType)
+        ?.tagColorsBuilder;
+
     // In case the color builder is null, which means there is no config selected
     if (colorBuilder == null) return null;
 
     final colorScheme = ref.watch(colorSchemeProvider);
 
+    final colors = colorsBuilder?.call(
+          TagColorsOptions(
+            brightness: colorScheme.brightness,
+          ),
+        ) ??
+        TagColors.fromBrightness(colorScheme.brightness);
+
     final color = colorBuilder(
       TagColorOptions(
         tagType: tag,
-        brightness: colorScheme.brightness,
-        defaultTagColors: TagColors.fromBrightness(colorScheme.brightness),
+        colors: colors,
       ),
     );
 

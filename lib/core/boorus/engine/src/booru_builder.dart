@@ -23,6 +23,8 @@ abstract class BooruBuilder {
 
   TagColorBuilder get tagColorBuilder;
 
+  TagColorsBuilder get tagColorsBuilder;
+
   DownloadFilenameGenerator get downloadFilenameBuilder;
 
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;

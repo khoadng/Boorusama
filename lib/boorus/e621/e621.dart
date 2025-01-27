@@ -24,6 +24,7 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
+import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import 'artists/artists.dart';
@@ -206,16 +207,30 @@ class E621Builder
 
   @override
   TagColorBuilder get tagColorBuilder => (options) => switch (options.tagType) {
-        'general' => const Color(0xffb4c7d8),
-        'artist' => const Color(0xfff2ad04),
-        'copyright' => const Color(0xffd60ad8),
-        'character' => const Color(0xff05a903),
-        'species' => const Color(0xffed5d1f),
-        'invalid' => const Color(0xfffe3c3d),
-        'meta' => const Color(0xfffefffe),
-        'lore' => const Color(0xff218923),
-        _ => const Color(0xffb4c7d8),
+        'general' => options.colors.general,
+        'artist' => options.colors.artist,
+        'copyright' => options.colors.copyright,
+        'character' => options.colors.character,
+        'species' => options.colors.get('species'),
+        'invalid' => options.colors.get('invalid'),
+        'meta' => options.colors.meta,
+        'lore' => options.colors.get('lore'),
+        _ => options.colors.general,
       };
+
+  @override
+  TagColorsBuilder get tagColorsBuilder => (options) => const TagColors(
+        general: Color(0xffb4c7d8),
+        artist: Color(0xfff2ad04),
+        copyright: Color(0xffd60ad8),
+        character: Color(0xff05a903),
+        meta: Color(0xfffefffe),
+        customColors: {
+          'species': Color(0xffed5d1f),
+          'invalid': Color(0xfffe3c3d),
+          'lore': Color(0xff218923),
+        },
+      );
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
