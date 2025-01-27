@@ -20,6 +20,7 @@ import '../../tags/tag/colors.dart';
 import '../../tags/tag/tag.dart';
 import '../../widgets/widgets.dart';
 import '../providers.dart';
+import '../theme_configs.dart';
 import '../utils.dart';
 import 'theme_previewer_notifier.dart';
 
@@ -108,9 +109,10 @@ class PreviewHome extends StatelessWidget {
                       harmonizeWithPrimary: colors.harmonizeWithPrimary,
                     );
 
-                    final tagColors = TagColors.fromBrightness(
-                      colorScheme.brightness,
-                    );
+                    final tagColors = getTagColorsFromColorSettings(colors) ??
+                        TagColors.fromBrightness(
+                          colorScheme.brightness,
+                        );
 
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(
@@ -312,7 +314,9 @@ class PreviewTagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagColors = TagColors.fromBrightness(colorScheme.brightness);
+    final colors = ref.watch(themePreviewerColorsProvider);
+    final tagColors = getTagColorsFromColorSettings(colors) ??
+        TagColors.fromBrightness(colorScheme.brightness);
 
     return TagsTile(
       post: post,

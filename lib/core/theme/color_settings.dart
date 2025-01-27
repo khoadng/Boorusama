@@ -121,7 +121,7 @@ class ColorSettings extends Equatable {
       schemeType: SchemeType.builtIn.value,
       dynamicSchemeVariant: null,
       enableDynamicColoring: false,
-      harmonizeWithPrimary: true,
+      harmonizeWithPrimary: false,
       followSystemDarkMode: null,
     );
   }
