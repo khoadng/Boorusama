@@ -9,6 +9,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../tags/tag/colors.dart';
 import '../utils/color_utils.dart';
 import 'app_theme.dart';
 import 'color_settings.dart';
@@ -109,6 +110,39 @@ ColorScheme? getSchemeFromPredefined(String? name) {
     'coral_pink' => staticCoralPinkScheme,
     'hacker' => staticHackerScheme,
     'cyberpunk' => staticCyberpunkScheme,
+    _ => null,
+  };
+}
+
+TagColors? getTagColorsFromPredefined(String name, Brightness? brightness) {
+  return switch (name) {
+    'green' => const TagColors(
+        general: Color(0xff000198),
+        artist: Color(0xffaa0101),
+        character: Color(0xff01aa01),
+        copyright: Color(0xffab00ab),
+        meta: Color(0xfffe8900),
+      ),
+    'dark_green' => const TagColors(
+        general: Color(0xffb0e0b0),
+        artist: Color(0xffeea0a1),
+        character: Color(0xfff1f1a0),
+        copyright: Color(0xffeea0ee),
+        meta: Color(0xff8ed8ec),
+      ),
+    _ => null,
+  };
+}
+
+TagColors? getTagColorsFromColorSettings(ColorSettings? colorSettings) {
+  final settings = colorSettings;
+  if (settings == null) return null;
+
+  return switch (settings.schemeType) {
+    SchemeType.builtIn => getTagColorsFromPredefined(
+        settings.name,
+        settings.colorScheme?.brightness,
+      ),
     _ => null,
   };
 }

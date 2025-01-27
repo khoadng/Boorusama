@@ -12,6 +12,7 @@ import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
+import '../../../theme/theme_configs.dart';
 import 'tag_colors.dart';
 import 'tag_repository.dart';
 import 'tag_repository_impl.dart';
@@ -28,21 +29,12 @@ final tagColorProvider = Provider.family<Color?, String>(
         .getBuilder(config.booruType)
         ?.tagColorBuilder;
 
-    final colorsBuilder = ref
-        .watch(booruEngineRegistryProvider)
-        .getBuilder(config.booruType)
-        ?.tagColorsBuilder;
-
     // In case the color builder is null, which means there is no config selected
     if (colorBuilder == null) return null;
 
     final colorScheme = ref.watch(colorSchemeProvider);
 
-    final colors = colorsBuilder?.call(
-          TagColorsOptions(
-            brightness: colorScheme.brightness,
-          ),
-        ) ??
+    final colors = ref.watch(tagColorsProvider) ??
         TagColors.fromBrightness(colorScheme.brightness);
 
     final color = colorBuilder(
@@ -62,6 +54,38 @@ final tagColorProvider = Provider.family<Color?, String>(
   dependencies: [
     enableDynamicColoringProvider,
     colorSchemeProvider,
+    tagColorsProvider,
+  ],
+);
+
+final tagColorsProvider = Provider<TagColors?>(
+  (ref) {
+    final config = ref.watchConfigAuth;
+
+    final colorsBuilder = ref
+        .watch(booruEngineRegistryProvider)
+        .getBuilder(config.booruType)
+        ?.tagColorsBuilder;
+
+    // In case the color builder is null, which means there is no config selected
+    if (colorsBuilder == null) return null;
+
+    final colorScheme = ref.watch(colorSchemeProvider);
+    final customColors = ref.watch(customColorsProvider);
+
+    final colors = customColors != null
+        ? getTagColorsFromColorSettings(customColors)
+        : colorsBuilder.call(
+            TagColorsOptions(
+              brightness: colorScheme.brightness,
+            ),
+          );
+
+    return colors;
+  },
+  dependencies: [
+    colorSchemeProvider,
+    customColorsProvider,
   ],
 );
 
