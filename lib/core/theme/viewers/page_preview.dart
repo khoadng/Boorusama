@@ -237,21 +237,16 @@ class PreviewDetails extends StatelessWidget {
               ),
             ),
             const SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  DefaultFileDetailsSection(
-                    post: _previewPost,
-                    initialExpanded: true,
-                  ),
-                  Divider(thickness: 0.5),
-                ],
+              child: DefaultFileDetailsSection(
+                post: _previewPost,
+                initialExpanded: true,
               ),
             ),
             SliverIgnorePointer(
               sliver: SliverArtistPostList(
                 tag: _previewPost.tags.first,
                 child: const SliverPreviewPostGridPlaceholder(
-                  itemCount: 6,
+                  itemCount: 9,
                 ),
               ),
             ),

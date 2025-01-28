@@ -80,7 +80,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
               ),
               if (context.isLargeScreen)
                 Container(
-                  width: 460,
+                  width: 350,
                   padding: EdgeInsets.only(
                     top: viewPadding.top + 40,
                   ),

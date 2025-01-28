@@ -37,6 +37,8 @@ class DanbooruTagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final config = ref.watchConfigAuth;
     final tagDetails =
         allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
@@ -46,13 +48,13 @@ class DanbooruTagsTile extends ConsumerWidget {
 
     return DetailsWidgetSeparator(
       child: Theme(
-        data: Theme.of(context).copyWith(
-          listTileTheme: Theme.of(context).listTileTheme.copyWith(
-                visualDensity: VisualDensity.compact,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
-              ),
+        data: theme.copyWith(
+          listTileTheme: theme.listTileTheme.copyWith(
+            visualDensity: VisualDensity.compact,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ),
+          ),
           dividerColor: Colors.transparent,
         ),
         child: RemoveLeftPaddingOnLargeScreen(
@@ -72,16 +74,16 @@ class DanbooruTagsTile extends ConsumerWidget {
                 if (config.hasLoginDetails())
                   FilledButton(
                     style: FilledButton.styleFrom(
+                      padding: EdgeInsets.zero,
                       visualDensity: VisualDensity.compact,
                       shape: const CircleBorder(),
-                      backgroundColor:
-                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                      backgroundColor: colorScheme.surfaceContainerHighest,
                     ),
                     onPressed: () => ref.danbooruEdit(post),
                     child: Icon(
                       Symbols.edit,
                       size: 16,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: colorScheme.onSurfaceVariant,
                       fill: 1,
                     ),
                   ),

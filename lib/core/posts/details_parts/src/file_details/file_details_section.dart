@@ -71,6 +71,7 @@ class FileDetailsSection extends StatelessWidget {
               ),
             ),
             children: [
+              const SizedBox(height: 16),
               FileDetailTile(
                 title: 'ID',
                 valueLabel: post.id.toString(),
@@ -126,6 +127,7 @@ class FileDetailsSection extends StatelessWidget {
                     value: detail.value,
                   ),
               ],
+              const SizedBox(height: 16),
             ],
           ),
         ),

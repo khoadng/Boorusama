@@ -21,6 +21,13 @@ class BookmarkAppBar extends ConsumerWidget {
     final edit = ref.watch(bookmarkEditProvider);
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 
+    final itemBuilder = {
+      if (hasBookmarks) 'edit': const Text('Edit'),
+      if (hasBookmarks)
+        'download_all': Text(
+          'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks',
+        ),
+    };
     return AppBar(
       title: const Text('Bookmarks'),
       automaticallyImplyLeading: !edit,
@@ -36,26 +43,21 @@ class BookmarkAppBar extends ConsumerWidget {
           : null,
       actions: [
         if (!edit)
-          BooruPopupMenuButton(
-            onSelected: (value) {
-              switch (value) {
-                case 'edit':
-                  ref.read(bookmarkEditProvider.notifier).state = true;
-                case 'download_all':
-                  ref.bookmarks.downloadBookmarks(
-                    ref.readConfig,
-                    ref.read(filteredBookmarksProvider),
-                  );
-              }
-            },
-            itemBuilder: {
-              if (hasBookmarks) 'edit': const Text('Edit'),
-              if (hasBookmarks)
-                'download_all': Text(
-                  'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks',
-                ),
-            },
-          ),
+          if (itemBuilder.isNotEmpty)
+            BooruPopupMenuButton(
+              onSelected: (value) {
+                switch (value) {
+                  case 'edit':
+                    ref.read(bookmarkEditProvider.notifier).state = true;
+                  case 'download_all':
+                    ref.bookmarks.downloadBookmarks(
+                      ref.readConfig,
+                      ref.read(filteredBookmarksProvider),
+                    );
+                }
+              },
+              itemBuilder: itemBuilder,
+            ),
       ],
     );
   }
