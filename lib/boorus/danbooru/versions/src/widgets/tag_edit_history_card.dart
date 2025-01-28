@@ -24,6 +24,8 @@ class TagEditHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 8,
@@ -32,9 +34,12 @@ class TagEditHistoryCard extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        border: Border.all(),
+        border: Border.all(
+          color: colorScheme.outlineVariant,
+          width: 0.2,
+        ),
         borderRadius: BorderRadius.circular(8),
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: colorScheme.surfaceContainerLow,
       ),
       child: Row(
         children: [

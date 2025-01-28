@@ -84,6 +84,8 @@ class _DanbooruPostVersionsPageState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         leading: Container(
@@ -100,16 +102,16 @@ class _DanbooruPostVersionsPageState
       extendBodyBehindAppBar: true,
       body: Theme(
         data: Theme.of(context).copyWith(
-          focusColor: Theme.of(context).colorScheme.primary,
+          focusColor: colorScheme.primary,
         ),
         child: MultiSplitViewTheme(
           data: MultiSplitViewThemeData(
             dividerThickness: 24,
             dividerPainter: DividerPainters.grooved1(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: colorScheme.onSurface,
               thickness: 4,
               size: 75,
-              highlightedColor: Theme.of(context).colorScheme.primary,
+              highlightedColor: colorScheme.primary,
             ),
           ),
           child: MultiSplitView(
