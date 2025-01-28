@@ -65,11 +65,13 @@ class SettingEntry {
     required this.title,
     required this.content,
     required this.icon,
+    required this.name,
   });
 
   final String title;
   final Widget content;
   final IconData icon;
+  final String name;
 }
 
 // This should be always constant

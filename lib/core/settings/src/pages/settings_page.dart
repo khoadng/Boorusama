@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
+import '../../../analytics.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../configs/routes.dart';
@@ -38,52 +39,62 @@ import 'search_settings_page.dart';
 
 final _entries = [
   const SettingEntry(
+    name: '/settings/appearance',
     title: 'settings.appearance.appearance',
     icon: FontAwesomeIcons.paintRoller,
     content: AppearancePage(),
   ),
   const SettingEntry(
+    name: '/settings/language',
     title: 'settings.language.language',
     icon: Symbols.translate,
     content: LanguagePage(),
   ),
   const SettingEntry(
+    name: '/settings/download',
     title: 'settings.download.title',
     icon: FontAwesomeIcons.download,
     content: DownloadPage(),
   ),
   const SettingEntry(
+    name: '/settings/data_and_storage',
     title: 'settings.data_and_storage.data_and_storage',
     icon: FontAwesomeIcons.database,
     content: DataAndStoragePage(),
   ),
   const SettingEntry(
+    name: '/settings/backup_and_restore',
     title: 'settings.backup_and_restore.backup_and_restore',
     icon: FontAwesomeIcons.cloudArrowDown,
     content: BackupAndRestorePage(),
   ),
   const SettingEntry(
+    name: '/settings/search',
     title: 'settings.search.search',
     icon: FontAwesomeIcons.magnifyingGlass,
     content: SearchSettingsPage(),
   ),
   const SettingEntry(
+    name: '/settings/accessibility',
     title: 'settings.accessibility.accessibility',
     icon: FontAwesomeIcons.universalAccess,
     content: AccessibilityPage(),
   ),
   const SettingEntry(
+    name: '/settings/image_viewer',
     title: 'settings.image_viewer.image_viewer',
     icon: FontAwesomeIcons.image,
     content: ImageViewerPage(),
   ),
   const SettingEntry(
+    name: '/settings/privacy',
     title: 'settings.privacy.privacy',
     icon: FontAwesomeIcons.shieldHalved,
     content: PrivacyPage(),
   ),
   if (kPremiumEnabled)
     const SettingEntry(
+      name: '/settings/premium',
       title: kPremiumBrandNameFull,
       icon: FontAwesomeIcons.solidStar,
       content: PremiumPage(),
@@ -189,18 +200,21 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
     if (initial != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // open the initial page
-        final page = _findInitialPage(initial);
+        final entry = _findInitialPage(initial);
 
-        if (page != null) {
+        if (entry != null) {
           Navigator.of(context).push(
             CupertinoPageRoute(
+              settings: RouteSettings(
+                name: entry.name,
+              ),
               builder: (_) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: SettingsPageScope(
                       options: SettingsPageScope.of(context).options,
-                      child: page,
+                      child: entry.content,
                     ),
                   ),
                   const WidthThresholdPopper(
@@ -235,12 +249,12 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
     }
   }
 
-  Widget? _findInitialPage(String initial) {
+  SettingEntry? _findInitialPage(String initial) {
     final options = SettingsPageScope.of(context).options;
     for (final entry in options.entries) {
       // fuzzy search
       if (entry.title.toLowerCase().contains(initial.toLowerCase())) {
-        return entry.content;
+        return entry;
       }
     }
 
@@ -278,6 +292,9 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
                     ),
                     onTap: () => Navigator.of(context).push(
                       CupertinoPageRoute(
+                        settings: RouteSettings(
+                          name: entry.name,
+                        ),
                         builder: (_) => SettingsPageScope(
                           options: options,
                           child: entry.content,
@@ -335,6 +352,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
   @override
   Widget build(BuildContext context) {
     final entries = SettingsPageScope.of(context).options.entries;
+    final analytics = ref.watch(analyticsProvider);
 
     // ref.watch(settingsProvider.select((value) => value.language));
     final options = SettingsPageScope.of(context).options;
@@ -357,6 +375,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                   showLeading: options.showIcon,
                   onTap: () => setState(() {
                     _selectedEntry = entries.indexOf(entry);
+                    analytics.logScreenView(entry.name);
                     widget.onTabChanged?.call(entry.title);
                   }),
                 ),
