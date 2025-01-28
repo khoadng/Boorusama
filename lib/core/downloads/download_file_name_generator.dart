@@ -109,7 +109,9 @@ class DownloadFileNameBuilder<T extends Post>
 
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
-  String _joinFileWithExtension(String fileName, String fileExt) {
+  String _joinFileWithExtension(String rawFileName, String fileExt) {
+    final fileName = sanitizedUrl(rawFileName);
+
     // check if file already has extension
     final fileNameExt = extension(fileName);
     if (fileNameExt.isNotEmpty) return fileName;
