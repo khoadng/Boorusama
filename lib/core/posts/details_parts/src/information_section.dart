@@ -76,8 +76,8 @@ class InformationSection extends ConsumerWidget {
           const EdgeInsets.only(
             top: 12,
             bottom: 4,
-            left: 16,
-            right: 16,
+            left: 12,
+            right: 12,
           ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

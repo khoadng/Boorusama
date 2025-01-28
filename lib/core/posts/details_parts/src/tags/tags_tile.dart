@@ -9,6 +9,7 @@ import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../post/post.dart';
+import '../_internal/details_widget_frame.dart';
 
 class TagsTile extends ConsumerWidget {
   const TagsTile({
@@ -49,30 +50,33 @@ class TagsTile extends ConsumerWidget {
         dividerColor: Colors.transparent,
       ),
       child: RemoveLeftPaddingOnLargeScreen(
-        child: ExpansionTile(
-          initiallyExpanded: initialExpanded,
-          title: Text('$count tags'),
-          controlAffinity: ListTileControlAffinity.trailing,
-          onExpansionChanged: (value) =>
-              value ? onExpand?.call() : onCollapse?.call(),
-          children: [
-            Padding(
-              padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
-              child: PostTagList(
-                tags: tags,
-                itemBuilder: (context, tag) => GeneralTagContextMenu(
-                  tag: tag.rawName,
-                  child: PostTagListChip(
-                    tag: tag,
-                    onTap: () => onTagTap?.call(tag),
-                    color:
-                        tagColorBuilder != null ? tagColorBuilder!(tag) : null,
+        child: DetailsWidgetSeparator(
+          child: ExpansionTile(
+            initiallyExpanded: initialExpanded,
+            title: Text('$count tags'),
+            controlAffinity: ListTileControlAffinity.trailing,
+            onExpansionChanged: (value) =>
+                value ? onExpand?.call() : onCollapse?.call(),
+            children: [
+              Padding(
+                padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
+                child: PostTagList(
+                  tags: tags,
+                  itemBuilder: (context, tag) => GeneralTagContextMenu(
+                    tag: tag.rawName,
+                    child: PostTagListChip(
+                      tag: tag,
+                      onTap: () => onTagTap?.call(tag),
+                      color: tagColorBuilder != null
+                          ? tagColorBuilder!(tag)
+                          : null,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-          ],
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );

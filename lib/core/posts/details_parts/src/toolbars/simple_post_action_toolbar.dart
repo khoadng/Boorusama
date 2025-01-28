@@ -13,6 +13,7 @@ import '../../../favorites/providers.dart';
 import '../../../favorites/widgets.dart';
 import '../../../post/post.dart';
 import '../../../shares/widgets.dart';
+import '../_internal/details_widget_frame.dart';
 import 'bookmark_post_button.dart';
 import 'comment_post_button.dart';
 import 'download_post_button.dart';
@@ -119,9 +120,8 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DetailsWidgetSeparator(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      color: Theme.of(context).colorScheme.surface,
       child: OverflowBar(
         alignment: MainAxisAlignment.spaceEvenly,
         children: children,

@@ -54,62 +54,82 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
       ),
     );
 
-    return SliverList(
-      delegate: SliverChildListDelegate([
-        Column(
-          children: [
-            Material(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 4,
-                  vertical: 8,
-                ),
-                child: onViewAll != null
-                    ? InkWell(
-                        onTap: onViewAll,
-                        customBorder: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: listTile,
-                      )
-                    : listTile,
-              ),
-            ),
-            PreviewPostList(
-              posts: posts,
-              imageUrl: imageUrl,
-              imageBuilder: (post) => Stack(
-                children: [
-                  BooruImage(
-                    aspectRatio: 0.6,
-                    imageUrl: imageUrl(post),
-                    placeholderUrl: post.thumbnailImageUrl,
-                    fit: BoxFit.cover,
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          Column(
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 8,
                   ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        post.source.whenWeb(
-                          (source) => Container(
-                            padding: const EdgeInsets.all(4),
-                            margin: const EdgeInsets.all(1),
-                            width: 25,
-                            height: 25,
-                            decoration: BoxDecoration(
-                              color: context
-                                  .extendedColorScheme.surfaceContainerOverlay,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
-                            ),
-                            child: WebsiteLogo(url: source.faviconUrl),
+                  child: onViewAll != null
+                      ? InkWell(
+                          onTap: onViewAll,
+                          customBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          () => const SizedBox.shrink(),
-                        ),
-                        if (post.fileSize > 0)
+                          child: listTile,
+                        )
+                      : listTile,
+                ),
+              ),
+              PreviewPostList(
+                posts: posts,
+                imageUrl: imageUrl,
+                imageBuilder: (post) => Stack(
+                  children: [
+                    BooruImage(
+                      aspectRatio: 0.6,
+                      imageUrl: imageUrl(post),
+                      placeholderUrl: post.thumbnailImageUrl,
+                      fit: BoxFit.cover,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          post.source.whenWeb(
+                            (source) => Container(
+                              padding: const EdgeInsets.all(4),
+                              margin: const EdgeInsets.all(1),
+                              width: 25,
+                              height: 25,
+                              decoration: BoxDecoration(
+                                color: context.extendedColorScheme
+                                    .surfaceContainerOverlay,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(4)),
+                              ),
+                              child: WebsiteLogo(url: source.faviconUrl),
+                            ),
+                            () => const SizedBox.shrink(),
+                          ),
+                          if (post.fileSize > 0)
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              margin: const EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                color: context.extendedColorScheme
+                                    .surfaceContainerOverlay,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(4)),
+                              ),
+                              child: Text(
+                                Filesize.parse(post.fileSize, round: 1),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: context.extendedColorScheme
+                                      .onSurfaceContainerOverlay,
+                                ),
+                              ),
+                            ),
                           Container(
                             padding: const EdgeInsets.all(4),
                             margin: const EdgeInsets.all(1),
@@ -120,7 +140,7 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                                   const BorderRadius.all(Radius.circular(4)),
                             ),
                             child: Text(
-                              Filesize.parse(post.fileSize, round: 1),
+                              '${post.width.toInt()}x${post.height.toInt()}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: context.extendedColorScheme
@@ -128,34 +148,17 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                               ),
                             ),
                           ),
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          margin: const EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            color: context
-                                .extendedColorScheme.surfaceContainerOverlay,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
-                          ),
-                          child: Text(
-                            '${post.width.toInt()}x${post.height.toInt()}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: context.extendedColorScheme
-                                  .onSurfaceContainerOverlay,
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                onTap: onTap,
               ),
-              onTap: onTap,
-            ),
-          ],
-        ),
-      ]),
+            ],
+          ),
+        ]),
+      ),
     );
   }
 }

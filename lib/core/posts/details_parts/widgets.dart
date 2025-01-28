@@ -16,3 +16,5 @@ export 'src/tags/basic_tag_list.dart';
 export 'src/toolbars/bookmark_post_button.dart';
 export 'src/toolbars/comment_post_button.dart';
 export 'src/toolbars/download_post_button.dart';
+
+export 'src/_internal/details_widget_frame.dart';

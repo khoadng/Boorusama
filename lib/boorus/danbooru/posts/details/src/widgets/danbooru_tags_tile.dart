@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/display/media_query_utils.dart';
+import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
@@ -43,68 +44,70 @@ class DanbooruTagsTile extends ConsumerWidget {
     final isExpanded =
         ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        listTileTheme: Theme.of(context).listTileTheme.copyWith(
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
-            ),
-        dividerColor: Colors.transparent,
-      ),
-      child: RemoveLeftPaddingOnLargeScreen(
-        child: ExpansionTile(
-          initiallyExpanded: initialExpanded,
-          onExpansionChanged: (value) {
-            ref
-                .read(
-                  danbooruTagTileExpansionStateProvider(initialExpanded)
-                      .notifier,
-                )
-                .state = value;
-          },
-          title: Row(
-            children: [
-              Text('$count tags'),
-              if (config.hasLoginDetails())
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    shape: const CircleBorder(),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                  ),
-                  onPressed: () => ref.danbooruEdit(post),
-                  child: Icon(
-                    Symbols.edit,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fill: 1,
-                  ),
+    return DetailsWidgetSeparator(
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          listTileTheme: Theme.of(context).listTileTheme.copyWith(
+                visualDensity: VisualDensity.compact,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
                 ),
-            ],
-          ),
-          children: [
-            if (isExpanded)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: PostTagList(
-                  tags: ref.watch(danbooruTagGroupsProvider(post)).maybeWhen(
-                        data: (data) => data,
-                        orElse: () => null,
+              ),
+          dividerColor: Colors.transparent,
+        ),
+        child: RemoveLeftPaddingOnLargeScreen(
+          child: ExpansionTile(
+            initiallyExpanded: initialExpanded,
+            onExpansionChanged: (value) {
+              ref
+                  .read(
+                    danbooruTagTileExpansionStateProvider(initialExpanded)
+                        .notifier,
+                  )
+                  .state = value;
+            },
+            title: Row(
+              children: [
+                Text('$count tags'),
+                if (config.hasLoginDetails())
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      shape: const CircleBorder(),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                    ),
+                    onPressed: () => ref.danbooruEdit(post),
+                    child: Icon(
+                      Symbols.edit,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fill: 1,
+                    ),
+                  ),
+              ],
+            ),
+            children: [
+              if (isExpanded)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: PostTagList(
+                    tags: ref.watch(danbooruTagGroupsProvider(post)).maybeWhen(
+                          data: (data) => data,
+                          orElse: () => null,
+                        ),
+                    itemBuilder: (context, tag) => DanbooruTagContextMenu(
+                      tag: tag.rawName,
+                      child: PostTagListChip(
+                        tag: tag,
+                        onTap: () => goToSearchPage(context, tag: tag.rawName),
                       ),
-                  itemBuilder: (context, tag) => DanbooruTagContextMenu(
-                    tag: tag.rawName,
-                    child: PostTagListChip(
-                      tag: tag,
-                      onTap: () => goToSearchPage(context, tag: tag.rawName),
                     ),
                   ),
                 ),
-              ),
-            const SizedBox(height: 8),
-          ],
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );

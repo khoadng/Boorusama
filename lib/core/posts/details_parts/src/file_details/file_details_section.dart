@@ -11,6 +11,7 @@ import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../../../rating/rating.dart';
+import '../_internal/details_widget_frame.dart';
 import 'file_detail_tile.dart';
 
 class FileDetailsSection extends StatelessWidget {
@@ -46,85 +47,87 @@ class FileDetailsSection extends StatelessWidget {
 
     final ratingText = rating.name.getFirstCharacter().toUpperCase();
 
-    return Theme(
-      data: Theme.of(context).copyWith(
-        listTileTheme: Theme.of(context).listTileTheme.copyWith(
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
+    return DetailsWidgetSeparator(
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          listTileTheme: Theme.of(context).listTileTheme.copyWith(
+                visualDensity: VisualDensity.compact,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                ),
+              ),
+          dividerColor: Colors.transparent,
+        ),
+        child: RemoveLeftPaddingOnLargeScreen(
+          child: ExpansionTile(
+            initiallyExpanded: initialExpanded,
+            title: Text(
+              'post.detail.file_details'.tr(),
+            ),
+            subtitle: Text(
+              '$resolutionText$fileFormatText$fileSizeText • $ratingText',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.hintColor,
               ),
             ),
-        dividerColor: Colors.transparent,
-      ),
-      child: RemoveLeftPaddingOnLargeScreen(
-        child: ExpansionTile(
-          initiallyExpanded: initialExpanded,
-          title: Text(
-            'post.detail.file_details'.tr(),
-          ),
-          subtitle: Text(
-            '$resolutionText$fileFormatText$fileSizeText • $ratingText',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.hintColor,
-            ),
-          ),
-          children: [
-            FileDetailTile(
-              title: 'ID',
-              valueLabel: post.id.toString(),
-              valueTrailing: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  child: const Icon(
-                    Symbols.content_copy,
-                    size: 18,
+            children: [
+              FileDetailTile(
+                title: 'ID',
+                valueLabel: post.id.toString(),
+                valueTrailing: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    child: const Icon(
+                      Symbols.content_copy,
+                      size: 18,
+                    ),
+                    onTap: () {
+                      AppClipboard.copyWithDefaultToast(
+                        context,
+                        post.id.toString(),
+                      );
+                    },
                   ),
-                  onTap: () {
-                    AppClipboard.copyWithDefaultToast(
-                      context,
-                      post.id.toString(),
-                    );
-                  },
                 ),
               ),
-            ),
-            FileDetailTile(
-              title: 'post.detail.rating'.tr(),
-              valueLabel: rating.name.pascalCase,
-            ),
-            if (post.fileSize > 0)
               FileDetailTile(
-                title: 'post.detail.size'.tr(),
-                valueLabel: Filesize.parse(post.fileSize, round: 1),
+                title: 'post.detail.rating'.tr(),
+                valueLabel: rating.name.pascalCase,
               ),
-            if (post.width > 0 && post.height > 0)
-              FileDetailTile(
-                title: 'post.detail.resolution'.tr(),
-                valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
-              ),
-            FileDetailTile(
-              title: 'post.detail.file_format'.tr(),
-              valueLabel: post.format,
-            ),
-            if (post.isVideo && post.duration > 0)
-              FileDetailTile(
-                title: 'Duration',
-                valueLabel: '${post.duration.toInt()} seconds',
-              ),
-            if (uploader != null)
-              FileDetailTile(
-                title: 'Uploader',
-                value: uploader,
-              ),
-            if (customDetails != null) ...[
-              for (final detail in customDetails!.entries)
+              if (post.fileSize > 0)
                 FileDetailTile(
-                  title: detail.key,
-                  value: detail.value,
+                  title: 'post.detail.size'.tr(),
+                  valueLabel: Filesize.parse(post.fileSize, round: 1),
                 ),
+              if (post.width > 0 && post.height > 0)
+                FileDetailTile(
+                  title: 'post.detail.resolution'.tr(),
+                  valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
+                ),
+              FileDetailTile(
+                title: 'post.detail.file_format'.tr(),
+                valueLabel: post.format,
+              ),
+              if (post.isVideo && post.duration > 0)
+                FileDetailTile(
+                  title: 'Duration',
+                  valueLabel: '${post.duration.toInt()} seconds',
+                ),
+              if (uploader != null)
+                FileDetailTile(
+                  title: 'Uploader',
+                  value: uploader,
+                ),
+              if (customDetails != null) ...[
+                for (final detail in customDetails!.entries)
+                  FileDetailTile(
+                    title: detail.key,
+                    value: detail.value,
+                  ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

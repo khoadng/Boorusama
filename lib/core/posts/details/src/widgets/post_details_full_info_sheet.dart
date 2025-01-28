@@ -69,7 +69,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
               (p) => builder.buildPart(context, p),
             )
             .nonNulls,
-        const SliverSizedBox(height: 24),
+        const SliverSizedBox(height: 12),
         if (canCustomize)
           const SliverToBoxAdapter(
             child: AddCustomDetailsButton(),

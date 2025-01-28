@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
+import '_internal/details_widget_frame.dart';
 
 class SimplePostStatsTile extends StatelessWidget {
   const SimplePostStatsTile({
@@ -32,7 +33,7 @@ class SimplePostStatsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return DetailsWidgetSeparator(
       padding: padding ??
           const EdgeInsets.symmetric(
             horizontal: 8,

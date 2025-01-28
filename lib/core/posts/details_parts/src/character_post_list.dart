@@ -24,17 +24,23 @@ class SliverCharacterPostList extends ConsumerWidget {
     if (tags.isEmpty) return const SliverSizedBox.shrink();
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
       sliver: MultiSliver(
         children: [
           SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.only(top: 20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 8,
+              ),
               child: Row(
                 children: [
                   Text(
                     'Characters',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -42,7 +48,7 @@ class SliverCharacterPostList extends ConsumerWidget {
               ),
             ),
           ),
-          const SliverSizedBox(height: 8),
+          const SliverSizedBox(height: 4),
           SliverGrid.count(
             crossAxisCount: 2,
             childAspectRatio: 4.5,

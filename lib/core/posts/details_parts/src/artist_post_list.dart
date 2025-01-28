@@ -27,34 +27,37 @@ class SliverArtistPostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MultiSliver(
-      children: [
-        SliverToBoxAdapter(
-          child: Material(
-            color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 8,
-              ),
-              child: InkWell(
-                onTap: () => goToArtistPage(context, tag),
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      sliver: MultiSliver(
+        children: [
+          SliverToBoxAdapter(
+            child: Material(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 8,
                 ),
-                child: RemoveLeftPaddingOnLargeScreen(
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                    visualDensity: VisualDensity.compact,
-                    minVerticalPadding: 0,
-                    trailing: const Icon(
-                      Symbols.arrow_right_alt,
-                    ),
-                    title: Text(
-                      tag.replaceAll('_', ' '),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
+                child: InkWell(
+                  onTap: () => goToArtistPage(context, tag),
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: RemoveLeftPaddingOnLargeScreen(
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      visualDensity: VisualDensity.compact,
+                      minVerticalPadding: 0,
+                      trailing: const Icon(
+                        Symbols.arrow_right_alt,
+                      ),
+                      title: Text(
+                        tag.replaceAll('_', ' '),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                   ),
@@ -62,12 +65,12 @@ class SliverArtistPostList extends ConsumerWidget {
               ),
             ),
           ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: child,
-        ),
-      ],
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            sliver: child,
+          ),
+        ],
+      ),
     );
   }
 }
