@@ -31,6 +31,8 @@ class AppInfo {
     required this.translationBadgeUrl,
     required this.supportEmail,
     required this.booruDefUrl,
+    required this.termsOfServiceUrl,
+    required this.privacyPolicyUrl,
   })  : copyrightYearRange = (
           start: 2020,
           end: DateTime.now().toUtc().year,
@@ -46,6 +48,8 @@ class AppInfo {
         translationBadgeUrl: json['translationBadgeUrl'],
         supportEmail: json['supportEmail'],
         booruDefUrl: json['booruDefUrl'],
+        termsOfServiceUrl: json['termsOfServiceUrl'],
+        privacyPolicyUrl: json['privacyPolicyUrl'],
       );
 
   static final empty = AppInfo(
@@ -57,6 +61,8 @@ class AppInfo {
     translationBadgeUrl: '',
     supportEmail: '',
     booruDefUrl: '',
+    termsOfServiceUrl: '',
+    privacyPolicyUrl: '',
   );
 
   final String discordUrl;
@@ -67,6 +73,8 @@ class AppInfo {
   final String translationBadgeUrl;
   final String supportEmail;
   final String booruDefUrl;
+  final String termsOfServiceUrl;
+  final String privacyPolicyUrl;
 
   final YearRange copyrightYearRange;
   final String author;

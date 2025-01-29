@@ -8,6 +8,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../foundation/iap/iap.dart';
+import '../../../foundation/url_launcher.dart';
+import '../../../info/app_info.dart';
 import '../../../widgets/widgets.dart';
 import '../internal_widgets/subscription_plan_tile.dart';
 import '../providers/premium_purchase_provider.dart';
@@ -241,12 +243,13 @@ class _BackButtonBlocker extends ConsumerWidget {
   }
 }
 
-class _LegalDisclaimerText extends StatelessWidget {
+class _LegalDisclaimerText extends ConsumerWidget {
   const _LegalDisclaimerText();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final appInfo = ref.watch(appInfoProvider);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -266,7 +269,25 @@ class _LegalDisclaimerText extends StatelessWidget {
               text: 'Terms of Service',
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  //FIXME: open terms of service
+                  launchExternalUrlString(appInfo.termsOfServiceUrl);
+                },
+              style: TextStyle(
+                color: colorScheme.primary,
+              ),
+            ),
+            TextSpan(
+              text: ' and ',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+            ),
+            TextSpan(
+              text: 'Privacy Policy',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  launchExternalUrlString(appInfo.privacyPolicyUrl);
                 },
               style: TextStyle(
                 color: colorScheme.primary,
