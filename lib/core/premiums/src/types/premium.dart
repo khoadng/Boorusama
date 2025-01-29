@@ -13,11 +13,6 @@ const defaultBenefits = <Benefit>[
         'More themes to choose from and customize. Each profile can have its own theme.',
   ),
   Benefit(
-    title: 'Widgets',
-    description:
-        'Add widgets to your home screen to quickly access your favorite profiles.',
-  ),
-  Benefit(
     title: 'Support indie developer',
     description:
         'Help me as a solo developer to keep the app updated and improving.',

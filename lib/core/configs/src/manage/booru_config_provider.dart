@@ -9,8 +9,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../analytics.dart';
 import '../../../foundation/loggers.dart';
-import '../../../home_widgets/providers.dart';
-import '../../../premiums/providers.dart';
 import '../../../settings/providers.dart';
 import '../../../utils/collection_utils.dart';
 import '../booru_config.dart';
@@ -156,8 +154,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
           },
         ),
       );
-
-      unawaited(syncToHomeScreen());
     } catch (e) {
       onFailure?.call(e.toString());
     }
@@ -225,8 +221,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
               ),
         );
       }
-
-      unawaited(syncToHomeScreen());
     } catch (e) {
       _logError('Failed to update config: $oldConfigId');
       onFailure?.call(
@@ -286,8 +280,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       if (setAsCurrent || state.length == 1) {
         await ref.read(currentBooruConfigProvider.notifier).update(config);
       }
-
-      unawaited(syncToHomeScreen());
     } catch (e) {
       onFailure?.call(
         'Something went wrong while adding your profile. Please try again',
@@ -303,8 +295,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         booruConfigIdOrders: configIds.join(' '),
       ),
     );
-
-    unawaited(syncToHomeScreen());
   }
 
   void reorder(
@@ -323,20 +313,6 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
   BooruConfig? findConfigById(int id) {
     return state.firstWhereOrNull((config) => config.id == id);
-  }
-
-  Future<void> pinToHomeScreen({
-    required BooruConfig config,
-  }) =>
-      ref.read(homeWidgetProvider).pinToHomeScreen(config: config);
-
-  Future<void> syncToHomeScreen() async {
-    final hasPremium = ref.read(hasPremiumProvider);
-
-    if (!hasPremium) return;
-
-    final settings = ref.read(settingsProvider);
-    await ref.read(homeWidgetProvider).updateWidget(state, settings);
   }
 
   void _logError(String message) {

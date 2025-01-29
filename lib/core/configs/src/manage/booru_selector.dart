@@ -11,9 +11,6 @@ import 'package:reorderables/reorderables.dart';
 
 // Project imports:
 import '../../../foundation/toast.dart';
-import '../../../home_widgets/home_widget_providers.dart';
-import '../../../premiums/providers.dart';
-import '../../../premiums/routes.dart';
 import '../../../router.dart';
 import '../../../settings/providers.dart';
 import '../booru_config.dart';
@@ -34,9 +31,6 @@ class BooruSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Quick hack to initialize the provider
-    ref.listen(canPinWidgetProvider, (_, __) {});
-
     return direction == Axis.vertical
         ? const BooruSelectorVertical()
         : const BooruSelectorHorizontal();
@@ -189,31 +183,6 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
             'generic.action.duplicate'.tr(),
             onPressed: () => notifier.duplicate(config: config),
           ),
-          if (kPremiumEnabled)
-            ref.watch(canPinWidgetProvider).when(
-                  data: (canPin) => canPin
-                      ? canPin
-                          ? ContextMenuButtonConfig(
-                              'Pin to home screen',
-                              onPressed: () {
-                                final hasPremium = ref.read(hasPremiumProvider);
-                                if (hasPremium) {
-                                  notifier.pinToHomeScreen(
-                                    config: config,
-                                  );
-                                } else {
-                                  goToPremiumPage(context);
-                                }
-                              },
-                            )
-                          : null
-                      : null,
-                  loading: () => ContextMenuButtonConfig(
-                    'Pin to home screen (checking...)',
-                    onPressed: null,
-                  ),
-                  error: (error, _) => null,
-                ),
           ContextMenuButtonConfig(
             'generic.action.delete'.tr(),
             labelStyle: TextStyle(

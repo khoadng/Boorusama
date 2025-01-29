@@ -42,8 +42,6 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       final miscBox = ref.read(miscDataBoxProvider);
 
       ref.showChangelogDialogIfNeeded(miscBox);
-
-      ref.read(booruConfigProvider.notifier).syncToHomeScreen();
     });
   }
 
