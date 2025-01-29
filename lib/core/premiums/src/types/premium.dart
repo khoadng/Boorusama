@@ -3,19 +3,24 @@ import 'package:equatable/equatable.dart';
 
 const defaultBenefits = <Benefit>[
   Benefit(
-    title: 'Customized layout',
+    title: 'Themes',
     description:
-        "Don't like the default layout? Want to see more or less information? Customize it!",
+        'Enjoy a variety of themes to choose from and customize. Give each profile its own unique look.',
   ),
   Benefit(
-    title: 'Customized theme',
+    title: 'Customize your layout',
     description:
-        'More themes to choose from and customize. Each profile can have its own theme.',
+        'Not a fan of the default layout? Want to see more or less info? Tweak it to your liking!',
+  ),
+  Benefit(
+    title: 'Custom home screen',
+    description:
+        'Set your home screen to Bookmarks, Search, or any other page you prefer.',
   ),
   Benefit(
     title: 'Support indie developer',
     description:
-        'Help me as a solo developer to keep the app updated and improving.',
+        'Support my solo development efforts so I can keep rolling out updates and improvements.',
   ),
 ];
 
