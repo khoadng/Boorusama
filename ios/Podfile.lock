@@ -204,8 +204,6 @@ PODS:
   - GoogleUtilities/UserDefaults (8.0.2):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
-  - home_widget (0.0.1):
-    - Flutter
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -271,7 +269,6 @@ DEPENDENCIES:
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - fvp (from `.symlinks/plugins/fvp/darwin`)
   - gal (from `.symlinks/plugins/gal/darwin`)
-  - home_widget (from `.symlinks/plugins/home_widget/ios`)
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -342,8 +339,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fvp/darwin"
   gal:
     :path: ".symlinks/plugins/gal/darwin"
-  home_widget:
-    :path: ".symlinks/plugins/home_widget/ios"
   local_auth_darwin:
     :path: ".symlinks/plugins/local_auth_darwin/darwin"
   package_info_plus:
@@ -404,7 +399,6 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 987769c4ca6b968f2479fbcc9fe3ce34af454b8e
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
-  home_widget: 0434835a4c9a75704264feff6be17ea40e0f0d57
   local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
   mdk: 5b3a56ae10c666309c1796bd72968e91db4d670a
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
