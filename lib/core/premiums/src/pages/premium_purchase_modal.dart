@@ -189,7 +189,7 @@ class _PurchaseButton extends ConsumerWidget {
                 width: 16,
                 height: 16,
                 child: CircularProgressIndicator(
-                  color: colorScheme.onPrimary,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ),

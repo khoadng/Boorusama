@@ -17,7 +17,7 @@ class PremiumThanksDialog extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           const Text(
-            'Thank you for supporting me!',
+            'Thank you!',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
