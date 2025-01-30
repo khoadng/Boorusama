@@ -96,7 +96,6 @@ class _MoebooruPostDetailsPageState
     data.controller.currentPage.addListener(_onPageChanged);
   }
 
-  //FIXME: Need to test this carefully
   @override
   void didUpdateWidget(covariant MoebooruPostDetailsPageInternal oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -139,13 +138,17 @@ class _MoebooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
+
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
       topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
           post: InheritedPost.of<MoebooruPost>(context),
-          onStartSlideshow: () => controller.startSlideshow(),
+          onStartSlideshow: config.hasLoginDetails()
+              ? null
+              : () => controller.startSlideshow(),
         ),
       ],
     );
