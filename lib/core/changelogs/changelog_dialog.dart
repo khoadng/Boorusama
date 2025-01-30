@@ -21,6 +21,7 @@ class ChangelogDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final version = data.version;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(
@@ -62,10 +63,8 @@ class ChangelogDialog extends StatelessWidget {
                             ).tr(),
                             const SizedBox(width: 8),
                             CompactChip(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              textColor:
-                                  Theme.of(context).colorScheme.onPrimary,
+                              backgroundColor: colorScheme.primary,
+                              textColor: colorScheme.onPrimary,
                               label: version.toString(),
                             ),
                           ],
@@ -95,7 +94,7 @@ class ChangelogDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       switch (data.version) {
-                        final Unreleased u => Padding(
+                        final Prereleased u => Padding(
                             padding: const EdgeInsets.only(
                               left: 8,
                               bottom: 4,
@@ -103,7 +102,7 @@ class ChangelogDialog extends StatelessWidget {
                             child: Text(
                               '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.hintColor,
+                                color: colorScheme.hintColor,
                                 fontStyle: FontStyle.italic,
                                 fontSize: 12,
                               ),

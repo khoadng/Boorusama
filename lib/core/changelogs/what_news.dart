@@ -15,15 +15,15 @@ sealed class ReleaseVersion {
 
   factory ReleaseVersion.fromText(String? text) =>
       switch (text?.toLowerCase()) {
-        final String s => s.startsWith('unreleased')
-            ? Unreleased.fromText(s)
+        final String s => s.startsWith('prereleased')
+            ? Prereleased.fromText(s)
             : Official(Version.parse(s)),
         _ => Invalid(),
       };
 
   String? getChangelogKey() => switch (this) {
-        final Unreleased u =>
-          '${kChangelogKey}_unreleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
+        final Prereleased u =>
+          '${kChangelogKey}_prereleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
         final Official o =>
           '${kChangelogKey}_${o.version.withoutPreRelease()}_seen',
         Invalid _ => null,
@@ -31,17 +31,17 @@ sealed class ReleaseVersion {
 
   @override
   String toString() => switch (this) {
-        Unreleased _ => 'unreleased',
+        Prereleased _ => 'pre-released',
         final Official o => o.version.toString(),
         Invalid _ => 'invalid',
       };
 }
 
-class Unreleased extends ReleaseVersion {
-  const Unreleased(this.lastUpdated);
+class Prereleased extends ReleaseVersion {
+  const Prereleased(this.lastUpdated);
 
-  // unreleased-2000.1.1
-  factory Unreleased.fromText(String text) {
+  // prereleased-2000.1.1
+  factory Prereleased.fromText(String text) {
     final parts = text.split('-');
     final dateStrings = parts.getOrNull(1)?.split('.');
     final year = dateStrings?.getOrNull(0);
@@ -55,7 +55,7 @@ class Unreleased extends ReleaseVersion {
           )
         : null;
 
-    return Unreleased(
+    return Prereleased(
       date,
     );
   }
