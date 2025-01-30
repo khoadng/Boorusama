@@ -33,11 +33,16 @@ void showErrorToast(
         horizontal: 20,
         vertical: 60,
       ),
-      textPadding: const EdgeInsets.all(4),
+      textPadding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
       duration: duration ?? const Duration(seconds: 4),
       backgroundColor: Theme.of(context).colorScheme.error,
       textStyle: TextStyle(
         color: Theme.of(context).colorScheme.onError,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
       ),
     );
 

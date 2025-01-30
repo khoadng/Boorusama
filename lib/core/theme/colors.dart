@@ -10,14 +10,14 @@ const kDimWhiteColor = Color.fromARGB(255, 130, 130, 130);
 // AMOLED Dark theme
 const kPrimaryAmoledDarkColor = Color.fromARGB(255, 86, 99, 233);
 const kOnPrimaryAmoledDarkColor = kLightWhiteColor;
-const kErrorAmoledDarkColor = Color(0xFFCF6679);
+const kErrorAmoledDarkColor = Color(0xFFB00020);
 const kOnErrorAmoledDarkColor = kLightWhiteColor;
 const kHintAmoledDarkColor = kDimWhiteColor;
 
 // Dark theme
 const kPrimaryDarkColor = Color.fromARGB(255, 86, 99, 233);
 const kOnPrimaryDarkColor = kLightWhiteColor;
-const kErrorDarkColor = Color(0xFFCF6679);
+const kErrorDarkColor = Color(0xFFB00020);
 const kOnErrorDarkColor = kLightWhiteColor;
 const kIconDarkColor = kLightWhiteColor;
 
