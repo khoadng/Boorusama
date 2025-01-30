@@ -92,7 +92,7 @@ final _entries = [
     icon: FontAwesomeIcons.shieldHalved,
     content: PrivacyPage(),
   ),
-  if (kPremiumEnabled)
+  if (kPremiumEnabled && !kForcePremium)
     const SettingEntry(
       name: '/settings/premium',
       title: kPremiumBrandNameFull,

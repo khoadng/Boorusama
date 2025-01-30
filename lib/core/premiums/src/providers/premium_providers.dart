@@ -8,6 +8,7 @@ import '../../premiums.dart';
 const _premiumMode = String.fromEnvironment('PREMIUM_MODE');
 final kPremiumMode = parsePremiumMode(_premiumMode);
 final kPremiumEnabled = parsePremiumMode(_premiumMode) != PremiumMode.hidden;
+final kForcePremium = parsePremiumMode(_premiumMode) == PremiumMode.premium;
 
 final hasPremiumProvider = Provider<bool>((ref) {
   if (kPremiumMode == PremiumMode.hidden) return false;
