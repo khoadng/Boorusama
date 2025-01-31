@@ -113,9 +113,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         )
       : null;
 
-  // Use for large screen when details is on the side to prevent spamming
-  Timer? _debounceTimer;
-  final _cooldown = ValueNotifier(false);
   final _hovering = ValueNotifier(false);
 
   final _isSheetAnimating = ValueNotifier(false);
@@ -312,8 +309,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   @override
   void dispose() {
-    _cancelCooldown();
-
     _controller.sheetState.removeListener(_onSheetStateChanged);
     _controller.pageController.removeListener(_onPageChanged);
     _controller.sheetController.removeListener(_onSheetChanged);
@@ -324,7 +319,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _isSheetAnimating.removeListener(_onSheetAnimatingChanged);
 
-    _cooldown.dispose();
     _hovering.dispose();
     _pointerCount.dispose();
     _interacting.dispose();
@@ -348,15 +342,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.arrowRight): () {
-          if (_cooldown.value) return;
-
           _controller.nextPage(
             duration: isLargeScreen ? Duration.zero : null,
           );
         },
         const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
-          if (_cooldown.value) return;
-
           _controller.previousPage(
             duration: isLargeScreen ? Duration.zero : null,
           );
@@ -646,8 +636,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         final blockSwipe = !swipe || state.isExpanded || interacting;
 
         return PageView.builder(
-          onPageChanged:
-              blockSwipe && !isPortrait ? (_) => _startCooldownTimer() : null,
+          onPageChanged: blockSwipe && !isPortrait
+              ? (_) => _controller.startCooldownTimer()
+              : null,
           controller: _controller.pageController,
           physics: blockSwipe
               ? const NeverScrollableScrollPhysics()
@@ -659,57 +650,24 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     );
   }
 
-  void _cancelCooldown() {
-    _debounceTimer?.cancel();
-    _debounceTimer = null;
-    _cooldown.value = false;
-  }
-
-  void _startCooldownTimer([
-    Duration? duration,
-  ]) {
-    _cancelCooldown();
-
-    if (!mounted) return;
-
-    _cooldown.value = true;
-    _debounceTimer = Timer(
-      duration ?? kDefaultCooldownDuration,
-      () {
-        if (!mounted) return;
-        _cooldown.value = false;
-      },
-    );
-  }
-
   final _dummyAlwaysFalse = ValueNotifier(false);
 
   Widget _buildItem(int index, bool blockSwipe) {
     List<Widget> buildNavButtons() {
       return [
-        ValueListenableBuilder(
-          valueListenable: _cooldown,
-          builder: (_, cooldown, __) => PageNavButton(
-            alignment: Alignment.centerRight,
-            controller: _controller,
-            visibleWhen: (page) => page < widget.itemCount - 1,
-            icon: const Icon(Symbols.arrow_forward),
-            onPressed: !cooldown
-                ? () => _controller.nextPage(duration: Duration.zero)
-                : null,
-          ),
+        PageNavButton(
+          alignment: Alignment.centerRight,
+          controller: _controller,
+          visibleWhen: (page) => page < widget.itemCount - 1,
+          icon: const Icon(Symbols.arrow_forward),
+          onPressed: () => _controller.nextPage(duration: Duration.zero),
         ),
-        ValueListenableBuilder(
-          valueListenable: _cooldown,
-          builder: (_, cooldown, __) => PageNavButton(
-            alignment: Alignment.centerLeft,
-            controller: _controller,
-            visibleWhen: (page) => page > 0,
-            icon: const Icon(Symbols.arrow_back),
-            onPressed: !cooldown
-                ? () => _controller.previousPage(duration: Duration.zero)
-                : null,
-          ),
+        PageNavButton(
+          alignment: Alignment.centerLeft,
+          controller: _controller,
+          visibleWhen: (page) => page > 0,
+          icon: const Icon(Symbols.arrow_back),
+          onPressed: () => _controller.previousPage(duration: Duration.zero),
         ),
       ];
     }

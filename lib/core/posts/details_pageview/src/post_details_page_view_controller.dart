@@ -42,6 +42,9 @@ class PostDetailsPageViewController extends ChangeNotifier
 
   late SlideshowOptions _slideshowOptions;
 
+  // Use for large screen when details is on the side to prevent spamming
+  Timer? _debounceTimer;
+
   late final _pageController = PageController(
     initialPage: initialPage,
   );
@@ -88,6 +91,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final isItemPushed = ValueNotifier(false);
   final forceHideOverlay = ValueNotifier(false);
   final forceHideBottomSheet = ValueNotifier(false);
+  final cooldown = ValueNotifier(false);
 
   void attachOverlayAnimController(AnimationController? controller) {
     _overlayAnimController = controller;
@@ -505,9 +509,30 @@ class PostDetailsPageViewController extends ChangeNotifier
     stopAutoSlide();
   }
 
+  void _cancelCooldown() {
+    _debounceTimer?.cancel();
+    _debounceTimer = null;
+    cooldown.value = false;
+  }
+
+  void startCooldownTimer([
+    Duration? duration,
+  ]) {
+    _cancelCooldown();
+
+    cooldown.value = true;
+    _debounceTimer = Timer(
+      duration ?? kDefaultCooldownDuration,
+      () {
+        cooldown.value = false;
+      },
+    );
+  }
+
   @override
   void dispose() {
     stopAutoSlide();
+    _cancelCooldown();
 
     _pageController.dispose();
     _sheetController.dispose();

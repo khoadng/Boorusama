@@ -61,7 +61,14 @@ class _SideSheetState extends State<SideSheet> {
             ),
           ),
         ),
-        child: widget.sheetBuilder(context, null),
+        child: ValueListenableBuilder(
+          valueListenable: widget.controller.cooldown,
+          builder: (_, cooldown, __) => cooldown
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : widget.sheetBuilder(context, null),
+        ),
       ),
     );
 
