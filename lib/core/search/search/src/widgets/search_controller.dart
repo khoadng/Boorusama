@@ -83,6 +83,7 @@ class SearchPageController extends ChangeNotifier {
   void submit(String value) {
     tagsController.addTag(value);
     textController.clear();
+    changeState(SearchState.initial);
   }
 
   void tapHistoryTag(SearchHistory history) {

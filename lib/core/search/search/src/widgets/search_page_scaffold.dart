@@ -350,6 +350,7 @@ class _SearchPageScaffoldState<T extends Post>
         final parentRoute = ModalRoute.of(context);
 
         return SearchAppBar(
+          onSubmitted: (value) => _controller.submit(value),
           trailingSearchButton: ValueListenableBuilder(
             valueListenable: _controller.didSearchOnce,
             builder: (_, searchOnce, __) {
