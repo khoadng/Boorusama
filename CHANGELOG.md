@@ -5,6 +5,7 @@
 - Proxy support (HTTP, SOCKS5)
 - Add a new backup method to quickly transfer data between devices in the same network
 - Add a new option to auto fetch notes when viewing a post
+- Add a new option to keep search bar visible when scrolling
 - Support navigating between posts using volume keys
 - Various bug fixes and UI/UX improvements
 
