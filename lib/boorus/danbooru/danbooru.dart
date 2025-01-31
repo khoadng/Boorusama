@@ -394,7 +394,6 @@ class DanbooruBuilder
           const DanbooruInheritedPostActionToolbar(),
     },
     full: {
-      DetailsPart.pool: (context) => const DanbooruPoolTiles(),
       DetailsPart.info: (context) => const DanbooruInformationSection(),
       DetailsPart.toolbar: (context) =>
           const DanbooruInheritedPostActionToolbar(),
@@ -403,6 +402,7 @@ class DanbooruBuilder
       DetailsPart.tags: (context) => const DanbooruTagsSection(),
       DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
       DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
+      DetailsPart.pool: (context) => const DanbooruPoolTiles(),
       DetailsPart.relatedPosts: (context) =>
           const DanbooruRelatedPostsSection2(),
       DetailsPart.characterList: (context) =>

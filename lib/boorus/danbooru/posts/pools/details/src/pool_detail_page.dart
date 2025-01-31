@@ -77,23 +77,28 @@ class PoolDetailPage extends ConsumerWidget {
               ),
             ),
           ),
-          poolDesc.maybeWhen(
-            data: (data) => data.description.isNotEmpty &&
-                    hasTextBetweenDiv(data.description)
-                ? SliverToBoxAdapter(
-                    child: AppHtml(
-                      onLinkTap: !config.hasStrictSFW
-                          ? (url, attributes, element) => _onHtmlLinkTapped(
-                                attributes,
-                                url,
-                                data.descriptionEndpointRefUrl,
-                              )
-                          : null,
-                      data: data.description,
-                    ),
-                  )
-                : const SliverSizedBox.shrink(),
-            orElse: () => const SliverSizedBox.shrink(),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ),
+            sliver: poolDesc.maybeWhen(
+              data: (data) => data.description.isNotEmpty &&
+                      hasTextBetweenDiv(data.description)
+                  ? SliverToBoxAdapter(
+                      child: AppHtml(
+                        onLinkTap: !config.hasStrictSFW
+                            ? (url, attributes, element) => _onHtmlLinkTapped(
+                                  attributes,
+                                  url,
+                                  data.descriptionEndpointRefUrl,
+                                )
+                            : null,
+                        data: data.description,
+                      ),
+                    )
+                  : const SliverSizedBox.shrink(),
+              orElse: () => const SliverSizedBox.shrink(),
+            ),
           ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(
