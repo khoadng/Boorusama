@@ -18,6 +18,10 @@ class PoolTiles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (pools.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(

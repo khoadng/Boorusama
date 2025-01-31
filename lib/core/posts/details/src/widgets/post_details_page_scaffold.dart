@@ -538,6 +538,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
+        const SliverDivider(
+          thickness: 0.5,
+        ),
         SliverToBoxAdapter(
           child: _buildVideoControls(),
         ),
@@ -568,6 +571,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        const Divider(
+          thickness: 0.5,
+        ),
         _buildVideoControls(),
         SizedBox(
           height: MediaQuery.paddingOf(context).bottom,
