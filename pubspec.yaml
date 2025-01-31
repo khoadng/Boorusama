@@ -85,7 +85,7 @@ dependencies:
   material_symbols_icons: ^4.2785.1
   modal_bottom_sheet: ^3.0.0-pre
   multi_split_view: ^3.5.0
-  native_dio_adapter: ^1.3.0
+  native_dio_adapter: 1.3.0 # 1.4.0 introduces cupertino_http 2.0.0 which causes hangs on iOS
   oktoast: ^3.4.0
   package_info_plus: ^8.0.2
   path: ^1.8.3
