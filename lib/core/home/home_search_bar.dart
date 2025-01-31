@@ -21,6 +21,7 @@ import '../search/search/routes.dart';
 import '../search/search/src/widgets/search_app_bar.dart';
 import '../search/search/widgets.dart';
 import '../search/selected_tags/providers.dart';
+import '../settings/providers.dart';
 import '../tags/configs/providers.dart';
 import '../theme.dart';
 import 'home_page_controller.dart';
@@ -273,6 +274,9 @@ class _SliverHomeSearchBarState
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final persistentSearchBar = ref.watch(
+      settingsProvider.select((value) => value.persistSearchBar),
+    );
 
     if (context.isLargeScreen) {
       return MediaQuery.sizeOf(context).height >= 550
@@ -306,6 +310,7 @@ class _SliverHomeSearchBarState
         ),
         floating: true,
         snap: true,
+        pinned: persistentSearchBar,
         automaticallyImplyLeading: false,
       );
     }

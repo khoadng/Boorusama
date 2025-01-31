@@ -44,6 +44,7 @@ class Settings extends Equatable {
     required this.colors,
     required this.videoPlayerEngine,
     required this.volumeKeyViewerNavigation,
+    required this.searchBarScrollBehavior,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -119,6 +120,9 @@ class Settings extends Equatable {
         videoPlayerEngine = json['videoPlayerEngine'] != null
             ? VideoPlayerEngine.values[json['videoPlayerEngine']]
             : VideoPlayerEngine.auto,
+        searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
+            ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
+            : SearchBarScrollBehavior.autoHide,
         volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
         reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
@@ -170,6 +174,7 @@ class Settings extends Equatable {
     videoAudioDefaultState: VideoAudioDefaultState.unspecified,
     videoPlayerEngine: VideoPlayerEngine.auto,
     volumeKeyViewerNavigation: false,
+    searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
   );
 
   final ImageListingSettings listing;
@@ -229,6 +234,8 @@ class Settings extends Equatable {
 
   final bool volumeKeyViewerNavigation;
 
+  final SearchBarScrollBehavior searchBarScrollBehavior;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -262,6 +269,7 @@ class Settings extends Equatable {
     ColorSettings? colors,
     VideoPlayerEngine? videoPlayerEngine,
     bool? volumeKeyViewerNavigation,
+    SearchBarScrollBehavior? searchBarScrollBehavior,
   }) =>
       Settings(
         listing: listing ?? this.listing,
@@ -309,6 +317,8 @@ class Settings extends Equatable {
         videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
         volumeKeyViewerNavigation:
             volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
+        searchBarScrollBehavior:
+            searchBarScrollBehavior ?? this.searchBarScrollBehavior,
       );
 
   Map<String, dynamic> toJson() {
@@ -347,6 +357,7 @@ class Settings extends Equatable {
       'colors': colors?.toJson(),
       'videoPlayerEngine': videoPlayerEngine.index,
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
+      'searchBarScrollBehavior': searchBarScrollBehavior.index,
     };
   }
 
@@ -383,6 +394,7 @@ class Settings extends Equatable {
         colors,
         videoPlayerEngine,
         volumeKeyViewerNavigation,
+        searchBarScrollBehavior,
       ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
@@ -406,6 +418,9 @@ class Settings extends Equatable {
 
   bool get muteAudioByDefault =>
       videoAudioDefaultState == VideoAudioDefaultState.mute;
+
+  bool get persistSearchBar =>
+      searchBarScrollBehavior == SearchBarScrollBehavior.persistent;
 
   Duration get slideshowDuration {
     // if less than 1 second, should use milliseconds instead

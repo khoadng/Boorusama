@@ -185,6 +185,9 @@ class _SearchPageScaffoldState<T extends Post>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final persistentSearchBar = ref.watch(
+      settingsProvider.select((value) => value.persistSearchBar),
+    );
 
     return CustomContextMenuOverlay(
       child: InheritedSearchPageController(
@@ -201,6 +204,7 @@ class _SearchPageScaffoldState<T extends Post>
                     return searchOnce
                         ? NotificationListener<ScrollNotification>(
                             onNotification: (notification) {
+                              if (persistentSearchBar) return false;
                               if (notification.depth != 0) return false;
 
                               final hasSelectedTag =

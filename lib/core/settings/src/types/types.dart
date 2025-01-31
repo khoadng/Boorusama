@@ -119,3 +119,8 @@ enum VideoPlayerEngine {
   videoPlayerPlugin,
   mdk,
 }
+
+enum SearchBarScrollBehavior {
+  autoHide,
+  persistent,
+}

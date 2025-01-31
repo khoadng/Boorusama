@@ -33,12 +33,28 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
         ListTile(
           title: const Text('settings.search.auto_focus_search_bar').tr(),
           trailing: Switch(
-            activeColor: Theme.of(context).colorScheme.primary,
             value: settings.autoFocusSearchBar,
             onChanged: (value) {
               notifer.updateSettings(
                 settings.copyWith(
                   autoFocusSearchBar: value,
+                ),
+              );
+            },
+          ),
+        ),
+        ListTile(
+          title: const Text('Persistent search bar').tr(),
+          subtitle:
+              const Text('Keep the search bar visible while scrolling.').tr(),
+          trailing: Switch(
+            value: settings.persistSearchBar,
+            onChanged: (value) {
+              notifer.updateSettings(
+                settings.copyWith(
+                  searchBarScrollBehavior: value
+                      ? SearchBarScrollBehavior.persistent
+                      : SearchBarScrollBehavior.autoHide,
                 ),
               );
             },
