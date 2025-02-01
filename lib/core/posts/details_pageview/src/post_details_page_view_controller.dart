@@ -290,7 +290,7 @@ class PostDetailsPageViewController extends ChangeNotifier
       hideBottomSheet();
     } else {
       showOverlay(
-        includeSystemStatus: false,
+        includeSystemStatus: true,
       );
     }
 
@@ -409,7 +409,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
         maxSize,
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
       );
       sheetState.value = SheetState.expanded;

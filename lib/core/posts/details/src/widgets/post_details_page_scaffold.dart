@@ -25,6 +25,7 @@ import '../../../../premiums/providers.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
+import '../../../../theme/app_theme.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
@@ -535,18 +536,23 @@ class _PostDetailPageScaffoldState<T extends Post>
         ) ??
         uiBuilder.preview.keys.toSet();
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
-        const SliverDivider(
-          thickness: 0.5,
-        ),
         SliverToBoxAdapter(
           child: _buildVideoControls(),
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: colorScheme.surface,
+            border: Border(
+              top: BorderSide(
+                color: colorScheme.hintColor,
+                width: 0.2,
+              ),
+            ),
           ),
           sliver: MultiSliver(
             children: preferredPreviewParts
@@ -557,7 +563,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         DecoratedSliver(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: colorScheme.surface,
           ),
           sliver: SliverSizedBox(
             height: MediaQuery.paddingOf(context).bottom,
@@ -571,9 +577,6 @@ class _PostDetailPageScaffoldState<T extends Post>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Divider(
-          thickness: 0.5,
-        ),
         _buildVideoControls(),
         SizedBox(
           height: MediaQuery.paddingOf(context).bottom,

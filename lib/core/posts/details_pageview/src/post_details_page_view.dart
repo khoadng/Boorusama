@@ -102,7 +102,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late final _bottomInfoAnimController = !widget.disableAnimation
       ? AnimationController(
           vsync: this,
-          duration: const Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 150),
         )
       : null;
 
@@ -282,7 +282,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     // Handle case when sheet is closed by dragging down, this is not handled by the controller
     if (dis <= 0 && _controller.isExpanded) {
       _controller.sheetState.value = SheetState.hidden;
+    }
 
+    if (dis <= 150 && _controller.isExpanded) {
       // Delay to next frame to wait for the sheet state to change before showing the overlay
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.showBottomSheet();
