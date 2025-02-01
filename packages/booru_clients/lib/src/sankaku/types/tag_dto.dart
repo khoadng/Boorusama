@@ -1,3 +1,6 @@
+// Project imports:
+import 'common.dart';
+
 class TagDto {
   TagDto({
     this.id,
@@ -19,7 +22,7 @@ class TagDto {
 
   factory TagDto.fromJson(Map<String, dynamic> json) {
     return TagDto(
-      id: json['id'],
+      id: SankakuId.maybeFrom(json['id']),
       nameEn: json['name_en'],
       nameJa: json['name_ja'],
       type: json['type'],
@@ -36,7 +39,8 @@ class TagDto {
       name: json['name'],
     );
   }
-  final String? id;
+
+  final SankakuId? id;
   final String? nameEn;
   final String? nameJa;
   final int? type;

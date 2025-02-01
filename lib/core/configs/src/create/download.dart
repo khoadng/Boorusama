@@ -48,24 +48,22 @@ class BooruConfigDownloadView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (!isApple()) ...[
-            DownloadFolderSelectorSection(
-              storagePath: customDownloadLocation,
-              deviceInfo: ref.watch(deviceInfoProvider),
-              onPathChanged: (path) =>
-                  ref.editNotifier.updateCustomDownloadLocation(path),
-              title: 'Download location',
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Leave empty to use the download location in settings.',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                  ),
-            ),
-          ],
+          DownloadFolderSelectorSection(
+            storagePath: customDownloadLocation,
+            deviceInfo: ref.watch(deviceInfoProvider),
+            onPathChanged: (path) =>
+                ref.editNotifier.updateCustomDownloadLocation(path),
+            title: 'Download location',
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Leave empty to use the download location in settings.',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w400,
+                ),
+          ),
           const SizedBox(height: 8),
           CustomDownloadFileNameSection(
             config: config,

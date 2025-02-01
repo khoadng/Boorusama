@@ -56,12 +56,6 @@ class _DownloadFolderSelectorSectionState
 
   @override
   Widget build(BuildContext context) {
-    // Probably won't work on iOS on real devices so just hide it
-    // It's woring on iOS simulator though
-    if (isApple()) {
-      return const SizedBox.shrink();
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

@@ -184,9 +184,6 @@ extension BulkDownloadTaskXX on BulkDownloadTask {
   }) {
     if (tags.isEmpty) return false;
 
-    // Default to application directory
-    if (isApple()) return true;
-
     if (path.isEmpty) return false;
 
     if (!isAndroid()) return true;

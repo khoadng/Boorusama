@@ -93,11 +93,21 @@ final sankakuPostRepoProvider =
                   [];
               final timestamp = e.createdAt?.s;
 
+              // They changed the id to a string, so a workaround is needed until i can figure out a better way
+              // This workaround is just generating an autoincrement id to make the filtering work
+              // Update: They are reverting the id back to an int, not sure if they changed their mind again so i will keep this workaround
+              final (id, sankakuId) = switch (e.id) {
+                // No id, so we generate pseudo id and a dummy string id
+                null => (idGenerator.generateId(), ''),
+                // Int id, which means they reverted back to int id
+                IntId i => (i.value, ''),
+                // String id, which means they are using string id
+                StringId s => (idGenerator.generateId(), s.value),
+              };
+
               return SankakuPost(
-                // They changed the id to a string, so a workaround is needed until i can figure out a better way
-                // This workaround is just generating an autoincrement id to make the filtering work
-                id: idGenerator.generateId(),
-                sankakuId: e.id ?? '',
+                id: id,
+                sankakuId: sankakuId,
                 thumbnailImageUrl: e.previewUrl ?? '',
                 sampleImageUrl: e.sampleUrl ?? '',
                 originalImageUrl: e.fileUrl ?? '',

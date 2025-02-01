@@ -374,7 +374,7 @@ extension TaskExceptionX on TaskException {
 
     return switch (responseCode) {
       416 =>
-        'HTTP 416 Requested range not satisfiable, this is likely because you have an invalid download location. Please change the download location and try again.',
+        'HTTP 416 Requested range not satisfiable, this is likely because you have an invalid download location or filename rule. Please change the download location or filename rule and try again.',
       _ => 'Failed: $description',
     };
   }
