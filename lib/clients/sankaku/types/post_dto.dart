@@ -1,4 +1,5 @@
 // Project imports:
+import 'common.dart';
 import 'tag_dto.dart';
 
 class PostDto {
@@ -48,7 +49,7 @@ class PostDto {
 
   factory PostDto.fromJson(Map<String, dynamic> json) {
     return PostDto(
-      id: json['id'],
+      id: SankakuId.maybeFrom(json['id']),
       rating: json['rating'],
       status: json['status'],
       author:
@@ -101,7 +102,7 @@ class PostDto {
       //     .toList(),
     );
   }
-  final String? id;
+  final SankakuId? id;
   final String? rating;
   final String? status;
   final AuthorDto? author;
@@ -176,13 +177,13 @@ class AuthorDto {
 
   factory AuthorDto.fromJson(Map<String, dynamic> json) {
     return AuthorDto(
-      id: json['id'] as String?,
+      id: SankakuId.maybeFrom(json['id']),
       name: json['name'] as String?,
       avatar: json['avatar'] as String?,
       avatarRating: json['avatar_rating'] as String?,
     );
   }
-  final String? id;
+  final SankakuId? id;
   final String? name;
   final String? avatar;
   final String? avatarRating;

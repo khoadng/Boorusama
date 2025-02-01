@@ -80,16 +80,10 @@ class BackgroundDownloader implements DownloadService {
             filename: filename,
             allowPause: true,
             retries: 1,
-            baseDirectory: isApple()
-                ? BaseDirectory.applicationDocuments
-                : downloadDir != null
-                    ? BaseDirectory.root
-                    : BaseDirectory.applicationDocuments,
-            directory: isApple()
-                ? 'Downloads'
-                : downloadDir != null
-                    ? downloadDir.path
-                    : '',
+            baseDirectory: downloadDir != null
+                ? BaseDirectory.root
+                : BaseDirectory.applicationDocuments,
+            directory: downloadDir != null ? downloadDir.path : '',
             updates: Updates.statusAndProgress,
             metaData: metadata?.toJsonString() ?? '',
             headers: headers,
@@ -117,10 +111,8 @@ class BackgroundDownloader implements DownloadService {
           final task = DownloadTask(
             url: url,
             filename: filename,
-            baseDirectory: isApple()
-                ? BaseDirectory.applicationDocuments
-                : BaseDirectory.root,
-            directory: isApple() ? 'Downloads' : path,
+            baseDirectory: BaseDirectory.root,
+            directory: path,
             allowPause: true,
             retries: 1,
             updates: Updates.statusAndProgress,
