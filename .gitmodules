@@ -1,0 +1,3 @@
+[submodule "flutter_staggered_grid_view"]
+	path = packages/flutter_staggered_grid_view
+	url = https://github.com/khoadng/flutter_staggered_grid_view.git
