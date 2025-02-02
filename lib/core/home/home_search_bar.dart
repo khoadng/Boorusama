@@ -33,7 +33,7 @@ class HomeSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeController = InheritedHomePageController.of(context);
+    final homeController = InheritedHomePageController.maybeOf(context);
 
     return BooruSearchBar(
       enabled: false,
@@ -159,7 +159,7 @@ class HomeSearchBar extends ConsumerWidget {
         splashRadius: 16,
         icon: const Icon(Symbols.menu),
         onPressed: () {
-          homeController.openMenu();
+          homeController?.openMenu();
         },
       ),
       onTap: () => goToSearchPage(context),
