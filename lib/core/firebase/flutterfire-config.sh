@@ -9,7 +9,7 @@ case $1 in
   dev)
     flutterfire config \
       --project=boorusama-dev \
-      --out=lib/foundation/firebase/firebase_options_dev.dart \
+      --out=lib/core/firebase/firebase_options_dev.dart \
       --ios-bundle-id=com.degenk.boorusama.dev \
       --ios-out=ios/flavors/dev/GoogleService-Info.plist \
       --macos-bundle-id=com.degenk.boorusama.dev \
@@ -20,7 +20,7 @@ case $1 in
   prod)
     flutterfire config \
       --project=boorusama-40f9d \
-      --out=lib/foundation/firebase/firebase_options_prod.dart \
+      --out=lib/core/firebase/firebase_options_prod.dart \
       --ios-bundle-id=com.degenk.boorusama \
       --ios-out=ios/flavors/prod/GoogleService-Info.plist \
       --macos-bundle-id=com.degenk.boorusama \
