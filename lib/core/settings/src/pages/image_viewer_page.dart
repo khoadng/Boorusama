@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:go_router/go_router.dart';
 
 // Project imports:
 import '../../../configs/redirect.dart';
@@ -11,6 +12,7 @@ import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
 import '../types/types_l10n.dart';
+import '../widgets/more_settings_redirect_card.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/settings_tile.dart';
@@ -133,7 +135,23 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
           ],
         ),
-        const BooruConfigMoreSettingsRedirectCard.imageViewer(),
+        BooruConfigMoreSettingsRedirectCard.imageViewer(
+          extraActions: [
+            RedirectAction(
+              label: 'settings.accessibility.accessibility'.tr(),
+              onPressed: () {
+                context.push(
+                  Uri(
+                    path: '/settings',
+                    queryParameters: {
+                      'initial': 'accessibility',
+                    },
+                  ).toString(),
+                );
+              },
+            ),
+          ],
+        ),
       ],
     );
   }

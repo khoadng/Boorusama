@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../settings/widgets.dart';
 import 'booru_config_ref.dart';
 import 'providers.dart';
 import 'route_utils.dart';
@@ -13,25 +14,31 @@ class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
   const BooruConfigMoreSettingsRedirectCard({
     required this.initialTab,
     super.key,
+    this.extraActions,
   });
 
   const BooruConfigMoreSettingsRedirectCard.imageViewer({
     super.key,
+    this.extraActions,
   }) : initialTab = 'viewer';
 
   const BooruConfigMoreSettingsRedirectCard.download({
     super.key,
+    this.extraActions,
   }) : initialTab = 'download';
 
   const BooruConfigMoreSettingsRedirectCard.search({
     super.key,
+    this.extraActions,
   }) : initialTab = 'search';
 
   const BooruConfigMoreSettingsRedirectCard.appearance({
     super.key,
+    this.extraActions,
   }) : initialTab = 'appearance';
 
   final String initialTab;
+  final List<RedirectAction>? extraActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,49 +49,22 @@ class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 16,
-      ),
-      margin: const EdgeInsets.symmetric(
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Need more?',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-              ),
-            ),
-            onPressed: () {
-              goToUpdateBooruConfigPage(
-                context,
-                config: config,
-                initialTab: initialTab,
-              );
-            },
-            child: Text(
-              'Profile',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ),
-        ],
-      ),
+    final actions = extraActions;
+
+    return MoreSettingsRedirectCard(
+      actions: [
+        RedirectAction(
+          label: 'Profile',
+          onPressed: () {
+            goToUpdateBooruConfigPage(
+              context,
+              config: config,
+              initialTab: initialTab,
+            );
+          },
+        ),
+        if (actions != null) ...actions,
+      ],
     );
   }
 }
