@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:foundation/foundation.dart';
+import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/errors.dart';

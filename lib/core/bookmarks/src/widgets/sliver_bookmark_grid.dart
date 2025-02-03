@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 
 // Project imports:
 import '../../../configs/ref.dart';

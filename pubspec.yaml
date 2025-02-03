@@ -11,7 +11,7 @@ workspace:
   - packages/foundation
   - packages/booru_clients
   - packages/filename_generator
-  - packages/flutter_staggered_grid_view
+  - packages/sliver_masonry_grid
   - packages/extended_image
 
 dependencies:
@@ -22,8 +22,8 @@ dependencies:
     path: packages/booru_clients
   filename_generator:
     path: packages/filename_generator
-  flutter_staggered_grid_view:
-    path: packages/flutter_staggered_grid_view
+  sliver_masonry_grid:
+    path: packages/sliver_masonry_grid
   extended_image:
     path: packages/extended_image
 
