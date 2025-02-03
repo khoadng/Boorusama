@@ -73,7 +73,7 @@ class PostDto {
       hasNotes: json['has_notes'],
       isFavorited: json['is_favorited'],
       md5: json['md5'],
-      parentId: json['parent_id'],
+      parentId: SankakuId.maybeFrom(json['parent_id']),
       change: json['change'],
       favCount: json['fav_count'],
       recommendedPosts: json['recommended_posts'],
@@ -124,7 +124,7 @@ class PostDto {
   final bool? isFavorited;
   // final dynamic userVote; // Change this to the actual type if known
   final String? md5;
-  final String? parentId;
+  final SankakuId? parentId;
   final int? change;
   final int? favCount;
   final int? recommendedPosts;
