@@ -165,6 +165,7 @@ class _Image<T extends Post> extends ConsumerWidget {
         imageBorderRadius,
       ),
       forceFill: imageListType == ImageListType.standard,
+      fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
       placeholderUrl: post.thumbnailImageUrl,
       gaplessPlayback: true,
     );

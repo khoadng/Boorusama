@@ -21,7 +21,8 @@ extension ThemeModeTranslated on AppThemeMode {
 extension ImageListTypeTranslated on ImageListType {
   String localize() => switch (this) {
         ImageListType.standard => 'settings.image_list.standard',
-        ImageListType.masonry => 'settings.image_list.masonry'
+        ImageListType.masonry => 'settings.image_list.masonry',
+        ImageListType.classic => 'Classic',
       };
 }
 

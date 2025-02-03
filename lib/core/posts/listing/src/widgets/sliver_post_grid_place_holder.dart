@@ -50,7 +50,22 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
         );
 
         return switch (imageListType) {
-          ImageListType.standard => SliverGrid(
+          ImageListType.masonry => SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: imageGridSpacing,
+              crossAxisSpacing: imageGridSpacing,
+              childCount: perPage,
+              addRepaintBoundaries: false,
+              addAutomaticKeepAlives: false,
+              addSemanticIndexes: false,
+              itemBuilder: (context, index) {
+                return createRandomPlaceholderContainer(
+                  context,
+                  borderRadius: imageBorderRadius,
+                );
+              },
+            ),
+          _ => SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 childAspectRatio: imageGridAspectRatio,
                 crossAxisCount: crossAxisCount,
@@ -67,21 +82,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 addSemanticIndexes: false,
               ),
             ),
-          ImageListType.masonry => SliverMasonryGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: imageGridSpacing,
-              crossAxisSpacing: imageGridSpacing,
-              childCount: perPage,
-              addRepaintBoundaries: false,
-              addAutomaticKeepAlives: false,
-              addSemanticIndexes: false,
-              itemBuilder: (context, index) {
-                return createRandomPlaceholderContainer(
-                  context,
-                  borderRadius: imageBorderRadius,
-                );
-              },
-            )
         };
       },
     );

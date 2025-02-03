@@ -15,6 +15,7 @@ enum GridSize {
 enum ImageListType {
   standard,
   masonry,
+  classic,
 }
 
 enum DataCollectingStatus {
