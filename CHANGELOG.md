@@ -3,6 +3,7 @@
 - Major image viewer and video player overhaul
 - Make the app more responsive on larger screen devices
 - Proxy support (HTTP, SOCKS5)
+- Add a new image list layout: Classic
 - Add a new backup method to quickly transfer data between devices in the same network
 - Add a new option to auto fetch notes when viewing a post
 - Add a new option to keep search bar visible when scrolling
