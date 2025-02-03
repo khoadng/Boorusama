@@ -29,9 +29,7 @@ class ExtendedImage extends StatefulWidget {
     this.fit,
     this.alignment = Alignment.center,
     this.gaplessPlayback = false,
-    this.shape,
     this.borderRadius,
-    this.clipBehavior = Clip.antiAlias,
     this.clearMemoryCacheIfFailed = true,
     this.clearMemoryCacheWhenDispose = false,
     this.controller,
@@ -53,9 +51,7 @@ class ExtendedImage extends StatefulWidget {
     this.fit,
     this.alignment = Alignment.center,
     this.gaplessPlayback = false,
-    this.shape,
     this.borderRadius,
-    this.clipBehavior = Clip.antiAlias,
     this.clearMemoryCacheIfFailed = true,
     BoxConstraints? constraints,
     CancellationToken? cancelToken,
@@ -119,22 +115,6 @@ class ExtendedImage extends StatefulWidget {
   ///when failed to load image, whether clear memory cache
   ///if true, image will reload in next time.
   final bool clearMemoryCacheIfFailed;
-
-  /// {@macro flutter.clipper.clipBehavior}
-  final Clip clipBehavior;
-
-  /// The shape to fill the background [color], [gradient], and [image] into and
-  /// to cast as the [boxShadow].
-  ///
-  /// If this is [BoxShape.circle] then [borderRadius] is ignored.
-  ///
-  /// The [shape] cannot be interpolated; animating between two [BoxDecoration]s
-  /// with different [shape]s will result in a discontinuity in the rendering.
-  /// To interpolate between two shapes, consider using [ShapeDecoration] and
-  /// different [ShapeBorder]s; in particular, [CircleBorder] instead of
-  /// [BoxShape.circle] and [RoundedRectangleBorder] instead of
-  /// [BoxShape.rectangle].
-  final BoxShape? shape;
 
   /// If non-null, the corners of this box are rounded by this [BorderRadius].
   ///
@@ -311,28 +291,13 @@ class _ExtendedImageState extends State<ExtendedImage>
       },
     );
 
-    final borderRadius = widget.borderRadius;
-    final withShape = switch (widget.shape) {
-      BoxShape.circle => ClipOval(
-          clipBehavior: widget.clipBehavior,
-          child: current,
-        ),
-      _ => borderRadius != null
-          ? ClipRRect(
-              borderRadius: borderRadius,
-              clipBehavior: widget.clipBehavior,
-              child: current,
-            )
-          : current,
-    };
-
     final constraints = widget.constraints;
     final withConstraints = constraints != null
         ? ConstrainedBox(
             constraints: constraints,
-            child: withShape,
+            child: current,
           )
-        : withShape;
+        : current;
 
     return widget.excludeFromSemantics
         ? withConstraints
@@ -419,6 +384,7 @@ class _ExtendedImageState extends State<ExtendedImage>
         height: widget.height,
         fit: widget.fit,
         alignment: widget.alignment,
+        borderRadius: widget.borderRadius,
       ),
       child: ValueListenableBuilder(
         valueListenable: _controller.imageInfo,
@@ -539,15 +505,23 @@ class _ImageOptions extends Equatable {
     this.height,
     this.fit,
     this.alignment,
+    this.borderRadius,
   });
 
   final double? width;
   final double? height;
   final BoxFit? fit;
   final AlignmentGeometry? alignment;
+  final BorderRadius? borderRadius;
 
   @override
-  List<Object?> get props => [width, height, fit, alignment];
+  List<Object?> get props => [
+        width,
+        height,
+        fit,
+        alignment,
+        borderRadius,
+      ];
 }
 
 class ExtendedImageController extends ChangeNotifier {
@@ -674,6 +648,7 @@ class _RawImage extends StatelessWidget {
       scale: imageInfo?.scale ?? 1.0,
       fit: options.fit,
       alignment: options.alignment ?? Alignment.center,
+      borderRadius: options.borderRadius,
     );
   }
 }

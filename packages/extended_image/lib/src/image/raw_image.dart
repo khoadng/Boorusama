@@ -30,6 +30,7 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
     this.filterQuality = FilterQuality.low,
     this.isAntiAlias = false,
     this.debugImageLabel,
+    this.borderRadius,
   });
 
   /// The image to display.
@@ -119,6 +120,8 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
   /// Anti-aliasing alleviates the sawtooth artifact when the image is rotated.
   final bool isAntiAlias;
 
+  final BorderRadius? borderRadius;
+
   @override
   ExtendedRenderImage createRenderObject(BuildContext context) {
     assert(
@@ -139,6 +142,7 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
       alignment: alignment,
       isAntiAlias: isAntiAlias,
       filterQuality: filterQuality,
+      borderRadius: borderRadius,
     );
   }
 
@@ -161,6 +165,7 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
       ..fit = fit
       ..alignment = alignment
       ..isAntiAlias = isAntiAlias
+      ..borderRadius = borderRadius
       ..filterQuality = filterQuality;
   }
 
@@ -187,5 +192,8 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
         'alignment', alignment,
         defaultValue: null));
     properties.add(EnumProperty<FilterQuality>('filterQuality', filterQuality));
+    properties.add(DiagnosticsProperty<BorderRadius>(
+        'borderRadius', borderRadius,
+        defaultValue: null));
   }
 }

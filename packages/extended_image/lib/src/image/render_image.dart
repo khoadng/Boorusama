@@ -30,6 +30,7 @@ class ExtendedRenderImage extends RenderBox {
     bool isAntiAlias = false,
     FilterQuality filterQuality = FilterQuality.low,
     Rect? sourceRect,
+    BorderRadius? borderRadius,
     EdgeInsets layoutInsets = EdgeInsets.zero,
   })  : _image = image,
         _width = width,
@@ -48,6 +49,7 @@ class ExtendedRenderImage extends RenderBox {
         _isAntiAlias = isAntiAlias,
         _filterQuality = filterQuality,
         _sourceRect = sourceRect,
+        _borderRadius = borderRadius,
         _layoutInsets = layoutInsets {
     _updateColorFilter();
   }
@@ -59,6 +61,13 @@ class ExtendedRenderImage extends RenderBox {
       return;
     }
     _layoutInsets = value;
+    markNeedsPaint();
+  }
+
+  BorderRadius? _borderRadius;
+  set borderRadius(BorderRadius? value) {
+    if (_borderRadius == value) return;
+    _borderRadius = value;
     markNeedsPaint();
   }
 
@@ -440,33 +449,51 @@ class ExtendedRenderImage extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (_image == null) {
-      return;
-    }
+    final image = _image;
+
+    if (image == null) return;
     _resolve();
-    assert(_resolvedAlignment != null);
-    assert(_flipHorizontally != null);
-    Rect rect = offset & size;
+
+    final resolvedAlignment = _resolvedAlignment ?? Alignment.center;
+    final flipHorizontally = _flipHorizontally ?? false;
+    final borderRadius = _borderRadius;
+
+    final outputRect = offset & size;
+    final imageSize = Size(image.width.toDouble(), image.height.toDouble());
+    final fittedSizes = applyBoxFit(_fit ?? BoxFit.none, imageSize, size);
+    final destinationSize = fittedSizes.destination;
+    final destinationRect =
+        resolvedAlignment.inscribe(destinationSize, outputRect);
+    final canvas = context.canvas;
+
+    if (borderRadius != null && borderRadius != BorderRadius.zero) {
+      canvas.save();
+      canvas.clipRRect(borderRadius.toRRect(destinationRect));
+    }
 
     paintExtendedImage(
-      canvas: context.canvas,
-      rect: rect,
-      image: _image!,
+      canvas: canvas,
+      rect: outputRect,
+      image: image,
       debugImageLabel: debugImageLabel,
       scale: _scale,
       opacity: _opacity?.value ?? 1.0,
       colorFilter: _colorFilter,
       fit: _fit,
-      alignment: _resolvedAlignment!,
+      alignment: resolvedAlignment,
       centerSlice: _centerSlice,
       repeat: _repeat,
-      flipHorizontally: _flipHorizontally!,
+      flipHorizontally: flipHorizontally,
       invertColors: invertColors,
       filterQuality: _filterQuality,
       isAntiAlias: _isAntiAlias,
       customSourceRect: _sourceRect,
       layoutInsets: layoutInsets,
     );
+
+    if (borderRadius != null && borderRadius != BorderRadius.zero) {
+      canvas.restore();
+    }
   }
 
   @override
