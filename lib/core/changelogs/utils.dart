@@ -11,8 +11,8 @@ import 'what_news.dart';
 
 extension ChangelogWidgetRefX on WidgetRef {
   Future<void> showChangelogDialogIfNeeded(Box<String> box) async {
-    final data = await loadLatestChangelogFromAssets();
-    final shouldShow = shouldShowChangelogDialog(
+    final data = await loadLatestChangelogFromAssets(box);
+    final shouldShow = await shouldShowChangelogDialog(
       box,
       data.version,
     );
@@ -31,4 +31,16 @@ extension ChangelogWidgetRefX on WidgetRef {
       await markChangelogAsSeen(data.version, box);
     }
   }
+}
+
+bool isSignificantUpdate(ReleaseVersion? previous, ReleaseVersion? current) {
+  if (previous == null || current == null) return false;
+
+  // only check major and minor versions of official releases
+  if (previous is Official && current is Official) {
+    return previous.version.minor < current.version.minor ||
+        previous.version.major < current.version.major;
+  }
+
+  return false;
 }

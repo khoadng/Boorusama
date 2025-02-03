@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:version/version.dart';
 
 const kChangelogKey = 'changelog';
+const kPreviousVersionKey = 'changelog_previous_version';
 
 const String _assetUrl = 'CHANGELOG.md';
 
@@ -29,12 +30,42 @@ sealed class ReleaseVersion {
         Invalid _ => null,
       };
 
+  static ReleaseVersion? getVersionFromChangelogKey(String key) {
+    final parts = key.split('_');
+
+    if (parts.length < 3) return null;
+
+    final isPrereleased = parts[1] == 'prereleased';
+
+    return isPrereleased
+        ? Prereleased(
+            switch (parts.getOrNull(2)) {
+              final String s => DateTime.tryParse(s),
+              _ => null,
+            },
+          )
+        : switch (_tryParseVersion(parts.getOrNull(1))) {
+            final Version v => Official(v),
+            _ => null,
+          };
+  }
+
   @override
   String toString() => switch (this) {
         Prereleased _ => 'pre-released',
         final Official o => o.version.toString(),
         Invalid _ => 'invalid',
       };
+}
+
+Version? _tryParseVersion(String? text) {
+  try {
+    if (text == null) return null;
+
+    return Version.parse(text);
+  } catch (_) {
+    return null;
+  }
 }
 
 class Prereleased extends ReleaseVersion {
@@ -72,6 +103,7 @@ class Official extends ReleaseVersion {
 class Invalid extends ReleaseVersion {}
 
 typedef ChangelogData = ({
+  ReleaseVersion? previousVersion,
   ReleaseVersion version,
   String content,
 });
@@ -80,7 +112,9 @@ extension VersionX on Version {
   Version withoutPreRelease() => Version(major, minor, patch);
 }
 
-Future<ChangelogData> loadLatestChangelogFromAssets() async {
+Future<ChangelogData> loadLatestChangelogFromAssets(
+  Box<String> dataBox,
+) async {
   final text = await rootBundle.loadString(_assetUrl);
 
   // parse the md file until encountering the first empty line
@@ -97,7 +131,13 @@ Future<ChangelogData> loadLatestChangelogFromAssets() async {
     buffer.writeln(line);
   }
 
+  final previousVersionKey = dataBox.get(kPreviousVersionKey);
+  final previousVersion = previousVersionKey != null
+      ? ReleaseVersion.getVersionFromChangelogKey(previousVersionKey)
+      : null;
+
   return (
+    previousVersion: previousVersion,
     version: ReleaseVersion.fromText(versionText),
     content: buffer.toString(),
   );
@@ -113,12 +153,13 @@ Future<void> markChangelogAsSeen(
 
   final currentTime = DateTime.now().dateOnly();
   await dataBox.put(key, currentTime.toIso8601String());
+  await dataBox.put(kPreviousVersionKey, key);
 }
 
-bool shouldShowChangelogDialog(
+Future<bool> shouldShowChangelogDialog(
   Box<String> dataBox,
   ReleaseVersion targetVersion,
-) {
+) async {
   final key = targetVersion.getChangelogKey();
 
   // Invalid version
@@ -127,7 +168,14 @@ bool shouldShowChangelogDialog(
   final value = dataBox.get(key);
 
   // Already seen
-  if (value != null) return false;
+  if (value != null) {
+    // Check if previous version is set, if not, we will set it
+    if (dataBox.get(kPreviousVersionKey) == null) {
+      await dataBox.put(kPreviousVersionKey, key);
+    }
+
+    return false;
+  }
 
   return true;
 }

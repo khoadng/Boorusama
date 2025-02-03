@@ -1,16 +1,22 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:foundation/foundation.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../core/widgets/widgets.dart';
+import '../premiums/premiums.dart';
+import '../premiums/providers.dart';
+import '../premiums/routes.dart';
 import '../theme.dart';
+import 'utils.dart';
 import 'what_news.dart';
 
-class ChangelogDialog extends StatelessWidget {
+class ChangelogDialog extends ConsumerWidget {
   const ChangelogDialog({
     required this.data,
     super.key,
@@ -19,9 +25,12 @@ class ChangelogDialog extends StatelessWidget {
   final ChangelogData data;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final version = data.version;
     final colorScheme = Theme.of(context).colorScheme;
+    final significantUpdate =
+        isSignificantUpdate(data.previousVersion, data.version);
+    final hasPrem = kPremiumEnabled && ref.watch(hasPremiumProvider);
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(
@@ -125,7 +134,127 @@ class ChangelogDialog extends StatelessWidget {
                   ),
                 ),
               ),
+              if (significantUpdate) ...[
+                const SizedBox(height: 8),
+                Divider(
+                  thickness: 2,
+                  endIndent: 32,
+                  indent: 32,
+                  height: 8,
+                  color: colorScheme.primary,
+                ),
+                if (!hasPrem) const _SupportBanner() else const _ThanksBanner(),
+              ],
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ThanksBanner extends StatelessWidget {
+  const _ThanksBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 4,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8,
+        ),
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                goToPremiumPage(context);
+              },
+              icon: const Icon(
+                color: Colors.red,
+                Symbols.favorite,
+                fill: 1,
+              ),
+            ),
+            Expanded(
+              child: RichText(
+                text: const TextSpan(
+                  children: [
+                    TextSpan(
+                      text:
+                          'Thank you for supporting the development of this app by subscribing to $kPremiumBrandNameFull!',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SupportBanner extends StatelessWidget {
+  const _SupportBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 4,
+        ),
+        child: InkWell(
+          customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          onTap: () {
+            goToPremiumPage(context);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+            ),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    goToPremiumPage(context);
+                  },
+                  icon: const Icon(
+                    color: Colors.red,
+                    Symbols.favorite,
+                    fill: 1,
+                  ),
+                ),
+                Expanded(
+                  child: RichText(
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                              "If you're enjoying these updates, consider supporting my work to keep the improvements coming.",
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
