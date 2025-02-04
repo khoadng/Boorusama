@@ -3,7 +3,6 @@
 
 // Dart imports:
 import 'dart:async';
-import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -32,7 +31,7 @@ class PostDetailsPageView extends StatefulWidget {
     required this.itemBuilder,
     required this.checkIfLargeScreen,
     super.key,
-    this.minSize = 0.18,
+    this.thresholdSizeToExpand = 0.06,
     this.maxSize = 0.7,
     this.controller,
     this.onSwipeDownThresholdReached,
@@ -52,7 +51,7 @@ class PostDetailsPageView extends StatefulWidget {
       sheetBuilder;
   final int itemCount;
   final IndexedWidgetBuilder itemBuilder;
-  final double minSize;
+  final double thresholdSizeToExpand;
   final double maxSize;
   final double swipeDownThreshold;
 
@@ -259,12 +258,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     final dy = _controller.verticalPosition.value;
 
-    if (dy > 0) {
-      return;
-    }
+    if (dy > 0) return;
 
-    final size = min(dy.abs(), _controller.sheetDragThreshold) /
-        _controller.sheetDragThreshold;
+    final size = _controller.sheetController.pixelsToSize(dy.abs());
 
     _controller.sheetController.jumpTo(size);
   }
@@ -802,7 +798,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     final size = _controller.sheetController.size;
 
-    if (size > widget.minSize) {
+    if (size > widget.thresholdSizeToExpand) {
       _controller.expandToSnapPoint();
 
       return;

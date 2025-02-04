@@ -409,7 +409,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     return WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _sheetController.animateTo(
         maxSize,
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
       );
       sheetState.value = SheetState.expanded;
