@@ -22,49 +22,66 @@ class SearchHistory extends Equatable {
   const SearchHistory({
     required this.query,
     required this.createdAt,
+    required this.updatedAt,
     required this.searchCount,
     required this.queryType,
+    required this.booruTypeName,
+    required this.siteUrl,
   });
-  factory SearchHistory.fromJson(Map<String, dynamic> json) => SearchHistory(
-        query: json['query'],
-        createdAt: DateTime.parse(json['created_at']),
-        searchCount: json['search_count'],
-        queryType: parseQueryType(json['type']),
-      );
 
-  factory SearchHistory.now(String query, QueryType queryType) => SearchHistory(
+  factory SearchHistory.now(
+    String query,
+    QueryType queryType, {
+    required String booruTypeName,
+    required String siteUrl,
+  }) =>
+      SearchHistory(
         query: query,
         createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
         searchCount: 0,
         queryType: queryType,
+        booruTypeName: booruTypeName,
+        siteUrl: siteUrl,
       );
 
   final String query;
   final DateTime createdAt;
+  final DateTime updatedAt;
   final int searchCount;
   final QueryType? queryType;
+  final String booruTypeName;
+  final String siteUrl;
 
   SearchHistory copyWith({
     String? query,
     DateTime? createdAt,
+    DateTime? updatedAt,
     int? searchCount,
+    QueryType? Function()? queryType,
+    String? booruTypeName,
+    String? siteUrl,
   }) =>
       SearchHistory(
         query: query ?? this.query,
         createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
         searchCount: searchCount ?? this.searchCount,
-        queryType: queryType,
+        queryType: queryType != null ? queryType() : this.queryType,
+        booruTypeName: booruTypeName ?? this.booruTypeName,
+        siteUrl: siteUrl ?? this.siteUrl,
       );
 
-  Map<String, dynamic> toJson() => {
-        'query': query,
-        'created_at': createdAt.toIso8601String(),
-        'search_count': searchCount,
-        'type': queryType?.name,
-      };
-
   @override
-  List<Object?> get props => [query, createdAt, searchCount, queryType];
+  List<Object?> get props => [
+        query,
+        createdAt,
+        updatedAt,
+        searchCount,
+        queryType,
+        booruTypeName,
+        siteUrl,
+      ];
 }
 
 extension SearchHistoryX on SearchHistory {

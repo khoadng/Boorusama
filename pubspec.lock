@@ -1723,6 +1723,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  sqlite3:
+    dependency: "direct main"
+    description:
+      name: sqlite3
+      sha256: "35d3726fe18ab1463403a5cc8d97dbc81f2a0b08082e8173851363fcc97b6627"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.7.2"
+  sqlite3_flutter_libs:
+    dependency: "direct main"
+    description:
+      name: sqlite3_flutter_libs
+      sha256: "228e8850cfd2a6030751055868eeafe4cad7c7c4fa818191e1a94044e2ebb4f4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.29+1"
   stack_trace:
     dependency: "direct main"
     description:

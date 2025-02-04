@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../configs/ref.dart';
 import '../../selected_tags/selected_tag_controller.dart';
 import 'data/search_history_repository.dart';
 import 'search_history.dart';
@@ -24,8 +25,8 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     final histories = await ref.watch(searchHistoryRepoProvider).getHistories();
 
     return SearchHistoryState.initial().copyWith(
-      histories: _sortByDateDesc(histories),
-      filteredHistories: _sortByDateDesc(histories),
+      histories: histories,
+      filteredHistories: histories,
     );
   }
 
@@ -65,20 +66,22 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     // ignore empty history
     if (history.trim().isEmpty) return;
 
-    // If history length is larger than 255 characters, we will not add it.
-    // This is a limitation of Hive.
-    if (history.length > 255) return;
-
     final currentState = state.value;
 
     if (currentState == null) return;
 
-    final histories = await ref
-        .read(searchHistoryRepoProvider)
-        .addHistory(history, queryType: queryType);
+    final config = ref.readConfigAuth;
+
+    final histories = await ref.read(searchHistoryRepoProvider).addHistory(
+          history,
+          queryType: queryType,
+          siteUrl: Uri.tryParse(config.url)?.host ?? '',
+          booruTypeName: config.booruType.name,
+        );
+
     state = AsyncData(
       currentState.copyWith(
-        histories: _sortByDateDesc(histories),
+        histories: histories,
       ),
     );
 
@@ -95,7 +98,7 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     state = AsyncData(
       currentState.copyWith(
-        histories: _sortByDateDesc(histories),
+        histories: histories,
       ),
     );
 
@@ -112,7 +115,7 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     state = AsyncData(
       currentState.copyWith(
         currentQuery: pattern,
-        filteredHistories: _sortByDateDesc(filteredHistories),
+        filteredHistories: filteredHistories,
       ),
     );
   }
@@ -126,12 +129,4 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     filterHistories('');
   }
-}
-
-List<SearchHistory> _sortByDateDesc(List<SearchHistory> hist) {
-  hist.sort((a, b) {
-    return b.createdAt.compareTo(a.createdAt);
-  });
-
-  return hist;
 }

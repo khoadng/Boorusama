@@ -111,6 +111,8 @@ dependencies:
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
   socks5_proxy: ^2.0.0
+  sqlite3: ^2.7.2
+  sqlite3_flutter_libs: ^0.5.29+1
   stack_trace: ^1.11.0
   timeago: ^3.7.0
   url_launcher: ^6.3.1
