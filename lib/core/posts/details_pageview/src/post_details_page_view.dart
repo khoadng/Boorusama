@@ -263,7 +263,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       return;
     }
 
-    final size = min(dy.abs(), _controller.threshold) / _controller.threshold;
+    final size = min(dy.abs(), _controller.sheetDragThreshold) /
+        _controller.sheetDragThreshold;
 
     _controller.sheetController.jumpTo(size);
   }
@@ -478,7 +479,21 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                             begin: const Offset(0, 1),
                             end: Offset.zero,
                           ).animate(_bottomInfoAnimController),
-                          child: bottomSheet,
+                          child: ColoredBox(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: FadeTransition(
+                              opacity: Tween(
+                                begin: 0.0,
+                                end: 1.0,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: _bottomInfoAnimController,
+                                  curve: Curves.easeInCubic,
+                                ),
+                              ),
+                              child: bottomSheet,
+                            ),
+                          ),
                         )
                       : bottomSheet,
             ),

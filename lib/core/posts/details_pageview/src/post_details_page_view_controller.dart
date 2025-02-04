@@ -24,7 +24,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     this.initialHideOverlay = false,
     bool hoverToControlOverlay = false,
     this.maxSize = 0.7,
-    this.threshold = 400.0,
+    this.sheetDragThreshold = 200,
     SlideshowOptions slideshowOptions = const SlideshowOptions(),
   })  : currentPage = ValueNotifier(initialPage),
         _slideshowOptions = slideshowOptions,
@@ -37,7 +37,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final int totalPage;
   final bool initialHideOverlay;
   final double maxSize;
-  final double threshold;
+  final double sheetDragThreshold;
   final bool disableAnimation;
 
   late SlideshowOptions _slideshowOptions;
@@ -300,7 +300,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   Future<void> dragEnd() async {
-    if (verticalPosition.value.abs() <= threshold) {
+    if (verticalPosition.value.abs() <= sheetDragThreshold) {
       // Animate back to original position
       await resetSheet(
         duration: const Duration(milliseconds: 150),
