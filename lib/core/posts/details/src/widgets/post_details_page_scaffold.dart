@@ -537,38 +537,51 @@ class _PostDetailPageScaffoldState<T extends Post>
         uiBuilder.preview.keys.toSet();
 
     final colorScheme = Theme.of(context).colorScheme;
+    final decoration = BoxDecoration(
+      color: colorScheme.surface,
+      border: Border(
+        top: BorderSide(
+          color: colorScheme.hintColor,
+          width: 0.2,
+        ),
+      ),
+    );
 
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
-        SliverToBoxAdapter(
-          child: _buildVideoControls(),
+        ValueListenableBuilder(
+          valueListenable: widget.controller.currentPost,
+          builder: (_, post, __) => post.isVideo
+              ? SliverToBoxAdapter(
+                  child: DecoratedBox(
+                    decoration: decoration,
+                    child: PostDetailsVideoControls(
+                      controller: widget.controller,
+                    ),
+                  ),
+                )
+              : const SliverSizedBox.shrink(),
         ),
-        DecoratedSliver(
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-            border: Border(
-              top: BorderSide(
-                color: colorScheme.hintColor,
-                width: 0.2,
-              ),
-            ),
-          ),
-          sliver: MultiSliver(
-            children: preferredPreviewParts
-                .map((p) => uiBuilder.buildPart(context, p))
-                .nonNulls
-                .toList(),
-          ),
+        ValueListenableBuilder(
+          valueListenable: widget.controller.currentPost,
+          builder: (_, post, __) {
+            final multiSliver = MultiSliver(
+              children: preferredPreviewParts
+                  .map((p) => uiBuilder.buildPart(context, p))
+                  .nonNulls
+                  .toList(),
+            );
+
+            return !post.isVideo
+                ? DecoratedSliver(
+                    decoration: decoration,
+                    sliver: multiSliver,
+                  )
+                : multiSliver;
+          },
         ),
-        DecoratedSliver(
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-          ),
-          sliver: SliverSizedBox(
-            height: MediaQuery.paddingOf(context).bottom,
-          ),
-        ),
+        const _SliverBottomPadding(),
       ],
     );
   }
@@ -593,6 +606,24 @@ class _PostDetailPageScaffoldState<T extends Post>
               controller: widget.controller,
             )
           : const SizedBox.shrink(),
+    );
+  }
+}
+
+class _SliverBottomPadding extends StatelessWidget {
+  const _SliverBottomPadding();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return DecoratedSliver(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+      ),
+      sliver: SliverSizedBox(
+        height: MediaQuery.paddingOf(context).bottom,
+      ),
     );
   }
 }
