@@ -34,25 +34,54 @@ import 'metadata.dart';
 import 'providers.dart';
 
 extension PostDownloadX on WidgetRef {
+  Future<void> download(Post post) async {
+    return read(downloadNotifierProvider.notifier).download(post);
+  }
+
+  Future<void> bulkDownload(
+    List<Post> posts, {
+    String? group,
+    String? downloadPath,
+  }) async {
+    return read(downloadNotifierProvider.notifier).bulkDownload(
+      posts,
+      group: group,
+      downloadPath: downloadPath,
+    );
+  }
+}
+
+final downloadNotifierProvider =
+    NotifierProvider<DownloadNotifier, void>(DownloadNotifier.new);
+
+class DownloadNotifier extends Notifier<void> {
+  @override
+  void build() {
+    return;
+  }
+
   Future<PermissionStatus?> _getPermissionStatus() async {
-    final perm = await read(deviceStoragePermissionProvider.future);
+    final perm = await ref.read(deviceStoragePermissionProvider.future);
     return isAndroid() || isIOS() ? perm.storagePermission : null;
   }
 
   void _showToastIfPossible({String? message}) {
-    if (context.mounted) {
+    final context = navigatorKey.currentState?.context;
+
+    if (context != null && context.mounted) {
       showDownloadStartToast(context, message: message);
     }
   }
 
   Future<void> download(Post post) async {
-    final settings = read(settingsProvider);
-    final urlExtractor = read(downloadFileUrlExtractorProvider(readConfigAuth));
+    final settings = ref.read(settingsProvider);
+    final urlExtractor =
+        ref.read(downloadFileUrlExtractorProvider(ref.readConfigAuth));
     final perm = await _getPermissionStatus();
-    final analytics = read(analyticsProvider);
+    final analytics = ref.read(analyticsProvider);
 
     await _download(
-      this,
+      ref,
       post,
       permission: perm,
       settings: settings,
@@ -66,8 +95,8 @@ extension PostDownloadX on WidgetRef {
         analytics.logEvent(
           'single_download_start',
           parameters: {
-            'hint_site': readConfigAuth.booruType.name,
-            'url': Uri.tryParse(readConfig.url)?.host,
+            'hint_site': ref.readConfigAuth.booruType.name,
+            'url': Uri.tryParse(ref.readConfig.url)?.host,
           },
         );
       },
@@ -79,13 +108,15 @@ extension PostDownloadX on WidgetRef {
     String? group,
     String? downloadPath,
   }) async {
-    final settings = read(settingsProvider);
-    final config = readConfigAuth;
-    final urlExtractor = read(downloadFileUrlExtractorProvider(config));
-    final analytics = read(analyticsProvider);
+    final settings = ref.read(settingsProvider);
+    final config = ref.readConfigAuth;
+    final urlExtractor = ref.read(downloadFileUrlExtractorProvider(config));
+    final analytics = ref.read(analyticsProvider);
 
     // ensure that the booru supports bulk download
     if (!config.booruType.canDownloadMultipleFiles) {
+      final context = navigatorKey.currentState?.context;
+
       showBulkDownloadUnsupportErrorToast(context);
       return;
     }
@@ -110,7 +141,7 @@ extension PostDownloadX on WidgetRef {
     for (var i = 0; i < posts.length; i++) {
       final post = posts[i];
       await _download(
-        this,
+        ref,
         post,
         permission: perm,
         settings: settings,
@@ -127,7 +158,7 @@ extension PostDownloadX on WidgetRef {
 }
 
 Future<void> _download(
-  WidgetRef ref,
+  Ref ref,
   Post downloadable, {
   required Settings settings,
   required DownloadFileUrlExtractor downloadFileUrlExtractor,
@@ -160,17 +191,17 @@ Future<void> _download(
 
   if (fileNameBuilder == null) {
     logger.logE('Single Download', 'No file name builder found, aborting...');
-    if (ref.context.mounted) {
-      showErrorToast(ref.context, 'Download aborted, cannot create file name');
-    }
+    // if (ref.context.mounted) {
+    //   showErrorToast(ref.context, 'Download aborted, cannot create file name');
+    // }
     return;
   }
 
   if (urlData == null || urlData.url.isEmpty) {
     logger.logE('Single Download', 'No download url found, aborting...');
-    if (ref.context.mounted) {
-      showErrorToast(ref.context, 'Download aborted, no download url found');
-    }
+    // if (ref.context.mounted) {
+    //   showErrorToast(ref.context, 'Download aborted, no download url found');
+    // }
     return;
   }
 
@@ -256,7 +287,9 @@ void showDownloadStartToast(BuildContext context, {String? message}) {
   );
 }
 
-void showBulkDownloadUnsupportErrorToast(BuildContext context) {
+void showBulkDownloadUnsupportErrorToast(BuildContext? context) {
+  if (context == null) return;
+
   showErrorToast(
     context,
     duration: const Duration(seconds: 3),
