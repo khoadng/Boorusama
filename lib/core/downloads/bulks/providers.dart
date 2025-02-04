@@ -2,30 +2,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../manager/download_task.dart';
-import '../manager/download_tasks_notifier.dart';
+import '../manager/download_task_update.dart';
+import '../manager/download_task_updates_notifier.dart';
 import 'bulk_download_task.dart';
 import 'create_bulk_download_notifier.dart';
 
 final downloadGroupCompletedProvider =
     Provider.autoDispose.family<bool, String>((ref, group) {
-  return ref.watch(downloadTasksProvider).allCompleted(group);
+  return ref.watch(downloadTaskUpdatesProvider).allCompleted(group);
 });
 
 final downloadGroupFailedProvider =
     Provider.autoDispose.family<int, String>((ref, group) {
-  final failed = ref.watch(downloadTasksProvider).failed(group);
+  final failed = ref.watch(downloadTaskUpdatesProvider).failed(group);
 
   return failed.length;
 });
 
 final percentCompletedProvider =
     Provider.autoDispose.family<double, String>((ref, group) {
-  final completed = ref.watch(downloadTasksProvider).completed(group);
+  final completed = ref.watch(downloadTaskUpdatesProvider).completed(group);
 
   if (completed.isEmpty) return 0.0;
 
-  final total = ref.watch(downloadTasksProvider).all(group);
+  final total = ref.watch(downloadTaskUpdatesProvider).all(group);
 
   if (total.isEmpty) return 0.0;
 

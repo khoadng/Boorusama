@@ -11,8 +11,8 @@ import '../../router.dart';
 import '../bulks/bulk_download_notifier.dart';
 import '../bulks/bulk_download_task.dart';
 import '../bulks/notifications/providers.dart';
-import '../manager/download_task.dart';
-import '../manager/download_tasks_notifier.dart';
+import '../manager/download_task_update.dart';
+import '../manager/download_task_updates_notifier.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({
@@ -26,7 +26,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref
       ..listen(
-        downloadTasksProvider,
+        downloadTaskUpdatesProvider,
         (prev, cur) {
           final notifQueue = ref.read(bulkDownloadNotificationQueueProvider);
 

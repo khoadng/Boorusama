@@ -3,17 +3,17 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'download_task.dart';
+import 'download_task_update.dart';
 
-final downloadTasksProvider =
-    NotifierProvider<DownloadTasksNotifier, DownloadTaskState>(
-  DownloadTasksNotifier.new,
+final downloadTaskUpdatesProvider =
+    NotifierProvider<DownloadTaskUpdatesNotifier, DownloadTaskUpdateState>(
+  DownloadTaskUpdatesNotifier.new,
 );
 
-class DownloadTasksNotifier extends Notifier<DownloadTaskState> {
+class DownloadTaskUpdatesNotifier extends Notifier<DownloadTaskUpdateState> {
   @override
-  DownloadTaskState build() {
-    return const DownloadTaskState(
+  DownloadTaskUpdateState build() {
+    return const DownloadTaskUpdateState(
       tasks: {},
     );
   }

@@ -21,8 +21,8 @@ import '../downloader/metadata.dart';
 import '../internal_widgets/download_tile.dart';
 import '../l10n.dart';
 import 'download_filter.dart';
-import 'download_task.dart';
-import 'download_tasks_notifier.dart';
+import 'download_task_update.dart';
+import 'download_task_updates_notifier.dart';
 
 final downloadFilterProvider =
     StateProvider.family<DownloadFilter, String?>((ref, initialFilter) {
@@ -38,7 +38,7 @@ final downloadFilteredProvider = Provider.family<List<TaskUpdate>, String?>(
   (ref, initialFilter) {
     final filter = ref.watch(downloadFilterProvider(initialFilter));
     final group = ref.watch(downloadGroupProvider);
-    final state = ref.watch(downloadTasksProvider);
+    final state = ref.watch(downloadTaskUpdatesProvider);
 
     return switch (filter) {
       DownloadFilter.all => state.all(group),
@@ -197,7 +197,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   icon: const Icon(Icons.clear),
                   onPressed: () {
                     // clear default group only
-                    ref.read(downloadTasksProvider.notifier).clear(
+                    ref.read(downloadTaskUpdatesProvider.notifier).clear(
                       FileDownloader.defaultGroup,
                       onFailed: () {
                         showSimpleSnackBar(
@@ -316,7 +316,7 @@ class RetryAllFailedButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final failed = ref.watch(downloadTasksProvider).failed(
+    final failed = ref.watch(downloadTaskUpdatesProvider).failed(
           ref.watch(downloadGroupProvider),
         );
 

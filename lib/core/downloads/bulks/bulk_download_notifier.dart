@@ -25,8 +25,8 @@ import '../../settings/providers.dart';
 import '../../utils/duration_utils.dart';
 import '../downloader/metadata.dart';
 import '../downloader/providers.dart';
-import '../manager/download_task.dart';
-import '../manager/download_tasks_notifier.dart';
+import '../manager/download_task_update.dart';
+import '../manager/download_task_updates_notifier.dart';
 import 'bulk_download_task.dart';
 import 'notifications/providers.dart';
 
@@ -310,7 +310,7 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
   Future<bool> cancelAll(String group) async {
     final taskIds = ref
-        .read(downloadTasksProvider)
+        .read(downloadTaskUpdatesProvider)
         .all(group)
         .map((e) => e.task.taskId)
         .toList();

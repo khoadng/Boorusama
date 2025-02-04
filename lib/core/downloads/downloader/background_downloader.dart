@@ -19,7 +19,7 @@ import '../../foundation/path.dart';
 import '../../foundation/platform.dart';
 import '../../router.dart';
 import '../l10n.dart';
-import '../manager/download_tasks_notifier.dart';
+import '../manager/download_task_updates_notifier.dart';
 import '../path/download_path.dart';
 import 'download_service.dart';
 import 'metadata.dart';
@@ -212,7 +212,7 @@ class _BackgroundDownloaderScopeState
       }
     }
 
-    ref.read(downloadTasksProvider.notifier).addOrUpdate(update);
+    ref.read(downloadTaskUpdatesProvider.notifier).addOrUpdate(update);
   }
 
   @override

@@ -2,14 +2,14 @@
 import 'package:background_downloader/background_downloader.dart';
 import 'package:equatable/equatable.dart';
 
-class DownloadTaskState extends Equatable {
-  const DownloadTaskState({
+class DownloadTaskUpdateState extends Equatable {
+  const DownloadTaskUpdateState({
     required Map<String, List<TaskUpdate>> tasks,
   }) : _tasks = tasks;
   final Map<String, List<TaskUpdate>> _tasks;
 
-  DownloadTaskState updateWith(String group, List<TaskUpdate> updates) {
-    return DownloadTaskState(
+  DownloadTaskUpdateState updateWith(String group, List<TaskUpdate> updates) {
+    return DownloadTaskUpdateState(
       tasks: {
         ..._tasks,
         group: updates,
@@ -17,13 +17,13 @@ class DownloadTaskState extends Equatable {
     );
   }
 
-  DownloadTaskState? clear(String group) {
+  DownloadTaskUpdateState? clear(String group) {
     if (!_tasks.containsKey(group)) return null;
 
     final removed = _tasks.remove(group);
     if (removed == null) return null;
 
-    return DownloadTaskState(
+    return DownloadTaskUpdateState(
       tasks: {
         ..._tasks,
       },
@@ -34,7 +34,7 @@ class DownloadTaskState extends Equatable {
   List<Object?> get props => [_tasks];
 }
 
-extension DownloadTaskStateX on DownloadTaskState {
+extension DownloadTaskStateX on DownloadTaskUpdateState {
   bool allCompleted(String group) {
     final items = completed(group);
 

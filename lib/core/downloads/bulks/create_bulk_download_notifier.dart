@@ -7,8 +7,8 @@ import '../../info/device_info.dart';
 import '../../search/histories/history.dart';
 import '../../settings/providers.dart';
 import '../../settings/settings.dart';
-import '../manager/download_task.dart';
-import '../manager/download_tasks_notifier.dart';
+import '../manager/download_task_update.dart';
+import '../manager/download_task_updates_notifier.dart';
 import 'bulk_download_notifier.dart';
 import 'bulk_download_task.dart';
 import 'notifications/providers.dart';
@@ -89,7 +89,7 @@ class CreateBulkDownloadNotifier extends AutoDisposeNotifier<BulkDownloadTask> {
     if (runningTask != null) {
       // check if it is completed
       final completed =
-          ref.read(downloadTasksProvider).allCompleted(runningTask.id);
+          ref.read(downloadTaskUpdatesProvider).allCompleted(runningTask.id);
 
       if (!completed) {
         const msg =
