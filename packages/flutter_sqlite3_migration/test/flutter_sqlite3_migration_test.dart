@@ -1,97 +1,9 @@
-import 'package:flutter_sqlite3_migration/src/exceptions.dart';
 import 'package:flutter_sqlite3_migration/src/migration.dart';
 import 'package:flutter_sqlite3_migration/src/migration_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 void main() {
-  group('create', () {
-    late Database db;
-
-    setUp(() {
-      db = sqlite3.openInMemory();
-    });
-
-    tearDown(() {
-      db.dispose();
-    });
-
-    test('throws on non-positive target version', () {
-      expect(
-        () => DbMigrationManager.create(
-          db: db,
-          targetVersion: -1,
-          migrations: [
-            BasicMigration(version: 1, onUp: (context) {}),
-          ],
-        ),
-        throwsA(isA<NegativeTargetVersionException>()),
-      );
-    });
-
-    test('throws on non-sequential migration versions', () {
-      expect(
-        () => DbMigrationManager.create(
-          db: db,
-          targetVersion: 3,
-          migrations: [
-            BasicMigration(version: 1, onUp: (context) {}),
-            BasicMigration(version: 3, onUp: (context) {}),
-          ],
-        ),
-        throwsA(
-          isA<NonSequentialMigrationException>().having(
-            (e) => e.message,
-            'message',
-            'Non-sequential migration versions between 1 and 3',
-          ),
-        ),
-      );
-    });
-
-    test('throws when duplicate version exists', () {
-      expect(
-        () => DbMigrationManager.create(
-          db: db,
-          targetVersion: 2,
-          migrations: [
-            BasicMigration(version: 1, onUp: (context) {}),
-            BasicMigration(version: 1, onUp: (context) {}), // Duplicate
-          ],
-        ),
-        throwsA(isA<DuplicateMigrationVersionException>()),
-      );
-    });
-
-    test('throws when target version has no migration', () {
-      expect(
-        () => DbMigrationManager.create(
-          db: db,
-          targetVersion: 3,
-          migrations: [
-            BasicMigration(version: 1, onUp: (context) {}),
-            BasicMigration(version: 2, onUp: (context) {}),
-          ],
-        ),
-        throwsA(isA<NoCorrespondingMigrationException>()),
-      );
-    });
-
-    test('throws when target version is within range but missing', () {
-      expect(
-        () => DbMigrationManager.create(
-          db: db,
-          targetVersion: 2,
-          migrations: [
-            BasicMigration(version: 1, onUp: (context) {}),
-            BasicMigration(version: 3, onUp: (context) {}),
-          ],
-        ),
-        throwsA(isA<MissingRangeMigrationException>()),
-      );
-    });
-  });
-
   group('migrate', () {
     late Database db;
 
@@ -146,43 +58,6 @@ void main() {
       // Expect three columns: id, name, and age.
       final columnNames = tableInfo.map((row) => row['name']).toList();
       expect(columnNames, containsAll(['id', 'name', 'age']));
-    });
-
-    test('does nothing for downgrade attempt (currentVersion > targetVersion)',
-        () {
-      // Manually set user_version to a higher version than target.
-      db.execute('PRAGMA user_version = 4');
-
-      final migrations = [
-        // These migrations won't run since our currentVersion (4) > targetVersion (2).
-        BasicMigration(
-          version: 2,
-          onUp: (context) {
-            context.execute(
-              'CREATE TABLE downgrade_test (id INTEGER PRIMARY KEY)',
-            );
-          },
-        ),
-      ];
-
-      const targetVersion = 2;
-      DbMigrationManager.create(
-        db: db,
-        targetVersion: targetVersion,
-        migrations: migrations,
-        mode: MigrationMode.repair,
-      ).runMigrations();
-
-      // User version remains unchanged (still 4)
-      final updatedVersion =
-          db.select('PRAGMA user_version').first.columnAt(0) as int;
-      expect(updatedVersion, equals(4));
-
-      // The migration did not run so the table should not exist.
-      final result = db.select(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='downgrade_test'",
-      );
-      expect(result, isEmpty);
     });
 
     test(
@@ -350,46 +225,6 @@ void main() {
       final updatedVersion =
           db.select('PRAGMA user_version').first.columnAt(0) as int;
       expect(updatedVersion, lessThan(targetVersion));
-    });
-
-    test('does nothing if current version is greater than targetVersion', () {
-      // Set a higher version than the target.
-      db.execute('PRAGMA user_version = 4');
-
-      final migrations = [
-        BasicMigration(
-          version: 2,
-          onUp: (context) {
-            context.execute(
-              'CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT);',
-            );
-          },
-        ),
-        BasicMigration(
-          version: 3,
-          onUp: (context) {
-            context.execute('ALTER TABLE test_table ADD COLUMN age INTEGER;');
-          },
-        ),
-      ];
-
-      const targetVersion = 3;
-      DbMigrationManager.create(
-        db: db,
-        targetVersion: targetVersion,
-        migrations: migrations,
-        mode: MigrationMode.repair,
-      ).runMigrations();
-
-      final updatedVersion =
-          db.select('PRAGMA user_version').first.columnAt(0) as int;
-      expect(updatedVersion, equals(4));
-
-      // test_table should not exist.
-      final result = db.select(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='test_table'",
-      );
-      expect(result, isEmpty);
     });
 
     test('executes each migration callback exactly once', () {

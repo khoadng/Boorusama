@@ -30,11 +30,6 @@ class HistoryInconsistencyException extends MigrationException {
             'This could indicate a database schema mismatch.');
 }
 
-class NoCorrespondingMigrationException extends MigrationException {
-  NoCorrespondingMigrationException(int version)
-      : super('Target version $version has no corresponding migration');
-}
-
 class InvalidCurrentVersionException extends MigrationException {
   InvalidCurrentVersionException(int version)
       : super('Invalid current version: $version');
@@ -59,4 +54,18 @@ class DuplicateMigrationVersionException implements Exception {
 
   @override
   String toString() => 'Duplicate migration found for version $version';
+}
+
+class FutureMigrationVersionException implements Exception {
+  FutureMigrationVersionException(
+    this.currentVersion,
+    this.maxDefinedVersion,
+  );
+
+  final int currentVersion;
+  final int maxDefinedVersion;
+
+  @override
+  String toString() =>
+      "Database version $currentVersion exceeds the maximum defined migration version $maxDefinedVersion.";
 }

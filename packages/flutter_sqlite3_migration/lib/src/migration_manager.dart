@@ -57,6 +57,8 @@ class DbMigrationManager {
       throw NegativeTargetVersionException(targetVersion);
     }
 
+    final result = db.select('PRAGMA user_version');
+    final currentVersion = result.first.columnAt(0) as int;
     final versions = migrations.map((e) => e.version).toList()..sort();
 
     if (migrations.isNotEmpty) {
@@ -73,10 +75,14 @@ class DbMigrationManager {
       }
     }
 
-    if (migrationMap.isNotEmpty) {
-      if (!migrations.any((m) => m.version == targetVersion) &&
-          targetVersion > versions.last) {
-        throw NoCorrespondingMigrationException(targetVersion);
+    if (versions.isNotEmpty) {
+      final maxDefinedVersion = versions.last;
+
+      if (currentVersion > maxDefinedVersion) {
+        throw FutureMigrationVersionException(
+          currentVersion,
+          maxDefinedVersion,
+        );
       }
     }
 
