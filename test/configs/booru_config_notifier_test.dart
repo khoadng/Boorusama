@@ -97,13 +97,9 @@ class InMemorySettingsRepository implements SettingsRepository {
   SettingsOrError load() => TaskEither.right(_settings);
 }
 
-class MockAnalytics extends Mock implements AnalyticsInterface {}
-
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 class MockLogger extends Mock implements Logger {}
-
-final mockAnalytics = MockAnalytics();
 
 class MockCallback extends Mock {
   // ignore: unreachable_from_main
@@ -125,8 +121,13 @@ ProviderContainer createBooruConfigContainer({
       settingsNotifierProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
       initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
-      analyticsProvider.overrideWithValue(mockAnalytics),
+      analyticsProvider.overrideWithValue(NoAnalyticsInterface()),
       loggerProvider.overrideWithValue(mockLogger),
+      booruConfigProvider.overrideWith(
+        () => BooruConfigNotifier(
+          initialConfigs: [],
+        ),
+      ),
     ],
   );
 }
@@ -150,7 +151,6 @@ void main() {
       setUp(
         () async {
           reset(mockSettingsRepository);
-          reset(mockAnalytics);
 
           when(() => mockSettingsRepository.save(any()))
               .thenAnswer((_) async => true);
@@ -288,11 +288,8 @@ void main() {
               final newConfigs = container.read(booruConfigProvider);
 
               expect(
-                listEquals(
-                  null,
-                  newConfigs,
-                ),
-                isTrue,
+                newConfigs,
+                isEmpty,
               );
             },
           );
