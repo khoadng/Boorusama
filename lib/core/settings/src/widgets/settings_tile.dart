@@ -15,6 +15,7 @@ class SettingsTile<T> extends StatelessWidget {
     this.subtitle,
     this.leading,
     this.padding,
+    this.visualDensity,
   });
 
   final Widget title;
@@ -25,6 +26,7 @@ class SettingsTile<T> extends StatelessWidget {
   final List<T> items;
   final Widget Function(T item) optionBuilder;
   final EdgeInsetsGeometry? padding;
+  final VisualDensity? visualDensity;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class SettingsTile<T> extends StatelessWidget {
       leading: leading,
       subtitle: subtitle,
       title: title,
+      visualDensity: visualDensity,
       trailing: OptionDropDownButton<T>(
         backgroundColor: Colors.transparent,
         value: selectedOption,

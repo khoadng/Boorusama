@@ -110,7 +110,6 @@ class PostGridActionSheet extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 8,
-          vertical: 8,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -140,6 +139,7 @@ class PostGridActionSheet extends ConsumerWidget {
                       items: const [...PageMode.values],
                       onChanged: (value) => onModeChanged(value),
                       optionBuilder: (value) => Text(value.localize()).tr(),
+                      visualDensity: VisualDensity.compact,
                     ),
                     SettingsTile<GridSize>(
                       title:
@@ -149,6 +149,7 @@ class PostGridActionSheet extends ConsumerWidget {
                       items: GridSize.values,
                       onChanged: (value) => onGridChanged(value),
                       optionBuilder: (value) => Text(value.localize().tr()),
+                      visualDensity: VisualDensity.compact,
                     ),
                     SettingsTile<ImageListType>(
                       title: const Text('settings.image_list.image_list').tr(),
@@ -156,6 +157,7 @@ class PostGridActionSheet extends ConsumerWidget {
                       items: ImageListType.values,
                       onChanged: (value) => onImageListChanged(value),
                       optionBuilder: (value) => Text(value.localize()).tr(),
+                      visualDensity: VisualDensity.compact,
                     ),
                     SettingsTile<ImageQuality>(
                       title: const Text(
@@ -166,6 +168,7 @@ class PostGridActionSheet extends ConsumerWidget {
                         ..remove(ImageQuality.original),
                       onChanged: (value) => onImageQualityChanged(value),
                       optionBuilder: (value) => Text(value.localize()).tr(),
+                      visualDensity: VisualDensity.compact,
                     ),
                   ],
                 ),
@@ -213,7 +216,7 @@ class PostGridActionSheet extends ConsumerWidget {
                         ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
             ],
             FilledButton(
               onPressed: () {
