@@ -21,7 +21,7 @@ class PremiumPurchaseModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const _PurchaseInProgressUIBlocker(
+    const modal = _PurchaseInProgressUIBlocker(
       child: _PremiumModalContainer(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -38,6 +38,27 @@ class PremiumPurchaseModal extends ConsumerWidget {
           ],
         ),
       ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) => constraints.maxHeight < 400
+          ? const Stack(
+              children: [
+                ScrollConfiguration(
+                  behavior: MaterialScrollBehavior(),
+                  child: SingleChildScrollView(
+                    physics: ClampingScrollPhysics(),
+                    child: modal,
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: CloseButton(),
+                ),
+              ],
+            )
+          : modal,
     );
   }
 }
