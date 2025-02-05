@@ -20,12 +20,12 @@ void main() {
       expect(
         () => DbMigrationManager.create(
           db: db,
-          targetVersion: 0,
+          targetVersion: -1,
           migrations: [
             BasicMigration(version: 1, onUp: (context) {}),
           ],
         ),
-        throwsA(isA<NonPositiveTargetVersionException>()),
+        throwsA(isA<NegativeTargetVersionException>()),
       );
     });
 
@@ -247,6 +247,25 @@ void main() {
       final updatedVersion =
           db.select('PRAGMA user_version').first.columnAt(0) as int;
       expect(updatedVersion, equals(0));
+    });
+
+    test('handles no migrations and target version 0 on fresh database', () {
+      // Fresh db starts at version 0
+      final initialVersion =
+          db.select('PRAGMA user_version').first.columnAt(0) as int;
+      expect(initialVersion, equals(0));
+
+      // Run with no migrations and target 0
+      DbMigrationManager.create(
+        db: db,
+        targetVersion: 0,
+        migrations: [],
+      ).runMigrations();
+
+      // Version should remain 0
+      final finalVersion =
+          db.select('PRAGMA user_version').first.columnAt(0) as int;
+      expect(finalVersion, equals(0));
     });
 
     test('does nothing if already up-to-date', () {

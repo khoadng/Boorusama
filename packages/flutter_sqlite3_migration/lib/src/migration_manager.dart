@@ -53,8 +53,8 @@ class DbMigrationManager {
       };
     }
 
-    if (targetVersion <= 0) {
-      throw NonPositiveTargetVersionException(targetVersion);
+    if (targetVersion < 0) {
+      throw NegativeTargetVersionException(targetVersion);
     }
 
     final versions = migrations.map((e) => e.version).toList()..sort();

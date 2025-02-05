@@ -6,9 +6,9 @@ class MigrationException implements Exception {
   String toString() => 'MigrationException: $message';
 }
 
-class NonPositiveTargetVersionException extends MigrationException {
-  NonPositiveTargetVersionException(int version)
-      : super('Target version must be greater than 0, got: $version');
+class NegativeTargetVersionException extends MigrationException {
+  NegativeTargetVersionException(int version)
+      : super('Target version must be equal or greater than 0, got: $version');
 }
 
 class NonSequentialMigrationException extends MigrationException {
