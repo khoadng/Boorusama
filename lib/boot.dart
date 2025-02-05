@@ -162,7 +162,8 @@ Future<void> boot(BootLogger bootLogger) async {
   final allConfigs = await booruUserRepo.getAll();
 
   final searchHistoryRepoOverride = await createSearchHistoryRepoOverride(
-    logger: bootLogger,
+    bootLogger: bootLogger,
+    logger: logger,
   );
 
   final favoriteTagsRepoOverride = await createFavoriteTagOverride(
