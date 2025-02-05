@@ -13,6 +13,7 @@ workspace:
   - packages/filename_generator
   - packages/sliver_masonry_grid
   - packages/extended_image
+  - packages/flutter_sqlite3_migration
 
 dependencies:
   # local packages
@@ -26,6 +27,8 @@ dependencies:
     path: packages/sliver_masonry_grid
   extended_image:
     path: packages/extended_image
+  flutter_sqlite3_migration:
+    path: packages/flutter_sqlite3_migration
 
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2

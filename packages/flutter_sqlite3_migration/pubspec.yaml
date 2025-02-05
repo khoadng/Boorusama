@@ -1,11 +1,13 @@
 name: flutter_sqlite3_migration
 description: A package to manage SQLite3 migrations in Flutter.
 version: 0.0.1
-homepage:
+publish_to: none
 
 environment:
   sdk: ^3.6.0
   flutter: ">=1.17.0"
+
+resolution: workspace
 
 dependencies:
   equatable: ^2.0.5
