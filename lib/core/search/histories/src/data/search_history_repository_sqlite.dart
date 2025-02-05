@@ -1,9 +1,12 @@
 // Package imports:
+import 'package:flutter_sqlite3_migration/flutter_sqlite3_migration.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
 import '../search_history.dart';
 import 'search_history_repository.dart';
+
+const _kSearchHistoryVersion = 0;
 
 class SearchHistoryRepositorySqlite implements SearchHistoryRepository {
   SearchHistoryRepositorySqlite({required this.db});
@@ -12,6 +15,11 @@ class SearchHistoryRepositorySqlite implements SearchHistoryRepository {
 
   void initialize() {
     _createTableIfNotExists();
+    DbMigrationManager.create(
+      db: db,
+      targetVersion: _kSearchHistoryVersion,
+      migrations: [],
+    ).runMigrations();
   }
 
   void _createTableIfNotExists() {

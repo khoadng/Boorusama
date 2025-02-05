@@ -52,13 +52,13 @@ Future<SearchHistoryRepository> _createRepo({
   try {
     return SearchHistoryRepositorySqlite(db: db)..initialize();
   } on Exception catch (e) {
-    db.dispose();
     logger?.logE(
       _kServiceName,
       'Failed to initialize SQLite database for search history: $e',
     );
     logger?.logW(_kServiceName, 'Fallback to empty search history repository');
 
+    db.dispose();
     return EmptySearchHistoryRepository();
   }
 }
