@@ -14,6 +14,9 @@ import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../configs/widgets.dart';
 import '../downloads/routes.dart';
+import '../premiums/premiums.dart';
+import '../premiums/providers.dart';
+import '../premiums/routes.dart';
 import '../search/search/routes.dart';
 import '../settings/providers.dart';
 import '../settings/routes.dart';
@@ -42,6 +45,7 @@ class SideBarMenu extends ConsumerWidget {
       settingsProvider.select((value) => value.booruConfigSelectorPosition),
     );
     final viewKey = ref.watch(customHomeViewKeyProvider);
+    final hasPremium = ref.watch(hasPremiumProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final viewPadding = MediaQuery.viewPaddingOf(context);
@@ -156,6 +160,18 @@ class SideBarMenu extends ConsumerWidget {
                           key: ValueKey('divider'),
                           thickness: 0.75,
                         ),
+                        if (kPremiumEnabled && !kForcePremium && !hasPremium)
+                          SideMenuTile(
+                            icon: const Icon(
+                              Symbols.favorite,
+                              fill: 1,
+                              color: Colors.red,
+                            ),
+                            title: const Text('Get $kPremiumBrandName'),
+                            onTap: () {
+                              goToPremiumPage(context);
+                            },
+                          ),
                         SideMenuTile(
                           icon: const Icon(
                             Symbols.question_mark,

@@ -16,6 +16,9 @@ import '../configs/widgets.dart';
 import '../downloads/bulks.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
+import '../premiums/premiums.dart';
+import '../premiums/providers.dart';
+import '../premiums/routes.dart';
 import '../search/search/src/pages/search_page.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/widgets.dart';
@@ -196,6 +199,7 @@ class HomeSideMenu extends ConsumerWidget {
                                 context,
                                 constraints,
                                 viewKey,
+                                ref.watch(hasPremiumProvider),
                               ),
                             ],
                           ),
@@ -256,6 +260,7 @@ List<Widget> coreDesktopTabBuilder(
   BuildContext context,
   BoxConstraints constraints,
   CustomHomeViewKey? viewKey,
+  bool hasPremium,
 ) {
   return [
     const Divider(),
@@ -303,6 +308,17 @@ List<Widget> coreDesktopTabBuilder(
       title: 'Download manager',
     ),
     const Divider(),
+    if (kPremiumEnabled && !kForcePremium && !hasPremium)
+      HomeNavigationTile(
+        value: 99998,
+        constraints: constraints,
+        selectedIcon: Symbols.favorite,
+        icon: Symbols.favorite,
+        title: 'Get $kPremiumBrandName',
+        onTap: () => goToPremiumPage(context),
+        forceFillIcon: true,
+        forceIconColor: Colors.red,
+      ),
     HomeNavigationTile(
       value: 99999,
       constraints: constraints,

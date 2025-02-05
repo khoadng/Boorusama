@@ -15,6 +15,8 @@ class HomeNavigationTile extends StatelessWidget {
     required this.constraints,
     super.key,
     this.onTap,
+    this.forceFillIcon = false,
+    this.forceIconColor,
   });
 
   // Will override the onTap function
@@ -24,6 +26,8 @@ class HomeNavigationTile extends StatelessWidget {
   final IconData selectedIcon;
   final int value;
   final BoxConstraints constraints;
+  final bool forceFillIcon;
+  final Color? forceIconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,9 @@ class HomeNavigationTile extends StatelessWidget {
           ),
           icon: Icon(
             icon,
-            color: selected ? Theme.of(context).colorScheme.onSecondary : null,
+            color: forceIconColor ??
+                (selected ? Theme.of(context).colorScheme.onSecondary : null),
+            fill: forceFillIcon ? 1 : 0,
           ),
           title: Text(
             title,
