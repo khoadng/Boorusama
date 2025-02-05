@@ -111,7 +111,7 @@ class ImageGridItem extends StatelessWidget {
                 icon: Symbols.gif,
               )
             else if (isAnimated ?? false)
-              if (duration == null)
+              if (duration == null || duration < 0)
                 const ImageOverlayIcon(
                   icon: Symbols.play_circle,
                   size: 20,
