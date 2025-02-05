@@ -14,6 +14,7 @@ import '../../../../videos/more_options_control_button.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
+import '../../../../videos/video_progress.dart';
 import '../../../../videos/video_progress_bar.dart';
 import '../../../post/post.dart';
 import 'post_details_controller.dart';
@@ -121,6 +122,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                             forceHigherThanOneSecond: false,
                           ),
                         ),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Container(
                             color: Colors.transparent,
@@ -129,46 +131,17 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                               valueListenable: controller.currentPost,
                               builder: (_, post, __) => ValueListenableBuilder(
                                 valueListenable: controller.videoProgress,
-                                builder: (_, progress, __) => VideoProgressBar(
-                                  duration: progress.duration,
-                                  position: progress.position,
-                                  buffered: const [],
-                                  onDragStart: () {
-                                    // pause the video when dragging
-                                    controller.pauseVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      useDefaultEngine,
-                                    );
-                                  },
-                                  onDragEnd: () {
-                                    // resume the video when dragging ends
-                                    controller.playVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      useDefaultEngine,
-                                    );
-                                  },
-                                  seekTo: (position) =>
-                                      controller.onVideoSeekTo(
-                                    position,
-                                    post.id,
-                                    post.isWebm,
+                                builder: (_, progress, __) =>
+                                    ValueListenableBuilder(
+                                  valueListenable:
+                                      controller.isVideoInitializing,
+                                  builder: (_, initializing, __) => _buildBar(
+                                    context,
+                                    progress,
+                                    post,
                                     useDefaultEngine,
+                                    initializing,
                                   ),
-                                  barHeight: 3,
-                                  handleHeight: 6,
-                                  drawShadow: true,
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .hintColor
-                                      .withValues(alpha: 0.2),
-                                  playedColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  bufferedColor:
-                                      Theme.of(context).colorScheme.hintColor,
-                                  handleColor:
-                                      Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ),
@@ -193,6 +166,52 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildBar(
+    BuildContext context,
+    VideoProgress progress,
+    T post,
+    bool useDefaultEngine,
+    bool initializing,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return VideoProgressBar(
+      indeterminate: initializing,
+      duration: progress.duration,
+      position: progress.position,
+      buffered: const [],
+      onDragStart: () {
+        // pause the video when dragging
+        controller.pauseVideo(
+          post.id,
+          post.isWebm,
+          useDefaultEngine,
+        );
+      },
+      onDragEnd: () {
+        // resume the video when dragging ends
+        controller.playVideo(
+          post.id,
+          post.isWebm,
+          useDefaultEngine,
+        );
+      },
+      seekTo: (position) => controller.onVideoSeekTo(
+        position,
+        post.id,
+        post.isWebm,
+        useDefaultEngine,
+      ),
+      barHeight: 3,
+      handleHeight: 6,
+      drawShadow: true,
+      backgroundColor: colorScheme.hintColor.withValues(alpha: 0.2),
+      playedColor: colorScheme.primary,
+      bufferedColor: colorScheme.hintColor,
+      handleColor: colorScheme.primary,
     );
   }
 }

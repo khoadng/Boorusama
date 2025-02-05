@@ -88,6 +88,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         thumbnailUrl: post.videoThumbnailUrl,
                         onOpenSettings: () => _openSettings(context),
                         headers: headers,
+                        onInitializing: details.controller.onInitializing,
                       ),
               ),
               if (context.isLargeScreen)

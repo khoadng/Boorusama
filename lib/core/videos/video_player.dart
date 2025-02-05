@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -23,6 +26,7 @@ class BooruVideo extends StatefulWidget {
     this.onOpenSettings,
     this.headers,
     this.heroTag,
+    this.onInitializing,
   });
 
   final String url;
@@ -36,6 +40,7 @@ class BooruVideo extends StatefulWidget {
   final void Function()? onOpenSettings;
   final Map<String, String>? headers;
   final String? heroTag;
+  final void Function(bool value)? onInitializing;
 
   @override
   State<BooruVideo> createState() => _BooruVideoState();
@@ -45,6 +50,8 @@ class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   bool? _initialized;
   String? _error;
+  bool _previouslyReportedInitializing = false;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -65,11 +72,23 @@ class _BooruVideoState extends State<BooruVideo> {
       ..setPlaybackSpeed(widget.speed)
       ..setLooping(true);
 
+    _timer = Timer(
+      const Duration(milliseconds: 1000),
+      () {
+        // If the video is still initializing, report back to the parent widget
+        if (!_videoPlayerController.value.isInitialized) {
+          widget.onInitializing?.call(true);
+          _previouslyReportedInitializing = true;
+        }
+      },
+    );
+
     _initialized = false;
     _videoPlayerController.initialize().then((_) {
       if (mounted) {
         setState(() {});
         _initialized = true;
+        _clearInitializing();
       }
     }).catchError((error) {
       if (mounted) {
@@ -82,7 +101,19 @@ class _BooruVideoState extends State<BooruVideo> {
     _listenToVideoPosition();
   }
 
+  void _clearInitializing() {
+    if (_previouslyReportedInitializing) {
+      widget.onInitializing?.call(false);
+      _previouslyReportedInitializing = false;
+    }
+
+    _timer?.cancel();
+    _timer = null;
+  }
+
   void _disposeVideoPlayerController() {
+    _clearInitializing();
+
     _videoPlayerController.removeListener(_onChanged);
     _initialized = null;
     _error = null;
@@ -138,7 +169,22 @@ class _BooruVideoState extends State<BooruVideo> {
                   _videoPlayerController.value.aspectRatio,
               child: BooruHero(
                 tag: widget.heroTag,
-                child: VideoPlayer(_videoPlayerController),
+                child: Stack(
+                  children: [
+                    if (thumb != null)
+                      Positioned.fill(
+                        child: BooruImage(
+                          borderRadius: BorderRadius.zero,
+                          aspectRatio: widget.aspectRatio ??
+                              _videoPlayerController.value.aspectRatio,
+                          imageUrl: thumb,
+                        ),
+                      ),
+                    Positioned.fill(
+                      child: VideoPlayer(_videoPlayerController),
+                    ),
+                  ],
+                ),
               ),
             )
           : _error != null
@@ -199,9 +245,6 @@ class _BooruVideoState extends State<BooruVideo> {
                                     _videoPlayerController.value.aspectRatio,
                                 imageUrl: thumb,
                               ),
-                            ),
-                            const LinearProgressIndicator(
-                              minHeight: 1,
                             ),
                           ],
                         )

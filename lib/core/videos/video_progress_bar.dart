@@ -24,6 +24,7 @@ class VideoProgressBar extends StatefulWidget {
     this.onDragEnd,
     this.onDragStart,
     this.onDragUpdate,
+    this.indeterminate = false,
   });
 
   final Duration duration;
@@ -42,6 +43,8 @@ class VideoProgressBar extends StatefulWidget {
   final Color bufferedColor;
   final Color handleColor;
 
+  final bool indeterminate;
+
   @override
   State<VideoProgressBar> createState() => _VideoProgressBarState();
 }
@@ -49,6 +52,7 @@ class VideoProgressBar extends StatefulWidget {
 class _VideoProgressBarState extends State<VideoProgressBar> {
   final isDragging = ValueNotifier(false);
   final isHovering = ValueNotifier(false);
+  final isIndeterminate = ValueNotifier(false);
 
   void _seekToRelativePosition(Offset globalPosition) {
     final renderObject = context.findRenderObject();
@@ -62,6 +66,15 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
     final position = widget.duration * relative;
 
     widget.seekTo(position);
+  }
+
+  @override
+  void didUpdateWidget(VideoProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.indeterminate != widget.indeterminate) {
+      isIndeterminate.value = widget.indeterminate;
+    }
   }
 
   @override
@@ -97,38 +110,54 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
       valueListenable: isHovering,
       builder: (_, hovering, __) => ValueListenableBuilder(
         valueListenable: isDragging,
-        builder: (_, dragging, __) => RepaintBoundary(
-          child: CustomPaint(
-            painter: _ProgressBarPainter(
-              barRadius: Radius.zero,
-              position: widget.position,
-              duration: widget.duration,
-              buffered: widget.buffered,
-              barHeight: isDesktop
-                  ? hovering
-                      ? widget.barHeight * 1.5
-                      : widget.barHeight
-                  : dragging
-                      ? widget.barHeight * 1.2
-                      : widget.barHeight,
-              handleHeight: isDesktop
-                  ? !hovering
-                      ? 0
-                      : dragging
-                          ? widget.handleHeight * 1.2
-                          : widget.handleHeight
-                  : !dragging
-                      ? widget.handleHeight
-                      : widget.handleHeight * 1.5,
-              drawShadow: widget.drawShadow,
-              backgroundColor: widget.backgroundColor,
-              playedColor: widget.playedColor,
-              bufferedColor: widget.bufferedColor,
-              handleColor: widget.handleColor,
-              useHandle: true,
+        builder: (_, dragging, __) {
+          final barHeight = isDesktop
+              ? hovering
+                  ? widget.barHeight * 1.5
+                  : widget.barHeight
+              : dragging
+                  ? widget.barHeight * 1.2
+                  : widget.barHeight;
+
+          return RepaintBoundary(
+            child: ValueListenableBuilder(
+              valueListenable: isIndeterminate,
+              builder: (_, indeterminate, __) => indeterminate
+                  ? Center(
+                      child: SizedBox(
+                        height: barHeight,
+                        child: LinearProgressIndicator(
+                          backgroundColor: widget.backgroundColor,
+                        ),
+                      ),
+                    )
+                  : CustomPaint(
+                      painter: _ProgressBarPainter(
+                        barRadius: Radius.zero,
+                        position: widget.position,
+                        duration: widget.duration,
+                        buffered: widget.buffered,
+                        barHeight: barHeight,
+                        handleHeight: isDesktop
+                            ? !hovering
+                                ? 0
+                                : dragging
+                                    ? widget.handleHeight * 1.2
+                                    : widget.handleHeight
+                            : !dragging
+                                ? widget.handleHeight
+                                : widget.handleHeight * 1.5,
+                        drawShadow: widget.drawShadow,
+                        backgroundColor: widget.backgroundColor,
+                        playedColor: widget.playedColor,
+                        bufferedColor: widget.bufferedColor,
+                        handleColor: widget.handleColor,
+                        useHandle: true,
+                      ),
+                    ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

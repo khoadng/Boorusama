@@ -79,6 +79,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   final _videoProgress = ValueNotifier(VideoProgress.zero);
   final _isVideoPlaying = ValueNotifier<bool>(false);
+  final _isVideoInitializing = ValueNotifier<bool>(false);
 
   //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
   final Map<int, VideoPlayerController> _videoControllers = {};
@@ -86,6 +87,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
   ValueNotifier<bool> get isVideoPlaying => _isVideoPlaying;
+  ValueNotifier<bool> get isVideoInitializing => _isVideoInitializing;
 
   void onCurrentPositionChanged(double current, double total, String url) {
     // // check if the current video is the same as the one being played
@@ -165,5 +167,33 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   void onVideoPlayerCreated(VideoPlayerController controller, int id) {
     _videoControllers[id] = controller;
+  }
+
+  // ignore: use_setters_to_change_properties
+  void onInitializing(bool value) {
+    _isVideoInitializing.value = value;
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _videoControllers.values) {
+      controller.dispose();
+    }
+
+    for (final controller in _webmVideoControllers.values) {
+      controller.dispose();
+    }
+
+    _videoControllers.clear();
+    _webmVideoControllers.clear();
+
+    _videoProgress.dispose();
+    _isVideoPlaying.dispose();
+    _isVideoInitializing.dispose();
+
+    currentPage.dispose();
+    currentPost.dispose();
+
+    super.dispose();
   }
 }
