@@ -13,6 +13,7 @@ enum BulkDownloadTaskStatus {
   inProgress,
   canceled,
   error,
+  completed,
 }
 
 class PageProgress extends Equatable {

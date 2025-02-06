@@ -318,7 +318,7 @@ class _Subtitle extends ConsumerWidget {
         ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
     final path =
         ref.watch(_currentDownloadTaskProvider(id).select((e) => e.path));
-    final isCompleted = ref.watch(downloadGroupCompletedProvider(id));
+    final isCompleted = status == BulkDownloadTaskStatus.completed;
 
     return !isCompleted && status == BulkDownloadTaskStatus.inProgress ||
             status == BulkDownloadTaskStatus.queue
@@ -397,7 +397,9 @@ class _CancelAllButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(_currentDownloadTaskIdProvider);
-    final isCompleted = ref.watch(downloadGroupCompletedProvider(id));
+    final status =
+        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
+    final isCompleted = status == BulkDownloadTaskStatus.completed;
 
     return !isCompleted
         ? _ActionButton(

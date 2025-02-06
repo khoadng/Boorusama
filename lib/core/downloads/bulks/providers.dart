@@ -7,11 +7,6 @@ import '../manager/download_task_updates_notifier.dart';
 import 'bulk_download_task.dart';
 import 'create_bulk_download_notifier.dart';
 
-final downloadGroupCompletedProvider =
-    Provider.autoDispose.family<bool, String>((ref, group) {
-  return ref.watch(downloadTaskUpdatesProvider).allCompleted(group);
-});
-
 final downloadGroupFailedProvider =
     Provider.autoDispose.family<int, String>((ref, group) {
   final failed = ref.watch(downloadTaskUpdatesProvider).failed(group);

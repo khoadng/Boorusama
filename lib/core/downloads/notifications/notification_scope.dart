@@ -72,6 +72,12 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
         },
       )
       ..listen(
+        taskCompleteCheckerProvider,
+        (prev, cur) {
+          // Just here to keep the listener active
+        },
+      )
+      ..listen(
         bulkDownloadOnTapStreamProvider,
         (prev, cur) {
           if (prev == null) return;

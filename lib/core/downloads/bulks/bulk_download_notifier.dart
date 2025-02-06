@@ -4,6 +4,7 @@ import 'dart:isolate';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -289,12 +290,18 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
         }
       }
 
+      final currentStatus =
+          state.firstWhereOrNull((e) => e.id == taskId)?.status;
+
       state = [
         for (final t in state)
           if (t.id == taskId)
             t.copyWith(
               estimatedDownloadSize: () => estimatedDownloadSize,
-              status: BulkDownloadTaskStatus.inProgress,
+              // If the task is completed, don't update the status
+              status: currentStatus == BulkDownloadTaskStatus.completed
+                  ? null
+                  : BulkDownloadTaskStatus.inProgress,
               coverUrl: () => coverUrl,
               totalItems: () => totalItems,
               siteUrl: () => siteUrl,
@@ -360,4 +367,83 @@ List<Post> _filterInIsolate(
   }
 
   return posts.where((e) => !filterIds.contains(e.id)).toList();
+}
+
+final taskCompleteCheckerProvider =
+    NotifierProvider<CompleteCheckNotifier, void>(CompleteCheckNotifier.new);
+
+class CompleteCheckNotifier extends Notifier<void> {
+  @override
+  void build() {
+    // ignore: no_leading_underscores_for_local_identifiers
+    Timer? _timer;
+
+    // Listen to task count
+    final count = ref.watch(bulkdownloadProvider.select((e) => e.length));
+
+    _print('Task count: $count');
+
+    // check if all tasks are completed every 1 seconds
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final taskUpdates = ref.read(downloadTaskUpdatesProvider);
+      final bulkTasks = ref.read(bulkdownloadProvider);
+
+      // if all bulk download tasks are completed, cancel the timer
+      if (bulkTasks
+          .every((e) => e.status == BulkDownloadTaskStatus.completed)) {
+        _print('All tasks are completed');
+        timer.cancel();
+        return;
+      }
+
+      for (final task in bulkTasks) {
+        var running = false;
+        var completedCount = 0;
+
+        for (final update in taskUpdates.all(task.id)) {
+          // if one of the tasks is in progress, break the loop
+          if (update is TaskStatusUpdate &&
+              update.status == TaskStatus.running) {
+            running = true;
+            _print('Task ${task.id} is running, breaking loop');
+            break;
+          }
+
+          if (update is TaskStatusUpdate &&
+              update.status == TaskStatus.complete) {
+            completedCount += 1;
+          }
+        }
+
+        final completed = completedCount == task.totalItems;
+
+        final status = running
+            ? BulkDownloadTaskStatus.inProgress
+            : completed
+                ? BulkDownloadTaskStatus.completed
+                : null;
+
+        if (status != null) {
+          _print('Updating task ${task.id} status to $status');
+          ref.read(bulkdownloadProvider.notifier).updateTaskStatus(
+                task.id,
+                status,
+              );
+        }
+      }
+    });
+
+    ref.onDispose(() {
+      _timer?.cancel();
+      _timer = null;
+    });
+
+    return;
+  }
+}
+
+void _print(String message) {
+  if (!kDebugMode) return;
+
+  debugPrint('[Bulk Download] $message');
 }
