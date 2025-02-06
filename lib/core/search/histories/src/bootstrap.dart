@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -28,8 +31,11 @@ Future<Database?> _createDb(
 ) async {
   try {
     final applicationDocumentsDir = await getApplicationDocumentsDirectory();
-    return sqlite3
-        .open(join(applicationDocumentsDir.path, 'search_history.db'));
+    final dbFolderPath = join(applicationDocumentsDir.path, 'data');
+    // Make sure the directory exists
+    await Directory(dbFolderPath).create(recursive: true);
+
+    return sqlite3.open(join(dbFolderPath, 'search_history.db'));
   } on Exception catch (e) {
     logger?.logE(
       _kServiceName,
