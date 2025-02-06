@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
@@ -73,10 +74,23 @@ final class FileSystemDownloadError extends DownloadError {
   final FileSystemException error;
 }
 
-typedef DownloadPathOrError = TaskEither<DownloadError, String>;
+typedef DownloadTaskInfoOrError = TaskEither<DownloadError, DownloadTaskInfo>;
+
+class DownloadTaskInfo extends Equatable {
+  const DownloadTaskInfo({
+    required this.path,
+    required this.id,
+  });
+
+  final String path;
+  final String id;
+
+  @override
+  List<Object?> get props => [path, id];
+}
 
 abstract class DownloadService {
-  DownloadPathOrError download({
+  DownloadTaskInfoOrError download({
     required String url,
     required String filename,
     DownloaderMetadata? metadata,
@@ -84,7 +98,7 @@ abstract class DownloadService {
     Map<String, String>? headers,
   });
 
-  DownloadPathOrError downloadCustomLocation({
+  DownloadTaskInfoOrError downloadCustomLocation({
     required String url,
     required String path,
     required String filename,
@@ -97,7 +111,7 @@ abstract class DownloadService {
 }
 
 extension DownloadWithSettingsX on DownloadService {
-  DownloadPathOrError downloadWithSettings(
+  DownloadTaskInfoOrError downloadWithSettings(
     Settings settings, {
     required String url,
     required String filename,

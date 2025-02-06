@@ -25,7 +25,7 @@ import 'download_service.dart';
 import 'metadata.dart';
 
 extension FileDownloadX on FileDownloader {
-  Future<String> enqueueIfNeeded(
+  Future<DownloadTaskInfo> enqueueIfNeeded(
     DownloadTask task, {
     bool? skipIfExists,
   }) async {
@@ -33,19 +33,25 @@ extension FileDownloadX on FileDownloader {
 
     if (skipIfExists == true) {
       if (File(file).existsSync()) {
-        return file;
+        return DownloadTaskInfo(
+          path: file,
+          id: task.taskId,
+        );
       }
     }
 
     await enqueue(task);
 
-    return file;
+    return DownloadTaskInfo(
+      path: file,
+      id: task.taskId,
+    );
   }
 }
 
 class BackgroundDownloader implements DownloadService {
   @override
-  DownloadPathOrError download({
+  DownloadTaskInfoOrError download({
     required String url,
     required String filename,
     DownloaderMetadata? metadata,
@@ -81,7 +87,7 @@ class BackgroundDownloader implements DownloadService {
       );
 
   @override
-  DownloadPathOrError downloadCustomLocation({
+  DownloadTaskInfoOrError downloadCustomLocation({
     required String url,
     required String path,
     required String filename,
