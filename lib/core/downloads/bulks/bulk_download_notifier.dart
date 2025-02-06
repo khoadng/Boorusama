@@ -318,13 +318,16 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
   }
 
   Future<bool> cancelAll(String group) async {
+    final config = ref.readConfigAuth;
+    final downloader = ref.read(downloadServiceProvider(config));
+
     final taskIds = ref
         .read(downloadTaskUpdatesProvider)
         .all(group)
         .map((e) => e.task.taskId)
         .toList();
 
-    final res = await FileDownloader().cancelTasksWithIds(taskIds);
+    final res = await downloader.cancelTasksWithIds(taskIds);
 
     updateTaskStatus(group, BulkDownloadTaskStatus.canceled);
 

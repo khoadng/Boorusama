@@ -110,6 +110,11 @@ class BackgroundDownloader implements DownloadService {
           );
         },
       );
+
+  @override
+  Future<bool> cancelTasksWithIds(List<String> ids) {
+    return FileDownloader().cancelTasksWithIds(ids);
+  }
 }
 
 class BackgroundDownloaderBuilder extends ConsumerWidget {

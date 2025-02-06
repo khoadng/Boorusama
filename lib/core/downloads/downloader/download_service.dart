@@ -92,6 +92,8 @@ abstract class DownloadService {
     bool? skipIfExists,
     Map<String, String>? headers,
   });
+
+  Future<bool> cancelTasksWithIds(List<String> ids);
 }
 
 extension DownloadWithSettingsX on DownloadService {
