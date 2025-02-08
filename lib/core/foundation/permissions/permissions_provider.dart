@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../info/device_info.dart';
 import '../loggers.dart';
 import 'device_storage_permission_notifier.dart';
+import 'permission_utils.dart';
 
 final deviceStoragePermissionProvider = AsyncNotifierProvider<
     DeviceStoragePermissionNotifier, DeviceStoragePermissionState>(
@@ -13,4 +14,10 @@ final deviceStoragePermissionProvider = AsyncNotifierProvider<
     deviceInfoProvider,
     loggerProvider,
   ],
+);
+
+final mediaPermissionManagerProvider = Provider<MediaPermissionManager>(
+  (ref) => MediaPermissionManager(
+    deviceInfo: ref.watch(deviceInfoProvider),
+  ),
 );

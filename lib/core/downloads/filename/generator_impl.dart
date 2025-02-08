@@ -213,3 +213,17 @@ class DownloadFileNameBuilder<T extends Post>
   @override
   final String defaultFileNameFormat;
 }
+
+const fallbackFileNameFormat = '{uuid:version=1}.{extension}';
+final fallbackFileNameBuilder = DownloadFileNameBuilder<Post>(
+  defaultFileNameFormat: fallbackFileNameFormat,
+  defaultBulkDownloadFileNameFormat: fallbackFileNameFormat,
+  sampleData: [],
+  hasRating: false,
+  extensionHandler: (post, config) =>
+      post.format.startsWith('.') ? post.format.substring(1) : post.format,
+  tokenHandlers: {
+    'width': (post, config) => post.width.toString(),
+    'height': (post, config) => post.height.toString(),
+  },
+);

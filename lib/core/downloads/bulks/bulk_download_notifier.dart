@@ -28,6 +28,7 @@ import '../../settings/providers.dart';
 import '../../utils/duration_utils.dart';
 import '../downloader/metadata.dart';
 import '../downloader/providers.dart';
+import '../filename.dart';
 import '../manager/download_task_update.dart';
 import '../manager/download_task_updates_notifier.dart';
 import 'bulk_download_task.dart';
@@ -145,14 +146,10 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
     final headers = ref.read(cachedBypassDdosHeadersProvider(config.url));
 
     final fileNameBuilder =
-        ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
+        ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder ??
+            fallbackFileNameBuilder;
 
     final analytics = ref.read(analyticsProvider);
-
-    if (fileNameBuilder == null) {
-      logger.logE('Bulk Download', 'No file name builder found, aborting...');
-      return;
-    }
 
     var estimatedDownloadSize = 0;
     var totalItems = 0;
@@ -228,7 +225,8 @@ class BulkDownloadNotifier extends Notifier<List<BulkDownloadTask>> {
 
           final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
             post: item,
-            quality: task.options.quality ?? settings.downloadQuality,
+            quality:
+                task.options.quality?.name ?? settings.downloadQuality.name,
           );
           if (urlData == null || urlData.url.isEmpty) continue;
 

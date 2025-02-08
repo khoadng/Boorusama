@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../posts/post/post.dart';
-import '../../settings/settings.dart';
 
 class DownloadUrlData extends Equatable {
   const DownloadUrlData({
@@ -26,7 +25,7 @@ class DownloadUrlData extends Equatable {
 abstract interface class DownloadFileUrlExtractor {
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required DownloadQuality quality,
+    required String quality,
   });
 }
 
@@ -36,7 +35,7 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
   @override
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required DownloadQuality quality,
+    required String quality,
   }) async {
     if (post.isVideo) return DownloadUrlData.urlOnly(post.videoUrl);
 
@@ -47,10 +46,10 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
     ];
 
     final url = switch (quality) {
-      DownloadQuality.original => urls.firstWhereOrNull((e) => e.isNotEmpty),
-      DownloadQuality.sample =>
-        urls.skip(1).firstWhereOrNull((e) => e.isNotEmpty),
-      DownloadQuality.preview => post.thumbnailImageUrl,
+      'original' => urls.firstWhereOrNull((e) => e.isNotEmpty),
+      'sample' => urls.skip(1).firstWhereOrNull((e) => e.isNotEmpty),
+      'preview' => post.thumbnailImageUrl,
+      _ => urls.firstWhereOrNull((e) => e.isNotEmpty),
     };
 
     return url != null ? DownloadUrlData.urlOnly(url) : null;

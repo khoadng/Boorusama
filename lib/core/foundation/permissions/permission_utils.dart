@@ -90,3 +90,19 @@ Future<PermissionStatus> _checkMediaPermissionsAndroid(
     return status;
   }
 }
+
+class MediaPermissionManager {
+  MediaPermissionManager({
+    required this.deviceInfo,
+  });
+
+  final DeviceInfo deviceInfo;
+
+  Future<PermissionStatus> request() {
+    return requestMediaPermissions(deviceInfo);
+  }
+
+  Future<PermissionStatus> check() {
+    return checkMediaPermissions(deviceInfo);
+  }
+}

@@ -186,7 +186,7 @@ Future<void> _download(
 
   final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
     post: downloadable,
-    quality: settings.downloadQuality,
+    quality: settings.downloadQuality.name,
   );
 
   if (fileNameBuilder == null) {

@@ -8,7 +8,9 @@ mixin MediaInfoMixin {
 
   bool get isVideo => isFormatVideo(format);
 
-  bool get isAnimated {
-    return isVideo || (format == 'gif') || (format == '.gif');
-  }
+  bool get isAnimated => isAnimatedFormat(format);
+}
+
+bool isAnimatedFormat(String? format) {
+  return isFormatVideo(format) || format == 'gif' || format == '.gif';
 }
