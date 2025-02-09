@@ -1,4 +1,4 @@
-# Prereleased-2025.2.1
+# Prereleased-2025.2.10
 - Introduce Boorusama Plus that allows users to support the development of the app and unlock additional features like theme, home screen, layout customization, and more.
 - Major image viewer and video player overhaul
 - Make the app more responsive on larger screen devices
@@ -7,6 +7,7 @@
 - Add a new backup method to quickly transfer data between devices in the same network
 - Add a new option to auto fetch notes when viewing a post
 - Add a new option to keep search bar visible when scrolling
+- Support viewing bulk download history
 - Support navigating between posts using volume keys
 - Various bug fixes and UI/UX improvements
 
