@@ -14,7 +14,7 @@ import '../../boorus/booru/booru.dart';
 import '../../configs/ref.dart';
 import '../../foundation/toast.dart';
 import '../../router.dart';
-import '../bulks/create_bulk_download_task_sheet.dart';
+import '../bulks/pages/create_bulk_download_task_sheet.dart';
 import '../downloader/download_utils.dart';
 import '../l10n.dart';
 

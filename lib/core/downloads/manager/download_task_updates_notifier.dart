@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +12,27 @@ final downloadTaskUpdatesProvider =
     NotifierProvider<DownloadTaskUpdatesNotifier, DownloadTaskUpdateState>(
   DownloadTaskUpdatesNotifier.new,
 );
+
+final downloadTaskStreamControllerProvider =
+    Provider<StreamController<TaskUpdate>>((ref) {
+  final controller = StreamController<TaskUpdate>.broadcast();
+
+  ref.onDispose(() {
+    controller.close();
+  });
+
+  return controller;
+});
+
+final downloadTaskStreamProvider = StreamProvider<TaskUpdate>((ref) {
+  final controller = ref.watch(downloadTaskStreamControllerProvider);
+
+  ref.onDispose(() {
+    controller.close();
+  });
+
+  return controller.stream;
+});
 
 class DownloadTaskUpdatesNotifier extends Notifier<DownloadTaskUpdateState> {
   @override

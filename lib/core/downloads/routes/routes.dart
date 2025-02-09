@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../router.dart';
-import '../bulks/bulk_download_page.dart';
+import '../bulks/pages/bulk_download_page.dart';
 import '../manager/download_manager_page.dart';
 
 final downloadManagerRoutes = GoRoute(

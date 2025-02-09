@@ -10,47 +10,52 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import '../../configs/ref.dart';
-import '../../foundation/clipboard.dart';
-import '../../images/booru_image.dart';
-import '../../router.dart';
-import '../../theme.dart';
-import '../../utils/flutter_utils.dart';
-import '../../widgets/widgets.dart';
-import '../l10n.dart';
-import 'bulk_download_notifier.dart';
-import 'bulk_download_task.dart';
-import 'providers.dart';
+import '../../../configs/ref.dart';
+import '../../../foundation/clipboard.dart';
+import '../../../foundation/toast.dart';
+import '../../../images/booru_image.dart';
+import '../../../router.dart';
+import '../../../theme.dart';
+import '../../../utils/flutter_utils.dart';
+import '../../../widgets/widgets.dart';
+import '../../l10n.dart';
+import '../../manager.dart';
+import '../providers/bulk_download_notifier.dart';
+import '../providers/providers.dart';
+import '../types/bulk_download_error_interpreter.dart';
+import '../types/bulk_download_session.dart';
+import '../types/download_session.dart';
+import '../types/download_session_stats.dart';
 
-final _currentDownloadTaskProvider =
-    Provider.autoDispose.family<BulkDownloadTask, String>(
+final _currentSessionProvider =
+    Provider.autoDispose.family<BulkDownloadSession, String>(
   (ref, id) {
-    final tasks = ref.watch(bulkdownloadProvider);
+    final sessions = ref.watch(bulkDownloadSessionsProvider);
 
-    return tasks.firstWhere((element) => element.id == id);
+    return sessions.firstWhere((element) => element.session.id == id);
   },
   dependencies: [
-    _currentDownloadTaskIdProvider,
+    _currentSessionIdProvider,
   ],
 );
 
-final _currentDownloadTaskIdProvider = Provider.autoDispose<String>((ref) {
+final _currentSessionIdProvider = Provider.autoDispose<String>((ref) {
   throw UnimplementedError();
 });
 
 class BulkDownloadTaskTile extends ConsumerWidget {
   const BulkDownloadTaskTile({
-    required this.taskId,
+    required this.sessionId,
     super.key,
   });
 
-  final String taskId;
+  final String sessionId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        _currentDownloadTaskIdProvider.overrideWithValue(taskId),
+        _currentSessionIdProvider.overrideWithValue(sessionId),
       ],
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -118,9 +123,9 @@ class _ContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
+    final id = ref.watch(_currentSessionIdProvider);
     final path =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.path));
+        ref.watch(_currentSessionProvider(id).select((e) => e.task.path));
 
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
@@ -128,7 +133,7 @@ class _ContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             DownloadTranslations.bulkDownloadDelete.tr(),
             onPressed: () {
-              ref.read(bulkdownloadProvider.notifier).removeTask(id);
+              ref.read(bulkDownloadProvider.notifier).deleteSession(id);
             },
           ),
           ContextMenuButtonConfig(
@@ -151,18 +156,30 @@ class _DetailsInkWell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
+    final id = ref.watch(_currentSessionIdProvider);
     final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
+        ref.watch(_currentSessionProvider(id).select((e) => e.session.status));
 
     return InkWell(
-      onTap: status != BulkDownloadTaskStatus.created
+      onTap: status == DownloadSessionStatus.running
           ? () {
-              context.push(
-                '/download_manager?group=$id',
-              );
+              final updates = ref.read(downloadTaskUpdatesProvider).all(id);
+
+              if (updates.isNotEmpty) {
+                context.push(
+                  '/download_manager?group=$id',
+                );
+              } else {
+                showSimpleSnackBar(
+                  context: context,
+                  duration: const Duration(seconds: 3),
+                  content: const Text(
+                    'Nothing to show, download updates are empty',
+                  ),
+                );
+              }
             }
-          : null,
+          : () {},
       child: child,
     );
   }
@@ -172,14 +189,14 @@ class _CoverImage extends ConsumerWidget {
   const _CoverImage();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final coverUrl =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.coverUrl));
+    final id = ref.watch(_currentSessionIdProvider);
+    final stats = ref.watch(_currentSessionProvider(id).select((e) => e.stats));
 
     return SizedBox(
       width: 72,
-      child: coverUrl.toOption().fold(
-            () => SizedBox(
+      child: stats != DownloadSessionStats.empty
+          ? _Thumbnail(url: stats.coverUrl)
+          : SizedBox(
               height: 72,
               child: Card(
                 color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -189,8 +206,6 @@ class _CoverImage extends ConsumerWidget {
                 ),
               ),
             ),
-            (t) => _Thumbnail(url: t),
-          ),
     );
   }
 }
@@ -200,11 +215,10 @@ class _Logo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final siteUrl =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.siteUrl));
+    final id = ref.watch(_currentSessionIdProvider);
+    final stats = ref.watch(_currentSessionProvider(id).select((e) => e.stats));
 
-    return siteUrl != null
+    return stats != DownloadSessionStats.empty
         ? BooruLogo.fromConfig(
             ref.watchConfigAuth,
             width: 18,
@@ -218,24 +232,34 @@ class _ActionButtons extends ConsumerWidget {
   const _ActionButtons();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final session = ref.watch(_currentSessionProvider(sessionId));
+    final status = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.status),
+    );
 
     return switch (status) {
-      BulkDownloadTaskStatus.created => _ActionButton(
+      DownloadSessionStatus.pending => _ActionButton(
           title: DownloadTranslations.bulkDownloadStart.tr(),
           onPressed: () {
-            ref.read(bulkdownloadProvider.notifier).startTask(id);
+            ref
+                .read(bulkDownloadProvider.notifier)
+                .downloadFromTask(session.task);
           },
         ),
-      BulkDownloadTaskStatus.inProgress => const _CancelAllButton(),
-      BulkDownloadTaskStatus.queue => _ActionButton(
+      DownloadSessionStatus.running => const _CancelAllButton(),
+      DownloadSessionStatus.dryRun => _ActionButton(
           onPressed: () {
-            ref.read(bulkdownloadProvider.notifier).stopQueuing(id);
+            ref.read(bulkDownloadProvider.notifier).stopDryRun(sessionId);
           },
           title: DownloadTranslations.bulkDownloadStop.tr(),
         ),
+      // DownloadSessionStatus.interrupted => _ActionButton(
+      //     onPressed: () {
+      //       ref.read(bulkDownloadProvider.notifier).resumeSession(sessionId);
+      //     },
+      //     title: DownloadTranslations.bulkDownloadResume.tr(),
+      //   ),
       _ => const SizedBox(
           height: 24,
         ),
@@ -248,39 +272,33 @@ class _InfoText extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final fileSize = ref.watch(
-      _currentDownloadTaskProvider(id).select((e) => e.estimatedDownloadSize),
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final stats =
+        ref.watch(_currentSessionProvider(sessionId).select((e) => e.stats));
+
+    final fileSize = stats.estimatedDownloadSize;
+    final totalItems = stats.totalItems;
+    final status = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.status),
     );
-    final mixedMedia =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.mixedMedia));
-    final totalItems =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.totalItems));
-    final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
-    final pageProgress = ref
-        .watch(_currentDownloadTaskProvider(id).select((e) => e.pageProgress));
-    final error =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.error));
+    final pageProgress = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.pageProgress),
+    );
 
     final fileSizeText = fileSize != null && fileSize > 0
         ? Filesize.parse(fileSize, round: 1)
         : null;
 
-    final totalItemText = totalItems != null
-        ? DownloadTranslations.bulkDownloadTitleInfoCounter(
-            !(totalItems == 1),
-            mixedMedia == true,
-          ).replaceAll('{}', totalItems.toString())
-        : null;
+    final totalItemText = DownloadTranslations.bulkDownloadTitleInfoCounter(
+      !(totalItems == 1),
+    ).replaceAll('{}', totalItems.toString());
 
     final infoText = [
       fileSizeText,
       totalItemText,
     ].nonNulls.join(' • ');
 
-    final siteUrl =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.siteUrl));
+    final siteUrl = stats.siteUrl;
 
     return Padding(
       padding: siteUrl != null
@@ -288,13 +306,14 @@ class _InfoText extends ConsumerWidget {
           : EdgeInsets.zero,
       child: Text(
         switch (status) {
-          BulkDownloadTaskStatus.created =>
+          DownloadSessionStatus.pending =>
             DownloadTranslations.bulkDownloadCreatedStatus.tr(),
-          BulkDownloadTaskStatus.queue =>
+          DownloadSessionStatus.dryRun =>
             DownloadTranslations.bulkDownloadInProgressStatus(
-              pageProgress?.completed,
+              pageProgress.completed,
             ).tr(),
-          BulkDownloadTaskStatus.error => error ?? 'Error',
+          DownloadSessionStatus.failed => 'Error',
+          DownloadSessionStatus.interrupted => 'Interrupted',
           _ => infoText,
         },
         maxLines: 1,
@@ -313,15 +332,16 @@ class _Subtitle extends ConsumerWidget {
   const _Subtitle();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
-    final path =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.path));
-    final isCompleted = status == BulkDownloadTaskStatus.completed;
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final status = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.status),
+    );
+    final path = ref
+        .watch(_currentSessionProvider(sessionId).select((e) => e.task.path));
 
-    return !isCompleted && status == BulkDownloadTaskStatus.inProgress ||
-            status == BulkDownloadTaskStatus.queue
+    return status == DownloadSessionStatus.running ||
+            status == DownloadSessionStatus.dryRun ||
+            status == DownloadSessionStatus.interrupted
         ? const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -329,26 +349,32 @@ class _Subtitle extends ConsumerWidget {
               _FailedCount(),
             ],
           )
-        : ReadMoreText(
-            path,
-            trimLines: 1,
-            trimMode: TrimMode.Line,
-            trimCollapsedText: ' more',
-            trimExpandedText: ' less',
-            lessStyle: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            moreStyle: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.hintColor,
-              fontSize: 12,
-            ),
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ReadMoreText(
+                path,
+                trimLines: 1,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: ' more',
+                trimExpandedText: ' less',
+                lessStyle: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                moreStyle: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 12,
+                ),
+              ),
+              const _ErrorText(),
+            ],
           );
   }
 }
@@ -357,38 +383,58 @@ class _ProgressBar extends ConsumerWidget {
   const _ProgressBar();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
-    final progress = ref.watch(
-      percentCompletedProvider(id),
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final status = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.status),
     );
 
-    return status == BulkDownloadTaskStatus.queue
-        ? const Padding(
-            padding: EdgeInsets.only(
-              top: 10,
-              right: 40,
-              left: 4,
+    return switch (status) {
+      DownloadSessionStatus.dryRun => _buildLinear(),
+      DownloadSessionStatus.interrupted =>
+        ref.watch(percentCompletedFromDbProvider(sessionId)).maybeWhen(
+              data: (progress) => _buildPercent(progress),
+              orElse: () => _buildLinear(),
             ),
-            child: LinearProgressIndicator(
-              color: Colors.red,
-              minHeight: 2,
-            ),
-          )
-        : LinearPercentIndicator(
-            lineHeight: 2,
-            percent: progress,
-            progressColor: Colors.red,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 4,
-            ),
-            animation: true,
-            animateFromLastPercent: true,
-            trailing: Text(
-              '${(progress * 100).floor()}%',
-            ),
-          );
+      _ => Builder(
+          builder: (context) {
+            final progress = ref.watch(
+              percentCompletedProvider(sessionId),
+            );
+
+            return _buildPercent(progress);
+          },
+        ),
+    };
+  }
+
+  Widget _buildPercent(double progress) {
+    return LinearPercentIndicator(
+      lineHeight: 2,
+      percent: progress,
+      progressColor: Colors.red,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+      ),
+      animation: true,
+      animateFromLastPercent: true,
+      trailing: Text(
+        '${(progress * 100).floor()}%',
+      ),
+    );
+  }
+
+  Widget _buildLinear() {
+    return const Padding(
+      padding: EdgeInsets.only(
+        top: 10,
+        right: 40,
+        left: 4,
+      ),
+      child: LinearProgressIndicator(
+        color: Colors.red,
+        minHeight: 2,
+      ),
+    );
   }
 }
 
@@ -396,15 +442,16 @@ class _CancelAllButton extends ConsumerWidget {
   const _CancelAllButton();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
-    final isCompleted = status == BulkDownloadTaskStatus.completed;
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final status = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.status),
+    );
+    final isCompleted = status == DownloadSessionStatus.completed;
 
     return !isCompleted
         ? _ActionButton(
             onPressed: () {
-              ref.read(bulkdownloadProvider.notifier).cancelAll(id);
+              ref.read(bulkDownloadProvider.notifier).cancelSession(sessionId);
             },
             title: DownloadTranslations.bulkDownloadCancel.tr(),
           )
@@ -419,12 +466,34 @@ class _FailedCount extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
+    final id = ref.watch(_currentSessionIdProvider);
     final failedCount = ref.watch(downloadGroupFailedProvider(id));
 
     return failedCount > 0
         ? Text(
             '$failedCount failed',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.error,
+              fontSize: 11,
+            ),
+          )
+        : const SizedBox.shrink();
+  }
+}
+
+class _ErrorText extends ConsumerWidget {
+  const _ErrorText();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final error = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.error),
+    );
+
+    return error != null
+        ? Text(
+            BulkDownloadErrorInterpreter.fromString(error).toString(),
             style: TextStyle(
               color: Theme.of(context).colorScheme.error,
               fontSize: 11,
@@ -484,20 +553,21 @@ class _Title extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentDownloadTaskIdProvider);
-    final data = ref
-        .watch(_currentDownloadTaskProvider(id).select((e) => e.displayName));
-    final status =
-        ref.watch(_currentDownloadTaskProvider(id).select((e) => e.status));
-    final strikeThrough = status == BulkDownloadTaskStatus.canceled;
+    final sessionId = ref.watch(_currentSessionIdProvider);
+    final tags = ref
+        .watch(_currentSessionProvider(sessionId).select((e) => e.task.tags));
+    final status = ref.watch(
+      _currentSessionProvider(sessionId).select((e) => e.session.status),
+    );
+    final strikeThrough = status == DownloadSessionStatus.cancelled;
 
     return Text(
-      data,
+      tags ?? 'No tags',
       maxLines: 1,
       overflow: TextOverflow.fade,
       softWrap: false,
       style: TextStyle(
-        color: status == BulkDownloadTaskStatus.canceled
+        color: status == DownloadSessionStatus.cancelled
             ? Theme.of(context).colorScheme.hintColor
             : null,
         fontWeight: FontWeight.w500,

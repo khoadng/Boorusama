@@ -2,17 +2,12 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
 import '../../router.dart';
-import '../bulks/bulk_download_notifier.dart';
-import '../bulks/bulk_download_task.dart';
 import '../bulks/notifications/providers.dart';
-import '../manager/download_task_update.dart';
-import '../manager/download_task_updates_notifier.dart';
+import '../bulks/providers/bulk_download_notifier.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({
@@ -25,52 +20,6 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref
-      ..listen(
-        downloadTaskUpdatesProvider,
-        (prev, cur) {
-          final notifQueue = ref.read(bulkDownloadNotificationQueueProvider);
-
-          if (notifQueue.isEmpty) return;
-
-          for (final group in cur.tasks.keys) {
-            if (!notifQueue.containsKey(group)) {
-              continue;
-            }
-
-            final curComleted = cur.allCompleted(group);
-
-            if (curComleted) {
-              final task = ref.read(bulkdownloadProvider).firstWhereOrNull(
-                    (e) => e.id == group,
-                  );
-
-              if (task == null) return;
-
-              ref.read(bulkDownloadNotificationProvider).showNotification(
-                    task.displayName,
-                    'Downloaded ${task.totalItems} files',
-                  );
-
-              notifQueue.remove(group);
-
-              ref.read(bulkDownloadNotificationQueueProvider.notifier).state = {
-                ...notifQueue,
-              };
-            }
-          }
-        },
-      )
-      ..listen(
-        bulkDownloadErrorNotificationQueueProvider,
-        (prev, cur) {
-          if (cur == null) return;
-
-          ref.read(bulkDownloadErrorNotificationQueueProvider.notifier).state =
-              null;
-
-          showErrorToast(context, cur);
-        },
-      )
       ..listen(
         taskCompleteCheckerProvider,
         (prev, cur) {

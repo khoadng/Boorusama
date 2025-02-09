@@ -32,19 +32,15 @@ class DownloadTranslations {
   static const String bulkDownloadStart = 'Start';
   static const String bulkDownloadCancel = 'Cancel';
   static const String bulkDownloadStop = 'Stop';
+  static const String bulkDownloadResume = 'Resume';
   static const String bulkDownloadCreatedStatus = 'Created';
   static const String bulkDownloadDownload = 'Download';
   static const String bulkDownloadAddToQueue = 'Add to queue';
   static String bulkDownloadInProgressStatus(int? completed) =>
       'Fetching${completed != null ? ' page ${completed + 1}' : ''}...';
-  static String bulkDownloadTitleInfoCounter(bool plural, bool isMixed) =>
-      isMixed
-          ? plural
-              ? '{} files'
-              : '{} file'
-          : plural
-              ? '{} images'
-              : '{} image';
+  static String bulkDownloadTitleInfoCounter(bool plural) =>
+      plural ? '{} files' : '{} file';
+
   static const String bulkDownloadSaveToFolder =
       'download.bulk_download_save_to_folder';
   static const String bulkdDownloadShowAdvancedOptions =

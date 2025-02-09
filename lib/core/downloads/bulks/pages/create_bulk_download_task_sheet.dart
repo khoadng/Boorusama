@@ -7,20 +7,22 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/picker.dart';
-import '../../foundation/platform.dart';
-import '../../info/device_info.dart';
-import '../../search/histories/providers.dart';
-import '../../search/histories/widgets.dart';
-import '../../search/search/routes.dart';
-import '../../settings/settings.dart';
-import '../../settings/widgets.dart';
-import '../../theme.dart';
-import '../l10n.dart';
-import '../widgets/download_folder_selector_section.dart';
-import 'bulk_download_task.dart';
-import 'create_bulk_download_notifier.dart';
-import 'providers.dart';
+import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
+import '../../../foundation/toast.dart';
+import '../../../info/device_info.dart';
+import '../../../search/histories/providers.dart';
+import '../../../search/histories/widgets.dart';
+import '../../../search/search/routes.dart';
+import '../../../settings/settings.dart';
+import '../../../settings/widgets.dart';
+import '../../../theme.dart';
+import '../../l10n.dart';
+import '../../widgets/download_folder_selector_section.dart';
+import '../providers/create_bulk_download_notifier.dart';
+import '../providers/providers.dart';
+import '../types/bulk_download_error.dart';
+import '../types/download_options.dart';
 
 class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({
@@ -38,7 +40,7 @@ class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        createBulkDownloadInitialProvider.overrideWithValue(initialValue),
+        createBulkDownloadInitialTagsProvider.overrideWithValue(initialValue),
       ],
       child: CreateBulkDownloadTaskSheetInternal(
         title: title,
@@ -152,36 +154,29 @@ class _CreateBulkDownloadTaskSheetState
                   title: const Text(
                     DownloadTranslations.bulkDownloadEnableNotifications,
                   ).tr(),
-                  value: task.options.notications,
+                  value: task.notifications,
                   onChanged: (value) {
-                    notifier.setOptions(
-                      task.options.copyWith(notications: value),
-                    );
+                    notifier.setNotifications(value);
                   },
                 ),
                 SwitchListTile(
                   title: const Text(DownloadTranslations.skipDownloadIfExists)
                       .tr(),
-                  value: task.options.skipIfExists,
+                  value: task.skipIfExists,
                   onChanged: (value) {
-                    notifier.setOptions(
-                      task.options.copyWith(skipIfExists: value),
-                    );
+                    notifier.setSkipIfExists(value);
                   },
                 ),
                 SettingsTile(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   title: const Text('settings.download.quality').tr(),
-                  selectedOption:
-                      task.options.quality ?? DownloadQuality.original,
-                  items: DownloadQuality.values,
+                  selectedOption: task.quality ?? DownloadQuality.original.name,
+                  items: DownloadQuality.values.map((e) => e.name).toList(),
                   onChanged: (value) {
-                    notifier.setOptions(
-                      task.options.copyWith(quality: () => value),
-                    );
+                    notifier.setQuality(value);
                   },
                   optionBuilder: (value) =>
-                      Text('settings.download.qualities.${value.name}').tr(),
+                      Text('settings.download.qualities.$value').tr(),
                 ),
               ],
               Container(
@@ -225,10 +220,12 @@ class _CreateBulkDownloadTaskSheetState
                           ),
                           onPressed: task.valid(androidSdkInt: androidSdkInt)
                               ? () {
-                                  final success = notifier.start();
-                                  if (success) {
+                                  try {
+                                    notifier.start();
                                     widget.onSubmitted(context, false);
                                     Navigator.of(context).pop();
+                                  } on BulkDownloadOptionsError catch (e) {
+                                    showErrorToast(context, e.message);
                                   }
                                 }
                               : null,
@@ -258,7 +255,7 @@ class _CreateBulkDownloadTaskSheetState
         },
       );
 
-  Widget _buildPathSelector(BulkDownloadTask task) {
+  Widget _buildPathSelector(DownloadOptions options) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -279,9 +276,9 @@ class _CreateBulkDownloadTaskSheetState
                 visualDensity: VisualDensity.compact,
                 minVerticalPadding: 0,
                 onTap: () => _pickFolder(context),
-                title: task.path.isNotEmpty
+                title: options.path.isNotEmpty
                     ? Text(
-                        task.path,
+                        options.path,
                         overflow: TextOverflow.fade,
                       )
                     : Text(

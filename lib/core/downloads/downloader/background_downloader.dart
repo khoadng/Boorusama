@@ -224,6 +224,7 @@ class _BackgroundDownloaderScopeState
     }
 
     ref.read(downloadTaskUpdatesProvider.notifier).addOrUpdate(update);
+    ref.read(downloadTaskStreamControllerProvider).add(update);
   }
 
   @override
