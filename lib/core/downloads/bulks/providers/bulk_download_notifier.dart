@@ -206,7 +206,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     return r.posts;
   }
 
-  Future<void> downloadFromOptions(
+  Future<void> queueDownloadLater(
     DownloadOptions options, {
     DownloadConfigs? downloadConfigs,
   }) async {
@@ -216,29 +216,32 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       throw const InvalidDownloadOptionsError();
     }
 
-    final hasPremium = ref.read(hasPremiumProvider);
-
-    // Only allow one download session for free users
-    if (!hasPremium) {
-      final activeSessions = await getRunningSessions();
-
-      if (activeSessions > 0) {
-        throw const FreeUserMultipleDownloadSessionsError();
-      }
-    }
-
     final task = await _withRepo((repo) => repo.createTask(options));
-    await downloadFromTask(
-      task,
-      downloadConfigs: downloadConfigs,
-    );
+    final _ = await _withRepo((repo) => repo.createSession(task.id));
+    await _loadTasks();
+
+    return;
   }
 
-  Future<void> downloadFromTaskId(
-    String taskId, {
-    DownloadConfigs? downloadConfigs,
-  }) async {
-    final task = await _withRepo((repo) => repo.getTask(taskId));
+  Future<void> startPendingSession(String sessionId) async {
+    final session = await _withRepo((repo) => repo.getSession(sessionId));
+
+    if (session == null) {
+      state = state.copyWith(
+        error: SessionNotFoundError.new,
+      );
+      return;
+    }
+
+    if (session.status != DownloadSessionStatus.pending) {
+      state = state.copyWith(
+        error: () => Exception('Session is not in pending state'),
+      );
+      return;
+    }
+
+    final task = await _withRepo((repo) => repo.getTask(session.taskId));
+
     if (task == null) {
       state = state.copyWith(
         error: TaskNotFoundError.new,
@@ -246,14 +249,12 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       return;
     }
 
-    await downloadFromTask(
-      task,
-      downloadConfigs: downloadConfigs,
-    );
+    await _startDownloadWithSession(task, session);
   }
 
-  Future<void> downloadFromTask(
-    DownloadTask task, {
+  Future<void> _startDownloadWithSession(
+    DownloadTask task,
+    DownloadSession session, {
     DownloadConfigs? downloadConfigs,
   }) async {
     final authConfig = ref.readConfigAuth;
@@ -292,13 +293,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     final analytics = ref.read(analyticsProvider);
 
-    final taskId = task.id;
-
-    final initialSession =
-        await _withRepo((repo) => repo.createSession(taskId));
-
-    DownloadSession? currentSession = initialSession;
-    final sessionId = initialSession.id;
+    final sessionId = session.id;
+    DownloadSession? currentSession = session;
 
     await _loadTasks();
 
@@ -531,6 +527,66 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         error: e.toString(),
       );
     }
+  }
+
+  Future<void> downloadFromOptions(
+    DownloadOptions options, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    final androidSdkVersion = downloadConfigs?.androidSdkVersion;
+
+    if (!options.valid(androidSdkInt: androidSdkVersion)) {
+      throw const InvalidDownloadOptionsError();
+    }
+
+    final hasPremium = ref.read(hasPremiumProvider);
+
+    // Only allow one download session for free users
+    if (!hasPremium) {
+      final activeSessions = await getRunningSessions();
+
+      if (activeSessions > 0) {
+        throw const FreeUserMultipleDownloadSessionsError();
+      }
+    }
+
+    final task = await _withRepo((repo) => repo.createTask(options));
+    await downloadFromTask(
+      task,
+      downloadConfigs: downloadConfigs,
+    );
+  }
+
+  Future<void> downloadFromTaskId(
+    String taskId, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    final task = await _withRepo((repo) => repo.getTask(taskId));
+    if (task == null) {
+      state = state.copyWith(
+        error: TaskNotFoundError.new,
+      );
+      return;
+    }
+
+    await downloadFromTask(
+      task,
+      downloadConfigs: downloadConfigs,
+    );
+  }
+
+  Future<void> downloadFromTask(
+    DownloadTask task, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    final initialSession =
+        await _withRepo((repo) => repo.createSession(task.id));
+
+    await _startDownloadWithSession(
+      task,
+      initialSession,
+      downloadConfigs: downloadConfigs,
+    );
   }
 
   Future<void> cancelSession(String sessionId) async {

@@ -77,13 +77,15 @@ class _CreateBulkDownloadTaskSheetState
       deviceInfoProvider
           .select((value) => value.androidDeviceInfo?.version.sdkInt),
     );
+    final validTask = task.valid(androidSdkInt: androidSdkInt);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      child: Container(
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
-        ),
+      color: colorScheme.surfaceContainer,
+      child: SafeArea(
+        top: false,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +97,7 @@ class _CreateBulkDownloadTaskSheetState
                 children: [
                   Text(
                     widget.title,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: textTheme.titleLarge,
                   ),
                 ],
               ),
@@ -113,10 +115,10 @@ class _CreateBulkDownloadTaskSheetState
                   DownloadTranslations.bulkDownloadSaveToFolder
                       .tr()
                       .toUpperCase(),
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.hintColor,
-                        fontWeight: FontWeight.w800,
-                      ),
+                  style: textTheme.titleSmall?.copyWith(
+                    color: colorScheme.hintColor,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               _buildPathSelector(task),
@@ -180,59 +182,59 @@ class _CreateBulkDownloadTaskSheetState
                 ),
               ],
               Container(
-                margin: const EdgeInsets.only(
-                  top: 12,
-                  bottom: 28,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
                 ),
                 child: Row(
+                  spacing: 16,
                   children: [
-                    // FilledButton(
-                    //   style: FilledButton.styleFrom(
-                    //     foregroundColor: context.iconTheme.color,
-                    //     backgroundColor:
-                    //         Theme.of(context).colorScheme.surfaceContainerHighest,
-                    //     shape: const RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.all(Radius.circular(16)),
-                    //     ),
-                    //   ),
-                    //   onPressed: task.valid(androidSdkInt: androidSdkInt)
-                    //       ? () {
-                    //           notifier.queue();
-                    //           widget.onSubmitted(context, true);
-                    //           Navigator.of(context).pop();
-                    //         }
-                    //       : null,
-                    //   child: const Text(
-                    //           DownloadTranslations.bulkDownloadAddToQueue)
-                    //       .tr(),
-                    // ),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: FilledButton(
-                          style: FilledButton.styleFrom(
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onPrimary,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16)),
-                            ),
+                      child: ElevatedButton(
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: validTask
+                                ? BorderSide(
+                                    color: colorScheme.outline,
+                                  )
+                                : BorderSide.none,
                           ),
-                          onPressed: task.valid(androidSdkInt: androidSdkInt)
-                              ? () {
-                                  try {
-                                    notifier.start();
-                                    widget.onSubmitted(context, false);
-                                    Navigator.of(context).pop();
-                                  } on BulkDownloadOptionsError catch (e) {
-                                    showErrorToast(context, e.message);
-                                  }
-                                }
-                              : null,
-                          child: const Text(
-                            DownloadTranslations.bulkDownloadDownload,
-                          ).tr(),
                         ),
+                        onPressed: validTask
+                            ? () {
+                                notifier.startLater();
+                                widget.onSubmitted(context, true);
+                                Navigator.of(context).pop();
+                              }
+                            : null,
+                        child: const Text(
+                          DownloadTranslations.bulkDownloadAddToQueue,
+                        ).tr(),
+                      ),
+                    ),
+                    Expanded(
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                          ),
+                        ),
+                        onPressed: validTask
+                            ? () {
+                                try {
+                                  notifier.start();
+                                  widget.onSubmitted(context, false);
+                                  Navigator.of(context).pop();
+                                } on BulkDownloadOptionsError catch (e) {
+                                  showErrorToast(context, e.message);
+                                }
+                              }
+                            : null,
+                        child: const Text(
+                          DownloadTranslations.bulkDownloadDownload,
+                        ).tr(),
                       ),
                     ),
                   ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -27,85 +28,67 @@ import '../types/bulk_download_session.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 
-final _currentSessionProvider =
-    Provider.autoDispose.family<BulkDownloadSession, String>(
-  (ref, id) {
-    final sessions = ref.watch(bulkDownloadSessionsProvider);
-
-    return sessions.firstWhere((element) => element.session.id == id);
-  },
-  dependencies: [
-    _currentSessionIdProvider,
-  ],
-);
-
-final _currentSessionIdProvider = Provider.autoDispose<String>((ref) {
-  throw UnimplementedError();
-});
-
 class BulkDownloadTaskTile extends ConsumerWidget {
   const BulkDownloadTaskTile({
-    required this.sessionId,
+    required this.session,
     super.key,
   });
 
-  final String sessionId;
+  final BulkDownloadSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        _currentSessionIdProvider.overrideWithValue(sessionId),
-      ],
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          minHeight: 60,
-        ),
-        child: const _ContextMenu(
-          child: _DetailsInkWell(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 8,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _CoverImage(),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _Logo(),
-                            Expanded(
-                              child: _InfoText(),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 60,
+      ),
+      child: _ContextMenu(
+        session: session,
+        child: _DetailsInkWell(
+          session: session,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 8,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _CoverImage(session),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _Logo(session),
+                          Expanded(
+                            child: _InfoText(session),
+                          ),
+                          _ActionButtons(session),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _Title(session),
+                                _Subtitle(session),
+                              ],
                             ),
-                            _ActionButtons(),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _Title(),
-                                  _Subtitle(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                _StartPendingButton(session),
+              ],
             ),
           ),
         ),
@@ -114,18 +97,57 @@ class BulkDownloadTaskTile extends ConsumerWidget {
   }
 }
 
+class _StartPendingButton extends ConsumerWidget {
+  const _StartPendingButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = session.id;
+    final status = session.session.status;
+    final colorScheme = Theme.of(context).colorScheme;
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
+
+    return status == DownloadSessionStatus.pending
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              CircularIconButton(
+                padding: const EdgeInsets.all(8),
+                backgroundColor: colorScheme.surfaceContainer,
+                icon: Icon(
+                  FontAwesomeIcons.play,
+                  fill: 1,
+                  size: 18,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                onPressed: () {
+                  notifier.startPendingSession(sessionId);
+                },
+              ),
+            ],
+          )
+        : const SizedBox.shrink();
+  }
+}
+
 class _ContextMenu extends ConsumerWidget {
   const _ContextMenu({
+    required this.session,
     required this.child,
   });
 
+  final BulkDownloadSession session;
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentSessionIdProvider);
-    final path =
-        ref.watch(_currentSessionProvider(id).select((e) => e.task.path));
+    final path = session.task.path;
 
     return ContextMenuRegion(
       contextMenu: GenericContextMenu(
@@ -133,7 +155,7 @@ class _ContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             DownloadTranslations.bulkDownloadDelete.tr(),
             onPressed: () {
-              ref.read(bulkDownloadProvider.notifier).deleteSession(id);
+              ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
             },
           ),
           ContextMenuButtonConfig(
@@ -149,16 +171,17 @@ class _ContextMenu extends ConsumerWidget {
 
 class _DetailsInkWell extends ConsumerWidget {
   const _DetailsInkWell({
+    required this.session,
     required this.child,
   });
 
+  final BulkDownloadSession session;
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentSessionIdProvider);
-    final status =
-        ref.watch(_currentSessionProvider(id).select((e) => e.session.status));
+    final id = session.id;
+    final status = session.session.status;
 
     return InkWell(
       onTap: status == DownloadSessionStatus.running
@@ -186,16 +209,20 @@ class _DetailsInkWell extends ConsumerWidget {
 }
 
 class _CoverImage extends ConsumerWidget {
-  const _CoverImage();
+  const _CoverImage(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentSessionIdProvider);
-    final stats = ref.watch(_currentSessionProvider(id).select((e) => e.stats));
+    final coverUrl = session.stats.coverUrl;
 
     return SizedBox(
       width: 72,
-      child: stats != DownloadSessionStats.empty
-          ? _Thumbnail(url: stats.coverUrl)
+      child: coverUrl != null && coverUrl.isNotEmpty
+          ? _Thumbnail(url: coverUrl)
           : SizedBox(
               height: 72,
               child: Card(
@@ -211,12 +238,15 @@ class _CoverImage extends ConsumerWidget {
 }
 
 class _Logo extends ConsumerWidget {
-  const _Logo();
+  const _Logo(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentSessionIdProvider);
-    final stats = ref.watch(_currentSessionProvider(id).select((e) => e.stats));
+    final stats = session.stats;
 
     return stats != DownloadSessionStats.empty
         ? BooruLogo.fromConfig(
@@ -229,25 +259,27 @@ class _Logo extends ConsumerWidget {
 }
 
 class _ActionButtons extends ConsumerWidget {
-  const _ActionButtons();
+  const _ActionButtons(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final session = ref.watch(_currentSessionProvider(sessionId));
-    final status = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.status),
-    );
+    final sessionId = session.id;
+    final status = session.session.status;
 
     return switch (status) {
-      DownloadSessionStatus.pending => _ActionButton(
-          title: DownloadTranslations.bulkDownloadStart.tr(),
-          onPressed: () {
-            ref
-                .read(bulkDownloadProvider.notifier)
-                .downloadFromTask(session.task);
-          },
-        ),
-      DownloadSessionStatus.running => const _CancelAllButton(),
+      // DownloadSessionStatus.pending => _ActionButton(
+      //     title: DownloadTranslations.bulkDownloadStart.tr(),
+      //     onPressed: () {
+      //       ref
+      //           .read(bulkDownloadProvider.notifier)
+      //           .downloadFromTask(session.task);
+      //     },
+      //   ),
+      DownloadSessionStatus.running => _CancelAllButton(session),
       DownloadSessionStatus.dryRun => _ActionButton(
           onPressed: () {
             ref.read(bulkDownloadProvider.notifier).stopDryRun(sessionId);
@@ -268,22 +300,20 @@ class _ActionButtons extends ConsumerWidget {
 }
 
 class _InfoText extends ConsumerWidget {
-  const _InfoText();
+  const _InfoText(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final stats =
-        ref.watch(_currentSessionProvider(sessionId).select((e) => e.stats));
+    final stats = session.stats;
 
     final fileSize = stats.estimatedDownloadSize;
     final totalItems = stats.totalItems;
-    final status = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.status),
-    );
-    final pageProgress = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.pageProgress),
-    );
+    final status = session.session.status;
+    final pageProgress = session.pageProgress;
 
     final fileSizeText = fileSize != null && fileSize > 0
         ? Filesize.parse(fileSize, round: 1)
@@ -298,12 +328,8 @@ class _InfoText extends ConsumerWidget {
       totalItemText,
     ].nonNulls.join(' • ');
 
-    final siteUrl = stats.siteUrl;
-
     return Padding(
-      padding: siteUrl != null
-          ? const EdgeInsets.symmetric(horizontal: 8)
-          : EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Text(
         switch (status) {
           DownloadSessionStatus.pending =>
@@ -329,24 +355,25 @@ class _InfoText extends ConsumerWidget {
 }
 
 class _Subtitle extends ConsumerWidget {
-  const _Subtitle();
+  const _Subtitle(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final status = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.status),
-    );
-    final path = ref
-        .watch(_currentSessionProvider(sessionId).select((e) => e.task.path));
+    final status = session.session.status;
+    final path = session.task.path;
 
     return status == DownloadSessionStatus.running ||
             status == DownloadSessionStatus.dryRun ||
             status == DownloadSessionStatus.interrupted
-        ? const Column(
+        ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ProgressBar(),
-              _FailedCount(),
+              _ProgressBar(session),
+              _FailedCount(session),
             ],
           )
         : Column(
@@ -373,26 +400,32 @@ class _Subtitle extends ConsumerWidget {
                   fontSize: 12,
                 ),
               ),
-              const _ErrorText(),
+              _ErrorText(session),
             ],
           );
   }
 }
 
 class _ProgressBar extends ConsumerWidget {
-  const _ProgressBar();
+  const _ProgressBar(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final status = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.status),
-    );
+    final sessionId = session.id;
+    final status = session.session.status;
 
     return switch (status) {
       DownloadSessionStatus.dryRun => _buildLinear(),
       DownloadSessionStatus.interrupted =>
         ref.watch(percentCompletedFromDbProvider(sessionId)).maybeWhen(
-              data: (progress) => _buildPercent(progress),
+              data: (progress) => _buildPercent(
+                progress,
+                animateFromLastPercent: false,
+              ),
               orElse: () => _buildLinear(),
             ),
       _ => Builder(
@@ -407,7 +440,10 @@ class _ProgressBar extends ConsumerWidget {
     };
   }
 
-  Widget _buildPercent(double progress) {
+  Widget _buildPercent(
+    double progress, {
+    bool animateFromLastPercent = true,
+  }) {
     return LinearPercentIndicator(
       lineHeight: 2,
       percent: progress,
@@ -415,8 +451,8 @@ class _ProgressBar extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 4,
       ),
-      animation: true,
-      animateFromLastPercent: true,
+      animation: animateFromLastPercent,
+      animateFromLastPercent: animateFromLastPercent,
       trailing: Text(
         '${(progress * 100).floor()}%',
       ),
@@ -439,13 +475,16 @@ class _ProgressBar extends ConsumerWidget {
 }
 
 class _CancelAllButton extends ConsumerWidget {
-  const _CancelAllButton();
+  const _CancelAllButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final status = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.status),
-    );
+    final sessionId = session.id;
+    final status = session.session.status;
     final isCompleted = status == DownloadSessionStatus.completed;
 
     return !isCompleted
@@ -462,11 +501,15 @@ class _CancelAllButton extends ConsumerWidget {
 }
 
 class _FailedCount extends ConsumerWidget {
-  const _FailedCount();
+  const _FailedCount(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(_currentSessionIdProvider);
+    final id = session.id;
     final failedCount = ref.watch(downloadGroupFailedProvider(id));
 
     return failedCount > 0
@@ -482,14 +525,15 @@ class _FailedCount extends ConsumerWidget {
 }
 
 class _ErrorText extends ConsumerWidget {
-  const _ErrorText();
+  const _ErrorText(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final error = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.error),
-    );
+    final error = session.session.error;
 
     return error != null
         ? Text(
@@ -549,16 +593,16 @@ class _Thumbnail extends StatelessWidget {
 }
 
 class _Title extends ConsumerWidget {
-  const _Title();
+  const _Title(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = ref.watch(_currentSessionIdProvider);
-    final tags = ref
-        .watch(_currentSessionProvider(sessionId).select((e) => e.task.tags));
-    final status = ref.watch(
-      _currentSessionProvider(sessionId).select((e) => e.session.status),
-    );
+    final tags = session.task.tags;
+    final status = session.session.status;
     final strikeThrough = status == DownloadSessionStatus.cancelled;
 
     return Text(

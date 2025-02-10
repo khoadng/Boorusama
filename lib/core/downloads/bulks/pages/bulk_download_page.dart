@@ -111,7 +111,7 @@ class BulkDownloadActionSessions extends ConsumerWidget {
         ? ListView.builder(
             itemCount: sessiosn.length,
             itemBuilder: (context, index) => BulkDownloadTaskTile(
-              sessionId: sessiosn[index].session.id,
+              session: sessiosn[index],
             ),
           )
         : Center(

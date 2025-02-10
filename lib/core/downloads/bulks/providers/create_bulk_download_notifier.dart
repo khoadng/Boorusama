@@ -102,6 +102,10 @@ class CreateBulkDownload2Notifier extends AutoDisposeNotifier<DownloadOptions> {
     ref.read(bulkDownloadProvider.notifier).downloadFromOptions(state);
   }
 
+  void startLater() {
+    ref.read(bulkDownloadProvider.notifier).queueDownloadLater(state);
+  }
+
   int? get androidSdkInt =>
       ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt;
 }

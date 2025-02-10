@@ -35,7 +35,7 @@ class DownloadTranslations {
   static const String bulkDownloadResume = 'Resume';
   static const String bulkDownloadCreatedStatus = 'Created';
   static const String bulkDownloadDownload = 'Download';
-  static const String bulkDownloadAddToQueue = 'Add to queue';
+  static const String bulkDownloadAddToQueue = 'Queue';
   static String bulkDownloadInProgressStatus(int? completed) =>
       'Fetching${completed != null ? ' page ${completed + 1}' : ''}...';
   static String bulkDownloadTitleInfoCounter(bool plural) =>

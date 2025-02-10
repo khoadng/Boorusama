@@ -73,7 +73,7 @@ extension DownloadOptionsX on DownloadOptions {
 
     if (!droid) return true;
 
-    return !shouldDisplayWarning(
+    return isValidDownload(
       hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
     );
   }
