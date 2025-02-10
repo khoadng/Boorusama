@@ -37,6 +37,7 @@ import '../types/download_repository.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
+import 'file_system_download_exist_checker.dart';
 import 'providers.dart';
 
 // Package imports:
@@ -248,6 +249,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     final mediaPermManager = ref.read(mediaPermissionManagerProvider);
 
+    final fileExistChecker =
+        downloadConfigs?.existChecker ?? const FileSystemDownloadExistChecker();
+
     final logger = ref.read(loggerProvider);
 
     final analytics = ref.read(analyticsProvider);
@@ -354,6 +358,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
             downloadUrl: urlData.url,
           );
 
+          if (task.skipIfExists) {
+            final exists = fileExistChecker.exists(fileName, task.path);
+
+            // skip if file exists
+            if (exists) {
+              continue;
+            }
+          }
+
           records.add(
             DownloadRecord(
               url: urlData.url,
@@ -415,6 +428,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         (repo) => repo.getPendingRecordsBySessionId(sessionId),
       );
 
+      if (pendings.isEmpty) {
+        await _updateSession(
+          sessionId,
+          status: DownloadSessionStatus.allSkipped,
+        );
+        return;
+      }
+
       await _updateSession(
         sessionId,
         status: DownloadSessionStatus.running,
@@ -440,7 +461,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               url: record.url,
               path: task.path,
               filename: record.fileName,
-              skipIfExists: task.skipIfExists,
+              skipIfExists: false, // We already handled this in the dry run
               headers: record.headers,
               metadata: DownloaderMetadata(
                 thumbnailUrl: record.thumbnailImageUrl,

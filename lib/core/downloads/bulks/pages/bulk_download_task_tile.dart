@@ -329,7 +329,7 @@ class _InfoText extends ConsumerWidget {
     ].nonNulls.join(' • ');
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Text(
         switch (status) {
           DownloadSessionStatus.pending =>
@@ -340,6 +340,7 @@ class _InfoText extends ConsumerWidget {
             ).tr(),
           DownloadSessionStatus.failed => 'Error',
           DownloadSessionStatus.interrupted => 'Interrupted',
+          DownloadSessionStatus.allSkipped => 'Skipped',
           _ => infoText,
         },
         maxLines: 1,

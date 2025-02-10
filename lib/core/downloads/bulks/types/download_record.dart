@@ -6,7 +6,6 @@ enum DownloadRecordStatus {
   downloading,
   completed,
   failed,
-  skipped,
   cancelled;
 
   static DownloadRecordStatus fromString(String value) {

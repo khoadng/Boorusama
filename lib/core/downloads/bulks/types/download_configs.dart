@@ -10,6 +10,7 @@ class DownloadConfigs {
     this.settings,
     this.fileNameBuilder,
     this.urlExtractor,
+    this.existChecker,
     this.headers,
     this.blacklistedTags,
     this.baseUrl,
@@ -23,6 +24,7 @@ class DownloadConfigs {
   final Settings? settings;
   final DownloadFileNameBuilder? fileNameBuilder;
   final DownloadFileUrlExtractor? urlExtractor;
+  final DownloadExistChecker? existChecker;
   final Map<String, String>? headers;
   final Set<String>? blacklistedTags;
   final String? baseUrl;
@@ -30,4 +32,8 @@ class DownloadConfigs {
   final Duration? delayBetweenDownloads;
   final Duration? delayBetweenRequests;
   final int? androidSdkVersion;
+}
+
+abstract class DownloadExistChecker {
+  bool exists(String fileName, String path);
 }

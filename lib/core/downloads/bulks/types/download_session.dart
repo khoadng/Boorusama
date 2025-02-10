@@ -6,6 +6,7 @@ enum DownloadSessionStatus {
   dryRun,
   running,
   completed,
+  allSkipped,
   failed,
   interrupted,
   paused,
