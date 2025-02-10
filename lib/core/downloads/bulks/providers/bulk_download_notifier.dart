@@ -2,9 +2,6 @@
 import 'dart:async';
 import 'dart:isolate';
 
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +26,6 @@ import '../../../utils/duration_utils.dart';
 import '../../downloader.dart';
 import '../../filename/generator_impl.dart';
 import '../../manager.dart';
-import '../data/download_repository_provider.dart';
 import '../notifications/providers.dart';
 import '../types/bulk_download_error.dart';
 import '../types/bulk_download_session.dart';
@@ -41,6 +37,7 @@ import '../types/download_repository.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
+import 'providers.dart';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart'
@@ -56,44 +53,6 @@ final bulkDownloadProvider =
 
 final bulkDownloadSessionsProvider = Provider<List<BulkDownloadSession>>((ref) {
   return ref.watch(bulkDownloadProvider.select((e) => e.sessions));
-});
-
-final downloadRepositoryProvider =
-    FutureProvider<DownloadRepository>((ref) async {
-  final repo = await ref.watch(internalDownloadRepositoryProvider.future);
-
-  return repo;
-});
-
-final percentCompletedProvider =
-    Provider.autoDispose.family<double, String>((ref, group) {
-  final completed = ref.watch(downloadTaskUpdatesProvider).completed(group);
-
-  if (completed.isEmpty) return 0.0;
-
-  final total = ref.watch(downloadTaskUpdatesProvider).all(group);
-
-  if (total.isEmpty) return 0.0;
-
-  return completed.length / total.length;
-});
-
-final percentCompletedFromDbProvider =
-    FutureProvider.autoDispose.family<double, String>((ref, group) async {
-  final repo = await ref.watch(downloadRepositoryProvider.future);
-
-  final completed = await repo.getRecordsBySessionIdAndStatus(
-    group,
-    DownloadRecordStatus.completed,
-  );
-
-  if (completed.isEmpty) return 0.0;
-
-  final total = await repo.getRecordsBySessionId(group);
-
-  if (total.isEmpty) return 0.0;
-
-  return completed.length / total.length;
 });
 
 class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
@@ -863,71 +822,4 @@ List<Post> _filterInIsolate(
   }
 
   return posts.where((e) => !filterIds.contains(e.id)).toList();
-}
-
-final taskCompleteCheckerProvider =
-    NotifierProvider<CompleteCheckNotifier, void>(CompleteCheckNotifier.new);
-
-class CompleteCheckNotifier extends Notifier<void> {
-  Timer? _timer;
-
-  @override
-  void build() {
-    // Cancel any existing timer
-    _timer?.cancel();
-
-    // Listen to task count
-    final _ = ref.watch(bulkDownloadProvider.select((e) => e.sessions.length));
-
-    // check if all tasks are completed every 1 seconds
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final taskUpdates = ref.read(downloadTaskUpdatesProvider);
-      // final bulkTasks = ref.read(bulkdownloadProvider);
-      final sessions = ref.read(bulkDownloadProvider).sessions;
-
-      // if all bulk download tasks are completed, cancel the timer
-      if (sessions
-          .every((e) => e.session.status == DownloadSessionStatus.completed)) {
-        _print('All sessions are completed');
-        timer.cancel();
-        return;
-      }
-
-      for (final session in sessions
-          .where((e) => e.session.status == DownloadSessionStatus.running)) {
-        var completedCount = 0;
-        final sessionId = session.session.id;
-
-        for (final update in taskUpdates.all(sessionId)) {
-          if (update is TaskStatusUpdate &&
-              update.status == TaskStatus.complete) {
-            completedCount += 1;
-          }
-        }
-
-        final completed =
-            completedCount > 0 && completedCount == session.stats.totalItems;
-
-        if (completed) {
-          _print('Session $sessionId is completed, updating status');
-          ref.read(bulkDownloadProvider.notifier).tryCompleteSession(
-                sessionId,
-              );
-        }
-      }
-    });
-
-    ref.onDispose(() {
-      _timer?.cancel();
-      _timer = null;
-    });
-
-    return;
-  }
-}
-
-void _print(String message) {
-  if (!kDebugMode) return;
-
-  debugPrint('[Bulk Download] $message');
 }

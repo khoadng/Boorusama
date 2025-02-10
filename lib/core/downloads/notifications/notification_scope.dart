@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../router.dart';
 import '../bulks/notifications/providers.dart';
-import '../bulks/providers/bulk_download_notifier.dart';
+import '../bulks/providers/complete_check_notifier.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({
