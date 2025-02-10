@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
 
 // Package imports:
@@ -77,6 +78,19 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         if (prev != next) {
           next.whenData((event) {
             if (event is TaskStatusUpdate) {
+              if (event.status == TaskStatus.complete) {
+                event.task.filePath().then((value) {
+                  final fileSize = File(value).lengthSync();
+
+                  updateRecord(
+                    event.task.group,
+                    event.task.taskId,
+                    DownloadRecordStatus.completed,
+                    fileSize: fileSize,
+                  );
+                });
+              }
+
               updateRecord(
                 event.task.group,
                 event.task.taskId,
@@ -722,6 +736,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               ),
         );
       }
+
+      await _loadTasks();
     } catch (e) {
       state = state.copyWith(
         error: DatabaseOperationError.new,
@@ -732,8 +748,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   Future<void> updateRecord(
     String sessionId,
     String downloadId,
-    DownloadRecordStatus status,
-  ) async {
+    DownloadRecordStatus status, {
+    int? fileSize,
+  }) async {
     try {
       final record = await _withRepo(
         (repo) => repo.getRecordByDownloadId(
@@ -754,6 +771,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           sessionId: sessionId,
           downloadId: downloadId,
           status: status,
+          fileSize: fileSize,
         ),
       );
     } catch (e) {
