@@ -1,0 +1,297 @@
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:foundation/foundation.dart';
+import 'package:mocktail/mocktail.dart';
+
+// Project imports:
+import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/blacklists/providers.dart';
+import 'package:boorusama/core/boorus/booru/booru.dart';
+import 'package:boorusama/core/boorus/engine/engine.dart';
+import 'package:boorusama/core/boorus/engine/providers.dart';
+import 'package:boorusama/core/configs/config.dart';
+import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/downloads/bulks/data/download_repository_provider.dart';
+import 'package:boorusama/core/downloads/bulks/notifications.dart';
+import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
+import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
+import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
+import 'package:boorusama/core/downloads/downloader.dart';
+import 'package:boorusama/core/downloads/filename.dart';
+import 'package:boorusama/core/downloads/urls.dart';
+import 'package:boorusama/core/foundation/loggers.dart';
+import 'package:boorusama/core/foundation/permissions.dart';
+import 'package:boorusama/core/http/providers.dart';
+import 'package:boorusama/core/info/device_info.dart';
+import 'package:boorusama/core/posts/post/post.dart';
+import 'package:boorusama/core/posts/post/providers.dart';
+import 'package:boorusama/core/premiums/providers.dart';
+import 'package:boorusama/core/search/queries/query.dart';
+import 'package:boorusama/core/search/selected_tags/providers.dart';
+import 'package:boorusama/core/settings/providers.dart';
+import 'package:boorusama/core/settings/settings.dart';
+import '../../common.dart';
+
+class MockMediaPermissionManager extends Mock
+    implements MediaPermissionManager {}
+
+class DummyLogger implements Logger {
+  @override
+  void log(String serviceName, String message, {LogLevel? level}) {}
+
+  @override
+  void logE(String serviceName, String message) {}
+
+  @override
+  void logI(String serviceName, String message) {}
+
+  @override
+  void logW(String serviceName, String message) {}
+}
+
+class DownloadTestConstants {
+  static const perPage = 2;
+  static final lastPage = (posts.length / perPage).ceil();
+
+  static const defaultOptions = DownloadOptions(
+    path: '/test/path',
+    notifications: true,
+    skipIfExists: true,
+    perPage: 2,
+    concurrency: 5,
+    tags: ['test_tags'],
+  );
+
+  static final posts = [
+    // page 1
+    DummyPost(
+      id: 1,
+      thumbnailImageUrl: 'test-thumbnail-url-1',
+      originalImageUrl: 'test-original-url-1',
+      sampleImageUrl: 'test-sample-url-1',
+      tags: {'tag1', 'tag2'},
+    ),
+    DummyPost(
+      id: 2,
+      thumbnailImageUrl: 'test-thumbnail-url-2',
+      originalImageUrl: 'test-original-url-2',
+      sampleImageUrl: 'test-sample-url-2',
+      tags: {'tag3', 'tag4'},
+    ),
+    // page 2
+    DummyPost(
+      id: 3,
+      thumbnailImageUrl: 'test-thumbnail-url-3',
+      originalImageUrl: 'test-original-url-3',
+      sampleImageUrl: 'test-sample-url-3',
+      tags: {'tag5', 'tag6'},
+    ),
+    DummyPost(
+      id: 4,
+      thumbnailImageUrl: 'test-thumbnail-url-4',
+      originalImageUrl: 'test-original-url-4',
+      sampleImageUrl: 'test-sample-url-4',
+      tags: {'tag7'},
+    ),
+    // page 3
+    DummyPost(
+      id: 5,
+      thumbnailImageUrl: 'test-thumbnail-url-5',
+      originalImageUrl: 'test-original-url-5',
+      sampleImageUrl: 'test-sample-url-5',
+      tags: {'tag8'},
+    ),
+    DummyPost(
+      id: 6,
+      thumbnailImageUrl: 'test-thumbnail-url-6',
+      originalImageUrl: 'test-original-url-6',
+      sampleImageUrl: 'test-sample-url-6',
+      tags: {'tag9'},
+    ),
+    // page 4
+    DummyPost(
+      id: 7,
+      thumbnailImageUrl: 'test-thumbnail-url-7',
+      originalImageUrl: 'test-original-url-7',
+      sampleImageUrl: 'test-sample-url-7',
+      tags: {'tag10'},
+    ),
+  ];
+}
+
+class DummyPostRepository implements PostRepository {
+  @override
+  PostsOrError<Post> getPosts(String tags, int page, {int? limit}) {
+    final posts = DownloadTestConstants.posts
+        .skip((page - 1) * DownloadTestConstants.perPage)
+        .take(DownloadTestConstants.perPage)
+        .toList();
+
+    return TaskEither.right(PostResult(posts: posts, total: null));
+  }
+
+  @override
+  PostsOrError<Post> getPostsFromController(
+    SelectedTagController controller,
+    int page, {
+    int? limit,
+  }) =>
+      getPosts('', page);
+
+  @override
+  TagQueryComposer get tagComposer =>
+      DefaultTagQueryComposer(config: booruConfigSearch);
+}
+
+final booruConfigSearch = BooruConfigSearch.fromConfig(
+  booruConfig,
+);
+
+final booruConfigAuth = BooruConfigAuth.fromConfig(
+  booruConfig,
+);
+
+final booruConfig = BooruConfig.defaultConfig(
+  booruType: BooruType.danbooru,
+  url: 'test-url',
+  customDownloadFileNameFormat: null,
+);
+
+class MockBooruBuilder extends Mock implements BooruBuilder {}
+
+class MockNotification extends Mock implements BulkDownloadNotifications {}
+
+class DummyDownloadService implements DownloadService {
+  @override
+  DownloadTaskInfoOrError download({
+    required String url,
+    required String filename,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
+    Map<String, String>? headers,
+  }) {
+    return TaskEither.right(
+      DownloadTaskInfo(
+        path: 'path',
+        id: url,
+      ),
+    );
+  }
+
+  @override
+  DownloadTaskInfoOrError downloadCustomLocation({
+    required String url,
+    required String path,
+    required String filename,
+    DownloaderMetadata? metadata,
+    bool? skipIfExists,
+    Map<String, String>? headers,
+  }) {
+    return TaskEither.right(
+      DownloadTaskInfo(path: 'path', id: url),
+    );
+  }
+
+  @override
+  Future<bool> cancelTasksWithIds(List<String> ids) {
+    return Future.value(true);
+  }
+}
+
+final dummyDownloadFileNameBuilder = DownloadFileNameBuilder<DummyPost>(
+  tokenHandlers: {},
+  sampleData: [],
+  defaultFileNameFormat: 'test-default-format',
+  defaultBulkDownloadFileNameFormat: 'test-default-bulk-format',
+);
+
+class AlwaysGrantedPermissionManager implements MediaPermissionManager {
+  @override
+  Future<PermissionStatus> check() async => PermissionStatus.granted;
+
+  @override
+  Future<PermissionStatus> request() async => PermissionStatus.granted;
+
+  @override
+  DeviceInfo get deviceInfo => DeviceInfo.empty();
+}
+
+class ExistCheckerMock extends Mock implements DownloadExistChecker {}
+
+ProviderContainer createBulkDownloadContainer({
+  required DownloadRepository downloadRepository,
+  required MockBooruBuilder booruBuilder,
+  MediaPermissionManager? mediaPermissionManager,
+  bool hasPremium = true,
+}) {
+  when(() => booruBuilder.downloadFilenameBuilder).thenReturn(
+    dummyDownloadFileNameBuilder,
+  );
+
+  final notifications = MockNotification();
+
+  when(
+    () => notifications.showNotification(
+      any(),
+      any(),
+      payload: any(named: 'payload'),
+      progress: any(named: 'progress'),
+      total: any(named: 'total'),
+      indeterminate: any(named: 'indeterminate'),
+    ),
+  ).thenAnswer((_) => Future.value());
+
+  final container = ProviderContainer(
+    overrides: getTestOverrides(
+      downloadRepository: downloadRepository,
+      mediaPermissionManager:
+          mediaPermissionManager ?? AlwaysGrantedPermissionManager(),
+      booruBuilder: booruBuilder,
+      notifications: notifications,
+      hasPremium: hasPremium,
+    ),
+  );
+
+  addTearDown(() {
+    reset(booruBuilder);
+    reset(notifications);
+
+    container.dispose();
+  });
+
+  return container;
+}
+
+List<Override> getTestOverrides({
+  required DownloadRepository downloadRepository,
+  MediaPermissionManager? mediaPermissionManager,
+  BooruBuilder? booruBuilder,
+  BulkDownloadNotifications? notifications,
+  bool hasPremium = true,
+}) {
+  return [
+    internalDownloadRepositoryProvider.overrideWith((_) => downloadRepository),
+    currentReadOnlyBooruConfigSearchProvider
+        .overrideWithValue(booruConfigSearch),
+    currentReadOnlyBooruConfigAuthProvider.overrideWithValue(booruConfigAuth),
+    currentReadOnlyBooruConfigProvider.overrideWithValue(booruConfig),
+    postRepoProvider.overrideWith((__, _) => DummyPostRepository()),
+    downloadServiceProvider.overrideWith((__, _) => DummyDownloadService()),
+    loggerProvider.overrideWithValue(DummyLogger()),
+    mediaPermissionManagerProvider.overrideWithValue(
+      mediaPermissionManager ?? MockMediaPermissionManager(),
+    ),
+    settingsProvider.overrideWithValue(Settings.defaultSettings),
+    downloadFileUrlExtractorProvider
+        .overrideWith((__, _) => const UrlInsidePostExtractor()),
+    cachedBypassDdosHeadersProvider.overrideWith((_, __) => {}),
+    analyticsProvider.overrideWith((_) => NoAnalyticsInterface()),
+    currentBooruBuilderProvider
+        .overrideWith((_) => booruBuilder ?? MockBooruBuilder()),
+    blacklistTagsProvider.overrideWith((_, __) => {}),
+    hasPremiumProvider.overrideWithValue(hasPremium),
+    if (notifications != null)
+      bulkDownloadNotificationProvider.overrideWithValue(notifications),
+  ];
+}
