@@ -15,6 +15,23 @@ class DownloadTask extends Equatable {
     this.tags,
   });
 
+  factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
+        id: json['id'] as String? ?? '',
+        path: json['path'] as String? ?? '',
+        notifications: json['notifications'] as bool? ?? false,
+        skipIfExists: json['skipIfExists'] as bool? ?? false,
+        quality: json['quality'] as String?,
+        createdAt: json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'] as String)
+            : DateTime.now(),
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'] as String)
+            : DateTime.now(),
+        perPage: json['perPage'] as int? ?? 20,
+        concurrency: json['concurrency'] as int? ?? 1,
+        tags: json['tags'] as String?,
+      );
+
   final String id;
   final String path;
   final bool notifications;
@@ -47,6 +64,19 @@ class DownloadTask extends Equatable {
         concurrency: concurrency ?? this.concurrency,
         tags: tags ?? this.tags,
       );
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'path': path,
+        'notifications': notifications,
+        'skipIfExists': skipIfExists,
+        'quality': quality,
+        'createdAt': createdAt.toIso8601String(),
+        'updatedAt': updatedAt.toIso8601String(),
+        'perPage': perPage,
+        'concurrency': concurrency,
+        'tags': tags,
+      };
 
   @override
   List<Object?> get props => [

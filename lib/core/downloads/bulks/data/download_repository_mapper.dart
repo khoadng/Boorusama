@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
@@ -34,6 +35,8 @@ DownloadTask mapToTask(Row row) {
 }
 
 DownloadSession mapToSession(Row row) {
+  final task = tryDecodeJson<DownloadTask?>(row['task']).getOrElse((_) => null);
+
   return DownloadSession(
     id: row['id'],
     taskId: row['task_id'],
@@ -45,6 +48,7 @@ DownloadSession mapToSession(Row row) {
     totalPages: row['total_pages'],
     status: DownloadSessionStatus.fromString(row['status']),
     error: row['error'],
+    task: task,
   );
 }
 

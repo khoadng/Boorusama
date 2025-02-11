@@ -21,7 +21,7 @@ abstract class DownloadRepository {
   Future<List<DownloadTask>> getTasksByIds(List<String> ids);
   Future<void> deleteTask(String id);
 
-  Future<DownloadSession> createSession(String taskId);
+  Future<DownloadSession> createSession(DownloadTask task);
   Future<DownloadSession?> getSession(String id);
   Future<List<DownloadSession>> getSessionsByTaskId(String taskId);
   Future<List<DownloadSession>> getSessionsByStatus(

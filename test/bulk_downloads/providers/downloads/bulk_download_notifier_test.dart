@@ -226,6 +226,34 @@ void main() {
         );
       }
     });
+
+    test('should reflect saved task changes in active sessions', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.createSavedTask(task);
+
+      // Get the saved task
+      final savedTasks = await repository.getSavedTasks();
+      expect(savedTasks.length, equals(1));
+      final savedTask = savedTasks.first;
+
+      // Edit the saved task with new tags
+      final editedTask = task.copyWith(tags: 'new_tag');
+      await notifier.editTask(editedTask);
+
+      // Start a session from the saved task
+      await notifier.runSavedTask(savedTask);
+
+      // Assert
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+
+      // Verify that the session uses the updated tags
+      final state = container.read(bulkDownloadProvider);
+      final activeSession = state.sessions.first;
+      expect(activeSession.task.tags, equals('new_tag'));
+    });
   });
 
   group('Error Scenarios', () {

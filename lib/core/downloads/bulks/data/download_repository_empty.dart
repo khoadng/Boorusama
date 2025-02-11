@@ -27,14 +27,8 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<void> deleteTask(String id) async {}
 
   @override
-  Future<DownloadSession> createSession(String taskId) async {
-    return DownloadSession(
-      id: '',
-      taskId: '',
-      startedAt: DateTime.now(),
-      currentPage: 0,
-      status: DownloadSessionStatus.pending,
-    );
+  Future<DownloadSession> createSession(DownloadTask task) async {
+    throw Exception('Empty repository, cannot create session');
   }
 
   @override

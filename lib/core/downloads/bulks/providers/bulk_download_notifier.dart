@@ -192,7 +192,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
 
     final task = await _withRepo((repo) => repo.createTask(options));
-    final _ = await _withRepo((repo) => repo.createSession(task.id));
+    final _ = await _withRepo((repo) => repo.createSession(task));
     await _loadTasks();
 
     return;
@@ -584,8 +584,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadTask task, {
     DownloadConfigs? downloadConfigs,
   }) async {
-    final initialSession =
-        await _withRepo((repo) => repo.createSession(task.id));
+    final initialSession = await _withRepo((repo) => repo.createSession(task));
 
     await _startDownloadWithSession(
       task,

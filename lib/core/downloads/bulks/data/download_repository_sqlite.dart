@@ -3,6 +3,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:flutter_sqlite3_migration/flutter_sqlite3_migration.dart';
+import 'package:foundation/foundation.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:uuid/uuid.dart';
 
@@ -65,26 +66,9 @@ class DownloadRepositorySqlite implements DownloadRepository {
         )
       ''')
       ..execute('''
-        CREATE TABLE IF NOT EXISTS download_task_versions (
-          id INTEGER PRIMARY KEY,
-          task_id TEXT NOT NULL,
-          version INTEGER NOT NULL,
-          path TEXT NOT NULL,
-          notifications BOOLEAN NOT NULL,
-          skip_if_exists BOOLEAN NOT NULL,
-          quality TEXT,
-          per_page INTEGER NOT NULL,
-          concurrency INTEGER NOT NULL,
-          tags TEXT,
-          created_at INTEGER NOT NULL,
-          FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
-        )
-      ''')
-      ..execute('''
         CREATE TABLE IF NOT EXISTS saved_download_tasks (
           id INTEGER PRIMARY KEY,
           task_id TEXT NOT NULL UNIQUE,
-          active_version_id INTEGER,
           name TEXT,
           created_at INTEGER NOT NULL,
           updated_at INTEGER,
@@ -101,6 +85,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
           status TEXT NOT NULL,
           total_pages INTEGER, 
           error TEXT,
+          task TEXT NOT NULL,
           FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
         )
       ''')
@@ -168,37 +153,23 @@ class DownloadRepositorySqlite implements DownloadRepository {
   Future<void> editTask(DownloadTask newTask) async {
     final taskId = newTask.id;
     _transaction(() {
-      // Update the task's updated_at timestamp
-      db.execute(
-        'UPDATE download_tasks SET updated_at = ? WHERE id = ?',
-        [DateTime.now().millisecondsSinceEpoch, taskId],
-      );
-
-      // Get the latest version number
-      final latestVersion = db.select(
-            'SELECT MAX(version) as max_version FROM download_task_versions WHERE task_id = ?',
-            [taskId],
-          ).first['max_version'] as int? ??
-          0;
-
       db.execute(
         '''
-        INSERT INTO download_task_versions (
-          task_id, version, path, notifications, skip_if_exists, 
-          quality, per_page, concurrency, tags, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        UPDATE download_tasks 
+        SET path = ?, notifications = ?, skip_if_exists = ?, quality = ?, 
+            updated_at = ?, per_page = ?, concurrency = ?, tags = ? 
+        WHERE id = ?
         ''',
         [
-          taskId,
-          latestVersion + 1,
           newTask.path,
           if (newTask.notifications) 1 else 0,
           if (newTask.skipIfExists) 1 else 0,
           newTask.quality,
+          DateTime.now().millisecondsSinceEpoch,
           newTask.perPage,
           newTask.concurrency,
           newTask.tags,
-          DateTime.now().millisecondsSinceEpoch,
+          taskId,
         ],
       );
     });
@@ -278,10 +249,11 @@ class DownloadRepositorySqlite implements DownloadRepository {
   }
 
   @override
-  Future<DownloadSession> createSession(String taskId) async {
+  Future<DownloadSession> createSession(DownloadTask task) async {
     final session = DownloadSession(
       id: _uuid.v4(),
-      taskId: taskId,
+      taskId: task.id,
+      task: task,
       startedAt: DateTime.now(),
       currentPage: 1,
       status: DownloadSessionStatus.pending,
@@ -290,8 +262,8 @@ class DownloadRepositorySqlite implements DownloadRepository {
     db.execute(
       '''
       INSERT INTO download_sessions (
-        id, task_id, started_at, completed_at, current_page, status, total_pages
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        id, task_id, started_at, completed_at, current_page, status, total_pages, task
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       ''',
       [
         session.id,
@@ -301,6 +273,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
         session.currentPage,
         session.status.name,
         session.totalPages,
+        jsonEncode(task.toJson()),
       ],
     );
     return session;
@@ -452,6 +425,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
       final session = DownloadSession(
         id: row['session_id'] as String,
         taskId: row['task_id'] as String,
+        task: tryDecodeJson<DownloadTask?>(row['task']).getOrElse((_) => null),
         startedAt:
             DateTime.fromMillisecondsSinceEpoch(row['started_at'] as int),
         completedAt: row['completed_at'] != null
@@ -968,11 +942,9 @@ class DownloadRepositorySqlite implements DownloadRepository {
       SELECT 
         s.id,
         s.task_id,
-        s.active_version_id,
         s.name,
         s.created_at,
         s.updated_at,
-        t.id as task_id,
         t.path, 
         t.notifications,
         t.skip_if_exists,
@@ -981,45 +953,26 @@ class DownloadRepositorySqlite implements DownloadRepository {
         t.updated_at as task_updated_at,
         t.per_page,
         t.concurrency,
-        t.tags,
-        COALESCE(v.path, t.path) as effective_path,
-        COALESCE(v.notifications, t.notifications) as effective_notifications,
-        COALESCE(v.skip_if_exists, t.skip_if_exists) as effective_skip_if_exists,
-        COALESCE(v.quality, t.quality) as effective_quality,
-        COALESCE(v.per_page, t.per_page) as effective_per_page,
-        COALESCE(v.concurrency, t.concurrency) as effective_concurrency,
-        COALESCE(v.tags, t.tags) as effective_tags,
-        v.id as version_id
+        t.tags
       FROM saved_download_tasks s
       INNER JOIN download_tasks t ON s.task_id = t.id
-      LEFT JOIN download_task_versions v ON (
-        s.task_id = v.task_id 
-        AND (
-          (s.active_version_id IS NULL AND v.id = (
-            SELECT MAX(id) 
-            FROM download_task_versions 
-            WHERE task_id = s.task_id
-          ))
-          OR v.id = s.active_version_id
-        )
-      )
       ORDER BY s.created_at DESC
     ''');
 
     return results.map((row) {
       final task = DownloadTask(
         id: row['task_id'] as String,
-        path: row['effective_path'] as String,
-        notifications: row['effective_notifications'] == 1,
-        skipIfExists: row['effective_skip_if_exists'] == 1,
-        quality: row['effective_quality'] as String?,
+        path: row['path'] as String,
+        notifications: row['notifications'] == 1,
+        skipIfExists: row['skip_if_exists'] == 1,
+        quality: row['quality'] as String?,
         createdAt:
             DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
         updatedAt:
             DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
-        perPage: row['effective_per_page'] as int,
-        concurrency: row['effective_concurrency'] as int,
-        tags: row['effective_tags'] as String?,
+        perPage: row['per_page'] as int,
+        concurrency: row['concurrency'] as int,
+        tags: row['tags'] as String?,
       );
 
       return SavedDownloadTask(
@@ -1031,7 +984,6 @@ class DownloadRepositorySqlite implements DownloadRepository {
         updatedAt: row['updated_at'] != null
             ? DateTime.fromMillisecondsSinceEpoch(row['updated_at'] as int)
             : null,
-        activeVersionId: row['active_version_id'] as int?,
       );
     }).toList();
   }

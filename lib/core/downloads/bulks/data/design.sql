@@ -24,25 +24,9 @@ CREATE TABLE download_tasks (
     tags TEXT
 );
 
-CREATE TABLE download_task_versions (
-    id INTEGER PRIMARY KEY,
-    task_id TEXT NOT NULL,
-    version INTEGER NOT NULL,
-    path TEXT NOT NULL,
-    notifications BOOLEAN,
-    skip_if_exists BOOLEAN,
-    quality TEXT,
-    per_page INTEGER,
-    concurrency INTEGER,
-    tags TEXT,
-    created_at INTEGER NOT NULL,
-    FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
-);
-
 CREATE TABLE saved_download_tasks (
     id INTEGER PRIMARY KEY,
     task_id TEXT NOT NULL UNIQUE,
-    active_version_id INTEGER, 
     name TEXT,
     created_at INTEGER NOT NULL,
     updated_at INTEGER,
@@ -58,6 +42,7 @@ CREATE TABLE download_sessions (
     total_pages INTEGER,
     status TEXT NOT NULL,
     error TEXT,
+    task TEXT NOT NULL,
     FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
 );
 

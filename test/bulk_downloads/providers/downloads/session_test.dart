@@ -102,7 +102,7 @@ void main() {
         () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task.id);
+      final session = await repository.createSession(task);
 
       // Session starts as pending
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -291,7 +291,7 @@ void main() {
       // Arrange
       final task = await repository.createTask(_options);
       final notifier = container.read(bulkDownloadProvider.notifier);
-      final session = await repository.createSession(task.id);
+      final session = await repository.createSession(task);
 
       // Act
       await notifier.cancelSession(session.id);

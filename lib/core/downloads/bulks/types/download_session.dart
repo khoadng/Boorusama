@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'download_task.dart';
+
 enum DownloadSessionStatus {
   pending,
   dryRun,
@@ -30,6 +33,7 @@ class DownloadSession extends Equatable {
     this.completedAt,
     this.totalPages,
     this.error,
+    this.task,
   });
 
   final String id;
@@ -40,6 +44,7 @@ class DownloadSession extends Equatable {
   final int? totalPages;
   final DownloadSessionStatus status;
   final String? error;
+  final DownloadTask? task;
 
   DownloadSession copyWith({
     String? id,
@@ -73,5 +78,6 @@ class DownloadSession extends Equatable {
         totalPages,
         status,
         error,
+        task,
       ];
 }
