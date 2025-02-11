@@ -10,31 +10,23 @@ import '../types/download_session.dart';
 import '../types/download_task.dart';
 
 DownloadTask mapToTask(Row row) {
-  return DownloadTask(
-    id: row['id'],
-    path: row['path'],
-    notifications: row['notifications'] == 1,
-    skipIfExists: row['skip_if_exists'] == 1,
-    quality: row['quality'],
-    createdAt: DateTime.fromMillisecondsSinceEpoch(row['created_at']),
-    updatedAt: DateTime.fromMillisecondsSinceEpoch(row['updated_at']),
-    perPage: row['per_page'],
-    concurrency: row['concurrency'],
-    tags: row['tags'],
-  );
-}
+  // Get column name with fallback
+  final id = row['task_id'] ?? row['id'];
+  final createdAt = row['task_created_at'] ?? row['created_at'];
+  final updatedAt = row['task_updated_at'] ?? row['updated_at'];
 
-DownloadTask mapToTaskFromJoin(Row row) {
+  if (id == null || createdAt == null || updatedAt == null) {
+    throw Exception('Invalid task data: missing required fields');
+  }
+
   return DownloadTask(
-    id: row['task_id'] as String,
+    id: id as String,
     path: row['path'] as String,
     notifications: row['notifications'] == 1,
     skipIfExists: row['skip_if_exists'] == 1,
     quality: row['quality'] as String?,
-    createdAt:
-        DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
-    updatedAt:
-        DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+    createdAt: DateTime.fromMillisecondsSinceEpoch(createdAt as int),
+    updatedAt: DateTime.fromMillisecondsSinceEpoch(updatedAt as int),
     perPage: row['per_page'] as int,
     concurrency: row['concurrency'] as int,
     tags: row['tags'] as String?,

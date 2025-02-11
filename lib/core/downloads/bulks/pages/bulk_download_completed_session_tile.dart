@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +19,7 @@ import '../../l10n.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_session_stats.dart';
+import 'bulk_download_saved_task_page.dart';
 
 class BulkDownloadCompletedSessionTile extends ConsumerWidget {
   const BulkDownloadCompletedSessionTile({
@@ -191,12 +193,27 @@ class _ContextMenu extends ConsumerWidget {
               await ref
                   .read(bulkDownloadProvider.notifier)
                   .deleteSession(session.session.id);
-              onDelete(); // This now triggers _refreshList() instead of a full refresh
+              onDelete();
             },
           ),
           ContextMenuButtonConfig(
             DownloadTranslations.bulkDownloadCopyPath.tr(),
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
+          ),
+          ContextMenuButtonConfig(
+            'Create a saved task',
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              await ref
+                  .read(bulkDownloadProvider.notifier)
+                  .createSavedTask(session.task);
+
+              await navigator.push(
+                CupertinoPageRoute(
+                  builder: (context) => const BulkDownloadSavedTaskPage(),
+                ),
+              );
+            },
           ),
         ],
       ),

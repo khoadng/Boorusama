@@ -340,7 +340,7 @@ class _InfoText extends ConsumerWidget {
             ).tr(),
           DownloadSessionStatus.failed => 'Error',
           DownloadSessionStatus.interrupted => 'Interrupted',
-          DownloadSessionStatus.allSkipped => 'Skipped',
+          DownloadSessionStatus.allSkipped => 'Skipped, no new items',
           _ => infoText,
         },
         maxLines: 1,

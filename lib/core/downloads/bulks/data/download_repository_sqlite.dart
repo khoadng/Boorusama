@@ -14,6 +14,7 @@ import '../types/download_repository.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
+import '../types/saved_download_task.dart';
 import 'download_repository_mapper.dart';
 
 const _kDownloadVersion = 0;
@@ -69,11 +70,11 @@ class DownloadRepositorySqlite implements DownloadRepository {
           task_id TEXT NOT NULL,
           version INTEGER NOT NULL,
           path TEXT NOT NULL,
-          notifications BOOLEAN,
-          skip_if_exists BOOLEAN,
+          notifications BOOLEAN NOT NULL,
+          skip_if_exists BOOLEAN NOT NULL,
           quality TEXT,
-          per_page INTEGER,
-          concurrency INTEGER,
+          per_page INTEGER NOT NULL,
+          concurrency INTEGER NOT NULL,
           tags TEXT,
           created_at INTEGER NOT NULL,
           FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
@@ -81,8 +82,8 @@ class DownloadRepositorySqlite implements DownloadRepository {
       ''')
       ..execute('''
         CREATE TABLE IF NOT EXISTS saved_download_tasks (
-          id TEXT PRIMARY KEY,
-          task_id TEXT NOT NULL,
+          id INTEGER PRIMARY KEY,
+          task_id TEXT NOT NULL UNIQUE,
           active_version_id INTEGER,
           name TEXT,
           created_at INTEGER NOT NULL,
@@ -164,45 +165,43 @@ class DownloadRepositorySqlite implements DownloadRepository {
   }
 
   @override
-  Future<void> saveTask(String taskId, String name) async {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    db.execute(
-      '''
-      INSERT INTO saved_download_tasks (id, task_id, name, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?)
-      ''',
-      [_uuid.v4(), taskId, name, now, now],
-    );
-  }
+  Future<void> editTask(DownloadTask newTask) async {
+    final taskId = newTask.id;
+    _transaction(() {
+      // Update the task's updated_at timestamp
+      db.execute(
+        'UPDATE download_tasks SET updated_at = ? WHERE id = ?',
+        [DateTime.now().millisecondsSinceEpoch, taskId],
+      );
 
-  @override
-  Future<void> createTaskVersion(String taskId, DownloadOptions options) async {
-    final latestVersion = db.select(
-          'SELECT MAX(version) as max_version FROM download_task_versions WHERE task_id = ?',
-          [taskId],
-        ).first['max_version'] as int? ??
-        0;
+      // Get the latest version number
+      final latestVersion = db.select(
+            'SELECT MAX(version) as max_version FROM download_task_versions WHERE task_id = ?',
+            [taskId],
+          ).first['max_version'] as int? ??
+          0;
 
-    db.execute(
-      '''
-      INSERT INTO download_task_versions (
-        task_id, version, path, notifications, skip_if_exists,
-        quality, per_page, concurrency, tags, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ''',
-      [
-        taskId,
-        latestVersion + 1,
-        options.path,
-        if (options.notifications) 1 else 0,
-        if (options.skipIfExists) 1 else 0,
-        options.quality,
-        options.perPage,
-        options.concurrency,
-        options.tags.join(' '),
-        DateTime.now().millisecondsSinceEpoch,
-      ],
-    );
+      db.execute(
+        '''
+        INSERT INTO download_task_versions (
+          task_id, version, path, notifications, skip_if_exists, 
+          quality, per_page, concurrency, tags, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''',
+        [
+          taskId,
+          latestVersion + 1,
+          newTask.path,
+          if (newTask.notifications) 1 else 0,
+          if (newTask.skipIfExists) 1 else 0,
+          newTask.quality,
+          newTask.perPage,
+          newTask.concurrency,
+          newTask.tags,
+          DateTime.now().millisecondsSinceEpoch,
+        ],
+      );
+    });
   }
 
   @override
@@ -515,7 +514,20 @@ class DownloadRepositorySqlite implements DownloadRepository {
   List<BulkDownloadSession> _mapToBulkDownloadSessions(List<Row> results) {
     return results.map((row) {
       final session = mapToSession(row);
-      final task = mapToTaskFromJoin(row);
+      final task = DownloadTask(
+        id: row['task_id'] as String,
+        path: row['path'] as String,
+        notifications: row['notifications'] == 1,
+        skipIfExists: row['skip_if_exists'] == 1,
+        quality: row['quality'] as String?,
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
+        updatedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+        perPage: row['per_page'] as int,
+        concurrency: row['concurrency'] as int,
+        tags: row['tags'] as String?,
+      );
       final stats = DownloadSessionStats(
         id: null,
         sessionId: session.id,
@@ -932,5 +944,102 @@ class DownloadRepositorySqlite implements DownloadRepository {
     });
 
     return stats;
+  }
+
+  @override
+  Future<void> createSavedTask(String taskId, String name) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    _transaction(() {
+      db.execute(
+        '''
+        INSERT OR IGNORE INTO saved_download_tasks (
+          task_id, name, created_at, updated_at
+        ) VALUES (?, ?, ?, ?)
+        ''',
+        [taskId, name, now, now],
+      );
+    });
+  }
+
+  @override
+  Future<List<SavedDownloadTask>> getSavedTasks() async {
+    final results = db.select('''
+      SELECT 
+        s.id,
+        s.task_id,
+        s.active_version_id,
+        s.name,
+        s.created_at,
+        s.updated_at,
+        t.id as task_id,
+        t.path, 
+        t.notifications,
+        t.skip_if_exists,
+        t.quality,
+        t.created_at as task_created_at,
+        t.updated_at as task_updated_at,
+        t.per_page,
+        t.concurrency,
+        t.tags,
+        COALESCE(v.path, t.path) as effective_path,
+        COALESCE(v.notifications, t.notifications) as effective_notifications,
+        COALESCE(v.skip_if_exists, t.skip_if_exists) as effective_skip_if_exists,
+        COALESCE(v.quality, t.quality) as effective_quality,
+        COALESCE(v.per_page, t.per_page) as effective_per_page,
+        COALESCE(v.concurrency, t.concurrency) as effective_concurrency,
+        COALESCE(v.tags, t.tags) as effective_tags,
+        v.id as version_id
+      FROM saved_download_tasks s
+      INNER JOIN download_tasks t ON s.task_id = t.id
+      LEFT JOIN download_task_versions v ON (
+        s.task_id = v.task_id 
+        AND (
+          (s.active_version_id IS NULL AND v.id = (
+            SELECT MAX(id) 
+            FROM download_task_versions 
+            WHERE task_id = s.task_id
+          ))
+          OR v.id = s.active_version_id
+        )
+      )
+      ORDER BY s.created_at DESC
+    ''');
+
+    return results.map((row) {
+      final task = DownloadTask(
+        id: row['task_id'] as String,
+        path: row['effective_path'] as String,
+        notifications: row['effective_notifications'] == 1,
+        skipIfExists: row['effective_skip_if_exists'] == 1,
+        quality: row['effective_quality'] as String?,
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
+        updatedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+        perPage: row['effective_per_page'] as int,
+        concurrency: row['effective_concurrency'] as int,
+        tags: row['effective_tags'] as String?,
+      );
+
+      return SavedDownloadTask(
+        id: row['id'] as int,
+        task: task,
+        name: row['name'] as String?,
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(row['created_at'] as int),
+        updatedAt: row['updated_at'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(row['updated_at'] as int)
+            : null,
+        activeVersionId: row['active_version_id'] as int?,
+      );
+    }).toList();
+  }
+
+  @override
+  Future<void> deleteSavedTask(int id) async {
+    _transaction(() {
+      db.execute('DELETE FROM saved_download_tasks WHERE id = ?', [id]);
+    });
   }
 }

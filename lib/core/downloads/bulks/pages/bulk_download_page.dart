@@ -16,6 +16,7 @@ import '../../l10n.dart';
 import '../../routes/route_utils.dart';
 import '../providers/bulk_download_notifier.dart';
 import 'bulk_download_completed_page.dart';
+import 'bulk_download_saved_task_page.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({super.key});
@@ -60,6 +61,16 @@ class BulkDownloadPageInternal extends ConsumerWidget {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
                     builder: (context) => const BulkDownloadCompletedPage(),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Symbols.bookmark),
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => const BulkDownloadSavedTaskPage(),
                   ),
                 );
               },

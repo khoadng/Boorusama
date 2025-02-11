@@ -26,6 +26,28 @@ class DownloadTask extends Equatable {
   final int concurrency;
   final String? tags;
 
+  DownloadTask copyWith({
+    String? path,
+    bool? notifications,
+    bool? skipIfExists,
+    String? quality,
+    int? perPage,
+    int? concurrency,
+    String? tags,
+  }) =>
+      DownloadTask(
+        id: id,
+        path: path ?? this.path,
+        notifications: notifications ?? this.notifications,
+        skipIfExists: skipIfExists ?? this.skipIfExists,
+        quality: quality ?? this.quality,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        perPage: perPage ?? this.perPage,
+        concurrency: concurrency ?? this.concurrency,
+        tags: tags ?? this.tags,
+      );
+
   @override
   List<Object?> get props => [
         id,

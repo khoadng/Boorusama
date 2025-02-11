@@ -11,9 +11,11 @@ import 'download_record.dart';
 import 'download_session.dart';
 import 'download_session_stats.dart';
 import 'download_task.dart';
+import 'saved_download_task.dart';
 
 abstract class DownloadRepository {
   Future<DownloadTask> createTask(DownloadOptions options);
+  Future<void> editTask(DownloadTask newTask);
   Future<List<DownloadTask>> getTasks();
   Future<DownloadTask?> getTask(String id);
   Future<List<DownloadTask>> getTasksByIds(List<String> ids);
@@ -94,11 +96,13 @@ abstract class DownloadRepository {
     DownloadSessionStatus status,
   );
 
-  Future<void> saveTask(String taskId, String name);
-  Future<void> createTaskVersion(String taskId, DownloadOptions options);
   Future<DownloadSessionStats> updateStatisticsAndCleanup(
     String sessionId,
   );
+
+  Future<void> createSavedTask(String taskId, String name);
+  Future<List<SavedDownloadTask>> getSavedTasks();
+  Future<void> deleteSavedTask(int id);
 }
 
 extension DownloadRepositoryX on DownloadRepository {

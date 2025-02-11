@@ -40,8 +40,8 @@ CREATE TABLE download_task_versions (
 );
 
 CREATE TABLE saved_download_tasks (
-    id TEXT PRIMARY KEY,
-    task_id TEXT NOT NULL,
+    id INTEGER PRIMARY KEY,
+    task_id TEXT NOT NULL UNIQUE,
     active_version_id INTEGER, 
     name TEXT,
     created_at INTEGER NOT NULL,

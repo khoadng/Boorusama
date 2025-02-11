@@ -6,6 +6,7 @@ import '../types/download_repository.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
+import '../types/saved_download_task.dart';
 
 class DownloadRepositoryEmpty implements DownloadRepository {
   @override
@@ -151,13 +152,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   ) async {}
 
   @override
-  Future<void> saveTask(String taskId, String name) async {}
-
-  @override
-  Future<void> createTaskVersion(
-    String taskId,
-    DownloadOptions options,
-  ) async {}
+  Future<void> editTask(DownloadTask newTask) async {}
 
   @override
   Future<DownloadSessionStats> updateStatisticsAndCleanup(
@@ -165,4 +160,13 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   ) async {
     return DownloadSessionStats.empty;
   }
+
+  @override
+  Future<void> createSavedTask(String taskId, String name) async {}
+
+  @override
+  Future<List<SavedDownloadTask>> getSavedTasks() async => [];
+
+  @override
+  Future<void> deleteSavedTask(int id) async {}
 }

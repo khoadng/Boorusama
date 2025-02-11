@@ -38,6 +38,7 @@ import '../types/download_repository.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
+import '../types/saved_download_task.dart';
 import 'file_system_download_exist_checker.dart';
 import 'providers.dart';
 
@@ -849,6 +850,55 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     return session;
+  }
+
+  Future<void> createSavedTask(
+    DownloadTask task, {
+    String? name,
+  }) async {
+    try {
+      await _withRepo(
+        (repo) => repo.createSavedTask(
+          task.id,
+          name ?? 'Untitled',
+        ),
+      );
+      await _loadTasks();
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
+  }
+
+  Future<void> editTask(DownloadTask newTask) async {
+    try {
+      final currentTask = await _withRepo((repo) => repo.getTask(newTask.id));
+
+      // if there is no changes, just return
+      if (currentTask == newTask) return;
+
+      await _withRepo((repo) => repo.editTask(newTask));
+      await _loadTasks();
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
+  }
+
+  Future<void> runSavedTask(SavedDownloadTask savedTask) async {
+    try {
+      // Start downloading the existing task directly
+      await downloadFromTask(savedTask.task);
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
+  }
+
+  Future<void> deleteSavedTask(int id) async {
+    try {
+      await _withRepo((repo) => repo.deleteSavedTask(id));
+      await _loadTasks();
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
   }
 }
 
