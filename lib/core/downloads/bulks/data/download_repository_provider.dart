@@ -10,7 +10,7 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import '../../../foundation/loggers.dart';
 import '../types/download_repository.dart';
-import 'download_repository_memory.dart';
+import 'download_repository_empty.dart';
 import 'download_repository_sqlite.dart';
 
 const _kServiceName = 'Download DB';
@@ -20,18 +20,34 @@ final internalDownloadRepositoryProvider =
   final logger = ref.watch(loggerProvider);
   final db = await _createDb(logger);
 
-  DownloadRepository repo;
+  ref.onDispose(() => db?.dispose());
 
-  if (db == null) {
-    logger.logW(_kServiceName, 'Fallback to memory repository');
-    repo = DownloadRepositoryMemory();
-  } else {
-    final sqliteRepo = DownloadRepositorySqlite(db)..initialize();
-    repo = sqliteRepo;
-  }
-
-  return repo;
+  return _createRepository(logger, db);
 });
+
+Future<DownloadRepository> _createRepository(
+  Logger? logger,
+  Database? db,
+) async {
+  if (db == null) {
+    logger?.logW(_kServiceName, 'Fallback to empty repository');
+    return DownloadRepositoryEmpty();
+  } else {
+    try {
+      final sqliteRepo = DownloadRepositorySqlite(db)..initialize();
+      return sqliteRepo;
+    } on Exception catch (e) {
+      logger?.logE(
+        _kServiceName,
+        'Failed to initialize SQLite repository for download: $e',
+      );
+      logger?.logW(_kServiceName, 'Fallback to empty repository');
+
+      db.dispose();
+      return DownloadRepositoryEmpty();
+    }
+  }
+}
 
 Future<Database?> _createDb(
   Logger? logger,
@@ -46,7 +62,7 @@ Future<Database?> _createDb(
   } on Exception catch (e) {
     logger?.logE(
       _kServiceName,
-      'Failed to initialize SQLite database for search history: $e',
+      'Failed to initialize SQLite database for download: $e',
     );
     return null;
   }

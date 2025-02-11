@@ -19,6 +19,7 @@ import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/downloads/bulks/data/download_repository_provider.dart';
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
+import 'package:boorusama/core/downloads/bulks/notifications.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
@@ -164,6 +165,8 @@ final booruConfig = BooruConfig.defaultConfig(
 
 class MockBooruBuilder extends Mock implements BooruBuilder {}
 
+class MockNotification extends Mock implements BulkDownloadNotifications {}
+
 class DummyDownloadService implements DownloadService {
   @override
   DownloadTaskInfoOrError download({
@@ -214,19 +217,33 @@ void main() {
     late DownloadRepositorySqlite repository;
     late ProviderContainer container;
     late MockBooruBuilder booruBuilder;
+    late BulkDownloadNotifications notifications;
 
     setUp(() {
       db = sqlite3.openInMemory();
       repository = DownloadRepositorySqlite(db)..initialize();
       booruBuilder = MockBooruBuilder();
+      notifications = MockNotification();
 
       when(() => booruBuilder.downloadFilenameBuilder).thenReturn(
         dummyDownloadFileNameBuilder,
       );
 
+      when(
+        () => notifications.showNotification(
+          any(),
+          any(),
+          payload: any(named: 'payload'),
+          progress: any(named: 'progress'),
+          total: any(named: 'total'),
+          indeterminate: any(named: 'indeterminate'),
+        ),
+      ).thenAnswer((_) => Future.value());
+
       container = _createContainer(
         repository,
         booruBuilder,
+        notifications: notifications,
       )..read(bulkDownloadProvider); // Initialize provider
     });
 
@@ -415,7 +432,7 @@ void main() {
 
         final sessions = await repository.getSessionsByTaskId(task.id);
 
-        final stats = await repository.getSessionStats(sessions.first.id);
+        final stats = await repository.getActionSessionStats(sessions.first.id);
 
         expect(stats.totalItems, _posts.length);
       });
@@ -521,14 +538,10 @@ void main() {
         final sessions = await repository.getSessionsByTaskId(task.id);
         expect(sessions.length, equals(1));
 
-        final stats = await repository.getSessionStats(sessions.first.id);
+        final stats = await repository.getActionSessionStats(sessions.first.id);
         expect(stats.totalItems, equals(_posts.length));
         expect(stats.coverUrl, equals('test-thumbnail-url-1'));
         expect(stats.siteUrl, equals('test-url'));
-        expect(
-          stats.estimatedDownloadSize,
-          null,
-        ); // Default since we don't set file sizes in test data
       });
 
       test('should handle multiple running sessions for the same task',
@@ -955,6 +968,83 @@ void main() {
         // Assert
         final session = await repository.getSession(sessionId);
         expect(session?.status, equals(DownloadSessionStatus.completed));
+      });
+
+      test(
+          'should calculate final statistics and cleanup on session completion',
+          () async {
+        // Arrange
+        final task = await repository.createTask(_options);
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        await notifier.downloadFromTaskId(
+          task.id,
+          downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        );
+
+        final sessions = await repository.getSessionsByTaskId(task.id);
+        final sessionId = sessions.first.id;
+        final records = await repository.getRecordsBySessionId(sessionId);
+
+        // Mark all records as completed
+        for (final record in records) {
+          await notifier.updateRecord(
+            sessionId,
+            record.downloadId!,
+            DownloadRecordStatus.completed,
+            fileSize: 1000, // Mock file size
+          );
+        }
+
+        // Act
+        await notifier.tryCompleteSession(sessionId);
+
+        // Assert
+        final session = await repository.getSession(sessionId);
+        expect(session?.status, equals(DownloadSessionStatus.completed));
+
+        // Verify records were cleaned up
+        final remainingRecords =
+            await repository.getRecordsBySessionId(sessionId);
+        expect(remainingRecords.isEmpty, isTrue);
+      });
+
+      test('should preserve session statistics after cleanup', () async {
+        // Arrange
+        final task = await repository.createTask(_options);
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        await notifier.downloadFromTaskId(
+          task.id,
+          downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        );
+
+        final sessions = await repository.getSessionsByTaskId(task.id);
+        final sessionId = sessions.first.id;
+
+        // Store initial stats
+        final initialStats = await repository.getActionSessionStats(sessionId);
+
+        // Complete all records
+        final records = await repository.getRecordsBySessionId(sessionId);
+        for (final record in records) {
+          await notifier.updateRecord(
+            sessionId,
+            record.downloadId!,
+            DownloadRecordStatus.completed,
+            fileSize: 1000, // Mock file size
+          );
+        }
+
+        // Act
+        await notifier.tryCompleteSession(sessionId);
+
+        // Assert
+        final completed = await repository.getCompletedSessions();
+        final finalStats = completed.first.stats;
+
+        // Verify stats were preserved
+        expect(finalStats.totalItems, equals(initialStats.totalItems));
+        expect(finalStats.coverUrl, equals(initialStats.coverUrl));
+        expect(finalStats.siteUrl, equals(initialStats.siteUrl));
       });
     });
 
@@ -1523,8 +1613,9 @@ void main() {
 
 ProviderContainer _createContainer(
   DownloadRepositorySqlite repository,
-  MockBooruBuilder booruBuilder,
-) {
+  MockBooruBuilder booruBuilder, {
+  BulkDownloadNotifications? notifications,
+}) {
   return ProviderContainer(
     overrides: [
       internalDownloadRepositoryProvider.overrideWith((_) => repository),
@@ -1546,6 +1637,8 @@ ProviderContainer _createContainer(
       currentBooruBuilderProvider.overrideWith((_) => booruBuilder),
       blacklistTagsProvider.overrideWith((_, __) => {}),
       hasPremiumProvider.overrideWithValue(true),
+      if (notifications != null)
+        bulkDownloadNotificationProvider.overrideWithValue(notifications),
     ],
   );
 }

@@ -109,20 +109,18 @@ void main() {
         expect(updated?.status, equals(DownloadRecordStatus.completed));
         expect(updated?.fileName, equals('updated.jpg'));
       });
+    });
 
-      test('deleteTask should cascade delete sessions and records', () async {
+    group('foreign key SET NULL behavior', () {
+      test('sessions should handle null task_id after task deletion', () async {
         final task = await repository.createTask(_options);
+        final session = await repository.createSession(task.id);
 
-        // Create multiple sessions
-        final session1 = await repository.createSession(task.id);
-
-        final session2 = await repository.createSession(task.id);
-
-        // Create records for each session
+        // Create some records for the session
         await repository.createRecord(
           DownloadRecord(
             url: 'https://example.com/1.jpg',
-            sessionId: session1.id,
+            sessionId: session.id,
             status: DownloadRecordStatus.completed,
             page: 1,
             pageIndex: 0,
@@ -131,72 +129,58 @@ void main() {
           ),
         );
 
-        await repository.createRecord(
-          DownloadRecord(
-            url: 'https://example.com/2.jpg',
-            sessionId: session1.id,
-            status: DownloadRecordStatus.pending,
-            page: 1,
-            pageIndex: 1,
-            createdAt: DateTime.now(),
-            fileName: '2.jpg',
-          ),
-        );
+        // Before deletion - verify relationships
+        var sessionResult = await repository.getSession(session.id);
+        expect(sessionResult?.taskId, equals(task.id));
 
-        await repository.createRecord(
-          DownloadRecord(
-            url: 'https://example.com/3.jpg',
-            sessionId: session2.id,
-            status: DownloadRecordStatus.pending,
-            page: 1,
-            pageIndex: 0,
-            createdAt: DateTime.now(),
-            fileName: '3.jpg',
-          ),
-        );
-
-        // Verify initial state
-        final sessions = await repository.getSessionsByTaskId(task.id);
-        expect(sessions.length, equals(2));
-
-        final records1 = await repository.getRecordsBySessionId(session1.id);
-        expect(records1.length, equals(2));
-
-        final records2 = await repository.getRecordsBySessionId(session2.id);
-        expect(records2.length, equals(1));
-
-        // Delete task
+        // Delete task - should set session's task_id to null but keep session
         await repository.deleteTask(task.id);
 
-        // Verify everything is deleted
+        // Verify task is gone
         final deletedTask = await repository.getTask(task.id);
         expect(deletedTask, isNull);
 
-        final deletedSessions = await repository.getSessionsByTaskId(task.id);
-        expect(deletedSessions, isEmpty);
+        // Verify session still exists but with null task_id
+        sessionResult = await repository.getSession(session.id);
+        expect(sessionResult, isNotNull);
+        expect(sessionResult?.taskId, isNull);
 
-        final deletedRecords1 =
-            await repository.getRecordsBySessionId(session1.id);
-        expect(deletedRecords1, isEmpty);
+        // Verify session records are still intact
+        final records = await repository.getRecordsBySessionId(session.id);
+        expect(records, isNotEmpty);
+      });
 
-        final deletedRecords2 =
-            await repository.getRecordsBySessionId(session2.id);
-        expect(deletedRecords2, isEmpty);
+      test('statistics should handle null session_id after session deletion',
+          () async {
+        final task = await repository.createTask(_options);
+        final session = await repository.createSession(task.id);
 
-        // Verify counts directly from tables
-        final taskCount = db
-            .select('SELECT COUNT(*) as count FROM download_tasks')
-            .first['count'] as int;
-        final sessionCount = db
-            .select('SELECT COUNT(*) as count FROM download_sessions')
-            .first['count'] as int;
-        final recordCount = db
-            .select('SELECT COUNT(*) as count FROM download_records')
-            .first['count'] as int;
+        // Insert test statistics
+        db.execute(
+          '''
+          INSERT INTO download_session_statistics 
+          (session_id, total_files, total_size) 
+          VALUES (?, 100, 1000)
+        ''',
+          [session.id],
+        );
 
-        expect(taskCount, equals(0));
-        expect(sessionCount, equals(0));
-        expect(recordCount, equals(0));
+        // Verify initial state
+        var stats = db.select(
+          'SELECT * FROM download_session_statistics WHERE session_id = ?',
+          [session.id],
+        ).first;
+        expect(stats['session_id'], equals(session.id));
+
+        // Delete session
+        await repository.deleteSession(session.id);
+
+        // Verify statistics entry still exists but with null session_id
+        stats = db.select(
+          'SELECT * FROM download_session_statistics WHERE id = ?',
+          [stats['id']],
+        ).first;
+        expect(stats['session_id'], isNull);
       });
     });
   });

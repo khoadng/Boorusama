@@ -214,7 +214,16 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       return;
     }
 
-    final task = await _withRepo((repo) => repo.getTask(session.taskId));
+    final taskId = session.taskId;
+
+    if (taskId == null) {
+      state = state.copyWith(
+        error: TaskNotFoundError.new,
+      );
+      return;
+    }
+
+    final task = await _withRepo((repo) => repo.getTask(taskId));
 
     if (task == null) {
       state = state.copyWith(
@@ -457,7 +466,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       );
 
       currentSession = await _withRepo((repo) => repo.getSession(sessionId));
-      final stats = await _withRepo((repo) => repo.getSessionStats(sessionId));
+      final stats =
+          await _withRepo((repo) => repo.getActionSessionStats(sessionId));
 
       await _updateSessionWithState(sessionId, currentSession, stats: stats);
 
@@ -685,7 +695,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
   Future<void> tryCompleteSession(String sessionId) async {
     try {
-      final session = await _withRepo((repo) => repo.getSession(sessionId));
+      var session = await _withRepo((repo) => repo.getSession(sessionId));
       if (session == null) {
         state = state.copyWith(
           error: SessionNotFoundError.new,
@@ -719,9 +729,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      await _updateSession(
+      session = await _updateSession(
         sessionId,
         status: DownloadSessionStatus.completed,
+      );
+
+      // Calculate final statistics and cleanup
+      final stats = await _withRepo(
+        (repo) => repo.updateStatisticsAndCleanup(sessionId),
       );
 
       final currentSessionState = state.sessions.firstWhereOrNull(
@@ -732,7 +747,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         unawaited(
           ref.read(bulkDownloadNotificationProvider).showNotification(
                 currentSessionState?.task.tags ?? 'Download completed',
-                'Downloaded ${currentSessionState?.stats.totalItems} files',
+                'Downloaded ${stats.totalItems} files',
               ),
         );
       }

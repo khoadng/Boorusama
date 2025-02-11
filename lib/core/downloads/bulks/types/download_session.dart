@@ -33,7 +33,7 @@ class DownloadSession extends Equatable {
   });
 
   final String id;
-  final String taskId;
+  final String? taskId;
   final DateTime startedAt;
   final DateTime? completedAt;
   final int currentPage;

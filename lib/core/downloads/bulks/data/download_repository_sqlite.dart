@@ -64,28 +64,55 @@ class DownloadRepositorySqlite implements DownloadRepository {
         )
       ''')
       ..execute('''
-        CREATE TABLE IF NOT EXISTS download_sessions (
+        CREATE TABLE IF NOT EXISTS download_task_versions (
+          id INTEGER PRIMARY KEY,
+          task_id TEXT NOT NULL,
+          version INTEGER NOT NULL,
+          path TEXT NOT NULL,
+          notifications BOOLEAN,
+          skip_if_exists BOOLEAN,
+          quality TEXT,
+          per_page INTEGER,
+          concurrency INTEGER,
+          tags TEXT,
+          created_at INTEGER NOT NULL,
+          FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
+        )
+      ''')
+      ..execute('''
+        CREATE TABLE IF NOT EXISTS saved_download_tasks (
           id TEXT PRIMARY KEY,
           task_id TEXT NOT NULL,
+          active_version_id INTEGER,
+          name TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER,
+          FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE RESTRICT
+        )
+      ''')
+      ..execute('''
+        CREATE TABLE IF NOT EXISTS download_sessions (
+          id TEXT PRIMARY KEY,
+          task_id TEXT,
           started_at INTEGER NOT NULL,
           completed_at INTEGER,
           current_page INTEGER NOT NULL DEFAULT 1,
           status TEXT NOT NULL,
           total_pages INTEGER, 
           error TEXT,
-          FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
+          FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
         )
       ''')
       ..execute('''
         CREATE TABLE IF NOT EXISTS download_records (
           url TEXT NOT NULL,
-          session_id TEXT,
+          session_id TEXT NOT NULL,
           status TEXT NOT NULL,
           page INTEGER NOT NULL,
-          page_index INTEGER NOT NULL,
+          page_index SMALLINT NOT NULL,
           created_at INTEGER NOT NULL,
           file_size INTEGER,
-          file_name TEXT,
+          file_name TEXT NOT NULL,
           extension TEXT,      
           error TEXT,
           download_id TEXT,
@@ -97,29 +124,85 @@ class DownloadRepositorySqlite implements DownloadRepository {
         )
       ''')
       ..execute('''
-        CREATE INDEX IF NOT EXISTS idx_download_records_session_id 
-        ON download_records(session_id)
+        CREATE TABLE IF NOT EXISTS download_session_statistics (
+          id INTEGER PRIMARY KEY,
+          session_id TEXT UNIQUE,
+          cover_url TEXT,      
+          site_url TEXT,
+          total_files INTEGER,
+          total_size BIGINT,
+          average_duration INTEGER,  -- in milliseconds
+          average_file_size BIGINT,
+          largest_file_size BIGINT,
+          smallest_file_size BIGINT,
+          median_file_size BIGINT,
+          avg_files_per_page REAL,
+          max_files_per_page INTEGER,
+          min_files_per_page INTEGER,
+          extension_counts TEXT,     -- JSON object {".jpg": 100, ".png": 50, etc}
+          FOREIGN KEY(session_id) REFERENCES download_sessions(id) ON DELETE SET NULL
+        )
       ''')
-      ..execute('''
-        CREATE INDEX IF NOT EXISTS idx_download_sessions_task_id 
-        ON download_sessions(task_id)
-      ''')
-      ..execute('''
-        CREATE INDEX IF NOT EXISTS idx_download_tasks_created_at 
-        ON download_tasks(created_at)
-      ''')
-      ..execute('''
-        CREATE INDEX IF NOT EXISTS idx_download_records_status_session 
-        ON download_records(session_id, status)
-      ''')
-      ..execute('''
-        CREATE INDEX IF NOT EXISTS idx_download_records_download_lookup
-        ON download_records(session_id, download_id)
-      ''')
-      ..execute('''
-        CREATE INDEX IF NOT EXISTS idx_download_sessions_status_started 
-        ON download_sessions(status, started_at)
-      ''');
+      ..execute(
+        'CREATE INDEX IF NOT EXISTS idx_download_records_session_id ON download_records(session_id)',
+      )
+      ..execute(
+        'CREATE INDEX IF NOT EXISTS idx_download_sessions_task_id ON download_sessions(task_id)',
+      )
+      ..execute(
+        'CREATE INDEX IF NOT EXISTS idx_download_tasks_created_at ON download_tasks(created_at)',
+      )
+      ..execute(
+        'CREATE INDEX IF NOT EXISTS idx_download_records_status_session ON download_records(session_id, status)',
+      )
+      ..execute(
+        'CREATE INDEX IF NOT EXISTS idx_download_records_download_lookup ON download_records(session_id, download_id)',
+      )
+      ..execute(
+        'CREATE INDEX IF NOT EXISTS idx_download_sessions_status_started ON download_sessions(status, started_at)',
+      );
+  }
+
+  @override
+  Future<void> saveTask(String taskId, String name) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    db.execute(
+      '''
+      INSERT INTO saved_download_tasks (id, task_id, name, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?)
+      ''',
+      [_uuid.v4(), taskId, name, now, now],
+    );
+  }
+
+  @override
+  Future<void> createTaskVersion(String taskId, DownloadOptions options) async {
+    final latestVersion = db.select(
+          'SELECT MAX(version) as max_version FROM download_task_versions WHERE task_id = ?',
+          [taskId],
+        ).first['max_version'] as int? ??
+        0;
+
+    db.execute(
+      '''
+      INSERT INTO download_task_versions (
+        task_id, version, path, notifications, skip_if_exists,
+        quality, per_page, concurrency, tags, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ''',
+      [
+        taskId,
+        latestVersion + 1,
+        options.path,
+        if (options.notifications) 1 else 0,
+        if (options.skipIfExists) 1 else 0,
+        options.quality,
+        options.perPage,
+        options.concurrency,
+        options.tags.join(' '),
+        DateTime.now().millisecondsSinceEpoch,
+      ],
+    );
   }
 
   @override
@@ -296,7 +379,6 @@ class DownloadRepositorySqlite implements DownloadRepository {
     int offset = 0,
     int limit = 20,
   }) async {
-    // Validate and sanitize pagination parameters
     final sanitizedOffset = offset < 0 ? 0 : offset;
     final sanitizedLimit = limit <= 0
         ? 20
@@ -319,7 +401,14 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
     final query = '''
       SELECT 
-        s.*,
+        s.id as session_id,
+        s.task_id,
+        s.started_at,
+        s.completed_at,
+        s.current_page,
+        s.status as session_status,
+        s.total_pages,
+        s.error,
         t.id as task_id,
         t.path,
         t.notifications,
@@ -330,13 +419,23 @@ class DownloadRepositorySqlite implements DownloadRepository {
         t.per_page,
         t.concurrency,
         t.tags,
-        r.thumbnail_url as cover_url,
-        r.source_url as site_url,
-        COUNT(r.url) as total_items,
-        SUM(CASE WHEN r.file_size IS NOT NULL THEN r.file_size ELSE 0 END) as total_size
+        stats.id as stats_id,
+        stats.cover_url,
+        stats.site_url,
+        stats.total_files,
+        stats.total_size,
+        stats.average_duration,
+        stats.average_file_size,
+        stats.largest_file_size,
+        stats.smallest_file_size,
+        stats.median_file_size,
+        stats.avg_files_per_page,
+        stats.max_files_per_page,
+        stats.min_files_per_page,
+        stats.extension_counts
       FROM download_sessions s
       INNER JOIN download_tasks t ON s.task_id = t.id
-      LEFT JOIN download_records r ON s.id = r.session_id
+      LEFT JOIN download_session_statistics stats ON s.id = stats.session_id
       WHERE ${whereClauses.join(' AND ')}
       GROUP BY s.id, t.id
       ORDER BY s.started_at DESC
@@ -350,7 +449,67 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
     final results = db.select(query, params);
 
-    return _mapToBulkDownloadSessions(results);
+    return results.map((row) {
+      final session = DownloadSession(
+        id: row['session_id'] as String,
+        taskId: row['task_id'] as String,
+        startedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['started_at'] as int),
+        completedAt: row['completed_at'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(row['completed_at'] as int)
+            : null,
+        currentPage: row['current_page'] as int,
+        status: DownloadSessionStatus.values
+            .byName(row['session_status'] as String),
+        totalPages: row['total_pages'] as int?,
+        error: row['error'] as String?,
+      );
+
+      final task = DownloadTask(
+        id: row['task_id'] as String,
+        path: row['path'] as String,
+        notifications: (row['notifications'] as int) == 1,
+        skipIfExists: (row['skip_if_exists'] as int) == 1,
+        quality: row['quality'] as String?,
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
+        updatedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+        perPage: row['per_page'] as int,
+        concurrency: row['concurrency'] as int,
+        tags: row['tags'] as String,
+      );
+
+      final stats = DownloadSessionStats(
+        id: row['stats_id'] as int?,
+        sessionId: session.id,
+        coverUrl: row['cover_url'] as String?,
+        siteUrl: row['site_url'] as String?,
+        totalItems: row['total_files'] as int? ?? 0,
+        totalSize: row['total_size'] as int?,
+        averageDuration: row['average_duration'] != null
+            ? Duration(milliseconds: row['average_duration'] as int)
+            : null,
+        averageFileSize: row['average_file_size'] as int?,
+        largestFileSize: row['largest_file_size'] as int?,
+        smallestFileSize: row['smallest_file_size'] as int?,
+        medianFileSize: row['median_file_size'] as int?,
+        avgFilesPerPage: row['avg_files_per_page'] as double?,
+        maxFilesPerPage: row['max_files_per_page'] as int?,
+        minFilesPerPage: row['min_files_per_page'] as int?,
+        extensionCounts: row['extension_counts'] != null
+            ? Map<String, int>.from(
+                jsonDecode(row['extension_counts'] as String),
+              )
+            : {},
+      );
+
+      return BulkDownloadSession(
+        task: task,
+        session: session,
+        stats: stats,
+      );
+    }).toList();
   }
 
   List<BulkDownloadSession> _mapToBulkDownloadSessions(List<Row> results) {
@@ -358,11 +517,12 @@ class DownloadRepositorySqlite implements DownloadRepository {
       final session = mapToSession(row);
       final task = mapToTaskFromJoin(row);
       final stats = DownloadSessionStats(
+        id: null,
         sessionId: session.id,
         coverUrl: row['cover_url'] as String?,
         totalItems: row['total_items'] as int,
         siteUrl: row['site_url'] as String?,
-        estimatedDownloadSize: row['total_size'] as int?,
+        totalSize: row['total_size'] as int?,
       );
 
       return BulkDownloadSession(
@@ -732,5 +892,45 @@ class DownloadRepositorySqlite implements DownloadRepository {
         [status.name, ...sessionIds],
       );
     });
+  }
+
+  @override
+  Future<DownloadSessionStats> updateStatisticsAndCleanup(
+    String sessionId,
+  ) async {
+    final stats = await getActionSessionStats(sessionId);
+
+    _transaction(() {
+      db
+        ..execute('''
+        INSERT OR REPLACE INTO download_session_statistics (
+          session_id, cover_url, site_url, total_files, total_size, average_duration,
+          average_file_size, largest_file_size, smallest_file_size,
+          median_file_size, avg_files_per_page, max_files_per_page,
+          min_files_per_page, extension_counts
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ''', [
+          sessionId,
+          stats.coverUrl,
+          stats.siteUrl,
+          stats.totalItems,
+          stats.totalSize,
+          stats.averageDuration?.inMilliseconds,
+          stats.averageFileSize,
+          stats.largestFileSize,
+          stats.smallestFileSize,
+          stats.medianFileSize,
+          stats.avgFilesPerPage,
+          stats.maxFilesPerPage,
+          stats.minFilesPerPage,
+          jsonEncode(stats.extensionCounts),
+        ])
+        ..execute(
+          'DELETE FROM download_records WHERE session_id = ?',
+          [sessionId],
+        );
+    });
+
+    return stats;
   }
 }

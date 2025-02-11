@@ -2,8 +2,7 @@
 - When the user opens the Create Task UI, they fill in task parameters (path, tags, download options) that get stored in the download_tasks table.
 - For premium users, the UI also presents a "Download Later" option. If selected, the task is flagged for later execution.
 - Once the task is created, if the user clicks “Start Download,” the app immediately creates a session in download_sessions and starts a dry run. It gathers metadata and produces download_records for items to download.
-- In the event of a scheduled download (via "Download Later"), an additional record is created (e.g., in a saved tasks or scheduled tasks table) marking the task configuration and the desired scheduled time or recurrence.
-- In the bulk download UI, all tasks from download_tasks are listed. For premium users, tasks that are saved (or scheduled) are also displayed, allowing them to quickly re-run the task with its preconfigured settings.
+- In the bulk download UI, all tasks from download_tasks are listed. For premium users, tasks that are saved are also displayed, allowing them to quickly re-run the task with its preconfigured settings.
 - When a task is started, a session is created
 - The app will start a dry run and search using tags and go page by page to collect and decide what to download/skip
 - If the app decides to download, it will create a record in download_records
@@ -25,45 +24,79 @@ CREATE TABLE download_tasks (
     tags TEXT
 );
 
+CREATE TABLE download_task_versions (
+    id INTEGER PRIMARY KEY,
+    task_id TEXT NOT NULL,
+    version INTEGER NOT NULL,
+    path TEXT NOT NULL,
+    notifications BOOLEAN,
+    skip_if_exists BOOLEAN,
+    quality TEXT,
+    per_page INTEGER,
+    concurrency INTEGER,
+    tags TEXT,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
+);
+
 CREATE TABLE saved_download_tasks (
     id TEXT PRIMARY KEY,
     task_id TEXT NOT NULL,
+    active_version_id INTEGER, 
+    name TEXT,
     created_at INTEGER NOT NULL,
     updated_at INTEGER,
-    scheduled_at INTEGER,       -- timestamp for next scheduled run; NULL if not scheduled
-    recurrence_interval INTEGER, -- interval in seconds for recurring runs; NULL if one-off
-    FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
+    FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE download_sessions (
     id TEXT PRIMARY KEY,
-    task_id TEXT NOT NULL,
+    task_id TEXT,
     started_at INTEGER NOT NULL,
     completed_at INTEGER,
     current_page INTEGER NOT NULL DEFAULT 1,
     total_pages INTEGER,
     status TEXT NOT NULL,
     error TEXT,
-    FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE CASCADE
+    FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
 );
 
 CREATE TABLE download_records (
     url TEXT NOT NULL,
-    session_id TEXT,
+    session_id TEXT NOT NULL,
     status TEXT NOT NULL,
     page INTEGER NOT NULL,
-    page_index INTEGER NOT NULL,
+    page_index SMALLINT NOT NULL,
     created_at INTEGER NOT NULL,
     file_size INTEGER,
-    file_name TEXT,
+    file_name TEXT NOT NULL,
     extension TEXT,
     error TEXT,
     download_id TEXT,
     headers TEXT,           
-    thumbnail_url TEXT,   
+    thumbnail_url TEXT,     
     source_url TEXT,        
     PRIMARY KEY(url, session_id),
     FOREIGN KEY(session_id) REFERENCES download_sessions(id) ON DELETE CASCADE
+);
+
+CREATE TABLE download_session_statistics (
+    id INTEGER PRIMARY KEY,
+    session_id TEXT UNIQUE,
+    cover_url TEXT,         
+    site_url TEXT,        
+    total_files INTEGER,
+    total_size BIGINT,
+    average_duration INTEGER,  -- in milliseconds
+    average_file_size BIGINT,
+    largest_file_size BIGINT,
+    smallest_file_size BIGINT,
+    median_file_size BIGINT,
+    avg_files_per_page REAL,
+    max_files_per_page INTEGER,
+    min_files_per_page INTEGER,
+    extension_counts TEXT,     -- JSON object {".jpg": 100, ".png": 50, etc}
+    FOREIGN KEY(session_id) REFERENCES download_sessions(id) ON DELETE SET NULL
 );
 
 CREATE INDEX idx_download_records_session_id ON download_records(session_id);
