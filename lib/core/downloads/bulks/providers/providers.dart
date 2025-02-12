@@ -44,11 +44,20 @@ final percentCompletedFromDbProvider =
 
   if (completed.isEmpty) return 0.0;
 
+  final total = await ref.watch(totalDownloadCountProvider(group).future);
+
+  if (total == null) return 0.0;
+
+  return completed.length / total;
+});
+
+final totalDownloadCountProvider =
+    FutureProvider.autoDispose.family<int?, String>((ref, group) async {
+  final repo = await ref.watch(downloadRepositoryProvider.future);
+
   final total = await repo.getRecordsBySessionId(group);
 
-  if (total.isEmpty) return 0.0;
-
-  return completed.length / total.length;
+  return total.length;
 });
 
 final percentCompletedProvider =
@@ -57,9 +66,14 @@ final percentCompletedProvider =
 
   if (completed.isEmpty) return 0.0;
 
-  final total = ref.watch(downloadTaskUpdatesProvider).all(group);
+  final total = ref.watch(totalDownloadCountProvider(group)).valueOrNull;
 
-  if (total.isEmpty) return 0.0;
+  if (total == null) {
+    final totalFallback = ref.watch(downloadTaskUpdatesProvider).all(group);
+    if (totalFallback.isEmpty) return 0.0;
 
-  return completed.length / total.length;
+    return completed.length / totalFallback.length;
+  } else {
+    return completed.length / total;
+  }
 });

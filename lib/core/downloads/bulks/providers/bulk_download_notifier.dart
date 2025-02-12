@@ -46,7 +46,6 @@ import 'providers.dart';
 import 'package:background_downloader/background_downloader.dart'
     hide DownloadTask, PermissionStatus;
 
-const _perPage = 100;
 const _serviceName = 'Bulk Download Manager';
 
 final bulkDownloadProvider =
@@ -168,6 +167,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   Future<List<Post>> _getPosts(
     String tags,
     int page,
+    DownloadTask task,
   ) async {
     final config = ref.readConfigSearch;
     final postRepo = ref.read(postRepoProvider(config));
@@ -175,7 +175,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final r = await postRepo.getPostsFromTagsOrEmpty(
       tags,
       page: page,
-      limit: _perPage,
+      limit: task.perPage,
     );
 
     return r.posts;
@@ -344,7 +344,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         currentPage: page,
       );
 
-      final initialPosts = await _getPosts(tags, page);
+      final initialPosts = await _getPosts(tags, page, task);
 
       if (initialPosts.isEmpty) {
         await _updateSession(
@@ -435,7 +435,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           await delay.future;
         }
 
-        final items = await _getPosts(tags, page);
+        final items = await _getPosts(tags, page, task);
 
         // No more items, stop dry run
         if (items.isEmpty) {
@@ -474,50 +474,72 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
       await _updateSessionWithState(sessionId, currentSession, stats: stats);
 
-      for (final record in pendings) {
-        final result = await downloader
-            .downloadCustomLocation(
-              url: record.url,
-              path: task.path,
-              filename: record.fileName,
-              skipIfExists: false, // We already handled this in the dry run
-              headers: record.headers,
-              metadata: DownloaderMetadata(
-                thumbnailUrl: record.thumbnailImageUrl,
-                fileSize: record.fileSize,
-                siteUrl: PostSource.from(record.thumbnailImageUrl).url,
-                group: sessionId,
-              ),
-            )
-            .run();
-
-        await result.fold(
-          (error) async {
-            await _withRepo(
-              (repo) => repo.updateRecord(
-                url: record.url,
-                sessionId: record.sessionId,
-                error: error.toString(),
-                status: DownloadRecordStatus.failed,
-              ),
-            );
-          },
-          (info) async {
-            await _withRepo(
-              (repo) => repo.updateRecord(
-                url: record.url,
-                sessionId: record.sessionId,
-                downloadId: info.id,
-                status: DownloadRecordStatus.downloading,
-              ),
-            );
-          },
+      // Download page by page
+      for (var currentPage = 1; currentPage <= page; currentPage++) {
+        // Check if session is still running
+        currentSession = await _withRepoNull(
+          (repo) => repo.getSession(sessionId),
         );
 
-        // Delay to prevent too many requests
-        final delay = downloadConfigs?.delayBetweenDownloads;
-        if (delay != null) {
-          await delay.future;
+        if (currentSession?.status != DownloadSessionStatus.running) {
+          break;
+        }
+
+        final records = await _withRepo(
+          (repo) => repo.getRecordsBySessionId(
+            sessionId,
+            recordPage: currentPage,
+            status: DownloadRecordStatus.pending,
+          ),
+        );
+
+        if (records.isEmpty) continue;
+
+        for (final record in records) {
+          final result = await downloader
+              .downloadCustomLocation(
+                url: record.url,
+                path: task.path,
+                filename: record.fileName,
+                skipIfExists: false, // We already handled this in the dry run
+                headers: record.headers,
+                metadata: DownloaderMetadata(
+                  thumbnailUrl: record.thumbnailImageUrl,
+                  fileSize: record.fileSize,
+                  siteUrl: PostSource.from(record.thumbnailImageUrl).url,
+                  group: sessionId,
+                ),
+              )
+              .run();
+
+          await result.fold(
+            (error) async {
+              await _withRepo(
+                (repo) => repo.updateRecord(
+                  url: record.url,
+                  sessionId: record.sessionId,
+                  error: error.toString(),
+                  status: DownloadRecordStatus.failed,
+                ),
+              );
+            },
+            (info) async {
+              await _withRepo(
+                (repo) => repo.updateRecord(
+                  url: record.url,
+                  sessionId: record.sessionId,
+                  downloadId: info.id,
+                  status: DownloadRecordStatus.downloading,
+                ),
+              );
+            },
+          );
+
+          // Delay to prevent too many requests
+          final delay = downloadConfigs?.delayBetweenDownloads;
+          if (delay != null) {
+            await delay.future;
+          }
         }
       }
     } catch (e) {
@@ -610,7 +632,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       );
 
       unawaited(
-        downloader.cancelTasksWithIds(records.map((e) => e.url).toList()),
+        downloader.cancelTasksWithIds(
+          records.map((e) => e.downloadId).nonNulls.toList(),
+        ),
       );
     } catch (e) {
       state = state.copyWith(
