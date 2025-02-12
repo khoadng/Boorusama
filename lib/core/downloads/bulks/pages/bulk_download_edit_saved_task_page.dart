@@ -62,16 +62,18 @@ class _BulkDownloadEditSavedTaskPageState
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () async {
-              final updatedTask = widget.savedTask.task.copyWith(
-                path: _pathController.text,
-                notifications: _notifications,
-                skipIfExists: _skipIfExists,
-                tags: _tagsController.text,
-                perPage: _perPage,
-                concurrency: _concurrency,
+              final updatedTask = widget.savedTask.copyWith(
+                task: widget.savedTask.task.copyWith(
+                  path: _pathController.text,
+                  notifications: _notifications,
+                  skipIfExists: _skipIfExists,
+                  tags: _tagsController.text,
+                  perPage: _perPage,
+                  concurrency: _concurrency,
+                ),
               );
 
-              await notifier.editTask(
+              await notifier.editSavedTask(
                 updatedTask,
               );
 

@@ -11,15 +11,29 @@ class SavedDownloadTask extends Equatable {
     required this.createdAt,
     this.name,
     this.updatedAt,
-    this.activeVersionId,
   });
+
+  SavedDownloadTask copyWith({
+    int? id,
+    DownloadTask? task,
+    String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return SavedDownloadTask(
+      id: id ?? this.id,
+      task: task ?? this.task,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 
   final int id;
   final DownloadTask task;
   final String? name;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final int? activeVersionId;
 
   @override
   List<Object?> get props => [
@@ -28,6 +42,5 @@ class SavedDownloadTask extends Equatable {
         name,
         createdAt,
         updatedAt,
-        activeVersionId,
       ];
 }

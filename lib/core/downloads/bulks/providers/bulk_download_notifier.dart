@@ -868,14 +868,31 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 
-  Future<void> editTask(DownloadTask newTask) async {
+  Future<void> editSavedTask(SavedDownloadTask newTask) async {
     try {
-      final currentTask = await _withRepo((repo) => repo.getTask(newTask.id));
+      final currentTask =
+          await _withRepo((repo) => repo.getSavedTask(newTask.id));
 
-      // if there is no changes, just return
-      if (currentTask == newTask) return;
+      if (currentTask == null) {
+        state = state.copyWith(
+          error: TaskNotFoundError.new,
+        );
+        return;
+      }
 
-      await _withRepo((repo) => repo.editTask(newTask));
+      // No changes, do nothing
+      if (currentTask == newTask) {
+        return;
+      }
+
+      if (currentTask.task != newTask.task) {
+        await _withRepo((repo) => repo.editTask(newTask.task));
+      }
+
+      if (currentTask.name != newTask.name) {
+        await _withRepo((repo) => repo.editSavedTask(newTask));
+      }
+
       await _loadTasks();
     } catch (e) {
       state = state.copyWith(error: () => e);

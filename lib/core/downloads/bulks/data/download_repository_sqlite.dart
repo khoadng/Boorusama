@@ -994,4 +994,72 @@ class DownloadRepositorySqlite implements DownloadRepository {
       db.execute('DELETE FROM saved_download_tasks WHERE id = ?', [id]);
     });
   }
+
+  @override
+  Future<SavedDownloadTask?> getSavedTask(int id) async {
+    final results = db.select('''
+      SELECT 
+        s.id,
+        s.task_id,
+        s.name,
+        s.created_at,
+        s.updated_at,
+        t.path, 
+        t.notifications,
+        t.skip_if_exists,
+        t.quality,
+        t.created_at as task_created_at,
+        t.updated_at as task_updated_at,
+        t.per_page,
+        t.concurrency,
+        t.tags
+      FROM saved_download_tasks s
+      INNER JOIN download_tasks t ON s.task_id = t.id
+      WHERE s.id = ?
+    ''', [id]);
+
+    if (results.isEmpty) return null;
+
+    final row = results.first;
+    final task = DownloadTask(
+      id: row['task_id'] as String,
+      path: row['path'] as String,
+      notifications: row['notifications'] == 1,
+      skipIfExists: row['skip_if_exists'] == 1,
+      quality: row['quality'] as String?,
+      createdAt:
+          DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
+      updatedAt:
+          DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+      perPage: row['per_page'] as int,
+      concurrency: row['concurrency'] as int,
+      tags: row['tags'] as String?,
+    );
+
+    return SavedDownloadTask(
+      id: row['id'] as int,
+      task: task,
+      name: row['name'] as String?,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(row['created_at'] as int),
+      updatedAt: row['updated_at'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(row['updated_at'] as int)
+          : null,
+    );
+  }
+
+  @override
+  Future<void> editSavedTask(SavedDownloadTask task) async {
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    _transaction(() {
+      db.execute(
+        '''
+        UPDATE saved_download_tasks 
+        SET name = ?, updated_at = ?
+        WHERE id = ?
+        ''',
+        [task.name, now, task.id],
+      );
+    });
+  }
 }

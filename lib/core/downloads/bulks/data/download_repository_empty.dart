@@ -162,5 +162,11 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<List<SavedDownloadTask>> getSavedTasks() async => [];
 
   @override
+  Future<SavedDownloadTask?> getSavedTask(int id) async => null;
+
+  @override
+  Future<void> editSavedTask(SavedDownloadTask task) async {}
+
+  @override
   Future<void> deleteSavedTask(int id) async {}
 }

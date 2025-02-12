@@ -239,8 +239,18 @@ void main() {
       final savedTask = savedTasks.first;
 
       // Edit the saved task with new tags
-      final editedTask = task.copyWith(tags: 'new_tag');
-      await notifier.editTask(editedTask);
+      final editedTask = savedTask.copyWith(
+        name: 'new_name',
+        task: savedTask.task.copyWith(tags: 'new_tag'),
+      );
+      await notifier.editSavedTask(editedTask);
+
+      final savedTasksAfterEdit = await repository.getSavedTasks();
+
+      // Piggyback this test to verify editSavedTask
+      expect(savedTasksAfterEdit.length, equals(1));
+      expect(savedTasksAfterEdit.first.task.tags, equals('new_tag'));
+      expect(savedTasksAfterEdit.first.name, equals('new_name'));
 
       // Start a session from the saved task
       await notifier.runSavedTask(savedTask);

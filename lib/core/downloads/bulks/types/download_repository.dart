@@ -102,6 +102,8 @@ abstract class DownloadRepository {
 
   Future<void> createSavedTask(String taskId, String name);
   Future<List<SavedDownloadTask>> getSavedTasks();
+  Future<SavedDownloadTask?> getSavedTask(int id);
+  Future<void> editSavedTask(SavedDownloadTask task);
   Future<void> deleteSavedTask(int id);
 }
 
