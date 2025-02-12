@@ -218,6 +218,8 @@ class _CoverImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final coverUrl = session.stats.coverUrl;
+    final status = session.session.status;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SizedBox(
       width: 72,
@@ -226,10 +228,12 @@ class _CoverImage extends ConsumerWidget {
           : SizedBox(
               height: 72,
               child: Card(
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-                child: const Icon(
-                  Symbols.image,
-                  color: Colors.white,
+                color: colorScheme.tertiaryContainer,
+                child: Icon(
+                  status == DownloadSessionStatus.allSkipped
+                      ? Symbols.check
+                      : Symbols.image,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -309,6 +313,7 @@ class _InfoText extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = session.stats;
+    final task = session.task;
 
     final fileSize = stats.estimatedDownloadSize;
     final totalItems = stats.totalItems;
@@ -324,7 +329,7 @@ class _InfoText extends ConsumerWidget {
     ).replaceAll('{}', totalItems.toString());
 
     final infoText = [
-      fileSizeText,
+      if (task.quality == 'original' && fileSizeText != null) fileSizeText,
       totalItemText,
     ].nonNulls.join(' • ');
 
@@ -340,7 +345,7 @@ class _InfoText extends ConsumerWidget {
             ).tr(),
           DownloadSessionStatus.failed => 'Error',
           DownloadSessionStatus.interrupted => 'Interrupted',
-          DownloadSessionStatus.allSkipped => 'Skipped, no new items',
+          DownloadSessionStatus.allSkipped => 'Completed with no new files',
           _ => infoText,
         },
         maxLines: 1,

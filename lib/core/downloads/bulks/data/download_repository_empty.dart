@@ -160,4 +160,18 @@ class DownloadRepositoryEmpty implements DownloadRepository {
 
   @override
   Future<void> deleteSavedTask(int id) async {}
+
+  @override
+  Future<int> getRecordsCountBySessionId(
+    String sessionId, {
+    DownloadRecordStatus? status,
+  }) async =>
+      0;
+
+  @override
+  Future<void> updateRecordsByStatus(
+    String sessionId, {
+    required DownloadRecordStatus to,
+    DownloadRecordStatus? from,
+  }) async {}
 }

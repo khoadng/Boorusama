@@ -448,14 +448,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         rawPosts = filtered;
       }
 
-      final pendings = await _withRepo(
-        (repo) => repo.getRecordsBySessionId(
+      final pendingCount = await _withRepo(
+        (repo) => repo.getRecordsCountBySessionId(
           sessionId,
           status: DownloadRecordStatus.pending,
         ),
       );
 
-      if (pendings.isEmpty) {
+      if (pendingCount == 0) {
         await _updateSession(
           sessionId,
           status: DownloadSessionStatus.allSkipped,
@@ -463,16 +463,16 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
+      final stats =
+          await _withRepo((repo) => repo.getActiveSessionStats(sessionId));
+
+      await _updateSessionWithState(sessionId, currentSession, stats: stats);
+
       currentSession = await _updateSession(
         sessionId,
         status: DownloadSessionStatus.running,
         totalPages: page,
       );
-
-      final stats =
-          await _withRepo((repo) => repo.getActiveSessionStats(sessionId));
-
-      await _updateSessionWithState(sessionId, currentSession, stats: stats);
 
       // Download page by page
       for (var currentPage = 1; currentPage <= page; currentPage++) {
@@ -629,6 +629,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await _updateSession(
         sessionId,
         status: DownloadSessionStatus.cancelled,
+      );
+
+      await _withRepo(
+        (repo) => repo.updateRecordsByStatus(
+          sessionId,
+          from: DownloadRecordStatus.downloading,
+          to: DownloadRecordStatus.cancelled,
+        ),
       );
 
       unawaited(

@@ -76,6 +76,12 @@ abstract class DownloadRepository {
     String? error,
   });
 
+  Future<void> updateRecordsByStatus(
+    String sessionId, {
+    required DownloadRecordStatus to,
+    DownloadRecordStatus? from,
+  });
+
   Future<DownloadRecord?> getRecordByDownloadId(
     String sessionId,
     String downloadId,
@@ -85,6 +91,11 @@ abstract class DownloadRepository {
     String sessionId,
     List<DownloadRecordStatus> statuses,
   );
+
+  Future<int> getRecordsCountBySessionId(
+    String sessionId, {
+    DownloadRecordStatus? status,
+  });
 
   // Reset to pending status and delete all associated download records
   Future<void> resetSessions(List<String> sessionIds);

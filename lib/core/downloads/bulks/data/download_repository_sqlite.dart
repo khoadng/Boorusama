@@ -1058,4 +1058,45 @@ class DownloadRepositorySqlite implements DownloadRepository {
       );
     });
   }
+
+  @override
+  Future<int> getRecordsCountBySessionId(
+    String sessionId, {
+    DownloadRecordStatus? status,
+  }) async {
+    final query = status != null
+        ? 'SELECT COUNT(*) as count FROM download_records WHERE session_id = ? AND status = ?'
+        : 'SELECT COUNT(*) as count FROM download_records WHERE session_id = ?';
+
+    final params = status != null ? [sessionId, status.name] : [sessionId];
+
+    final result = db.select(query, params).first;
+    return result['count'] as int;
+  }
+
+  @override
+  Future<void> updateRecordsByStatus(
+    String sessionId, {
+    required DownloadRecordStatus to,
+    DownloadRecordStatus? from,
+  }) async {
+    _transaction(() {
+      final query = from != null
+          ? '''
+          UPDATE download_records 
+          SET status = ? 
+          WHERE session_id = ? AND status = ?
+          '''
+          : '''
+          UPDATE download_records 
+          SET status = ? 
+          WHERE session_id = ?
+          ''';
+
+      final params =
+          from != null ? [to.name, sessionId, from.name] : [to.name, sessionId];
+
+      db.execute(query, params);
+    });
+  }
 }

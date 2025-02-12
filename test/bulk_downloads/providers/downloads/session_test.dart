@@ -398,6 +398,66 @@ void main() {
         equals(DownloadSessionStatus.cancelled),
       );
     });
+
+    test('should not allow cancellation of already completed session',
+        () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final session = await repository.createSession(task);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Mark session as completed
+      await repository.updateSession(
+        session.id,
+        status: DownloadSessionStatus.completed,
+      );
+
+      // Act
+      await notifier.cancelSession(session.id);
+
+      // Assert
+      final updatedSession = await repository.getSession(session.id);
+      expect(
+        updatedSession?.status,
+        equals(DownloadSessionStatus.completed),
+      );
+    });
+
+    test(
+        'should cancel all in-progress downloads and mark their records as cancelled',
+        () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Mark some records as downloading
+      final records = await repository.getRecordsBySessionId(sessionId);
+      for (final record in records.take(3)) {
+        await repository.updateRecordByDownloadId(
+          sessionId: sessionId,
+          downloadId: 'test-${record.downloadId}',
+          status: DownloadRecordStatus.downloading,
+        );
+      }
+
+      // Act
+      await notifier.cancelSession(sessionId);
+
+      // Assert
+      final updatedRecords = await repository.getRecordsBySessionId(sessionId);
+      for (final record in updatedRecords) {
+        if (record.downloadId != null) {
+          expect(record.status, equals(DownloadRecordStatus.cancelled));
+        }
+      }
+    });
   });
 
   group('Session Resume', () {
