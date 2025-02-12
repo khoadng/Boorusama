@@ -573,4 +573,103 @@ void main() {
       expect(records, isEmpty);
     });
   });
+
+  group('Session Pause and Resume', () {
+    test('should pause running session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      final sessionId = sessions.first.id;
+
+      // Act
+      await notifier.pauseSession(sessionId);
+
+      // Assert
+      final updatedSession = await repository.getSession(sessionId);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.paused));
+
+      // Verify state update
+      final state = container.read(bulkDownloadProvider);
+      final sessionState =
+          state.sessions.firstWhere((e) => e.session.id == sessionId);
+      expect(sessionState.session.status, equals(DownloadSessionStatus.paused));
+    });
+
+    test('should resume paused session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Pause session first
+      await notifier.pauseSession(sessionId);
+
+      // Act
+      await notifier.resumeSession(sessionId);
+
+      // Assert
+      final updatedSession = await repository.getSession(sessionId);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.running));
+
+      // Verify state update
+      final state = container.read(bulkDownloadProvider);
+      final sessionState =
+          state.sessions.firstWhere((e) => e.session.id == sessionId);
+      expect(
+        sessionState.session.status,
+        equals(DownloadSessionStatus.running),
+      );
+    });
+
+    test('should not pause non-running session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final session = await repository.createSession(task);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      await notifier.pauseSession(session.id);
+
+      // Assert
+      expect(
+        container.read(bulkDownloadProvider).error,
+        isNotNull,
+      );
+
+      final updatedSession = await repository.getSession(session.id);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.pending));
+    });
+
+    test('should not resume non-paused session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final session = await repository.createSession(task);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      await notifier.resumeSession(session.id);
+
+      // Assert
+      expect(
+        container.read(bulkDownloadProvider).error,
+        isNotNull,
+      );
+
+      final updatedSession = await repository.getSession(session.id);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.pending));
+    });
+  });
 }

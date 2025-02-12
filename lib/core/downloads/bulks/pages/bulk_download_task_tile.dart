@@ -17,7 +17,6 @@ import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../theme.dart';
-import '../../../utils/flutter_utils.dart';
 import '../../../widgets/widgets.dart';
 import '../../l10n.dart';
 import '../../manager.dart';
@@ -68,7 +67,6 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                           Expanded(
                             child: _InfoText(session),
                           ),
-                          _ActionButtons(session),
                         ],
                       ),
                       Row(
@@ -79,6 +77,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                               children: [
                                 _Title(session),
                                 _Subtitle(session),
+                                _ActionButtonBar(session: session),
                               ],
                             ),
                           ),
@@ -87,12 +86,80 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                     ],
                   ),
                 ),
-                _StartPendingButton(session),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ActionButtonBar extends StatelessWidget {
+  const _ActionButtonBar({
+    required this.session,
+  });
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context) {
+    final status = session.session.status;
+
+    if (status == DownloadSessionStatus.completed ||
+        status == DownloadSessionStatus.cancelled ||
+        status == DownloadSessionStatus.failed ||
+        status == DownloadSessionStatus.allSkipped) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 4,
+      ),
+      child: Wrap(
+        spacing: 8,
+        children: [
+          if (status == DownloadSessionStatus.pending)
+            _StartPendingButton(session)
+          else if (status == DownloadSessionStatus.dryRun)
+            _StopDryRunButton(session),
+          if (status == DownloadSessionStatus.running ||
+              status == DownloadSessionStatus.paused)
+            _CancelAllButton(session),
+          if (status == DownloadSessionStatus.running)
+            _PauseAllButton(session)
+          else if (status == DownloadSessionStatus.paused)
+            _ResumeAllButton(session),
+        ],
+      ),
+    );
+  }
+}
+
+class _StopDryRunButton extends ConsumerWidget {
+  const _StopDryRunButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = session.id;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.forward,
+        fill: 1,
+        size: 18,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () {
+        ref.read(bulkDownloadProvider.notifier).stopDryRun(sessionId);
+      },
     );
   }
 }
@@ -112,25 +179,18 @@ class _StartPendingButton extends ConsumerWidget {
     final notifier = ref.watch(bulkDownloadProvider.notifier);
 
     return status == DownloadSessionStatus.pending
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              CircularIconButton(
-                padding: const EdgeInsets.all(8),
-                backgroundColor: colorScheme.surfaceContainer,
-                icon: Icon(
-                  FontAwesomeIcons.play,
-                  fill: 1,
-                  size: 18,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                onPressed: () {
-                  notifier.startPendingSession(sessionId);
-                },
-              ),
-            ],
+        ? CircularIconButton(
+            padding: const EdgeInsets.all(8),
+            backgroundColor: colorScheme.surfaceContainer,
+            icon: Icon(
+              FontAwesomeIcons.play,
+              fill: 1,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
+            onPressed: () {
+              notifier.startPendingSession(sessionId);
+            },
           )
         : const SizedBox.shrink();
   }
@@ -184,7 +244,8 @@ class _DetailsInkWell extends ConsumerWidget {
     final status = session.session.status;
 
     return InkWell(
-      onTap: status == DownloadSessionStatus.running
+      onTap: status == DownloadSessionStatus.running ||
+              status == DownloadSessionStatus.paused
           ? () {
               final updates = ref.read(downloadTaskUpdatesProvider).all(id);
 
@@ -262,47 +323,6 @@ class _Logo extends ConsumerWidget {
   }
 }
 
-class _ActionButtons extends ConsumerWidget {
-  const _ActionButtons(
-    this.session,
-  );
-
-  final BulkDownloadSession session;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sessionId = session.id;
-    final status = session.session.status;
-
-    return switch (status) {
-      // DownloadSessionStatus.pending => _ActionButton(
-      //     title: DownloadTranslations.bulkDownloadStart.tr(),
-      //     onPressed: () {
-      //       ref
-      //           .read(bulkDownloadProvider.notifier)
-      //           .downloadFromTask(session.task);
-      //     },
-      //   ),
-      DownloadSessionStatus.running => _CancelAllButton(session),
-      DownloadSessionStatus.dryRun => _ActionButton(
-          onPressed: () {
-            ref.read(bulkDownloadProvider.notifier).stopDryRun(sessionId);
-          },
-          title: DownloadTranslations.bulkDownloadStop.tr(),
-        ),
-      // DownloadSessionStatus.interrupted => _ActionButton(
-      //     onPressed: () {
-      //       ref.read(bulkDownloadProvider.notifier).resumeSession(sessionId);
-      //     },
-      //     title: DownloadTranslations.bulkDownloadResume.tr(),
-      //   ),
-      _ => const SizedBox(
-          height: 24,
-        ),
-    };
-  }
-}
-
 class _InfoText extends ConsumerWidget {
   const _InfoText(
     this.session,
@@ -374,7 +394,8 @@ class _Subtitle extends ConsumerWidget {
 
     return status == DownloadSessionStatus.running ||
             status == DownloadSessionStatus.dryRun ||
-            status == DownloadSessionStatus.interrupted
+            status == DownloadSessionStatus.interrupted ||
+            status == DownloadSessionStatus.paused
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -471,6 +492,7 @@ class _ProgressBar extends ConsumerWidget {
         top: 10,
         right: 40,
         left: 4,
+        bottom: 8,
       ),
       child: LinearProgressIndicator(
         color: Colors.red,
@@ -490,19 +512,76 @@ class _CancelAllButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
-    final status = session.session.status;
-    final isCompleted = status == DownloadSessionStatus.completed;
 
-    return !isCompleted
-        ? _ActionButton(
-            onPressed: () {
-              ref.read(bulkDownloadProvider.notifier).cancelSession(sessionId);
-            },
-            title: DownloadTranslations.bulkDownloadCancel.tr(),
-          )
-        : const SizedBox(
-            height: 24,
-          );
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.stop,
+        fill: 1,
+        size: 18,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () {
+        ref.read(bulkDownloadProvider.notifier).cancelSession(sessionId);
+      },
+    );
+  }
+}
+
+class _PauseAllButton extends ConsumerWidget {
+  const _PauseAllButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = session.id;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.pause,
+        fill: 1,
+        size: 18,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () {
+        ref.read(bulkDownloadProvider.notifier).pauseSession(sessionId);
+      },
+    );
+  }
+}
+
+class _ResumeAllButton extends ConsumerWidget {
+  const _ResumeAllButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = session.id;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.play,
+        fill: 1,
+        size: 18,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () {
+        ref.read(bulkDownloadProvider.notifier).resumeSession(sessionId);
+      },
+    );
   }
 }
 
@@ -550,32 +629,6 @@ class _ErrorText extends ConsumerWidget {
             ),
           )
         : const SizedBox.shrink();
-  }
-}
-
-class _ActionButton extends ConsumerWidget {
-  const _ActionButton({
-    required this.title,
-    required this.onPressed,
-  });
-
-  final String title;
-  final void Function() onPressed;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return FilledButton(
-      style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 12,
-        ),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: const ShrinkVisualDensity(),
-      ),
-      onPressed: onPressed,
-      child: Text(title),
-    );
   }
 }
 

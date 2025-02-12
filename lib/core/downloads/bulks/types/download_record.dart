@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 enum DownloadRecordStatus {
   pending,
   downloading,
+  paused,
   completed,
   failed,
   cancelled;

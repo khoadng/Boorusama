@@ -102,7 +102,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
                   TaskStatus.failed => DownloadRecordStatus.failed,
                   TaskStatus.canceled => DownloadRecordStatus.cancelled,
                   TaskStatus.waitingToRetry => DownloadRecordStatus.downloading,
-                  TaskStatus.paused => DownloadRecordStatus.downloading,
+                  TaskStatus.paused => DownloadRecordStatus.paused,
                 },
               );
             }
@@ -243,9 +243,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }) async {
     final authConfig = ref.readConfigAuth;
     final config = ref.readConfig;
-
-    final fallbackDownloader = ref.read(downloadServiceProvider(authConfig));
-    final downloader = downloadConfigs?.downloader ?? fallbackDownloader;
 
     final fallbackSettings = ref.read(settingsProvider);
     final settings = downloadConfigs?.settings ?? fallbackSettings;
@@ -474,80 +471,108 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         totalPages: page,
       );
 
-      // Download page by page
-      for (var currentPage = 1; currentPage <= page; currentPage++) {
-        // Check if session is still running
-        currentSession = await _withRepoNull(
-          (repo) => repo.getSession(sessionId),
-        );
-
-        if (currentSession?.status != DownloadSessionStatus.running) {
-          break;
-        }
-
-        final records = await _withRepo(
-          (repo) => repo.getRecordsBySessionId(
-            sessionId,
-            recordPage: currentPage,
-            status: DownloadRecordStatus.pending,
-          ),
-        );
-
-        if (records.isEmpty) continue;
-
-        for (final record in records) {
-          final result = await downloader
-              .downloadCustomLocation(
-                url: record.url,
-                path: task.path,
-                filename: record.fileName,
-                skipIfExists: false, // We already handled this in the dry run
-                headers: record.headers,
-                metadata: DownloaderMetadata(
-                  thumbnailUrl: record.thumbnailImageUrl,
-                  fileSize: record.fileSize,
-                  siteUrl: PostSource.from(record.thumbnailImageUrl).url,
-                  group: sessionId,
-                ),
-              )
-              .run();
-
-          await result.fold(
-            (error) async {
-              await _withRepo(
-                (repo) => repo.updateRecord(
-                  url: record.url,
-                  sessionId: record.sessionId,
-                  error: error.toString(),
-                  status: DownloadRecordStatus.failed,
-                ),
-              );
-            },
-            (info) async {
-              await _withRepo(
-                (repo) => repo.updateRecord(
-                  url: record.url,
-                  sessionId: record.sessionId,
-                  downloadId: info.id,
-                  status: DownloadRecordStatus.downloading,
-                ),
-              );
-            },
-          );
-
-          // Delay to prevent too many requests
-          final delay = downloadConfigs?.delayBetweenDownloads;
-          if (delay != null) {
-            await delay.future;
-          }
-        }
-      }
+      await _downloadSessionPages(
+        sessionId: sessionId,
+        task: task,
+        startPage: 1,
+        endPage: page,
+        downloadConfigs: downloadConfigs,
+      );
     } catch (e) {
       await _updateSession(
         sessionId,
         status: DownloadSessionStatus.failed,
         error: e.toString(),
       );
+    }
+  }
+
+  Future<void> pauseSession(String sessionId) async {
+    try {
+      final session = await _withRepo((repo) => repo.getSession(sessionId));
+
+      if (session == null) {
+        state = state.copyWith(
+          error: SessionNotFoundError.new,
+        );
+        return;
+      }
+
+      if (session.status != DownloadSessionStatus.running) {
+        state = state.copyWith(
+          error: () => Exception('Session is not in running state'),
+        );
+        return;
+      }
+
+      await _updateSession(
+        sessionId,
+        status: DownloadSessionStatus.paused,
+      );
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
+  }
+
+  Future<void> resumeSession(
+    String sessionId, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    try {
+      final currentSession =
+          await _withRepo((repo) => repo.getSession(sessionId));
+
+      if (currentSession == null) {
+        state = state.copyWith(error: SessionNotFoundError.new);
+        return;
+      }
+
+      if (currentSession.status != DownloadSessionStatus.paused) {
+        state = state.copyWith(
+          error: () => Exception('Session is not in paused state'),
+        );
+        return;
+      }
+
+      final taskId = currentSession.taskId;
+      if (taskId == null) {
+        state = state.copyWith(error: TaskNotFoundError.new);
+        return;
+      }
+
+      final task = await _withRepo((repo) => repo.getTask(taskId));
+      if (task == null) {
+        state = state.copyWith(error: TaskNotFoundError.new);
+        return;
+      }
+
+      final page = currentSession.currentPage;
+      final totalPages = currentSession.totalPages;
+
+      if (totalPages == null) {
+        state = state.copyWith(
+          error: () =>
+              Exception('Session is missing page information, cannot resume'),
+        );
+        return;
+      }
+
+      final config = ref.readConfigAuth;
+      final downloader = ref.read(downloadServiceProvider(config));
+
+      // Continue downloading items that were paused
+      unawaited(downloader.resumeAll(sessionId));
+
+      await _updateSession(sessionId, status: DownloadSessionStatus.running);
+      await _downloadSessionPages(
+        sessionId: sessionId,
+        task: task,
+        startPage: page,
+        endPage: totalPages,
+        downloadConfigs: downloadConfigs,
+      );
+    } catch (e) {
+      state = state.copyWith(error: () => e);
     }
   }
 
@@ -618,6 +643,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
       if (session == null ||
           (session.status != DownloadSessionStatus.running &&
+              session.status != DownloadSessionStatus.paused &&
               session.status != DownloadSessionStatus.failed &&
               session.status != DownloadSessionStatus.pending)) {
         return;
@@ -941,6 +967,122 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await _loadTasks();
     } catch (e) {
       state = state.copyWith(error: () => e);
+    }
+  }
+
+  Future<void> _downloadSessionPages({
+    required String sessionId,
+    required DownloadTask task,
+    required int startPage,
+    required int endPage,
+    required DownloadConfigs? downloadConfigs,
+  }) async {
+    final config = ref.readConfigAuth;
+    final fallbackDownloader = ref.read(downloadServiceProvider(config));
+    final downloader = downloadConfigs?.downloader ?? fallbackDownloader;
+
+    for (var currentPage = startPage; currentPage <= endPage; currentPage++) {
+      final currentSession = await _updateSession(
+        sessionId,
+        currentPage: currentPage,
+      );
+
+      // Check if session is still running
+      if (currentSession?.status != DownloadSessionStatus.running) {
+        final status = currentSession?.status;
+
+        if (status == DownloadSessionStatus.paused) {
+          await downloader.pauseAll(sessionId);
+        }
+
+        break;
+      }
+
+      await _downloadRecordsForPage(
+        sessionId,
+        task,
+        currentPage,
+        downloader,
+        downloadConfigs,
+      );
+    }
+  }
+
+  Future<void> _downloadRecordsForPage(
+    String sessionId,
+    DownloadTask task,
+    int currentPage,
+    DownloadService downloader,
+    DownloadConfigs? downloadConfigs,
+  ) async {
+    final records = await _withRepo(
+      (repo) => repo.getRecordsBySessionId(
+        sessionId,
+        recordPage: currentPage,
+        status: DownloadRecordStatus.pending,
+      ),
+    );
+
+    if (records.isEmpty) return;
+
+    for (final record in records) {
+      // Check if session is still running
+      final currentSession = await _withRepoNull(
+        (repo) => repo.getSession(sessionId),
+      );
+
+      if (currentSession?.status != DownloadSessionStatus.running) {
+        break;
+      }
+
+      final result = await downloader
+          .downloadCustomLocation(
+            url: record.url,
+            path: task.path,
+            filename: record.fileName,
+            skipIfExists: false, // We already handled this in the dry run
+            headers: record.headers,
+            metadata: DownloaderMetadata(
+              thumbnailUrl: record.thumbnailImageUrl,
+              fileSize: record.fileSize,
+              siteUrl: PostSource.from(record.thumbnailImageUrl).url,
+              group: sessionId,
+            ),
+          )
+          .run();
+
+      await result.fold(
+        (error) async {
+          await _withRepo(
+            (repo) => repo.updateRecord(
+              url: record.url,
+              sessionId: record.sessionId,
+              error: error.toString(),
+              status: DownloadRecordStatus.failed,
+            ),
+          );
+        },
+        (info) async {
+          await _withRepo(
+            (repo) => repo.updateRecord(
+              url: record.url,
+              sessionId: record.sessionId,
+              downloadId: info.id,
+              status: DownloadRecordStatus.downloading,
+            ),
+          );
+        },
+      );
+
+      // Delay to prevent too many requests
+      if (downloadConfigs != null) {
+        final delay = downloadConfigs.delayBetweenDownloads;
+        if (delay != null) {
+          await delay.future;
+        }
+      } else {
+        await const Duration(milliseconds: 200).future;
+      }
     }
   }
 }

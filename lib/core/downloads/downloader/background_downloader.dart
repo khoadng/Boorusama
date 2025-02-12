@@ -121,6 +121,34 @@ class BackgroundDownloader implements DownloadService {
   Future<bool> cancelTasksWithIds(List<String> ids) {
     return FileDownloader().cancelTasksWithIds(ids);
   }
+
+  @override
+  Future<void> pauseAll(String group) async {
+    final tasks = await FileDownloader().allTasks(
+      group: group,
+    );
+
+    final taskFutures = tasks
+        .whereType<DownloadTask>()
+        .map((task) => FileDownloader().pause(task))
+        .toList();
+
+    await Future.wait(taskFutures);
+  }
+
+  @override
+  Future<void> resumeAll(String group) async {
+    final tasks = await FileDownloader().allTasks(
+      group: group,
+    );
+
+    final taskFutures = tasks
+        .whereType<DownloadTask>()
+        .map((task) => FileDownloader().resume(task))
+        .toList();
+
+    await Future.wait(taskFutures);
+  }
 }
 
 class BackgroundDownloaderBuilder extends ConsumerWidget {

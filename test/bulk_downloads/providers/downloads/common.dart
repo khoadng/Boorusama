@@ -197,6 +197,12 @@ class DummyDownloadService implements DownloadService {
   Future<bool> cancelTasksWithIds(List<String> ids) {
     return Future.value(true);
   }
+
+  @override
+  Future<void> pauseAll(String group) async {}
+
+  @override
+  Future<void> resumeAll(String group) async {}
 }
 
 final dummyDownloadFileNameBuilder = DownloadFileNameBuilder<DummyPost>(

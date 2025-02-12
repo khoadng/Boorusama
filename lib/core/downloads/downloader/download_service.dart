@@ -108,6 +108,10 @@ abstract class DownloadService {
   });
 
   Future<bool> cancelTasksWithIds(List<String> ids);
+
+  Future<void> pauseAll(String group);
+
+  Future<void> resumeAll(String group);
 }
 
 extension DownloadWithSettingsX on DownloadService {
