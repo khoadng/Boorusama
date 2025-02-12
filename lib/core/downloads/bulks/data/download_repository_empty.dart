@@ -80,13 +80,11 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<void> createRecords(List<DownloadRecord> records) async {}
 
   @override
-  Future<List<DownloadRecord>> getRecordsBySessionId(String sessionId) async =>
-      [];
-
-  @override
-  Future<List<DownloadRecord>> getPendingRecordsBySessionId(
-    String sessionId,
-  ) async =>
+  Future<List<DownloadRecord>> getRecordsBySessionId(
+    String sessionId, {
+    DownloadRecordStatus? status,
+    int? recordPage,
+  }) async =>
       [];
 
   @override
@@ -114,13 +112,6 @@ class DownloadRepositoryEmpty implements DownloadRepository {
 
   @override
   Future<void> deleteSession(String id) async {}
-
-  @override
-  Future<List<DownloadRecord>> getRecordsBySessionIdAndStatus(
-    String sessionId,
-    DownloadRecordStatus status,
-  ) async =>
-      [];
 
   @override
   Future<DownloadRecord?> getRecordByDownloadId(

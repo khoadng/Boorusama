@@ -199,7 +199,7 @@ void main() {
       final sessionId = sessions.first.id;
 
       // Store initial stats
-      final initialStats = await repository.getActionSessionStats(sessionId);
+      final initialStats = await repository.getActiveSessionStats(sessionId);
 
       // Complete all records
       final records = await repository.getRecordsBySessionId(sessionId);

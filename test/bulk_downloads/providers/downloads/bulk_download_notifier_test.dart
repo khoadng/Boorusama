@@ -175,7 +175,7 @@ void main() {
       final sessions = await repository.getSessionsByTaskId(task.id);
       expect(sessions.length, equals(1));
 
-      final stats = await repository.getActionSessionStats(sessions.first.id);
+      final stats = await repository.getActiveSessionStats(sessions.first.id);
       expect(stats.totalItems, equals(_posts.length));
       expect(stats.coverUrl, equals('test-thumbnail-url-1'));
       expect(stats.siteUrl, equals('test-url'));

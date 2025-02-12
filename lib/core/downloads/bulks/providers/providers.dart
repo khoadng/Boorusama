@@ -37,9 +37,9 @@ final percentCompletedFromDbProvider =
     FutureProvider.autoDispose.family<double, String>((ref, group) async {
   final repo = await ref.watch(downloadRepositoryProvider.future);
 
-  final completed = await repo.getRecordsBySessionIdAndStatus(
+  final completed = await repo.getRecordsBySessionId(
     group,
-    DownloadRecordStatus.completed,
+    status: DownloadRecordStatus.completed,
   );
 
   if (completed.isEmpty) return 0.0;

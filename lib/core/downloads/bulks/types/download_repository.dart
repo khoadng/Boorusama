@@ -49,8 +49,11 @@ abstract class DownloadRepository {
 
   Future<void> createRecord(DownloadRecord record);
   Future<void> createRecords(List<DownloadRecord> records);
-  Future<List<DownloadRecord>> getRecordsBySessionId(String sessionId);
-  Future<List<DownloadRecord>> getPendingRecordsBySessionId(String sessionId);
+  Future<List<DownloadRecord>> getRecordsBySessionId(
+    String sessionId, {
+    DownloadRecordStatus? status,
+    int? recordPage,
+  });
 
   Future<void> updateRecord({
     required String url,
@@ -72,11 +75,6 @@ abstract class DownloadRepository {
     String? extension,
     String? error,
   });
-
-  Future<List<DownloadRecord>> getRecordsBySessionIdAndStatus(
-    String sessionId,
-    DownloadRecordStatus status,
-  );
 
   Future<DownloadRecord?> getRecordByDownloadId(
     String sessionId,
@@ -108,7 +106,7 @@ abstract class DownloadRepository {
 }
 
 extension DownloadRepositoryX on DownloadRepository {
-  Future<DownloadSessionStats> getActionSessionStats(String sessionId) async {
+  Future<DownloadSessionStats> getActiveSessionStats(String sessionId) async {
     final records = await getRecordsBySessionId(sessionId);
     if (records.isEmpty) return DownloadSessionStats.empty;
 

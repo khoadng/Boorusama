@@ -449,7 +449,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       }
 
       final pendings = await _withRepo(
-        (repo) => repo.getPendingRecordsBySessionId(sessionId),
+        (repo) => repo.getRecordsBySessionId(
+          sessionId,
+          status: DownloadRecordStatus.pending,
+        ),
       );
 
       if (pendings.isEmpty) {
@@ -460,27 +463,18 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      await _updateSession(
+      currentSession = await _updateSession(
         sessionId,
         status: DownloadSessionStatus.running,
         totalPages: page,
       );
 
-      currentSession = await _withRepo((repo) => repo.getSession(sessionId));
       final stats =
-          await _withRepo((repo) => repo.getActionSessionStats(sessionId));
+          await _withRepo((repo) => repo.getActiveSessionStats(sessionId));
 
       await _updateSessionWithState(sessionId, currentSession, stats: stats);
 
       for (final record in pendings) {
-        await _withRepo(
-          (repo) => repo.updateRecord(
-            url: record.url,
-            sessionId: record.sessionId,
-            status: DownloadRecordStatus.downloading,
-          ),
-        );
-
         final result = await downloader
             .downloadCustomLocation(
               url: record.url,
@@ -514,6 +508,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
                 url: record.url,
                 sessionId: record.sessionId,
                 downloadId: info.id,
+                status: DownloadRecordStatus.downloading,
               ),
             );
           },
@@ -711,9 +706,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       }
 
       final records = await _withRepo(
-        (repo) => repo.getRecordsBySessionIdAndStatus(
+        (repo) => repo.getRecordsBySessionId(
           sessionId,
-          DownloadRecordStatus.completed,
+          status: DownloadRecordStatus.completed,
         ),
       );
 

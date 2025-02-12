@@ -662,33 +662,26 @@ class DownloadRepositorySqlite implements DownloadRepository {
   }
 
   @override
-  Future<List<DownloadRecord>> getRecordsBySessionId(String sessionId) async {
-    final results = db.select(
-      'SELECT * FROM download_records WHERE session_id = ? ORDER BY page ASC, page_index ASC',
-      [sessionId],
-    );
-    return results.map(mapToRecord).toList();
-  }
+  Future<List<DownloadRecord>> getRecordsBySessionId(
+    String sessionId, {
+    DownloadRecordStatus? status,
+    int? recordPage,
+  }) async {
+    final whereClause = [
+      'session_id = ?',
+      if (status != null) 'status = ?',
+      if (recordPage != null) 'page = ?',
+    ].join(' AND ');
 
-  @override
-  Future<List<DownloadRecord>> getPendingRecordsBySessionId(
-    String sessionId,
-  ) async {
-    final results = db.select(
-      'SELECT * FROM download_records WHERE session_id = ? AND status = ? ORDER BY page ASC, page_index ASC',
-      [sessionId, DownloadRecordStatus.pending.name],
-    );
-    return results.map(mapToRecord).toList();
-  }
+    final params = [
+      sessionId,
+      if (status != null) status.name,
+      if (recordPage != null) recordPage,
+    ];
 
-  @override
-  Future<List<DownloadRecord>> getRecordsBySessionIdAndStatus(
-    String sessionId,
-    DownloadRecordStatus status,
-  ) async {
     final results = db.select(
-      'SELECT * FROM download_records WHERE session_id = ? AND status = ? ORDER BY page ASC, page_index ASC',
-      [sessionId, status.name],
+      'SELECT * FROM download_records WHERE $whereClause ORDER BY page ASC, page_index ASC',
+      params,
     );
     return results.map(mapToRecord).toList();
   }
@@ -884,7 +877,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   Future<DownloadSessionStats> updateStatisticsAndCleanup(
     String sessionId,
   ) async {
-    final stats = await getActionSessionStats(sessionId);
+    final stats = await getActiveSessionStats(sessionId);
 
     _transaction(() {
       db
@@ -997,7 +990,8 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
   @override
   Future<SavedDownloadTask?> getSavedTask(int id) async {
-    final results = db.select('''
+    final results = db.select(
+      '''
       SELECT 
         s.id,
         s.task_id,
@@ -1016,7 +1010,9 @@ class DownloadRepositorySqlite implements DownloadRepository {
       FROM saved_download_tasks s
       INNER JOIN download_tasks t ON s.task_id = t.id
       WHERE s.id = ?
-    ''', [id]);
+    ''',
+      [id],
+    );
 
     if (results.isEmpty) return null;
 
