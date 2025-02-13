@@ -13,17 +13,19 @@ class DetailsWidgetSeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).dividerColor,
-            width: 0.15,
-          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: padding,
+          child: child,
         ),
-      ),
-      child: child,
+        const Divider(
+          height: 0,
+          thickness: 0.5,
+        ),
+      ],
     );
   }
 }
