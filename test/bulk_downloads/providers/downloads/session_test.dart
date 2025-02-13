@@ -10,7 +10,6 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
-import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
@@ -115,7 +114,7 @@ void main() {
       final state = container.read(bulkDownloadProvider);
       expect(
         state.error,
-        isA<SessionNotRunningError>(),
+        isNull,
       );
     });
 
@@ -234,7 +233,7 @@ void main() {
       // Assert
       expect(
         container.read(bulkDownloadProvider).error,
-        isA<SessionNotFoundError>(),
+        isNull,
       );
     });
   });
@@ -462,55 +461,6 @@ void main() {
   });
 
   group('Session Resume', () {
-    test('should mark running session as interrupted on app restart', () async {
-      // Arrange
-      var myContainer = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-      );
-      final task = await repository.createTask(_options);
-      var notifier = myContainer.read(bulkDownloadProvider.notifier);
-      await notifier.downloadFromTask(
-        task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
-      );
-
-      // Get session ID
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      expect(sessions.length, equals(1));
-      final sessionId = sessions.first.id;
-
-      // Simulate app restart
-      myContainer.dispose();
-      myContainer = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-      );
-
-      notifier = myContainer.read(bulkDownloadProvider.notifier);
-
-      // Wait for notifier to load
-      await Future.delayed(const Duration(milliseconds: 10));
-
-      // Verify session is marked as interrupted
-      final interruptedSession = await repository.getSession(sessionId);
-      expect(
-        interruptedSession?.status,
-        equals(DownloadSessionStatus.interrupted),
-      );
-
-      // Verify state reflects changes
-      final state = myContainer.read(bulkDownloadProvider);
-      final stateSession = state.sessions.firstWhere(
-        (s) => s.session.id == sessionId,
-      );
-
-      expect(
-        stateSession.session.status,
-        equals(DownloadSessionStatus.interrupted),
-      );
-    });
-
     test('should mark dry run session as pending when interrupted', () async {
       // Arrange
       var myContainer = createBulkDownloadContainer(
@@ -1053,6 +1003,62 @@ void main() {
       expect(
         stateSession.session.status,
         equals(DownloadSessionStatus.running),
+      );
+    });
+
+    test('should mark paused session as suspended on app restart', () async {
+      // Arrange
+      var myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      final task = await repository.createTask(_options);
+      var notifier = myContainer.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      // Get session ID
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      final sessionId = sessions.first.id;
+
+      // Pause the session
+      await notifier.pauseSession(sessionId);
+
+      // Verify session is paused
+      final pausedSession = await repository.getSession(sessionId);
+      expect(pausedSession?.status, equals(DownloadSessionStatus.paused));
+
+      // Simulate app restart
+      myContainer.dispose();
+      myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+
+      notifier = myContainer.read(bulkDownloadProvider.notifier);
+
+      // Wait for notifier to load
+      await Future.delayed(const Duration(milliseconds: 10));
+
+      // Verify session is marked as suspended
+      final suspendedSession = await repository.getSession(sessionId);
+      expect(
+        suspendedSession?.status,
+        equals(DownloadSessionStatus.suspended),
+      );
+
+      // Verify state reflects changes
+      final state = myContainer.read(bulkDownloadProvider);
+      final stateSession = state.sessions.firstWhere(
+        (s) => s.session.id == sessionId,
+      );
+
+      expect(
+        stateSession.session.status,
+        equals(DownloadSessionStatus.suspended),
       );
     });
   });

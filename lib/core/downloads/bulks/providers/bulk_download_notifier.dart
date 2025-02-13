@@ -232,13 +232,18 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final interruptedSessions = await repo.getSessionsByStatuses([
       DownloadSessionStatus.running,
       DownloadSessionStatus.dryRun,
+      DownloadSessionStatus.paused,
     ]);
 
     final dryRunSessions = interruptedSessions
         .where((e) => e.status == DownloadSessionStatus.dryRun)
         .toList();
     final runningSessions = interruptedSessions
-        .where((e) => e.status == DownloadSessionStatus.running)
+        .where(
+          (e) =>
+              e.status == DownloadSessionStatus.running ||
+              e.status == DownloadSessionStatus.paused,
+        )
         .toList();
 
     // For dry run sessions, just reset to pending cause the data are already stale
@@ -247,11 +252,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await repo.resetSessions(dryRunSessions.map((e) => e.id).toList());
     }
 
-    // For running sessions, mark them as interrupted
+    // For running and paused sessions, mark them as suspended
     if (runningSessions.isNotEmpty) {
       await repo.updateSessionsStatus(
         runningSessions.map((e) => e.id).toList(),
-        DownloadSessionStatus.interrupted,
+        DownloadSessionStatus.suspended,
       );
     }
   }
@@ -290,6 +295,30 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     return r.posts;
+  }
+
+  Future<bool> _shouldExitForFreeUser() async {
+    final hasPremium = ref.read(hasPremiumProvider);
+
+    // check for session limit for non-premium users
+    if (!hasPremium) {
+      final sessions = await _withRepo(
+        (repo) => repo.getSessionsByStatuses([
+          DownloadSessionStatus.running,
+          DownloadSessionStatus.paused,
+          DownloadSessionStatus.dryRun,
+        ]),
+      );
+
+      if (sessions.isNotEmpty) {
+        state = state.copyWith(
+          error: FreeUserMultipleDownloadSessionsError.new,
+        );
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Future<void> queueDownloadLater(
@@ -392,6 +421,12 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadSession? currentSession = session;
 
     await _loadTasks();
+
+    final shouldExit = await _shouldExitForFreeUser();
+
+    if (shouldExit) {
+      return;
+    }
 
     final permission = await mediaPermManager.check();
     logger.logI(
@@ -627,6 +662,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
   Future<void> suspendSession(String sessionId) async {
     try {
+      final hasPremium = ref.read(hasPremiumProvider);
+      if (!hasPremium) {
+        state = state.copyWith(
+          error: NonPremiumSuspendResumeError.new,
+        );
+        return;
+      }
+
       final session = await _withRepo((repo) => repo.getSession(sessionId));
 
       if (session == null) {
@@ -685,6 +728,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     try {
+      final hasPremium = ref.read(hasPremiumProvider);
+      if (!hasPremium) {
+        state = state.copyWith(
+          error: NonPremiumSuspendResumeError.new,
+        );
+        return;
+      }
+
       final session = await _withRepo((repo) => repo.getSession(sessionId));
 
       if (session == null) {
@@ -811,17 +862,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     if (!options.valid(androidSdkInt: androidSdkVersion)) {
       throw const InvalidDownloadOptionsError();
-    }
-
-    final hasPremium = ref.read(hasPremiumProvider);
-
-    // Only allow one download session for free users
-    if (!hasPremium) {
-      final activeSessions = await getRunningSessions();
-
-      if (activeSessions > 0) {
-        throw const FreeUserMultipleDownloadSessionsError();
-      }
     }
 
     final task = await _withRepo((repo) => repo.createTask(options));
@@ -984,72 +1024,57 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   Future<void> tryCompleteSession(String sessionId) async {
     final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
 
-    try {
-      var session = await _withRepo((repo) => repo.getSession(sessionId));
-      if (session == null) {
-        state = state.copyWith(
-          error: SessionNotFoundError.new,
-        );
-        return;
-      }
+    var session = await _withRepo((repo) => repo.getSession(sessionId));
+    if (session == null) {
+      return;
+    }
 
-      if (session.status != DownloadSessionStatus.running) {
-        state = state.copyWith(
-          error: SessionNotRunningError.new,
-        );
-        return;
-      }
+    if (session.status != DownloadSessionStatus.running) {
+      return;
+    }
 
-      final records = await _withRepo(
-        (repo) => repo.getRecordsCountBySessionId(
-          sessionId,
-          status: DownloadRecordStatus.completed,
-        ),
-      );
-
-      // Get total records to compare
-      final totalRecords =
-          await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
-      final allCompleted = records == totalRecords;
-
-      if (!allCompleted) {
-        state = state.copyWith(
-          error: IncompleteDownloadsError.new,
-        );
-        return;
-      }
-
-      session = await _updateSession(
+    final records = await _withRepo(
+      (repo) => repo.getRecordsCountBySessionId(
         sessionId,
-        status: DownloadSessionStatus.completed,
-      );
+        status: DownloadRecordStatus.completed,
+      ),
+    );
 
-      // Calculate final statistics and cleanup
-      final stats = await _withRepo(
-        (repo) => repo.updateStatisticsAndCleanup(sessionId),
-      );
+    // Get total records to compare
+    final totalRecords =
+        await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
+    final allCompleted = records == totalRecords;
 
-      final currentSessionState = state.sessions.firstWhereOrNull(
-        (e) => e.session.id == sessionId,
-      );
+    if (!allCompleted) {
+      return;
+    }
 
-      if (currentSessionState?.task.notifications ?? true) {
-        unawaited(
-          ref.read(bulkDownloadNotificationProvider).showNotification(
-                currentSessionState?.task.tags ?? 'Download completed',
-                'Downloaded ${stats.totalItems} files',
-              ),
-        );
-      }
+    session = await _updateSession(
+      sessionId,
+      status: DownloadSessionStatus.completed,
+    );
 
-      progressNotifier.removeSession(sessionId);
+    // Calculate final statistics and cleanup
+    final stats = await _withRepo(
+      (repo) => repo.updateStatisticsAndCleanup(sessionId),
+    );
 
-      await _loadTasks();
-    } catch (e) {
-      state = state.copyWith(
-        error: DatabaseOperationError.new,
+    final currentSessionState = state.sessions.firstWhereOrNull(
+      (e) => e.session.id == sessionId,
+    );
+
+    if (currentSessionState?.task.notifications ?? true) {
+      unawaited(
+        ref.read(bulkDownloadNotificationProvider).showNotification(
+              currentSessionState?.task.tags ?? 'Download completed',
+              'Downloaded ${stats.totalItems} files',
+            ),
       );
     }
+
+    progressNotifier.removeSession(sessionId);
+
+    await _loadTasks();
   }
 
   Future<void> updateRecordFromTaskStream(
@@ -1058,49 +1083,43 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadRecordStatus status, {
     int? fileSize,
   }) async {
-    try {
-      final record = await _withRepo(
-        (repo) => repo.getRecordByDownloadId(
-          sessionId,
-          downloadId,
-        ),
-      );
+    final record = await _withRepo(
+      (repo) => repo.getRecordByDownloadId(
+        sessionId,
+        downloadId,
+      ),
+    );
 
-      if (record == null) {
-        state = state.copyWith(
-          error: DownloadRecordNotFoundError.new,
-        );
-        return;
-      }
-
-      final session = await _withRepo((repo) => repo.getSession(sessionId));
-
-      if (session == null) {
-        state = state.copyWith(
-          error: SessionNotFoundError.new,
-        );
-        return;
-      }
-
-      // if suspended, do not update records, we will update all records manually
-      if (session.status == DownloadSessionStatus.suspended &&
-          status == DownloadRecordStatus.cancelled) {
-        return;
-      }
-
-      await _withRepo(
-        (repo) => repo.updateRecordByDownloadId(
-          sessionId: sessionId,
-          downloadId: downloadId,
-          status: status,
-          fileSize: fileSize,
-        ),
-      );
-    } catch (e) {
+    if (record == null) {
       state = state.copyWith(
-        error: DatabaseOperationError.new,
+        error: DownloadRecordNotFoundError.new,
       );
+      return;
     }
+
+    final session = await _withRepo((repo) => repo.getSession(sessionId));
+
+    if (session == null) {
+      state = state.copyWith(
+        error: SessionNotFoundError.new,
+      );
+      return;
+    }
+
+    // if suspended, do not update records, we will update all records manually
+    if (session.status == DownloadSessionStatus.suspended &&
+        status == DownloadRecordStatus.cancelled) {
+      return;
+    }
+
+    await _withRepo(
+      (repo) => repo.updateRecordByDownloadId(
+        sessionId: sessionId,
+        downloadId: downloadId,
+        status: status,
+        fileSize: fileSize,
+      ),
+    );
   }
 
   Future<int> getRunningSessions() async {
@@ -1163,6 +1182,18 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     String? name,
   }) async {
     try {
+      final hasPremium = ref.read(hasPremiumProvider);
+
+      if (!hasPremium) {
+        final savedTasks = await _withRepo((repo) => repo.getSavedTasks());
+        if (savedTasks.isNotEmpty) {
+          state = state.copyWith(
+            error: NonPremiumSavedTaskLimitError.new,
+          );
+          return;
+        }
+      }
+
       await _withRepo(
         (repo) => repo.createSavedTask(
           task.id,

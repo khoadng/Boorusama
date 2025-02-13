@@ -389,32 +389,6 @@ void main() {
       );
     });
 
-    test('should handle database operation failures', () async {
-      // Arrange
-      final task = await repository.createTask(_options);
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.downloadFromTaskId(
-        task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
-      );
-
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      db.dispose(); // Force database error
-
-      // Act
-      await notifier.updateRecordFromTaskStream(
-        sessions.first.id,
-        'any-download-id',
-        DownloadRecordStatus.completed,
-      );
-
-      // Assert
-      expect(
-        container.read(bulkDownloadProvider).error,
-        isA<DatabaseOperationError>(),
-      );
-    });
-
     test(
         'should continue downloading when multiple consecutive pages are filtered out',
         () async {
@@ -467,32 +441,6 @@ void main() {
   });
 
   group('Record Updates', () {
-    test('should handle database operation failures during updates', () async {
-      // Arrange
-      final task = await repository.createTask(_options);
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.downloadFromTaskId(
-        task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
-      );
-
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      db.dispose(); // Force database error
-
-      // Act
-      await notifier.updateRecordFromTaskStream(
-        sessions.first.id,
-        'any-download-id',
-        DownloadRecordStatus.completed,
-      );
-
-      // Assert
-      expect(
-        container.read(bulkDownloadProvider).error,
-        isA<DatabaseOperationError>(),
-      );
-    });
-
     test('should skip update for already completed records', () async {
       // Arrange
       final task = await repository.createTask(_options);

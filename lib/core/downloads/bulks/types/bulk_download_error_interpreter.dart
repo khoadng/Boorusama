@@ -19,7 +19,7 @@ class BulkDownloadErrorInterpreter {
     final message = error.substring(8);
     final errorCode = BulkDownloadErrorCode.values.firstWhere(
       (e) => e.code == code,
-      orElse: () => BulkDownloadErrorCode.databaseOperation,
+      orElse: () => BulkDownloadErrorCode.unknown,
     );
 
     return (errorCode, message);
@@ -50,14 +50,14 @@ class BulkDownloadErrorInterpreter {
         const TaskHasActiveSessionsError(),
       BulkDownloadErrorCode.downloadRecordNotFound =>
         const DownloadRecordNotFoundError(),
-      BulkDownloadErrorCode.incompleteDownloads =>
-        const IncompleteDownloadsError(),
       BulkDownloadErrorCode.sessionNotRunning => const SessionNotRunningError(),
-      BulkDownloadErrorCode.databaseOperation => const DatabaseOperationError(),
-      BulkDownloadErrorCode.nonPremiumResume => const NonPremiumResumeError(),
-      BulkDownloadErrorCode.invalidSessionStatusForResume =>
-        const InvalidSessionStatusForResumeError(),
       BulkDownloadErrorCode.unknown => UnknownBulkDownloadError(message),
+      BulkDownloadErrorCode.nonPremiumSessionLimit =>
+        const FreeUserMultipleDownloadSessionsError(),
+      BulkDownloadErrorCode.nonPremiumSuspendResume =>
+        const NonPremiumSuspendResumeError(),
+      BulkDownloadErrorCode.nonPremiumSavedTaskLimit =>
+        const NonPremiumSavedTaskLimitError(),
     };
   }
 }

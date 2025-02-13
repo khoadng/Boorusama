@@ -60,7 +60,7 @@ class DownloadTestConstants {
   static final lastPage = (posts.length / perPage).ceil();
 
   static const defaultOptions = DownloadOptions(
-    path: '/test/path',
+    path: '/storage/emulated/0/Download',
     notifications: true,
     skipIfExists: true,
     perPage: 2,

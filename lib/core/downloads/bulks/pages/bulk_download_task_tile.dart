@@ -78,7 +78,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                 if (session.session.status ==
                                     DownloadSessionStatus.suspended)
                                   CompactChip(
-                                    label: session.session.status.name,
+                                    label: 'Sleep',
                                     textStyle: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: colorScheme.onSecondaryContainer,
@@ -606,7 +606,7 @@ class _SuspendButton extends ConsumerWidget {
       padding: const EdgeInsets.all(8),
       backgroundColor: colorScheme.surfaceContainer,
       icon: Icon(
-        FontAwesomeIcons.clock,
+        FontAwesomeIcons.solidMoon,
         fill: 1,
         size: 18,
         color: colorScheme.onSurfaceVariant,

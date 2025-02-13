@@ -56,6 +56,8 @@ void goToNewBulkDownloadTaskPage(
     return;
   }
 
+  final prevRouteName = ModalRoute.of(context)?.settings.name;
+
   showMaterialModalBottomSheet(
     context: context,
     settings: const RouteSettings(name: 'bulk_download_create'),
@@ -68,18 +70,20 @@ void goToNewBulkDownloadTaskPage(
       initialValue: initialValue,
       title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),
       onSubmitted: (_, isQueue) {
-        showSimpleSnackBar(
-          context: context,
-          content: Text(
-            isQueue ? 'Added' : 'Download started',
-          ),
-          action: SnackBarAction(
-            label: 'View',
-            onPressed: () {
-              context.pushNamed(kBulkdownload);
-            },
-          ),
-        );
+        if (prevRouteName != kBulkdownload) {
+          showSimpleSnackBar(
+            context: context,
+            content: Text(
+              isQueue ? 'Added' : 'Download started',
+            ),
+            action: SnackBarAction(
+              label: 'View',
+              onPressed: () {
+                context.pushNamed(kBulkdownload);
+              },
+            ),
+          );
+        }
       },
     ),
   );

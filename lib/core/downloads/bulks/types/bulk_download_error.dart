@@ -27,7 +27,7 @@ class StoragePermissionDeniedError extends BulkDownloadError {
   const StoragePermissionDeniedError()
       : super(
           BulkDownloadErrorCode.storagePermissionDenied,
-          'Storage permission not granted',
+          'Storage permission is not granted',
         );
 }
 
@@ -35,7 +35,7 @@ class StoragePermanentlyDeniedError extends BulkDownloadError {
   const StoragePermanentlyDeniedError()
       : super(
           BulkDownloadErrorCode.storagePermanentlyDenied,
-          'Storage permission permanently denied, please enable it in settings',
+          'Storage permission permanently denied, please enable it in Settings',
         );
 }
 
@@ -49,7 +49,10 @@ class NoRunningSessionError extends BulkDownloadError {
 
 class NoPostsFoundError extends BulkDownloadError {
   const NoPostsFoundError()
-      : super(BulkDownloadErrorCode.noPostsFound, 'No posts found for tags');
+      : super(
+          BulkDownloadErrorCode.noPostsFound,
+          'No posts found for the specified tags',
+        );
 }
 
 class SessionNotFoundError extends BulkDownloadError {
@@ -70,11 +73,12 @@ class TaskHasActiveSessionsError extends BulkDownloadError {
         );
 }
 
-class FreeUserMultipleDownloadSessionsError extends BulkDownloadOptionsError {
+class FreeUserMultipleDownloadSessionsError extends BulkDownloadError {
   const FreeUserMultipleDownloadSessionsError()
       : super(
+          BulkDownloadErrorCode.nonPremiumSessionLimit,
           'Free users can only have one active download session, '
-          'please wait until all download sessions are completed.',
+          'please wait until all download sessions are complete.',
         );
 }
 
@@ -93,14 +97,6 @@ class DownloadRecordNotFoundError extends BulkDownloadError {
         );
 }
 
-class IncompleteDownloadsError extends BulkDownloadError {
-  const IncompleteDownloadsError()
-      : super(
-          BulkDownloadErrorCode.incompleteDownloads,
-          'Session has incomplete downloads',
-        );
-}
-
 class SessionNotRunningError extends BulkDownloadError {
   const SessionNotRunningError()
       : super(
@@ -109,31 +105,23 @@ class SessionNotRunningError extends BulkDownloadError {
         );
 }
 
-class DatabaseOperationError extends BulkDownloadError {
-  const DatabaseOperationError()
-      : super(
-          BulkDownloadErrorCode.databaseOperation,
-          'Database operation failed',
-        );
-}
-
 class UnknownBulkDownloadError extends BulkDownloadError {
   const UnknownBulkDownloadError(String message)
       : super(BulkDownloadErrorCode.unknown, message);
 }
 
-class NonPremiumResumeError extends BulkDownloadError {
-  const NonPremiumResumeError()
+class NonPremiumSuspendResumeError extends BulkDownloadError {
+  const NonPremiumSuspendResumeError()
       : super(
-          BulkDownloadErrorCode.nonPremiumResume,
-          'Premium subscription required to resume downloads',
+          BulkDownloadErrorCode.nonPremiumSuspendResume,
+          'A premium subscription is required to sleep or wake up downloads',
         );
 }
 
-class InvalidSessionStatusForResumeError extends BulkDownloadError {
-  const InvalidSessionStatusForResumeError()
+class NonPremiumSavedTaskLimitError extends BulkDownloadError {
+  const NonPremiumSavedTaskLimitError()
       : super(
-          BulkDownloadErrorCode.invalidSessionStatusForResume,
-          'Only failed or cancelled sessions can be resumed',
+          BulkDownloadErrorCode.nonPremiumSavedTaskLimit,
+          'Free users can only have one saved task',
         );
 }

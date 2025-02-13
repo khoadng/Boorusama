@@ -5,8 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../foundation/toast.dart';
 import '../../router.dart';
 import '../bulks/notifications/providers.dart';
+import '../bulks/providers/bulk_download_notifier.dart';
+import '../bulks/types/bulk_download_error.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({
@@ -18,14 +21,31 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(
-      bulkDownloadOnTapStreamProvider,
-      (prev, cur) {
-        if (prev == null) return;
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
 
-        context.pushNamed(kBulkdownload);
-      },
-    );
+    ref
+      ..listen(
+        bulkDownloadProvider.select((state) => state.error),
+        (prev, cur) {
+          if (prev == cur) return;
+
+          if (cur != null && cur is BulkDownloadError) {
+            showSimpleSnackBar(
+              context: context,
+              content: Text(cur.message),
+            );
+            notifier.clearError();
+          }
+        },
+      )
+      ..listen(
+        bulkDownloadOnTapStreamProvider,
+        (prev, cur) {
+          if (prev == null) return;
+
+          context.pushNamed(kBulkdownload);
+        },
+      );
 
     return child;
   }
