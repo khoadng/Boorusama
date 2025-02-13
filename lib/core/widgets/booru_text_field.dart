@@ -62,7 +62,7 @@ class BooruTextField extends ConsumerWidget {
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = true,
     this.enableIMEPersonalizedLearning,
     this.canRequestFocus = true,
     this.spellCheckConfiguration,
@@ -120,7 +120,7 @@ class BooruTextField extends ConsumerWidget {
   final ContentInsertionConfiguration? contentInsertionConfiguration;
   final Clip clipBehavior;
   final String? restorationId;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
   final bool? enableIMEPersonalizedLearning;
   final bool canRequestFocus;
   final SpellCheckConfiguration? spellCheckConfiguration;
@@ -187,7 +187,7 @@ class BooruTextField extends ConsumerWidget {
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
       restorationId: restorationId,
-      scribbleEnabled: scribbleEnabled,
+      stylusHandwritingEnabled: stylusHandwritingEnabled,
       enableIMEPersonalizedLearning:
           enableIMEPersonalizedLearning ?? !enableIncognitoModeForKeyboard,
       canRequestFocus: canRequestFocus,

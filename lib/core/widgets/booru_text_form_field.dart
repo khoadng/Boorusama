@@ -69,7 +69,7 @@ class BooruTextFormField extends ConsumerWidget {
     this.cursorOpacityAnimates,
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = true,
     this.canRequestFocus = true,
   });
 
@@ -131,7 +131,7 @@ class BooruTextFormField extends ConsumerWidget {
   final bool? cursorOpacityAnimates;
   final ContentInsertionConfiguration? contentInsertionConfiguration;
   final Clip clipBehavior;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
   final bool canRequestFocus;
 
   @override
@@ -201,7 +201,7 @@ class BooruTextFormField extends ConsumerWidget {
       cursorOpacityAnimates: cursorOpacityAnimates,
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
-      scribbleEnabled: scribbleEnabled,
+      stylusHandwritingEnabled: stylusHandwritingEnabled,
       canRequestFocus: canRequestFocus,
     );
   }

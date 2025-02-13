@@ -33,7 +33,11 @@ dependencies:
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2
   background_downloader: ^8.8.0
-  bonsoir: ^5.1.10
+  bonsoir:
+    git:
+      url: https://github.com/khoadng/Bonsoir.git
+      path: packages/bonsoir
+      ref: remove-android-v1-embedding
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
   context_menus:
