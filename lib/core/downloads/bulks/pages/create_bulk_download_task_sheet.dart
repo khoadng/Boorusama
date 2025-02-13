@@ -91,7 +91,7 @@ class _CreateBulkDownloadTaskSheetState
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -101,7 +101,6 @@ class _CreateBulkDownloadTaskSheetState
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
               const CreateBulkDownloadTagList(),
               const Divider(
                 thickness: 1,

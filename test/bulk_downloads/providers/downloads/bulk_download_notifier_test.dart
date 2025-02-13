@@ -376,7 +376,7 @@ void main() {
     test('should handle non-existent records gracefully', () async {
       // Act
       final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.updateRecord(
+      await notifier.updateRecordFromTaskStream(
         'non-existent-session',
         'non-existent-download',
         DownloadRecordStatus.completed,
@@ -402,7 +402,7 @@ void main() {
       db.dispose(); // Force database error
 
       // Act
-      await notifier.updateRecord(
+      await notifier.updateRecordFromTaskStream(
         sessions.first.id,
         'any-download-id',
         DownloadRecordStatus.completed,
@@ -480,7 +480,7 @@ void main() {
       db.dispose(); // Force database error
 
       // Act
-      await notifier.updateRecord(
+      await notifier.updateRecordFromTaskStream(
         sessions.first.id,
         'any-download-id',
         DownloadRecordStatus.completed,
@@ -507,14 +507,14 @@ void main() {
       final record = records.first;
 
       // First update
-      await notifier.updateRecord(
+      await notifier.updateRecordFromTaskStream(
         sessions.first.id,
         record.downloadId!,
         DownloadRecordStatus.completed,
       );
 
       // Second update
-      await notifier.updateRecord(
+      await notifier.updateRecordFromTaskStream(
         sessions.first.id,
         record.downloadId!,
         DownloadRecordStatus.completed,

@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:background_downloader/background_downloader.dart' hide Database;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -134,7 +135,7 @@ void main() {
       // Simulate concurrent updates
       await Future.wait([
         for (final record in records)
-          notifier.updateRecord(
+          notifier.updateRecordFromTaskStream(
             sessionId,
             record.downloadId!,
             DownloadRecordStatus.completed,
@@ -165,7 +166,7 @@ void main() {
 
       // Mark all records as completed
       for (final record in records) {
-        await notifier.updateRecord(
+        await notifier.updateRecordFromTaskStream(
           sessionId,
           record.downloadId!,
           DownloadRecordStatus.completed,
@@ -204,7 +205,7 @@ void main() {
       // Complete all records
       final records = await repository.getRecordsBySessionId(sessionId);
       for (final record in records) {
-        await notifier.updateRecord(
+        await notifier.updateRecordFromTaskStream(
           sessionId,
           record.downloadId!,
           DownloadRecordStatus.completed,
@@ -670,6 +671,469 @@ void main() {
 
       final updatedSession = await repository.getSession(session.id);
       expect(updatedSession?.status, equals(DownloadSessionStatus.pending));
+    });
+  });
+
+  group('Session Suspension', () {
+    test('should suspend running session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      final sessionId = sessions.first.id;
+
+      // Act
+      await notifier.suspendSession(sessionId);
+
+      // Assert
+      final updatedSession = await repository.getSession(sessionId);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.suspended));
+
+      // Verify state update
+      final state = container.read(bulkDownloadProvider);
+      final sessionState =
+          state.sessions.firstWhere((e) => e.session.id == sessionId);
+      expect(
+        sessionState.session.status,
+        equals(DownloadSessionStatus.suspended),
+      );
+    });
+
+    test('should not suspend non-running session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final session = await repository.createSession(task);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      await notifier.suspendSession(session.id);
+
+      // Assert
+      expect(
+        container.read(bulkDownloadProvider).error,
+        isNotNull,
+      );
+
+      final updatedSession = await repository.getSession(session.id);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.pending));
+    });
+
+    test('should resume suspended session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Start download
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Suspend session
+      await notifier.suspendSession(sessionId);
+
+      // Act
+      await notifier.resumeSuspendedSession(
+        sessionId,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      // Assert
+      final updatedSession = await repository.getSession(sessionId);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.running));
+
+      // Verify state update
+      final state = container.read(bulkDownloadProvider);
+      final sessionState =
+          state.sessions.firstWhere((e) => e.session.id == sessionId);
+      expect(
+        sessionState.session.status,
+        equals(DownloadSessionStatus.running),
+      );
+    });
+
+    test('should not resume non-suspended session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final session = await repository.createSession(task);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      await notifier.resumeSuspendedSession(session.id);
+
+      // Assert
+      expect(
+        container.read(bulkDownloadProvider).error,
+        isNotNull,
+      );
+
+      final updatedSession = await repository.getSession(session.id);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.pending));
+    });
+
+    test('should reset download records when suspending', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Act
+      await notifier.suspendSession(sessionId);
+
+      // Assert
+      final updatedRecords = await repository.getRecordsBySessionId(sessionId);
+      for (final record in updatedRecords) {
+        expect(record.status, equals(DownloadRecordStatus.pending));
+      }
+    });
+
+    test('should not suspend already suspended session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Suspend first time
+      await notifier.suspendSession(sessionId);
+
+      // Act - try to suspend again
+      await notifier.suspendSession(sessionId);
+
+      // Verify session is still suspended
+      final updatedSession = await repository.getSession(sessionId);
+      expect(
+        updatedSession?.status,
+        equals(DownloadSessionStatus.suspended),
+      );
+
+      // Verify state reflects changes
+      final state = container.read(bulkDownloadProvider);
+      expect(state.error, isNotNull);
+    });
+  });
+
+  group('Session Resume after App Restart', () {
+    test('should resume suspended session after app restart', () async {
+      // Arrange
+      var myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      final task = await repository.createTask(_options);
+      var notifier = myContainer.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      // Get session ID
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      final sessionId = sessions.first.id;
+
+      // Suspend session
+      await notifier.suspendSession(sessionId);
+
+      // Verify session is suspended
+      final suspendedSession = await repository.getSession(sessionId);
+      expect(
+        suspendedSession?.status,
+        equals(DownloadSessionStatus.suspended),
+      );
+
+      // Simulate app restart
+      myContainer.dispose();
+      myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      notifier = myContainer.read(bulkDownloadProvider.notifier);
+
+      // Wait for notifier to load
+      await Future.delayed(const Duration(milliseconds: 10));
+
+      // Resume suspended session
+      await notifier.resumeSuspendedSession(
+        sessionId,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      // Verify session is running
+      final resumedSession = await repository.getSession(sessionId);
+      expect(
+        resumedSession?.status,
+        equals(DownloadSessionStatus.running),
+      );
+
+      // Verify state reflects changes
+      final state = myContainer.read(bulkDownloadProvider);
+      final stateSession = state.sessions.firstWhere(
+        (s) => s.session.id == sessionId,
+      );
+
+      expect(
+        stateSession.session.status,
+        equals(DownloadSessionStatus.running),
+      );
+    });
+
+    test('should maintain download progress after resuming suspended session',
+        () async {
+      // Arrange
+      var myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      final task = await repository.createTask(_options);
+      var notifier = myContainer.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Mark some records as completed before suspension
+      final records = await repository.getRecordsBySessionId(sessionId);
+      for (final record in records.take(2)) {
+        await notifier.updateRecordFromTaskStream(
+          sessionId,
+          record.downloadId ?? 'test-${record.downloadId}',
+          DownloadRecordStatus.completed,
+          fileSize: 1000,
+        );
+      }
+
+      // Get completed count before suspension
+      final beforeCompletedCount = await repository.getRecordsCountBySessionId(
+        sessionId,
+        status: DownloadRecordStatus.completed,
+      );
+
+      // Suspend session
+      await notifier.suspendSession(sessionId);
+
+      // Simulate app restart
+      myContainer.dispose();
+      myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      notifier = myContainer.read(bulkDownloadProvider.notifier);
+
+      // Wait for notifier to load
+      await Future.delayed(const Duration(milliseconds: 10));
+
+      // Resume suspended session
+      await notifier.resumeSuspendedSession(
+        sessionId,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      // Verify completed records count is maintained
+      final afterCompletedCount = await repository.getRecordsCountBySessionId(
+        sessionId,
+        status: DownloadRecordStatus.completed,
+      );
+      expect(afterCompletedCount, equals(beforeCompletedCount));
+    });
+
+    test('should only download pending records when resuming suspended session',
+        () async {
+      // Arrange
+      var myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      final task = await repository.createTask(_options);
+      var notifier = myContainer.read(bulkDownloadProvider.notifier);
+
+      // Start initial download
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+      final records = await repository.getRecordsBySessionId(sessionId);
+
+      // Mark some records as completed before suspension
+      for (final record in records.take(2)) {
+        await notifier.updateRecordFromTaskStream(
+          sessionId,
+          record.downloadId!,
+          DownloadRecordStatus.completed,
+          fileSize: 1000,
+        );
+      }
+
+      // Suspend session
+      await notifier.suspendSession(sessionId);
+
+      // Verify records are reset to pending except completed ones
+      final beforeRestartRecords =
+          await repository.getRecordsBySessionId(sessionId);
+      expect(
+        beforeRestartRecords
+            .where((r) => r.status == DownloadRecordStatus.completed)
+            .length,
+        equals(2),
+      );
+      expect(
+        beforeRestartRecords
+            .where((r) => r.status == DownloadRecordStatus.pending)
+            .length,
+        equals(records.length - 2),
+      );
+
+      // Simulate app restart
+      myContainer.dispose();
+      myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+      );
+      notifier = myContainer.read(bulkDownloadProvider.notifier);
+
+      // Resume suspended session
+      await notifier.resumeSuspendedSession(
+        sessionId,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      // Verify that completed records weren't redownloaded
+      final afterRestartRecords =
+          await repository.getRecordsBySessionId(sessionId);
+      expect(
+        afterRestartRecords
+            .where((r) => r.status == DownloadRecordStatus.completed)
+            .length,
+        equals(2),
+      );
+
+      // Verify that pending records are downloading
+      expect(
+        afterRestartRecords
+            .where((r) => r.status == DownloadRecordStatus.downloading)
+            .length,
+        equals(records.length - 2),
+      );
+
+      // Verify session is now running
+      final session = await repository.getSession(sessionId);
+      expect(session?.status, equals(DownloadSessionStatus.running));
+
+      // Verify state reflects changes
+      final state = myContainer.read(bulkDownloadProvider);
+      final stateSession = state.sessions.firstWhere(
+        (s) => s.session.id == sessionId,
+      );
+      expect(
+        stateSession.session.status,
+        equals(DownloadSessionStatus.running),
+      );
+    });
+  });
+
+  group('Session Completion Scheduling', () {
+    test('should trigger completion check when all records complete', () async {
+      // Arrange
+      final taskUpdateStreamController = StreamController<TaskUpdate>();
+      final myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        taskUpdateStream: taskUpdateStreamController.stream,
+      );
+
+      addTearDown(() {
+        taskUpdateStreamController.close();
+        myContainer.dispose();
+      });
+
+      // Act
+      final task = await repository.createTask(_options);
+      final notifier = myContainer.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+      final records = await repository.getRecordsBySessionId(sessionId);
+
+      for (final record in records) {
+        taskUpdateStreamController.add(
+          TaskStatusUpdate(
+            DownloadTask(
+              taskId: record.downloadId,
+              url: record.url,
+              group: sessionId,
+            ),
+            TaskStatus.complete,
+          ),
+        );
+      }
+
+      // Allow completion check to process
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // Assert
+      final session = await repository.getSession(sessionId);
+      expect(session?.status, equals(DownloadSessionStatus.completed));
+    });
+
+    test('should not complete session when some records are still pending',
+        () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+      final records = await repository.getRecordsBySessionId(sessionId);
+
+      // Complete all but one record
+      for (final record in records.take(records.length - 1)) {
+        await notifier.updateRecordFromTaskStream(
+          sessionId,
+          record.downloadId!,
+          DownloadRecordStatus.completed,
+        );
+      }
+
+      // Allow completion check to process
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // Assert
+      final session = await repository.getSession(sessionId);
+      expect(session?.status, equals(DownloadSessionStatus.running));
     });
   });
 }

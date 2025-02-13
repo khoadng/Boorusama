@@ -1078,25 +1078,29 @@ class DownloadRepositorySqlite implements DownloadRepository {
   Future<void> updateRecordsByStatus(
     String sessionId, {
     required DownloadRecordStatus to,
-    DownloadRecordStatus? from,
+    List<DownloadRecordStatus>? from,
   }) async {
     _transaction(() {
-      final query = from != null
-          ? '''
-          UPDATE download_records 
-          SET status = ? 
-          WHERE session_id = ? AND status = ?
+      if (from == null || from.isEmpty) {
+        db.execute(
           '''
-          : '''
           UPDATE download_records 
           SET status = ? 
           WHERE session_id = ?
-          ''';
-
-      final params =
-          from != null ? [to.name, sessionId, from.name] : [to.name, sessionId];
-
-      db.execute(query, params);
+          ''',
+          [to.name, sessionId],
+        );
+      } else {
+        final placeholders = from.map((_) => '?').join(',');
+        db.execute(
+          '''
+          UPDATE download_records 
+          SET status = ? 
+          WHERE session_id = ? AND status IN ($placeholders)
+          ''',
+          [to.name, sessionId, ...from.map((s) => s.name)],
+        );
+      }
     });
   }
 }

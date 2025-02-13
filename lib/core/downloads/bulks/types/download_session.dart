@@ -13,6 +13,7 @@ enum DownloadSessionStatus {
   failed,
   interrupted,
   paused,
+  suspended,
   cancelled;
 
   static DownloadSessionStatus fromString(String value) {

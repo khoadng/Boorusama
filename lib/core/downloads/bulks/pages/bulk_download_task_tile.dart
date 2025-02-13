@@ -37,6 +37,8 @@ class BulkDownloadTaskTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ConstrainedBox(
       constraints: const BoxConstraints(
         minHeight: 60,
@@ -65,7 +67,28 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                         children: [
                           _Logo(session),
                           Expanded(
-                            child: _InfoText(session),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4),
+                                  child: _InfoText(session),
+                                ),
+                                if (session.session.status ==
+                                    DownloadSessionStatus.suspended)
+                                  CompactChip(
+                                    label: session.session.status.name,
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: colorScheme.onSecondaryContainer,
+                                      fontSize: 13,
+                                    ),
+                                    backgroundColor:
+                                        colorScheme.secondaryContainer,
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -118,7 +141,7 @@ class _ActionButtonBar extends StatelessWidget {
         top: 4,
       ),
       child: Wrap(
-        spacing: 8,
+        spacing: 12,
         children: [
           if (status == DownloadSessionStatus.pending)
             _StartPendingButton(session)
@@ -131,6 +154,10 @@ class _ActionButtonBar extends StatelessWidget {
             _PauseAllButton(session)
           else if (status == DownloadSessionStatus.paused)
             _ResumeAllButton(session),
+          if (status == DownloadSessionStatus.running)
+            _SuspendButton(session)
+          else if (status == DownloadSessionStatus.suspended)
+            _ResumeSuspensionButton(session),
         ],
       ),
     );
@@ -457,11 +484,17 @@ class _ProgressBar extends ConsumerWidget {
             ),
       _ => Builder(
           builder: (context) {
-            final progress = ref.watch(
-              percentCompletedProvider(sessionId),
+            final progressMap = ref.watch(
+              bulkDownloadProgressProvider,
             );
 
-            return _buildPercent(progress);
+            final progress = progressMap[sessionId];
+
+            return progress != null
+                ? _buildPercent(
+                    progress,
+                  )
+                : _buildLinear();
           },
         ),
     };
@@ -552,6 +585,64 @@ class _PauseAllButton extends ConsumerWidget {
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).pauseSession(sessionId);
+      },
+    );
+  }
+}
+
+class _SuspendButton extends ConsumerWidget {
+  const _SuspendButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = session.id;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.clock,
+        fill: 1,
+        size: 18,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () {
+        ref.read(bulkDownloadProvider.notifier).suspendSession(sessionId);
+      },
+    );
+  }
+}
+
+class _ResumeSuspensionButton extends ConsumerWidget {
+  const _ResumeSuspensionButton(
+    this.session,
+  );
+
+  final BulkDownloadSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionId = session.id;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.play,
+        fill: 1,
+        size: 18,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () {
+        ref
+            .read(bulkDownloadProvider.notifier)
+            .resumeSuspendedSession(sessionId);
       },
     );
   }

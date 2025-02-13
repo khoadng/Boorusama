@@ -10,6 +10,7 @@ class CompactChip extends StatelessWidget {
     this.textColor,
     this.borderRadius,
     this.padding,
+    this.textStyle,
   });
 
   final void Function()? onTap;
@@ -18,6 +19,7 @@ class CompactChip extends StatelessWidget {
   final Color? textColor;
   final BorderRadius? borderRadius;
   final EdgeInsetsGeometry? padding;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +30,11 @@ class CompactChip extends StatelessWidget {
         label,
         softWrap: false,
         maxLines: 1,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          color: textColor,
-        ),
+        style: textStyle ??
+            TextStyle(
+              fontWeight: FontWeight.w600,
+              color: textColor,
+            ),
       ),
       backgroundColor: backgroundColor,
       foregroundColor: textColor,

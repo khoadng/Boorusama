@@ -101,4 +101,7 @@ class DownloadRecord extends Equatable {
         thumbnailImageUrl,
         sourceUrl,
       ];
+
+  @override
+  String toString() => 'url: $url, status: $status';
 }

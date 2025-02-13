@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 
 // Package imports:
@@ -57,6 +56,60 @@ final bulkDownloadSessionsProvider = Provider<List<BulkDownloadSession>>((ref) {
   return ref.watch(bulkDownloadProvider.select((e) => e.sessions));
 });
 
+final bulkDownloadProgressProvider =
+    NotifierProvider<BulkDownloadProgressNotifier, Map<String, double>>(
+  BulkDownloadProgressNotifier.new,
+);
+
+class BulkDownloadProgressNotifier extends Notifier<Map<String, double>> {
+  @override
+  Map<String, double> build() {
+    // Initialize progress mapping from persistent storage.
+    _initProgress();
+    return {};
+  }
+
+  Future<void> _initProgress() async {
+    final repo = await ref.watch(downloadRepositoryProvider.future);
+    final sessions = await repo.getActiveSessions();
+
+    final map = <String, double>{};
+
+    for (final session in sessions) {
+      final completedCount = await repo.getRecordsCountBySessionId(
+        session.id,
+        status: DownloadRecordStatus.completed,
+      );
+      final totalCount = await repo.getRecordsCountBySessionId(session.id);
+
+      final progress = _calculateProgress(completedCount, totalCount);
+
+      map[session.id] = progress;
+    }
+
+    state = map;
+  }
+
+  void updateProgress(String sessionId, double progress) {
+    state = {...state, sessionId: progress};
+  }
+
+  void updateProgressFromCounts(String sessionId, int completed, int total) {
+    final progress = _calculateProgress(completed, total);
+
+    updateProgress(sessionId, progress);
+  }
+
+  void removeSession(String sessionId) {
+    final newState = Map<String, double>.from(state)..remove(sessionId);
+    state = newState;
+  }
+
+  double _calculateProgress(int completed, int total) {
+    return total <= 0 ? 0.0 : completed / total;
+  }
+}
+
 class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   Future<T> _withRepo<T>(Future<T> Function(DownloadRepository repo) fn) async {
     final repo = await ref.read(downloadRepositoryProvider.future);
@@ -72,6 +125,50 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
   @override
   BulkDownloadState build() {
+    final completionTimers = <String, Timer>{};
+    final progressUpdateTimers = <String, Timer>{};
+
+    final progressNotifier = ref.watch(bulkDownloadProgressProvider.notifier);
+
+    void scheduleProgressUpdate(String sessionId) {
+      if (progressUpdateTimers.containsKey(sessionId)) {
+        // A timer is already scheduled; skip this event.
+        return;
+      }
+      progressUpdateTimers[sessionId] = Timer(
+        const Duration(milliseconds: 500),
+        () async {
+          final repo = await ref.read(downloadRepositoryProvider.future);
+          final completedCount = await repo.getRecordsCountBySessionId(
+            sessionId,
+            status: DownloadRecordStatus.completed,
+          );
+          final totalCount = await repo.getRecordsCountBySessionId(sessionId);
+
+          // Recalculate the overall session progress.
+          progressNotifier.updateProgressFromCounts(
+            sessionId,
+            completedCount,
+            totalCount,
+          );
+
+          progressUpdateTimers.remove(sessionId);
+        },
+      );
+    }
+
+    void scheduleCompletionCheck(String sessionId) {
+      completionTimers[sessionId]?.cancel();
+
+      completionTimers[sessionId] = Timer(
+        const Duration(milliseconds: 100),
+        () {
+          tryCompleteSession(sessionId);
+          completionTimers.remove(sessionId);
+        },
+      );
+    }
+
     ref.listen(
       downloadTaskStreamProvider,
       (prev, next) {
@@ -79,19 +176,21 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           next.whenData((event) {
             if (event is TaskStatusUpdate) {
               if (event.status == TaskStatus.complete) {
-                event.task.filePath().then((value) {
-                  final fileSize = File(value).lengthSync();
+                ref.read(taskFileSizeResolverProvider(event.task).future).then(
+                  (fileSize) {
+                    updateRecordFromTaskStream(
+                      event.task.group,
+                      event.task.taskId,
+                      DownloadRecordStatus.completed,
+                      fileSize: fileSize,
+                    );
+                  },
+                );
 
-                  updateRecord(
-                    event.task.group,
-                    event.task.taskId,
-                    DownloadRecordStatus.completed,
-                    fileSize: fileSize,
-                  );
-                });
+                scheduleCompletionCheck(event.task.group);
               }
 
-              updateRecord(
+              updateRecordFromTaskStream(
                 event.task.group,
                 event.task.taskId,
                 switch (event.status) {
@@ -105,11 +204,23 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
                   TaskStatus.paused => DownloadRecordStatus.paused,
                 },
               );
+            } else if (event is TaskProgressUpdate) {
+              scheduleProgressUpdate(event.task.group);
             }
           });
         }
       },
     );
+
+    ref.onDispose(() {
+      for (final timer in completionTimers.values) {
+        timer.cancel();
+      }
+
+      for (final timer in progressUpdateTimers.values) {
+        timer.cancel();
+      }
+    });
 
     _loadTasks(init: true);
     return const BulkDownloadState();
@@ -514,6 +625,122 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 
+  Future<void> suspendSession(String sessionId) async {
+    try {
+      final session = await _withRepo((repo) => repo.getSession(sessionId));
+
+      if (session == null) {
+        state = state.copyWith(
+          error: SessionNotFoundError.new,
+        );
+        return;
+      }
+
+      if (session.status != DownloadSessionStatus.running) {
+        state = state.copyWith(
+          error: () => Exception('Session is not in running state'),
+        );
+        return;
+      }
+
+      final config = ref.readConfigAuth;
+      final downloader = ref.read(downloadServiceProvider(config));
+
+      await _updateSession(
+        sessionId,
+        status: DownloadSessionStatus.suspended,
+        // Set to initial page so we can start from the beginning
+        currentPage: 1,
+      );
+
+      final nonCompletedStatuses = DownloadRecordStatus.values
+          .where((e) => e != DownloadRecordStatus.completed)
+          .toList();
+
+      final records = await _withRepo(
+        (repo) => repo.getRecordsBySessionIdAndStatuses(
+          sessionId,
+          nonCompletedStatuses,
+        ),
+      );
+
+      await _withRepo(
+        (repo) => repo.updateRecordsByStatus(
+          sessionId,
+          from: nonCompletedStatuses,
+          to: DownloadRecordStatus.pending,
+        ),
+      );
+
+      await downloader.cancelTasksWithIds(
+        records.map((e) => e.downloadId).nonNulls.toList(),
+      );
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
+  }
+
+  Future<void> resumeSuspendedSession(
+    String sessionId, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    try {
+      final session = await _withRepo((repo) => repo.getSession(sessionId));
+
+      if (session == null) {
+        state = state.copyWith(
+          error: SessionNotFoundError.new,
+        );
+        return;
+      }
+
+      if (session.status != DownloadSessionStatus.suspended) {
+        state = state.copyWith(
+          error: () => Exception('Session is not in suspended state'),
+        );
+        return;
+      }
+
+      final taskId = session.taskId;
+      if (taskId == null) {
+        state = state.copyWith(
+          error: TaskNotFoundError.new,
+        );
+        return;
+      }
+
+      final task = await _withRepo((repo) => repo.getTask(taskId));
+      if (task == null) {
+        state = state.copyWith(
+          error: TaskNotFoundError.new,
+        );
+        return;
+      }
+
+      final page = session.currentPage;
+      final totalPages = session.totalPages;
+
+      if (totalPages == null) {
+        state = state.copyWith(
+          error: () =>
+              Exception('Session is missing page information, cannot resume'),
+        );
+        return;
+      }
+
+      await _updateSession(sessionId, status: DownloadSessionStatus.running);
+      await _downloadSessionPages(
+        sessionId: sessionId,
+        task: task,
+        startPage: page,
+        endPage: totalPages,
+        downloadConfigs: downloadConfigs,
+      );
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+    }
+  }
+
   Future<void> resumeSession(
     String sessionId, {
     DownloadConfigs? downloadConfigs,
@@ -640,6 +867,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final config = ref.readConfigAuth;
       final downloader = ref.read(downloadServiceProvider(config));
       final session = await _withRepo((repo) => repo.getSession(sessionId));
+      final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
 
       if (session == null ||
           (session.status != DownloadSessionStatus.running &&
@@ -660,7 +888,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await _withRepo(
         (repo) => repo.updateRecordsByStatus(
           sessionId,
-          from: DownloadRecordStatus.downloading,
+          from: [DownloadRecordStatus.downloading],
           to: DownloadRecordStatus.cancelled,
         ),
       );
@@ -670,6 +898,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           records.map((e) => e.downloadId).nonNulls.toList(),
         ),
       );
+
+      progressNotifier.removeSession(sessionId);
     } catch (e) {
       state = state.copyWith(
         error: () => e is BulkDownloadError ? e : Exception(e.toString()),
@@ -714,6 +944,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }
 
   Future<void> deleteSession(String sessionId) async {
+    final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
+
     try {
       final session = await _withRepo((repo) => repo.getSession(sessionId));
 
@@ -724,6 +956,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       }
 
       await _withRepo((repo) => repo.deleteSession(sessionId));
+
+      progressNotifier.removeSession(sessionId);
+
       await _loadTasks();
     } catch (e) {
       state = state.copyWith(error: () => e);
@@ -747,6 +982,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }
 
   Future<void> tryCompleteSession(String sessionId) async {
+    final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
+
     try {
       var session = await _withRepo((repo) => repo.getSession(sessionId));
       if (session == null) {
@@ -764,7 +1001,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       }
 
       final records = await _withRepo(
-        (repo) => repo.getRecordsBySessionId(
+        (repo) => repo.getRecordsCountBySessionId(
           sessionId,
           status: DownloadRecordStatus.completed,
         ),
@@ -772,8 +1009,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
       // Get total records to compare
       final totalRecords =
-          await _withRepo((repo) => repo.getRecordsBySessionId(sessionId));
-      final allCompleted = records.length == totalRecords.length;
+          await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
+      final allCompleted = records == totalRecords;
 
       if (!allCompleted) {
         state = state.copyWith(
@@ -805,6 +1042,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         );
       }
 
+      progressNotifier.removeSession(sessionId);
+
       await _loadTasks();
     } catch (e) {
       state = state.copyWith(
@@ -813,7 +1052,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 
-  Future<void> updateRecord(
+  Future<void> updateRecordFromTaskStream(
     String sessionId,
     String downloadId,
     DownloadRecordStatus status, {
@@ -831,6 +1070,21 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         state = state.copyWith(
           error: DownloadRecordNotFoundError.new,
         );
+        return;
+      }
+
+      final session = await _withRepo((repo) => repo.getSession(sessionId));
+
+      if (session == null) {
+        state = state.copyWith(
+          error: SessionNotFoundError.new,
+        );
+        return;
+      }
+
+      // if suspended, do not update records, we will update all records manually
+      if (session.status == DownloadSessionStatus.suspended &&
+          status == DownloadRecordStatus.cancelled) {
         return;
       }
 

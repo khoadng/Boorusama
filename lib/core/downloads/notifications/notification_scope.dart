@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../router.dart';
 import '../bulks/notifications/providers.dart';
-import '../bulks/providers/complete_check_notifier.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({
@@ -19,21 +18,14 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref
-      ..listen(
-        taskCompleteCheckerProvider,
-        (prev, cur) {
-          // Just here to keep the listener active
-        },
-      )
-      ..listen(
-        bulkDownloadOnTapStreamProvider,
-        (prev, cur) {
-          if (prev == null) return;
+    ref.listen(
+      bulkDownloadOnTapStreamProvider,
+      (prev, cur) {
+        if (prev == null) return;
 
-          context.pushNamed(kBulkdownload);
-        },
-      );
+        context.pushNamed(kBulkdownload);
+      },
+    );
 
     return child;
   }

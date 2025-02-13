@@ -59,21 +59,3 @@ final totalDownloadCountProvider =
 
   return total.length;
 });
-
-final percentCompletedProvider =
-    Provider.autoDispose.family<double, String>((ref, group) {
-  final completed = ref.watch(downloadTaskUpdatesProvider).completed(group);
-
-  if (completed.isEmpty) return 0.0;
-
-  final total = ref.watch(totalDownloadCountProvider(group)).valueOrNull;
-
-  if (total == null) {
-    final totalFallback = ref.watch(downloadTaskUpdatesProvider).all(group);
-    if (totalFallback.isEmpty) return 0.0;
-
-    return completed.length / totalFallback.length;
-  } else {
-    return completed.length / total;
-  }
-});

@@ -1,4 +1,8 @@
 // Package imports:
+import 'package:background_downloader/background_downloader.dart'
+    hide Database, PermissionStatus;
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foundation/foundation.dart';
@@ -19,6 +23,7 @@ import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/downloads/filename.dart';
+import 'package:boorusama/core/downloads/manager.dart';
 import 'package:boorusama/core/downloads/urls.dart';
 import 'package:boorusama/core/foundation/loggers.dart';
 import 'package:boorusama/core/foundation/permissions.dart';
@@ -225,11 +230,14 @@ class AlwaysGrantedPermissionManager implements MediaPermissionManager {
 
 class ExistCheckerMock extends Mock implements DownloadExistChecker {}
 
+const emptyTaskUpdateStream = Stream<TaskUpdate>.empty();
+
 ProviderContainer createBulkDownloadContainer({
   required DownloadRepository downloadRepository,
   required MockBooruBuilder booruBuilder,
   MediaPermissionManager? mediaPermissionManager,
   bool hasPremium = true,
+  Stream<TaskUpdate>? taskUpdateStream,
 }) {
   when(() => booruBuilder.downloadFilenameBuilder).thenReturn(
     dummyDownloadFileNameBuilder,
@@ -256,6 +264,7 @@ ProviderContainer createBulkDownloadContainer({
       booruBuilder: booruBuilder,
       notifications: notifications,
       hasPremium: hasPremium,
+      taskUpdateStream: taskUpdateStream,
     ),
   );
 
@@ -275,6 +284,7 @@ List<Override> getTestOverrides({
   BooruBuilder? booruBuilder,
   BulkDownloadNotifications? notifications,
   bool hasPremium = true,
+  Stream<TaskUpdate>? taskUpdateStream,
 }) {
   return [
     internalDownloadRepositoryProvider.overrideWith((_) => downloadRepository),
@@ -297,6 +307,9 @@ List<Override> getTestOverrides({
         .overrideWith((_) => booruBuilder ?? MockBooruBuilder()),
     blacklistTagsProvider.overrideWith((_, __) => {}),
     hasPremiumProvider.overrideWithValue(hasPremium),
+    downloadTaskStreamProvider
+        .overrideWith((_) => taskUpdateStream ?? emptyTaskUpdateStream),
+    taskFileSizeResolverProvider.overrideWith((_, __) => Future.value(0)),
     if (notifications != null)
       bulkDownloadNotificationProvider.overrideWithValue(notifications),
   ];

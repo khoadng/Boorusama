@@ -172,6 +172,6 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<void> updateRecordsByStatus(
     String sessionId, {
     required DownloadRecordStatus to,
-    DownloadRecordStatus? from,
+    List<DownloadRecordStatus>? from,
   }) async {}
 }

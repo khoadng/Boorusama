@@ -3,6 +3,7 @@ import 'dart:async';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -32,6 +33,14 @@ final downloadTaskStreamProvider = StreamProvider<TaskUpdate>((ref) {
   });
 
   return controller.stream;
+});
+
+final taskFileSizeResolverProvider =
+    FutureProvider.autoDispose.family<int, Task>((ref, task) async {
+  final path = await task.filePath();
+  final file = XFile(path);
+
+  return file.length();
 });
 
 class DownloadTaskUpdatesNotifier extends Notifier<DownloadTaskUpdateState> {
