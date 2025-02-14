@@ -81,21 +81,19 @@ packages:
   bonsoir:
     dependency: "direct main"
     description:
-      path: "packages/bonsoir"
-      ref: remove-android-v1-embedding
-      resolved-ref: "9d92f926f16f82d6d11bfbb9f0aea2be27737223"
-      url: "https://github.com/khoadng/Bonsoir.git"
-    source: git
-    version: "5.1.10"
+      name: bonsoir
+      sha256: "2e2cf3be580deccad9a48dcaddddf90de092e74b7de2015ef58fb24e11d66496"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.11"
   bonsoir_android:
     dependency: transitive
     description:
-      path: "packages/bonsoir_android"
-      ref: remove-android-v1-embedding
-      resolved-ref: "9d92f926f16f82d6d11bfbb9f0aea2be27737223"
-      url: "https://github.com/khoadng/Bonsoir.git"
-    source: git
-    version: "5.1.5"
+      name: bonsoir_android
+      sha256: "9a65b6e50c5718c3f1a7ed6ff57ab9ed8ae990ff9c36d2b1ab3d1b90f28f7d1b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.6"
   bonsoir_darwin:
     dependency: transitive
     description:
