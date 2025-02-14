@@ -10,8 +10,9 @@ enum BulkDownloadErrorCode {
   downloadRecordNotFound('BD0009'),
   sessionNotRunning('BD0011'),
   nonPremiumSessionLimit('BD0015'),
-  nonPremiumSuspendResume('BD0016'),
-  nonPremiumSavedTaskLimit('BD0017'),
+  nonPremiumSuspend('BD0016'),
+  nonPremiumResume('BD0017'),
+  nonPremiumSavedTaskLimit('BD0018'),
   unknown('BD9999');
 
   const BulkDownloadErrorCode(this.code);

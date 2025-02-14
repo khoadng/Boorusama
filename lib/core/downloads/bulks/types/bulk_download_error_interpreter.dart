@@ -54,8 +54,8 @@ class BulkDownloadErrorInterpreter {
       BulkDownloadErrorCode.unknown => UnknownBulkDownloadError(message),
       BulkDownloadErrorCode.nonPremiumSessionLimit =>
         const FreeUserMultipleDownloadSessionsError(),
-      BulkDownloadErrorCode.nonPremiumSuspendResume =>
-        const NonPremiumSuspendResumeError(),
+      BulkDownloadErrorCode.nonPremiumSuspend => const NonPremiumSuspendError(),
+      BulkDownloadErrorCode.nonPremiumResume => const NonPremiumResumeError(),
       BulkDownloadErrorCode.nonPremiumSavedTaskLimit =>
         const NonPremiumSavedTaskLimitError(),
     };

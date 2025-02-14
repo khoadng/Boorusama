@@ -171,7 +171,7 @@ void main() {
       final state = container.read(bulkDownloadProvider);
       expect(
         state.error.toString(),
-        const NonPremiumSuspendResumeError().toString(),
+        const NonPremiumSuspendError().toString(),
       );
 
       // Verify session status hasn't changed
@@ -205,7 +205,7 @@ void main() {
       final state = container.read(bulkDownloadProvider);
       expect(
         state.error.toString(),
-        const NonPremiumSuspendResumeError().toString(),
+        const NonPremiumResumeError().toString(),
       );
 
       // Verify session status hasn't changed

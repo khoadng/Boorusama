@@ -683,7 +683,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final hasPremium = ref.read(hasPremiumProvider);
       if (!hasPremium) {
         state = state.copyWith(
-          error: NonPremiumSuspendResumeError.new,
+          error: NonPremiumSuspendError.new,
         );
         return;
       }
@@ -749,7 +749,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final hasPremium = ref.read(hasPremiumProvider);
       if (!hasPremium) {
         state = state.copyWith(
-          error: NonPremiumSuspendResumeError.new,
+          error: NonPremiumResumeError.new,
         );
         return;
       }

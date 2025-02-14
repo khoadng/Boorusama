@@ -77,8 +77,7 @@ class FreeUserMultipleDownloadSessionsError extends BulkDownloadError {
   const FreeUserMultipleDownloadSessionsError()
       : super(
           BulkDownloadErrorCode.nonPremiumSessionLimit,
-          'Free users can only have one active download session, '
-          'please wait until all download sessions are complete.',
+          'Free users can only have one active download session.',
         );
 }
 
@@ -110,11 +109,19 @@ class UnknownBulkDownloadError extends BulkDownloadError {
       : super(BulkDownloadErrorCode.unknown, message);
 }
 
-class NonPremiumSuspendResumeError extends BulkDownloadError {
-  const NonPremiumSuspendResumeError()
+class NonPremiumSuspendError extends BulkDownloadError {
+  const NonPremiumSuspendError()
       : super(
-          BulkDownloadErrorCode.nonPremiumSuspendResume,
-          'A premium subscription is required to sleep or wake up downloads',
+          BulkDownloadErrorCode.nonPremiumSuspend,
+          'A premium subscription is required to sleep downloads',
+        );
+}
+
+class NonPremiumResumeError extends BulkDownloadError {
+  const NonPremiumResumeError()
+      : super(
+          BulkDownloadErrorCode.nonPremiumResume,
+          'A premium subscription is required to resume sleeping downloads',
         );
 }
 
