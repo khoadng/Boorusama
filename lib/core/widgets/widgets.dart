@@ -36,6 +36,7 @@ export 'network_unavailable_indicator.dart';
 export 'no_data_box.dart';
 export 'option_dropdown_button.dart';
 export 'option_searchable_sheet.dart';
+export 'primary_button.dart';
 export 'reboot.dart';
 export 'route_transition_builder.dart';
 export 'scroll_to_top.dart';

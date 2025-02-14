@@ -103,20 +103,17 @@ class BulkDownloadPageInternal extends StatelessWidget {
                         const Expanded(
                           child: BulkDownloadActionSessions(),
                         ),
-                        Container(
-                          margin: const EdgeInsets.all(12),
-                          child: FilledButton(
-                            onPressed: () {
-                              goToNewBulkDownloadTaskPage(
-                                ref,
-                                context,
-                                initialValue: null,
-                              );
-                            },
-                            child: const Text(
-                              DownloadTranslations.bulkDownloadCreate,
-                            ).tr(),
-                          ),
+                        PrimaryButton(
+                          onPressed: () {
+                            goToNewBulkDownloadTaskPage(
+                              ref,
+                              context,
+                              initialValue: null,
+                            );
+                          },
+                          child: const Text(
+                            DownloadTranslations.bulkDownloadCreate,
+                          ).tr(),
                         ),
                       ],
                     )

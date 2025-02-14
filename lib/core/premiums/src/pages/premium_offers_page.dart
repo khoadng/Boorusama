@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../foundation/iap/iap.dart';
 import '../../../foundation/toast.dart';
 import '../../../router.dart';
+import '../../../widgets/widgets.dart';
 import '../internal_widgets/benefit_card.dart';
 import '../types/premium.dart';
 import '../types/strings.dart';
@@ -175,35 +176,26 @@ class _GetPremiumButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 32,
-        vertical: 12,
-      ),
-      child: FilledButton(
-        style: FilledButton.styleFrom(
-          minimumSize: const Size(0, 48),
-        ),
-        onPressed: ref.watch(packagePurchaseProvider).when(
-              data: (_) {
-                return () => _showPlans(context, ref);
-              },
-              loading: () => null,
-              error: (_, __) {
-                return () => _showPlans(context, ref);
-              },
-            ),
-        child: ref.watch(packagePurchaseProvider).maybeWhen(
-              orElse: () => const Text('Get Plus'),
-              loading: () => SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+    return PrimaryButton(
+      onPressed: ref.watch(packagePurchaseProvider).when(
+            data: (_) {
+              return () => _showPlans(context, ref);
+            },
+            loading: () => null,
+            error: (_, __) {
+              return () => _showPlans(context, ref);
+            },
+          ),
+      child: ref.watch(packagePurchaseProvider).maybeWhen(
+            orElse: () => const Text('Get Plus'),
+            loading: () => SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
-      ),
+          ),
     );
   }
 

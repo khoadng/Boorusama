@@ -87,20 +87,11 @@ class DetailsLayoutManagerPage extends StatelessWidget {
 
                 return !hasPremium
                     ? SafeArea(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          child: FilledButton(
-                            style: FilledButton.styleFrom(
-                              minimumSize: const Size(0, 48),
-                            ),
-                            onPressed: () {
-                              goToPremiumPage(context);
-                            },
-                            child: const Text('Upgrade to save'),
-                          ),
+                        child: PrimaryButton(
+                          onPressed: () {
+                            goToPremiumPage(context);
+                          },
+                          child: const Text('Upgrade to save'),
                         ),
                       )
                     : const SizedBox.shrink();
