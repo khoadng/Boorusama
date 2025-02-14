@@ -129,10 +129,7 @@ class _ActionButtonBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = session.session.status;
 
-    if (status == DownloadSessionStatus.completed ||
-        status == DownloadSessionStatus.cancelled ||
-        status == DownloadSessionStatus.failed ||
-        status == DownloadSessionStatus.allSkipped) {
+    if (!session.actionable) {
       return const SizedBox.shrink();
     }
 
@@ -175,14 +172,9 @@ class _StopDryRunButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
 
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-      icon: Icon(
+    return _ActionButton(
+      icon: const Icon(
         FontAwesomeIcons.forward,
-        fill: 1,
-        size: 18,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).stopDryRun(sessionId);
@@ -201,25 +193,47 @@ class _StartPendingButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
-    final status = session.session.status;
-    final colorScheme = Theme.of(context).colorScheme;
     final notifier = ref.watch(bulkDownloadProvider.notifier);
 
-    return status == DownloadSessionStatus.pending
-        ? CircularIconButton(
-            padding: const EdgeInsets.all(8),
-            backgroundColor: colorScheme.surfaceContainer,
-            icon: Icon(
-              FontAwesomeIcons.play,
-              fill: 1,
-              size: 18,
-              color: colorScheme.onSurfaceVariant,
-            ),
-            onPressed: () {
-              notifier.startPendingSession(sessionId);
-            },
-          )
-        : const SizedBox.shrink();
+    return _ActionButton(
+      icon: const Icon(
+        FontAwesomeIcons.play,
+      ),
+      onPressed: () {
+        notifier.startPendingSession(sessionId);
+      },
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.onPressed,
+    required this.icon,
+  });
+
+  final VoidCallback onPressed;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Theme(
+        data: ThemeData(
+          iconTheme: IconThemeData(
+            color: colorScheme.onSurfaceVariant,
+            fill: 1,
+            size: 18,
+          ),
+        ),
+        child: icon,
+      ),
+      onPressed: onPressed,
+    );
   }
 }
 
@@ -546,14 +560,9 @@ class _CancelAllButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
 
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-      icon: Icon(
+    return _ActionButton(
+      icon: const Icon(
         FontAwesomeIcons.stop,
-        fill: 1,
-        size: 18,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).cancelSession(sessionId);
@@ -572,16 +581,10 @@ class _PauseAllButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: colorScheme.surfaceContainer,
-      icon: Icon(
+    return _ActionButton(
+      icon: const Icon(
         FontAwesomeIcons.pause,
-        fill: 1,
-        size: 18,
-        color: colorScheme.onSurfaceVariant,
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).pauseSession(sessionId);
@@ -600,16 +603,10 @@ class _SuspendButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: colorScheme.surfaceContainer,
-      icon: Icon(
+    return _ActionButton(
+      icon: const Icon(
         FontAwesomeIcons.solidMoon,
-        fill: 1,
-        size: 18,
-        color: colorScheme.onSurfaceVariant,
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).suspendSession(sessionId);
@@ -628,16 +625,10 @@ class _ResumeSuspensionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: colorScheme.surfaceContainer,
-      icon: Icon(
+    return _ActionButton(
+      icon: const Icon(
         FontAwesomeIcons.play,
-        fill: 1,
-        size: 18,
-        color: colorScheme.onSurfaceVariant,
       ),
       onPressed: () {
         ref
@@ -658,16 +649,10 @@ class _ResumeAllButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionId = session.id;
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: colorScheme.surfaceContainer,
-      icon: Icon(
+    return _ActionButton(
+      icon: const Icon(
         FontAwesomeIcons.play,
-        fill: 1,
-        size: 18,
-        color: colorScheme.onSurfaceVariant,
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).resumeSession(sessionId);

@@ -40,28 +40,41 @@ class BulkDownloadPage extends ConsumerWidget {
   }
 }
 
-class BulkDownloadPageInternal extends ConsumerWidget {
+class BulkDownloadPageInternal extends StatelessWidget {
   const BulkDownloadPageInternal({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final ready =
-        ref.watch(bulkDownloadProvider.select((state) => state.ready));
-
+  Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
           title: const Text(DownloadTranslations.bulkDownloadTitle).tr(),
           actions: [
-            IconButton(
-              icon: const Icon(Symbols.history),
-              onPressed: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => const BulkDownloadCompletedPage(),
+            Consumer(
+              builder: (_, ref, __) {
+                final hasUnseen = ref.watch(
+                  bulkDownloadProvider.select(
+                    (state) => state.hasUnseenFinishedSessions,
                   ),
+                );
+                final notifier = ref.watch(bulkDownloadProvider.notifier);
+
+                return IconButton(
+                  icon: Badge(
+                    isLabelVisible: hasUnseen,
+                    smallSize: 8,
+                    child: const Icon(Symbols.history),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const BulkDownloadCompletedPage(),
+                      ),
+                    );
+                    notifier.clearUnseenFinishedSessions();
+                  },
                 );
               },
             ),
@@ -77,34 +90,41 @@ class BulkDownloadPageInternal extends ConsumerWidget {
             ),
           ],
         ),
-        body: SafeArea(
-          child: ready
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Expanded(
-                      child: BulkDownloadActionSessions(),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.all(12),
-                      child: FilledButton(
-                        onPressed: () {
-                          goToNewBulkDownloadTaskPage(
-                            ref,
-                            context,
-                            initialValue: null,
-                          );
-                        },
-                        child:
-                            const Text(DownloadTranslations.bulkDownloadCreate)
+        body: Consumer(
+          builder: (_, ref, __) {
+            final ready =
+                ref.watch(bulkDownloadProvider.select((state) => state.ready));
+
+            return SafeArea(
+              child: ready
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Expanded(
+                          child: BulkDownloadActionSessions(),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.all(12),
+                          child: FilledButton(
+                            onPressed: () {
+                              goToNewBulkDownloadTaskPage(
+                                ref,
+                                context,
+                                initialValue: null,
+                              );
+                            },
+                            child: const Text(
+                                    DownloadTranslations.bulkDownloadCreate)
                                 .tr(),
-                      ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  ],
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                ),
+            );
+          },
         ),
       ),
     );

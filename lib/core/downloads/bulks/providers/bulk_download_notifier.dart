@@ -61,6 +61,19 @@ final bulkDownloadProgressProvider =
   BulkDownloadProgressNotifier.new,
 );
 
+extension SessionActionX on BulkDownloadSession {
+  bool get actionable {
+    final status = session.status;
+
+    return status == DownloadSessionStatus.completed ||
+            status == DownloadSessionStatus.cancelled ||
+            status == DownloadSessionStatus.failed ||
+            status == DownloadSessionStatus.allSkipped
+        ? false
+        : true;
+  }
+}
+
 class BulkDownloadProgressNotifier extends Notifier<Map<String, double>> {
   @override
   Map<String, double> build() {
@@ -1074,7 +1087,17 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     progressNotifier.removeSession(sessionId);
 
+    state = state.copyWith(
+      hasUnseenFinishedSessions: true,
+    );
+
     await _loadTasks();
+  }
+
+  void clearUnseenFinishedSessions() {
+    state = state.copyWith(
+      hasUnseenFinishedSessions: false,
+    );
   }
 
   Future<void> updateRecordFromTaskStream(
