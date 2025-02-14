@@ -6,7 +6,6 @@ import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
@@ -130,9 +129,9 @@ class _SuccessView extends ConsumerWidget {
     BuildContext context,
     SavedSearch savedSearch,
   ) {
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
-      settings: const RouteSettings(name: 'saved_search_action_select'),
+      routeSettings: const RouteSettings(name: 'saved_search_action_select'),
       builder: (_) => SavedSearchQuickEditSheet(
         savedSearch: savedSearch,
       ),

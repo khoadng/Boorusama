@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
@@ -58,11 +57,9 @@ extension PostShareX on WidgetRef {
     );
 
     Screen.of(context).size == ScreenSize.small
-        ? showMaterialModalBottomSheet(
+        ? showModalBottomSheet(
             context: context,
-            settings: routeSettings,
-            barrierColor: Colors.black45,
-            backgroundColor: Colors.transparent,
+            routeSettings: routeSettings,
             builder: (context) => modal,
           )
         : showDialog(

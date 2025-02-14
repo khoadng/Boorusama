@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../../../../../core/foundation/animations.dart';
 import '../../../../../../../core/foundation/display.dart';
 import '../../../../post/post.dart';
 import '../pages/add_to_favorite_group_page.dart';
@@ -17,13 +15,13 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
   BuildContext context,
   List<DanbooruPost> posts,
 ) {
-  return showMaterialModalBottomSheet<bool>(
+  return showModalBottomSheet<bool>(
     context: context,
-    duration: AppDurations.bottomSheet,
-    expand: true,
-    settings: const RouteSettings(
+    isScrollControlled: true,
+    routeSettings: const RouteSettings(
       name: 'add_to_favorite_group',
     ),
+    useSafeArea: true,
     builder: (_) => AddToFavoriteGroupPage(
       posts: posts,
     ),

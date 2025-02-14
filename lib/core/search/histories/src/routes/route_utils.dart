@@ -1,11 +1,7 @@
 // Flutter imports:
-import 'package:flutter/widgets.dart';
-
-// Package imports:
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../foundation/animations.dart';
 import '../../../../router.dart';
 import '../full_history_page.dart';
 import '../search_history.dart';
@@ -14,15 +10,15 @@ void goToSearchHistoryPage(
   BuildContext context, {
   required Function(SearchHistory history) onTap,
 }) {
-  showMaterialModalBottomSheet(
+  showModalBottomSheet(
     context: context,
-    settings: const RouteSettings(
+    routeSettings: const RouteSettings(
       name: RouterPageConstant.searchHistories,
     ),
-    duration: AppDurations.bottomSheet,
+    isScrollControlled: true,
+    useSafeArea: true,
     builder: (context) => FullHistoryPage(
       onTap: onTap,
-      scrollController: ModalScrollController.of(context),
     ),
   );
 }

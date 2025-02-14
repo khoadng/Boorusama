@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../foundation/toast.dart';
@@ -33,10 +32,9 @@ class BlacklistedTagPage extends ConsumerWidget {
       actions: [
         IconButton(
           onPressed: () {
-            showMaterialModalBottomSheet(
+            showModalBottomSheet(
               context: context,
-              settings: const RouteSettings(name: 'blacklisted_tag_sort'),
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+              routeSettings: const RouteSettings(name: 'blacklisted_tag_sort'),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

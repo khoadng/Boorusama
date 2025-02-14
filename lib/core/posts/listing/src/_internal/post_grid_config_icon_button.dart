@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../foundation/animations.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
@@ -31,9 +29,9 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
     return InkWell(
       customBorder: const CircleBorder(),
-      onTap: () => showMaterialModalBottomSheet(
+      onTap: () => showModalBottomSheet(
         context: context,
-        settings: const RouteSettings(name: 'grid_config'),
+        routeSettings: const RouteSettings(name: 'grid_config'),
         builder: (_) => PostGridActionSheet(
           postController: postController,
           onModeChanged: (mode) => settingsNotifier.updateWith(
@@ -200,12 +198,13 @@ class PostGridActionSheet extends ConsumerWidget {
                           onTap: !refreshing
                               ? () {
                                   Navigator.of(context).pop();
-                                  showMaterialModalBottomSheet(
+                                  showModalBottomSheet(
                                     context: context,
-                                    settings: const RouteSettings(
+                                    isScrollControlled: true,
+                                    useSafeArea: true,
+                                    routeSettings: const RouteSettings(
                                       name: 'post_statistics',
                                     ),
-                                    duration: AppDurations.bottomSheet,
                                     builder: (_) => postStatsPageBuilder(
                                       context,
                                       postController.items,

@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
 import '../../../favgroups/favgroup.dart';
@@ -16,9 +13,9 @@ void showFavgroupEditSheet(
   DanbooruFavoriteGroup favGroup,
   BooruConfigSearch config,
 ) {
-  showMaterialModalBottomSheet(
+  showModalBottomSheet(
     context: context,
-    settings: const RouteSettings(name: 'favorite_groups_action'),
+    routeSettings: const RouteSettings(name: 'favorite_groups_action'),
     builder: (_) => ModalFavoriteGroupAction(
       onDelete: () => showDialog(
         context: context,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../foundation/display.dart';
@@ -25,7 +24,7 @@ class MoreOptionsControlButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         customBorder: const CircleBorder(),
-        onTap: () => showMaterialModalBottomSheet(
+        onTap: () => showModalBottomSheet(
           context: context,
           builder: (_) => BooruVideoOptionSheet(
             value: speed,
@@ -64,13 +63,12 @@ class BooruVideoOptionSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 8),
             MobileConfigTile(
               value: _buildSpeedText(value),
               title: 'Play back speed',
               onTap: () {
                 Navigator.of(context).pop();
-                showMaterialModalBottomSheet(
+                showModalBottomSheet(
                   context: context,
                   builder: (_) => PlaybackSpeedActionSheet(
                     onChanged: onChanged,

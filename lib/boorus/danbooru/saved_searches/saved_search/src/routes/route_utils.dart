@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 // Project imports:
 import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/router.dart';
@@ -15,9 +12,9 @@ void goToSavedSearchCreatePage(
   String? initialValue,
 }) {
   if (kPreferredLayout.isMobile) {
-    showMaterialModalBottomSheet(
+    showModalBottomSheet(
       context: context,
-      settings: const RouteSettings(
+      routeSettings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
       backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
@@ -62,9 +59,9 @@ void goToSavedSearchPatchPage(
   BuildContext context,
   SavedSearch savedSearch,
 ) {
-  showMaterialModalBottomSheet(
+  showModalBottomSheet(
     context: context,
-    settings: const RouteSettings(
+    routeSettings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
     backgroundColor: Theme.of(context).colorScheme.surfaceContainer,

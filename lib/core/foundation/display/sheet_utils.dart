@@ -19,12 +19,11 @@ Future<T?> showAdaptiveSheet<T>(
   RouteSettings? settings,
 }) {
   if (Screen.of(context).size == ScreenSize.small) {
-    return showMaterialModalBottomSheet<T>(
-      settings: settings,
+    return showModalBottomSheet<T>(
+      routeSettings: settings,
       context: context,
       backgroundColor: backgroundColor,
-      duration: AppDurations.bottomSheet,
-      expand: expand,
+      isScrollControlled: expand,
       builder: builder,
     );
   } else {

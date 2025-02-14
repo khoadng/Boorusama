@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
@@ -109,9 +108,9 @@ class FavoriteTagsPage extends ConsumerWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      showMaterialModalBottomSheet(
+                      showModalBottomSheet(
                         context: context,
-                        settings:
+                        routeSettings:
                             const RouteSettings(name: 'favorite_tag_config'),
                         backgroundColor:
                             Theme.of(context).colorScheme.surfaceContainer,
@@ -192,9 +191,10 @@ class FavoriteTagsPage extends ConsumerWidget {
                   final tag = tags[index];
                   ref.read(favoriteTagsProvider.notifier).remove(tag.name);
                 case 'edit':
-                  showMaterialModalBottomSheet(
+                  showModalBottomSheet(
                     context: context,
-                    settings: const RouteSettings(name: 'edit_favorite_tag'),
+                    routeSettings:
+                        const RouteSettings(name: 'edit_favorite_tag'),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(16),
