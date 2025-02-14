@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,8 @@ class MoebooruHomePage extends ConsumerStatefulWidget {
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
+    final favoritesPageBuilder = ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
+
     return HomePageScaffold(
       mobileMenu: [
         SideMenuTile(
@@ -101,10 +104,20 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
+        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails()) 
+          HomeNavigationTile(
+            value: 3,
+            constraints: constraints,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
+            title: 'Favorites',
+          ),
       ],
-      desktopViews: const [
+      desktopViews: [
         MoebooruPopularPage(),
         MoebooruPopularRecentPage(),
+        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails()) 
+          favoritesPageBuilder(context, ref.watchConfig),
       ],
     );
   }

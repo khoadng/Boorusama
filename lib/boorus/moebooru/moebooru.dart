@@ -124,6 +124,7 @@ class MoebooruBuilder
             scrollController: payload.scrollController,
             desktop: (controller) => MoebooruPostDetailsDesktopPage(
               initialIndex: controller.currentPage.value,
+              controller: controller,
               posts: payload.posts.map((e) => e as MoebooruPost).toList(),
               onExit: (page) => controller.onExit(page),
               onPageChanged: (page) => controller.setPage(page),
