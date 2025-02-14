@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../info/device_info.dart';
 import '../../../search/histories/history.dart';
+import '../../../settings/settings.dart';
+import '../../../settings/widgets.dart';
+import '../../l10n.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../types/saved_download_task.dart';
 import '../widgets/bulk_download_tag_list.dart';
@@ -34,6 +38,7 @@ class _BulkDownloadEditSavedTaskPageState
   late bool _skipIfExists;
   late int _perPage;
   late int _concurrency;
+  late String? _quality;
 
   @override
   void initState() {
@@ -49,6 +54,7 @@ class _BulkDownloadEditSavedTaskPageState
     _skipIfExists = widget.savedTask.task.skipIfExists;
     _perPage = widget.savedTask.task.perPage;
     _concurrency = widget.savedTask.task.concurrency;
+    _quality = widget.savedTask.task.quality;
   }
 
   @override
@@ -81,12 +87,13 @@ class _BulkDownloadEditSavedTaskPageState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Task'),
+        title: const Text('Edit template').tr(),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () async {
               final updatedTask = widget.savedTask.copyWith(
+                name: _nameController.text,
                 task: widget.savedTask.task.copyWith(
                   path: _path,
                   notifications: _notifications,
@@ -109,21 +116,32 @@ class _BulkDownloadEditSavedTaskPageState
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Task Name',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              child: TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Template name',
+                ),
               ),
             ),
-            DownloadFolderSelectorSection(
-              storagePath: _path,
-              deviceInfo: ref.watch(deviceInfoProvider),
-              onPathChanged: (path) => setState(() => _path = path),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              child: DownloadFolderSelectorSection(
+                backgroundColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
+                storagePath: _path,
+                deviceInfo: ref.watch(deviceInfoProvider),
+                onPathChanged: (path) => setState(() => _path = path),
+              ),
             ),
             const SizedBox(height: 16),
             BulkDownloadTagList(
@@ -132,54 +150,28 @@ class _BulkDownloadEditSavedTaskPageState
               onRemove: _removeTag,
               onHistoryTap: _onHistoryTap,
             ),
-            const SizedBox(height: 16),
             SwitchListTile(
-              title: const Text('Notifications'),
+              title: const Text(
+                DownloadTranslations.bulkDownloadEnableNotifications,
+              ).tr(),
               value: _notifications,
               onChanged: (value) => setState(() => _notifications = value),
             ),
             SwitchListTile(
-              title: const Text('Skip If Exists'),
+              title: const Text(DownloadTranslations.skipDownloadIfExists).tr(),
               value: _skipIfExists,
               onChanged: (value) => setState(() => _skipIfExists = value),
             ),
-            ListTile(
-              title: const Text('Per Page'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: () => setState(() {
-                      if (_perPage > 1) _perPage--;
-                    }),
-                  ),
-                  Text('$_perPage'),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () => setState(() => _perPage++),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              title: const Text('Concurrency'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: () => setState(() {
-                      if (_concurrency > 1) _concurrency--;
-                    }),
-                  ),
-                  Text('$_concurrency'),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () => setState(() => _concurrency++),
-                  ),
-                ],
-              ),
+            SettingsTile(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              title: const Text('settings.download.quality').tr(),
+              selectedOption: _quality ?? DownloadQuality.original.name,
+              items: DownloadQuality.values.map((e) => e.name).toList(),
+              onChanged: (value) {
+                setState(() => _quality = value);
+              },
+              optionBuilder: (value) =>
+                  Text('settings.download.qualities.$value').tr(),
             ),
           ],
         ),

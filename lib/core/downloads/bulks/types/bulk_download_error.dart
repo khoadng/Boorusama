@@ -122,6 +122,6 @@ class NonPremiumSavedTaskLimitError extends BulkDownloadError {
   const NonPremiumSavedTaskLimitError()
       : super(
           BulkDownloadErrorCode.nonPremiumSavedTaskLimit,
-          'Free users can only have one saved task',
+          'Free users can only create 1 template, please upgrade to premium to create more',
         );
 }

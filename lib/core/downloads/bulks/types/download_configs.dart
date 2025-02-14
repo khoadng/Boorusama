@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
 import '../../../settings/settings.dart';
 import '../../downloader.dart';
@@ -17,6 +20,7 @@ class DownloadConfigs {
     this.quality,
     this.delayBetweenDownloads = const Duration(milliseconds: 200),
     this.delayBetweenRequests,
+    this.onDownloadStart,
     this.androidSdkVersion,
   });
 
@@ -31,6 +35,7 @@ class DownloadConfigs {
   final String? quality;
   final Duration? delayBetweenDownloads;
   final Duration? delayBetweenRequests;
+  final VoidCallback? onDownloadStart;
   final int? androidSdkVersion;
 }
 

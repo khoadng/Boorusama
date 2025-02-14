@@ -267,17 +267,14 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
-          width: 0.5,
-        ),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
       child: ExpandablePanel(
         theme: ExpandableThemeData(
           headerAlignment: ExpandablePanelHeaderAlignment.center,
           tapBodyToCollapse: true,
           iconColor: Theme.of(context).iconTheme.color,
+          inkWellBorderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -57,7 +57,7 @@ void showSimpleSnackBar({
   final snackbar = SnackBar(
     action: action,
     behavior: snackBarBehavior,
-    duration: duration ?? const Duration(seconds: 6),
+    duration: duration ?? const Duration(seconds: 4),
     elevation: 6,
     width: _calculateSnackBarWidth(context, snackBarBehavior),
     content: content,

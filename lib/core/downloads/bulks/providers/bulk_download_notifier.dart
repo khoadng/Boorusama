@@ -494,6 +494,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
       var rawPosts = <Post>[];
 
+      if (downloadConfigs?.onDownloadStart != null) {
+        downloadConfigs!.onDownloadStart!();
+      }
+
       currentSession = await _updateSession(
         sessionId,
         status: DownloadSessionStatus.dryRun,
@@ -1200,7 +1204,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     return session;
   }
 
-  Future<void> createSavedTask(
+  Future<bool> createSavedTask(
     DownloadTask task, {
     String? name,
   }) async {
@@ -1213,7 +1217,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           state = state.copyWith(
             error: NonPremiumSavedTaskLimitError.new,
           );
-          return;
+          return false;
         }
       }
 
@@ -1224,8 +1228,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         ),
       );
       await _loadTasks();
+
+      return true;
     } catch (e) {
       state = state.copyWith(error: () => e);
+      return false;
     }
   }
 
@@ -1260,10 +1267,16 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 
-  Future<void> runSavedTask(SavedDownloadTask savedTask) async {
+  Future<void> runSavedTask(
+    SavedDownloadTask savedTask, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
     try {
       // Start downloading the existing task directly
-      await downloadFromTask(savedTask.task);
+      await downloadFromTask(
+        savedTask.task,
+        downloadConfigs: downloadConfigs,
+      );
     } catch (e) {
       state = state.copyWith(error: () => e);
     }

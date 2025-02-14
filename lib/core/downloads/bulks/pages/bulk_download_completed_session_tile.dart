@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
@@ -19,6 +20,7 @@ import '../../l10n.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_session_stats.dart';
+import '../types/download_task.dart';
 import 'bulk_download_saved_task_page.dart';
 
 class BulkDownloadCompletedSessionTile extends ConsumerWidget {
@@ -71,6 +73,9 @@ class BulkDownloadCompletedSessionTile extends ConsumerWidget {
                             ),
                           ),
                           const _ActionButtons(),
+                          _CreateSavedTaskButton(
+                            task: session.task,
+                          ),
                         ],
                       ),
                       Row(
@@ -98,6 +103,41 @@ class BulkDownloadCompletedSessionTile extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _CreateSavedTaskButton extends ConsumerWidget {
+  const _CreateSavedTaskButton({
+    required this.task,
+  });
+
+  final DownloadTask task;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
+    final navigator = Navigator.of(context);
+
+    return CircularIconButton(
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Icon(
+        FontAwesomeIcons.clone,
+        size: 18,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      onPressed: () async {
+        final success = await notifier.createSavedTask(task);
+
+        if (success) {
+          await navigator.push(
+            CupertinoPageRoute(
+              builder: (context) => const BulkDownloadSavedTaskPage(),
+            ),
+          );
+        }
+      },
     );
   }
 }
@@ -201,18 +241,22 @@ class _ContextMenu extends ConsumerWidget {
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
           ContextMenuButtonConfig(
-            'Create a saved task',
+            'Create a template',
             onPressed: () async {
               final navigator = Navigator.of(context);
-              await ref
+              final success = await ref
                   .read(bulkDownloadProvider.notifier)
                   .createSavedTask(session.task);
 
-              await navigator.push(
-                CupertinoPageRoute(
-                  builder: (context) => const BulkDownloadSavedTaskPage(),
-                ),
-              );
+              if (success) {
+                await navigator.push(
+                  CupertinoPageRoute(
+                    builder: (context) => const BulkDownloadSavedTaskPage(),
+                  ),
+                );
+              } else {
+                // Do nothing
+              }
             },
           ),
         ],
