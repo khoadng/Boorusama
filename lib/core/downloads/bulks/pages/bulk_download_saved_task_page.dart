@@ -44,7 +44,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
                       return ListTile(
                         title: Text(savedTask.name ?? 'Unnamed Task'),
                         subtitle: Text(
-                          'Tags: ${savedTask.task.tags ?? 'No tags'}\nPath: ${savedTask.task.path}\nConcurrency: ${savedTask.task.concurrency}',
+                          savedTask.task.tags ?? 'No tags',
                         ),
                         isThreeLine: true,
                         trailing: BooruPopupMenuButton(
@@ -68,8 +68,8 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
                           },
                           itemBuilder: const {
                             'run': Text('Run'),
-                            'delete': Text('Delete'),
                             'edit': Text('Edit'),
+                            'delete': Text('Delete'),
                           },
                         ),
                       );

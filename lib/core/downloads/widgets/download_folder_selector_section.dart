@@ -23,6 +23,7 @@ class DownloadFolderSelectorSection extends StatefulWidget {
     super.key,
     this.hint,
     this.title,
+    this.backgroundColor,
   });
 
   final String? storagePath;
@@ -30,7 +31,8 @@ class DownloadFolderSelectorSection extends StatefulWidget {
   final DeviceInfo deviceInfo;
 
   final String? hint;
-  final String? title;
+  final Widget? title;
+  final Color? backgroundColor;
 
   @override
   State<DownloadFolderSelectorSection> createState() =>
@@ -56,22 +58,21 @@ class _DownloadFolderSelectorSectionState
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 16),
-        Text(
-          widget.title ?? DownloadTranslations.downloadPath.tr(),
-        ),
+        widget.title ??
+            Text(
+              DownloadTranslations.downloadPath.tr(),
+            ),
         const SizedBox(height: 4),
         Material(
-          color: Theme.of(context).colorScheme.surfaceContainer,
+          color: widget.backgroundColor ?? colorScheme.surfaceContainer,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
-              width: 0.75,
-            ),
           ),
           child: InkWell(
             customBorder: RoundedRectangleBorder(
@@ -97,8 +98,7 @@ class _DownloadFolderSelectorSectionState
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.hintColor,
+                                  color: colorScheme.hintColor,
                                 ),
                           ),
                   ),

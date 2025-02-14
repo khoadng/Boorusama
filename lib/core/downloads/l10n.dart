@@ -45,7 +45,7 @@ class DownloadTranslations {
       'download.bulk_download_save_to_folder';
   static const String bulkdDownloadShowAdvancedOptions =
       'Show advanced options';
-  static const String bulkDownloadEnableNotifications = 'Enable notifications';
+  static const String bulkDownloadEnableNotifications = 'Notifications';
   static const String bulkDownloadSelectFolder =
       'download.bulk_download_select_a_folder';
 }

@@ -53,7 +53,9 @@ class BooruConfigDownloadView extends ConsumerWidget {
             deviceInfo: ref.watch(deviceInfoProvider),
             onPathChanged: (path) =>
                 ref.editNotifier.updateCustomDownloadLocation(path),
-            title: 'Download location',
+            title: const Text(
+              'Download location',
+            ),
           ),
           const SizedBox(height: 4),
           Text(

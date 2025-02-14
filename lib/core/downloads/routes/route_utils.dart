@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../boorus/booru/booru.dart';
@@ -58,14 +57,9 @@ void goToNewBulkDownloadTaskPage(
 
   final prevRouteName = ModalRoute.of(context)?.settings.name;
 
-  showMaterialModalBottomSheet(
+  showModalBottomSheet(
     context: context,
-    settings: const RouteSettings(name: 'bulk_download_create'),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(16),
-      ),
-    ),
+    routeSettings: const RouteSettings(name: 'bulk_download_create'),
     builder: (_) => CreateBulkDownloadTaskSheet(
       initialValue: initialValue,
       title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),

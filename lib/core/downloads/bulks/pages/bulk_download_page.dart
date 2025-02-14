@@ -114,8 +114,8 @@ class BulkDownloadPageInternal extends StatelessWidget {
                               );
                             },
                             child: const Text(
-                                    DownloadTranslations.bulkDownloadCreate)
-                                .tr(),
+                              DownloadTranslations.bulkDownloadCreate,
+                            ).tr(),
                           ),
                         ),
                       ],

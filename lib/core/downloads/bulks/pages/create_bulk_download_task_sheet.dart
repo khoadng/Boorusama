@@ -4,25 +4,21 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../foundation/picker.dart';
-import '../../../foundation/platform.dart';
 import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
-import '../../../search/histories/providers.dart';
-import '../../../search/histories/widgets.dart';
-import '../../../search/search/routes.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
 import '../../../theme.dart';
+import '../../../widgets/drag_line.dart';
 import '../../l10n.dart';
 import '../../widgets/download_folder_selector_section.dart';
 import '../providers/create_bulk_download_notifier.dart';
 import '../providers/providers.dart';
 import '../types/bulk_download_error.dart';
 import '../types/download_options.dart';
+import '../widgets/bulk_download_tag_list.dart';
 
 class CreateBulkDownloadTaskSheet extends ConsumerWidget {
   const CreateBulkDownloadTaskSheet({
@@ -82,8 +78,13 @@ class _CreateBulkDownloadTaskSheetState
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
 
-    return Material(
-      color: colorScheme.surfaceContainer,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainer,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
       child: SafeArea(
         top: false,
         child: SingleChildScrollView(
@@ -91,54 +92,44 @@ class _CreateBulkDownloadTaskSheetState
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    widget.title,
-                    style: textTheme.titleLarge,
-                  ),
-                ],
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DragLine(),
+                  ],
+                ),
               ),
-              const CreateBulkDownloadTagList(),
-              const Divider(
-                thickness: 1,
-                endIndent: 16,
-                indent: 16,
+              BulkDownloadTagList(
+                tags: task.tags,
+                onSubmit: notifier.addTag,
+                onRemove: notifier.removeTag,
+                onHistoryTap: notifier.addFromSearchHistory,
               ),
-              const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  DownloadTranslations.bulkDownloadSaveToFolder
-                      .tr()
-                      .toUpperCase(),
-                  style: textTheme.titleSmall?.copyWith(
-                    color: colorScheme.hintColor,
-                    fontWeight: FontWeight.w800,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: DownloadFolderSelectorSection(
+                  title: Text(
+                    DownloadTranslations.bulkDownloadSaveToFolder
+                        .tr()
+                        .toUpperCase(),
+                    style: textTheme.titleSmall?.copyWith(
+                      color: colorScheme.hintColor,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
+                  backgroundColor: colorScheme.surfaceContainerHigh,
+                  storagePath: task.path,
+                  deviceInfo: ref.watch(deviceInfoProvider),
+                  onPathChanged: (path) {
+                    ref.read(createBulkDownloadProvider.notifier).setPath(path);
+                  },
+                  hint: DownloadTranslations.bulkDownloadSelectFolder.tr(),
                 ),
               ),
-              _buildPathSelector(task),
-              if (isAndroid())
-                Builder(
-                  builder: (context) {
-                    return task.shouldDisplayWarning(
-                      hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
-                    )
-                        ? DownloadPathWarning(
-                            releaseName: ref
-                                    .read(deviceInfoProvider)
-                                    .androidDeviceInfo
-                                    ?.version
-                                    .release ??
-                                'Unknown',
-                            allowedFolders: task.allowedFolders,
-                          )
-                        : const SizedBox.shrink();
-                  },
-                ),
               SwitchListTile(
                 title: const Text(
                   DownloadTranslations.bulkdDownloadShowAdvancedOptions,
@@ -242,145 +233,6 @@ class _CreateBulkDownloadTaskSheetState
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Future<void> _pickFolder(
-    BuildContext context,
-  ) =>
-      pickDirectoryPathToastOnError(
-        context: context,
-        onPick: (path) {
-          ref.read(createBulkDownloadProvider.notifier).setPath(path);
-        },
-      );
-
-  Widget _buildPathSelector(DownloadOptions options) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
-      child: Builder(
-        builder: (context) {
-          return Material(
-            child: Ink(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                border: Border.fromBorderSide(
-                  BorderSide(color: Theme.of(context).colorScheme.hintColor),
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(4)),
-              ),
-              child: ListTile(
-                visualDensity: VisualDensity.compact,
-                minVerticalPadding: 0,
-                onTap: () => _pickFolder(context),
-                title: options.path.isNotEmpty
-                    ? Text(
-                        options.path,
-                        overflow: TextOverflow.fade,
-                      )
-                    : Text(
-                        DownloadTranslations.bulkDownloadSelectFolder.tr(),
-                        overflow: TextOverflow.fade,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(
-                              color: Theme.of(context).colorScheme.hintColor,
-                            ),
-                      ),
-                trailing: IconButton(
-                  onPressed: () => _pickFolder(context),
-                  icon: const Icon(Symbols.folder),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class CreateBulkDownloadTagList extends ConsumerStatefulWidget {
-  const CreateBulkDownloadTagList({
-    super.key,
-  });
-
-  @override
-  ConsumerState<CreateBulkDownloadTagList> createState() =>
-      _CreateBulkDownloadTagListState();
-}
-
-class _CreateBulkDownloadTagListState
-    extends ConsumerState<CreateBulkDownloadTagList> {
-  @override
-  Widget build(BuildContext context) {
-    final notifier = ref.watch(createBulkDownloadProvider.notifier);
-    final tags =
-        ref.watch(createBulkDownloadProvider.select((value) => value.tags));
-
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 12,
-      ),
-      child: Wrap(
-        runAlignment: WrapAlignment.center,
-        spacing: 5,
-        runSpacing: isMobilePlatform() ? -4 : 8,
-        children: [
-          ...tags.map(
-            (e) => Chip(
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
-              label: Text(e.replaceAll('_', ' ')),
-              deleteIcon: Icon(
-                Symbols.close,
-                size: 16,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              onDeleted: () => notifier.removeTag(e),
-            ),
-          ),
-          IconButton(
-            iconSize: 28,
-            splashRadius: 20,
-            onPressed: () {
-              goToQuickSearchPage(
-                context,
-                ref: ref,
-                emptyBuilder: (controller) => ValueListenableBuilder(
-                  valueListenable: controller,
-                  builder: (_, value, __) => value.text.isEmpty
-                      ? ref.watch(searchHistoryProvider).maybeWhen(
-                            data: (data) => SearchHistorySection(
-                              maxHistory: 20,
-                              showTime: true,
-                              histories: data.histories,
-                              onHistoryTap: (history) {
-                                Navigator.of(context).pop();
-                                notifier.addFromSearchHistory(history);
-                              },
-                            ),
-                            orElse: () => const SizedBox.shrink(),
-                          )
-                      : const SizedBox.shrink(),
-                ),
-                onSubmitted: (context, text, _) {
-                  Navigator.of(context).pop();
-                  notifier.addTag(text);
-                },
-                onSelected: (tag, _) {
-                  notifier.addTag(tag);
-                },
-              );
-            },
-            icon: const Icon(Symbols.add),
-          ),
-        ],
       ),
     );
   }

@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../downloads/widgets/download_folder_selector_section.dart';
+import '../../../info/device_info.dart';
+import '../../../search/histories/history.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../types/saved_download_task.dart';
+import '../widgets/bulk_download_tag_list.dart';
 
 class BulkDownloadEditSavedTaskPage extends ConsumerStatefulWidget {
   const BulkDownloadEditSavedTaskPage({
@@ -24,8 +28,8 @@ class BulkDownloadEditSavedTaskPage extends ConsumerStatefulWidget {
 class _BulkDownloadEditSavedTaskPageState
     extends ConsumerState<BulkDownloadEditSavedTaskPage> {
   late final TextEditingController _nameController;
-  late final TextEditingController _pathController;
-  late final TextEditingController _tagsController;
+  late String _path;
+  late List<String> _tags;
   late bool _notifications;
   late bool _skipIfExists;
   late int _perPage;
@@ -35,8 +39,12 @@ class _BulkDownloadEditSavedTaskPageState
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.savedTask.name);
-    _pathController = TextEditingController(text: widget.savedTask.task.path);
-    _tagsController = TextEditingController(text: widget.savedTask.task.tags);
+    _path = widget.savedTask.task.path;
+    _tags = widget.savedTask.task.tags
+            ?.split(' ')
+            .where((t) => t.isNotEmpty)
+            .toList() ??
+        [];
     _notifications = widget.savedTask.task.notifications;
     _skipIfExists = widget.savedTask.task.skipIfExists;
     _perPage = widget.savedTask.task.perPage;
@@ -46,9 +54,25 @@ class _BulkDownloadEditSavedTaskPageState
   @override
   void dispose() {
     _nameController.dispose();
-    _pathController.dispose();
-    _tagsController.dispose();
     super.dispose();
+  }
+
+  void _addTag(String tag) {
+    if (!_tags.contains(tag)) {
+      setState(() {
+        _tags.add(tag);
+      });
+    }
+  }
+
+  void _removeTag(String tag) {
+    setState(() {
+      _tags.remove(tag);
+    });
+  }
+
+  void _onHistoryTap(SearchHistory history) {
+    _addTag(history.query);
   }
 
   @override
@@ -64,10 +88,10 @@ class _BulkDownloadEditSavedTaskPageState
             onPressed: () async {
               final updatedTask = widget.savedTask.copyWith(
                 task: widget.savedTask.task.copyWith(
-                  path: _pathController.text,
+                  path: _path,
                   notifications: _notifications,
                   skipIfExists: _skipIfExists,
-                  tags: _tagsController.text,
+                  tags: _tags.join(' '),
                   perPage: _perPage,
                   concurrency: _concurrency,
                 ),
@@ -87,6 +111,7 @@ class _BulkDownloadEditSavedTaskPageState
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: _nameController,
@@ -95,21 +120,17 @@ class _BulkDownloadEditSavedTaskPageState
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _pathController,
-              decoration: const InputDecoration(
-                labelText: 'Download Path',
-                border: OutlineInputBorder(),
-              ),
+            DownloadFolderSelectorSection(
+              storagePath: _path,
+              deviceInfo: ref.watch(deviceInfoProvider),
+              onPathChanged: (path) => setState(() => _path = path),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _tagsController,
-              decoration: const InputDecoration(
-                labelText: 'Tags',
-                border: OutlineInputBorder(),
-              ),
+            BulkDownloadTagList(
+              tags: _tags,
+              onSubmit: _addTag,
+              onRemove: _removeTag,
+              onHistoryTap: _onHistoryTap,
             ),
             const SizedBox(height: 16),
             SwitchListTile(
