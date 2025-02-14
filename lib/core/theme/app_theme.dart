@@ -44,9 +44,9 @@ const staticDarkScheme = ColorScheme(
   tertiaryContainer: GreyscaleShades.gray48,
   onTertiaryContainer: Colors.white,
   surfaceContainerLowest: GreyscaleShades.gray12,
-  surfaceContainerLow: GreyscaleShades.gray32,
-  surfaceContainer: GreyscaleShades.gray46,
-  surfaceContainerHigh: GreyscaleShades.gray50,
+  surfaceContainerLow: GreyscaleShades.gray26,
+  surfaceContainer: GreyscaleShades.gray36,
+  surfaceContainerHigh: GreyscaleShades.gray48,
   surfaceContainerHighest: GreyscaleShades.gray54,
   primary: kPrimaryDarkColor,
   onPrimary: kOnPrimaryDarkColor,
@@ -271,9 +271,6 @@ class AppTheme {
           ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           filled: true,
-          fillColor: colorScheme.brightness.isDark
-              ? colorScheme.surfaceContainer
-              : null,
           enabledBorder: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             borderSide: BorderSide.none,
