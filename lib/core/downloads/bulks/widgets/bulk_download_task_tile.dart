@@ -78,7 +78,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                 if (session.session.status ==
                                     DownloadSessionStatus.suspended)
                                   CompactChip(
-                                    label: 'Sleep',
+                                    label: 'Saved',
                                     textStyle: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: colorScheme.onSecondaryContainer,
@@ -606,7 +606,7 @@ class _SuspendButton extends ConsumerWidget {
 
     return _ActionButton(
       icon: const Icon(
-        FontAwesomeIcons.solidMoon,
+        FontAwesomeIcons.solidFloppyDisk,
       ),
       onPressed: () {
         ref.read(bulkDownloadProvider.notifier).suspendSession(sessionId);

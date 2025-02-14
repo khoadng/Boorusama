@@ -863,7 +863,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      final page = currentSession.currentPage;
+      var page = currentSession.currentPage;
       final totalPages = currentSession.totalPages;
 
       if (totalPages == null) {
@@ -872,6 +872,16 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               Exception('Session is missing page information, cannot resume'),
         );
         return;
+      }
+
+      // Handle data race that causes page equal to totalPages but not all records are completed
+      if (totalPages == page && completedCount < totalRecords) {
+        await _updateSession(
+          sessionId,
+          currentPage: 1,
+        );
+
+        page = 1;
       }
 
       final config = ref.readConfigAuth;

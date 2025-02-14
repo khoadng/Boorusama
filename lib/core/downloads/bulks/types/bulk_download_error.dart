@@ -1,4 +1,5 @@
 // Project imports:
+import '../../../premiums/premiums.dart';
 import 'bulk_download_error_code.dart';
 
 sealed class BulkDownloadError implements Exception {
@@ -77,7 +78,7 @@ class FreeUserMultipleDownloadSessionsError extends BulkDownloadError {
   const FreeUserMultipleDownloadSessionsError()
       : super(
           BulkDownloadErrorCode.nonPremiumSessionLimit,
-          'Free users can only have one active download session.',
+          'Only one active download session is allowed. Upgrade to $kPremiumBrandName for additional sessions.',
         );
 }
 
@@ -113,7 +114,7 @@ class NonPremiumSuspendError extends BulkDownloadError {
   const NonPremiumSuspendError()
       : super(
           BulkDownloadErrorCode.nonPremiumSuspend,
-          'A premium subscription is required to sleep downloads',
+          'Saving download sessions is only available on $kPremiumBrandName.',
         );
 }
 
@@ -121,7 +122,7 @@ class NonPremiumResumeError extends BulkDownloadError {
   const NonPremiumResumeError()
       : super(
           BulkDownloadErrorCode.nonPremiumResume,
-          'A premium subscription is required to resume sleeping downloads',
+          'Resuming saved download sessions is only available on $kPremiumBrandName.',
         );
 }
 
@@ -129,6 +130,6 @@ class NonPremiumSavedTaskLimitError extends BulkDownloadError {
   const NonPremiumSavedTaskLimitError()
       : super(
           BulkDownloadErrorCode.nonPremiumSavedTaskLimit,
-          'Free users can only create 1 template, please upgrade to premium to create more',
+          'Only one template is allowed. Upgrade to $kPremiumBrandName to create more templates.',
         );
 }

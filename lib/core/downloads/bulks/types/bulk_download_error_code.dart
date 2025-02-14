@@ -21,3 +21,11 @@ enum BulkDownloadErrorCode {
   @override
   String toString() => code;
 }
+
+extension BulkDownloadErrorCodeX on BulkDownloadErrorCode {
+  bool get isPremiumError =>
+      this == BulkDownloadErrorCode.nonPremiumSessionLimit ||
+      this == BulkDownloadErrorCode.nonPremiumSuspend ||
+      this == BulkDownloadErrorCode.nonPremiumResume ||
+      this == BulkDownloadErrorCode.nonPremiumSavedTaskLimit;
+}
