@@ -523,6 +523,47 @@ void main() {
       final records = await repository.getRecordsBySessionId(sessionId);
       expect(records, isEmpty);
     });
+
+    test(
+        'should complete a paused session if all records are already completed',
+        () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+      );
+
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+
+      // Mark all records as completed
+      final records = await repository.getRecordsBySessionId(sessionId);
+      for (final record in records) {
+        await notifier.updateRecordFromTaskStream(
+          sessionId,
+          record.downloadId!,
+          DownloadRecordStatus.completed,
+          fileSize: 1000,
+        );
+      }
+
+      // Pause the session
+      await notifier.pauseSession(sessionId);
+      final pausedSession = await repository.getSession(sessionId);
+      expect(pausedSession?.status, equals(DownloadSessionStatus.paused));
+
+      // Act
+      await notifier.resumeSession(sessionId);
+
+      // Assert
+      final completedSession = await repository.getSession(sessionId);
+      expect(
+        completedSession?.status,
+        equals(DownloadSessionStatus.completed),
+      );
+    });
   });
 
   group('Session Pause and Resume', () {

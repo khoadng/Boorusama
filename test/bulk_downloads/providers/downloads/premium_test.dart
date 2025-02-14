@@ -6,6 +6,7 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
+import 'package:boorusama/core/downloads/bulks/providers/saved_task_lock_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
@@ -245,6 +246,103 @@ void main() {
       final savedTasks = await repository.getSavedTasks();
       expect(savedTasks.length, 1);
       expect(savedTasks.first.name, 'First Task');
+    });
+
+    test('locks all saved tasks except first one when premium expires',
+        () async {
+      // Arrange - Create container with premium enabled
+      final container = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        hasPremium: true,
+      );
+
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Create multiple saved tasks while having premium
+      final task1 =
+          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task2 =
+          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task3 =
+          await repository.createTask(DownloadTestConstants.defaultOptions);
+
+      await notifier.createSavedTask(task1, name: 'Task 1');
+      await Future.delayed(const Duration(milliseconds: 5));
+      await notifier.createSavedTask(task2, name: 'Task 2');
+      await Future.delayed(const Duration(milliseconds: 5));
+      await notifier.createSavedTask(task3, name: 'Task 3');
+      await Future.delayed(const Duration(milliseconds: 5));
+
+      // Verify all tasks can be accessed with premium
+      final savedTasks = await repository.getSavedTasks();
+      expect(savedTasks.length, 3);
+
+      // Act - Simulate premium expiration by recreating container without premium
+      final nonPremiumContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        hasPremium: false,
+      );
+
+      // Verify lock states
+      final lockState =
+          await nonPremiumContainer.read(savedTaskLockProvider.future);
+      expect(
+        lockState.lockedIds,
+        // All except the newest task should be locked
+        {task1.id, task2.id},
+      );
+    });
+
+    test('automatically unlocks saved tasks when premium is restored',
+        () async {
+      // Arrange - Start with premium to create tasks
+      final initContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        hasPremium: true,
+      );
+
+      final initNotifier = initContainer.read(bulkDownloadProvider.notifier);
+
+      // Create multiple tasks while premium
+      final task1 =
+          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task2 =
+          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task3 =
+          await repository.createTask(DownloadTestConstants.defaultOptions);
+
+      await initNotifier.createSavedTask(task1, name: 'Task 1');
+      await Future.delayed(const Duration(milliseconds: 5));
+      await initNotifier.createSavedTask(task2, name: 'Task 2');
+      await Future.delayed(const Duration(milliseconds: 5));
+      await initNotifier.createSavedTask(task3, name: 'Task 3');
+
+      // Act - Simulate premium expiration
+      final nonPremiumContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        hasPremium: false,
+      );
+
+      // Verify tasks are locked when premium expires
+      final nonPremiumLockState =
+          await nonPremiumContainer.read(savedTaskLockProvider.future);
+      expect(nonPremiumLockState.lockedIds, {task1.id, task2.id});
+
+      // Act - Simulate premium restoration
+      final premiumContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        hasPremium: true,
+      );
+
+      // Assert - All tasks should be unlocked
+      final restoredLockState =
+          await premiumContainer.read(savedTaskLockProvider.future);
+      expect(restoredLockState.lockedIds, isEmpty);
     });
   });
 }

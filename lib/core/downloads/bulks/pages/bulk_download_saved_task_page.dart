@@ -12,6 +12,7 @@ import '../../../foundation/toast.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
+import '../providers/saved_task_lock_notifier.dart';
 import '../types/download_configs.dart';
 import '../types/saved_download_task.dart';
 import 'bulk_download_edit_saved_task_page.dart';
@@ -43,6 +44,10 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
                     ),
                   )
                 : ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
                     itemCount: tasks.length,
                     itemBuilder: (context, index) {
                       final savedTask = tasks[index];
@@ -58,57 +63,105 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
                         },
                       );
 
-                      return ListTile(
-                        title: Text(savedTask.name ?? 'Untitled'),
-                        subtitle: Text(
-                          savedTask.task.tags ?? 'No tags',
-                        ),
-                        onTap: () async {
-                          await navigator.push(
-                            CupertinoPageRoute(
-                              builder: (context) =>
-                                  BulkDownloadEditSavedTaskPage(
-                                savedTask: savedTask,
-                              ),
-                            ),
-                          );
-                          ref.invalidate(savedDownloadTasksProvider);
-                        },
-                        trailing: _ActionButton(
-                          icon: const Icon(
-                            FontAwesomeIcons.play,
+                      return _SavedTaskFrame(
+                        taskId: savedTask.task.id,
+                        child: ListTile(
+                          title: Text(savedTask.name ?? 'Untitled'),
+                          subtitle: Text(
+                            savedTask.task.tags ?? 'No tags',
                           ),
-                          onPressed: () {
-                            notifier.runSavedTask(
-                              savedTask,
-                              downloadConfigs: downloadConfigs,
+                          onTap: () async {
+                            await navigator.push(
+                              CupertinoPageRoute(
+                                builder: (context) =>
+                                    BulkDownloadEditSavedTaskPage(
+                                  savedTask: savedTask,
+                                ),
+                              ),
+                            );
+                            ref.invalidate(savedDownloadTasksProvider);
+                          },
+                          trailing: _ActionButton(
+                            icon: const Icon(
+                              FontAwesomeIcons.play,
+                            ),
+                            onPressed: () {
+                              notifier.runSavedTask(
+                                savedTask,
+                                downloadConfigs: downloadConfigs,
+                              );
+                            },
+                          ),
+                          onLongPress: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => _ModalOptions(
+                                savedTask: savedTask,
+                                onDelete: () async {
+                                  await notifier.deleteSavedTask(savedTask.id);
+                                  ref.invalidate(savedDownloadTasksProvider);
+                                },
+                                onRun: () {
+                                  notifier.runSavedTask(
+                                    savedTask,
+                                    downloadConfigs: downloadConfigs,
+                                  );
+                                  ref.invalidate(savedDownloadTasksProvider);
+                                },
+                              ),
                             );
                           },
                         ),
-                        onLongPress: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => _ModalOptions(
-                              savedTask: savedTask,
-                              onDelete: () async {
-                                await notifier.deleteSavedTask(savedTask.id);
-                                ref.invalidate(savedDownloadTasksProvider);
-                              },
-                              onRun: () {
-                                notifier.runSavedTask(
-                                  savedTask,
-                                  downloadConfigs: downloadConfigs,
-                                );
-                                ref.invalidate(savedDownloadTasksProvider);
-                              },
-                            ),
-                          );
-                        },
                       );
                     },
                   ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SavedTaskFrame extends ConsumerWidget {
+  const _SavedTaskFrame({
+    required this.taskId,
+    required this.child,
+  });
+
+  final String taskId;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLocked = ref.watch(isSavedTaskLockedProvider(taskId));
+
+    return GrayedOut(
+      opacity: 0.2,
+      grayedOut: isLocked,
+      stackOverlay: const [
+        Positioned.fill(
+          child: Icon(
+            FontAwesomeIcons.lock,
+            color: Colors.white,
+          ),
+        ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+        ),
+        margin: const EdgeInsets.symmetric(
+          vertical: 4,
+        ),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+            width: 0.5,
+          ),
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: child,
       ),
     );
   }

@@ -40,6 +40,7 @@ import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
 import 'file_system_download_exist_checker.dart';
 import 'providers.dart';
+import 'saved_task_lock_notifier.dart';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart'
@@ -841,6 +842,27 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
+      // Check if download is already 100% completed
+      final completedCount = await _withRepo(
+        (repo) => repo.getRecordsCountBySessionId(
+          sessionId,
+          status: DownloadRecordStatus.completed,
+        ),
+      );
+      final totalRecords =
+          await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
+
+      if (completedCount == totalRecords) {
+        await tryCompleteSession(
+          sessionId,
+          countInfo: (
+            total: totalRecords,
+            completed: completedCount,
+          ),
+        );
+        return;
+      }
+
       final page = currentSession.currentPage;
       final totalPages = currentSession.totalPages;
 
@@ -1038,7 +1060,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
   }
 
-  Future<void> tryCompleteSession(String sessionId) async {
+  Future<void> tryCompleteSession(
+    String sessionId, {
+    RecordCountInfo? countInfo,
+  }) async {
     final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
 
     var session = await _withRepo((repo) => repo.getSession(sessionId));
@@ -1046,21 +1071,25 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       return;
     }
 
-    if (session.status != DownloadSessionStatus.running) {
-      return;
+    if (countInfo == null) {
+      if (session.status != DownloadSessionStatus.running) {
+        return;
+      }
     }
 
-    final records = await _withRepo(
+    var total = countInfo?.total;
+    var completed = countInfo?.completed;
+
+    total ??=
+        await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
+    completed ??= await _withRepo(
       (repo) => repo.getRecordsCountBySessionId(
         sessionId,
         status: DownloadRecordStatus.completed,
       ),
     );
 
-    // Get total records to compare
-    final totalRecords =
-        await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
-    final allCompleted = records == totalRecords;
+    final allCompleted = total == completed;
 
     if (!allCompleted) {
       return;
@@ -1272,6 +1301,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     try {
+      final lockState = await ref.read(savedTaskLockProvider.future);
+
+      if (lockState.isLocked(savedTask.task.id)) {
+        state = state.copyWith(
+          error: NonPremiumSavedTaskLimitError.new,
+        );
+        return;
+      }
+
       // Start downloading the existing task directly
       await downloadFromTask(
         savedTask.task,
@@ -1407,6 +1445,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 }
+
+typedef RecordCountInfo = ({
+  int completed,
+  int total,
+});
 
 Future<List<Post>> _filterBlacklistedTags(
   List<Post> posts,

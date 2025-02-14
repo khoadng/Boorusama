@@ -6,10 +6,14 @@ class GrayedOut extends StatelessWidget {
     required this.child,
     super.key,
     this.grayedOut = true,
+    this.stackOverlay = const [],
+    this.opacity,
   });
 
   final Widget child;
   final bool grayedOut;
+  final List<Widget> stackOverlay;
+  final double? opacity;
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +21,12 @@ class GrayedOut extends StatelessWidget {
         ? Stack(
             children: [
               Opacity(
-                opacity: 0.3,
+                opacity: opacity ?? 0.3,
                 child: IgnorePointer(
                   child: child,
                 ),
               ),
+              ...stackOverlay,
             ],
           )
         : child;
