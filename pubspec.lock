@@ -788,6 +788,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
   frontend_server_client:
     dependency: transitive
     description:
@@ -1405,6 +1413,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  purchases_flutter:
+    dependency: "direct main"
+    description:
+      name: purchases_flutter
+      sha256: "63711ef3716779d4a38ea7bfaa57673d294eecc43ac654438c1db04bf5e72f20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.4.6"
   rate_my_app:
     dependency: "direct main"
     description:
@@ -2112,10 +2128,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
-      sha256: "8e0593559bfecd35eb1757d6907ed6b995a41ef82607d6113df897c2805ce6be"
+      sha256: "7310de7efa4e6df8b3d2ff14aef3f290bc00b43363f2d0028845e6de46507fc9"
       url: "https://pub.dev"
     source: hosted
-    version: "3.18.0"
+    version: "3.18.1"
   win32:
     dependency: transitive
     description:

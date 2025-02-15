@@ -98,6 +98,7 @@ dependencies:
   percent_indicator: ^4.2.3
   permission_handler: ^11.3.1
   petitparser: ^6.0.2
+  purchases_flutter: ^8.4.1
   rate_my_app: ^2.2.0
   readmore: ^3.0.0
   reorderable_grid_view: ^2.2.8

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../loggers.dart';
+import '../platform.dart';
+import '../revenuecat/revenuecat.dart';
 import 'dummy.dart';
 import 'in_app_purchase.dart';
 import 'subscription.dart';
@@ -80,6 +82,18 @@ const _kPackages = <Package>[
 Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
   Logger logger,
 ) async {
+  final (InAppPurchase, SubscriptionManager, Package?) data;
+
+  if (isMobilePlatform()) {
+    data = (await initRevenuecatIap(logger)) ?? await _initDummyIap();
+  } else {
+    data = await _initDummyIap();
+  }
+
+  return data;
+}
+
+Future<(InAppPurchase, SubscriptionManager, Package?)> _initDummyIap() async {
   final iap = DummyInAppPurchase(
     packages: _kPackages,
   );
