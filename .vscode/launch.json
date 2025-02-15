@@ -7,7 +7,7 @@
             "type": "dart",
             "flutterMode": "debug",
             "args": [
-                "--flavor", 
+                "--flavor",
                 "dev",
                 "--dart-define-from-file",
                 "env/dev.json"
@@ -29,7 +29,7 @@
             "type": "dart",
             "flutterMode": "profile",
             "args": [
-                "--flavor", 
+                "--flavor",
                 "dev",
                 "--dart-define-from-file",
                 "env/dev.json"
@@ -41,10 +41,34 @@
             "type": "dart",
             "flutterMode": "release",
             "args": [
-                "--flavor", 
+                "--flavor",
                 "dev",
                 "--dart-define-from-file",
                 "env/dev.json"
+            ]
+        },
+        {
+            "name": "boorusama prod (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define-from-file",
+                "env/prod.json"
+            ]
+        },
+        {
+            "name": "boorusama prod (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define-from-file",
+                "env/prod.json"
             ]
         }
     ]
