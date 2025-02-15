@@ -3,24 +3,29 @@ import 'package:equatable/equatable.dart';
 
 const defaultBenefits = <Benefit>[
   Benefit(
-    title: 'Themes',
+    title: 'Exclusive Themes',
     description:
         'Enjoy a variety of themes to choose from and customize. Give each profile its own unique look.',
   ),
   Benefit(
-    title: 'Customize your layout',
+    title: 'Customize Your Layout',
     description:
         'Not a fan of the default layout? Want to see more or less info? Tweak it to your liking!',
   ),
   Benefit(
-    title: 'Custom home screen',
+    title: 'Custom Home Screen',
     description:
-        'Set your home screen to Bookmarks, Search, or any other page you prefer.',
+        'Set your home screen to Bookmarks, Search, or any other page you prefer for quick access.',
   ),
   Benefit(
-    title: 'Support indie developer',
+    title: 'Enhanced Bulk Downloader',
     description:
-        'Support my solo development efforts so I can keep rolling out updates and improvements.',
+        'Unlimited templates, multiple sessions and seamless resume after restart.',
+  ),
+  Benefit(
+    title: 'Support Development',
+    description:
+        'Run by one developer since 2020, this project relies on your support for ongoing updates and improvements.',
   ),
 ];
 
