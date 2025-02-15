@@ -16,6 +16,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(savedDownloadTasksProvider);
+    final notifier = ref.watch(savedDownloadTasksProvider.notifier);
 
     return CustomContextMenuOverlay(
       child: Scaffold(
@@ -23,7 +24,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
           title: const Text('Templates').tr(),
         ),
         body: RefreshIndicator(
-          onRefresh: () => ref.refresh(savedDownloadTasksProvider.future),
+          onRefresh: () => notifier.refresh(),
           child: tasksAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stack) => Center(child: Text('Error: $error')),

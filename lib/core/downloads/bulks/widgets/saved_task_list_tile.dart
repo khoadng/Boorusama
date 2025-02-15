@@ -1,13 +1,17 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// Project imports:
 import '../../../foundation/toast.dart';
 import '../../../premiums/routes.dart';
+import '../../../routers/routes.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/bulk_download_edit_saved_task_page.dart';
-import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
 import '../types/download_configs.dart';
@@ -17,27 +21,32 @@ class SavedTaskListTile extends ConsumerWidget {
   const SavedTaskListTile({
     required this.savedTask,
     super.key,
+    this.enableTap = true,
   });
 
   final SavedDownloadTask savedTask;
+  final bool enableTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(bulkDownloadProvider.notifier);
+    final notifier = ref.watch(savedDownloadTasksProvider.notifier);
     final isLocked = ref.watch(isSavedTaskLockedProvider(savedTask.task.id));
     final navigator = Navigator.of(context);
     final listTileTheme = Theme.of(context).listTileTheme;
+    final currentRouteName = ModalRoute.of(context)?.settings.name;
 
-    final downloadConfigs = DownloadConfigs(
-      onDownloadStart: () {
-        showSimpleSnackBar(
-          context: context,
-          content: Text(
-            'Downloading ${savedTask.name}...',
-          ),
-        );
-      },
-    );
+    final downloadConfigs = currentRouteName != kBulkdownload
+        ? DownloadConfigs(
+            onDownloadStart: () {
+              showSimpleSnackBar(
+                context: context,
+                content: Text(
+                  'Downloading ${savedTask.name}...',
+                ),
+              );
+            },
+          )
+        : null;
 
     return GrayedOut(
       opacity: 0.2,
@@ -68,35 +77,37 @@ class SavedTaskListTile extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
-            onTap: () async {
-              await navigator.push(
-                CupertinoPageRoute(
-                  builder: (context) => BulkDownloadEditSavedTaskPage(
-                    savedTask: savedTask,
-                  ),
-                ),
-              );
-              ref.invalidate(savedDownloadTasksProvider);
-            },
-            onLongPress: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => _ModalOptions(
-                  savedTask: savedTask,
-                  onDelete: () async {
-                    await notifier.deleteSavedTask(savedTask.id);
-                    ref.invalidate(savedDownloadTasksProvider);
-                  },
-                  onRun: () {
-                    notifier.runSavedTask(
-                      savedTask,
-                      downloadConfigs: downloadConfigs,
+            onTap: enableTap
+                ? () async {
+                    await navigator.push(
+                      CupertinoPageRoute(
+                        builder: (context) => BulkDownloadEditSavedTaskPage(
+                          savedTask: savedTask,
+                        ),
+                      ),
                     );
                     ref.invalidate(savedDownloadTasksProvider);
-                  },
-                ),
-              );
-            },
+                  }
+                : null,
+            onLongPress: enableTap
+                ? () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => _ModalOptions(
+                        savedTask: savedTask,
+                        onDelete: () {
+                          notifier.delete(savedTask);
+                        },
+                        onRun: () {
+                          notifier.run(
+                            savedTask,
+                            downloadConfigs: downloadConfigs,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                : null,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -120,7 +131,7 @@ class SavedTaskListTile extends ConsumerWidget {
                   _ActionButton(
                     icon: const Icon(FontAwesomeIcons.play),
                     onPressed: () {
-                      notifier.runSavedTask(
+                      notifier.run(
                         savedTask,
                         downloadConfigs: downloadConfigs,
                       );

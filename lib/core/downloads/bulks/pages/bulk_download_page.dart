@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,13 +9,14 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/ref.dart';
+import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';
 import '../../bulks.dart';
 import '../../l10n.dart';
-import '../../routes/route_utils.dart';
 import '../providers/bulk_download_notifier.dart';
-import 'bulk_download_completed_page.dart';
-import 'bulk_download_saved_task_page.dart';
+import '../providers/saved_download_task_provider.dart';
+import '../routes/internal_routes.dart';
+import '../widgets/saved_task_list_tile.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({super.key});
@@ -68,11 +68,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
                     child: const Icon(Symbols.history),
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => const BulkDownloadCompletedPage(),
-                      ),
-                    );
+                    goToBulkDownloadCompletedPage(context);
                     notifier.clearUnseenFinishedSessions();
                   },
                 );
@@ -81,11 +77,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
             IconButton(
               icon: const Icon(Symbols.bookmark),
               onPressed: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => const BulkDownloadSavedTaskPage(),
-                  ),
-                );
+                goToBulkDownloadSavedTasksPage(context);
               },
             ),
           ],
@@ -133,20 +125,76 @@ class BulkDownloadActionSessions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessiosn = ref.watch(bulkDownloadSessionsProvider);
+    final sessions = ref.watch(bulkDownloadSessionsProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return sessiosn.isNotEmpty
+    return sessions.isNotEmpty
         ? ListView.builder(
-            itemCount: sessiosn.length,
+            itemCount: sessions.length,
             itemBuilder: (context, index) => BulkDownloadTaskTile(
-              session: sessiosn[index],
+              session: sessions[index],
             ),
           )
-        : Center(
-            child: const Text(
-              DownloadTranslations.bulkDownloadEmpty,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ).tr(),
-          );
+        : ref.watch(savedDownloadTasksProvider).when(
+              data: (tasks) => tasks.isEmpty
+                  ? Center(
+                      child: Text(
+                        DownloadTranslations.bulkDownloadEmpty,
+                        style: textTheme.titleSmall?.copyWith(
+                          color: colorScheme.hintColor,
+                        ),
+                      ),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          child: Center(
+                            child: Text(
+                              DownloadTranslations.bulkDownloadEmpty,
+                              style: textTheme.titleSmall?.copyWith(
+                                color: colorScheme.hintColor,
+                              ),
+                            ).tr(),
+                          ),
+                        ),
+                        const Divider(),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          child: const Text(
+                            'Templates',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ).tr(),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 12,
+                            ),
+                            itemCount: tasks.length,
+                            itemBuilder: (context, index) => SavedTaskListTile(
+                              savedTask: tasks[index],
+                              enableTap: false,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              error: (error, stack) => Center(
+                child: Text('Error: $error'),
+              ),
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
   }
 }

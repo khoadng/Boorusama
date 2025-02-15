@@ -26,7 +26,7 @@ class DownloadTranslations {
   static const String bulkDownloadTitle = 'Bulk Download';
   static const String bulkDownloadNewDownloadTitle = 'New download';
   static const String bulkDownloadCreate = 'New download';
-  static const String bulkDownloadEmpty = 'No downloads';
+  static const String bulkDownloadEmpty = 'No active download sessions';
   static const String bulkDownloadDelete = 'Delete';
   static const String bulkDownloadCopyPath = 'Copy path';
   static const String bulkDownloadStart = 'Start';

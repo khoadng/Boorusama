@@ -2,11 +2,62 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../types/download_configs.dart';
+import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
+import 'bulk_download_notifier.dart';
 import 'providers.dart';
 
+class SavedDownloadTasksNotifier
+    extends AsyncNotifier<List<SavedDownloadTask>> {
+  @override
+  Future<List<SavedDownloadTask>> build() async {
+    final repo = await ref.watch(downloadRepositoryProvider.future);
+    final tasks = await repo.getSavedTasks();
+
+    return tasks;
+  }
+
+  Future<bool> create(DownloadTask task) async {
+    final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
+    final success = await bulkNofifier.createSavedTask(
+      task,
+      name: task.tags,
+    );
+
+    if (success) {
+      ref.invalidateSelf();
+    }
+
+    return success;
+  }
+
+  Future<void> delete(SavedDownloadTask task) async {
+    final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
+    await bulkNofifier.deleteSavedTask(task.id);
+
+    ref.invalidateSelf();
+  }
+
+  Future<void> run(
+    SavedDownloadTask task, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
+    await bulkNofifier.runSavedTask(
+      task,
+      downloadConfigs: downloadConfigs,
+    );
+
+    ref.invalidateSelf();
+  }
+
+  Future<void> refresh() async {
+    ref.invalidateSelf();
+  }
+}
+
 final savedDownloadTasksProvider =
-    FutureProvider.autoDispose<List<SavedDownloadTask>>((ref) async {
-  final repo = await ref.watch(downloadRepositoryProvider.future);
-  return repo.getSavedTasks();
-});
+    AsyncNotifierProvider<SavedDownloadTasksNotifier, List<SavedDownloadTask>>(
+  SavedDownloadTasksNotifier.new,
+);

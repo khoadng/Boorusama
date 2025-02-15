@@ -14,7 +14,7 @@ import '../../../widgets/widgets.dart';
 import '../../l10n.dart';
 import '../providers/providers.dart';
 import '../types/bulk_download_session.dart';
-import 'bulk_download_completed_session_tile.dart';
+import '../widgets/bulk_download_completed_session_tile.dart';
 
 class BulkDownloadCompletedPage extends ConsumerStatefulWidget {
   const BulkDownloadCompletedPage({super.key});

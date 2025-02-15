@@ -13,15 +13,18 @@ import 'package:readmore/readmore.dart';
 // Project imports:
 import '../../../configs/ref.dart';
 import '../../../foundation/clipboard.dart';
+import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';
 import '../../l10n.dart';
+import '../pages/bulk_download_saved_task_page.dart';
 import '../providers/bulk_download_notifier.dart';
+import '../providers/saved_download_task_provider.dart';
+import '../routes/internal_routes.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
-import 'bulk_download_saved_task_page.dart';
 
 class BulkDownloadCompletedSessionTile extends ConsumerWidget {
   const BulkDownloadCompletedSessionTile({
@@ -117,8 +120,7 @@ class _CreateSavedTaskButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final notifier = ref.watch(bulkDownloadProvider.notifier);
-    final navigator = Navigator.of(context);
+    final notifier = ref.watch(savedDownloadTasksProvider.notifier);
 
     return CircularIconButton(
       backgroundColor: colorScheme.surfaceContainer,
@@ -128,14 +130,22 @@ class _CreateSavedTaskButton extends ConsumerWidget {
         color: colorScheme.onSurfaceVariant,
       ),
       onPressed: () async {
-        final success = await notifier.createSavedTask(task);
+        final success = await notifier.create(task);
 
         if (success) {
-          await navigator.push(
-            CupertinoPageRoute(
-              builder: (context) => const BulkDownloadSavedTaskPage(),
-            ),
-          );
+          if (context.mounted) {
+            showSimpleSnackBar(
+              context: context,
+              content: const Text('Template created'),
+              action: SnackBarAction(
+                label: 'View',
+                textColor: colorScheme.surface,
+                onPressed: () {
+                  goToBulkDownloadSavedTasksPage(context);
+                },
+              ),
+            );
+          }
         }
       },
     );
@@ -245,8 +255,8 @@ class _ContextMenu extends ConsumerWidget {
             onPressed: () async {
               final navigator = Navigator.of(context);
               final success = await ref
-                  .read(bulkDownloadProvider.notifier)
-                  .createSavedTask(session.task);
+                  .read(savedDownloadTasksProvider.notifier)
+                  .create(session.task);
 
               if (success) {
                 await navigator.push(
