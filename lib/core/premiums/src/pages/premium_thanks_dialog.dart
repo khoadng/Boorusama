@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../theme.dart';
+import '../../../widgets/widgets.dart';
 
 class PremiumThanksDialog extends StatelessWidget {
   const PremiumThanksDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return BooruDialog(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 20),
           const Text(
             'Thank you!',
             style: TextStyle(
@@ -50,7 +49,7 @@ class PremiumThanksDialog extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
         ],
       ),
     );

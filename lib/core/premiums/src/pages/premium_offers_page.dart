@@ -40,12 +40,7 @@ class PremiumOffersPage extends ConsumerWidget {
               if (success == true) {
                 showDialog(
                   context: context,
-                  builder: (context) => const Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: PremiumThanksDialog(),
-                  ),
+                  builder: (context) => const PremiumThanksDialog(),
                 );
               } else if (success == false) {
                 _showFailedPurchase(context);

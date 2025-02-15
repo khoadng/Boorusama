@@ -174,6 +174,7 @@ class _CreateBulkDownloadTaskSheetState
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
+                  vertical: 8,
                 ),
                 child: Row(
                   spacing: 16,
