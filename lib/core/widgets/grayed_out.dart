@@ -8,12 +8,14 @@ class GrayedOut extends StatelessWidget {
     this.grayedOut = true,
     this.stackOverlay = const [],
     this.opacity,
+    this.onTap,
   });
 
   final Widget child;
   final bool grayedOut;
   final List<Widget> stackOverlay;
   final double? opacity;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,12 @@ class GrayedOut extends StatelessWidget {
                 ),
               ),
               ...stackOverlay,
+              if (onTap != null)
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: onTap,
+                  ),
+                ),
             ],
           )
         : child;

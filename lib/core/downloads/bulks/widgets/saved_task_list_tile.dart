@@ -1,0 +1,210 @@
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../foundation/toast.dart';
+import '../../../premiums/routes.dart';
+import '../../../widgets/widgets.dart';
+import '../pages/bulk_download_edit_saved_task_page.dart';
+import '../providers/bulk_download_notifier.dart';
+import '../providers/saved_download_task_provider.dart';
+import '../providers/saved_task_lock_notifier.dart';
+import '../types/download_configs.dart';
+import '../types/saved_download_task.dart';
+
+class SavedTaskListTile extends ConsumerWidget {
+  const SavedTaskListTile({
+    required this.savedTask,
+    super.key,
+  });
+
+  final SavedDownloadTask savedTask;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
+    final isLocked = ref.watch(isSavedTaskLockedProvider(savedTask.task.id));
+    final navigator = Navigator.of(context);
+    final listTileTheme = Theme.of(context).listTileTheme;
+
+    final downloadConfigs = DownloadConfigs(
+      onDownloadStart: () {
+        showSimpleSnackBar(
+          context: context,
+          content: Text(
+            'Downloading ${savedTask.name}...',
+          ),
+        );
+      },
+    );
+
+    return GrayedOut(
+      opacity: 0.2,
+      grayedOut: isLocked,
+      onTap: () {
+        goToPremiumPage(context);
+      },
+      stackOverlay: const [
+        Positioned.fill(
+          child: Icon(
+            FontAwesomeIcons.lock,
+            color: Colors.white,
+          ),
+        ),
+      ],
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
+            width: 0.5,
+          ),
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () async {
+              await navigator.push(
+                CupertinoPageRoute(
+                  builder: (context) => BulkDownloadEditSavedTaskPage(
+                    savedTask: savedTask,
+                  ),
+                ),
+              );
+              ref.invalidate(savedDownloadTasksProvider);
+            },
+            onLongPress: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => _ModalOptions(
+                  savedTask: savedTask,
+                  onDelete: () async {
+                    await notifier.deleteSavedTask(savedTask.id);
+                    ref.invalidate(savedDownloadTasksProvider);
+                  },
+                  onRun: () {
+                    notifier.runSavedTask(
+                      savedTask,
+                      downloadConfigs: downloadConfigs,
+                    );
+                    ref.invalidate(savedDownloadTasksProvider);
+                  },
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          savedTask.name ?? 'Untitled',
+                          style: listTileTheme.titleTextStyle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          savedTask.task.tags ?? 'No tags',
+                          style: listTileTheme.subtitleTextStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                  _ActionButton(
+                    icon: const Icon(FontAwesomeIcons.play),
+                    onPressed: () {
+                      notifier.runSavedTask(
+                        savedTask,
+                        downloadConfigs: downloadConfigs,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ModalOptions extends StatelessWidget {
+  const _ModalOptions({
+    required this.savedTask,
+    required this.onDelete,
+    required this.onRun,
+  });
+
+  final SavedDownloadTask savedTask;
+  final void Function() onDelete;
+  final void Function() onRun;
+
+  @override
+  Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 8),
+          const DragLine(),
+          const SizedBox(height: 8),
+          ListTile(
+            title: const Text('Run'),
+            onTap: () {
+              onRun();
+              navigator.pop();
+            },
+          ),
+          ListTile(
+            title: const Text('Delete'),
+            onTap: () {
+              onDelete();
+              navigator.pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.onPressed,
+    required this.icon,
+  });
+
+  final VoidCallback onPressed;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return CircularIconButton(
+      padding: const EdgeInsets.all(8),
+      backgroundColor: colorScheme.surfaceContainer,
+      icon: Theme(
+        data: ThemeData(
+          iconTheme: IconThemeData(
+            color: colorScheme.onSurfaceVariant,
+            fill: 1,
+            size: 18,
+          ),
+        ),
+        child: icon,
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
