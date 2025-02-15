@@ -76,7 +76,10 @@ class _MoebooruPostDetailsDesktopPageState
       posts: widget.posts,
       initialIndex: widget.initialIndex,
       onExit: widget.onExit,
-      onPageChanged: widget.onPageChanged,
+      onPageChanged: (page) {
+        widget.onPageChanged(page);
+        _loadFavoriteUsers(posts[page].id);
+      },
       imageUrlBuilder: defaultPostImageUrlBuilder(ref),
       topRightButtonsBuilder: (currentPage, expanded, post) =>
           GeneralMoreActionButton(post: post),
