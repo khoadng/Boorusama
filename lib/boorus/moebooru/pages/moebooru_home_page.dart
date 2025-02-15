@@ -32,7 +32,8 @@ class MoebooruHomePage extends ConsumerStatefulWidget {
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
-    final favoritesPageBuilder = ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
+    final favoritesPageBuilder =
+        ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
@@ -104,7 +105,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
-        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails()) 
+        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails())
           HomeNavigationTile(
             value: 3,
             constraints: constraints,
@@ -116,7 +117,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       desktopViews: [
         MoebooruPopularPage(),
         MoebooruPopularRecentPage(),
-        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails()) 
+        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails())
           favoritesPageBuilder(context, ref.watchConfig),
       ],
     );

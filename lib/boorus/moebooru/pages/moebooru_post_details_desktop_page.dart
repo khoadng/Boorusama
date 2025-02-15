@@ -50,6 +50,7 @@ class _MoebooruPostDetailsDesktopPageState
       _loadFavoriteUsers(posts[widget.initialIndex].id);
     });
   }
+
   Future<void> _loadFavoriteUsers(int postId) async {
     final config = ref.readConfig;
     final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
@@ -83,7 +84,8 @@ class _MoebooruPostDetailsDesktopPageState
         post: post,
         tags: ref.watch(tagsProvider(config)),
       ),
-      toolbarBuilder:(context, post) => MoebooruPostDetailsActionToolbar(controller: widget.controller),
+      toolbarBuilder: (context, post) =>
+          MoebooruPostDetailsActionToolbar(controller: widget.controller),
       tagListBuilder: (context, post) => TagsTile(
         post: post,
         tags: ref.watch(tagsProvider(config)),
