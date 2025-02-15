@@ -33,6 +33,8 @@ class SankakuClient {
       url = url.replaceFirst('https://beta.', 'https://capi-v2.');
     } else if (url == 'https://sankaku.app/') {
       url = 'https://capi-v2.sankakucomplex.com';
+    } else if (url == 'https://sankakucomplex.com/') {
+      url = 'https://capi-v2.sankakucomplex.com';
     }
 
     _dio.options = BaseOptions(
