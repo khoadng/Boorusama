@@ -372,9 +372,7 @@ class ImportDataNotifier
               filePath: dbPath,
             );
 
-            state = state.copyWith(
-              forceReload: true,
-            );
+            ref.invalidate(searchHistoryRepoProvider);
         }
 
         state = state.copyWith(

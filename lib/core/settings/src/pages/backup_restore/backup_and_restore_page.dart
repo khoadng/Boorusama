@@ -286,16 +286,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     return BackupRestoreTile(
       leadingIcon: Symbols.history,
       title: 'Search histories',
-      subtitle: _searchHistoryDbRestartRequired
-          ? 'Restart required to prevent data corruption'
-          : null,
-      subtitleStyle: _searchHistoryDbRestartRequired
-          ? TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.error,
-            )
-          : null,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -360,16 +350,12 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             await sourceFile.copy(dbPath);
             _showSuccessToast('Search history imported successfully');
 
-            setState(() {
-              _searchHistoryDbRestartRequired = true;
-            });
+            ref.invalidate(searchHistoryRepoProvider);
           } catch (e) {
             _showErrorToast('Failed to import search history');
           }
         },
       );
-
-  var _searchHistoryDbRestartRequired = false;
 
   // SQLite files start with "SQLite format 3\0"
   bool _isSQLiteFile(List<int> header) {
