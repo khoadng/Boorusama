@@ -68,6 +68,11 @@ class DownloadTestConstants {
     tags: ['test_tags'],
   );
 
+  static const defaultConfigs = DownloadConfigs(
+    delayBetweenDownloads: Duration.zero,
+    delayBetweenRequests: Duration(milliseconds: 5),
+  );
+
   static final posts = [
     // page 1
     DummyPost(

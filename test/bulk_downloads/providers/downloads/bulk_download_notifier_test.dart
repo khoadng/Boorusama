@@ -7,7 +7,6 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
@@ -15,6 +14,7 @@ import 'common.dart';
 
 const _options = DownloadTestConstants.defaultOptions;
 final _posts = DownloadTestConstants.posts;
+const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
 void main() {
   late Database db;
@@ -46,7 +46,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -86,8 +86,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           blacklistedTags: {'tag1'},
         ),
       );
@@ -109,9 +108,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(
-          delayBetweenDownloads: null,
-        ),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -132,8 +129,7 @@ void main() {
       // Act
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           blacklistedTags: {
             'tag1',
             'tag3',
@@ -168,7 +164,7 @@ void main() {
       // Act
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -189,13 +185,13 @@ void main() {
       // Start first session
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Start second session
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Get all sessions for the task
@@ -253,7 +249,10 @@ void main() {
       expect(savedTasksAfterEdit.first.name, equals('new_name'));
 
       // Start a session from the saved task
-      await notifier.runSavedTask(savedTask);
+      await notifier.runSavedTask(
+        savedTask,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Assert
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -276,7 +275,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         taskId,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -293,7 +292,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         taskId,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -314,7 +313,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -336,7 +335,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -359,7 +358,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -399,8 +398,7 @@ void main() {
       // Act
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           blacklistedTags: {
             'tag5',
             'tag7',
@@ -447,7 +445,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);

@@ -12,6 +12,7 @@ import 'package:boorusama/core/downloads/bulks/types/saved_download_task.dart';
 import 'common.dart';
 
 const _options = DownloadTestConstants.defaultOptions;
+const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
 void main() {
   late Database db;
@@ -46,7 +47,10 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
-      await notifier.runSavedTask(savedTask);
+      await notifier.runSavedTask(
+        savedTask,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Assert
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -76,10 +80,16 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // First run
-      await notifier.runSavedTask(savedTask);
+      await notifier.runSavedTask(
+        savedTask,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Second run
-      await notifier.runSavedTask(savedTask);
+      await notifier.runSavedTask(
+        savedTask,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Assert
       final sessions = await repository.getSessionsByTaskId(task.id);

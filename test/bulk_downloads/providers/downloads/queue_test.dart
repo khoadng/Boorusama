@@ -8,7 +8,6 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
 import 'common.dart';
@@ -41,8 +40,7 @@ void main() {
       concurrency: 1,
       tags: ['tag1', 'tag2'],
     );
-    const downloadConfigs = DownloadConfigs(
-      delayBetweenDownloads: null,
+    final downloadConfigs = DownloadTestConstants.defaultConfigs.copyWith(
       // Test platform is Android so we can set this to make sure it's passed the options check
       androidSdkVersion: AndroidVersions.android15,
     );
@@ -87,7 +85,10 @@ void main() {
       final sessionId = sessions.first.id;
 
       // Act
-      await notifier.startPendingSession(sessionId);
+      await notifier.startPendingSession(
+        sessionId,
+        downloadConfigs: downloadConfigs,
+      );
 
       // Assert
       final updatedSession = await repository.getSession(sessionId);
@@ -110,14 +111,19 @@ void main() {
     test('should fail to start non-pending session', () async {
       // Arrange
       final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier
-          .downloadFromOptions(downloadOptions); // Creates running session
+      await notifier.downloadFromOptions(
+        downloadOptions,
+        downloadConfigs: downloadConfigs,
+      ); // Creates running session
 
       final sessions = await repository.getActiveSessions();
       final sessionId = sessions.first.id;
 
       // Act
-      await notifier.startPendingSession(sessionId);
+      await notifier.startPendingSession(
+        sessionId,
+        downloadConfigs: downloadConfigs,
+      );
 
       // Assert
       final state = container.read(bulkDownloadProvider);
@@ -133,7 +139,10 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
-      await notifier.startPendingSession('non-existent-session');
+      await notifier.startPendingSession(
+        'non-existent-session',
+        downloadConfigs: downloadConfigs,
+      );
 
       // Assert
       final state = container.read(bulkDownloadProvider);

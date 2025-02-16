@@ -356,7 +356,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     return;
   }
 
-  Future<void> startPendingSession(String sessionId) async {
+  Future<void> startPendingSession(
+    String sessionId, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
     final session = await _withRepo((repo) => repo.getSession(sessionId));
 
     if (session == null) {
@@ -391,7 +394,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       return;
     }
 
-    await _startDownloadWithSession(task, session);
+    await _startDownloadWithSession(
+      task,
+      session,
+      downloadConfigs: downloadConfigs,
+    );
   }
 
   Future<void> _startDownloadWithSession(
@@ -607,6 +614,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         final delay = downloadConfigs?.delayBetweenRequests;
         if (delay != null) {
           await delay.future;
+        } else {
+          await Future.delayed(const Duration(milliseconds: 200));
         }
 
         final items = await _getPosts(tags, page, task);
@@ -1387,6 +1396,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         downloader,
         downloadConfigs,
       );
+
+      final delay = downloadConfigs?.delayBetweenRequests;
+
+      if (delay != null) {
+        await delay.future;
+      } else {
+        await const Duration(milliseconds: 200).future;
+      }
     }
   }
 

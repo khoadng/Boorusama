@@ -26,6 +26,42 @@ class DownloadConfigs {
     this.androidSdkVersion,
   });
 
+  DownloadConfigs copyWith({
+    DownloadService? downloader,
+    NotificationPermissionManager? notificationPermissionManager,
+    Settings? settings,
+    DownloadFileNameBuilder? fileNameBuilder,
+    DownloadFileUrlExtractor? urlExtractor,
+    DownloadExistChecker? existChecker,
+    Map<String, String>? headers,
+    Set<String>? blacklistedTags,
+    String? baseUrl,
+    String? quality,
+    Duration? delayBetweenDownloads,
+    Duration? delayBetweenRequests,
+    VoidCallback? onDownloadStart,
+    int? androidSdkVersion,
+  }) {
+    return DownloadConfigs(
+      downloader: downloader ?? this.downloader,
+      notificationPermissionManager:
+          notificationPermissionManager ?? this.notificationPermissionManager,
+      settings: settings ?? this.settings,
+      fileNameBuilder: fileNameBuilder ?? this.fileNameBuilder,
+      urlExtractor: urlExtractor ?? this.urlExtractor,
+      existChecker: existChecker ?? this.existChecker,
+      headers: headers ?? this.headers,
+      blacklistedTags: blacklistedTags ?? this.blacklistedTags,
+      baseUrl: baseUrl ?? this.baseUrl,
+      quality: quality ?? this.quality,
+      delayBetweenDownloads:
+          delayBetweenDownloads ?? this.delayBetweenDownloads,
+      delayBetweenRequests: delayBetweenRequests ?? this.delayBetweenRequests,
+      onDownloadStart: onDownloadStart ?? this.onDownloadStart,
+      androidSdkVersion: androidSdkVersion ?? this.androidSdkVersion,
+    );
+  }
+
   final DownloadService? downloader;
   final NotificationPermissionManager? notificationPermissionManager;
   final Settings? settings;

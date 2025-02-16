@@ -12,6 +12,8 @@ import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
 import 'common.dart';
 
+const _defaultConfigs = DownloadTestConstants.defaultConfigs;
+
 void main() {
   late Database db;
   late DownloadRepositorySqlite repository;
@@ -42,13 +44,13 @@ void main() {
       // Act - Create first session
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Try to create second session
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final state = container.read(bulkDownloadProvider);
@@ -75,7 +77,7 @@ void main() {
       // Act - Create first session and start downloading
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Create second session but don't start downloading yet
@@ -118,7 +120,7 @@ void main() {
           await repository.createTask(DownloadTestConstants.defaultOptions);
       await notifier.downloadFromTask(
         firstTask,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Pause first session
@@ -132,7 +134,7 @@ void main() {
           await repository.createTask(DownloadTestConstants.defaultOptions);
       await notifier.downloadFromTask(
         secondTask,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert

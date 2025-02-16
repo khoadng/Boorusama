@@ -8,12 +8,12 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
 import 'common.dart';
 
 const _options = DownloadTestConstants.defaultOptions;
+const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 final _posts = DownloadTestConstants.posts;
 
 void main() {
@@ -56,8 +56,7 @@ void main() {
       // Act
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           existChecker: existChecker,
         ),
       );
@@ -92,8 +91,7 @@ void main() {
       // Act
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           existChecker: existChecker,
         ),
       );
@@ -122,8 +120,7 @@ void main() {
       // Act
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           existChecker: existChecker,
         ),
       );
@@ -151,8 +148,7 @@ void main() {
       // Act
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: DownloadConfigs(
-          delayBetweenDownloads: null,
+        downloadConfigs: _defaultConfigs.copyWith(
           existChecker: existChecker,
         ),
       );

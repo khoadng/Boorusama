@@ -7,10 +7,10 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'common.dart';
 
 const _options = DownloadTestConstants.defaultOptions;
+const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
 void main() {
   late Database db;
@@ -51,7 +51,7 @@ void main() {
       // Start task to create an active session
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Act

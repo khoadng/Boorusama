@@ -17,6 +17,7 @@ import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
 import 'common.dart';
 
 const _options = DownloadTestConstants.defaultOptions;
+const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
 void main() {
   late Database db;
@@ -47,7 +48,7 @@ void main() {
       // Start a task to create a session
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Get session ID from the first session
@@ -124,7 +125,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -156,7 +157,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -192,7 +193,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -315,18 +316,14 @@ void main() {
       unawaited(
         notifier.downloadFromTask(
           task1,
-          downloadConfigs: const DownloadConfigs(
-            delayBetweenDownloads: null,
-          ),
+          downloadConfigs: _defaultConfigs,
         ),
       );
 
       unawaited(
         notifier.downloadFromTask(
           task2,
-          downloadConfigs: const DownloadConfigs(
-            delayBetweenDownloads: null,
-          ),
+          downloadConfigs: _defaultConfigs,
         ),
       );
 
@@ -374,7 +371,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Get session ID
@@ -431,7 +428,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -532,7 +529,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -555,7 +552,10 @@ void main() {
       expect(pausedSession?.status, equals(DownloadSessionStatus.paused));
 
       // Act
-      await notifier.resumeSession(sessionId);
+      await notifier.resumeSession(
+        sessionId,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Assert
       final completedSession = await repository.getSession(sessionId);
@@ -573,7 +573,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -600,7 +600,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -610,7 +610,10 @@ void main() {
       await notifier.pauseSession(sessionId);
 
       // Act
-      await notifier.resumeSession(sessionId);
+      await notifier.resumeSession(
+        sessionId,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Assert
       final updatedSession = await repository.getSession(sessionId);
@@ -652,7 +655,10 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
-      await notifier.resumeSession(session.id);
+      await notifier.resumeSession(
+        session.id,
+        downloadConfigs: _defaultConfigs,
+      );
 
       // Assert
       expect(
@@ -672,7 +678,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -723,7 +729,7 @@ void main() {
       // Start download
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -735,7 +741,7 @@ void main() {
       // Act
       await notifier.resumeSuspendedSession(
         sessionId,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Assert
@@ -777,7 +783,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -799,7 +805,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -835,7 +841,7 @@ void main() {
       var notifier = myContainer.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Get session ID
@@ -867,7 +873,7 @@ void main() {
       // Resume suspended session
       await notifier.resumeSuspendedSession(
         sessionId,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Verify session is running
@@ -900,7 +906,7 @@ void main() {
       var notifier = myContainer.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -940,7 +946,7 @@ void main() {
       // Resume suspended session
       await notifier.resumeSuspendedSession(
         sessionId,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Verify completed records count is maintained
@@ -964,7 +970,7 @@ void main() {
       // Start initial download
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -1011,7 +1017,7 @@ void main() {
       // Resume suspended session
       await notifier.resumeSuspendedSession(
         sessionId,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Verify that completed records weren't redownloaded
@@ -1057,7 +1063,7 @@ void main() {
       var notifier = myContainer.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTask(
         task,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       // Get session ID
@@ -1124,7 +1130,7 @@ void main() {
       final notifier = myContainer.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
@@ -1159,7 +1165,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       await notifier.downloadFromTaskId(
         task.id,
-        downloadConfigs: const DownloadConfigs(delayBetweenDownloads: null),
+        downloadConfigs: _defaultConfigs,
       );
 
       final sessions = await repository.getSessionsByTaskId(task.id);
