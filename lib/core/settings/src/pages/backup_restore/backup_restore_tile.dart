@@ -11,12 +11,14 @@ class BackupRestoreTile extends StatelessWidget {
     required this.trailing,
     super.key,
     this.subtitle,
+    this.subtitleStyle,
     this.extra,
   });
 
   final IconData leadingIcon;
   final String title;
   final String? subtitle;
+  final TextStyle? subtitleStyle;
   final Widget trailing;
   final List<Widget>? extra;
 
@@ -55,10 +57,11 @@ class BackupRestoreTile extends StatelessWidget {
                 if (subtitle != null)
                   Text(
                     subtitle!,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.hintColor,
-                    ),
+                    style: subtitleStyle ??
+                        TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.hintColor,
+                        ),
                   ),
                 if (extra != null) ...extra!,
               ],

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:path/path.dart' show join;
 
 // Project imports:
 import '../../../../backups/routes.dart';
@@ -25,6 +26,7 @@ import '../../../../foundation/toast.dart';
 import '../../../../info/device_info.dart';
 import '../../../../info/package_info.dart';
 import '../../../../router.dart';
+import '../../../../search/histories/providers.dart';
 import '../../../../tags/favorites/providers.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
@@ -99,6 +101,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         _buildBookmark(),
         const SizedBox(height: 8),
         _buildBlacklistedTags(),
+        const SizedBox(height: 8),
+        _buildSearchHistories(),
         const SizedBox(height: 8),
         _buildSettings(),
         const SizedBox(height: 8),
@@ -278,6 +282,134 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     );
   }
 
+  Widget _buildSearchHistories() {
+    return BackupRestoreTile(
+      leadingIcon: Symbols.history,
+      title: 'Search histories',
+      subtitle: _searchHistoryDbRestartRequired
+          ? 'Restart required to prevent data corruption'
+          : null,
+      subtitleStyle: _searchHistoryDbRestartRequired
+          ? TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.error,
+            )
+          : null,
+      trailing: BooruPopupMenuButton(
+        onSelected: (value) {
+          switch (value) {
+            case 'export':
+              _pickSearchHistoryFolder(ref);
+            case 'import':
+              _pickSearchHistoryFile(ref);
+            default:
+          }
+        },
+        itemBuilder: const {
+          'export': Text('Export'),
+          'import': Text('Import'),
+        },
+      ),
+    );
+  }
+
+  Future<void> _pickSearchHistoryFolder(WidgetRef ref) =>
+      pickDirectoryPathToastOnError(
+        context: context,
+        onPick: (path) async {
+          try {
+            final dbPath = await getSearchHistoryDbPath();
+            final file = File(dbPath);
+            if (!file.existsSync()) {
+              _showErrorToast('No search history found');
+              return;
+            }
+
+            final destinationPath = join(path, kSearchHistoryDbName);
+            await file.copy(destinationPath);
+            _showSuccessToast('Search history exported successfully');
+          } catch (e) {
+            _showErrorToast('Failed to export search history');
+          }
+        },
+      );
+
+  void _pickSearchHistoryFile(WidgetRef ref) => _pickFile(
+        allowedExtensions: ['db'],
+        forceAnyFileType: true,
+        onPick: (path) async {
+          try {
+            final sourceFile = File(path);
+
+            // Check SQLite header magic number
+            final bytes = await sourceFile.openRead(0, 16).first;
+            final header = bytes.take(16).toList();
+            if (!_isSQLiteFile(header)) {
+              _showErrorToast('Invalid database file');
+              return;
+            }
+
+            final dbPath = await getSearchHistoryDbPath();
+            final destFile = File(dbPath);
+
+            if (destFile.existsSync()) {
+              await destFile.delete();
+            }
+
+            await sourceFile.copy(dbPath);
+            _showSuccessToast('Search history imported successfully');
+
+            setState(() {
+              _searchHistoryDbRestartRequired = true;
+            });
+          } catch (e) {
+            _showErrorToast('Failed to import search history');
+          }
+        },
+      );
+
+  var _searchHistoryDbRestartRequired = false;
+
+  // SQLite files start with "SQLite format 3\0"
+  bool _isSQLiteFile(List<int> header) {
+    const sqliteHeader = [
+      0x53,
+      0x51,
+      0x4C,
+      0x69,
+      0x74,
+      0x65,
+      0x20,
+      0x66,
+      0x6F,
+      0x72,
+      0x6D,
+      0x61,
+      0x74,
+      0x20,
+      0x33,
+      0x00,
+    ];
+    if (header.length < 16) return false;
+    for (var i = 0; i < 16; i++) {
+      if (header[i] != sqliteHeader[i]) return false;
+    }
+    return true;
+  }
+
+  void _showErrorToast(String message) {
+    if (context.mounted) {
+      showErrorToast(context, message);
+    }
+  }
+
+  void _showSuccessToast(String message) {
+    if (context.mounted) {
+      showSuccessToast(context, message);
+    }
+  }
+
   Future<bool> _showImportBooruConfigsAlertDialog(
     BooruConfigExportData data,
   ) async {
@@ -331,8 +463,12 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
   Future<void> _pickFile({
     required void Function(String path) onPick,
+    List<String> allowedExtensions = const ['json'],
+    bool forceAnyFileType = false,
   }) {
-    const allowedExtensions = ['json'];
+    if (forceAnyFileType) {
+      return _pickFileManualExtensionCheck(allowedExtensions, onPick);
+    }
 
     if (isAndroid()) {
       final androidVersion =
@@ -340,22 +476,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       // Android 9 or lower will need to use any file type
       if (androidVersion != null &&
           androidVersion <= AndroidVersions.android9) {
-        return pickSingleFilePathToastOnError(
-          context: context,
-          onPick: (path) {
-            final ext = p.extension(path);
-
-            if (!allowedExtensions.contains(ext.substring(1))) {
-              showErrorToast(
-                context,
-                'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed',
-              );
-              return;
-            }
-
-            onPick(path);
-          },
-        );
+        return _pickFileManualExtensionCheck(allowedExtensions, onPick);
       }
     }
 
@@ -366,6 +487,27 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       onPick: onPick,
     );
   }
+
+  Future<void> _pickFileManualExtensionCheck(
+    List<String> allowedExtensions,
+    void Function(String path) onPick,
+  ) =>
+      pickSingleFilePathToastOnError(
+        context: context,
+        onPick: (path) {
+          final ext = p.extension(path);
+
+          if (!allowedExtensions.contains(ext.substring(1))) {
+            showErrorToast(
+              context,
+              'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed',
+            );
+            return;
+          }
+
+          onPick(path);
+        },
+      );
 
   void _pickProfileFile(WidgetRef ref) => _pickFile(
         onPick: (path) {
