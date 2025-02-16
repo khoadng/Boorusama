@@ -8,6 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/home/home_navigation_tile.dart';
 import '../../../core/home/home_page_scaffold.dart';
@@ -30,6 +31,8 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final favoritesPageBuilder =
+        ref.watchBooruBuilder(config)?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
@@ -101,10 +104,20 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
+        if (favoritesPageBuilder != null && config.hasLoginDetails())
+          HomeNavigationTile(
+            value: 3,
+            constraints: constraints,
+            selectedIcon: Symbols.favorite,
+            icon: Symbols.favorite,
+            title: 'Favorites',
+          ),
       ],
-      desktopViews: const [
-        MoebooruPopularPage(),
-        MoebooruPopularRecentPage(),
+      desktopViews: [
+        const MoebooruPopularPage(),
+        const MoebooruPopularRecentPage(),
+        if (favoritesPageBuilder != null && config.hasLoginDetails())
+          favoritesPageBuilder(context),
       ],
     );
   }
