@@ -2,6 +2,6 @@
     "ENV_NAME": "dev",
     "EXPERIMENTAL_FEATURES": "",
     "PREFERRED_LAYOUT": "mobile",
-    "PREMIUM_MODE": "",
+    "PREMIUM_MODE": "free",
     "APP_NAME": "Boorusama Dev"
 }
