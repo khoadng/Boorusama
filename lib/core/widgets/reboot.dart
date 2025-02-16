@@ -41,7 +41,7 @@ class Reboot extends StatefulWidget {
 
   static void start(
     BuildContext context,
-    RebootData rebootData,
+    RebootData? rebootData,
   ) {
     context.findAncestorStateOfType<_RebootState>()!.restartApp(rebootData);
   }
@@ -51,9 +51,11 @@ class _RebootState extends State<Reboot> {
   Key _key = UniqueKey();
   late var _rebootData = widget.initialData;
 
-  void restartApp(RebootData rebootData) {
+  void restartApp(RebootData? rebootData) {
     setState(() {
-      _rebootData = rebootData;
+      if (rebootData != null) {
+        _rebootData = rebootData;
+      }
       _key = UniqueKey();
     });
   }

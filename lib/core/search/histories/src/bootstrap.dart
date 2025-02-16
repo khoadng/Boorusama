@@ -14,6 +14,7 @@ import 'data/search_history_repository_sqlite.dart';
 import 'providers.dart';
 
 const _kServiceName = 'Search History';
+const kSearchHistoryDbName = 'search_history.db';
 
 Future<Override> createSearchHistoryRepoOverride({
   BootLogger? bootLogger,
@@ -35,7 +36,7 @@ Future<Database?> _createDb(
     // Make sure the directory exists
     await Directory(dbFolderPath).create(recursive: true);
 
-    return sqlite3.open(join(dbFolderPath, 'search_history.db'));
+    return sqlite3.open(join(dbFolderPath, kSearchHistoryDbName));
   } on Exception catch (e) {
     logger?.logE(
       _kServiceName,
@@ -67,4 +68,10 @@ Future<SearchHistoryRepository> _createRepo({
     db.dispose();
     return EmptySearchHistoryRepository();
   }
+}
+
+// TODO: should have one place to get the db path in case we want to change it
+Future<String> getSearchHistoryDbPath() async {
+  final applicationDocumentsDir = await getApplicationDocumentsDirectory();
+  return join(applicationDocumentsDir.path, 'data', kSearchHistoryDbName);
 }

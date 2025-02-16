@@ -63,8 +63,11 @@ class ImportingStep extends ConsumerWidget {
     });
 
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final reloadPayload =
         ref.watch(importDataProvider(url).select((s) => s.reloadPayload));
+    final forceRestart =
+        ref.watch(importDataProvider(url).select((s) => s.forceReload));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -82,6 +85,7 @@ class ImportingStep extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 32),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 8,
             children: [
               ...tasks.map((task) {
@@ -107,7 +111,7 @@ class ImportingStep extends ConsumerWidget {
                         Text(
                           task.name,
                           style: TextStyle(
-                            color: theme.colorScheme.hintColor,
+                            color: colorScheme.hintColor,
                           ),
                         ),
                       ],
@@ -116,7 +120,7 @@ class ImportingStep extends ConsumerWidget {
                       children: [
                         Icon(
                           Icons.close,
-                          color: theme.colorScheme.error,
+                          color: colorScheme.error,
                         ),
                         const SizedBox(width: 4),
                         Text(task.name),
@@ -128,7 +132,7 @@ class ImportingStep extends ConsumerWidget {
                           child: Icon(
                             Icons.error,
                             size: 16,
-                            color: theme.colorScheme.error,
+                            color: colorScheme.error,
                           ),
                         ),
                       ],
@@ -137,7 +141,7 @@ class ImportingStep extends ConsumerWidget {
                       children: [
                         Icon(
                           Icons.check,
-                          color: theme.colorScheme.primary,
+                          color: colorScheme.primary,
                         ),
                         const SizedBox(width: 4),
                         Text(task.name),
@@ -151,55 +155,97 @@ class ImportingStep extends ConsumerWidget {
         if (!isDone)
           _buildCancelButton(context, isDone, reloadPayload, settings)
         else
-          reloadPayload != null
+          forceRestart
               ? Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    FilledButton(
-                      onPressed: () {
-                        Reboot.start(
-                          context,
-                          RebootData(
-                            config: reloadPayload.selectedConfig,
-                            configs: reloadPayload.configs,
-                            settings: reloadPayload.settings ?? settings,
+                    const Text(
+                      'PLEASE CLOSE AND REOPEN THE APP',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                            colorScheme.errorContainer.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info,
+                            color: colorScheme.error,
                           ),
-                        );
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'This is required to apply all changes and prevent data corruption.',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : reloadPayload != null
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FilledButton(
+                          onPressed: () {
+                            Reboot.start(
+                              context,
+                              RebootData(
+                                config: reloadPayload.selectedConfig,
+                                configs: reloadPayload.configs,
+                                settings: reloadPayload.settings ?? settings,
+                              ),
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            child: Text(
+                              'Restart App',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        _buildCancelButton(
+                          context,
+                          isDone,
+                          reloadPayload,
+                          settings,
+                        ),
+                      ],
+                    )
+                  : FilledButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Text(
-                          'Restart App',
+                          'Done',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildCancelButton(
-                      context,
-                      isDone,
-                      reloadPayload,
-                      settings,
-                    ),
-                  ],
-                )
-              : FilledButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    child: Text(
-                      'Done',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
       ],
     );
   }

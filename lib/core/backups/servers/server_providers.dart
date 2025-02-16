@@ -14,8 +14,10 @@ import '../../foundation/loggers.dart';
 import '../../foundation/networking/network_provider.dart';
 import '../../info/device_info.dart';
 import '../../info/package_info.dart';
+import '../../search/histories/providers.dart';
 import '../../settings/providers.dart';
 import '../../tags/favorites/providers.dart';
+import '../db_transfer.dart';
 import '../providers.dart';
 import 'server.dart';
 
@@ -100,6 +102,19 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
         final jsonString = jsonEncode(json);
 
         return Response.ok(jsonString);
+      },
+    ),
+    ExportCategory(
+      name: 'search_histories',
+      displayName: 'Search histories',
+      route: 'search_histories',
+      handler: (request) async {
+        final dbPath = await getSearchHistoryDbPath();
+
+        return createDbStreamResponse(
+          filePath: dbPath,
+          fileName: kSearchHistoryDbName,
+        );
       },
     ),
   ];

@@ -13,9 +13,11 @@ import '../../bookmarks/bookmark.dart';
 import '../../bookmarks/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/manage.dart';
+import '../../search/histories/providers.dart';
 import '../../settings/providers.dart';
 import '../../settings/settings.dart';
 import '../../tags/favorites/providers.dart';
+import '../db_transfer.dart';
 import '../servers/server_providers.dart';
 
 final importDataProvider = NotifierProvider.autoDispose
@@ -171,11 +173,13 @@ class ImportDataState extends Equatable {
     required this.tasks,
     required this.step,
     required this.reloadPayload,
+    required this.forceReload,
   });
 
   final List<ImportTask> tasks;
   final ImportStep step;
   final ReloadPayload? reloadPayload;
+  final bool forceReload;
 
   bool get atLeastOneSelected =>
       tasks.any((element) => element.status == SelectStatus.selected);
@@ -184,17 +188,24 @@ class ImportDataState extends Equatable {
     List<ImportTask>? tasks,
     ImportStep? step,
     ReloadPayload? Function()? reloadPayload,
+    bool? forceReload,
   }) {
     return ImportDataState(
       tasks: tasks ?? this.tasks,
       step: step ?? this.step,
       reloadPayload:
           reloadPayload != null ? reloadPayload() : this.reloadPayload,
+      forceReload: forceReload ?? this.forceReload,
     );
   }
 
   @override
-  List<Object?> get props => [tasks, step, reloadPayload];
+  List<Object?> get props => [
+        tasks,
+        step,
+        reloadPayload,
+        forceReload,
+      ];
 }
 
 class ImportDataNotifier
@@ -204,6 +215,7 @@ class ImportDataNotifier
     return ImportDataState(
       step: ImportStep.selection,
       reloadPayload: null,
+      forceReload: false,
       tasks: ref.watch(exportCategoriesProvider).map((category) {
         return ImportTask(
           id: category.name,
@@ -235,7 +247,7 @@ class ImportDataNotifier
 
     state = state.copyWith(
       tasks: [
-        for (final t in state.tasks)
+        for (final t in selectedTasks)
           if (t.status == SelectStatus.selected)
             t.copyWith(importStatus: const ImportQueued())
           else
@@ -351,6 +363,18 @@ class ImportDataNotifier
             await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
 
             await bookmarkNotifier.getAllBookmarks();
+
+          case 'search_histories':
+            final dbPath = await getSearchHistoryDbPath();
+            await downloadAndReplaceDb(
+              dio: dio,
+              url: '/search_histories',
+              filePath: dbPath,
+            );
+
+            state = state.copyWith(
+              forceReload: true,
+            );
         }
 
         state = state.copyWith(
