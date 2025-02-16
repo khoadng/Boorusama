@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../types/download_configs.dart';
+import '../types/download_options.dart';
 import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
 import 'bulk_download_notifier.dart';
@@ -16,6 +17,15 @@ class SavedDownloadTasksNotifier
     final tasks = await repo.getSavedTasks();
 
     return tasks;
+  }
+
+  Future<void> createFromOptions(DownloadOptions options) async {
+    final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
+    final success = await bulkNofifier.createSavedTaskFromOptions(options);
+
+    if (success) {
+      ref.invalidateSelf();
+    }
   }
 
   Future<bool> create(DownloadTask task) async {

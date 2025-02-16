@@ -11,12 +11,12 @@ class CreateDownloadOptionsNotifier
   @override
   DownloadOptions build(DownloadOptions arg) {
     return DownloadOptions(
-      path: '',
-      notifications: true,
-      skipIfExists: true,
+      path: arg.path,
+      notifications: arg.notifications,
+      skipIfExists: arg.skipIfExists,
       quality: arg.quality,
-      perPage: 100,
-      concurrency: 5,
+      perPage: arg.perPage,
+      concurrency: arg.concurrency,
       tags: arg.tags,
     );
   }

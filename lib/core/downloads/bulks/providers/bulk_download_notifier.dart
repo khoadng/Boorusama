@@ -1491,6 +1491,19 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       }
     }
   }
+
+  Future<bool> createSavedTaskFromOptions(
+    DownloadOptions options, {
+    String? name,
+  }) async {
+    try {
+      final task = await _withRepo((repo) => repo.createTask(options));
+      return createSavedTask(task, name: name);
+    } catch (e) {
+      state = state.copyWith(error: () => e);
+      return false;
+    }
+  }
 }
 
 typedef RecordCountInfo = ({

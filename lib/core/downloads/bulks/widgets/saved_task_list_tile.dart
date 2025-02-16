@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -31,7 +30,6 @@ class SavedTaskListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(savedDownloadTasksProvider.notifier);
     final isLocked = ref.watch(isSavedTaskLockedProvider(savedTask.task.id));
-    final navigator = Navigator.of(context);
     final listTileTheme = Theme.of(context).listTileTheme;
     final currentRouteName = ModalRoute.of(context)?.settings.name;
 
@@ -79,14 +77,14 @@ class SavedTaskListTile extends ConsumerWidget {
             borderRadius: BorderRadius.circular(8),
             onTap: enableTap
                 ? () async {
-                    await navigator.push(
-                      CupertinoPageRoute(
-                        builder: (context) => BulkDownloadEditSavedTaskPage(
-                          savedTask: savedTask,
-                        ),
+                    await showModalBottomSheet(
+                      context: context,
+                      routeSettings:
+                          const RouteSettings(name: 'bulk_download_create'),
+                      builder: (_) => BulkDownloadEditSavedTaskPage(
+                        savedTask: savedTask,
                       ),
                     );
-                    ref.invalidate(savedDownloadTasksProvider);
                   }
                 : null,
             onLongPress: enableTap

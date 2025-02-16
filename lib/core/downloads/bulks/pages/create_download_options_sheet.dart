@@ -22,7 +22,7 @@ import '../types/bulk_download_error.dart';
 import '../types/download_options.dart';
 import '../widgets/bulk_download_tag_list.dart';
 
-class CreateDownloadOptionsSheet extends StatelessWidget {
+class CreateDownloadOptionsSheet extends ConsumerWidget {
   const CreateDownloadOptionsSheet({
     required this.initialValue,
     super.key,
@@ -33,7 +33,7 @@ class CreateDownloadOptionsSheet extends StatelessWidget {
   final String? prevRouteName;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     void showSnackBar(String message) {
@@ -52,80 +52,76 @@ class CreateDownloadOptionsSheet extends StatelessWidget {
       }
     }
 
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
+    final quality =
+        ref.watch(settingsProvider.select((e) => e.downloadQuality));
+    final initial = DownloadOptions.initial(
+      quality: quality.name,
+      tags: initialValue,
+    );
+    final options = ref.watch(createDownloadOptionsProvider(initial));
+    final androidSdkInt = ref.watch(
+      deviceInfoProvider
+          .select((value) => value.androidDeviceInfo?.version.sdkInt),
+    );
+    final validOptions = options.valid(androidSdkInt: androidSdkInt);
+
     return CreateDownloadOptionsRawSheet(
-      initialValue: initialValue,
-      actions: Consumer(
-        builder: (_, ref, __) {
-          final notifier = ref.watch(bulkDownloadProvider.notifier);
-          final quality =
-              ref.watch(settingsProvider.select((e) => e.downloadQuality));
-          final params = DownloadOptions.initial(
-            quality: quality.name,
-            tags: initialValue,
-          );
-          final options = ref.watch(createDownloadOptionsProvider(params));
-          final androidSdkInt = ref.watch(
-            deviceInfoProvider
-                .select((value) => value.androidDeviceInfo?.version.sdkInt),
-          );
-          final validOptions = options.valid(androidSdkInt: androidSdkInt);
-
-          return Row(
-            spacing: 16,
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: validOptions
-                          ? BorderSide(
-                              color: colorScheme.outline,
-                            )
-                          : BorderSide.none,
-                    ),
-                  ),
-                  onPressed: validOptions
-                      ? () {
-                          notifier.queueDownloadLater(options);
-                          showSnackBar('Created');
-
-                          Navigator.of(context).pop();
-                        }
-                      : null,
-                  child: const Text(
-                    DownloadTranslations.bulkDownloadAddToQueue,
-                  ).tr(),
+      initial: initial,
+      actions: Row(
+        spacing: 16,
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: FilledButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: validOptions
+                      ? BorderSide(
+                          color: colorScheme.outline,
+                        )
+                      : BorderSide.none,
                 ),
               ),
-              Expanded(
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                  ),
-                  onPressed: validOptions
-                      ? () {
-                          try {
-                            notifier.downloadFromOptions(options);
-                            showSnackBar('Download started');
+              onPressed: validOptions
+                  ? () {
+                      notifier.queueDownloadLater(options);
+                      showSnackBar('Created');
 
-                            Navigator.of(context).pop();
-                          } on BulkDownloadOptionsError catch (e) {
-                            showErrorToast(context, e.message);
-                          }
-                        }
-                      : null,
-                  child: const Text(
-                    DownloadTranslations.bulkDownloadDownload,
-                  ).tr(),
+                      Navigator.of(context).pop();
+                    }
+                  : null,
+              child: const Text(
+                DownloadTranslations.bulkDownloadAddToQueue,
+              ).tr(),
+            ),
+          ),
+          Expanded(
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
                 ),
               ),
-            ],
-          );
-        },
+              onPressed: validOptions
+                  ? () {
+                      try {
+                        notifier.downloadFromOptions(options);
+                        showSnackBar('Download started');
+
+                        Navigator.of(context).pop();
+                      } on BulkDownloadOptionsError catch (e) {
+                        showErrorToast(context, e.message);
+                      }
+                    }
+                  : null,
+              child: const Text(
+                DownloadTranslations.bulkDownloadDownload,
+              ).tr(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -133,14 +129,15 @@ class CreateDownloadOptionsSheet extends StatelessWidget {
 
 class CreateDownloadOptionsRawSheet extends ConsumerStatefulWidget {
   const CreateDownloadOptionsRawSheet({
+    required this.initial,
     required this.actions,
     super.key,
-    this.initialValue,
+    this.advancedToggle = true,
   });
 
-  final List<String>? initialValue;
-
+  final DownloadOptions initial;
   final Widget actions;
+  final bool advancedToggle;
 
   @override
   ConsumerState<CreateDownloadOptionsRawSheet> createState() =>
@@ -153,18 +150,18 @@ class _CreateDownloadOptionsRawSheetState
 
   @override
   Widget build(BuildContext context) {
-    final quality =
-        ref.watch(settingsProvider.select((e) => e.downloadQuality));
-    final params = DownloadOptions.initial(
-      quality: quality.name,
-      tags: widget.initialValue,
-    );
+    final params = widget.initial;
     final notifier = ref.watch(createDownloadOptionsProvider(params).notifier);
     final options = ref.watch(createDownloadOptionsProvider(params));
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+
+    final showAll = switch (widget.advancedToggle) {
+      true => advancedOptions,
+      false => true,
+    };
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -218,18 +215,19 @@ class _CreateDownloadOptionsRawSheetState
                   hint: DownloadTranslations.bulkDownloadSelectFolder.tr(),
                 ),
               ),
-              SwitchListTile(
-                title: const Text(
-                  DownloadTranslations.bulkdDownloadShowAdvancedOptions,
-                ).tr(),
-                value: advancedOptions,
-                onChanged: (value) {
-                  setState(() {
-                    advancedOptions = value;
-                  });
-                },
-              ),
-              if (advancedOptions) ...[
+              if (widget.advancedToggle)
+                SwitchListTile(
+                  title: const Text(
+                    DownloadTranslations.bulkdDownloadShowAdvancedOptions,
+                  ).tr(),
+                  value: advancedOptions,
+                  onChanged: (value) {
+                    setState(() {
+                      advancedOptions = value;
+                    });
+                  },
+                ),
+              if (showAll || advancedOptions) ...[
                 SwitchListTile(
                   title: const Text(
                     DownloadTranslations.bulkDownloadEnableNotifications,
