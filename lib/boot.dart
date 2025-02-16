@@ -42,7 +42,6 @@ import 'core/http/providers.dart';
 import 'core/info/app_info.dart';
 import 'core/info/device_info.dart';
 import 'core/info/package_info.dart';
-import 'core/search/histories/providers.dart';
 import 'core/settings/providers.dart';
 import 'core/settings/settings.dart';
 import 'core/tags/categories/providers.dart';
@@ -161,11 +160,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  final searchHistoryRepoOverride = await createSearchHistoryRepoOverride(
-    bootLogger: bootLogger,
-    logger: logger,
-  );
-
   final favoriteTagsRepoOverride = await createFavoriteTagOverride(
     bootLogger: bootLogger,
   );
@@ -259,7 +253,6 @@ Future<void> boot(BootLogger bootLogger) async {
               (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
             ),
             favoriteTagsRepoOverride,
-            searchHistoryRepoOverride,
             booruFactoryProvider.overrideWithValue(booruFactory),
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),

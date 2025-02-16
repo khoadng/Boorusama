@@ -3,29 +3,27 @@ import 'dart:io';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' show join;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import '../../../foundation/loggers.dart';
-import '../../../foundation/path/path_utils.dart';
-import 'data/empty_search_history_repository.dart';
-import 'data/search_history_repository.dart';
-import 'data/search_history_repository_sqlite.dart';
-import 'providers.dart';
+import '../../../../foundation/loggers.dart';
+import 'empty_search_history_repository.dart';
+import 'search_history_repository.dart';
+import 'search_history_repository_sqlite.dart';
+
+final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
+  (ref) async {
+    final logger = ref.watch(loggerProvider);
+    final searchHistoryRepo = await _createRepo(logger: logger);
+
+    return searchHistoryRepo;
+  },
+);
 
 const _kServiceName = 'Search History';
 const kSearchHistoryDbName = 'search_history.db';
-
-Future<Override> createSearchHistoryRepoOverride({
-  BootLogger? bootLogger,
-  Logger? logger,
-}) async {
-  bootLogger?.l('Initialize SQLite database for search history');
-
-  final searchHistoryRepo = await _createRepo(logger: logger);
-
-  return searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo);
-}
 
 Future<Database?> _createDb(
   Logger? logger,

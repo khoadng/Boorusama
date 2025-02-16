@@ -7,12 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../configs/ref.dart';
 import '../../selected_tags/selected_tag_controller.dart';
-import 'data/search_history_repository.dart';
+import 'data/providers.dart';
 import 'search_history.dart';
 import 'search_history_state.dart';
-
-final searchHistoryRepoProvider =
-    Provider<SearchHistoryRepository>((ref) => throw UnimplementedError());
 
 final searchHistoryProvider =
     AsyncNotifierProvider<SearchHistoryNotifier, SearchHistoryState>(
@@ -22,7 +19,8 @@ final searchHistoryProvider =
 class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
   @override
   Future<SearchHistoryState> build() async {
-    final histories = await ref.watch(searchHistoryRepoProvider).getHistories();
+    final repo = await ref.watch(searchHistoryRepoProvider.future);
+    final histories = await repo.getHistories();
 
     return SearchHistoryState.initial().copyWith(
       histories: histories,
@@ -31,7 +29,8 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
   }
 
   Future<void> clearHistories() async {
-    final success = await ref.read(searchHistoryRepoProvider).clearAll();
+    final repo = await ref.read(searchHistoryRepoProvider.future);
+    final success = await repo.clearAll();
 
     if (success) {
       state = AsyncData(SearchHistoryState.initial());
@@ -72,12 +71,14 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     final config = ref.readConfigAuth;
 
-    final histories = await ref.read(searchHistoryRepoProvider).addHistory(
-          history,
-          queryType: queryType,
-          siteUrl: Uri.tryParse(config.url)?.host ?? '',
-          booruTypeName: config.booruType.name,
-        );
+    final repo = await ref.read(searchHistoryRepoProvider.future);
+
+    final histories = await repo.addHistory(
+      history,
+      queryType: queryType,
+      siteUrl: Uri.tryParse(config.url)?.host ?? '',
+      booruTypeName: config.booruType.name,
+    );
 
     state = AsyncData(
       currentState.copyWith(
@@ -93,8 +94,9 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     if (currentState == null) return;
 
-    final histories =
-        await ref.read(searchHistoryRepoProvider).removeHistory(history);
+    final repo = await ref.read(searchHistoryRepoProvider.future);
+
+    final histories = await repo.removeHistory(history);
 
     state = AsyncData(
       currentState.copyWith(
