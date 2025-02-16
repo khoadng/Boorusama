@@ -4,32 +4,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../info/device_info.dart';
 import '../../../search/histories/history.dart';
-import '../../../settings/providers.dart';
-import '../../../settings/settings.dart';
 import '../types/download_options.dart';
-import 'bulk_download_notifier.dart';
 
-final createBulkDownloadInitialTagsProvider =
-    Provider.autoDispose<List<String>?>((ref) => null);
-
-final bulkDownloadQualityProvider = Provider.autoDispose<DownloadQuality>(
-  (ref) => ref.watch(settingsProvider.select((e) => e.downloadQuality)),
-  dependencies: [
-    settingsProvider,
-  ],
-);
-
-class CreateBulkDownload2Notifier extends AutoDisposeNotifier<DownloadOptions> {
+class CreateDownloadOptionsNotifier
+    extends AutoDisposeFamilyNotifier<DownloadOptions, DownloadOptions> {
   @override
-  DownloadOptions build() {
+  DownloadOptions build(DownloadOptions arg) {
     return DownloadOptions(
       path: '',
       notifications: true,
       skipIfExists: true,
-      quality: ref.watch(bulkDownloadQualityProvider).name,
+      quality: arg.quality,
       perPage: 100,
       concurrency: 5,
-      tags: ref.watch(createBulkDownloadInitialTagsProvider) ?? [],
+      tags: arg.tags,
     );
   }
 
@@ -98,19 +86,11 @@ class CreateBulkDownload2Notifier extends AutoDisposeNotifier<DownloadOptions> {
     );
   }
 
-  void start() {
-    ref.read(bulkDownloadProvider.notifier).downloadFromOptions(state);
-  }
-
-  void startLater() {
-    ref.read(bulkDownloadProvider.notifier).queueDownloadLater(state);
-  }
-
   int? get androidSdkInt =>
       ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt;
 }
 
-final createBulkDownload2Provider =
-    AutoDisposeNotifierProvider<CreateBulkDownload2Notifier, DownloadOptions>(
-  CreateBulkDownload2Notifier.new,
+final createDownloadOptionsProvider = NotifierProvider.autoDispose
+    .family<CreateDownloadOptionsNotifier, DownloadOptions, DownloadOptions>(
+  CreateDownloadOptionsNotifier.new,
 );

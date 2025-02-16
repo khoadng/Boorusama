@@ -4,18 +4,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/toast.dart';
-import '../../../router.dart';
 import '../../downloader/download_utils.dart';
-import '../../l10n.dart';
 import '../pages/bulk_download_completed_page.dart';
 import '../pages/bulk_download_saved_task_page.dart';
-import '../pages/create_bulk_download_task_sheet.dart';
+import '../pages/create_download_options_sheet.dart';
 
 Future<void> goToBulkDownloadCompletedPage(BuildContext context) async {
   await Navigator.of(context).push(
@@ -45,31 +41,12 @@ void goToNewBulkDownloadTaskPage(
     return;
   }
 
-  final prevRouteName = ModalRoute.of(context)?.settings.name;
-
   showModalBottomSheet(
     context: context,
     routeSettings: const RouteSettings(name: 'bulk_download_create'),
-    builder: (_) => CreateBulkDownloadTaskSheet(
+    builder: (_) => CreateDownloadOptionsSheet(
       initialValue: initialValue,
-      title: DownloadTranslations.bulkDownloadNewDownloadTitle.tr(),
-      onSubmitted: (_, isQueue) {
-        if (prevRouteName != kBulkdownload) {
-          showSimpleSnackBar(
-            context: context,
-            content: Text(
-              isQueue ? 'Created' : 'Download started',
-            ),
-            action: SnackBarAction(
-              label: 'View',
-              textColor: Theme.of(context).colorScheme.surface,
-              onPressed: () {
-                context.pushNamed(kBulkdownload);
-              },
-            ),
-          );
-        }
-      },
+      prevRouteName: ModalRoute.of(context)?.settings.name,
     ),
   );
 }

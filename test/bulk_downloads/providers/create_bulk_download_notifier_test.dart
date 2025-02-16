@@ -6,21 +6,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/bulks/providers/create_bulk_download_notifier.dart';
+import 'package:boorusama/core/downloads/bulks/providers/create_download_options_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
 import 'package:boorusama/core/search/histories/history.dart';
-import 'package:boorusama/core/settings/settings.dart';
 
 void main() {
   late ProviderContainer container;
+  late DownloadOptions initial;
 
   setUp(() {
-    container = ProviderContainer(
-      overrides: [
-        bulkDownloadQualityProvider.overrideWithValue(
-          DownloadQuality.original,
-        ),
-      ],
+    container = ProviderContainer();
+    initial = DownloadOptions.initial(
+      quality: 'original',
     );
   });
 
@@ -29,12 +26,13 @@ void main() {
   });
 
   test('tag operations should work correctly', () {
-    final notifier = container.read(createBulkDownload2Provider.notifier)
+    final notifier = container
+        .read(createDownloadOptionsProvider(initial).notifier)
       ..addTag('tag1');
 
     expect(
       listEquals(
-        container.read(createBulkDownload2Provider).tags,
+        container.read(createDownloadOptionsProvider(initial)).tags,
         ['tag1'],
       ),
       isTrue,
@@ -55,7 +53,7 @@ void main() {
 
     expect(
       listEquals(
-        container.read(createBulkDownload2Provider).tags,
+        container.read(createDownloadOptionsProvider(initial)).tags,
         ['tag1', 'tag2'],
       ),
       isTrue,
@@ -65,7 +63,7 @@ void main() {
     notifier.removeTag('tag2');
     expect(
       listEquals(
-        container.read(createBulkDownload2Provider).tags,
+        container.read(createDownloadOptionsProvider(initial)).tags,
         ['tag1'],
       ),
       isTrue,
@@ -73,7 +71,8 @@ void main() {
   });
 
   test('validation should work correctly', () {
-    final notifier = container.read(createBulkDownload2Provider.notifier);
+    final notifier =
+        container.read(createDownloadOptionsProvider(initial).notifier);
 
     expect(notifier.state.valid(android: false), isFalse); // Initially invalid
 

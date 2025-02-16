@@ -5,6 +5,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../foundation/platform.dart';
 import '../../path.dart';
+import 'download_task.dart';
 
 class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
   const DownloadOptions({
@@ -16,6 +17,32 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
     required this.tags,
     this.quality,
   });
+
+  factory DownloadOptions.initial({
+    String? quality,
+    List<String>? tags,
+  }) {
+    return DownloadOptions(
+      path: '',
+      notifications: true,
+      skipIfExists: true,
+      quality: quality,
+      perPage: 100,
+      concurrency: 5,
+      tags: tags ?? [],
+    );
+  }
+
+  factory DownloadOptions.fromTask(DownloadTask task) {
+    return DownloadOptions(
+      path: task.path,
+      notifications: task.notifications,
+      skipIfExists: task.skipIfExists,
+      perPage: task.perPage,
+      concurrency: task.concurrency,
+      tags: task.tags?.split(' ') ?? [],
+    );
+  }
 
   final String path;
   final bool notifications;

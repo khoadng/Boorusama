@@ -5,10 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../manager/download_task_update.dart';
 import '../../manager/download_task_updates_notifier.dart';
 import '../data/download_repository_provider.dart';
-import '../types/download_options.dart';
 import '../types/download_record.dart';
 import '../types/download_repository.dart';
-import 'create_bulk_download_notifier.dart';
 
 final downloadGroupFailedProvider =
     Provider.autoDispose.family<int, String>((ref, group) {
@@ -16,15 +14,6 @@ final downloadGroupFailedProvider =
 
   return failed.length;
 });
-
-final createBulkDownloadProvider =
-    NotifierProvider.autoDispose<CreateBulkDownload2Notifier, DownloadOptions>(
-  CreateBulkDownload2Notifier.new,
-  dependencies: [
-    createBulkDownloadInitialTagsProvider,
-    bulkDownloadQualityProvider,
-  ],
-);
 
 final downloadRepositoryProvider =
     FutureProvider<DownloadRepository>((ref) async {
