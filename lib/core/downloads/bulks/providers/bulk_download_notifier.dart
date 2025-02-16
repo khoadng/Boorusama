@@ -541,6 +541,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           await _filterBlacklistedTags(initialPosts, patterns);
       rawPosts = filteredPosts;
 
+      var cumulativeIndex = 0;
       while (currentSession?.status == DownloadSessionStatus.dryRun) {
         final records = <DownloadRecord>[];
 
@@ -558,16 +559,16 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
             config,
             item,
             metadata: {
-              'index': i.toString(),
+              'index': cumulativeIndex.toString(),
             },
             downloadUrl: urlData.url,
           );
 
           if (task.skipIfExists) {
             final exists = fileExistChecker.exists(fileName, task.path);
-
-            // skip if file exists
+            // Skip if file exists.
             if (exists) {
+              cumulativeIndex++;
               continue;
             }
           }
@@ -592,6 +593,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               sourceUrl: config.url,
             ),
           );
+
+          cumulativeIndex++;
         }
 
         if (records.isNotEmpty) {
@@ -732,8 +735,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await _updateSession(
         sessionId,
         status: DownloadSessionStatus.suspended,
-        // Set to initial page so we can start from the beginning
-        currentPage: 1,
       );
 
       final nonCompletedStatuses = DownloadRecordStatus.values
@@ -808,7 +809,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      final page = session.currentPage;
+      // Reset to initial page so we can start from the beginning
+      // This is to ensure that we don't miss any items, completed items will be skipped anyway
+      const page = 1;
       final totalPages = session.totalPages;
 
       if (totalPages == null) {
@@ -819,7 +822,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      await _updateSession(sessionId, status: DownloadSessionStatus.running);
+      await _updateSession(
+        sessionId,
+        status: DownloadSessionStatus.running,
+        currentPage: page,
+      );
       await _downloadSessionPages(
         sessionId: sessionId,
         task: task,
