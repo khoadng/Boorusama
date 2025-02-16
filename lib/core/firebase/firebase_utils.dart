@@ -9,6 +9,7 @@ import '../analytics.dart';
 import '../foundation/error.dart';
 import '../foundation/loggers.dart';
 import '../settings/settings.dart';
+import '../tracking/types.dart';
 import 'firebase_analytics.dart';
 import 'firebase_crashlytics.dart';
 import 'firebase_options_dev.dart' as dev;
@@ -20,6 +21,33 @@ export 'firebase_crashlytics.dart';
 const _kEnv = String.fromEnvironment('ENV_NAME', defaultValue: '');
 
 const _kServiceName = 'Firebase';
+
+class FirebaseTracker implements Tracker {
+  FirebaseTracker._({
+    required this.analytics,
+    required this.reporter,
+  });
+
+  @override
+  final AnalyticsInterface analytics;
+
+  @override
+  final ErrorReporter reporter;
+
+  static Future<FirebaseTracker> initialize({
+    required Settings settings,
+    Logger? logger,
+  }) async {
+    final (analytics, reporter) = await ensureFirebaseInitialized(
+      settings,
+      logger: logger,
+    );
+    return FirebaseTracker._(
+      analytics: analytics ?? NoAnalyticsInterface(),
+      reporter: reporter ?? NoErrorReporter(),
+    );
+  }
+}
 
 Future<(AnalyticsInterface? analytics, ErrorReporter? reporter)>
     ensureFirebaseInitialized(

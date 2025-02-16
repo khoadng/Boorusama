@@ -195,17 +195,17 @@ Future<void> boot(BootLogger bootLogger) async {
   final supportedLanguages = await loadLanguageNames();
 
   bootLogger.l('Initialize tracking');
-  final (firebaseAnalytics, crashlyticsReporter) = await initializeTracking(
+  final tracker = await initializeTracking(
     settings,
     logger: logger,
   );
 
-  if (initialConfig != null && firebaseAnalytics != null) {
-    await firebaseAnalytics.changeCurrentAnalyticConfig(initialConfig);
+  if (initialConfig != null) {
+    await tracker.analytics.changeCurrentAnalyticConfig(initialConfig);
   }
 
   bootLogger.l('Initialize error handlers');
-  initializeErrorHandlers(crashlyticsReporter);
+  initializeErrorHandlers(tracker.reporter);
 
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
@@ -276,10 +276,8 @@ Future<void> boot(BootLogger bootLogger) async {
             supportedLanguagesProvider.overrideWithValue(supportedLanguages),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
             booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
-            if (firebaseAnalytics != null)
-              analyticsProvider.overrideWithValue(firebaseAnalytics),
-            if (crashlyticsReporter != null)
-              errorReporterProvider.overrideWithValue(crashlyticsReporter),
+            analyticsProvider.overrideWithValue(tracker.analytics),
+            errorReporterProvider.overrideWithValue(tracker.reporter),
           ],
           child: const App(),
         ),

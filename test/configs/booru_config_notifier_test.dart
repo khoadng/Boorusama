@@ -8,7 +8,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/current.dart';
 import 'package:boorusama/core/configs/manage.dart';
@@ -121,7 +120,6 @@ ProviderContainer createBooruConfigContainer({
       settingsNotifierProvider
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
       initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
-      analyticsProvider.overrideWithValue(NoAnalyticsInterface()),
       loggerProvider.overrideWithValue(mockLogger),
       booruConfigProvider.overrideWith(
         () => BooruConfigNotifier(
