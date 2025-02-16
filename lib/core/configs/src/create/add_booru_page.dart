@@ -134,7 +134,9 @@ class _AnalyticsInitStateHookState
   void initState() {
     super.initState();
 
-    ref.read(analyticsProvider).logScreenView(widget.screenName);
+    ref.read(analyticsProvider).whenData(
+          (analytics) => analytics.logScreenView(widget.screenName),
+        );
   }
 
   @override

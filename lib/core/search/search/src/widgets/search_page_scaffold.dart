@@ -429,13 +429,16 @@ class _SearchPageScaffoldState<T extends Post>
             ),
             child: Column(
               children: [
-                SearchViewAnalyticsAnchor(
-                  routeName: '/search_suggestions',
-                  previousRoute: !searchOnce
-                      ? ModalRoute.of(context)?.settings
-                      : const RouteSettings(name: '/search_result'),
-                  analytics: ref.watch(analyticsProvider),
-                ),
+                ref.watch(analyticsProvider).maybeWhen(
+                      data: (analytics) => SearchViewAnalyticsAnchor(
+                        routeName: '/search_suggestions',
+                        previousRoute: !searchOnce
+                            ? ModalRoute.of(context)?.settings
+                            : const RouteSettings(name: '/search_result'),
+                        analytics: analytics,
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
                 SelectedTagListWithData(
                   controller: _tagsController,
                 ),
@@ -611,13 +614,16 @@ class _SearchOptionsView extends ConsumerWidget {
                 bottom: false,
                 child: Column(
                   children: [
-                    SearchViewAnalyticsAnchor(
-                      routeName: '/search_options',
-                      previousRoute: const RouteSettings(
-                        name: '/search_result',
-                      ),
-                      analytics: ref.watch(analyticsProvider),
-                    ),
+                    ref.watch(analyticsProvider).maybeWhen(
+                          data: (analytics) => SearchViewAnalyticsAnchor(
+                            routeName: '/search_options',
+                            previousRoute: const RouteSettings(
+                              name: '/search_result',
+                            ),
+                            analytics: analytics,
+                          ),
+                          orElse: () => const SizedBox.shrink(),
+                        ),
                     ValueListenableBuilder(
                       valueListenable: controller.tagsController,
                       builder: (_, value, __) {
@@ -678,7 +684,9 @@ class _SearchResultAnalyticsAnchorState
   @override
   void initState() {
     super.initState();
-    ref.read(analyticsProvider).logScreenView('/search_result');
+    ref.read(analyticsProvider).whenData(
+          (analytics) => analytics.logScreenView('/search_result'),
+        );
   }
 
   @override

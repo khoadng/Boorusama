@@ -78,7 +78,7 @@ class DownloadNotifier extends Notifier<void> {
     final urlExtractor =
         ref.read(downloadFileUrlExtractorProvider(ref.readConfigAuth));
     final perm = await _getPermissionStatus();
-    final analytics = ref.read(analyticsProvider);
+    final analyticsAsync = ref.read(analyticsProvider);
 
     await _download(
       ref,
@@ -92,11 +92,15 @@ class DownloadNotifier extends Notifier<void> {
           showDownloadStartToast(c);
         }
 
-        analytics.logEvent(
-          'single_download_start',
-          parameters: {
-            'hint_site': ref.readConfigAuth.booruType.name,
-            'url': Uri.tryParse(ref.readConfig.url)?.host,
+        analyticsAsync.whenData(
+          (analytics) {
+            analytics.logEvent(
+              'single_download_start',
+              parameters: {
+                'hint_site': ref.readConfigAuth.booruType.name,
+                'url': Uri.tryParse(ref.readConfig.url)?.host,
+              },
+            );
           },
         );
       },
@@ -111,7 +115,7 @@ class DownloadNotifier extends Notifier<void> {
     final settings = ref.read(settingsProvider);
     final config = ref.readConfigAuth;
     final urlExtractor = ref.read(downloadFileUrlExtractorProvider(config));
-    final analytics = ref.read(analyticsProvider);
+    final analyticsAsync = ref.read(analyticsProvider);
 
     // ensure that the booru supports bulk download
     if (!config.booruType.canDownloadMultipleFiles) {
@@ -127,15 +131,17 @@ class DownloadNotifier extends Notifier<void> {
       message: 'Downloading ${posts.length} files...',
     );
 
-    unawaited(
-      analytics.logEvent(
-        'multiple_download_start',
-        parameters: {
-          'total': posts.length,
-          'hint_site': config.booruType.name,
-          'url': Uri.tryParse(config.url)?.host,
-        },
-      ),
+    analyticsAsync.whenData(
+      (analytics) {
+        analytics.logEvent(
+          'multiple_download_start',
+          parameters: {
+            'total': posts.length,
+            'hint_site': config.booruType.name,
+            'url': Uri.tryParse(config.url)?.host,
+          },
+        );
+      },
     );
 
     for (var i = 0; i < posts.length; i++) {

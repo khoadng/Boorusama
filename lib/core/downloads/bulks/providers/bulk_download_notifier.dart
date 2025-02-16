@@ -445,8 +445,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     final logger = ref.read(loggerProvider);
 
-    final analytics = ref.read(analyticsProvider);
-
     final sessionId = session.id;
     DownloadSession? currentSession = session;
 
@@ -489,7 +487,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await notificationPermManager.requestIfNotGranted();
     }
 
-    unawaited(
+    ref.read(analyticsProvider).whenData((analytics) {
       analytics.logEvent(
         'bulk_download_start',
         parameters: {
@@ -497,8 +495,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           'skip_if_exists': task.skipIfExists,
           'notifications': task.notifications,
         },
-      ),
-    );
+      );
+    });
 
     try {
       var page = 1;

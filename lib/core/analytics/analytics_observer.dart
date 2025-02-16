@@ -12,46 +12,60 @@ class AnalyticsObserver implements NavigatorObserver {
 
   final Ref Function() ref;
 
-  NavigatorObserver? _obs;
-
-  NavigatorObserver get observer =>
-      _obs ??= ref().read(analyticsProvider).getAnalyticsObserver();
+  Future<NavigatorObserver> withObserver() async {
+    final analytics = await ref().read(analyticsProvider.future);
+    return analytics.getAnalyticsObserver();
+  }
 
   @override
   void didChangeTop(Route topRoute, Route? previousTopRoute) {
-    observer.didChangeTop(topRoute, previousTopRoute);
+    withObserver().then((observer) {
+      observer.didChangeTop(topRoute, previousTopRoute);
+    });
   }
 
   @override
   void didPop(Route route, Route? previousRoute) {
-    observer.didPop(route, previousRoute);
+    withObserver().then((observer) {
+      observer.didPop(route, previousRoute);
+    });
   }
 
   @override
   void didPush(Route route, Route? previousRoute) {
-    observer.didPush(route, previousRoute);
+    withObserver().then((observer) {
+      observer.didPush(route, previousRoute);
+    });
   }
 
   @override
   void didRemove(Route route, Route? previousRoute) {
-    observer.didRemove(route, previousRoute);
+    withObserver().then((observer) {
+      observer.didRemove(route, previousRoute);
+    });
   }
 
   @override
   void didReplace({Route? newRoute, Route? oldRoute}) {
-    observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    withObserver().then((observer) {
+      observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    });
   }
 
   @override
   void didStartUserGesture(Route route, Route? previousRoute) {
-    observer.didStartUserGesture(route, previousRoute);
+    withObserver().then((observer) {
+      observer.didStartUserGesture(route, previousRoute);
+    });
   }
 
   @override
   void didStopUserGesture() {
-    observer.didStopUserGesture();
+    withObserver().then((observer) {
+      observer.didStopUserGesture();
+    });
   }
 
   @override
-  NavigatorState? get navigator => observer.navigator;
+  NavigatorState? get navigator => null;
 }

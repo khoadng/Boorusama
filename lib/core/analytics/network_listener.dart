@@ -20,26 +20,32 @@ class NetworkListener extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final analytics = ref.watch(analyticsProvider);
-
     ref.listen(
       connectivityProvider,
       (previous, next) {
         next.when(
           data: (data) {
-            if (data.isEmpty || data.contains(ConnectivityResult.none)) {
-              analytics.updateNetworkInfo(
-                const AnalyticsNetworkInfo.disconnected(),
-              );
-            } else {
-              analytics.updateNetworkInfo(
-                AnalyticsNetworkInfo.connected(data.prettyString),
-              );
-            }
+            ref.watch(analyticsProvider).whenData(
+              (analytics) {
+                if (data.isEmpty || data.contains(ConnectivityResult.none)) {
+                  analytics.updateNetworkInfo(
+                    const AnalyticsNetworkInfo.disconnected(),
+                  );
+                } else {
+                  analytics.updateNetworkInfo(
+                    AnalyticsNetworkInfo.connected(data.prettyString),
+                  );
+                }
+              },
+            );
           },
           error: (error, stackTrace) {
-            analytics.updateNetworkInfo(
-              AnalyticsNetworkInfo.error(error.toString()),
+            ref.watch(analyticsProvider).whenData(
+              (analytics) {
+                analytics.updateNetworkInfo(
+                  AnalyticsNetworkInfo.error(error.toString()),
+                );
+              },
             );
           },
           loading: () {},

@@ -513,12 +513,16 @@ class _PostDetailPageScaffoldState<T extends Post>
           widget.onExpanded?.call();
           // Reset zoom when expanded
           _transformController.value = Matrix4.identity();
-          ref.read(analyticsProvider).logScreenView('/details/info');
+          ref.read(analyticsProvider).whenData(
+                (analytics) => analytics.logScreenView('/details/info'),
+              );
         },
         onShrink: () {
           final routeName = ModalRoute.of(context)?.settings.name;
           if (routeName != null) {
-            ref.read(analyticsProvider).logScreenView(routeName);
+            ref.read(analyticsProvider).whenData(
+                  (analytics) => analytics.logScreenView(routeName),
+                );
           }
         },
       ),

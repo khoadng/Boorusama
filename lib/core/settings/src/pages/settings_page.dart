@@ -352,7 +352,6 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
   @override
   Widget build(BuildContext context) {
     final entries = SettingsPageScope.of(context).options.entries;
-    final analytics = ref.watch(analyticsProvider);
 
     // ref.watch(settingsProvider.select((value) => value.language));
     final options = SettingsPageScope.of(context).options;
@@ -375,7 +374,10 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                   showLeading: options.showIcon,
                   onTap: () => setState(() {
                     _selectedEntry = entries.indexOf(entry);
-                    analytics.logScreenView(entry.name);
+                    ref.read(analyticsProvider).whenData(
+                          (a) => a.logScreenView(entry.name),
+                        );
+
                     widget.onTabChanged?.call(entry.title);
                   }),
                 ),

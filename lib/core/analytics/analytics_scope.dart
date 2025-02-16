@@ -54,8 +54,10 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
 
     if (_lastAspectRatio == aspectRatio) return;
 
-    ref.read(analyticsProvider).updateViewInfo(
-          AnalyticsViewInfo(aspectRatio: aspectRatio),
+    ref.read(analyticsProvider).whenData(
+          (a) => a.updateViewInfo(
+            AnalyticsViewInfo(aspectRatio: aspectRatio),
+          ),
         );
 
     _lastAspectRatio = aspectRatio;
@@ -63,16 +65,15 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
 
   @override
   Widget build(BuildContext context) {
-    final analytics = ref.watch(analyticsProvider);
-    final enabled = analytics.enabled;
-
     ref.listen(
       currentBooruConfigProvider,
       (p, c) {
         if (p != c) {
-          if (enabled) {
-            analytics.changeCurrentAnalyticConfig(c);
-          }
+          ref.watch(analyticsProvider).whenData((a) {
+            if (a.enabled) {
+              a.changeCurrentAnalyticConfig(c);
+            }
+          });
         }
       },
     );

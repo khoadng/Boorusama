@@ -330,7 +330,9 @@ class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
       final item = widget.tabMap.keys.elementAtOrNull(_controller.index);
 
       if (item != null) {
-        ref.read(analyticsProvider).logScreenView(item.name);
+        ref.read(analyticsProvider).whenData(
+              (a) => a.logScreenView(item.name),
+            );
       }
     }
   }

@@ -80,7 +80,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     void Function(String message)? onFailure,
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
-    final analytics = ref.read(analyticsProvider);
+    final analyticsAsync = ref.read(analyticsProvider);
     const eventName = 'config_delete';
     final baseParams = {
       'url': config.url,
@@ -99,8 +99,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
         onSuccess?.call(config);
 
-        unawaited(
-          analytics.logEvent(
+        analyticsAsync.whenData(
+          (a) => a.logEvent(
             eventName,
             parameters: {
               ...baseParams,
@@ -141,8 +141,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       state = tmp;
       onSuccess?.call(config);
 
-      unawaited(
-        analytics.logEvent(
+      analyticsAsync.whenData(
+        (a) => a.logEvent(
           eventName,
           parameters: {
             ...baseParams,
@@ -202,24 +202,24 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       state = newConfigs;
       onSuccess?.call(updatedConfig);
 
-      unawaited(
-        ref.read(analyticsProvider).logEvent(
-          'config_update',
-          parameters: {
-            'url': updatedConfig.url,
-            'hint_site': updatedConfig.auth.booruType.name,
-            'is_current': ref.readConfigAuth == updatedConfig,
-          },
-        ),
-      );
+      ref.read(analyticsProvider).whenData(
+            (a) => a.logEvent(
+              'config_update',
+              parameters: {
+                'url': updatedConfig.url,
+                'hint_site': updatedConfig.auth.booruType.name,
+                'is_current': ref.readConfigAuth == updatedConfig,
+              },
+            ),
+          );
 
       if (oldConfig != null) {
-        unawaited(
-          ref.read(analyticsProvider).logConfigChangedEvent(
+        ref.read(analyticsProvider).whenData(
+              (a) => a.logConfigChangedEvent(
                 oldValue: oldConfig,
                 newValue: updatedConfig,
               ),
-        );
+            );
       }
     } catch (e) {
       _logError('Failed to update config: $oldConfigId');
@@ -252,29 +252,29 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       await _add(config);
 
-      unawaited(
-        ref.read(analyticsProvider).logEvent(
-          'site_add',
-          parameters: {
-            'url': config.url,
-            'total_sites': state.length,
-            'hint_site': config.auth.booruType.name,
-            'has_login': config.apiKey.toOption().fold(
-                  () => false,
-                  (a) => a.isNotEmpty,
-                ),
-            'is_copy': isCopy ?? false,
-          },
-        ),
-      );
+      ref.read(analyticsProvider).whenData(
+            (a) => a.logEvent(
+              'site_add',
+              parameters: {
+                'url': config.url,
+                'total_sites': state.length,
+                'hint_site': config.auth.booruType.name,
+                'has_login': config.apiKey.toOption().fold(
+                      () => false,
+                      (a) => a.isNotEmpty,
+                    ),
+                'is_copy': isCopy ?? false,
+              },
+            ),
+          );
 
       if (initialConfig != null) {
-        unawaited(
-          ref.read(analyticsProvider).logConfigChangedEvent(
+        ref.read(analyticsProvider).whenData(
+              (a) => a.logConfigChangedEvent(
                 oldValue: initialConfig,
                 newValue: config,
               ),
-        );
+            );
       }
 
       if (setAsCurrent || state.length == 1) {
