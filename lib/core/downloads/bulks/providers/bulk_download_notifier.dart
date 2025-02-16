@@ -424,6 +424,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     final mediaPermManager = ref.read(mediaPermissionManagerProvider);
 
+    final notificationPermManager =
+        downloadConfigs?.notificationPermissionManager != null
+            ? downloadConfigs!.notificationPermissionManager!
+            : ref.read(notificationPermissionManagerProvider);
+
     final fileExistChecker =
         downloadConfigs?.existChecker ?? const FileSystemDownloadExistChecker();
 
@@ -467,6 +472,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         );
         return;
       }
+    }
+
+    if (task.notifications) {
+      await notificationPermManager.requestIfNotGranted();
     }
 
     unawaited(

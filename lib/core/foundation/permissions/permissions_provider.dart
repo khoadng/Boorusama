@@ -21,3 +21,8 @@ final mediaPermissionManagerProvider = Provider<MediaPermissionManager>(
     deviceInfo: ref.watch(deviceInfoProvider),
   ),
 );
+
+final notificationPermissionManagerProvider =
+    Provider<NotificationPermissionManager>(
+  (ref) => NotificationPermissionManager(),
+);

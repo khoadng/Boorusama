@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../../foundation/permissions/permission_utils.dart';
 import '../../../settings/settings.dart';
 import '../../downloader.dart';
 import '../../filename/generator_impl.dart';
@@ -10,6 +11,7 @@ import '../../urls.dart';
 class DownloadConfigs {
   const DownloadConfigs({
     this.downloader,
+    this.notificationPermissionManager,
     this.settings,
     this.fileNameBuilder,
     this.urlExtractor,
@@ -25,6 +27,7 @@ class DownloadConfigs {
   });
 
   final DownloadService? downloader;
+  final NotificationPermissionManager? notificationPermissionManager;
   final Settings? settings;
   final DownloadFileNameBuilder? fileNameBuilder;
   final DownloadFileUrlExtractor? urlExtractor;

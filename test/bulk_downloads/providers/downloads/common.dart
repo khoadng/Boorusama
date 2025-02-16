@@ -228,6 +228,24 @@ class AlwaysGrantedPermissionManager implements MediaPermissionManager {
   DeviceInfo get deviceInfo => DeviceInfo.empty();
 }
 
+class AlwaysGrantedNotificationPermissionManager
+    implements NotificationPermissionManager {
+  @override
+  Future<PermissionStatus> check() async => PermissionStatus.granted;
+
+  @override
+  Future<PermissionStatus> request() async => PermissionStatus.granted;
+
+  @override
+  PermissionStatus? get status => PermissionStatus.granted;
+
+  @override
+  set status(PermissionStatus? status) {}
+
+  @override
+  Future<void> requestIfNotGranted() async {}
+}
+
 class ExistCheckerMock extends Mock implements DownloadExistChecker {}
 
 const emptyTaskUpdateStream = Stream<TaskUpdate>.empty();
@@ -297,6 +315,9 @@ List<Override> getTestOverrides({
     loggerProvider.overrideWithValue(DummyLogger()),
     mediaPermissionManagerProvider.overrideWithValue(
       mediaPermissionManager ?? MockMediaPermissionManager(),
+    ),
+    notificationPermissionManagerProvider.overrideWithValue(
+      AlwaysGrantedNotificationPermissionManager(),
     ),
     settingsProvider.overrideWithValue(Settings.defaultSettings),
     downloadFileUrlExtractorProvider

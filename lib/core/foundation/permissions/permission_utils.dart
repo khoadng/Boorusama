@@ -38,14 +38,9 @@ Future<PermissionStatus> _requestMediaPermissionsAndroid(
   AndroidVersion? androidVersion,
 ) async {
   if (hasScopedStorage(androidVersion) == true) {
-    // request notification permission separately
-    await Permission.notification.request();
     return PermissionStatus.granted;
   } else {
     final status = await Permission.storage.request();
-
-    // request notification permission separately
-    await Permission.notification.request();
 
     return status;
   }
@@ -55,9 +50,6 @@ Future<PermissionStatus> _requestMediaPermissionsIos() async {
   final statuses = await [
     Permission.storage,
   ].request();
-
-  // request notification permission separately
-  await Permission.notification.request();
 
   final allAccepted =
       statuses.values.every((e) => e == PermissionStatus.granted);
@@ -88,6 +80,38 @@ Future<PermissionStatus> _checkMediaPermissionsAndroid(
     final status = await Permission.storage.status;
 
     return status;
+  }
+}
+
+class NotificationPermissionManager {
+  NotificationPermissionManager();
+
+  PermissionStatus? status;
+
+  Future<void> requestIfNotGranted() async {
+    final status = await check();
+
+    if (status == PermissionStatus.permanentlyDenied) {
+      return;
+    }
+
+    if (status != PermissionStatus.granted) {
+      await request();
+    }
+  }
+
+  Future<PermissionStatus> request() {
+    return Permission.notification.request();
+  }
+
+  Future<PermissionStatus> check() async {
+    if (status != null) {
+      return status!;
+    }
+
+    status = await Permission.notification.status;
+
+    return status!;
   }
 }
 

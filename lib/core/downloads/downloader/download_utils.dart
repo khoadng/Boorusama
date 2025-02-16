@@ -184,6 +184,9 @@ Future<void> _download(
   final deviceStoragePermissionNotifier =
       ref.read(deviceStoragePermissionProvider.notifier);
 
+  final notificationPermManager =
+      ref.read(notificationPermissionManagerProvider);
+
   final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
     post: downloadable,
     quality: settings.downloadQuality.name,
@@ -246,6 +249,8 @@ Future<void> _download(
         )
         .run();
   }
+
+  await notificationPermManager.requestIfNotGranted();
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
