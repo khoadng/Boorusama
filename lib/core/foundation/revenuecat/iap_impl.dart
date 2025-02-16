@@ -14,7 +14,7 @@ import 'converter.dart';
 
 const _kServiceName = 'Revenuecat';
 
-class RevenuecatPurchase implements i.InAppPurchase {
+class RevenuecatPurchase implements i.Purchaser {
   RevenuecatPurchase(this.logger);
 
   final Logger logger;

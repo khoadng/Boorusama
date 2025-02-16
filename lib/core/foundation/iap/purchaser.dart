@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'subscription.dart';
+
 enum PackageType {
   monthly,
   annual,
@@ -109,7 +112,7 @@ class Offering extends Equatable {
       ];
 }
 
-abstract class InAppPurchase {
+abstract class Purchaser {
   Future<bool?> restorePurchases();
   Future<List<Package>> getAvailablePackages();
   Future<bool> purchasePackage(Package package);
@@ -200,4 +203,10 @@ class PurchaseDetails extends Equatable {
         transactionDate,
         status,
       ];
+}
+
+abstract class IAP {
+  Purchaser get purchaser;
+  SubscriptionManager get subscriptionManager;
+  Package? get activeSubscription;
 }

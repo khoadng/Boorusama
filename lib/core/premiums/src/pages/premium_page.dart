@@ -19,12 +19,26 @@ class PremiumPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final package = ref.watch(subscriptionNotifierProvider);
-
-    return package != null
-        ? PremiumManagePage(package: package)
-        : PremiumOffersPage(
-            canGoBack: canGoBack,
-          );
+    return ref.watch(subscriptionNotifierProvider).when(
+          data: (package) => package != null
+              ? PremiumManagePage(package: package)
+              : PremiumOffersPage(
+                  canGoBack: canGoBack,
+                ),
+          error: (error, _) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Error'),
+            ),
+            body: Center(
+              child: Text('Error: $error'),
+            ),
+          ),
+          loading: () => Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
   }
 }

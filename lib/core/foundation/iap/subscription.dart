@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,8 +17,8 @@ abstract class SubscriptionManager {
 }
 
 final subscriptionNotifierProvider =
-    NotifierProvider<SubscriptionNotifier, Package?>(
-  () => throw UnimplementedError(),
+    AsyncNotifierProvider<SubscriptionNotifier, Package?>(
+  SubscriptionNotifier.new,
 );
 
 final packagePurchaseProvider =
@@ -67,32 +70,25 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
   }
 }
 
-class SubscriptionNotifier extends Notifier<Package?> {
-  SubscriptionNotifier({
-    required this.initialPackage,
-    required this.iap,
-    required this.manager,
-  });
-
-  final Package? initialPackage;
-  final InAppPurchase iap;
-  final SubscriptionManager manager;
-
+class SubscriptionNotifier extends AsyncNotifier<Package?> {
   @override
-  Package? build() {
-    return initialPackage;
+  FutureOr<Package?> build() async {
+    final iap = await ref.watch(iapProvider.future);
+
+    return iap.activeSubscription;
   }
 
   Future<bool> purchasePackage(Package package) async {
+    final iap = await ref.watch(iapProvider.future);
     try {
-      final success = await iap.purchasePackage(package);
+      final success = await iap.purchaser.purchasePackage(package);
       if (success) {
-        state = package;
+        state = AsyncData(package);
       }
 
       return success;
     } on Exception catch (e, st) {
-      final error = iap.describePurchaseError(e);
+      final error = iap.purchaser.describePurchaseError(e);
 
       if (error == null) {
         Error.throwWithStackTrace(e, st);
@@ -103,14 +99,17 @@ class SubscriptionNotifier extends Notifier<Package?> {
   }
 
   Future<void> debugCancelSubscription() async {
-    state = null;
+    state = const AsyncValue.data(null);
   }
 
   Future<bool> restoreSubscription() async {
     final logger = ref.read(loggerProvider)
       ..logI('Subscription', 'Restoring subscription...');
 
-    final res = await iap.restorePurchases();
+    final iap = await ref.watch(iapProvider.future);
+    final manager = iap.subscriptionManager;
+
+    final res = await iap.purchaser.restorePurchases();
 
     logger.logI('Subscription', 'Restore result: $res');
 
@@ -120,7 +119,7 @@ class SubscriptionNotifier extends Notifier<Package?> {
     logger.logI('Subscription', 'Active package: ${activePackage?.id}');
 
     if (activePackage != null) {
-      state = activePackage;
+      state = AsyncData(activePackage);
     }
 
     final success = res == true && activePackage != null;

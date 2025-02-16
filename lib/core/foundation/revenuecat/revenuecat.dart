@@ -6,6 +6,7 @@ import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 
 // Project imports:
 import '../iap/iap.dart';
+import '../iap/iap_impl.dart';
 import '../loggers.dart';
 import 'constants.dart';
 import 'revenuecat.dart';
@@ -37,7 +38,7 @@ Future<bool> initRevenuecat({
   return true;
 }
 
-Future<(InAppPurchase, SubscriptionManager, Package?)?> initRevenuecatIap(
+Future<IAP?> initRevenuecatIap(
   Logger logger,
 ) async {
   final success = await initRevenuecat(logger: logger);
@@ -58,5 +59,9 @@ Future<(InAppPurchase, SubscriptionManager, Package?)?> initRevenuecatIap(
   final activePackages =
       await getActiveSubscriptionPackages(subscriptionManager);
 
-  return (iap, subscriptionManager, activePackages?.firstOrNull);
+  return DefaultIAP(
+    purchaser: iap,
+    subscriptionManager: subscriptionManager,
+    activeSubscription: activePackages?.firstOrNull,
+  );
 }

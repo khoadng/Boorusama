@@ -5,16 +5,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../loggers.dart';
 import '../platform.dart';
 import '../revenuecat/revenuecat.dart';
-import 'dummy.dart';
-import 'in_app_purchase.dart';
+import 'iap_impl.dart';
+import 'purchaser.dart';
 import 'subscription.dart';
 
-final iapProvider = Provider<InAppPurchase>((ref) {
-  throw UnimplementedError();
+final iapProvider = FutureProvider<IAP>((ref) async {
+  final IAP iap;
+  final logger = ref.watch(loggerProvider);
+
+  if (isMobilePlatform()) {
+    iap = (await initRevenuecatIap(logger)) ?? await _initDummyIap();
+  } else {
+    iap = await _initDummyIap();
+  }
+
+  return iap;
 });
 
-final subscriptionManagerProvider = Provider<SubscriptionManager>((ref) {
-  throw UnimplementedError();
+final subscriptionManagerProvider =
+    FutureProvider<SubscriptionManager>((ref) async {
+  final iap = await ref.watch(iapProvider.future);
+
+  return iap.subscriptionManager;
 });
 
 Future<List<Package>?> getActiveSubscriptionPackages(
@@ -25,91 +37,15 @@ Future<List<Package>?> getActiveSubscriptionPackages(
   return packages;
 }
 
-const _kPackages = <Package>[
-  Package(
-    id: 'annual_subscription',
-    product: ProductDetails(
-      id: 'annual_subscription',
-      title: '1 year',
-      description: '',
-      price: r'$24.99',
-      rawPrice: 24.99,
-      currencyCode: 'USD',
-    ),
-    type: PackageType.annual,
-  ),
-  Package(
-    id: 'monthly_subscription',
-    product: ProductDetails(
-      id: 'monthly_subscription',
-      title: '1 month',
-      description: '',
-      price: r'$2.99',
-      rawPrice: 2.99,
-      currencyCode: 'USD',
-    ),
-    type: PackageType.monthly,
-  ),
-];
+Future<IAP> _initDummyIap() async {
+  final iap = DummyIAP.create();
+  await iap.init();
 
-// const _kVNDPackages = <Package>[
-//   Package(
-//     id: 'annual_subscription',
-//     product: ProductDetails(
-//       id: 'annual_subscription',
-//       title: '1 year',
-//       description: '',
-//       price: '₫260000',
-//       rawPrice: 260000,
-//       currencyCode: 'VND',
-//     ),
-//     type: PackageType.annual,
-//   ),
-//   Package(
-//     id: 'monthly_subscription',
-//     product: ProductDetails(
-//       id: 'monthly_subscription',
-//       title: '1 month',
-//       description: '',
-//       price: '₫45000',
-//       rawPrice: 45000,
-//       currencyCode: 'VND',
-//     ),
-//     type: PackageType.monthly,
-//   ),
-// ];
-
-Future<(InAppPurchase, SubscriptionManager, Package?)> initIap(
-  Logger logger,
-) async {
-  final (InAppPurchase, SubscriptionManager, Package?) data;
-
-  if (isMobilePlatform()) {
-    data = (await initRevenuecatIap(logger)) ?? await _initDummyIap();
-  } else {
-    data = await _initDummyIap();
-  }
-
-  return data;
-}
-
-Future<(InAppPurchase, SubscriptionManager, Package?)> _initDummyIap() async {
-  final iap = DummyInAppPurchase(
-    packages: _kPackages,
-  );
-
-  final subscriptionManager = DummySubscriptionManager(
-    iap: iap,
-  );
-
-  final activePackages =
-      await getActiveSubscriptionPackages(subscriptionManager);
-
-  return (iap, subscriptionManager, activePackages?.firstOrNull);
+  return iap;
 }
 
 final subscriptionPackagesProvider =
     FutureProvider.autoDispose<List<Package>>((ref) async {
-  final iap = ref.watch(iapProvider);
-  return iap.getAvailablePackages();
+  final iap = await ref.watch(iapProvider.future);
+  return iap.purchaser.getAvailablePackages();
 });

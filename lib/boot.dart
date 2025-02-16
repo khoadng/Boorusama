@@ -31,7 +31,6 @@ import 'core/configs/manage.dart';
 import 'core/downloads/bulks/notifications.dart';
 import 'core/downloads/notifications.dart';
 import 'core/foundation/error.dart';
-import 'core/foundation/iap/iap.dart';
 import 'core/foundation/loggers.dart';
 import 'core/foundation/mobile.dart';
 import 'core/foundation/path.dart';
@@ -229,8 +228,6 @@ Future<void> boot(BootLogger bootLogger) async {
   // Prepare for Android 15
   unawaited(showSystemStatus());
 
-  final (iap, subManager, activeSubs) = await initIap(logger);
-
   logger.logI(
     'Start up',
     'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
@@ -279,15 +276,6 @@ Future<void> boot(BootLogger bootLogger) async {
             supportedLanguagesProvider.overrideWithValue(supportedLanguages),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
             booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
-            iapProvider.overrideWithValue(iap),
-            subscriptionManagerProvider.overrideWithValue(subManager),
-            subscriptionNotifierProvider.overrideWith(
-              () => SubscriptionNotifier(
-                initialPackage: activeSubs,
-                iap: iap,
-                manager: subManager,
-              ),
-            ),
             if (firebaseAnalytics != null)
               analyticsProvider.overrideWithValue(firebaseAnalytics),
             if (crashlyticsReporter != null)

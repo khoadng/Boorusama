@@ -16,12 +16,13 @@ final hasPremiumProvider = Provider<bool>((ref) {
 
   final package = ref.watch(subscriptionNotifierProvider);
 
-  return package != null;
+  return package.valueOrNull != null;
 });
 
-final premiumManagementURLProvider = FutureProvider.autoDispose<String?>((ref) {
+final premiumManagementURLProvider =
+    FutureProvider.autoDispose<String?>((ref) async {
   if (kPremiumMode == PremiumMode.hidden) return Future.value(null);
   if (kPremiumMode == PremiumMode.premium) return Future.value(null);
 
-  return ref.watch(subscriptionManagerProvider).managementURL;
+  return (await ref.watch(subscriptionManagerProvider.future)).managementURL;
 });

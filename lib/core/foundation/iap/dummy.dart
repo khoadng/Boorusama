@@ -7,8 +7,8 @@ import 'package:collection/collection.dart';
 // Project imports:
 import 'iap.dart';
 
-class DummyInAppPurchase implements InAppPurchase {
-  DummyInAppPurchase({
+class DummyPurchaser implements Purchaser {
+  DummyPurchaser({
     required this.packages,
   });
 
@@ -63,7 +63,7 @@ class DummySubscriptionManager implements SubscriptionManager {
     required this.iap,
   });
 
-  final DummyInAppPurchase iap;
+  final DummyPurchaser iap;
 
   @override
   Future<bool> hasActiveSubscription(String id) async {
