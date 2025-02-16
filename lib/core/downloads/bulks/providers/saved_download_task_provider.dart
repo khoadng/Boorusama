@@ -19,13 +19,15 @@ class SavedDownloadTasksNotifier
     return tasks;
   }
 
-  Future<void> createFromOptions(DownloadOptions options) async {
+  Future<bool> createFromOptions(DownloadOptions options) async {
     final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
     final success = await bulkNofifier.createSavedTaskFromOptions(options);
 
     if (success) {
       ref.invalidateSelf();
     }
+
+    return success;
   }
 
   Future<bool> create(DownloadTask task) async {

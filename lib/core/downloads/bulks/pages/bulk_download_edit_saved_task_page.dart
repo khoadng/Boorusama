@@ -6,13 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
 import '../../bulks.dart';
 import '../../l10n.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
-import '../types/bulk_download_error.dart';
 import '../types/download_options.dart';
 import '../types/saved_download_task.dart';
 
@@ -28,6 +26,7 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(savedDownloadTasksProvider.notifier);
     final initial = DownloadOptions.fromTask(savedTask.task);
+    final navigator = Navigator.of(context);
 
     return CreateDownloadOptionsRawSheet(
       initial: initial,
@@ -69,15 +68,10 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                     ),
                   ),
                   onPressed: validOptions
-                      ? () {
-                          try {
-                            notifier.createFromOptions(options);
-                            ref.invalidate(savedDownloadTasksProvider);
+                      ? () async {
+                          final _ = await notifier.createFromOptions(options);
 
-                            Navigator.of(context).pop();
-                          } on BulkDownloadOptionsError catch (e) {
-                            showErrorToast(context, e.message);
-                          }
+                          navigator.pop();
                         }
                       : null,
                   child: const Text(

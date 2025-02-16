@@ -13,6 +13,14 @@ class SavedDownloadTask extends Equatable {
     this.updatedAt,
   });
 
+  factory SavedDownloadTask.empty() {
+    return SavedDownloadTask(
+      id: -1,
+      task: DownloadTask.empty(),
+      createdAt: DateTime(1),
+    );
+  }
+
   SavedDownloadTask copyWith({
     int? id,
     DownloadTask? task,

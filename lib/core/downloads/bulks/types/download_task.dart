@@ -15,6 +15,19 @@ class DownloadTask extends Equatable {
     this.tags,
   });
 
+  factory DownloadTask.empty() {
+    return DownloadTask(
+      id: '',
+      path: '',
+      notifications: true,
+      skipIfExists: true,
+      createdAt: DateTime(1),
+      updatedAt: DateTime(1),
+      perPage: 20,
+      concurrency: 1,
+    );
+  }
+
   factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
         id: json['id'] as String? ?? '',
         path: json['path'] as String? ?? '',

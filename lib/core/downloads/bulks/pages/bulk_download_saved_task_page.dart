@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
 import '../providers/saved_download_task_provider.dart';
+import '../types/saved_download_task.dart';
 import '../widgets/saved_task_list_tile.dart';
+import 'bulk_download_edit_saved_task_page.dart';
 
 class BulkDownloadSavedTaskPage extends ConsumerWidget {
   const BulkDownloadSavedTaskPage({super.key});
@@ -22,6 +25,17 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Templates').tr(),
+          actions: [
+            IconButton(
+              icon: const Icon(Symbols.add),
+              onPressed: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => BulkDownloadEditSavedTaskPage(
+                  savedTask: SavedDownloadTask.empty(),
+                ),
+              ),
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: () => notifier.refresh(),
