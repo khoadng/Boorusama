@@ -188,6 +188,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       (prev, next) {
         if (prev != next) {
           next.whenData((event) {
+            if (event.task.isDefaultGroup) {
+              return;
+            }
+
             if (event is TaskStatusUpdate) {
               if (event.status == TaskStatus.complete) {
                 ref.read(taskFileSizeResolverProvider(event.task).future).then(

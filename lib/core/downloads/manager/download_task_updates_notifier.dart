@@ -43,6 +43,10 @@ final taskFileSizeResolverProvider =
   return file.length();
 });
 
+extension TaskX on Task {
+  bool get isDefaultGroup => group == FileDownloader.defaultGroup;
+}
+
 class DownloadTaskUpdatesNotifier extends Notifier<DownloadTaskUpdateState> {
   @override
   DownloadTaskUpdateState build() {
