@@ -159,7 +159,22 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           );
           final totalCount = await repo.getRecordsCountBySessionId(sessionId);
 
-          // Recalculate the overall session progress.
+          final session = await repo.getSession(sessionId);
+
+          // Only show progress if session is running AND notifications are enabled
+          if (session?.status == DownloadSessionStatus.running &&
+              session?.task?.notifications == true) {
+            final notification = ref.read(bulkDownloadNotificationProvider);
+            await notification.showProgressNotification(
+              sessionId,
+              session?.task?.tags ?? 'Downloading...',
+              '$completedCount/$totalCount files',
+              completed: completedCount,
+              total: totalCount,
+            );
+          }
+
+          // Always update progress state regardless of notifications
           progressNotifier.updateProgressFromCounts(
             sessionId,
             completedCount,
@@ -999,6 +1014,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final downloader = ref.read(downloadServiceProvider(config));
       final session = await _withRepo((repo) => repo.getSession(sessionId));
       final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
+      final notification = ref.read(bulkDownloadNotificationProvider);
+
+      // Cancel notification immediately
+      await notification.cancelNotification(sessionId);
 
       if (session == null ||
           (session.status != DownloadSessionStatus.running &&
@@ -1172,7 +1191,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     if (currentSessionState?.task.notifications ?? true) {
       unawaited(
-        ref.read(bulkDownloadNotificationProvider).showNotification(
+        ref.read(bulkDownloadNotificationProvider).showOneShotNotification(
               currentSessionState?.task.tags ?? 'Download completed',
               'Downloaded ${stats.totalItems} files',
             ),
@@ -1284,6 +1303,29 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       sessionId,
       session,
     );
+
+    // Handle notifications based on status and notification settings
+    final notification = ref.read(bulkDownloadNotificationProvider);
+
+    // Only show notifications if task.notifications is true
+    if (session?.task?.notifications ?? false) {
+      if (session?.status == DownloadSessionStatus.dryRun) {
+        // Show/update indeterminate progress during dry run
+        await notification.showNotification(
+          session?.task?.tags ?? 'Preparing download...',
+          'Scanning page ${currentPage ?? 1}',
+          indeterminate: true,
+          notificationId: sessionId.hashCode,
+        );
+      } else if (status != null &&
+          (status == DownloadSessionStatus.completed ||
+              status == DownloadSessionStatus.failed ||
+              status == DownloadSessionStatus.cancelled ||
+              status == DownloadSessionStatus.running ||
+              status == DownloadSessionStatus.suspended)) {
+        await notification.cancelNotification(sessionId);
+      }
+    }
 
     return session;
   }

@@ -171,7 +171,43 @@ final booruConfig = BooruConfig.defaultConfig(
 
 class MockBooruBuilder extends Mock implements BooruBuilder {}
 
-class MockNotification extends Mock implements BulkDownloadNotifications {}
+class DummyBulkNotification implements BulkDownloadNotifications {
+  @override
+  Future<void> cancelNotification(String sessionId) async {}
+
+  @override
+  void dispose() {}
+
+  @override
+  Future<void> showNotification(
+    String title,
+    String body, {
+    String? payload,
+    int? progress,
+    int? total,
+    bool? indeterminate,
+    int? notificationId,
+  }) async {}
+
+  @override
+  Future<void> showOneShotNotification(
+    String title,
+    String body, {
+    String? payload,
+  }) async {}
+
+  @override
+  Future<void> showProgressNotification(
+    String sessionId,
+    String title,
+    String body, {
+    required int completed,
+    required int total,
+  }) async {}
+
+  @override
+  Stream<String> get tapStream => const Stream.empty();
+}
 
 class DummyDownloadService implements DownloadService {
   @override
@@ -279,26 +315,13 @@ ProviderContainer createBulkDownloadContainer({
     dummyDownloadFileNameBuilder,
   );
 
-  final notifications = MockNotification();
-
-  when(
-    () => notifications.showNotification(
-      any(),
-      any(),
-      payload: any(named: 'payload'),
-      progress: any(named: 'progress'),
-      total: any(named: 'total'),
-      indeterminate: any(named: 'indeterminate'),
-    ),
-  ).thenAnswer((_) => Future.value());
-
   final container = ProviderContainer(
     overrides: getTestOverrides(
       downloadRepository: downloadRepository,
       mediaPermissionManager:
           mediaPermissionManager ?? AlwaysGrantedPermissionManager(),
       booruBuilder: booruBuilder,
-      notifications: notifications,
+      notifications: DummyBulkNotification(),
       hasPremium: hasPremium,
       taskUpdateStream: taskUpdateStream,
     ),
@@ -306,7 +329,6 @@ ProviderContainer createBulkDownloadContainer({
 
   addTearDown(() {
     reset(booruBuilder);
-    reset(notifications);
 
     container.dispose();
   });
