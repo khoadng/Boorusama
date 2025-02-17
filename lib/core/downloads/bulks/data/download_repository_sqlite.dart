@@ -8,6 +8,7 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:uuid/uuid.dart';
 
 // Project imports:
+import '../../../database/utils.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
 import '../types/download_record.dart';
@@ -20,23 +21,14 @@ import 'download_repository_mapper.dart';
 
 const _kDownloadVersion = 0;
 
-class DownloadRepositorySqlite implements DownloadRepository {
+class DownloadRepositorySqlite
+    with DatabaseUtilsMixin
+    implements DownloadRepository {
   DownloadRepositorySqlite(this.db);
 
+  @override
   final Database db;
   final _uuid = const Uuid();
-
-  // New helper to run a transaction.
-  void _transaction(void Function() action) {
-    db.execute('BEGIN TRANSACTION');
-    try {
-      action();
-      db.execute('COMMIT');
-    } catch (e) {
-      db.execute('ROLLBACK');
-      rethrow;
-    }
-  }
 
   void initialize() {
     db.execute('PRAGMA foreign_keys = ON');
@@ -152,7 +144,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   @override
   Future<void> editTask(DownloadTask newTask) async {
     final taskId = newTask.id;
-    _transaction(() {
+    transaction(() {
       db.execute(
         '''
         UPDATE download_tasks 
@@ -243,7 +235,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
   @override
   Future<void> deleteTask(String id) async {
-    _transaction(() {
+    transaction(() {
       db.execute('DELETE FROM download_tasks WHERE id = ?', [id]);
     });
   }
@@ -543,7 +535,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
     int? totalPages,
     String? error,
   }) async {
-    _transaction(() {
+    transaction(() {
       final setValues = <String>[];
       final params = <Object?>[];
 
@@ -581,7 +573,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
   @override
   Future<void> completeSession(String id) async {
-    _transaction(() {
+    transaction(() {
       final now = DateTime.now().millisecondsSinceEpoch;
       db.execute(
         '''
@@ -636,7 +628,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
     ''');
 
     try {
-      _transaction(() {
+      transaction(() {
         for (final record in records) {
           batch.execute([
             record.url,
@@ -800,7 +792,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
   @override
   Future<void> deleteSession(String id) async {
-    _transaction(() {
+    transaction(() {
       db.execute('DELETE FROM download_sessions WHERE id = ?', [id]);
     });
   }
@@ -831,7 +823,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   Future<void> resetSessions(List<String> sessionIds) async {
     if (sessionIds.isEmpty) return;
 
-    _transaction(() {
+    transaction(() {
       // Delete all records for these sessions
       db
         ..execute(
@@ -861,7 +853,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   ) async {
     if (sessionIds.isEmpty) return;
 
-    _transaction(() {
+    transaction(() {
       db.execute(
         '''
         UPDATE download_sessions 
@@ -879,7 +871,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   ) async {
     final stats = await getActiveSessionStats(sessionId);
 
-    _transaction(() {
+    transaction(() {
       db
         ..execute('''
         INSERT OR REPLACE INTO download_session_statistics (
@@ -917,7 +909,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   Future<void> createSavedTask(String taskId, String name) async {
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    _transaction(() {
+    transaction(() {
       db.execute(
         '''
         INSERT OR IGNORE INTO saved_download_tasks (
@@ -983,7 +975,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
 
   @override
   Future<void> deleteSavedTask(int id) async {
-    _transaction(() {
+    transaction(() {
       db.execute('DELETE FROM saved_download_tasks WHERE id = ?', [id]);
     });
   }
@@ -1047,7 +1039,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
   Future<void> editSavedTask(SavedDownloadTask task) async {
     final now = DateTime.now().millisecondsSinceEpoch;
 
-    _transaction(() {
+    transaction(() {
       db.execute(
         '''
         UPDATE saved_download_tasks 
@@ -1080,7 +1072,7 @@ class DownloadRepositorySqlite implements DownloadRepository {
     required DownloadRecordStatus to,
     List<DownloadRecordStatus>? from,
   }) async {
-    _transaction(() {
+    transaction(() {
       if (from == null || from.isEmpty) {
         db.execute(
           '''

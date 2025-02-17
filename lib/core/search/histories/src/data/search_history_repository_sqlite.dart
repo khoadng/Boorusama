@@ -3,14 +3,18 @@ import 'package:flutter_sqlite3_migration/flutter_sqlite3_migration.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
+import '../../../../database/utils.dart';
 import '../search_history.dart';
 import 'search_history_repository.dart';
 
 const _kSearchHistoryVersion = 0;
 
-class SearchHistoryRepositorySqlite implements SearchHistoryRepository {
+class SearchHistoryRepositorySqlite
+    with DatabaseUtilsMixin
+    implements SearchHistoryRepository {
   SearchHistoryRepositorySqlite({required this.db});
 
+  @override
   final Database db;
 
   void initialize() {
@@ -76,57 +80,39 @@ class SearchHistoryRepositorySqlite implements SearchHistoryRepository {
 
     final now = DateTime.now().toUtc().millisecondsSinceEpoch;
 
-    try {
-      db
-        ..execute('BEGIN TRANSACTION')
-        ..execute(
-          '''
+    transaction(() {
+      db.execute(
+        '''
         INSERT INTO $kSearchHistoryTable (query, created_at, updated_at, search_count, type, booru_type_name, site_url)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(query, type) DO UPDATE SET
           search_count = search_count + 1,
           updated_at = ? 
         ''',
-          [query, now, now, 1, queryType.name, booruTypeName, siteUrl, now],
-        )
-        ..execute('COMMIT');
-    } catch (error) {
-      db.execute('ROLLBACK');
-      rethrow;
-    }
+        [query, now, now, 1, queryType.name, booruTypeName, siteUrl, now],
+      );
+    });
 
     return getHistories();
   }
 
   @override
   Future<List<SearchHistory>> removeHistory(SearchHistory history) async {
-    try {
-      db
-        ..execute('BEGIN TRANSACTION')
-        ..execute(
-          'DELETE FROM $kSearchHistoryTable WHERE query = ? AND type = ?',
-          [history.query, history.queryType?.name],
-        )
-        ..execute('COMMIT');
-    } catch (error) {
-      db.execute('ROLLBACK');
-      rethrow;
-    }
+    transaction(() {
+      db.execute(
+        'DELETE FROM $kSearchHistoryTable WHERE query = ? AND type = ?',
+        [history.query, history.queryType?.name],
+      );
+    });
 
     return getHistories();
   }
 
   @override
   Future<bool> clearAll() async {
-    try {
-      db
-        ..execute('BEGIN TRANSACTION')
-        ..execute('DELETE FROM $kSearchHistoryTable')
-        ..execute('COMMIT');
-      return true;
-    } catch (error) {
-      db.execute('ROLLBACK');
-      rethrow;
-    }
+    transaction(() {
+      db.execute('DELETE FROM $kSearchHistoryTable');
+    });
+    return true;
   }
 }
