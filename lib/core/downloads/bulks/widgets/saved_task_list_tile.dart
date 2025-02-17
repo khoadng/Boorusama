@@ -93,6 +93,9 @@ class SavedTaskListTile extends ConsumerWidget {
                       context: context,
                       builder: (context) => _ModalOptions(
                         savedTask: savedTask,
+                        onDuplicate: () {
+                          notifier.duplicate(savedTask);
+                        },
                         onDelete: () {
                           notifier.delete(savedTask);
                         },
@@ -115,12 +118,12 @@ class SavedTaskListTile extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          savedTask.name ?? 'Untitled',
+                          savedTask.task.tags ?? 'Untitled',
                           style: listTileTheme.titleTextStyle,
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          savedTask.task.tags ?? 'No tags',
+                          savedTask.task.path,
                           style: listTileTheme.subtitleTextStyle,
                         ),
                       ],
@@ -150,15 +153,18 @@ class _ModalOptions extends StatelessWidget {
     required this.savedTask,
     required this.onDelete,
     required this.onRun,
+    required this.onDuplicate,
   });
 
   final SavedDownloadTask savedTask;
   final void Function() onDelete;
   final void Function() onRun;
+  final void Function() onDuplicate;
 
   @override
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
       child: Column(
@@ -175,7 +181,19 @@ class _ModalOptions extends StatelessWidget {
             },
           ),
           ListTile(
-            title: const Text('Delete'),
+            title: const Text('Duplicate'),
+            onTap: () {
+              onDuplicate();
+              navigator.pop();
+            },
+          ),
+          ListTile(
+            title: Text(
+              'Delete',
+              style: TextStyle(
+                color: colorScheme.error,
+              ),
+            ),
             onTap: () {
               onDelete();
               navigator.pop();
