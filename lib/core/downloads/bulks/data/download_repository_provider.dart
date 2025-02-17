@@ -1,5 +1,7 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' show join;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
@@ -50,4 +52,10 @@ Future<DownloadRepository> _createRepository(
       return DownloadRepositoryEmpty();
     }
   }
+}
+
+// TODO: should have one place to get the db path in case we want to change it
+Future<String> getDownloadsDbPath() async {
+  final applicationDocumentsDir = await getApplicationDocumentsDirectory();
+  return join(applicationDocumentsDir.path, 'data', kDownloadDbName);
 }

@@ -11,7 +11,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
-import '../../l10n.dart';
 import '../providers/providers.dart';
 import '../types/bulk_download_session.dart';
 import '../widgets/bulk_download_completed_session_tile.dart';
@@ -158,7 +157,7 @@ class _BulkDownloadCompletedPageState
               ),
               noItemsFoundIndicatorBuilder: (context) => Center(
                 child: const Text(
-                  DownloadTranslations.bulkDownloadEmpty,
+                  'No completed download sessions',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ).tr(),
               ),

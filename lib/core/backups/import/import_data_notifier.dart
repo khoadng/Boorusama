@@ -13,6 +13,7 @@ import '../../bookmarks/bookmark.dart';
 import '../../bookmarks/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/manage.dart';
+import '../../downloads/bulks/data/download_repository_provider.dart';
 import '../../search/histories/providers.dart';
 import '../../settings/providers.dart';
 import '../../settings/settings.dart';
@@ -373,6 +374,16 @@ class ImportDataNotifier
             );
 
             ref.invalidate(searchHistoryRepoProvider);
+
+          case 'downloads':
+            final dbPath = await getDownloadsDbPath();
+            await downloadAndReplaceDb(
+              dio: dio,
+              url: '/downloads',
+              filePath: dbPath,
+            );
+
+            ref.invalidate(internalDownloadRepositoryProvider);
         }
 
         state = state.copyWith(

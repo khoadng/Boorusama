@@ -18,6 +18,7 @@ import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/manage.dart';
+import '../../../../downloads/bulks/data/download_repository_provider.dart';
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/path.dart' as p;
 import '../../../../foundation/picker.dart';
@@ -103,6 +104,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
         _buildBlacklistedTags(),
         const SizedBox(height: 8),
         _buildSearchHistories(),
+        const SizedBox(height: 8),
+        _buildBulkDownloads(),
         const SizedBox(height: 8),
         _buildSettings(),
         const SizedBox(height: 8),
@@ -304,6 +307,28 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     );
   }
 
+  Widget _buildBulkDownloads() {
+    return BackupRestoreTile(
+      leadingIcon: Symbols.folder_zip,
+      title: 'Bulk Downloads',
+      trailing: BooruPopupMenuButton(
+        onSelected: (value) {
+          switch (value) {
+            case 'export':
+              _pickBulkDownloadsFolder(ref);
+            case 'import':
+              _pickBulkDownloadsFile(ref);
+            default:
+          }
+        },
+        itemBuilder: const {
+          'export': Text('Export'),
+          'import': Text('Import'),
+        },
+      ),
+    );
+  }
+
   Future<void> _pickSearchHistoryFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
         context: context,
@@ -353,6 +378,59 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             ref.invalidate(searchHistoryRepoProvider);
           } catch (e) {
             _showErrorToast('Failed to import search history');
+          }
+        },
+      );
+
+  Future<void> _pickBulkDownloadsFolder(WidgetRef ref) =>
+      pickDirectoryPathToastOnError(
+        context: context,
+        onPick: (path) async {
+          try {
+            final dbPath = await getDownloadsDbPath();
+            final file = File(dbPath);
+            if (!file.existsSync()) {
+              _showErrorToast('No bulk downloads found');
+              return;
+            }
+
+            final destinationPath = join(path, kDownloadDbName);
+            await file.copy(destinationPath);
+            _showSuccessToast('Bulk downloads exported successfully');
+          } catch (e) {
+            _showErrorToast('Failed to export bulk downloads');
+          }
+        },
+      );
+
+  void _pickBulkDownloadsFile(WidgetRef ref) => _pickFile(
+        onPick: (path) async {
+          try {
+            final sourceFile = File(path);
+
+            // Check SQLite header magic number
+            final bytes = await sourceFile.openRead(0, 16).first;
+            final header = bytes.take(16).toList();
+            if (!_isSQLiteFile(header)) {
+              _showErrorToast('Invalid database file');
+              return;
+            }
+
+            final dbPath = await getDownloadsDbPath();
+
+            final destFile = File(dbPath);
+
+            if (destFile.existsSync()) {
+              await destFile.delete();
+            }
+
+            await sourceFile.copy(dbPath);
+
+            _showSuccessToast('Bulk downloads imported successfully');
+
+            ref.invalidate(internalDownloadRepositoryProvider);
+          } catch (e) {
+            _showErrorToast('Failed to import bulk downloads');
           }
         },
       );

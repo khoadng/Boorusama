@@ -10,6 +10,7 @@ import '../../blacklists/providers.dart';
 import '../../bookmarks/providers.dart';
 import '../../configs/manage.dart';
 import '../../configs/src/export_import/booru_config_io_handler.dart';
+import '../../downloads/bulks/data/download_repository_provider.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/networking/network_provider.dart';
 import '../../info/device_info.dart';
@@ -114,6 +115,19 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
         return createDbStreamResponse(
           filePath: dbPath,
           fileName: kSearchHistoryDbName,
+        );
+      },
+    ),
+    ExportCategory(
+      name: 'downloads',
+      displayName: 'Downloads',
+      route: 'downloads',
+      handler: (request) async {
+        final dbPath = await getDownloadsDbPath();
+
+        return createDbStreamResponse(
+          filePath: dbPath,
+          fileName: kDownloadDbName,
         );
       },
     ),
