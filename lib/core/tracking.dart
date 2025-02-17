@@ -20,7 +20,7 @@ Future<Tracker> initializeTracking(
 
 final trackerProvider = FutureProvider<Tracker>((ref) async {
   final tracker = await FirebaseTracker.initialize(
-    settings: ref.watch(settingsProvider),
+    settings: ref.watch(initialSettingsProvider),
     logger: ref.watch(loggerProvider),
   );
 

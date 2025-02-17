@@ -239,6 +239,7 @@ Future<void> boot(BootLogger bootLogger) async {
             settingsRepoProvider.overrideWithValue(settingRepository),
             settingsNotifierProvider
                 .overrideWith(() => SettingsNotifier(data.settings)),
+            initialSettingsProvider.overrideWithValue(data.settings),
             booruConfigRepoProvider.overrideWithValue(booruUserRepo),
             booruConfigProvider.overrideWith(
               () => BooruConfigNotifier(

@@ -23,6 +23,11 @@ final settingsNotifierProvider = NotifierProvider<SettingsNotifier, Settings>(
   name: 'settingsNotifierProvider',
 );
 
+final initialSettingsProvider = Provider<Settings>(
+  (ref) => throw UnimplementedError(),
+  name: 'initialSettingsProvider',
+);
+
 class SettingsNotifier extends Notifier<Settings> {
   SettingsNotifier(this.initialSettings);
 
