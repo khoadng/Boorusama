@@ -29,6 +29,14 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(analyticsProvider).whenData((a) {
+        if (a.enabled) {
+          a.changeCurrentAnalyticConfig(ref.read(currentBooruConfigProvider));
+        }
+      });
+    });
   }
 
   @override

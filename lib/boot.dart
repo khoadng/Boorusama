@@ -17,7 +17,6 @@ import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
 import 'boorus/providers.dart';
-import 'core/analytics.dart';
 import 'core/app.dart';
 import 'core/blacklists/src/data/providers.dart';
 import 'core/bookmarks/providers.dart';
@@ -30,7 +29,6 @@ import 'core/configs/current.dart';
 import 'core/configs/manage.dart';
 import 'core/downloads/bulks/notifications.dart';
 import 'core/downloads/notifications.dart';
-import 'core/foundation/error.dart';
 import 'core/foundation/loggers.dart';
 import 'core/foundation/mobile.dart';
 import 'core/foundation/path.dart';
@@ -46,7 +44,6 @@ import 'core/settings/settings.dart';
 import 'core/tags/categories/providers.dart';
 import 'core/tags/configs/providers.dart';
 import 'core/tags/favorites/providers.dart';
-import 'core/tracking.dart';
 import 'core/utils/file_utils.dart';
 import 'core/widgets/widgets.dart';
 
@@ -194,19 +191,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load supported languages');
   final supportedLanguages = await loadLanguageNames();
 
-  bootLogger.l('Initialize tracking');
-  final tracker = await initializeTracking(
-    settings,
-    logger: logger,
-  );
-
-  if (initialConfig != null) {
-    await tracker.analytics.changeCurrentAnalyticConfig(initialConfig);
-  }
-
-  bootLogger.l('Initialize error handlers');
-  initializeErrorHandlers(tracker.reporter);
-
   bootLogger.l('Initialize download notifications');
   final downloadNotifications = await DownloadNotifications.create();
   final bulkDownloadNotifications = await BulkDownloadNotifications.create();
@@ -276,8 +260,6 @@ Future<void> boot(BootLogger bootLogger) async {
             supportedLanguagesProvider.overrideWithValue(supportedLanguages),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
             booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
-            analyticsProvider.overrideWith((_) => tracker.analytics),
-            errorReporterProvider.overrideWith((_) => tracker.reporter),
           ],
           child: const App(),
         ),
