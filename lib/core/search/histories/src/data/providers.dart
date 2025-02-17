@@ -16,9 +16,31 @@ import 'search_history_repository_sqlite.dart';
 final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
   (ref) async {
     final logger = ref.watch(loggerProvider);
-    final searchHistoryRepo = await _createRepo(logger: logger);
 
-    return searchHistoryRepo;
+    final db = await _createDb(logger);
+
+    if (db == null) {
+      logger.logW(_kServiceName, 'Fallback to empty search history repository');
+      return EmptySearchHistoryRepository();
+    }
+
+    ref.onDispose(() {
+      db.dispose();
+    });
+
+    try {
+      return SearchHistoryRepositorySqlite(db: db)..initialize();
+    } on Exception catch (e) {
+      logger
+        ..logE(
+          _kServiceName,
+          'Failed to initialize SQLite database for search history: $e',
+        )
+        ..logW(_kServiceName, 'Fallback to empty search history repository');
+
+      db.dispose();
+      return EmptySearchHistoryRepository();
+    }
   },
 );
 
@@ -41,30 +63,6 @@ Future<Database?> _createDb(
       'Failed to initialize SQLite database for search history: $e',
     );
     return null;
-  }
-}
-
-Future<SearchHistoryRepository> _createRepo({
-  Logger? logger,
-}) async {
-  final db = await _createDb(logger);
-
-  if (db == null) {
-    logger?.logW(_kServiceName, 'Fallback to empty search history repository');
-    return EmptySearchHistoryRepository();
-  }
-
-  try {
-    return SearchHistoryRepositorySqlite(db: db)..initialize();
-  } on Exception catch (e) {
-    logger?.logE(
-      _kServiceName,
-      'Failed to initialize SQLite database for search history: $e',
-    );
-    logger?.logW(_kServiceName, 'Fallback to empty search history repository');
-
-    db.dispose();
-    return EmptySearchHistoryRepository();
   }
 }
 
