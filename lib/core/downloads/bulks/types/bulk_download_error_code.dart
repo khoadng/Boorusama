@@ -13,6 +13,7 @@ enum BulkDownloadErrorCode {
   nonPremiumSuspend('BD0016'),
   nonPremiumResume('BD0017'),
   nonPremiumSavedTaskLimit('BD0018'),
+  directoryNotFound('BD0019'),
   unknown('BD9999');
 
   const BulkDownloadErrorCode(this.code);

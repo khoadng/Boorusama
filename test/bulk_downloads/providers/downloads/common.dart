@@ -71,6 +71,7 @@ class DownloadTestConstants {
   static const defaultConfigs = DownloadConfigs(
     delayBetweenDownloads: Duration.zero,
     delayBetweenRequests: Duration(milliseconds: 5),
+    directoryExistChecker: AlwaysExistsDirectoryExistChecker(),
   );
 
   static final posts = [
@@ -221,6 +222,18 @@ final dummyDownloadFileNameBuilder = DownloadFileNameBuilder<DummyPost>(
   defaultFileNameFormat: 'test-default-format',
   defaultBulkDownloadFileNameFormat: 'test-default-bulk-format',
 );
+
+class AlwaysExistsDirectoryExistChecker implements DirectoryExistChecker {
+  const AlwaysExistsDirectoryExistChecker();
+  @override
+  bool exists(String path) => true;
+}
+
+class AlwaysNotExistsDirectoryExistChecker implements DirectoryExistChecker {
+  const AlwaysNotExistsDirectoryExistChecker();
+  @override
+  bool exists(String path) => false;
+}
 
 class AlwaysGrantedPermissionManager implements MediaPermissionManager {
   @override

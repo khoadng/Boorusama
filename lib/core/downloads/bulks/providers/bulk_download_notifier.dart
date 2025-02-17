@@ -38,7 +38,7 @@ import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
-import 'file_system_download_exist_checker.dart';
+import 'file_system_exist_checker.dart';
 import 'providers.dart';
 import 'saved_task_lock_notifier.dart';
 
@@ -408,6 +408,21 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }) async {
     final authConfig = ref.readConfigAuth;
     final config = ref.readConfig;
+
+    final path = task.path;
+    final directoryChecker = downloadConfigs?.directoryExistChecker ??
+        const FileSystemDirectoryExistChecker();
+
+    // Check if directory exists
+    if (!directoryChecker.exists(path)) {
+      await _updateSession(
+        session.id,
+        status: DownloadSessionStatus.failed,
+        error: const DirectoryNotFoundError().toString(),
+      );
+      await _loadTasks();
+      return;
+    }
 
     final fallbackSettings = ref.read(settingsProvider);
     final settings = downloadConfigs?.settings ?? fallbackSettings;
@@ -1184,18 +1199,12 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     if (record == null) {
-      state = state.copyWith(
-        error: DownloadRecordNotFoundError.new,
-      );
       return;
     }
 
     final session = await _withRepo((repo) => repo.getSession(sessionId));
 
     if (session == null) {
-      state = state.copyWith(
-        error: SessionNotFoundError.new,
-      );
       return;
     }
 

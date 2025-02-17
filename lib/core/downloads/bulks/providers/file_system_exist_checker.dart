@@ -17,3 +17,12 @@ class FileSystemDownloadExistChecker implements DownloadExistChecker {
     return File(filePath).existsSync();
   }
 }
+
+class FileSystemDirectoryExistChecker implements DirectoryExistChecker {
+  const FileSystemDirectoryExistChecker();
+
+  @override
+  bool exists(String path) {
+    return Directory(path).existsSync();
+  }
+}

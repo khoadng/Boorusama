@@ -18,6 +18,8 @@ import 'package:boorusama/core/settings/src/providers/settings_notifier.dart';
 import 'package:boorusama/core/settings/src/providers/settings_provider.dart';
 import 'package:boorusama/core/settings/src/types/settings.dart';
 import 'package:boorusama/core/settings/src/types/settings_repository.dart';
+import 'package:boorusama/core/tracking.dart';
+import 'package:boorusama/core/tracking/types.dart';
 import '../riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {
@@ -121,6 +123,7 @@ ProviderContainer createBooruConfigContainer({
           .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
       initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
       loggerProvider.overrideWithValue(mockLogger),
+      trackerProvider.overrideWith((_) => DummyTracker()),
       booruConfigProvider.overrideWith(
         () => BooruConfigNotifier(
           initialConfigs: [],

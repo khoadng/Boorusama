@@ -133,3 +133,11 @@ class NonPremiumSavedTaskLimitError extends BulkDownloadError {
           'Only one template is allowed. Upgrade to $kPremiumBrandName to create more templates.',
         );
 }
+
+class DirectoryNotFoundError extends BulkDownloadError {
+  const DirectoryNotFoundError()
+      : super(
+          BulkDownloadErrorCode.directoryNotFound,
+          'Directory does not exist.',
+        );
+}

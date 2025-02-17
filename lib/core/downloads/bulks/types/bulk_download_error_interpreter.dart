@@ -58,6 +58,7 @@ class BulkDownloadErrorInterpreter {
       BulkDownloadErrorCode.nonPremiumResume => const NonPremiumResumeError(),
       BulkDownloadErrorCode.nonPremiumSavedTaskLimit =>
         const NonPremiumSavedTaskLimitError(),
+      BulkDownloadErrorCode.directoryNotFound => const DirectoryNotFoundError(),
     };
   }
 }

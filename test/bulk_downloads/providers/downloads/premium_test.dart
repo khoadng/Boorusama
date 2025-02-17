@@ -8,7 +8,6 @@ import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.d
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/providers/saved_task_lock_notifier.dart';
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
 import 'common.dart';
 
@@ -83,7 +82,7 @@ void main() {
       // Create second session but don't start downloading yet
       await notifier.queueDownloadLater(
         DownloadTestConstants.defaultOptions,
-        downloadConfigs: const DownloadConfigs(
+        downloadConfigs: _defaultConfigs.copyWith(
           delayBetweenDownloads: null,
           androidSdkVersion: AndroidVersions.android15,
         ),
@@ -94,7 +93,13 @@ void main() {
         DownloadSessionStatus.pending,
       );
 
-      await notifier.startPendingSession(pendingSession.first.id);
+      await notifier.startPendingSession(
+        pendingSession.first.id,
+        downloadConfigs: _defaultConfigs.copyWith(
+          delayBetweenDownloads: null,
+          androidSdkVersion: AndroidVersions.android15,
+        ),
+      );
 
       final state = container.read(bulkDownloadProvider);
       expect(

@@ -10,7 +10,6 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_configs.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
@@ -248,8 +247,8 @@ void main() {
       unawaited(
         notifier.downloadFromTaskId(
           task.id,
-          downloadConfigs: const DownloadConfigs(
-            delayBetweenRequests: Duration(milliseconds: 200),
+          downloadConfigs: _defaultConfigs.copyWith(
+            delayBetweenRequests: const Duration(milliseconds: 200),
           ),
         ),
       );
@@ -470,8 +469,8 @@ void main() {
       unawaited(
         notifier.downloadFromTask(
           task,
-          downloadConfigs: const DownloadConfigs(
-            delayBetweenRequests: Duration(milliseconds: 2000),
+          downloadConfigs: _defaultConfigs.copyWith(
+            delayBetweenRequests: const Duration(milliseconds: 2000),
           ),
         ),
       );

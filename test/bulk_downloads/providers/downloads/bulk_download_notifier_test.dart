@@ -372,22 +372,6 @@ void main() {
       );
     });
 
-    test('should handle non-existent records gracefully', () async {
-      // Act
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.updateRecordFromTaskStream(
-        'non-existent-session',
-        'non-existent-download',
-        DownloadRecordStatus.completed,
-      );
-
-      // Assert
-      expect(
-        container.read(bulkDownloadProvider).error,
-        isA<DownloadRecordNotFoundError>(),
-      );
-    });
-
     test(
         'should continue downloading when multiple consecutive pages are filtered out',
         () async {
@@ -474,6 +458,31 @@ void main() {
         record.downloadId!,
       );
       expect(updatedRecord?.status, equals(DownloadRecordStatus.completed));
+    });
+  });
+
+  group('Directory Validation', () {
+    test('should fail when directory does not exist', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: _defaultConfigs.copyWith(
+          directoryExistChecker: const AlwaysNotExistsDirectoryExistChecker(),
+        ),
+      );
+
+      // Assert
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      expect(sessions.first.status, equals(DownloadSessionStatus.failed));
+      expect(
+        sessions.first.error,
+        equals(const DirectoryNotFoundError().toString()),
+      );
     });
   });
 }

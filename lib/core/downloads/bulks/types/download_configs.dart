@@ -16,6 +16,7 @@ class DownloadConfigs {
     this.fileNameBuilder,
     this.urlExtractor,
     this.existChecker,
+    this.directoryExistChecker,
     this.headers,
     this.blacklistedTags,
     this.baseUrl,
@@ -33,6 +34,7 @@ class DownloadConfigs {
     DownloadFileNameBuilder? fileNameBuilder,
     DownloadFileUrlExtractor? urlExtractor,
     DownloadExistChecker? existChecker,
+    DirectoryExistChecker? directoryExistChecker,
     Map<String, String>? headers,
     Set<String>? blacklistedTags,
     String? baseUrl,
@@ -50,6 +52,8 @@ class DownloadConfigs {
       fileNameBuilder: fileNameBuilder ?? this.fileNameBuilder,
       urlExtractor: urlExtractor ?? this.urlExtractor,
       existChecker: existChecker ?? this.existChecker,
+      directoryExistChecker:
+          directoryExistChecker ?? this.directoryExistChecker,
       headers: headers ?? this.headers,
       blacklistedTags: blacklistedTags ?? this.blacklistedTags,
       baseUrl: baseUrl ?? this.baseUrl,
@@ -68,6 +72,7 @@ class DownloadConfigs {
   final DownloadFileNameBuilder? fileNameBuilder;
   final DownloadFileUrlExtractor? urlExtractor;
   final DownloadExistChecker? existChecker;
+  final DirectoryExistChecker? directoryExistChecker;
   final Map<String, String>? headers;
   final Set<String>? blacklistedTags;
   final String? baseUrl;
@@ -80,4 +85,8 @@ class DownloadConfigs {
 
 abstract class DownloadExistChecker {
   bool exists(String fileName, String path);
+}
+
+abstract interface class DirectoryExistChecker {
+  bool exists(String path);
 }
