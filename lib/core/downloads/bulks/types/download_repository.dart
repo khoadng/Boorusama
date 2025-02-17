@@ -46,6 +46,7 @@ abstract class DownloadRepository {
     String? error,
   });
   Future<void> completeSession(String id);
+  Future<void> deleteAllCompletedSessions();
 
   Future<void> createRecord(DownloadRecord record);
   Future<void> createRecords(List<DownloadRecord> records);

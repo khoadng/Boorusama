@@ -18,9 +18,11 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
   const BulkDownloadEditSavedTaskPage({
     required this.savedTask,
     super.key,
+    this.edit = false,
   });
 
   final SavedDownloadTask savedTask;
+  final bool edit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,7 +71,15 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                   ),
                   onPressed: validOptions
                       ? () async {
-                          final _ = await notifier.createFromOptions(options);
+                          if (edit) {
+                            await notifier.edit(
+                              savedTask.copyWith(
+                                task: options.toTask(),
+                              ),
+                            );
+                          } else {
+                            await notifier.createFromOptions(options);
+                          }
 
                           navigator.pop();
                         }

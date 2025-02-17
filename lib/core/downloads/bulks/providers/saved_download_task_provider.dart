@@ -44,6 +44,13 @@ class SavedDownloadTasksNotifier
     return success;
   }
 
+  Future<void> edit(SavedDownloadTask task) async {
+    final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
+    await bulkNofifier.editSavedTask(task);
+
+    ref.invalidateSelf();
+  }
+
   Future<bool> duplicate(SavedDownloadTask task) async {
     final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
     final options = DownloadOptions.fromTask(task.task);

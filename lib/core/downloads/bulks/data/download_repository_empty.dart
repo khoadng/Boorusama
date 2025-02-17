@@ -174,4 +174,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
     required DownloadRecordStatus to,
     List<DownloadRecordStatus>? from,
   }) async {}
+
+  @override
+  Future<void> deleteAllCompletedSessions() async {}
 }

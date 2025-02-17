@@ -151,7 +151,7 @@ class DownloadRepositorySqlite
         UPDATE download_tasks 
         SET path = ?, notifications = ?, skip_if_exists = ?, quality = ?, 
             updated_at = ?, per_page = ?, concurrency = ?, tags = ? 
-        WHERE id = ? AND deleted_at IS NULL
+        WHERE id = ?
         ''',
         [
           newTask.path,
@@ -807,14 +807,22 @@ class DownloadRepositorySqlite
   Future<void> deleteSession(String id) async {
     transaction(() {
       final now = DateTime.now().millisecondsSinceEpoch;
-      db.execute(
-        '''
+      db
+        ..execute(
+          '''
         UPDATE download_sessions 
         SET deleted_at = ? 
         WHERE id = ?
         ''',
-        [now, id],
-      );
+          [now, id],
+        )
+        ..execute(
+          '''
+        DELETE FROM download_records 
+        WHERE session_id = ?
+        ''',
+          [id],
+        );
     });
   }
 
@@ -1116,6 +1124,21 @@ class DownloadRepositorySqlite
           [to.name, sessionId, ...from.map((s) => s.name)],
         );
       }
+    });
+  }
+
+  @override
+  Future<void> deleteAllCompletedSessions() async {
+    transaction(() {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      db.execute(
+        '''
+        UPDATE download_sessions 
+        SET deleted_at = ? 
+        WHERE status = ? AND deleted_at IS NULL
+        ''',
+        [now, DownloadSessionStatus.completed.name],
+      );
     });
   }
 }

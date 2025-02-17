@@ -11,6 +11,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
+import '../providers/bulk_download_notifier.dart';
 import '../providers/providers.dart';
 import '../types/bulk_download_session.dart';
 import '../widgets/bulk_download_completed_session_tile.dart';
@@ -115,10 +116,25 @@ class _BulkDownloadCompletedPageState
 
   @override
   Widget build(BuildContext context) {
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
+
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Completed'),
+          actions: [
+            BooruPopupMenuButton(
+              onSelected: (value) {
+                if (value == 'clear_all') {
+                  notifier.deleteAllCompletedSessions();
+                  _refreshList();
+                }
+              },
+              itemBuilder: const {
+                'clear_all': Text('Clear all'),
+              },
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: _refreshList,

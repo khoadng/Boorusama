@@ -83,6 +83,7 @@ class SavedTaskListTile extends ConsumerWidget {
                           const RouteSettings(name: 'bulk_download_create'),
                       builder: (_) => BulkDownloadEditSavedTaskPage(
                         savedTask: savedTask,
+                        edit: true,
                       ),
                     );
                   }

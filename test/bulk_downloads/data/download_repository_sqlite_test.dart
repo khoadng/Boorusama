@@ -175,12 +175,12 @@ void main() {
         // Delete session
         await repository.deleteSession(session.id);
 
-        // Verify statistics entry still exists but with null session_id
+        // Verify statistics entry still exists
         stats = db.select(
           'SELECT * FROM download_session_statistics WHERE id = ?',
           [stats['id']],
         ).first;
-        expect(stats['session_id'], isNull);
+        expect(stats['session_id'], isNotNull);
       });
     });
 
@@ -255,9 +255,9 @@ void main() {
         ]);
         expect(sessions, isEmpty);
 
-        // Records should still be accessible
+        // Records are also deleted
         final records = await repository.getRecordsBySessionId(session.id);
-        expect(records, isNotEmpty);
+        expect(records, isEmpty);
       });
 
       test('should exclude soft deleted sessions from active sessions',

@@ -44,6 +44,20 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
     );
   }
 
+  DownloadTask toTask() {
+    return DownloadTask(
+      id: '',
+      path: path,
+      notifications: notifications,
+      skipIfExists: skipIfExists,
+      createdAt: DateTime(1),
+      updatedAt: DateTime(1),
+      perPage: perPage,
+      concurrency: concurrency,
+      tags: tags.join(' '),
+    );
+  }
+
   final String path;
   final bool notifications;
   final bool skipIfExists;
