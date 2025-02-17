@@ -366,7 +366,19 @@ class SelectDataStep extends ConsumerWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () => notifier.selectAllTasks(),
+              child: const Text('Select All'),
+            ),
+            TextButton(
+              onPressed: () => notifier.deselectAllTasks(),
+              child: const Text('Deselect All'),
+            ),
+          ],
+        ),
         ...options.map(
           (e) => CheckboxListTile(
             title: Text(e.name),

@@ -416,4 +416,28 @@ class ImportDataNotifier
       ],
     );
   }
+
+  void selectAllTasks() {
+    state = state.copyWith(
+      tasks: state.tasks
+          .map(
+            (task) => task.copyWith(
+              status: SelectStatus.selected,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  void deselectAllTasks() {
+    state = state.copyWith(
+      tasks: state.tasks
+          .map(
+            (task) => task.copyWith(
+              status: SelectStatus.unslected,
+            ),
+          )
+          .toList(),
+    );
+  }
 }
