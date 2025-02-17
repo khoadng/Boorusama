@@ -78,6 +78,7 @@ class DownloadRepositorySqlite
           total_pages INTEGER, 
           error TEXT,
           task TEXT NOT NULL,
+          deleted_at INTEGER,
           FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
         )
       ''')
@@ -125,7 +126,7 @@ class DownloadRepositorySqlite
         'CREATE INDEX IF NOT EXISTS idx_download_records_session_id ON download_records(session_id)',
       )
       ..execute(
-        'CREATE INDEX IF NOT EXISTS idx_download_sessions_task_id ON download_sessions(task_id)',
+        'CREATE INDEX IF NOT EXISTS idx_download_sessions_task_id ON download_sessions(task_id) WHERE deleted_at IS NULL',
       )
       ..execute(
         'CREATE INDEX IF NOT EXISTS idx_download_tasks_created_at ON download_tasks(created_at)',
@@ -137,7 +138,7 @@ class DownloadRepositorySqlite
         'CREATE INDEX IF NOT EXISTS idx_download_records_download_lookup ON download_records(session_id, download_id)',
       )
       ..execute(
-        'CREATE INDEX IF NOT EXISTS idx_download_sessions_status_started ON download_sessions(status, started_at)',
+        'CREATE INDEX IF NOT EXISTS idx_download_sessions_status_started ON download_sessions(status, started_at) WHERE deleted_at IS NULL',
       );
   }
 
@@ -150,7 +151,7 @@ class DownloadRepositorySqlite
         UPDATE download_tasks 
         SET path = ?, notifications = ?, skip_if_exists = ?, quality = ?, 
             updated_at = ?, per_page = ?, concurrency = ?, tags = ? 
-        WHERE id = ?
+        WHERE id = ? AND deleted_at IS NULL
         ''',
         [
           newTask.path,
@@ -274,7 +275,7 @@ class DownloadRepositorySqlite
   @override
   Future<DownloadSession?> getSession(String id) async {
     final results = db.select(
-      'SELECT * FROM download_sessions WHERE id = ?',
+      'SELECT * FROM download_sessions WHERE id = ? AND deleted_at IS NULL',
       [id],
     );
     if (results.isEmpty) return null;
@@ -284,7 +285,11 @@ class DownloadRepositorySqlite
   @override
   Future<List<DownloadSession>> getSessionsByTaskId(String taskId) async {
     final results = db.select(
-      'SELECT * FROM download_sessions WHERE task_id = ? ORDER BY started_at DESC',
+      '''
+      SELECT * FROM download_sessions 
+      WHERE task_id = ? AND deleted_at IS NULL 
+      ORDER BY started_at DESC
+      ''',
       [taskId],
     );
     return results.map(mapToSession).toList();
@@ -295,7 +300,11 @@ class DownloadRepositorySqlite
     DownloadSessionStatus status,
   ) async {
     final results = db.select(
-      'SELECT * FROM download_sessions WHERE status = ? ORDER BY started_at DESC',
+      '''
+      SELECT * FROM download_sessions 
+      WHERE status = ? AND deleted_at IS NULL 
+      ORDER BY started_at DESC
+      ''',
       [status.name],
     );
     return results.map(mapToSession).toList();
@@ -324,7 +333,7 @@ class DownloadRepositorySqlite
       FROM download_sessions s
       INNER JOIN download_tasks t ON s.task_id = t.id
       LEFT JOIN download_records r ON s.id = r.session_id
-      WHERE s.status != ?
+      WHERE s.status != ? AND s.deleted_at IS NULL
       GROUP BY s.id, t.id
       ORDER BY s.started_at DESC
     ''',
@@ -350,7 +359,7 @@ class DownloadRepositorySqlite
             ? _maxLimit
             : limit;
 
-    final whereClauses = ['s.status = ?'];
+    final whereClauses = ['s.status = ?', 's.deleted_at IS NULL'];
     final params = [DownloadSessionStatus.completed.name];
 
     if (startDate != null) {
@@ -521,7 +530,11 @@ class DownloadRepositorySqlite
     final placeholders = List.filled(statusNames.length, '?').join(',');
 
     final results = db.select(
-      'SELECT * FROM download_sessions WHERE status IN ($placeholders) ORDER BY started_at DESC',
+      '''
+      SELECT * FROM download_sessions 
+      WHERE status IN ($placeholders) AND deleted_at IS NULL 
+      ORDER BY started_at DESC
+      ''',
       statusNames,
     );
     return results.map(mapToSession).toList();
@@ -563,7 +576,7 @@ class DownloadRepositorySqlite
           '''
           UPDATE download_sessions 
           SET ${setValues.join(', ')} 
-          WHERE id = ?
+          WHERE id = ? AND deleted_at IS NULL
           ''',
           params,
         );
@@ -579,7 +592,7 @@ class DownloadRepositorySqlite
         '''
         UPDATE download_sessions 
         SET status = ?, completed_at = ? 
-        WHERE id = ?
+        WHERE id = ? AND deleted_at IS NULL
         ''',
         [DownloadSessionStatus.completed.name, now, id],
       );
@@ -793,7 +806,15 @@ class DownloadRepositorySqlite
   @override
   Future<void> deleteSession(String id) async {
     transaction(() {
-      db.execute('DELETE FROM download_sessions WHERE id = ?', [id]);
+      final now = DateTime.now().millisecondsSinceEpoch;
+      db.execute(
+        '''
+        UPDATE download_sessions 
+        SET deleted_at = ? 
+        WHERE id = ?
+        ''',
+        [now, id],
+      );
     });
   }
 
@@ -840,6 +861,7 @@ class DownloadRepositorySqlite
         UPDATE download_sessions 
         SET status = ?, error = NULL, current_page = 1, total_pages = NULL 
         WHERE id IN (${sessionIds.map((_) => '?').join(',')})
+        AND deleted_at IS NULL
         ''',
           [DownloadSessionStatus.pending.name, ...sessionIds],
         );
@@ -859,6 +881,7 @@ class DownloadRepositorySqlite
         UPDATE download_sessions 
         SET status = ? 
         WHERE id IN (${sessionIds.map((_) => '?').join(',')})
+        AND deleted_at IS NULL
         ''',
         [status.name, ...sessionIds],
       );

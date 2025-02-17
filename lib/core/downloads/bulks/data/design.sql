@@ -43,6 +43,7 @@ CREATE TABLE download_sessions (
     status TEXT NOT NULL,
     error TEXT,
     task TEXT NOT NULL,
+    deleted_at INTEGER,
     FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
 );
 
@@ -85,8 +86,8 @@ CREATE TABLE download_session_statistics (
 );
 
 CREATE INDEX idx_download_records_session_id ON download_records(session_id);
-CREATE INDEX idx_download_sessions_task_id ON download_sessions(task_id);
+CREATE INDEX idx_download_sessions_task_id ON download_sessions(task_id) WHERE deleted_at IS NULL;
 CREATE INDEX idx_download_tasks_created_at ON download_tasks(created_at);
 CREATE INDEX idx_download_records_status_session ON download_records(session_id, status);
 CREATE INDEX idx_download_records_download_lookup ON download_records(session_id, download_id);
-CREATE INDEX idx_download_sessions_status_started ON download_sessions(status, started_at);
+CREATE INDEX idx_download_sessions_status_started ON download_sessions(status, started_at) WHERE deleted_at IS NULL;

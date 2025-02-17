@@ -26,7 +26,6 @@ class BulkDownloadCompletedPage extends ConsumerStatefulWidget {
 class _BulkDownloadCompletedPageState
     extends ConsumerState<BulkDownloadCompletedPage> {
   static const _pageSize = 20;
-  static const _windowSize = 40;
 
   final PagingController<int, BulkDownloadSession> _pagingController =
       PagingController(firstPageKey: 0);
@@ -79,43 +78,16 @@ class _BulkDownloadCompletedPageState
       _isRefreshing = true;
       try {
         final repo = await ref.read(downloadRepositoryProvider.future);
+        // Clear existing items before refreshing
+        _pagingController.itemList?.clear();
 
-        // Get visible range
-        final firstItem = _pagingController.itemList?.firstOrNull;
-        final visibleItems = _pagingController.itemList ?? [];
-
-        if (firstItem == null || visibleItems.isEmpty) {
-          final items = await repo.getCompletedSessions(
-            offset: 0,
-            limit: _pageSize,
-          );
-          if (!mounted) return;
-          _updatePagingController(items);
-          return;
-        }
-
-        // Calculate window based on the defined window size
-        final currentOffset = _pagingController.nextPageKey ?? 0;
-        final windowStart = (currentOffset ~/ _windowSize) * _windowSize;
-
-        // Use the actual window size constant
-        final newItems = await repo.getCompletedSessions(
-          offset: windowStart,
-          limit: _windowSize,
+        final items = await repo.getCompletedSessions(
+          offset: 0,
+          limit: _pageSize,
         );
 
         if (!mounted) return;
-
-        // Update only items in the window
-        final updatedItems = List<BulkDownloadSession>.from(visibleItems);
-        for (var i = 0; i < newItems.length; i++) {
-          final index = windowStart + i;
-          if (index < updatedItems.length) {
-            updatedItems[index] = newItems[i];
-          }
-        }
-
-        _pagingController.itemList = updatedItems;
+        _updatePagingController(items);
       } finally {
         _isRefreshing = false;
       }
@@ -123,6 +95,9 @@ class _BulkDownloadCompletedPageState
   }
 
   void _updatePagingController(List<BulkDownloadSession> items) {
+    // Reset the page before updating with new items
+    _pagingController.nextPageKey = 0;
+
     final isLastPage = items.length < _pageSize;
     if (isLastPage) {
       _pagingController.appendLastPage(items);
