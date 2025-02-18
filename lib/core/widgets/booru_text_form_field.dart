@@ -201,7 +201,7 @@ class BooruTextFormField extends ConsumerWidget {
       cursorOpacityAnimates: cursorOpacityAnimates,
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
-      stylusHandwritingEnabled: stylusHandwritingEnabled,
+      // stylusHandwritingEnabled: stylusHandwritingEnabled,
       canRequestFocus: canRequestFocus,
     );
   }

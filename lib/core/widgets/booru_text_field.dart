@@ -187,7 +187,7 @@ class BooruTextField extends ConsumerWidget {
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
       restorationId: restorationId,
-      stylusHandwritingEnabled: stylusHandwritingEnabled,
+      // stylusHandwritingEnabled: stylusHandwritingEnabled,
       enableIMEPersonalizedLearning:
           enableIMEPersonalizedLearning ?? !enableIncognitoModeForKeyboard,
       canRequestFocus: canRequestFocus,
