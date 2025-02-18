@@ -1106,6 +1106,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     state = state.copyWith(error: () => null);
   }
 
+  void setError(BulkDownloadError error) {
+    state = state.copyWith(error: () => error);
+  }
+
   Future<void> stopDryRun(String sessionId) async {
     // check if session is in dry run
     final session = await _withRepo((repo) => repo.getSession(sessionId));

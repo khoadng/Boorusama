@@ -17,6 +17,15 @@ final isSavedTaskLockedProvider = Provider.autoDispose.family<bool, String>(
   },
 );
 
+final hasAnySavedTaskLockedProvider = FutureProvider(
+  (ref) async {
+    final tasks = await ref.watch(savedDownloadTasksProvider.future);
+    final hasPremium = ref.watch(hasPremiumProvider);
+
+    return tasks.isNotEmpty && !hasPremium;
+  },
+);
+
 class SavedTaskLockNotifier extends AsyncNotifier<SavedTaskLockState> {
   @override
   Future<SavedTaskLockState> build() async {

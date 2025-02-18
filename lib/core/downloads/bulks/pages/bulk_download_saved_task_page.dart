@@ -8,7 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
+import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
+import '../providers/saved_task_lock_notifier.dart';
+import '../types/bulk_download_error.dart';
 import '../types/saved_download_task.dart';
 import '../widgets/saved_task_list_tile.dart';
 import 'bulk_download_edit_saved_task_page.dart';
@@ -25,16 +28,8 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Templates').tr(),
-          actions: [
-            IconButton(
-              icon: const Icon(Symbols.add),
-              onPressed: () => showModalBottomSheet(
-                context: context,
-                builder: (context) => BulkDownloadEditSavedTaskPage(
-                  savedTask: SavedDownloadTask.empty(),
-                ),
-              ),
-            ),
+          actions: const [
+            _AddButton(),
           ],
         ),
         body: RefreshIndicator(
@@ -62,6 +57,33 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AddButton extends ConsumerWidget {
+  const _AddButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bulkNotifier = ref.watch(bulkDownloadProvider.notifier);
+    final hasSavedTaskLocked =
+        ref.watch(hasAnySavedTaskLockedProvider).valueOrNull;
+
+    return IconButton(
+      icon: const Icon(Symbols.add),
+      onPressed: () {
+        if (hasSavedTaskLocked != true) {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => BulkDownloadEditSavedTaskPage(
+              savedTask: SavedDownloadTask.empty(),
+            ),
+          );
+        } else {
+          bulkNotifier.setError(const NonPremiumSavedTaskLimitError());
+        }
+      },
     );
   }
 }
