@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'bulk_download_notification.dart';
 
-final bulkDownloadNotificationProvider = Provider<BulkDownloadNotifications>(
-  (ref) => throw UnimplementedError(),
+final bulkDownloadNotificationProvider =
+    FutureProvider<BulkDownloadNotifications>(
+  (ref) => BulkDownloadNotifications.create(),
 );
 
 final bulkDownloadOnTapStreamProvider = StreamProvider<String>(
-  (ref) {
-    return ref.watch(bulkDownloadNotificationProvider).tapStream;
-  },
+  (ref) => ref.watch(bulkDownloadNotificationProvider).maybeWhen(
+        data: (notifications) => notifications.tapStream,
+        orElse: () => const Stream.empty(),
+      ),
 );

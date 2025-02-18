@@ -165,7 +165,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           // Only show progress if session is running AND notifications are enabled
           if (session?.status == DownloadSessionStatus.running &&
               session?.task?.notifications == true) {
-            final notification = ref.read(bulkDownloadNotificationProvider);
+            final notification =
+                await ref.read(bulkDownloadNotificationProvider.future);
             await notification.showProgressNotification(
               sessionId,
               session?.task?.prettyTags ?? 'Downloading...',
@@ -1016,7 +1017,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final downloader = ref.read(downloadServiceProvider(config));
       final session = await _withRepo((repo) => repo.getSession(sessionId));
       final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
-      final notification = ref.read(bulkDownloadNotificationProvider);
+      final notification =
+          await ref.read(bulkDownloadNotificationProvider.future);
 
       // Cancel notification immediately
       await notification.cancelNotification(sessionId);
@@ -1172,11 +1174,13 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     if (currentSessionState?.task.notifications ?? true) {
-      unawaited(
-        ref.read(bulkDownloadNotificationProvider).showOneShotNotification(
-              currentSessionState?.task.prettyTags ?? 'Download completed',
-              'Downloaded ${stats.totalItems} files',
-            ),
+      ref.read(bulkDownloadNotificationProvider).whenData(
+        (notification) {
+          notification.showOneShotNotification(
+            currentSessionState?.task.prettyTags ?? 'Download completed',
+            'Downloaded ${stats.totalItems} files',
+          );
+        },
       );
     }
 
@@ -1287,7 +1291,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     // Handle notifications based on status and notification settings
-    final notification = ref.read(bulkDownloadNotificationProvider);
+    final notification =
+        await ref.read(bulkDownloadNotificationProvider.future);
 
     // Only show notifications if task.notifications is true
     if (session?.task?.notifications ?? false) {

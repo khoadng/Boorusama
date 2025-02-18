@@ -374,6 +374,6 @@ List<Override> getTestOverrides({
         .overrideWith((_) => taskUpdateStream ?? emptyTaskUpdateStream),
     taskFileSizeResolverProvider.overrideWith((_, __) => Future.value(0)),
     if (notifications != null)
-      bulkDownloadNotificationProvider.overrideWithValue(notifications),
+      bulkDownloadNotificationProvider.overrideWith((_) => notifications),
   ];
 }

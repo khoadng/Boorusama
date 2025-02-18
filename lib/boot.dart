@@ -23,13 +23,10 @@ import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
 import 'core/boorus/engine/providers.dart';
-import 'core/bulk_downloads/src/notifications/bulk_download_notification.dart';
-import 'core/bulk_downloads/src/notifications/providers.dart';
 import 'core/cache/providers.dart';
 import 'core/configs/config.dart';
 import 'core/configs/current.dart';
 import 'core/configs/manage.dart';
-import 'core/downloads/notifications.dart';
 import 'core/foundation/loggers.dart';
 import 'core/foundation/mobile.dart';
 import 'core/foundation/path.dart';
@@ -192,10 +189,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load supported languages');
   final supportedLanguages = await loadLanguageNames();
 
-  bootLogger.l('Initialize download notifications');
-  final downloadNotifications = await DownloadNotifications.create();
-  final bulkDownloadNotifications = await BulkDownloadNotifications.create();
-
   FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;
     if (stack is Chain) return stack.toTrace().vmTrace;
@@ -251,10 +244,6 @@ Future<void> boot(BootLogger bootLogger) async {
             httpCacheDirProvider.overrideWithValue(tempPath),
             loggerProvider.overrideWithValue(logger),
             bookmarkRepoOverride,
-            downloadNotificationProvider
-                .overrideWithValue(downloadNotifications),
-            bulkDownloadNotificationProvider
-                .overrideWithValue(bulkDownloadNotifications),
             deviceInfoProvider.overrideWithValue(deviceInfo),
             packageInfoProvider.overrideWithValue(packageInfo),
             appInfoProvider.overrideWithValue(appInfo),

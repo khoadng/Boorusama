@@ -4,10 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
-import '../../configs/current.dart';
-import '../../http/providers.dart';
-import '../../settings/providers.dart';
-import '../notifications/providers.dart';
 import '../urls/download_url.dart';
 import 'background_downloader.dart';
 import 'download_service.dart';
@@ -17,12 +13,6 @@ final downloadServiceProvider =
   (ref, config) {
     return BackgroundDownloader();
   },
-  dependencies: [
-    dioProvider,
-    downloadNotificationProvider,
-    currentBooruConfigProvider,
-    settingsProvider,
-  ],
 );
 
 final downloadFileUrlExtractorProvider =
