@@ -171,10 +171,18 @@ class BulkDownloadNotifications {
 
   Future<void> cancelNotification(String sessionId) async {
     if (isWindows()) return;
-    if (_activeNotifications[sessionId] != true) return;
 
-    await _flutterLocalNotificationsPlugin?.cancel(sessionId.hashCode);
-    _activeNotifications.remove(sessionId);
+    final id = sessionId.hashCode;
+    // Check both the sessionId and the hash version
+    if (_activeNotifications[sessionId] != true &&
+        _activeNotifications[id.toString()] != true) {
+      return;
+    }
+
+    await _flutterLocalNotificationsPlugin?.cancel(id);
+    _activeNotifications
+      ..remove(sessionId)
+      ..remove(id.toString());
   }
 
   void dispose() {

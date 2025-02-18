@@ -46,8 +46,8 @@ class BulkDownloadErrorInterpreter {
       BulkDownloadErrorCode.noPostsFound => const NoPostsFoundError(),
       BulkDownloadErrorCode.sessionNotFound => const SessionNotFoundError(),
       BulkDownloadErrorCode.emptyTags => const EmptyTagsError(),
-      BulkDownloadErrorCode.taskHasActiveSessions =>
-        const TaskHasActiveSessionsError(),
+      BulkDownloadErrorCode.runningSessionDeletion =>
+        const RunningSessionDeletionError(),
       BulkDownloadErrorCode.downloadRecordNotFound =>
         const DownloadRecordNotFoundError(),
       BulkDownloadErrorCode.sessionNotRunning => const SessionNotRunningError(),

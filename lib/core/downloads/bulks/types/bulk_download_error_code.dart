@@ -6,7 +6,7 @@ enum BulkDownloadErrorCode {
   noPostsFound('BD0005'),
   sessionNotFound('BD0006'),
   emptyTags('BD0007'),
-  taskHasActiveSessions('BD0008'),
+  runningSessionDeletion('BD0008'),
   downloadRecordNotFound('BD0009'),
   sessionNotRunning('BD0011'),
   nonPremiumSessionLimit('BD0015'),

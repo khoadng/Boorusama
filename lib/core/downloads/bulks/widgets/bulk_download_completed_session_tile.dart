@@ -38,70 +38,98 @@ class BulkDownloadCompletedSessionTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minHeight: 60,
+    final colorScheme = Theme.of(context).colorScheme;
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
+
+    return Dismissible(
+      key: ValueKey(session.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        color: colorScheme.error,
+        child: Icon(
+          Icons.delete,
+          color: colorScheme.onError,
+        ),
       ),
-      child: _ContextMenu(
-        session: session,
-        onDelete: onDelete,
-        child: InkWell(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 8,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _CoverImage(
-                  session,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _Logo(
-                            stats: session.stats,
-                          ),
-                          Expanded(
-                            child: _InfoText(
-                              session: session,
-                            ),
-                          ),
-                          const _ActionButtons(),
-                          _CreateSavedTaskButton(
-                            task: session.task,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _Title(
-                                  session: session,
-                                ),
-                                _Subtitle(
-                                  session: session,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          final success = await notifier.deleteSession(session.id);
+
+          if (success) {
+            onDelete();
+          }
+          return success;
+        }
+
+        return false;
+      },
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 60,
+        ),
+        child: _ContextMenu(
+          session: session,
+          onDelete: onDelete,
+          child: InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 8,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _CoverImage(
+                    session,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _Logo(
+                              stats: session.stats,
+                            ),
+                            Expanded(
+                              child: _InfoText(
+                                session: session,
+                              ),
+                            ),
+                            const _ActionButtons(),
+                            _CreateSavedTaskButton(
+                              task: session.task,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _Title(
+                                    session: session,
+                                  ),
+                                  _Subtitle(
+                                    session: session,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -38,78 +38,100 @@ class BulkDownloadTaskTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final notifier = ref.watch(bulkDownloadProvider.notifier);
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minHeight: 60,
+    return Dismissible(
+      key: ValueKey(session.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        color: colorScheme.error,
+        child: Icon(
+          Icons.delete,
+          color: colorScheme.onError,
+        ),
       ),
-      child: _ContextMenu(
-        session: session,
-        child: _DetailsInkWell(
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          return notifier.deleteSession(session.id);
+        }
+
+        return false;
+      },
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: 60,
+        ),
+        child: _ContextMenu(
           session: session,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 8,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _CoverImage(session),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _Logo(session),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4),
-                                  child: _InfoText(session),
-                                ),
-                                if (session.session.status ==
-                                    DownloadSessionStatus.suspended)
-                                  CompactChip(
-                                    label: 'Saved',
-                                    textStyle: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: colorScheme.onSecondaryContainer,
-                                      fontSize: 13,
-                                    ),
-                                    backgroundColor:
-                                        colorScheme.secondaryContainer,
+          child: _DetailsInkWell(
+            session: session,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 8,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _CoverImage(session),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _Logo(session),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4),
+                                    child: _InfoText(session),
                                   ),
-                              ],
+                                  if (session.session.status ==
+                                      DownloadSessionStatus.suspended)
+                                    CompactChip(
+                                      label: 'Saved',
+                                      textStyle: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: colorScheme.onSecondaryContainer,
+                                        fontSize: 13,
+                                      ),
+                                      backgroundColor:
+                                          colorScheme.secondaryContainer,
+                                    ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _Title(session),
-                                _Subtitle(session),
-                                _ActionButtonBar(session: session),
-                              ],
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _Title(session),
+                                  _Subtitle(session),
+                                  _ActionButtonBar(session: session),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

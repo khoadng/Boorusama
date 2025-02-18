@@ -66,11 +66,11 @@ class EmptyTagsError extends BulkDownloadError {
       : super(BulkDownloadErrorCode.emptyTags, 'Tags cannot be empty');
 }
 
-class TaskHasActiveSessionsError extends BulkDownloadError {
-  const TaskHasActiveSessionsError()
+class RunningSessionDeletionError extends BulkDownloadError {
+  const RunningSessionDeletionError()
       : super(
-          BulkDownloadErrorCode.taskHasActiveSessions,
-          'Task has active sessions and cannot be deleted',
+          BulkDownloadErrorCode.runningSessionDeletion,
+          'Cannot delete a running session',
         );
 }
 

@@ -1057,43 +1057,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 
-  Future<void> deleteTask(String taskId) async {
-    try {
-      // Check if task exists
-      final task = await _withRepo((repo) => repo.getTask(taskId));
-      if (task == null) {
-        state = state.copyWith(
-          error: TaskNotFoundError.new,
-        );
-        return;
-      }
-
-      // Check for active sessions
-      final sessions =
-          await _withRepo((repo) => repo.getSessionsByTaskId(taskId));
-      final hasActiveSessions = sessions.any(
-        (s) =>
-            s.status == DownloadSessionStatus.running ||
-            s.status == DownloadSessionStatus.dryRun,
-      );
-
-      if (hasActiveSessions) {
-        state = state.copyWith(
-          error: TaskHasActiveSessionsError.new,
-        );
-        return;
-      }
-
-      // Delete task and related sessions
-      await _withRepo((repo) => repo.deleteTask(taskId));
-
-      await _loadTasks();
-    } catch (e) {
-      state = state.copyWith(error: () => e);
-    }
-  }
-
-  Future<void> deleteSession(String sessionId) async {
+  Future<bool> deleteSession(String sessionId) async {
     final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
 
     try {
@@ -1103,6 +1067,16 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         state = state.copyWith(
           error: SessionNotFoundError.new,
         );
+        return false;
+      }
+
+      // Add check for running or dry run sessions
+      if (session.status == DownloadSessionStatus.running ||
+          session.status == DownloadSessionStatus.dryRun) {
+        state = state.copyWith(
+          error: RunningSessionDeletionError.new,
+        );
+        return false;
       }
 
       await _withRepo((repo) => repo.deleteSession(sessionId));
@@ -1110,8 +1084,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       progressNotifier.removeSession(sessionId);
 
       await _loadTasks();
+      return true;
     } catch (e) {
       state = state.copyWith(error: () => e);
+      return false;
     }
   }
 
@@ -1321,6 +1297,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           (status == DownloadSessionStatus.completed ||
               status == DownloadSessionStatus.failed ||
               status == DownloadSessionStatus.cancelled ||
+              status == DownloadSessionStatus.allSkipped ||
               status == DownloadSessionStatus.running ||
               status == DownloadSessionStatus.suspended)) {
         await notification.cancelNotification(sessionId);

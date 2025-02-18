@@ -10,6 +10,7 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
 import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
+import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
@@ -62,6 +63,18 @@ void main() {
         isTrue,
       );
 
+      // Complete the session
+      var records = await repository.getRecordsBySessionId(sessionId);
+      for (final record in records) {
+        await notifier.updateRecordFromTaskStream(
+          sessionId,
+          record.downloadId!,
+          DownloadRecordStatus.completed,
+        );
+      }
+
+      await notifier.tryCompleteSession(sessionId);
+
       // Act
       await notifier.deleteSession(sessionId);
 
@@ -78,7 +91,7 @@ void main() {
       expect(deletedSession, isNull);
 
       // Verify associated records are also deleted
-      final records = await repository.getRecordsBySessionId(sessionId);
+      records = await repository.getRecordsBySessionId(sessionId);
       expect(records, isEmpty);
 
       // Verify state is updated
@@ -94,6 +107,79 @@ void main() {
       // Assert
       final state = container.read(bulkDownloadProvider);
       expect(state.error, isNotNull);
+    });
+
+    test('should not allow deletion of running session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Start a task to create a running session
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: _defaultConfigs,
+      );
+
+      // Get session ID from the first session
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      final sessionId = sessions.first.id;
+
+      // Act
+      await notifier.deleteSession(sessionId);
+
+      // Assert
+      // Verify session still exists
+      final existingSession = await repository.getSession(sessionId);
+      expect(existingSession, isNotNull);
+
+      // Verify error state
+      final state = container.read(bulkDownloadProvider);
+      expect(
+        state.error.toString(),
+        const RunningSessionDeletionError().toString(),
+      );
+    });
+
+    test('should not allow deletion of dry run session', () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      unawaited(
+        notifier.downloadFromTaskId(
+          task.id,
+          downloadConfigs: _defaultConfigs.copyWith(
+            delayBetweenRequests: const Duration(milliseconds: 2000),
+          ),
+        ),
+      );
+
+      // Wait for dry run to start
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      // Get session ID from the first session
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      expect(sessions.length, equals(1));
+      final sessionId = sessions.first.id;
+
+      // Verify session is in dry run
+      expect(sessions.first.status, equals(DownloadSessionStatus.dryRun));
+
+      // Act
+      await notifier.deleteSession(sessionId);
+
+      // Assert
+      // Verify session still exists
+      final existingSession = await repository.getSession(sessionId);
+      expect(existingSession, isNotNull);
+
+      // Verify error state
+      final state = container.read(bulkDownloadProvider);
+      expect(
+        state.error.toString(),
+        const RunningSessionDeletionError().toString(),
+      );
     });
   });
 
