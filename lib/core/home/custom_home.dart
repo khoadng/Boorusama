@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/engine.dart';
+import '../bulk_downloads/widgets.dart';
 import '../configs/current.dart';
-import '../downloads/bulks.dart';
 import '../premiums/providers.dart';
 
 const _kDefaultView = 'default';

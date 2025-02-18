@@ -12,6 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
+import '../bulk_downloads/routes.dart';
 import '../configs/widgets.dart';
 import '../downloads/routes.dart';
 import '../premiums/premiums.dart';

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../downloads/routes.dart';
+import '../../../../bulk_downloads/routes.dart';
 
 class TagDetailsSlilverAppBar extends ConsumerWidget {
   const TagDetailsSlilverAppBar({

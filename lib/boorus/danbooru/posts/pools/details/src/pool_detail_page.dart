@@ -9,8 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import '../../../../../../core/bulk_downloads/routes.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/downloads/routes.dart';
 import '../../../../../../core/foundation/html.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/search/routes.dart';

@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../core/boorus/engine/providers.dart';
+import '../core/bulk_downloads/providers.dart';
 import '../core/cache/providers.dart';
 import '../core/changelogs/utils.dart';
 import '../core/configs/config.dart';
@@ -14,7 +15,6 @@ import '../core/configs/current.dart';
 import '../core/configs/manage.dart';
 import '../core/configs/ref.dart';
 import '../core/configs/widgets.dart';
-import '../core/downloads/notifications.dart';
 import '../core/foundation/display.dart';
 import '../core/foundation/permissions.dart';
 import '../core/foundation/platform.dart';

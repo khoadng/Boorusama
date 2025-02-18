@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../../downloads/downloader.dart';
+import '../../../downloads/filename/generator_impl.dart';
+import '../../../downloads/urls.dart';
 import '../../../foundation/permissions/permission_utils.dart';
 import '../../../settings/settings.dart';
-import '../../downloader.dart';
-import '../../filename/generator_impl.dart';
-import '../../urls.dart';
 
 class DownloadConfigs {
   const DownloadConfigs({

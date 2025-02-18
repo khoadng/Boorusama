@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/ref.dart';
-import '../../downloader/download_utils.dart';
+import '../../../downloads/downloader/download_utils.dart';
 import '../pages/bulk_download_completed_page.dart';
 import '../pages/bulk_download_saved_task_page.dart';
 import '../pages/create_download_options_sheet.dart';

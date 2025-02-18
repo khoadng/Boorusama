@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/downloads/routes.dart';
+import '../../../../../../core/bulk_downloads/routes.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
 import '../../../saved_search/saved_search.dart';
 

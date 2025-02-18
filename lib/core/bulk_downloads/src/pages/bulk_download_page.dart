@@ -11,11 +11,11 @@ import '../../../boorus/booru/booru.dart';
 import '../../../configs/ref.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';
-import '../../bulks.dart';
-import '../../l10n.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../routes/internal_routes.dart';
+import '../types/l10n.dart';
+import '../widgets/bulk_download_task_tile.dart';
 import '../widgets/saved_task_list_tile.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
@@ -28,7 +28,7 @@ class BulkDownloadPage extends ConsumerWidget {
     return config.booruType == BooruType.zerochan
         ? Scaffold(
             appBar: AppBar(
-              title: const Text(DownloadTranslations.bulkDownloadTitle).tr(),
+              title: const Text(DownloadTranslations.title).tr(),
             ),
             body: const Center(
               child: Text(
@@ -50,7 +50,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(DownloadTranslations.bulkDownloadTitle).tr(),
+          title: const Text(DownloadTranslations.title).tr(),
           actions: [
             Consumer(
               builder: (_, ref, __) {
@@ -104,7 +104,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
                             );
                           },
                           child: const Text(
-                            DownloadTranslations.bulkDownloadCreate,
+                            DownloadTranslations.create,
                           ).tr(),
                         ),
                       ],
@@ -140,7 +140,7 @@ class BulkDownloadActionSessions extends ConsumerWidget {
               data: (tasks) => tasks.isEmpty
                   ? Center(
                       child: Text(
-                        DownloadTranslations.bulkDownloadEmpty,
+                        DownloadTranslations.empty,
                         style: textTheme.titleSmall?.copyWith(
                           color: colorScheme.hintColor,
                         ),
@@ -153,7 +153,7 @@ class BulkDownloadActionSessions extends ConsumerWidget {
                           height: 60,
                           child: Center(
                             child: Text(
-                              DownloadTranslations.bulkDownloadEmpty,
+                              DownloadTranslations.empty,
                               style: textTheme.titleSmall?.copyWith(
                                 color: colorScheme.hintColor,
                               ),

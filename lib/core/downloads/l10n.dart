@@ -21,31 +21,4 @@ class DownloadTranslations {
       'Ignore files that already downloaded';
   static const String skipDownloadIfExistsExplanation =
       "This will prevent downloading files that already exist in the folder. This is useful when you don't want to download the same file multiple times.";
-
-  // Bulk download
-  static const String bulkDownloadTitle = 'Bulk Download';
-  static const String bulkDownloadNewDownloadTitle = 'New download';
-  static const String bulkDownloadCreate = 'New download';
-  static const String bulkDownloadEmpty = 'No active download sessions';
-  static const String bulkDownloadDelete = 'Delete';
-  static const String bulkDownloadCopyPath = 'Copy path';
-  static const String bulkDownloadStart = 'Start';
-  static const String bulkDownloadCancel = 'Cancel';
-  static const String bulkDownloadStop = 'Stop';
-  static const String bulkDownloadResume = 'Resume';
-  static const String bulkDownloadCreatedStatus = 'Created';
-  static const String bulkDownloadDownload = 'Download';
-  static const String bulkDownloadAddToQueue = 'Queue';
-  static String bulkDownloadInProgressStatus(int? completed) =>
-      'Fetching${completed != null ? ' page $completed ' : ''}...';
-  static String bulkDownloadTitleInfoCounter(bool plural) =>
-      plural ? '{} files' : '{} file';
-
-  static const String bulkDownloadSaveToFolder =
-      'download.bulk_download_save_to_folder';
-  static const String bulkdDownloadShowAdvancedOptions =
-      'Show advanced options';
-  static const String bulkDownloadEnableNotifications = 'Notifications';
-  static const String bulkDownloadSelectFolder =
-      'download.bulk_download_select_a_folder';
 }

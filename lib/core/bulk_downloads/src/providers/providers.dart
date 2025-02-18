@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../manager/download_task_update.dart';
-import '../../manager/download_task_updates_notifier.dart';
+import '../../../downloads/manager/download_task_update.dart';
+import '../../../downloads/manager/download_task_updates_notifier.dart';
 import '../data/download_repository_provider.dart';
 import '../types/download_record.dart';
 import '../types/download_repository.dart';

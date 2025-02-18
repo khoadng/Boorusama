@@ -12,20 +12,20 @@ import 'package:readmore/readmore.dart';
 
 // Project imports:
 import '../../../configs/ref.dart';
+import '../../../downloads/manager.dart';
 import '../../../foundation/clipboard.dart';
 import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
-import '../../l10n.dart';
-import '../../manager.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/providers.dart';
 import '../types/bulk_download_error_interpreter.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
+import '../types/l10n.dart';
 
 class BulkDownloadTaskTile extends ConsumerWidget {
   const BulkDownloadTaskTile({
@@ -276,13 +276,13 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.bulkDownloadDelete.tr(),
+            DownloadTranslations.delete.tr(),
             onPressed: () {
               ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.bulkDownloadCopyPath.tr(),
+            DownloadTranslations.copyPath.tr(),
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
         ],
@@ -407,7 +407,7 @@ class _InfoText extends ConsumerWidget {
         ? Filesize.parse(fileSize, round: 1)
         : null;
 
-    final totalItemText = DownloadTranslations.bulkDownloadTitleInfoCounter(
+    final totalItemText = DownloadTranslations.titleInfoCounter(
       !(totalItems == 1),
     ).replaceAll('{}', totalItems.toString());
 
@@ -421,14 +421,14 @@ class _InfoText extends ConsumerWidget {
       child: Text(
         switch (status) {
           DownloadSessionStatus.pending =>
-            DownloadTranslations.bulkDownloadCreatedStatus.tr(),
-          DownloadSessionStatus.dryRun =>
-            DownloadTranslations.bulkDownloadInProgressStatus(
+            DownloadTranslations.createdStatus.tr(),
+          DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
               pageProgress.completed,
             ).tr(),
           DownloadSessionStatus.failed => 'Error',
           DownloadSessionStatus.interrupted => 'Interrupted',
-          DownloadSessionStatus.allSkipped => 'Completed with no new files',
+          DownloadSessionStatus.allSkipped =>
+            DownloadTranslations.allSkippedStatus.tr(),
           _ => infoText,
         },
         maxLines: 1,

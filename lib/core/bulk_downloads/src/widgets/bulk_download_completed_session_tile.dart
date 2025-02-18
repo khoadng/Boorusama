@@ -17,7 +17,6 @@ import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';
-import '../../l10n.dart';
 import '../pages/bulk_download_saved_task_page.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
@@ -25,6 +24,7 @@ import '../routes/internal_routes.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
+import '../types/l10n.dart';
 
 class BulkDownloadCompletedSessionTile extends ConsumerWidget {
   const BulkDownloadCompletedSessionTile({
@@ -164,9 +164,9 @@ class _CreateSavedTaskButton extends ConsumerWidget {
           if (context.mounted) {
             showSimpleSnackBar(
               context: context,
-              content: const Text('Template created'),
+              content: const Text(DownloadTranslations.templateCreated),
               action: SnackBarAction(
-                label: 'View',
+                label: 'generic.view'.tr(),
                 textColor: colorScheme.surface,
                 onPressed: () {
                   goToBulkDownloadSavedTasksPage(context);
@@ -266,7 +266,7 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.bulkDownloadDelete.tr(),
+            DownloadTranslations.delete.tr(),
             onPressed: () async {
               await ref
                   .read(bulkDownloadProvider.notifier)
@@ -275,11 +275,11 @@ class _ContextMenu extends ConsumerWidget {
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.bulkDownloadCopyPath.tr(),
+            DownloadTranslations.copyPath.tr(),
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
           ContextMenuButtonConfig(
-            'Create a template',
+            DownloadTranslations.createTemplate.tr(),
             onPressed: () async {
               final navigator = Navigator.of(context);
               final success = await ref
@@ -332,7 +332,7 @@ class _InfoText extends ConsumerWidget {
         ? Filesize.parse(fileSize, round: 1)
         : null;
 
-    final totalItemText = DownloadTranslations.bulkDownloadTitleInfoCounter(
+    final totalItemText = DownloadTranslations.titleInfoCounter(
       !(totalItems == 1),
     ).replaceAll('{}', totalItems.toString());
 

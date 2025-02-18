@@ -12,6 +12,7 @@ import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
 import '../types/bulk_download_error.dart';
+import '../types/l10n.dart';
 import '../types/saved_download_task.dart';
 import '../widgets/saved_task_list_tile.dart';
 import 'bulk_download_edit_saved_task_page.dart';
@@ -27,7 +28,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Templates').tr(),
+          title: const Text(DownloadTranslations.templates).tr(),
           actions: const [
             _AddButton(),
           ],
@@ -40,7 +41,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
             data: (tasks) => tasks.isEmpty
                 ? const Center(
                     child: Text(
-                      'No templates',
+                      DownloadTranslations.emptyTemplates,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )

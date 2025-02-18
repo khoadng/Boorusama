@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/bulks/providers/create_download_options_notifier.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
+import 'package:boorusama/core/bulk_downloads/src/providers/create_download_options_notifier.dart';
+import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/search/histories/history.dart';
 
 void main() {

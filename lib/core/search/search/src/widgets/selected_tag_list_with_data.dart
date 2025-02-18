@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../bulk_downloads/routes.dart';
 import '../../../../configs/ref.dart';
 import '../../../../configs/routes.dart';
-import '../../../../downloads/routes.dart';
 import '../../../queries/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import 'selected_tag_list.dart';

@@ -11,6 +11,7 @@ import '../applock/applock.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
+import '../bulk_downloads/routes.dart';
 import '../configs/redirect.dart';
 import '../configs/routes.dart';
 import '../downloads/downloader.dart';

@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
-import '../../premiums/src/routes/routes.dart';
-import '../../router.dart';
-import '../bulks/notifications/providers.dart';
-import '../bulks/providers/bulk_download_notifier.dart';
-import '../bulks/types/bulk_download_error.dart';
-import '../bulks/types/bulk_download_error_code.dart';
+import '../../../foundation/toast.dart';
+import '../../../premiums/src/routes/routes.dart';
+import '../../../router.dart';
+import '../../providers.dart';
+import '../types/bulk_download_error.dart';
+import '../types/bulk_download_error_code.dart';
+import 'providers.dart';
 
 class BulkDownloadNotificationScope extends ConsumerWidget {
   const BulkDownloadNotificationScope({

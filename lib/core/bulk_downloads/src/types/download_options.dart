@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../downloads/path.dart';
 import '../../../foundation/platform.dart';
 import '../../../search/selected_tags/tag.dart';
-import '../../path.dart';
 import 'download_task.dart';
 
 class DownloadOptions extends Equatable with DownloadPathValidatorMixin {

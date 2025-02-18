@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.dart';
-import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.dart';
-import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
-import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
+import 'package:boorusama/core/bulk_downloads/src/data/download_repository_sqlite.dart';
+import 'package:boorusama/core/bulk_downloads/src/providers/bulk_download_notifier.dart';
+import 'package:boorusama/core/bulk_downloads/src/types/bulk_download_error.dart';
+import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
+import 'package:boorusama/core/bulk_downloads/src/types/download_repository.dart';
+import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
 import 'common.dart';
 

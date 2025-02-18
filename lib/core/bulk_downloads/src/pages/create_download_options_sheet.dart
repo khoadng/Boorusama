@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../downloads/l10n.dart' as d;
+import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
 import '../../../router.dart';
@@ -14,12 +16,11 @@ import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
 import '../../../theme.dart';
 import '../../../widgets/drag_line.dart';
-import '../../l10n.dart';
-import '../../widgets/download_folder_selector_section.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../types/bulk_download_error.dart';
 import '../types/download_options.dart';
+import '../types/l10n.dart';
 import '../widgets/bulk_download_tag_list.dart';
 
 class CreateDownloadOptionsSheet extends ConsumerWidget {
@@ -42,7 +43,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
           context: context,
           content: Text(message),
           action: SnackBarAction(
-            label: 'View',
+            label: 'generic.view'.tr(),
             textColor: colorScheme.surface,
             onPressed: () {
               context.pushNamed(kBulkdownload);
@@ -92,7 +93,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                     }
                   : null,
               child: const Text(
-                DownloadTranslations.bulkDownloadAddToQueue,
+                DownloadTranslations.addToQueue,
               ).tr(),
             ),
           ),
@@ -117,7 +118,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                     }
                   : null,
               child: const Text(
-                DownloadTranslations.bulkDownloadDownload,
+                DownloadTranslations.download,
               ).tr(),
             ),
           ),
@@ -198,9 +199,7 @@ class _CreateDownloadOptionsRawSheetState
                 ),
                 child: DownloadFolderSelectorSection(
                   title: Text(
-                    DownloadTranslations.bulkDownloadSaveToFolder
-                        .tr()
-                        .toUpperCase(),
+                    DownloadTranslations.saveToFolder.tr().toUpperCase(),
                     style: textTheme.titleSmall?.copyWith(
                       color: colorScheme.hintColor,
                       fontWeight: FontWeight.w800,
@@ -212,13 +211,13 @@ class _CreateDownloadOptionsRawSheetState
                   onPathChanged: (path) {
                     notifier.setPath(path);
                   },
-                  hint: DownloadTranslations.bulkDownloadSelectFolder.tr(),
+                  hint: DownloadTranslations.selectFolder.tr(),
                 ),
               ),
               if (widget.advancedToggle)
                 SwitchListTile(
                   title: const Text(
-                    DownloadTranslations.bulkdDownloadShowAdvancedOptions,
+                    DownloadTranslations.showAdvancedOptions,
                   ).tr(),
                   value: advancedOptions,
                   onChanged: (value) {
@@ -230,7 +229,7 @@ class _CreateDownloadOptionsRawSheetState
               if (showAll || advancedOptions) ...[
                 SwitchListTile(
                   title: const Text(
-                    DownloadTranslations.bulkDownloadEnableNotifications,
+                    DownloadTranslations.enableNotifications,
                   ).tr(),
                   value: options.notifications,
                   onChanged: (value) {
@@ -238,7 +237,7 @@ class _CreateDownloadOptionsRawSheetState
                   },
                 ),
                 SwitchListTile(
-                  title: const Text(DownloadTranslations.skipDownloadIfExists)
+                  title: const Text(d.DownloadTranslations.skipDownloadIfExists)
                       .tr(),
                   value: options.skipIfExists,
                   onChanged: (value) {

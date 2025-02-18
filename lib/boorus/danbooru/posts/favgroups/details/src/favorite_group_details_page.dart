@@ -11,9 +11,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../../core/bulk_downloads/routes.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/downloads/routes.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';

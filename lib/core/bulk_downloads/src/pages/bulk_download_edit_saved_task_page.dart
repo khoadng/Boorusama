@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../downloads/l10n.dart';
 import '../../../info/device_info.dart';
-import '../../bulks.dart';
-import '../../l10n.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../types/download_options.dart';
 import '../types/saved_download_task.dart';
+import 'create_download_options_sheet.dart';
 
 class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
   const BulkDownloadEditSavedTaskPage({

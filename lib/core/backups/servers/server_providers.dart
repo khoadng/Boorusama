@@ -8,9 +8,9 @@ import 'package:shelf/shelf.dart';
 // Project imports:
 import '../../blacklists/providers.dart';
 import '../../bookmarks/providers.dart';
+import '../../bulk_downloads/providers.dart';
 import '../../configs/manage.dart';
 import '../../configs/src/export_import/booru_config_io_handler.dart';
-import '../../downloads/bulks/data/download_repository_provider.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/networking/network_provider.dart';
 import '../../info/device_info.dart';

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
@@ -32,11 +33,11 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
                         ),
                         onPressed: () => goToDmailPage(context),
                         child: const Text(
-                          'View',
+                          'generic.view',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
+                        ).tr(),
                       ),
                     ],
                   ),
