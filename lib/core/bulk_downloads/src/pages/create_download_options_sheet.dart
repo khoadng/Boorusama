@@ -18,8 +18,8 @@ import '../../../widgets/drag_line.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
-import '../routes/routes.dart';
 import '../types/bulk_download_error.dart';
+import '../types/download_configs.dart';
 import '../types/download_options.dart';
 import '../types/l10n.dart';
 import '../widgets/bulk_download_tag_list.dart';
@@ -28,18 +28,18 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
   const CreateDownloadOptionsSheet({
     required this.initialValue,
     super.key,
-    this.prevRouteName,
+    this.showStartNotification = true,
   });
 
   final List<String>? initialValue;
-  final String? prevRouteName;
+  final bool showStartNotification;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     void showSnackBar(String message) {
-      if (prevRouteName != kBulkdownload) {
+      if (showStartNotification) {
         showSimpleSnackBar(
           context: context,
           content: Text(message),
@@ -87,7 +87,9 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
               ),
               onPressed: validOptions
                   ? () {
-                      notifier.queueDownloadLater(options);
+                      notifier.queueDownloadLater(
+                        options,
+                      );
                       showSnackBar('Created');
 
                       Navigator.of(context).pop();
@@ -109,8 +111,14 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
               onPressed: validOptions
                   ? () {
                       try {
-                        notifier.downloadFromOptions(options);
-                        showSnackBar('Download started');
+                        notifier.downloadFromOptions(
+                          options,
+                          downloadConfigs: DownloadConfigs(
+                            onDownloadStart: () {
+                              showSnackBar('Download started');
+                            },
+                          ),
+                        );
 
                         Navigator.of(context).pop();
                       } on BulkDownloadOptionsError catch (e) {

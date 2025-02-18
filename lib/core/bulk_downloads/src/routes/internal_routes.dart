@@ -39,6 +39,7 @@ void goToNewBulkDownloadTaskPage(
   WidgetRef ref,
   BuildContext context, {
   required List<String>? initialValue,
+  bool showStartNotification = true,
 }) {
   final config = ref.readConfigAuth;
 
@@ -52,7 +53,7 @@ void goToNewBulkDownloadTaskPage(
     routeSettings: const RouteSettings(name: 'bulk_download_create'),
     builder: (_) => CreateDownloadOptionsSheet(
       initialValue: initialValue,
-      prevRouteName: ModalRoute.of(context)?.settings.name,
+      showStartNotification: showStartNotification,
     ),
   );
 }

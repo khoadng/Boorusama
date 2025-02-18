@@ -101,6 +101,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
                               ref,
                               context,
                               initialValue: null,
+                              showStartNotification: false,
                             );
                           },
                           child: const Text(
