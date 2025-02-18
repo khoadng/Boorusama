@@ -21,7 +21,9 @@ class SavedDownloadTasksNotifier
 
   Future<bool> createFromOptions(DownloadOptions options) async {
     final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
-    final success = await bulkNofifier.createSavedTaskFromOptions(options);
+    final savedTask = await bulkNofifier.createSavedTaskFromOptions(options);
+
+    final success = savedTask != null;
 
     if (success) {
       ref.invalidateSelf();
@@ -32,10 +34,12 @@ class SavedDownloadTasksNotifier
 
   Future<bool> create(DownloadTask task) async {
     final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
-    final success = await bulkNofifier.createSavedTask(
+    final savedTask = await bulkNofifier.createSavedTask(
       task,
       name: task.prettyTags,
     );
+
+    final success = savedTask != null;
 
     if (success) {
       ref.invalidateSelf();
@@ -53,9 +57,10 @@ class SavedDownloadTasksNotifier
 
   Future<bool> duplicate(SavedDownloadTask task) async {
     final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
-    final options = DownloadOptions.fromTask(task.task);
 
-    final success = await bulkNofifier.createSavedTaskFromOptions(options);
+    final savedTask = await bulkNofifier.createSavedTask(task.task);
+
+    final success = savedTask != null;
 
     if (success) {
       ref.invalidateSelf();

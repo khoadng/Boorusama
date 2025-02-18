@@ -914,19 +914,32 @@ class DownloadRepositorySqlite
   }
 
   @override
-  Future<void> createSavedTask(String taskId, String name) async {
-    final now = DateTime.now().millisecondsSinceEpoch;
+  Future<SavedDownloadTask> createSavedTask(
+    DownloadTask task,
+    String name,
+  ) async {
+    final now = DateTime.now();
+    final timestamp = now.millisecondsSinceEpoch;
 
-    transaction(() {
-      db.execute(
-        '''
-        INSERT OR IGNORE INTO saved_download_tasks (
-          task_id, name, created_at, updated_at
-        ) VALUES (?, ?, ?, ?)
-        ''',
-        [taskId, name, now, now],
-      );
-    });
+    final result = db.select(
+      '''
+      INSERT INTO saved_download_tasks (
+        task_id, name, created_at, updated_at
+      ) VALUES (?, ?, ?, ?)
+      RETURNING id
+      ''',
+      [task.id, name, timestamp, timestamp],
+    );
+
+    final id = result.first['id'] as int;
+
+    return SavedDownloadTask(
+      id: id,
+      task: task,
+      name: name,
+      createdAt: now,
+      updatedAt: now,
+    );
   }
 
   @override

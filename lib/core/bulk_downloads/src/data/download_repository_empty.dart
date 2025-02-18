@@ -147,7 +147,11 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   }
 
   @override
-  Future<void> createSavedTask(String taskId, String name) async {}
+  Future<SavedDownloadTask> createSavedTask(
+    DownloadTask task,
+    String name,
+  ) async =>
+      throw Exception('Empty repository, cannot create saved task');
 
   @override
   Future<List<SavedDownloadTask>> getSavedTasks() async => [];

@@ -226,32 +226,34 @@ void main() {
 
     test('should reflect saved task changes in active sessions', () async {
       // Arrange
-      final task = await repository.createTask(_options);
+      final originalTask = await repository.createTask(_options);
       final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.createSavedTask(task);
+      await notifier.createSavedTask(originalTask);
 
       // Get the saved task
       final savedTasks = await repository.getSavedTasks();
       expect(savedTasks.length, equals(1));
       final savedTask = savedTasks.first;
+      final task = savedTask.task;
 
       // Edit the saved task with new tags
       final editedTask = savedTask.copyWith(
         name: 'new_name',
-        task: savedTask.task.copyWith(tags: 'new_tag'),
+        task: task.copyWith(tags: 'new_tag'),
       );
       await notifier.editSavedTask(editedTask);
 
       final savedTasksAfterEdit = await repository.getSavedTasks();
+      final savedTaskAfterEdit = savedTasksAfterEdit.first;
 
       // Piggyback this test to verify editSavedTask
       expect(savedTasksAfterEdit.length, equals(1));
-      expect(savedTasksAfterEdit.first.task.tags, equals('new_tag'));
-      expect(savedTasksAfterEdit.first.name, equals('new_name'));
+      expect(savedTaskAfterEdit.task.tags, equals('new_tag'));
+      expect(savedTaskAfterEdit.name, equals('new_name'));
 
       // Start a session from the saved task
       await notifier.runSavedTask(
-        savedTask,
+        savedTaskAfterEdit,
         downloadConfigs: _defaultConfigs,
       );
 

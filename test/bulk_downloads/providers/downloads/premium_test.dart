@@ -274,11 +274,11 @@ void main() {
       final task3 =
           await repository.createTask(DownloadTestConstants.defaultOptions);
 
-      await notifier.createSavedTask(task1, name: 'Task 1');
+      final savedTask1 = await notifier.createSavedTask(task1, name: 'Task 1');
       await Future.delayed(const Duration(milliseconds: 5));
-      await notifier.createSavedTask(task2, name: 'Task 2');
+      final savedTask2 = await notifier.createSavedTask(task2, name: 'Task 2');
       await Future.delayed(const Duration(milliseconds: 5));
-      await notifier.createSavedTask(task3, name: 'Task 3');
+      final _ = await notifier.createSavedTask(task3, name: 'Task 3');
       await Future.delayed(const Duration(milliseconds: 5));
 
       // Verify all tasks can be accessed with premium
@@ -298,7 +298,7 @@ void main() {
       expect(
         lockState.lockedIds,
         // All except the newest task should be locked
-        {task1.id, task2.id},
+        {savedTask1!.task.id, savedTask2!.task.id},
       );
     });
 
@@ -321,11 +321,13 @@ void main() {
       final task3 =
           await repository.createTask(DownloadTestConstants.defaultOptions);
 
-      await initNotifier.createSavedTask(task1, name: 'Task 1');
+      final savedTask1 =
+          await initNotifier.createSavedTask(task1, name: 'Task 1');
       await Future.delayed(const Duration(milliseconds: 5));
-      await initNotifier.createSavedTask(task2, name: 'Task 2');
+      final savedTask2 =
+          await initNotifier.createSavedTask(task2, name: 'Task 2');
       await Future.delayed(const Duration(milliseconds: 5));
-      await initNotifier.createSavedTask(task3, name: 'Task 3');
+      final _ = await initNotifier.createSavedTask(task3, name: 'Task 3');
 
       // Act - Simulate premium expiration
       final nonPremiumContainer = createBulkDownloadContainer(
@@ -337,7 +339,10 @@ void main() {
       // Verify tasks are locked when premium expires
       final nonPremiumLockState =
           await nonPremiumContainer.read(savedTaskLockProvider.future);
-      expect(nonPremiumLockState.lockedIds, {task1.id, task2.id});
+      expect(
+        nonPremiumLockState.lockedIds,
+        {savedTask1!.task.id, savedTask2!.task.id},
+      );
 
       // Act - Simulate premium restoration
       final premiumContainer = createBulkDownloadContainer(

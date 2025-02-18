@@ -1319,7 +1319,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     return session;
   }
 
-  Future<bool> createSavedTask(
+  Future<SavedDownloadTask?> createSavedTask(
     DownloadTask task, {
     String? name,
   }) async {
@@ -1332,22 +1332,27 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           state = state.copyWith(
             error: NonPremiumSavedTaskLimitError.new,
           );
-          return false;
+          return null;
         }
       }
 
-      await _withRepo(
+      // Clone the task to prevent any changes to the original task
+      final clonedOptions = DownloadOptions.fromTask(task);
+      final clonedTask =
+          await _withRepo((repo) => repo.createTask(clonedOptions));
+
+      final savedTask = await _withRepo(
         (repo) => repo.createSavedTask(
-          task.id,
+          clonedTask,
           name ?? 'Untitled',
         ),
       );
       await _loadTasks();
 
-      return true;
+      return savedTask;
     } catch (e) {
       state = state.copyWith(error: () => e);
-      return false;
+      return null;
     }
   }
 
@@ -1517,7 +1522,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
   }
 
-  Future<bool> createSavedTaskFromOptions(
+  Future<SavedDownloadTask?> createSavedTaskFromOptions(
     DownloadOptions options, {
     String? name,
   }) async {
@@ -1526,7 +1531,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       return createSavedTask(task, name: name);
     } catch (e) {
       state = state.copyWith(error: () => e);
-      return false;
+      return null;
     }
   }
 }

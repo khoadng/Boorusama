@@ -188,7 +188,7 @@ void main() {
     group('saved tasks', () {
       test('should save task and retrieve it', () async {
         final task = await repository.createTask(_options);
-        await repository.createSavedTask(task.id, 'My Download Task');
+        await repository.createSavedTask(task, 'My Download Task');
 
         final savedTasks = await repository.getSavedTasks();
         expect(savedTasks, hasLength(1));
@@ -200,7 +200,7 @@ void main() {
           () async {
         // Create initial task
         final task = await repository.createTask(_options);
-        await repository.createSavedTask(task.id, 'Task with versions');
+        await repository.createSavedTask(task, 'Task with versions');
 
         // Make some edits
         await repository.editTask(task.copyWith(path: '/path1'));

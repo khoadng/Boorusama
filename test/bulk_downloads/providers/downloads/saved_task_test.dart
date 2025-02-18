@@ -35,6 +35,28 @@ void main() {
   });
 
   group('Saved Task Operations', () {
+    test('should create a new task when creating a saved task', () async {
+      // Arrange
+      final originalTask = await repository.createTask(_options);
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      final savedTask = await notifier.createSavedTask(
+        originalTask,
+        name: 'Test Task',
+      );
+
+      // Assert
+      expect(savedTask, isNotNull);
+      expect(savedTask!.task.id, isNot(equals(originalTask.id)));
+      expect(savedTask.task.tags, equals(originalTask.tags));
+      expect(savedTask.task.path, equals(originalTask.path));
+      expect(savedTask.task.quality, equals(originalTask.quality));
+      expect(savedTask.task.perPage, equals(originalTask.perPage));
+      expect(savedTask.task.skipIfExists, equals(originalTask.skipIfExists));
+      expect(savedTask.task.notifications, equals(originalTask.notifications));
+    });
+
     test('should rerun saved task with same settings', () async {
       // Arrange
       final task = await repository.createTask(_options);
