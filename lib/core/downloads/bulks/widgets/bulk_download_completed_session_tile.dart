@@ -405,7 +405,7 @@ class _Title extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = session.task.tags;
+    final tags = session.task.prettyTags;
 
     return Text(
       tags ?? 'No tags',

@@ -184,7 +184,7 @@ class DownloadRepositorySqlite
       updatedAt: now,
       perPage: options.perPage,
       concurrency: options.concurrency,
-      tags: options.tags.join(' '),
+      tags: options.tags.toString(),
     );
 
     db.execute(

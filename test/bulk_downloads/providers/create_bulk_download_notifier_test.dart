@@ -32,7 +32,7 @@ void main() {
 
     expect(
       listEquals(
-        container.read(createDownloadOptionsProvider(initial)).tags,
+        container.read(createDownloadOptionsProvider(initial)).tags.list,
         ['tag1'],
       ),
       isTrue,
@@ -53,7 +53,7 @@ void main() {
 
     expect(
       listEquals(
-        container.read(createDownloadOptionsProvider(initial)).tags,
+        container.read(createDownloadOptionsProvider(initial)).tags.list,
         ['tag1', 'tag2'],
       ),
       isTrue,
@@ -63,7 +63,7 @@ void main() {
     notifier.removeTag('tag2');
     expect(
       listEquals(
-        container.read(createDownloadOptionsProvider(initial)).tags,
+        container.read(createDownloadOptionsProvider(initial)).tags.list,
         ['tag1'],
       ),
       isTrue,

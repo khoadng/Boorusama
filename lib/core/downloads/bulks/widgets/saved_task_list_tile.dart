@@ -119,7 +119,7 @@ class SavedTaskListTile extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          savedTask.task.tags ?? 'Untitled',
+                          savedTask.task.prettyTags ?? 'Untitled',
                           style: listTileTheme.titleTextStyle,
                         ),
                         const SizedBox(height: 4),

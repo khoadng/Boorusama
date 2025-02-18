@@ -10,6 +10,7 @@ import 'package:boorusama/core/downloads/bulks/providers/bulk_download_notifier.
 import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
+import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'common.dart';
 
 void main() {
@@ -32,13 +33,13 @@ void main() {
     container.dispose();
   });
   group('Download Queueing', () {
-    const downloadOptions = DownloadOptions(
+    final downloadOptions = DownloadOptions(
       path: '/storage/emulated/0/Download',
       notifications: false,
       skipIfExists: false,
       perPage: 100,
       concurrency: 1,
-      tags: ['tag1', 'tag2'],
+      tags: SearchTagSet.fromList(const ['tag1', 'tag2']),
     );
     final downloadConfigs = DownloadTestConstants.defaultConfigs.copyWith(
       // Test platform is Android so we can set this to make sure it's passed the options check

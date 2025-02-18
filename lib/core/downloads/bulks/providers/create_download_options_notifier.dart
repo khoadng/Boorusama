@@ -32,27 +32,19 @@ class CreateDownloadOptionsNotifier
 
   void addTag(String tag) {
     state = state.copyWith(
-      tags: {
-        ...state.tags,
-        tag,
-      }.toList(),
+      tags: state.tags.clone()..addTag(tag),
     );
   }
 
   void addTags(List<String> tags) {
     state = state.copyWith(
-      tags: {
-        ...state.tags,
-        ...tags,
-      }.toList(),
+      tags: state.tags.clone()..addTags(tags),
     );
   }
 
   void removeTag(String tag) {
     state = state.copyWith(
-      tags: [
-        ...state.tags.where((e) => e != tag),
-      ],
+      tags: state.tags.clone()..removeTagString(tag),
     );
   }
 

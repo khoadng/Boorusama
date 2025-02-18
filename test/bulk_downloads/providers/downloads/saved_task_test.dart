@@ -11,7 +11,7 @@ import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
 import 'package:boorusama/core/downloads/bulks/types/saved_download_task.dart';
 import 'common.dart';
 
-const _options = DownloadTestConstants.defaultOptions;
+final _options = DownloadTestConstants.defaultOptions;
 const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
 void main() {

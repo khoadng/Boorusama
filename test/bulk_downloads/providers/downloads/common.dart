@@ -34,6 +34,7 @@ import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/premiums/providers.dart';
 import 'package:boorusama/core/search/queries/query.dart';
 import 'package:boorusama/core/search/selected_tags/providers.dart';
+import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'package:boorusama/core/settings/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
 import '../../common.dart';
@@ -59,13 +60,13 @@ class DownloadTestConstants {
   static const perPage = 2;
   static final lastPage = (posts.length / perPage).ceil();
 
-  static const defaultOptions = DownloadOptions(
+  static final defaultOptions = DownloadOptions(
     path: '/storage/emulated/0/Download',
     notifications: true,
     skipIfExists: true,
     perPage: 2,
     concurrency: 5,
-    tags: ['test_tags'],
+    tags: SearchTagSet.fromList(const ['test_tags']),
   );
 
   static const defaultConfigs = DownloadConfigs(

@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import '../../../search/selected_tags/tag.dart';
+
 class DownloadTask extends Equatable {
   const DownloadTask({
     required this.id,
@@ -55,6 +58,10 @@ class DownloadTask extends Equatable {
   final int perPage;
   final int concurrency;
   final String? tags;
+
+  String? get prettyTags => tags == null
+      ? null
+      : SearchTagSet.fromString(tags).spaceDelimitedOriginalTags;
 
   DownloadTask copyWith({
     String? path,

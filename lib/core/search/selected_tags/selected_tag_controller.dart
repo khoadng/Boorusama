@@ -7,12 +7,14 @@ import '../../tags/configs/configs.dart';
 import '../../tags/metatag/metatag.dart';
 import '../histories/history.dart';
 import '../queries/filter_operator.dart';
+import 'search_tag_set.dart';
 import 'tag_search_item.dart';
 
 class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   SelectedTagController({
-    required this.metatagExtractor,
-  }) : super([]);
+    required MetatagExtractor? metatagExtractor,
+  })  : _tagSet = SearchTagSet(metatagExtractor: metatagExtractor),
+        super([]);
 
   SelectedTagController.fromBooruBuilder({
     required BooruBuilder? builder,
@@ -21,31 +23,15 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
           metatagExtractor: builder?.metatagExtractorBuilder?.call(tagInfo),
         );
 
-  final MetatagExtractor? metatagExtractor;
-  final Set<TagSearchItem> _tags = {};
+  final SearchTagSet _tagSet;
 
-  List<TagSearchItem> get tags => _tags.toList();
-  List<String> get rawTags => _tags.toRawStringList();
-  String get rawTagsString => _tags.toRawString();
-
-  TagSearchItem _toItem(
-    String tag,
-  ) =>
-      TagSearchItem.fromString(tag, metatagExtractor);
-
-  String _applyOperator(String tag, FilterOperator operator) =>
-      '${filterOperatorToString(operator)}$tag';
+  List<TagSearchItem> get tags => _tagSet.tags;
+  List<String> get rawTags => _tagSet.rawTags;
+  String get rawTagsString => _tagSet.rawTagsString;
 
   void addTagFromSearchHistory(SearchHistory history) {
-    if (history.queryType == QueryType.list) {
-      final tags = history.queryAsList();
-      addTags(tags);
-    } else {
-      addTag(
-        history.query,
-        isRaw: true,
-      );
-    }
+    _tagSet.addTagFromSearchHistory(history);
+    value = _tagSet.tags;
   }
 
   void addTag(
@@ -53,49 +39,35 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
     bool isRaw = false,
     FilterOperator operator = FilterOperator.none,
   }) {
-    if (tag.isEmpty) return;
-
-    if (isRaw) {
-      _tags.add(TagSearchItem.raw(tag: tag));
-    } else {
-      _tags.add(_toItem(_applyOperator(tag, operator)));
-    }
-
-    value = _tags.toList();
+    _tagSet.addTag(tag, isRaw: isRaw, operator: operator);
+    value = _tagSet.tags;
   }
 
-  void negateTag(String tag) => addTag(tag, operator: FilterOperator.not);
+  void negateTag(String tag) {
+    _tagSet.negateTag(tag);
+    value = _tagSet.tags;
+  }
 
   void addTags(
     List<String> tags, {
     FilterOperator operator = FilterOperator.none,
   }) {
-    _tags.addAll(tags.map((e) => _toItem(_applyOperator(e, operator))));
-    value = _tags.toList();
+    _tagSet.addTags(tags, operator: operator);
+    value = _tagSet.tags;
   }
 
   void removeTag(TagSearchItem tag) {
-    _tags.remove(tag);
-    value = _tags.toList();
+    _tagSet.removeTag(tag);
+    value = _tagSet.tags;
   }
 
   void updateTag(TagSearchItem oldTag, String newTag) {
-    final tags = _tags.toList();
-    final index = tags.indexOf(oldTag);
-    tags[index] = TagSearchItem.raw(tag: newTag);
-    _tags
-      ..clear()
-      ..addAll(tags);
-    value = _tags.toList();
+    _tagSet.updateTag(oldTag, newTag);
+    value = _tagSet.tags;
   }
 
   void clear() {
-    _tags.clear();
-    value = _tags.toList();
+    _tagSet.clear();
+    value = _tagSet.tags;
   }
-}
-
-extension TagSearchItemX on Iterable<TagSearchItem> {
-  String toRawString() => map((e) => e.toString()).join(' ');
-  List<String> toRawStringList() => map((e) => e.toString()).toList();
 }

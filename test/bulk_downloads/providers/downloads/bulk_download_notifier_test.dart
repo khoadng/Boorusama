@@ -10,9 +10,10 @@ import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
+import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
 import 'common.dart';
 
-const _options = DownloadTestConstants.defaultOptions;
+final _options = DownloadTestConstants.defaultOptions;
 final _posts = DownloadTestConstants.posts;
 const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
@@ -307,7 +308,11 @@ void main() {
 
     test('should not start download when no tags are provided', () async {
       // Arrange
-      final task = await repository.createTask(_options.copyWith(tags: []));
+      final task = await repository.createTask(
+        _options.copyWith(
+          tags: SearchTagSet.empty(),
+        ),
+      );
 
       // Act
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -329,7 +334,8 @@ void main() {
 
     test('should not accept empty tag in tag list', () async {
       // Arrange
-      final task = await repository.createTask(_options.copyWith(tags: ['']));
+      final task = await repository
+          .createTask(_options.copyWith(tags: SearchTagSet.fromString('')));
 
       // Act
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -351,8 +357,8 @@ void main() {
 
     test('should not accept whitespace-only tags', () async {
       // Arrange
-      final task =
-          await repository.createTask(_options.copyWith(tags: ['   ']));
+      final task = await repository
+          .createTask(_options.copyWith(tags: SearchTagSet.fromString('   ')));
 
       // Act
       final notifier = container.read(bulkDownloadProvider.notifier);

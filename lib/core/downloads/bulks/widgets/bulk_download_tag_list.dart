@@ -11,6 +11,7 @@ import '../../../search/histories/history.dart';
 import '../../../search/histories/providers.dart';
 import '../../../search/histories/widgets.dart';
 import '../../../search/search/routes.dart';
+import '../../../search/selected_tags/tag.dart';
 
 class BulkDownloadTagList extends ConsumerWidget {
   const BulkDownloadTagList({
@@ -24,7 +25,7 @@ class BulkDownloadTagList extends ConsumerWidget {
   final void Function(String tag) onSubmit;
   final void Function(String tag) onRemove;
   final void Function(SearchHistory history) onHistoryTap;
-  final List<String> tags;
+  final SearchTagSet tags;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +38,7 @@ class BulkDownloadTagList extends ConsumerWidget {
         spacing: 5,
         runSpacing: isMobilePlatform() ? -4 : 8,
         children: [
-          ...tags.map(
+          ...tags.list.map(
             (e) => Chip(
               backgroundColor:
                   Theme.of(context).colorScheme.surfaceContainerHighest,

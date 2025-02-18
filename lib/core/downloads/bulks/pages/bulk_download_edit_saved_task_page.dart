@@ -74,7 +74,9 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                           if (edit) {
                             await notifier.edit(
                               savedTask.copyWith(
-                                task: options.toTask(),
+                                task: options.toTask(
+                                  id: savedTask.task.id,
+                                ),
                               ),
                             );
                           } else {

@@ -34,7 +34,7 @@ class SavedDownloadTasksNotifier
     final bulkNofifier = ref.read(bulkDownloadProvider.notifier);
     final success = await bulkNofifier.createSavedTask(
       task,
-      name: task.tags,
+      name: task.prettyTags,
     );
 
     if (success) {

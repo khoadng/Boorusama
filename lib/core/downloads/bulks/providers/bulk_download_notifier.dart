@@ -21,6 +21,7 @@ import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
 import '../../../posts/sources/source.dart';
 import '../../../premiums/providers.dart';
+import '../../../search/selected_tags/tag.dart';
 import '../../../settings/providers.dart';
 import '../../../utils/duration_utils.dart';
 import '../../downloader.dart';
@@ -167,7 +168,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
             final notification = ref.read(bulkDownloadNotificationProvider);
             await notification.showProgressNotification(
               sessionId,
-              session?.task?.tags ?? 'Downloading...',
+              session?.task?.prettyTags ?? 'Downloading...',
               '$completedCount/$totalCount files',
               completed: completedCount,
               total: totalCount,
@@ -314,7 +315,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }
 
   Future<List<Post>> _getPosts(
-    String tags,
+    SearchTagSet tags,
     int page,
     DownloadTask task,
   ) async {
@@ -322,7 +323,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final postRepo = ref.read(postRepoProvider(config));
 
     final r = await postRepo.getPostsFromTagsOrEmpty(
-      tags,
+      //TODO: assume space delimited tags for now, if we need to support tag with space, we need to change this
+      tags.spaceDelimitedOriginalTags,
       page: page,
       limit: task.perPage,
     );
@@ -489,7 +491,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final permission = await mediaPermManager.check();
     logger.logI(
       _serviceName,
-      'Download requested for "${task.tags}" at "${task.path}" with permission status: $permission',
+      'Download requested for "${task.prettyTags}" at "${task.path}" with permission status: $permission',
     );
 
     if (permission == PermissionStatus.permanentlyDenied) {
@@ -530,7 +532,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     try {
       var page = 1;
-      final tags = task.tags?.trim() ?? '';
+      final tags = SearchTagSet.fromString(task.tags);
 
       if (tags.isEmpty) {
         await _updateSession(
@@ -1168,7 +1170,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     if (currentSessionState?.task.notifications ?? true) {
       unawaited(
         ref.read(bulkDownloadNotificationProvider).showOneShotNotification(
-              currentSessionState?.task.tags ?? 'Download completed',
+              currentSessionState?.task.prettyTags ?? 'Download completed',
               'Downloaded ${stats.totalItems} files',
             ),
       );
@@ -1288,7 +1290,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       if (session?.status == DownloadSessionStatus.dryRun) {
         // Show/update indeterminate progress during dry run
         await notification.showNotification(
-          session?.task?.tags ?? 'Preparing download...',
+          session?.task?.prettyTags ?? 'Preparing download...',
           'Scanning page ${currentPage ?? 1}',
           indeterminate: true,
           notificationId: sessionId.hashCode,

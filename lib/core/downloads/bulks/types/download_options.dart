@@ -4,6 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../foundation/platform.dart';
+import '../../../search/selected_tags/tag.dart';
 import '../../path.dart';
 import 'download_task.dart';
 
@@ -29,7 +30,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       quality: quality,
       perPage: 100,
       concurrency: 5,
-      tags: tags ?? [],
+      tags: SearchTagSet.fromList(tags),
     );
   }
 
@@ -40,13 +41,15 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       skipIfExists: task.skipIfExists,
       perPage: task.perPage,
       concurrency: task.concurrency,
-      tags: task.tags?.split(' ') ?? [],
+      tags: SearchTagSet.fromString(task.tags),
     );
   }
 
-  DownloadTask toTask() {
+  DownloadTask toTask({
+    required String id,
+  }) {
     return DownloadTask(
-      id: '',
+      id: id,
       path: path,
       notifications: notifications,
       skipIfExists: skipIfExists,
@@ -54,7 +57,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       updatedAt: DateTime(1),
       perPage: perPage,
       concurrency: concurrency,
-      tags: tags.join(' '),
+      tags: tags.toString(),
     );
   }
 
@@ -64,7 +67,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
   final String? quality;
   final int perPage;
   final int concurrency;
-  final List<String> tags;
+  final SearchTagSet tags;
 
   DownloadOptions copyWith({
     String? path,
@@ -73,7 +76,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
     String? quality,
     int? perPage,
     int? concurrency,
-    List<String>? tags,
+    SearchTagSet? tags,
   }) {
     return DownloadOptions(
       path: path ?? this.path,

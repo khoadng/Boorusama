@@ -7,15 +7,16 @@ import 'package:boorusama/core/downloads/bulks/data/download_repository_sqlite.d
 import 'package:boorusama/core/downloads/bulks/types/download_options.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
+import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
 
-const _options = DownloadOptions(
+final _options = DownloadOptions(
   path: '/test/path',
   notifications: true,
   skipIfExists: true,
   quality: 'high',
   perPage: 100,
   concurrency: 5,
-  tags: ['tag1', 'tag2'],
+  tags: SearchTagSet.fromList(const ['tag1', 'tag2']),
 );
 
 void main() {

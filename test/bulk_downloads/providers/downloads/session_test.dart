@@ -14,9 +14,10 @@ import 'package:boorusama/core/downloads/bulks/types/bulk_download_error.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_record.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_repository.dart';
 import 'package:boorusama/core/downloads/bulks/types/download_session.dart';
+import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'common.dart';
 
-const _options = DownloadTestConstants.defaultOptions;
+final _options = DownloadTestConstants.defaultOptions;
 const _defaultConfigs = DownloadTestConstants.defaultConfigs;
 
 void main() {
@@ -392,7 +393,7 @@ void main() {
       final task1 = await repository.createTask(_options);
       final task2 = await repository.createTask(
         _options.copyWith(
-          tags: ['different_tags'],
+          tags: SearchTagSet.fromList(const ['different_tags']),
         ),
       );
       final notifier = container.read(bulkDownloadProvider.notifier);
