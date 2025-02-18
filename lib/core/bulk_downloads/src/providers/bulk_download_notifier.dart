@@ -1176,9 +1176,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     if (currentSessionState?.task.notifications ?? true) {
       ref.read(bulkDownloadNotificationProvider).whenData(
         (notification) {
-          notification.showOneShotNotification(
+          notification.showCompleteNotification(
             currentSessionState?.task.prettyTags ?? 'Download completed',
             'Downloaded ${stats.totalItems} files',
+            notificationId: sessionId.hashCode,
           );
         },
       );

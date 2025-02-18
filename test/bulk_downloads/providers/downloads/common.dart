@@ -192,9 +192,10 @@ class DummyBulkNotification implements BulkDownloadNotifications {
   }) async {}
 
   @override
-  Future<void> showOneShotNotification(
+  Future<void> showCompleteNotification(
     String title,
     String body, {
+    required int notificationId,
     String? payload,
   }) async {}
 

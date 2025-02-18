@@ -17,12 +17,29 @@ Future<void> goToBulkDownloadPage(
   required WidgetRef ref,
 }) async {
   if (tags != null) {
-    goToNewBulkDownloadTaskPage(
+    return goToNewBulkDownloadTaskPage(
       ref,
       context,
       initialValue: tags,
     );
   } else {
-    unawaited(context.pushNamed(kBulkdownload));
+    return goToBulkDownloadManagerPage(context);
+  }
+}
+
+Future<void> goToBulkDownloadManagerPage(
+  BuildContext context, {
+  bool go = false,
+}) async {
+  final uri = Uri(
+    pathSegments: [
+      '',
+      'bulk_downloads',
+    ],
+  ).toString();
+  if (go) {
+    context.go(uri);
+  } else {
+    await context.push(uri);
   }
 }

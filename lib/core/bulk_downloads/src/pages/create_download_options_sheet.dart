@@ -10,7 +10,6 @@ import '../../../downloads/l10n.dart' as d;
 import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
-import '../../../router.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
@@ -18,6 +17,8 @@ import '../../../theme.dart';
 import '../../../widgets/drag_line.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
+import '../routes/route_utils.dart';
+import '../routes/routes.dart';
 import '../types/bulk_download_error.dart';
 import '../types/download_options.dart';
 import '../types/l10n.dart';
@@ -46,7 +47,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
             label: 'generic.view'.tr(),
             textColor: colorScheme.surface,
             onPressed: () {
-              context.pushNamed(kBulkdownload);
+              goToBulkDownloadManagerPage(context);
             },
           ),
         );

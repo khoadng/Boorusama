@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../foundation/toast.dart';
 import '../../../premiums/src/routes/routes.dart';
-import '../../../router.dart';
 import '../../providers.dart';
+import '../../routes.dart';
 import '../types/bulk_download_error.dart';
 import '../types/bulk_download_error_code.dart';
 import 'providers.dart';
@@ -54,7 +54,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
         (prev, cur) {
           if (prev == null) return;
 
-          context.pushNamed(kBulkdownload);
+          goToBulkDownloadManagerPage(context, go: true);
         },
       );
 

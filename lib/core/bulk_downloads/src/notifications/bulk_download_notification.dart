@@ -38,7 +38,9 @@ class BulkDownloadNotifications {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (_) => streamController.add(''),
+      onDidReceiveNotificationResponse: (res) {
+        streamController.add(res.id.toString());
+      },
     );
 
     final notif = BulkDownloadNotifications._(
@@ -52,9 +54,10 @@ class BulkDownloadNotifications {
   final FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
   final _activeNotifications = <String, bool>{};
 
-  Future<void> showOneShotNotification(
+  Future<void> showCompleteNotification(
     String title,
     String body, {
+    required int notificationId,
     String? payload,
   }) async {
     //TODO: implement custom notification for windows
@@ -64,8 +67,9 @@ class BulkDownloadNotifications {
       android: AndroidNotificationDetails(
         'download',
         'Download',
-        playSound: false,
-        enableVibration: false,
+        playSound: true,
+        enableVibration: true,
+        category: AndroidNotificationCategory.status,
       ),
       iOS: DarwinNotificationDetails(
         presentSound: false,
@@ -73,7 +77,7 @@ class BulkDownloadNotifications {
     );
 
     await _flutterLocalNotificationsPlugin?.show(
-      title.hashCode,
+      notificationId,
       title,
       body,
       platformChannelSpecifics,

@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,23 +8,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/download_utils.dart';
-import '../pages/bulk_download_completed_page.dart';
-import '../pages/bulk_download_saved_task_page.dart';
+import '../../../router.dart';
 import '../pages/create_download_options_sheet.dart';
 
 Future<void> goToBulkDownloadCompletedPage(BuildContext context) async {
-  await Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const BulkDownloadCompletedPage(),
-    ),
+  await context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'bulk_downloads',
+        'completed',
+      ],
+    ).toString(),
   );
 }
 
 Future<void> goToBulkDownloadSavedTasksPage(BuildContext context) async {
-  await Navigator.of(context).push(
-    CupertinoPageRoute(
-      builder: (context) => const BulkDownloadSavedTaskPage(),
-    ),
+  await context.push(
+    Uri(
+      pathSegments: [
+        '',
+        'bulk_downloads',
+        'saved',
+      ],
+    ).toString(),
   );
 }
 

@@ -8,11 +8,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import '../../../foundation/toast.dart';
 import '../../../premiums/routes.dart';
-import '../../../routers/routes.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/bulk_download_edit_saved_task_page.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
+import '../routes/routes.dart';
 import '../types/download_configs.dart';
 import '../types/saved_download_task.dart';
 

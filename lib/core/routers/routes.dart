@@ -47,8 +47,6 @@ const kInitialQueryKey = 'query';
 const kArtistNameKey = 'name';
 const kCharacterNameKey = 'name';
 
-const kBulkdownload = 'bulk_download';
-
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
         path: '/',
@@ -80,7 +78,7 @@ class Routes {
           bookmarkRoutes,
           globalBlacklistedTagsRoutes,
           downloadManagerRoutes,
-          bulkDownloadsRoutes(ref),
+          bulkDownloadsRoutes,
           favoriteTags(),
           originalImageRoutes,
           premiumRoutes,
