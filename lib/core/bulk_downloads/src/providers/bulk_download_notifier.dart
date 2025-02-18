@@ -200,62 +200,65 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       );
     }
 
-    ref.listen(
-      downloadTaskStreamProvider,
-      (prev, next) {
-        if (prev != next) {
-          next.whenData((event) {
-            if (event.task.isDefaultGroup) {
-              return;
-            }
-
-            if (event is TaskStatusUpdate) {
-              if (event.status == TaskStatus.complete) {
-                ref.read(taskFileSizeResolverProvider(event.task).future).then(
-                  (fileSize) {
-                    updateRecordFromTaskStream(
-                      event.task.group,
-                      event.task.taskId,
-                      DownloadRecordStatus.completed,
-                      fileSize: fileSize,
-                    );
-                  },
-                );
-
-                scheduleCompletionCheck(event.task.group);
+    ref
+      ..listen(
+        downloadTaskStreamProvider,
+        (prev, next) {
+          if (prev != next) {
+            next.whenData((event) {
+              if (event.task.isDefaultGroup) {
+                return;
               }
 
-              updateRecordFromTaskStream(
-                event.task.group,
-                event.task.taskId,
-                switch (event.status) {
-                  TaskStatus.enqueued => DownloadRecordStatus.pending,
-                  TaskStatus.running => DownloadRecordStatus.downloading,
-                  TaskStatus.complete => DownloadRecordStatus.completed,
-                  TaskStatus.notFound => DownloadRecordStatus.failed,
-                  TaskStatus.failed => DownloadRecordStatus.failed,
-                  TaskStatus.canceled => DownloadRecordStatus.cancelled,
-                  TaskStatus.waitingToRetry => DownloadRecordStatus.downloading,
-                  TaskStatus.paused => DownloadRecordStatus.paused,
-                },
-              );
-            } else if (event is TaskProgressUpdate) {
-              scheduleProgressUpdate(event.task.group);
-            }
-          });
+              if (event is TaskStatusUpdate) {
+                if (event.status == TaskStatus.complete) {
+                  ref
+                      .read(taskFileSizeResolverProvider(event.task).future)
+                      .then(
+                    (fileSize) {
+                      updateRecordFromTaskStream(
+                        event.task.group,
+                        event.task.taskId,
+                        DownloadRecordStatus.completed,
+                        fileSize: fileSize,
+                      );
+                    },
+                  );
+
+                  scheduleCompletionCheck(event.task.group);
+                }
+
+                updateRecordFromTaskStream(
+                  event.task.group,
+                  event.task.taskId,
+                  switch (event.status) {
+                    TaskStatus.enqueued => DownloadRecordStatus.pending,
+                    TaskStatus.running => DownloadRecordStatus.downloading,
+                    TaskStatus.complete => DownloadRecordStatus.completed,
+                    TaskStatus.notFound => DownloadRecordStatus.failed,
+                    TaskStatus.failed => DownloadRecordStatus.failed,
+                    TaskStatus.canceled => DownloadRecordStatus.cancelled,
+                    TaskStatus.waitingToRetry =>
+                      DownloadRecordStatus.downloading,
+                    TaskStatus.paused => DownloadRecordStatus.paused,
+                  },
+                );
+              } else if (event is TaskProgressUpdate) {
+                scheduleProgressUpdate(event.task.group);
+              }
+            });
+          }
+        },
+      )
+      ..onDispose(() {
+        for (final timer in completionTimers.values) {
+          timer.cancel();
         }
-      },
-    );
 
-    ref.onDispose(() {
-      for (final timer in completionTimers.values) {
-        timer.cancel();
-      }
-
-      for (final timer in progressUpdateTimers.values) {
-        timer.cancel();
-      }
-    });
+        for (final timer in progressUpdateTimers.values) {
+          timer.cancel();
+        }
+      });
 
     _loadTasks(init: true);
     return const BulkDownloadState();
