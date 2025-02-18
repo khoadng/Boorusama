@@ -54,7 +54,10 @@ class DownloadRepositorySqlite
           updated_at INTEGER NOT NULL,
           per_page INTEGER NOT NULL DEFAULT 100,
           concurrency INTEGER NOT NULL DEFAULT 5,
-          tags TEXT
+          tags TEXT,
+          blacklisted_tags TEXT,
+          filename_format TEXT,
+          dup_check_type TEXT
         )
       ''')
       ..execute('''
