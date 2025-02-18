@@ -343,7 +343,37 @@ class DownloadRepositorySqlite
       [DownloadSessionStatus.completed.name],
     );
 
-    return _mapToBulkDownloadSessions(results);
+    return results.map((row) {
+      final session = mapToSession(row);
+      final task = DownloadTask(
+        id: row['task_id'] as String,
+        path: row['path'] as String,
+        notifications: row['notifications'] == 1,
+        skipIfExists: row['skip_if_exists'] == 1,
+        quality: row['quality'] as String?,
+        createdAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
+        updatedAt:
+            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+        perPage: row['per_page'] as int,
+        concurrency: row['concurrency'] as int,
+        tags: row['tags'] as String?,
+      );
+      final stats = DownloadSessionStats(
+        id: null,
+        sessionId: session.id,
+        coverUrl: row['cover_url'] as String?,
+        totalItems: row['total_items'] as int,
+        siteUrl: row['site_url'] as String?,
+        totalSize: row['total_size'] as int?,
+      );
+
+      return BulkDownloadSession(
+        task: session.task ?? task,
+        session: session,
+        stats: stats,
+      );
+    }).toList();
   }
 
   static const _maxLimit = 100; // Protect against too large queries
@@ -385,16 +415,7 @@ class DownloadRepositorySqlite
         s.status as session_status,
         s.total_pages,
         s.error,
-        t.id as task_id,
-        t.path,
-        t.notifications,
-        t.skip_if_exists,
-        t.quality,
-        t.created_at as task_created_at,
-        t.updated_at as task_updated_at,
-        t.per_page,
-        t.concurrency,
-        t.tags,
+        s.task,
         stats.id as stats_id,
         stats.cover_url,
         stats.site_url,
@@ -410,10 +431,8 @@ class DownloadRepositorySqlite
         stats.min_files_per_page,
         stats.extension_counts
       FROM download_sessions s
-      INNER JOIN download_tasks t ON s.task_id = t.id
       LEFT JOIN download_session_statistics stats ON s.id = stats.session_id
       WHERE ${whereClauses.join(' AND ')}
-      GROUP BY s.id, t.id
       ORDER BY s.started_at DESC
       LIMIT ? OFFSET ?
     ''';
@@ -426,10 +445,14 @@ class DownloadRepositorySqlite
     final results = db.select(query, params);
 
     return results.map((row) {
+      final taskJson = tryDecodeJson<Map<String, dynamic>?>(row['task'])
+          .getOrElse((_) => null);
+      final task = taskJson != null ? DownloadTask.fromJson(taskJson) : null;
+
       final session = DownloadSession(
         id: row['session_id'] as String,
         taskId: row['task_id'] as String,
-        task: tryDecodeJson<DownloadTask?>(row['task']).getOrElse((_) => null),
+        task: task,
         startedAt:
             DateTime.fromMillisecondsSinceEpoch(row['started_at'] as int),
         completedAt: row['completed_at'] != null
@@ -440,21 +463,6 @@ class DownloadRepositorySqlite
             .byName(row['session_status'] as String),
         totalPages: row['total_pages'] as int?,
         error: row['error'] as String?,
-      );
-
-      final task = DownloadTask(
-        id: row['task_id'] as String,
-        path: row['path'] as String,
-        notifications: (row['notifications'] as int) == 1,
-        skipIfExists: (row['skip_if_exists'] as int) == 1,
-        quality: row['quality'] as String?,
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
-        updatedAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
-        perPage: row['per_page'] as int,
-        concurrency: row['concurrency'] as int,
-        tags: row['tags'] as String,
       );
 
       final stats = DownloadSessionStats(
@@ -482,41 +490,7 @@ class DownloadRepositorySqlite
       );
 
       return BulkDownloadSession(
-        task: task,
-        session: session,
-        stats: stats,
-      );
-    }).toList();
-  }
-
-  List<BulkDownloadSession> _mapToBulkDownloadSessions(List<Row> results) {
-    return results.map((row) {
-      final session = mapToSession(row);
-      final task = DownloadTask(
-        id: row['task_id'] as String,
-        path: row['path'] as String,
-        notifications: row['notifications'] == 1,
-        skipIfExists: row['skip_if_exists'] == 1,
-        quality: row['quality'] as String?,
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
-        updatedAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
-        perPage: row['per_page'] as int,
-        concurrency: row['concurrency'] as int,
-        tags: row['tags'] as String?,
-      );
-      final stats = DownloadSessionStats(
-        id: null,
-        sessionId: session.id,
-        coverUrl: row['cover_url'] as String?,
-        totalItems: row['total_items'] as int,
-        siteUrl: row['site_url'] as String?,
-        totalSize: row['total_size'] as int?,
-      );
-
-      return BulkDownloadSession(
-        task: task,
+        task: task ?? DownloadTask.empty(),
         session: session,
         stats: stats,
       );
