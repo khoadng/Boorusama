@@ -76,13 +76,12 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
           Expanded(
             child: ElevatedButton(
               style: FilledButton.styleFrom(
+                disabledBackgroundColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: validOptions
-                      ? BorderSide(
-                          color: colorScheme.outline,
-                        )
-                      : BorderSide.none,
+                  side: BorderSide(
+                    color: colorScheme.outline,
+                  ),
                 ),
               ),
               onPressed: validOptions
@@ -101,6 +100,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
             ),
           ),
           Expanded(
+            flex: 2,
             child: FilledButton(
               style: FilledButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,

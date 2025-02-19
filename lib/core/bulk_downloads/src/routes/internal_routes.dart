@@ -50,6 +50,7 @@ void goToNewBulkDownloadTaskPage(
 
   showModalBottomSheet(
     context: context,
+    scrollControlDisabledMaxHeightRatio: 0.9,
     routeSettings: const RouteSettings(name: 'bulk_download_create'),
     builder: (_) => CreateDownloadOptionsSheet(
       initialValue: initialValue,

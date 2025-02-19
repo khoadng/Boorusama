@@ -20,6 +20,7 @@ Future<T?> showAdaptiveSheet<T>(
 }) {
   if (Screen.of(context).size == ScreenSize.small) {
     return showModalBottomSheet<T>(
+      useSafeArea: true,
       routeSettings: settings,
       context: context,
       backgroundColor: backgroundColor,

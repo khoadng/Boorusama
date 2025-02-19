@@ -17,6 +17,7 @@ import '../../../downloads/filename/generator_impl.dart';
 import '../../../downloads/manager.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/permissions.dart';
+import '../../../foundation/platform.dart';
 import '../../../http/http.dart';
 import '../../../http/providers.dart';
 import '../../../posts/filter/filter.dart';
@@ -164,7 +165,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
           // Only show progress if session is running AND notifications are enabled
           if (session?.status == DownloadSessionStatus.running &&
-              session?.task?.notifications == true) {
+              session?.task?.notifications == true &&
+              !isIOS()) {
             final notification =
                 await ref.read(bulkDownloadNotificationProvider.future);
             await notification.showProgressNotification(
