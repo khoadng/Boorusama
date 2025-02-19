@@ -137,7 +137,8 @@ extension FirebaseAnalyticsX on FirebaseAnalytics {
         screenName: screenName,
         parameters: parameters != null && parameters.isNotEmpty
             ? {
-                ...parameters,
+                for (final entry in parameters.entries)
+                  if (entry.value != null) entry.key: entry.value,
               }
             : null,
       );
