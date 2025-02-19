@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/home/side_bar_menu.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/router.dart';
+import '../configs/routes.dart';
+import '../theme.dart';
 import 'home_page_controller.dart';
+import 'side_bar_menu.dart';
 
 class EmptyBooruConfigHomePage extends ConsumerStatefulWidget {
   const EmptyBooruConfigHomePage({
@@ -40,7 +40,7 @@ class _EmptyBooruConfigHomePageState
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
-        statusBarBrightness: context.brightness,
+        statusBarBrightness: Theme.of(context).brightness,
         statusBarIconBrightness: context.onBrightness,
       ),
       child: Scaffold(
@@ -48,7 +48,7 @@ class _EmptyBooruConfigHomePageState
         resizeToAvoidBottomInset: false,
         drawer: InheritedHomePageController(
           controller: homeController,
-          child: SideBarMenu(
+          child: const SideBarMenu(
             width: 300,
             padding: EdgeInsets.zero,
           ),
@@ -62,17 +62,17 @@ class _EmptyBooruConfigHomePageState
                   children: [
                     Text(
                       'No profiles available',
-                      style: context.textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Text(
                       'Add a profile to continue',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        color: context.theme.hintColor,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.hintColor,
+                          ),
                     ),
                     const SizedBox(height: 16),
                     FilledButton(
-                      onPressed: () => context.go('/boorus/add'),
+                      onPressed: () => goToAddBooruConfigPage(context),
                       child: const Text('Add Profile'),
                     ),
                   ],

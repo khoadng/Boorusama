@@ -2,169 +2,128 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru/artists/artists.dart';
-import 'package:boorusama/boorus/gelbooru/posts/posts.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/routes.dart';
+import '../../../core/posts/details_parts/widgets.dart';
+import '../../../core/search/search/routes.dart';
+import '../../../core/tags/tag/providers.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../artists/artists.dart';
+import 'posts.dart';
 
-final gelbooruPostDetailsArtistMapProvider = StateProvider.autoDispose(
-  (ref) => <int, List<String>>{},
-);
-
-final gelbooruPostDetailsCharacterMapProvider = StateProvider.autoDispose(
-  (ref) => <int, Set<String>>{},
-);
-
-class GelbooruPostDetailsPage extends ConsumerStatefulWidget {
-  const GelbooruPostDetailsPage({
+class GelbooruTagListSection extends ConsumerStatefulWidget {
+  const GelbooruTagListSection({
     super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
 
-  final int initialIndex;
-  final List<GelbooruPost> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
-
   @override
-  ConsumerState<GelbooruPostDetailsPage> createState() =>
-      _PostDetailPageState();
+  ConsumerState<GelbooruTagListSection> createState() =>
+      _GelbooruTagListSectionState();
 }
 
-class _PostDetailPageState extends ConsumerState<GelbooruPostDetailsPage> {
-  List<GelbooruPost> get posts => widget.posts;
-
+class _GelbooruTagListSectionState
+    extends ConsumerState<GelbooruTagListSection> {
   @override
   Widget build(BuildContext context) {
-    final booruConfig = ref.watchConfig;
+    final post = InheritedPost.of<GelbooruPost>(context);
 
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
-      toolbar: DefaultPostDetailsActionToolbar(controller: widget.controller),
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
-      ),
-      sliverArtistPostsBuilder: (context, post) =>
-          ref.watch(gelbooruPostDetailsArtistMapProvider).lookup(post.id).fold(
-                () => const [],
-                (tags) => tags.isNotEmpty
-                    ? tags
-                        .map((tag) => ArtistPostList(
-                              tag: tag,
-                              builder: (tag) => ref
-                                  .watch(gelbooruArtistPostsProvider(tag))
-                                  .maybeWhen(
-                                    data: (data) => SliverPreviewPostGrid(
-                                      posts: data,
-                                      onTap: (postIdx) => goToPostDetailsPage(
-                                        context: context,
-                                        posts: data,
-                                        initialIndex: postIdx,
-                                      ),
-                                      imageUrl: getGelbooruPostPreviewImageUrl,
-                                    ),
-                                    orElse: () =>
-                                        const SliverPreviewPostGridPlaceholder(),
-                                  ),
-                            ))
-                        .toList()
-                    : [],
-              ),
-      sliverCharacterPostsBuilder: (context, post) => ref
-          .watch(gelbooruPostDetailsCharacterMapProvider)
-          .lookup(post.id)
-          .fold(
-            () => const SliverSizedBox.shrink(),
-            (tags) => tags.isNotEmpty
-                ? CharacterPostList(
-                    tags: tags,
-                  )
-                : const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) => TagsTile(
-        tags: ref.watch(tagsProvider(booruConfig)),
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        tags: ref.watch(tagGroupProvider(post)).maybeWhen(
+              orElse: () => const [],
+              data: (data) => data.tags,
+            ),
         post: post,
         onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),
-      onExpanded: (post) => ref.read(tagsProvider(booruConfig).notifier).load(
-            post.tags,
-            onSuccess: (tags) => _setTags(post, tags),
-          ),
     );
-  }
-
-  void _setTags(
-    GelbooruPost post,
-    List<TagGroupItem> tags,
-  ) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!mounted) return;
-      ref.setGelbooruPostDetailsArtistMap(
-        post: post,
-        tags: tags,
-      );
-
-      ref.setGelbooruPostDetailsCharacterMap(
-        post: post,
-        tags: tags,
-      );
-    });
   }
 }
 
-extension GelbooruArtistMapProviderX on WidgetRef {
-  void setGelbooruPostDetailsArtistMap({
-    required Post post,
-    required List<TagGroupItem> tags,
-  }) {
-    final group =
-        tags.firstWhereOrNull((tag) => tag.groupName.toLowerCase() == 'artist');
+class GelbooruCharacterListSection extends ConsumerWidget {
+  const GelbooruCharacterListSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruPost>(context);
 
-    if (group == null) return;
-    final map = read(gelbooruPostDetailsArtistMapProvider);
-
-    map[post.id] = group.tags.map((e) => e.rawName).toList();
-
-    read(gelbooruPostDetailsArtistMapProvider.notifier).state = {
-      ...map,
-    };
+    return ref.watch(tagGroupProvider(post)).maybeWhen(
+          data: (data) => data.characterTags.isNotEmpty
+              ? SliverCharacterPostList(
+                  tags: data.characterTags,
+                )
+              : const SliverSizedBox.shrink(),
+          orElse: () => const SliverSizedBox.shrink(),
+        );
   }
+}
 
-  void setGelbooruPostDetailsCharacterMap({
-    required Post post,
-    required List<TagGroupItem> tags,
-  }) {
-    final group = tags.firstWhereOrNull(
-      (tag) => tag.groupName.toLowerCase() == 'character',
+class GelbooruFileDetailsSection extends StatelessWidget {
+  const GelbooruFileDetailsSection({
+    super.key,
+    this.initialExpanded = false,
+  });
+
+  final bool initialExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        initialExpanded: initialExpanded,
+        uploaderName: post.uploaderName,
+      ),
     );
+  }
+}
 
-    if (group == null) return;
-    final map = read(gelbooruPostDetailsCharacterMapProvider);
+class GelbooruArtistPostsSection extends ConsumerWidget {
+  const GelbooruArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruPost>(context);
 
-    map[post.id] = group.tags.map((e) => e.rawName).toSet();
-
-    read(gelbooruPostDetailsCharacterMapProvider.notifier).state = {
-      ...map,
-    };
+    return MultiSliver(
+      children: ref.watch(tagGroupProvider(post)).maybeWhen(
+            data: (data) => data.artistTags.isNotEmpty
+                ? data.artistTags
+                    .map(
+                      (tag) => SliverArtistPostList(
+                        tag: tag,
+                        child: ref
+                            .watch(gelbooruArtistPostsProvider(tag))
+                            .maybeWhen(
+                              data: (data) => SliverPreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) =>
+                                    goToPostDetailsPageFromPosts(
+                                  context: context,
+                                  posts: data,
+                                  initialIndex: postIdx,
+                                  initialThumbnailUrl:
+                                      getGelbooruPostPreviewImageUrl(
+                                    data[postIdx],
+                                  ),
+                                ),
+                                imageUrl: getGelbooruPostPreviewImageUrl,
+                              ),
+                              orElse: () =>
+                                  const SliverPreviewPostGridPlaceholder(),
+                            ),
+                      ),
+                    )
+                    .toList()
+                : [],
+            orElse: () => [],
+          ),
+    );
   }
 }
 

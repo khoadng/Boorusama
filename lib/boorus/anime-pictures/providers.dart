@@ -1,22 +1,25 @@
 // Package imports:
+import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
-import 'package:boorusama/clients/anime-pictures/types/types.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/categories/tag_category.dart';
 import 'anime_pictures.dart';
 
 final animePicturesClientProvider =
-    Provider.family<AnimePicturesClient, BooruConfig>(
+    Provider.family<AnimePicturesClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return AnimePicturesClient(
       dio: dio,
@@ -27,12 +30,12 @@ final animePicturesClientProvider =
 );
 
 final animePicturesPostRepoProvider =
-    Provider.family<PostRepository, BooruConfig>(
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(animePicturesClientProvider(config));
+    final client = ref.watch(animePicturesClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -41,13 +44,15 @@ final animePicturesPostRepoProvider =
         );
 
         return posts
-            .map((e) => dtoToAnimePicturesPost(
-                  e,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => dtoToAnimePicturesPost(
+                e,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -57,7 +62,7 @@ final animePicturesPostRepoProvider =
 );
 
 final animePicturesAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
+    Provider.family<AutocompleteRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(animePicturesClientProvider(config));
 
@@ -83,14 +88,14 @@ final animePicturesAutocompleteRepoProvider =
 );
 
 final animePicturesDownloadFileUrlExtractorProvider =
-    Provider.family<DownloadFileUrlExtractor, BooruConfig>((ref, config) {
+    Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>((ref, config) {
   return AnimePicturesDownloadFileUrlExtractor(
     client: ref.watch(animePicturesClientProvider(config)),
   );
 });
 
 typedef TopParams = ({
-  BooruConfig config,
+  BooruConfigAuth config,
   bool erotic,
 });
 
@@ -118,7 +123,7 @@ final animePicturesWeeklyPopularProvider = FutureProvider.autoDispose
 });
 
 final animePicturesCurrentUserIdProvider =
-    FutureProvider.family<int?, BooruConfig>((ref, config) async {
+    FutureProvider.family<int?, BooruConfigAuth>((ref, config) async {
   final cookie = config.passHash;
   if (cookie == null || cookie.isEmpty) return null;
 
@@ -150,7 +155,7 @@ AnimePicturesPost dtoToAnimePicturesPost(
     thumbnailImageUrl: e.mediumPreview ?? '',
     sampleImageUrl: e.bigPreview ?? '',
     originalImageUrl: e.bigPreview ?? '',
-    tags: {},
+    tags: const {},
     rating: switch (e.erotics) {
       EroticLevel.none => Rating.general,
       EroticLevel.light => Rating.sensitive,

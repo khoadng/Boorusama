@@ -5,35 +5,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../foundation/networking.dart';
+import 'network_unavailable_indicator.dart';
 
 class NetworkUnavailableIndicatorWithState extends ConsumerWidget {
   const NetworkUnavailableIndicatorWithState({
     super.key,
-    this.includeSafeArea = false,
   });
-
-  final bool includeSafeArea;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(networkStateProvider);
 
     return switch (state) {
-      NetworkDisconnectedState _ => ConditionalParentWidget(
-          condition: includeSafeArea,
-          conditionalBuilder: (child) => SafeArea(child: child),
-          child: const NetworkUnavailableIndicator(),
-        ),
-      NetworkInitialState _ => const SizedBox.shrink(),
-      NetworkLoadingState _ => ConditionalParentWidget(
-          condition: includeSafeArea,
-          conditionalBuilder: (child) => SafeArea(child: child),
-          child: const NetworkConnectingIndicator(),
-        ),
+      NetworkDisconnectedState _ => const NetworkUnavailableIndicator(),
       _ => const SizedBox.shrink(),
     };
+  }
+}
+
+class NetworkUnavailableRemovePadding extends ConsumerWidget {
+  const NetworkUnavailableRemovePadding({
+    required this.child,
+    super.key,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isNetworkUnavailable = ref.watch(
+      networkStateProvider.select((state) => state is NetworkDisconnectedState),
+    );
+
+    return isNetworkUnavailable
+        ? MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: child,
+          )
+        : child;
   }
 }

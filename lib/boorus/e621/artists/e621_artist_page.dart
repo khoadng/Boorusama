@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/artists/artists.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/functional.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/listing/widgets.dart';
+import '../../../core/tags/details/widgets.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../posts/posts.dart';
+import 'artists.dart';
 
 class E621ArtistPage extends ConsumerStatefulWidget {
   const E621ArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;
@@ -31,7 +31,7 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
   @override
   Widget build(BuildContext context) {
     final artist = ref.watch(e621ArtistProvider(widget.artistName));
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return PostScope(
       fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
@@ -42,19 +42,18 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
             ),
             page,
           ),
-      builder: (context, controller, errors) => TagDetailsPageScaffold(
+      builder: (context, controller) => TagDetailsPageScaffold(
         onCategoryToggle: (category) {
           selectedCategory.value = category;
           controller.refresh();
         },
         tagName: widget.artistName,
-        otherNamesBuilder: (_) => artist.when(
+        otherNames: artist.when(
           data: (data) => TagOtherNames(otherNames: data.otherNames),
           error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
           loading: () => const TagOtherNames(otherNames: null),
         ),
-        gridBuilder: (context, slivers) => InfinitePostListScaffold(
-          errors: errors,
+        gridBuilder: (context, slivers) => PostGrid(
           controller: controller,
           sliverHeaders: slivers,
         ),

@@ -3,21 +3,25 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/sankaku/sankaku.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
+import '../../core/configs/failsafe.dart';
+import '../../core/configs/ref.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/posts/favorites/routes.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import 'sankaku.dart';
 
 class SankakuHomePage extends ConsumerWidget {
   const SankakuHomePage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final login = config.login;
 
     return HomePageScaffold(
@@ -41,22 +45,37 @@ class SankakuHomePage extends ConsumerWidget {
             title: 'Favorites',
           ),
       ],
-      desktopViews: [if (login != null) SankakuFavoritesPage(username: login)],
+      desktopViews: [if (login != null) const SankakuFavoritesPage()],
     );
   }
 }
 
 class SankakuFavoritesPage extends ConsumerWidget {
-  const SankakuFavoritesPage({
-    super.key,
+  const SankakuFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
+    return BooruConfigAuthFailsafe(
+      builder: (_) => SankakuFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class SankakuFavoritesPageInternal extends ConsumerWidget {
+  const SankakuFavoritesPageInternal({
     required this.username,
+    super.key,
   });
 
   final String username;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final query = 'fav:$username';
 
     return FavoritesPageScaffold(

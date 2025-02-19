@@ -2,48 +2,61 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
-import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
-import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/gelbooru/gelbooru_v2_client.dart';
-import 'package:boorusama/clients/gelbooru/types/note_dto.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/notes/notes.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/failsafe.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/search/widgets.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
+import 'artists/artists.dart';
+import 'comments/comments.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
-import 'posts/gelbooru_v2_post_details_desktop_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
+import 'posts/posts_v2.dart';
 
 const kGelbooruV2CustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
 
 final gelbooruV2ClientProvider =
-    Provider.family<GelbooruV2Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<GelbooruV2Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return GelbooruV2Client.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
     dio: dio,
   );
 });
 
 final gelbooruV2AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(gelbooruV2ClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -75,23 +88,25 @@ final gelbooruV2AutocompleteRepoProvider =
 final gelbooruV2TagsFromIdProvider =
     FutureProvider.autoDispose.family<List<Tag>, int>(
   (ref, id) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final client = ref.watch(gelbooruV2ClientProvider(config));
 
     final data = await client.getTagsFromPostId(postId: id);
 
     return data
-        .map((e) => Tag(
-              name: e.name ?? '',
-              category: TagCategory.fromLegacyId(e.type),
-              postCount: e.count ?? 0,
-            ))
+        .map(
+          (e) => Tag(
+            name: e.name ?? '',
+            category: TagCategory.fromLegacyId(e.type),
+            postCount: e.count ?? 0,
+          ),
+        )
         .toList();
   },
 );
 
 final gelbooruV2NoteRepoProvider =
-    Provider.family<NoteRepository, BooruConfig>((ref, config) {
+    Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(gelbooruV2ClientProvider(config));
 
   return NoteRepositoryBuilder(
@@ -120,21 +135,18 @@ class GelbooruV2Builder
         FavoriteNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         DefaultThumbnailUrlMixin,
-        PostCountNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
+        DefaultTagColorsMixin,
         DefaultTagColorMixin
     implements BooruBuilder {
-  GelbooruV2Builder({
-    required this.client,
-  });
-
-  final GelbooruV2Client client;
+  GelbooruV2Builder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -157,7 +169,7 @@ class GelbooruV2Builder
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => GelbooruV2HomePage(config: config);
+      (context) => const GelbooruV2HomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -179,40 +191,21 @@ class GelbooruV2Builder
       GelbooruV2SearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
 
-        return PostDetailsLayoutSwitcher(
+        return PostDetailsScope(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => GelbooruV2PostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => GelbooruV2PostDetailsPage(
-            initialIndex: controller.currentPage.value,
-            controller: controller,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
+          child: const DefaultPostDetailsPage<GelbooruV2Post>(),
         );
       };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? GelbooruV2FavoritesPage(uid: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context) => const GelbooruV2FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -230,6 +223,7 @@ class GelbooruV2Builder
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => GelbooruV2CommentPage(
             postId: postId,
+            useAppBar: useAppBar,
           );
 
   @override
@@ -253,7 +247,102 @@ class GelbooruV2Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kGelbooruV2AltHomeView;
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<GelbooruV2Post>(),
+      DetailsPart.tags: (context) => const GelbooruV2TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const GelbooruV2FileDetailsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const GelbooruV2ArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const GelbooruV2RelatedPostsSection(),
+      DetailsPart.characterList: (context) =>
+          const GelbooruV2CharacterPostsSection(),
+    },
+  );
 }
+
+class GelbooruV2Repository implements BooruRepository {
+  const GelbooruV2Repository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(gelbooruV2PostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(gelbooruV2AutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(gelbooruV2NoteRepoProvider(config));
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => GelbooruV2Client(
+          baseUrl: config.url,
+          dio: dio,
+          userId: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
+}
+
+final kGelbooruV2AltHomeView = {
+  ...kDefaultAltHomeView,
+  // ignore: prefer_const_constructors
+  CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const GelbooruV2FavoritesPage(),
+  ),
+};
 
 class GelbooruV2SearchPage extends ConsumerWidget {
   const GelbooruV2SearchPage({
@@ -265,7 +354,7 @@ class GelbooruV2SearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(gelbooruV2PostRepoProvider(config));
 
     return SearchPageScaffold(
@@ -277,16 +366,31 @@ class GelbooruV2SearchPage extends ConsumerWidget {
 }
 
 class GelbooruV2FavoritesPage extends ConsumerWidget {
-  const GelbooruV2FavoritesPage({
-    super.key,
+  const GelbooruV2FavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
+    return BooruConfigAuthFailsafe(
+      builder: (_) => GelbooruV2FavoritesPageInternal(
+        uid: config.login!,
+      ),
+    );
+  }
+}
+
+class GelbooruV2FavoritesPageInternal extends ConsumerWidget {
+  const GelbooruV2FavoritesPageInternal({
     required this.uid,
+    super.key,
   });
 
   final String uid;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final query = 'fav:$uid';
 
     return FavoritesPageScaffold(

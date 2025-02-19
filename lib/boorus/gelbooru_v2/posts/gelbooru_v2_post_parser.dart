@@ -1,22 +1,27 @@
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/clients/gelbooru/types/post_v2_dto.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/tags.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
 import 'gelbooru_v2_post.dart';
 
 GelbooruV2Post gelbooruV2PostDtoToGelbooruPostNoMetadata(PostV2Dto dto) =>
     gelbooruV2PostDtoToGelbooruPost(dto, null);
 
 GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
-    PostV2Dto dto, PostMetadata? metadata) {
+  PostV2Dto dto,
+  PostMetadata? metadata,
+) {
   return GelbooruV2Post(
     id: dto.id!,
     thumbnailImageUrl: dto.previewUrl ?? '',
     sampleImageUrl: dto.sampleUrl ?? dto.fileUrl ?? '',
     originalImageUrl: dto.fileUrl ?? '',
-    tags: dto.tags?.split(' ').toSet() ?? {},
+    tags: dto.tags.splitTagString(),
     width: dto.width?.toDouble() ?? 0,
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.fileUrl ?? 'foo.png').substring(1),
@@ -43,6 +48,6 @@ bool _checkIfHasNotes(PostV2Dto dto) {
   }
 
   // check if tags contains 'translated' and not contains 'hard_translated'
-  final tags = dto.tags?.split(' ') ?? [];
+  final tags = dto.tags.splitTagString();
   return tags.contains('translated') && !tags.contains('hard_translated');
 }

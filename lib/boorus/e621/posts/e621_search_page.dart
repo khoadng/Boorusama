@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/posts/e621_post_provider.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/search/search/widgets.dart';
+import 'e621_post_provider.dart';
 
 class E621SearchPage extends ConsumerWidget {
   const E621SearchPage({
@@ -18,7 +18,7 @@ class E621SearchPage extends ConsumerWidget {
   final String? initialQuery;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(e621PostRepoProvider(config));
 
     return SearchPageScaffold(

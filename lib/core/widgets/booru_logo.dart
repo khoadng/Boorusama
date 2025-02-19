@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/core/posts/posts.dart';
+import '../boorus/booru/booru.dart';
+import '../configs/config.dart';
+import '../configs/ref.dart';
+import '../http/providers.dart';
+import '../posts/sources/source.dart';
 
-class BooruLogo extends StatelessWidget {
+class BooruLogo extends ConsumerWidget {
   const BooruLogo({
-    super.key,
     required this.source,
+    super.key,
     this.width,
     this.height,
   }) : _isFixedIcon = false;
 
   BooruLogo.fromConfig(
-    BooruConfig config, {
+    BooruConfigAuth config, {
     super.key,
     this.width,
     this.height,
@@ -46,30 +49,29 @@ class BooruLogo extends StatelessWidget {
   final bool _isFixedIcon;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (_isFixedIcon) {
       return _buildAssetImage(source);
     }
+
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
 
     return PostSource.from(source).whenWeb(
       (s) => FittedBox(
         child: s.faviconType == FaviconType.network
             ? ExtendedImage.network(
+                dio: dio,
                 s.faviconUrl,
                 width: width ?? 24,
                 height: height ?? 24,
                 fit: BoxFit.cover,
                 clearMemoryCacheIfFailed: false,
-                cacheMaxAge: kDefaultImageCacheDuration,
-                loadStateChanged: (state) =>
-                    switch (state.extendedImageLoadState) {
-                  LoadState.failed => FaIcon(
-                      FontAwesomeIcons.globe,
-                      size: width,
-                      color: Colors.blue,
-                    ),
-                  _ => state.completedWidget,
-                },
+                errorWidget: FaIcon(
+                  FontAwesomeIcons.globe,
+                  size: width,
+                  color: Colors.blue,
+                ),
               )
             : _buildAssetImage(s.faviconUrl),
       ),

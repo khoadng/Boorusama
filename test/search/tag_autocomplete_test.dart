@@ -3,10 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
 import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/tags/tags.dart';
+import 'package:boorusama/core/tags/metatag/metatag.dart';
+import 'package:boorusama/core/tags/metatag/src/default_extractor.dart';
 import 'common.dart';
 
-final _defaultExtractor = MetatagExtractor(
+final _defaultExtractor = DefaultMetatagExtractor(
   metatags: {
     const Metatag.simple(name: 'meta'),
   },

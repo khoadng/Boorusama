@@ -2,32 +2,47 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/hydrus.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/hydrus/hydrus_client.dart';
-import 'package:boorusama/clients/hydrus/types/types.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/core/downloads/download_file_name_generator.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/favorites/routes.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/search/search/widgets.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../core/widgets/widgets.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
 import 'favorites/favorites.dart';
 
 class HydrusPost extends SimplePost {
@@ -68,8 +83,8 @@ class HydrusPost extends SimplePost {
 }
 
 final hydrusClientProvider =
-    Provider.family<HydrusClient, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+    Provider.family<HydrusClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return HydrusClient(
     dio: dio,
@@ -78,10 +93,10 @@ final hydrusClientProvider =
   );
 });
 
-final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final hydrusPostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(hydrusClientProvider(config));
-    final composer = ref.watch(tagQueryComposerProvider(config));
+    final client = ref.watch(hydrusClientProvider(config.auth));
 
     Future<PostResult<HydrusPost>> getPosts(
       List<String> tags,
@@ -95,51 +110,54 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
       );
 
       final data = files.files
-          .map((e) => HydrusPost(
-                id: e.fileId ?? 0,
-                thumbnailImageUrl: e.thumbnailUrl,
-                sampleImageUrl: e.imageUrl,
-                originalImageUrl: e.imageUrl,
-                tags: e.allTags,
-                rating: Rating.general,
-                hasComment: false,
-                isTranslated: false,
-                hasParentOrChildren: false,
-                source: PostSource.from(e.firstSource),
-                score: 0,
-                duration: e.duration?.toDouble() ?? 0,
-                fileSize: e.size ?? 0,
-                format: e.ext ?? '',
-                hasSound: e.hasAudio,
-                height: e.height?.toDouble() ?? 0,
-                md5: e.hash ?? '',
-                videoThumbnailUrl: e.thumbnailUrl,
-                videoUrl: e.imageUrl,
-                width: e.width?.toDouble() ?? 0,
-                uploaderId: null,
-                uploaderName: null,
-                createdAt: null,
-                metadata: PostMetadata(
-                  page: page,
-                  search: tags.join(' '),
-                ),
-                ownFavorite: e.faved,
-              ))
+          .map(
+            (e) => HydrusPost(
+              id: e.fileId ?? 0,
+              thumbnailImageUrl: e.thumbnailUrl,
+              sampleImageUrl: e.imageUrl,
+              originalImageUrl: e.imageUrl,
+              tags: e.allTags,
+              rating: Rating.general,
+              hasComment: false,
+              isTranslated: false,
+              hasParentOrChildren: false,
+              source: PostSource.from(e.firstSource),
+              score: 0,
+              duration: e.duration?.toDouble() ?? 0,
+              fileSize: e.size ?? 0,
+              format: e.ext ?? '',
+              hasSound: e.hasAudio,
+              height: e.height?.toDouble() ?? 0,
+              md5: e.hash ?? '',
+              videoThumbnailUrl: e.thumbnailUrl,
+              videoUrl: e.imageUrl,
+              width: e.width?.toDouble() ?? 0,
+              uploaderId: null,
+              uploaderName: null,
+              createdAt: null,
+              metadata: PostMetadata(
+                page: page,
+                search: tags.join(' '),
+              ),
+              ownFavorite: e.faved,
+            ),
+          )
           .toList()
           .toResult(
             total: files.count,
           );
 
-      ref.read(hydrusFavoritesProvider(config).notifier).preload(data.posts);
+      ref.read(favoritesProvider(config.auth).notifier).preload(data.posts);
 
       return data;
     }
 
     return PostRepositoryBuilder(
-      tagComposer: composer,
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchFromController: (controller, page, {limit}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
+        final composer = ref.read(currentTagQueryComposerProvider);
 
         return getPosts(
           composer.compose(tags),
@@ -153,7 +171,7 @@ final hydrusPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final hydrusAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(hydrusClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -180,16 +198,17 @@ final hydrusAutocompleteRepoProvider =
 
 class HydrusBuilder
     with
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
+        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
@@ -247,47 +266,25 @@ class HydrusBuilder
       (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => HydrusPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => HydrusPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as HydrusPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<HydrusPost>(),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const HydrusFavoritesPage();
+      (context) => const HydrusFavoritesPage();
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(hydrusFavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
   @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(hydrusFavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
-
-  @override
-  HomePageBuilder get homePageBuilder => (context, config) => HydrusHomePage(
-        config: config,
-      );
+  HomePageBuilder get homePageBuilder => (context) => const HydrusHomePage();
 
   @override
   SearchPageBuilder get searchPageBuilder =>
@@ -300,15 +297,86 @@ class HydrusBuilder
       (context, post) => HydrusQuickFavoriteButton(
             post: post,
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<HydrusPost>(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<HydrusPost>(
+            initialExpanded: true,
+          ),
+    },
+  );
+}
+
+class HydrusRepository implements BooruRepository {
+  const HydrusRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(hydrusPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(hydrusAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return HydrusFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => HydrusClient(
+          baseUrl: config.url,
+          apiKey: config.apiKey ?? '',
+          dio: dio,
+        ).getFiles().then((value) => true);
+  }
 }
 
 class HydrusHomePage extends StatelessWidget {
   const HydrusHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   Widget build(BuildContext context) {
@@ -337,7 +405,7 @@ class HydrusHomePage extends StatelessWidget {
 }
 
 final ratingServiceNameProvider =
-    FutureProvider.family<String?, BooruConfig>((ref, config) async {
+    FutureProvider.family<String?, BooruConfigAuth>((ref, config) async {
   final client = ref.read(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();
@@ -350,105 +418,6 @@ final ratingServiceNameProvider =
 
   return services.firstWhereOrNull((e) => e.key == key)?.name;
 });
-
-class HydrusPostDetailsPage extends ConsumerWidget {
-  const HydrusPostDetailsPage({
-    super.key,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.posts,
-    required this.initialPage,
-  });
-
-  final List<Post> posts;
-  final PostDetailsController<Post> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialPage,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
-      toolbar: ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<HydrusPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => HydrusPostActionToolbar(post: post),
-                ),
-      ),
-    );
-  }
-}
-
-class HydrusPostDetailsDesktopPage extends ConsumerWidget {
-  const HydrusPostDetailsDesktopPage({
-    super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
-  });
-
-  final int initialIndex;
-  final List<Post> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      debounceDuration: Duration.zero,
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        onTap: (tag) => goToSearchPage(
-          context,
-          tag: tag,
-        ),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-      ),
-      toolbarBuilder: (context, post) => ValueListenableBuilder(
-        valueListenable: controller.currentPost,
-        builder: (_, rawPost, __) =>
-            castOrNull<HydrusPost>(rawPost).toOption().fold(
-                  () => SimplePostActionToolbar(post: rawPost),
-                  (post) => HydrusPostActionToolbar(post: post),
-                ),
-      ),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
-  }
-}
 
 class CreateHydrusConfigPage extends ConsumerWidget {
   const CreateHydrusConfigPage({
@@ -504,25 +473,25 @@ class HydrusAuthConfigView extends ConsumerWidget {
 class HydrusPostActionToolbar extends ConsumerWidget {
   const HydrusPostActionToolbar({
     super.key,
-    required this.post,
   });
-
-  final HydrusPost post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<HydrusPost>(context);
     final canFav =
-        ref.watch(hydrusCanFavoriteProvider(ref.watchConfig)).maybeWhen(
+        ref.watch(hydrusCanFavoriteProvider(ref.watchConfigAuth)).maybeWhen(
               data: (fav) => fav,
               orElse: () => false,
             );
 
-    return PostActionToolbar(
-      children: [
-        if (canFav) HydrusFavoritePostButton(post: post),
-        BookmarkPostButton(post: post),
-        DownloadPostButton(post: post),
-      ],
+    return SliverToBoxAdapter(
+      child: PostActionToolbar(
+        children: [
+          if (canFav) HydrusFavoritePostButton(post: post),
+          BookmarkPostButton(post: post),
+          DownloadPostButton(post: post),
+        ],
+      ),
     );
   }
 }
@@ -537,7 +506,7 @@ class HydrusSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     return SearchPageScaffold(
       initialQuery: initialQuery,
       fetcher: (page, controller) => ref

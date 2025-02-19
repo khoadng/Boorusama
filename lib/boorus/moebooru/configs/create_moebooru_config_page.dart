@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create/create.dart';
+import '../../../core/configs/create.dart';
 import 'widgets.dart';
 
 class CreateMoebooruConfigPage extends ConsumerWidget {
@@ -24,7 +24,9 @@ class CreateMoebooruConfigPage extends ConsumerWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const MoebooruAuthConfigView(),
-      hasRatingFilter: true,
+      searchTab: const DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
     );
   }
 }

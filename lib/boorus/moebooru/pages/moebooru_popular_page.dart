@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/providers.dart';
-import 'package:boorusama/core/datetimes/datetimes.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/functional.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/explores/explore.dart';
+import '../../../core/posts/explores/widgets.dart';
+import '../../../core/posts/listing/widgets.dart';
+import '../../../core/posts/post/post.dart';
 import '../feats/posts/posts.dart';
 
 enum MoebooruPopularType {
@@ -35,7 +35,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
   final selectedPopular = ValueNotifier(MoebooruPopularType.day);
 
   MoebooruPopularRepository get repo =>
-      ref.read(moebooruPopularRepoProvider(ref.readConfig));
+      ref.read(moebooruPopularRepoProvider(ref.readConfigAuth));
 
   DateTime get selectedDate => selectedDateNotifier.value;
 
@@ -54,11 +54,10 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
       fetcher: (page) => page > 1
           ? TaskEither.of(<Post>[].toResult())
           : _typeToData(selectedPopular.value, page),
-      builder: (context, controller, errors) => Column(
+      builder: (context, controller) => Column(
         children: [
           Expanded(
-            child: InfinitePostListScaffold(
-              errors: errors,
+            child: PostGrid(
               controller: controller,
               sliverHeaders: [
                 SliverToBoxAdapter(
@@ -74,7 +73,7 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
             ),
           ),
           Container(
-            color: context.theme.bottomNavigationBarTheme.backgroundColor,
+            color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
             margin: EdgeInsets.only(
               bottom: MediaQuery.viewPaddingOf(context).bottom,
             ),

@@ -2,44 +2,56 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
+import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/anime-pictures/anime_pictures_home_page.dart';
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/clients/anime-pictures/anime_pictures_client.dart';
-import 'package:boorusama/clients/anime-pictures/types/types.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/foundation/caching.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/routes.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
+import 'anime_pictures_home_page.dart';
 import 'create_anime_pictures_config_page.dart';
 import 'providers.dart';
 
 class AnimePicturesBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
+        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
@@ -97,49 +109,116 @@ class AnimePicturesBuilder
   );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => AnimePicturesPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as AnimePicturesPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => AnimePicturesPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as AnimePicturesPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<AnimePicturesPost>(),
+        );
+      };
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => AnimePicturesHomePage(config: config);
+      (context) => const AnimePicturesHomePage();
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => const AnimePicturesCurrentUserIdScope(
+      (context) => const AnimePicturesCurrentUserIdScope(
             child: AnimePicturesFavoritesPage(),
           );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+      DetailsPart.tags: (context) => const AnimePicturesTagListSection(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<AnimePicturesPost>(),
+      DetailsPart.relatedPosts: (context) =>
+          const AnimePicturesRelatedPostsSection(),
+    },
+  );
+}
+
+class AnimePicturesRepository implements BooruRepository {
+  const AnimePicturesRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(animePicturesPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(animePicturesAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return ref.read(animePicturesDownloadFileUrlExtractorProvider(config));
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => AnimePicturesClient(
+          baseUrl: config.url,
+          dio: dio,
+        ).getPosts().then((value) => true);
+  }
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
   const AnimePicturesCurrentUserIdScope({
-    super.key,
     required this.child,
+    super.key,
   });
 
   final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(animePicturesCurrentUserIdProvider(ref.watchConfig)).when(
+    return ref
+        .watch(animePicturesCurrentUserIdProvider(ref.watchConfigAuth))
+        .when(
           data: (value) => value != null
               ? ProviderScope(
                   overrides: [
@@ -179,7 +258,7 @@ class AnimePicturesFavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = ref.watch(_uidProvider);
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return FavoritesPageScaffold(
       favQueryBuilder: null,
@@ -207,7 +286,7 @@ class AnimePicturesDownloadFileUrlExtractor
   @override
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
-    required DownloadQuality quality,
+    required String quality,
   }) =>
       tryGet(
         post.id.toString(),
@@ -228,13 +307,13 @@ class AnimePicturesDownloadFileUrlExtractor
   @override
   final Cache<DownloadUrlData> cache = Cache(
     maxCapacity: 10,
-    staleDuration: Duration(minutes: 5),
+    staleDuration: const Duration(minutes: 5),
   );
 }
 
 final postDetailsProvider =
     FutureProvider.autoDispose.family<PostDetailsDto, int>((ref, id) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
   final client = ref.watch(animePicturesClientProvider(config));
 
   final post = await client.getPostDetails(id: id);
@@ -254,19 +333,19 @@ final postTagsProvider =
         order: _mapToOrder(c),
         tags: postDetails.tags
                 ?.where((e) => e.tag?.type == c)
-                .whereNotNull()
+                .nonNulls
                 .map((e) => e.tag!)
-                .map((e) => Tag(
-                      name: e.tag ?? '???',
-                      category: animePicturesTagTypeToTagCategory(e.type),
-                      postCount: e.num ?? 0,
-                    ))
+                .map(
+                  (e) => Tag(
+                    name: e.tag ?? '???',
+                    category: animePicturesTagTypeToTagCategory(e.type),
+                    postCount: e.num ?? 0,
+                  ),
+                )
                 .toList() ??
             [],
       ),
-  ];
-
-  tagGroups.sort((a, b) => a.order.compareTo(b.order));
+  ]..sort((a, b) => a.order.compareTo(b.order));
 
   final filtered = tagGroups.where((e) => e.tags.isNotEmpty).toList();
 
@@ -295,140 +374,62 @@ String _mapToGroupName(AnimePicturesTagType type) => switch (type) {
       AnimePicturesTagType.copyrightOther => 'Other Copyright',
     };
 
-class AnimePicturesPostDetailsPage extends ConsumerWidget {
-  const AnimePicturesPostDetailsPage({
+class AnimePicturesTagListSection extends ConsumerWidget {
+  const AnimePicturesTagListSection({
     super.key,
-    required this.posts,
-    required this.controller,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.initialPage,
   });
-
-  final List<AnimePicturesPost> posts;
-  final PostDetailsController<Post> controller;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final int initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialPage,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: onExit,
-      sliverRelatedPostsBuilder: (context, post) => ref
-          .watch(postDetailsProvider(post.id))
-          .when(
-            data: (details) => details.tied != null && details.tied!.isNotEmpty
-                ? RelatedPostsSection(
-                    posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                    imageUrl: defaultPostImageUrlBuilder(ref),
-                    onTap: (index) => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
-                    ),
-                  )
-                : const SliverSizedBox.shrink(),
-            error: (e, _) => const SliverSizedBox.shrink(),
-            loading: () => const SliverSizedBox.shrink(),
+    final post = InheritedPost.of<AnimePicturesPost>(context);
+
+    return SliverToBoxAdapter(
+      child: ref.watch(postTagsProvider(post.id)).when(
+            data: (tags) => TagsTile(
+              initialExpanded: true,
+              initialCount: post.tagsCount,
+              post: post,
+              tags: tags,
+            ),
+            loading: () => TagsTile(
+              initialExpanded: true,
+              initialCount: post.tagsCount,
+              post: post,
+              tags: null,
+            ),
+            error: (e, _) => Text('Error: $e'),
           ),
-      tagListBuilder: (context, post) =>
-          ref.watch(postTagsProvider(post.id)).when(
-                data: (tags) => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: tags,
-                ),
-                loading: () => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: null,
-                ),
-                error: (e, _) => Text('Error: $e'),
-              ),
-      toolbar: DefaultPostDetailsActionToolbar(
-        controller: controller,
-      ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
     );
   }
 }
 
-class AnimePicturesPostDetailsDesktopPage extends ConsumerWidget {
-  const AnimePicturesPostDetailsDesktopPage({
+class AnimePicturesRelatedPostsSection extends ConsumerWidget {
+  const AnimePicturesRelatedPostsSection({
     super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
   });
-
-  final int initialIndex;
-  final List<AnimePicturesPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      debounceDuration: Duration.zero,
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
-        post: post,
-        initialExpanded: true,
-      ),
-      toolbarBuilder: (context, post) => DefaultPostActionToolbar(
-        post: post,
-      ),
-      sliverRelatedPostsBuilder: (context, post) => ref
-          .watch(postDetailsProvider(post.id))
-          .when(
-            data: (details) => details.tied != null && details.tied!.isNotEmpty
-                ? RelatedPostsSection(
-                    posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                    imageUrl: defaultPostImageUrlBuilder(ref),
-                    onTap: (index) => goToPostDetailsPage(
-                      context: context,
-                      posts: posts,
-                      initialIndex: index,
+    final posts = PostDetails.of<AnimePicturesPost>(context).posts;
+    final post = InheritedPost.of<AnimePicturesPost>(context);
+
+    return ref.watch(postDetailsProvider(post.id)).when(
+          data: (details) => details.tied != null && details.tied!.isNotEmpty
+              ? SliverRelatedPostsSection(
+                  posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
+                  imageUrl: defaultPostImageUrlBuilder(ref),
+                  onTap: (index) => goToPostDetailsPageFromPosts(
+                    context: context,
+                    posts: posts,
+                    initialIndex: index,
+                    initialThumbnailUrl: defaultPostImageUrlBuilder(ref)(
+                      posts[index],
                     ),
-                  )
-                : const SliverSizedBox.shrink(),
-            error: (e, _) => const SliverSizedBox.shrink(),
-            loading: () => const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) =>
-          ref.watch(postTagsProvider(post.id)).when(
-                data: (tags) => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: tags,
-                ),
-                loading: () => TagsTile(
-                  initialExpanded: true,
-                  initialCount: post.tagsCount,
-                  post: post,
-                  tags: null,
-                ),
-                error: (e, _) => Text('Error: $e'),
-              ),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
+                  ),
+                )
+              : const SliverSizedBox.shrink(),
+          error: (e, _) => const SliverSizedBox.shrink(),
+          loading: () => const SliverSizedBox.shrink(),
+        );
   }
 }

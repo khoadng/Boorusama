@@ -2,40 +2,56 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/e621.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/e621/configs/configs.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/e621/e621_client.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/tags/tag/colors.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
+import 'configs/configs.dart';
+import 'favorites/favorite_repository_impl.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
+import 'notes/notes.dart';
+import 'popular/e621_popular_page.dart';
 import 'posts/posts.dart';
 import 'tags/tags.dart';
 
 final e621ClientProvider =
-    Provider.family<E621Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<E621Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return E621Client(
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     dio: dio,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    login: config.login,
+    apiKey: config.apiKey,
   );
 });
 
 final e621AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(e621ClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -46,14 +62,16 @@ final e621AutocompleteRepoProvider =
       final dtos = await client.getAutocomplete(query: query);
 
       return dtos
-          .map((e) => AutocompleteData(
-                type: AutocompleteData.tag,
-                label: e.name?.replaceAll('_', ' ') ?? '',
-                value: e.name ?? '',
-                category: intToE621TagCategory(e.category).name,
-                postCount: e.postCount,
-                antecedent: e.antecedentName,
-              ))
+          .map(
+            (e) => AutocompleteData(
+              type: AutocompleteData.tag,
+              label: e.name?.replaceAll('_', ' ') ?? '',
+              value: e.name ?? '',
+              category: intToE621TagCategory(e.category).name,
+              postCount: e.postCount,
+              antecedent: e.antecedentName,
+            ),
+          )
           .toList();
     },
   );
@@ -103,10 +121,10 @@ const kE621PostSamples = [
 
 class E621Builder
     with
-        PostCountNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
@@ -138,8 +156,7 @@ class E621Builder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => E621HomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const E621HomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -157,52 +174,25 @@ class E621Builder
           );
 
   @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(e621FavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => E621SearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => E621PostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => E621PostDetailsPage(
-              intitialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as E621Post).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as E621Post).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<E621Post>(),
+        );
+      };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? E621FavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context) => const E621FavoritesPage();
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -210,21 +200,37 @@ class E621Builder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => E621CommentPage(postId: postId);
+      (context, useAppBar, postId) => E621CommentPage(
+            postId: postId,
+            useAppBar: useAppBar,
+          );
 
   @override
-  TagColorBuilder get tagColorBuilder =>
-      (brightness, tagType) => switch (tagType) {
-            'general' => const Color(0xffb4c7d8),
-            'artist' => const Color(0xfff2ad04),
-            'copyright' => const Color(0xffd60ad8),
-            'character' => const Color(0xff05a903),
-            'species' => const Color(0xffed5d1f),
-            'invalid' => const Color(0xfffe3c3d),
-            'meta' => const Color(0xfffefffe),
-            'lore' => const Color(0xff218923),
-            _ => const Color(0xffb4c7d8),
-          };
+  TagColorBuilder get tagColorBuilder => (options) => switch (options.tagType) {
+        'general' => options.colors.general,
+        'artist' => options.colors.artist,
+        'copyright' => options.colors.copyright,
+        'character' => options.colors.character,
+        'species' => options.colors.get('species'),
+        'invalid' => options.colors.get('invalid'),
+        'meta' => options.colors.meta,
+        'lore' => options.colors.get('lore'),
+        _ => options.colors.general,
+      };
+
+  @override
+  TagColorsBuilder get tagColorsBuilder => (options) => const TagColors(
+        general: Color(0xffb4c7d8),
+        artist: Color(0xfff2ad04),
+        copyright: Color(0xffd60ad8),
+        character: Color(0xff05a903),
+        meta: Color(0xfffefffe),
+        customColors: {
+          'species': Color(0xffed5d1f),
+          'invalid': Color(0xfffe3c3d),
+          'lore': Color(0xff218923),
+        },
+      );
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -247,4 +253,104 @@ class E621Builder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      ke621AltHomeView;
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<E621Post>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<E621Post>(),
+      DetailsPart.artistInfo: (context) => const E621ArtistSection(),
+      DetailsPart.tags: (context) => const E621TagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<E621Post>(),
+      DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
+    },
+  );
 }
+
+class E621Repository implements BooruRepository {
+  const E621Repository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(e621PostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(e621AutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(e621NoteRepoProvider(config));
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return E621FavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => E621Client(
+          baseUrl: config.url,
+          dio: dio,
+          login: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
+}
+
+final ke621AltHomeView = {
+  ...kDefaultAltHomeView,
+  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const E621FavoritesPage(),
+  ),
+  const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
+    displayName: 'Popular',
+    builder: (context, _) => const E621PopularPage(),
+  ),
+};

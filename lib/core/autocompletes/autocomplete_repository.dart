@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocomplete.dart';
-import 'package:boorusama/foundation/debugs/print.dart';
+import '../foundation/debugs/print.dart';
+import 'autocompletes.dart';
 
 abstract class AutocompleteRepository {
   Future<List<AutocompleteData>> getAutocomplete(String query);
@@ -16,9 +16,9 @@ class AutocompleteRepositoryBuilder
     with DebugPrintMixin
     implements AutocompleteRepository {
   AutocompleteRepositoryBuilder({
-    this.persistentStaleDuration = const Duration(days: 1),
     required this.autocomplete,
     required this.persistentStorageKey,
+    this.persistentStaleDuration = const Duration(days: 1),
   });
 
   final Future<List<AutocompleteData>> Function(String query) autocomplete;

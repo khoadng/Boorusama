@@ -3,23 +3,22 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru/favorites/favorites.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/boorus/engine/providers.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/home/home_navigation_tile.dart';
+import '../../../core/home/home_page_scaffold.dart';
+import '../../../core/home/side_menu_tile.dart';
+import '../../../core/posts/favorites/routes.dart';
+import '../favorites/favorites.dart';
 
 class GelbooruHomePage extends ConsumerStatefulWidget {
   const GelbooruHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<GelbooruHomePage> createState() => _GelbooruHomePageState();
@@ -28,12 +27,13 @@ class GelbooruHomePage extends ConsumerStatefulWidget {
 class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
     final favoritePageBuilder =
-        ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
+        ref.watch(currentBooruBuilderProvider)?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
+        if (favoritePageBuilder != null && config.hasLoginDetails())
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -46,7 +46,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
           ),
       ],
       desktopMenuBuilder: (context, constraints) => [
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
+        if (favoritePageBuilder != null && config.hasLoginDetails())
           HomeNavigationTile(
             value: 1,
             constraints: constraints,
@@ -56,8 +56,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
           ),
       ],
       desktopViews: [
-        if (favoritePageBuilder != null && ref.watchConfig.hasLoginDetails())
-          GelbooruFavoritesPage(uid: ref.watchConfig.login!),
+        if (favoritePageBuilder != null) const GelbooruFavoritesPage(),
       ],
     );
   }

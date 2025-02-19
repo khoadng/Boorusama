@@ -1,23 +1,28 @@
 // Package imports:
+import 'package:booru_clients/e621.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/e621.dart';
-import 'package:boorusama/boorus/e621/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/posts/posts.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/e621/types/types.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/foundation/path.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/providers.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
+import '../../../core/search/queries/providers.dart';
+import '../../../core/settings/providers.dart';
+import '../e621.dart';
+import 'posts.dart';
 
 final e621PostRepoProvider =
-    Provider.family<PostRepository<E621Post>, BooruConfig>((ref, config) {
-  final client = ref.watch(e621ClientProvider(config));
+    Provider.family<PostRepository<E621Post>, BooruConfigSearch>((ref, config) {
+  final client = ref.watch(e621ClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    tagComposer: ref.watch(tagQueryComposerProvider(config)),
+    getComposer: () => ref.read(currentTagQueryComposerProvider),
     fetch: (tags, page, {limit}) async {
       final data = await client
           .getPosts(
@@ -25,17 +30,21 @@ final e621PostRepoProvider =
             tags: tags,
             limit: limit,
           )
-          .then((value) => value
-              .map((e) => postDtoToPost(
+          .then(
+            (value) => value
+                .map(
+                  (e) => postDtoToPost(
                     e,
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
                     ),
-                  ))
-              .toList());
+                  ),
+                )
+                .toList(),
+          );
 
-      ref.read(e621FavoritesProvider(config).notifier).preload(data);
+      ref.read(favoritesProvider(config.auth).notifier).preload(data);
 
       return data.toResult();
     },
@@ -45,7 +54,7 @@ final e621PostRepoProvider =
 });
 
 final e621PopularPostRepoProvider =
-    Provider.family<E621PopularRepository, BooruConfig>((ref, config) {
+    Provider.family<E621PopularRepository, BooruConfigAuth>((ref, config) {
   return E621PopularRepositoryApi(
     ref.watch(e621ClientProvider(config)),
     ref.watchConfig,

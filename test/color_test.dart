@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/utils/color_utils.dart';
+import 'package:boorusama/core/utils/color_utils.dart';
 
 void main() {
   group(
@@ -13,12 +13,15 @@ void main() {
     () {
       test(
         'Color to Hex',
-        () => expect(Colors.red.hex, '#f44336'),
+        () => expect(Colors.red.hexWithoutAlpha, '#f44336'),
       );
 
       test(
         'Hex to Color',
-        () => expect(ColorUtils.hexToColor('#F44336'), Color(Colors.red.value)),
+        () => expect(
+          ColorUtils.hexToColor('#F44336'),
+          Color(LegacyColor(Colors.red).value),
+        ),
       );
     },
   );

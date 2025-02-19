@@ -6,13 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/anime-pictures/providers.dart';
-import 'package:boorusama/boorus/danbooru/explores/explore_section.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/explores/explores.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../core/configs/ref.dart';
+import '../../core/posts/explores/widgets.dart';
+import '../../core/posts/listing/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/widgets/booru_segmented_button.dart';
+import 'providers.dart';
 
 final _eroticOnProvider = StateProvider<bool>((ref) => false);
 
@@ -26,10 +25,12 @@ class AnimePicturesTopPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
     return ExplorePage(
       useAppBarPadding: useAppBarPadding,
       sliverOverviews: [
-        if (ref.watchConfig.passHash != null)
+        if (config.passHash != null)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -46,7 +47,7 @@ class AnimePicturesTopPage extends ConsumerWidget {
               context,
               posts,
               'Daily Top',
-              RouteSettings(name: 'daily_top'),
+              const RouteSettings(name: 'daily_top'),
             ),
           ),
         ),
@@ -56,7 +57,7 @@ class AnimePicturesTopPage extends ConsumerWidget {
               context,
               posts,
               'Weekly Top',
-              RouteSettings(name: 'weekly_top'),
+              const RouteSettings(name: 'weekly_top'),
             ),
           ),
         ),
@@ -84,9 +85,9 @@ void goToAnimePicturesDetailsTopPage(
 
 class AnimePicturesDetailsTopPage extends ConsumerWidget {
   const AnimePicturesDetailsTopPage({
-    super.key,
     required this.posts,
     required this.title,
+    super.key,
   });
 
   final List<Post> posts;
@@ -107,8 +108,8 @@ class AnimePicturesDetailsTopPage extends ConsumerWidget {
 
 class EroticsToggleSwitch extends StatelessWidget {
   const EroticsToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(bool erotic) onToggle;
@@ -144,7 +145,7 @@ class _PopularExploreState extends ConsumerState<_DailyPopularExplore> {
   @override
   Widget build(BuildContext context) {
     final params = (
-      config: ref.watchConfig,
+      config: ref.watchConfigAuth,
       erotic: ref.watch(_eroticOnProvider),
     );
 
@@ -179,7 +180,7 @@ class _WeeklyPopularExploreState extends ConsumerState<_WeeklyPopularExplore> {
   @override
   Widget build(BuildContext context) {
     final params = (
-      config: ref.watchConfig,
+      config: ref.watchConfigAuth,
       erotic: ref.watch(_eroticOnProvider),
     );
 

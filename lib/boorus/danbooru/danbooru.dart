@@ -2,41 +2,76 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/gestures.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import '../../core/configs/create/create.dart';
-import 'artists/danbooru_artist_page.dart';
-import 'comments/comments.dart';
-import 'configs/create_danbooru_config_page.dart';
-import 'favorites/favorites.dart';
-import 'home/danbooru_home_page.dart';
-import 'post_votes/post_votes.dart';
-import 'posts/posts.dart';
-import 'reports/reports.dart';
-import 'search/search.dart';
-import 'tags/tags.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/downloader.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/foundation/url_launcher.dart';
+import '../../core/home/custom_home.dart';
+import '../../core/home/user_custom_home_builder.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/listing/widgets.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/routes.dart';
+import '../../core/posts/post/tags.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/shares/providers.dart';
+import '../../core/posts/shares/widgets.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/posts/statistics/stats.dart';
+import '../../core/posts/statistics/widgets.dart';
+import '../../core/settings/settings.dart';
+import '../../core/tags/metatag/providers.dart';
+import '../../core/tags/tag/routes.dart';
+import '../../core/tags/tag/tag.dart';
+import 'artists/artist/widgets.dart';
+import 'artists/search/src/artist_search_page.dart';
+import 'autocompletes/providers.dart';
+import 'autocompletes/widgets.dart';
+import 'blacklist/providers.dart';
+import 'comments/listing/widgets.dart';
+import 'configs/widgets.dart';
+import 'forums/topics/src/forum_page.dart';
+import 'home/widgets.dart';
+import 'notes/providers.dart';
+import 'posts/count/providers.dart';
+import 'posts/details/widgets.dart';
+import 'posts/explores/src/pages/danbooru_explore_page.dart';
+import 'posts/favgroups/listing/widgets.dart';
+import 'posts/favorites/providers.dart';
+import 'posts/favorites/widgets.dart';
+import 'posts/listing/providers.dart';
+import 'posts/listing/widgets.dart';
+import 'posts/pools/listing/widgets.dart';
+import 'posts/post/post.dart';
+import 'posts/post/providers.dart';
+import 'posts/search/widgets.dart';
+import 'posts/statistics/widgets.dart';
+import 'posts/votes/providers.dart';
+import 'saved_searches/feed/widgets.dart';
+import 'tags/details/widgets.dart';
+import 'tags/tag/providers.dart';
+import 'tags/tag/routes.dart';
 
 const kDanbooruSafeUrl = 'https://safebooru.donmai.us/';
-
-String getDanbooruProfileUrl(String url) =>
-    url.endsWith('/') ? '${url}profile' : '$url/profile';
 
 const kDanbooruPostSamples = [
   {
@@ -82,17 +117,12 @@ const kDanbooruPostSamples = [
 ];
 
 class DanbooruBuilder
-    with DefaultTagColorMixin, NewGranularRatingOptionsBuilderMixin
+    with
+        DefaultTagColorMixin,
+        DefaultTagColorsMixin,
+        NewGranularRatingOptionsBuilderMixin
     implements BooruBuilder {
-  DanbooruBuilder({
-    required this.favoriteRepo,
-    required this.postCountRepo,
-    required this.tagInfo,
-  });
-
-  final FavoritePostRepository favoriteRepo;
-  final PostCountRepository postCountRepo;
-  final TagInfo tagInfo;
+  DanbooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -114,8 +144,7 @@ class DanbooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => DanbooruHomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const DanbooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -133,67 +162,33 @@ class DanbooruBuilder
           );
 
   @override
-  FavoriteAdder? get favoriteAdder =>
-      (postId, ref) => ref.danbooruFavorites.add(postId).then((_) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover =>
-      (postId, ref) => ref.danbooruFavorites.remove(postId).then((_) => true);
-
-  @override
-  PostCountFetcher? get postCountFetcher => (config, tags, tagComposer) =>
-      postCountRepo.count(tagComposer.compose(tags));
-
-  @override
   SearchPageBuilder get searchPageBuilder =>
       (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) {
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as DanbooruPost).toList();
 
-        return PostDetailsLayoutSwitcher<DanbooruPost>(
+        return PostDetailsScope<DanbooruPost>(
           initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
-          desktop: (controller) => DanbooruPostDetailsDesktopPage(
-            initialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-          ),
-          mobile: (controller) => DanbooruPostDetailsPage(
-            intitialIndex: controller.currentPage.value,
-            posts: posts,
-            onExit: (page) => controller.onExit(page),
-            onPageChanged: (page) => controller.setPage(page),
-            controller: controller,
-          ),
+          child: const DanbooruPostDetailsPage(),
         );
       };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.login != null
-          ? DanbooruFavoritesPage(username: config.login!)
-          : Scaffold(
-              appBar: AppBar(
-                title: const Text('Favorites'),
-              ),
-              body: const Center(
-                child: Text('You must be logged in to view your favorites'),
-              ),
-            );
+      (context) => const DanbooruFavoritesPage();
 
   @override
-  ArtistPageBuilder? get artistPageBuilder => (context, artistName) =>
-      DanbooruArtistPage(artistName: artistName, backgroundImageUrl: '');
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => DanbooruArtistPage(artistName: artistName);
 
   @override
-  CharacterPageBuilder? get characterPageBuilder =>
-      (context, characterName) => DanbooruCharacterPage(
-          characterName: characterName, backgroundImageUrl: '');
+  CharacterPageBuilder? get characterPageBuilder => (context, characterName) =>
+      DanbooruCharacterPage(characterName: characterName);
 
   @override
   GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
@@ -222,7 +217,7 @@ class DanbooruBuilder
             onToggleBookmark: () => ref.toggleBookmark(post),
             onViewTags: () => castOrNull<DanbooruPost>(post).toOption().fold(
                   () => goToShowTaglistPage(
-                    ref,
+                    ref.context,
                     post.extractTags(),
                   ),
                   (post) => goToDanbooruShowTaglistPage(
@@ -235,7 +230,7 @@ class DanbooruBuilder
               (source) => launchExternalUrlString(source.url),
               () => false,
             ),
-            onToggleFavorite: () => ref.danbooruToggleFavorite(post.id),
+            onToggleFavorite: () => ref.toggleFavorite(post.id),
             onUpvote: () => ref.danbooruUpvote(post.id),
             onDownvote: () => ref.danbooruDownvote(post.id),
             onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
@@ -311,28 +306,29 @@ class DanbooruBuilder
 
   @override
   GranularRatingFilterer? get granularRatingFilterer =>
-      (post, config) => switch (config.ratingFilter) {
+      (post, config) => switch (config.filter.ratingFilter) {
             BooruConfigRatingFilter.none => false,
             BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
             BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
             BooruConfigRatingFilter.custom =>
-              config.granularRatingFiltersWithoutUnknown.toOption().fold(
+              config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
                     () => false,
                     (ratings) => ratings.contains(post.rating),
                   ),
           };
 
   @override
-  HomeViewBuilder get homeViewBuilder => (context, config, controller) {
-        return LatestView(
-          controller: controller,
+  HomeViewBuilder get homeViewBuilder => (context) {
+        return const UserCustomHomeBuilder(
+          defaultView: LatestView(),
         );
       };
 
   @override
-  late final MetatagExtractor metatagExtractor = MetatagExtractor(
-    metatags: tagInfo.metatags,
-  );
+  MetatagExtractorBuilder get metatagExtractorBuilder =>
+      (tagInfo) => DefaultMetatagExtractor(
+            metatags: tagInfo.metatags,
+          );
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
@@ -353,6 +349,77 @@ class DanbooruBuilder
             ? DanbooruMultiSelectionActions(controller: controller)
             : DefaultMultiSelectionActions(controller: controller);
       };
+
+  @override
+  final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders = {
+    ...kDefaultAltHomeView,
+    const CustomHomeViewKey('explore'): CustomHomeDataBuilder(
+      displayName: 'explore.explore',
+      builder: (context, _) => const DanbooruExplorePage(),
+    ),
+    const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+      displayName: 'profile.favorites',
+      builder: (context, _) => const DanbooruFavoritesPage(),
+    ),
+    const CustomHomeViewKey('artists'): CustomHomeDataBuilder(
+      displayName: 'Artists',
+      builder: (context, _) => const DanbooruArtistSearchPage(),
+    ),
+    const CustomHomeViewKey('forum'): CustomHomeDataBuilder(
+      displayName: 'forum.forum',
+      builder: (context, _) => const DanbooruForumPage(),
+    ),
+    const CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
+      displayName: 'favorite_groups.favorite_groups',
+      builder: (context, _) => const FavoriteGroupsPage(),
+    ),
+    const CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
+      displayName: 'saved_search.saved_search',
+      builder: (context, _) => const SavedSearchFeedPage(),
+    ),
+    const CustomHomeViewKey('pools'): CustomHomeDataBuilder(
+      displayName: 'Pools',
+      builder: (context, _) => const DanbooruPoolPage(),
+    ),
+  };
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    previewAllowedParts: {
+      DetailsPart.tags,
+    },
+    preview: {
+      DetailsPart.info: (context) => const DanbooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const DanbooruInheritedPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.info: (context) => const DanbooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const DanbooruInheritedPostActionToolbar(),
+      DetailsPart.artistInfo: (context) => const DanbooruArtistInfoSection(),
+      DetailsPart.stats: (context) => const DanbooruStatsSection(),
+      DetailsPart.tags: (context) => const DanbooruTagsSection(),
+      DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
+      DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
+      DetailsPart.pool: (context) => const DanbooruPoolTiles(),
+      DetailsPart.relatedPosts: (context) =>
+          const DanbooruRelatedPostsSection2(),
+      DetailsPart.characterList: (context) =>
+          const DanbooruCharacterListSection(),
+    },
+  );
+
+  @override
+  TagSuggestionItemBuilder get tagSuggestionItemBuilder =>
+      (config, tag, dense, currentQuery, onItemTap) =>
+          DanbooruTagSuggestionItem(
+            config: config,
+            tag: tag,
+            dense: dense,
+            currentQuery: currentQuery,
+            onItemTap: onItemTap,
+          );
 }
 
 bool handleDanbooruGestureAction(
@@ -371,16 +438,12 @@ bool handleDanbooruGestureAction(
   switch (action) {
     case kToggleFavoriteAction:
       onToggleFavorite?.call();
-      break;
     case kUpvoteAction:
       onUpvote?.call();
-      break;
     case kDownvoteAction:
       onDownvote?.call();
-      break;
     case kEditAction:
       onEdit?.call();
-      break;
     default:
       return handleDefaultGestureAction(
         action,
@@ -396,110 +459,70 @@ bool handleDanbooruGestureAction(
   return true;
 }
 
-extension DanbooruX on WidgetRef {
-  void danbooruToggleFavorite(int postId) {
-    _guardLogin(() async {
-      final isFaved = read(danbooruFavoriteProvider(postId));
-      if (isFaved) {
-        await danbooruFavorites.remove(postId);
-        if (context.mounted) {
-          _showSuccessSnackBar(
-            context,
-            'Removed from favorites',
-          );
-        }
-      } else {
-        await danbooruFavorites.add(postId);
-        if (context.mounted) {
-          _showSuccessSnackBar(
-            context,
-            'Added to favorites',
-          );
-        }
-      }
-    });
+class DanbooruRepository implements BooruRepository {
+  const DanbooruRepository({
+    required this.ref,
+    required this.booru,
+  });
+
+  final Booru booru;
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return ref.read(danbooruPostCountRepoProvider(config));
   }
 
-  void danbooruRemoveVote(int postId) {
-    _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfig).notifier)
-          .removeVote(postId);
-
-      if (context.mounted) {
-        _showSuccessSnackBar(
-          context,
-          'Vote removed',
-        );
-      }
-    });
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(danbooruPostRepoProvider(config));
   }
 
-  void danbooruUpvote(int postId) {
-    _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfig).notifier).upvote(postId);
-
-      if (context.mounted) {
-        _showSuccessSnackBar(
-          context,
-          'Upvoted',
-        );
-      }
-    });
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(danbooruAutocompleteRepoProvider(config));
   }
 
-  void danbooruDownvote(int postId) {
-    _guardLogin(() async {
-      await read(danbooruPostVotesProvider(readConfig).notifier)
-          .downvote(postId);
-
-      if (context.mounted) {
-        _showSuccessSnackBar(
-          context,
-          'Downvoted',
-        );
-      }
-    });
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(danbooruNoteRepoProvider(config));
   }
 
-  void danbooruEdit(DanbooruPost post) {
-    _guardLogin(() {
-      goToTagEditPage(
-        context,
-        post: post,
-      );
-    });
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(danbooruTagRepoProvider(config));
   }
 
-  void _showSuccessSnackBar(
-    BuildContext context,
-    String message, {
-    Color? backgroundColor,
-  }) {
-    showSuccessToast(
-      context,
-      message,
-      backgroundColor: backgroundColor,
-      duration: AppDurations.shortToast,
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return DanbooruFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return DanbooruBlacklistTagRepository(
+      ref,
+      config,
+      booru: booru,
     );
   }
 
-  void _guardLogin(void Function() action) {
-    guardLogin(this, action);
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => DanbooruClient(
+          baseUrl: config.url,
+          dio: dio,
+          login: config.login,
+          apiKey: config.apiKey,
+        ).getPosts().then((value) => true);
   }
-}
-
-void guardLogin(WidgetRef ref, void Function() action) {
-  if (!ref.readConfig.hasLoginDetails()) {
-    showSimpleSnackBar(
-      context: ref.context,
-      content: const Text(
-        'post.detail.login_required_notice',
-      ).tr(),
-      duration: AppDurations.shortToast,
-    );
-
-    return;
-  }
-
-  action();
 }

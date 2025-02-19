@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create/create.dart';
+import '../../core/configs/create.dart';
 
 class CreateSzurubooruConfigPage extends ConsumerWidget {
   const CreateSzurubooruConfigPage({
@@ -20,7 +20,9 @@ class CreateSzurubooruConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruConfigScaffold(
-      hasRatingFilter: true,
+      searchTab: const DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const SzurubooruAuthConfigView(),

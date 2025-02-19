@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/functional.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/listing/widgets.dart';
+import '../../../core/posts/post/post.dart';
 import '../feats/posts/posts.dart';
 import 'widgets/period_toggle_switch.dart';
 
@@ -27,7 +27,7 @@ class _MoebooruPopularPageState
   final selectedPeriod = ValueNotifier(MoebooruTimePeriod.day);
 
   MoebooruPopularRepository get repo =>
-      ref.read(moebooruPopularRepoProvider(ref.readConfig));
+      ref.read(moebooruPopularRepoProvider(ref.readConfigAuth));
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class _MoebooruPopularPageState
       fetcher: (page) => page > 1
           ? TaskEither.of(<Post>[].toResult())
           : repo.getPopularPostsRecent(selectedPeriod.value),
-      builder: (context, controller, errors) => Column(
+      builder: (context, controller) => Column(
         children: [
           PeriodToggleSwitch(
             onToggle: (period) {
@@ -45,8 +45,7 @@ class _MoebooruPopularPageState
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: InfinitePostListScaffold(
-              errors: errors,
+            child: PostGrid(
               controller: controller,
             ),
           ),

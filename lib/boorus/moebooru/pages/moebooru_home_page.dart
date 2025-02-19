@@ -1,29 +1,27 @@
 // Flutter imports:
-import 'package:boorusama/boorus/booru_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/boorus/engine/providers.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/home/home_navigation_tile.dart';
+import '../../../core/home/home_page_scaffold.dart';
+import '../../../core/home/side_menu_tile.dart';
+import '../../../core/posts/favorites/routes.dart';
+import '../../../core/widgets/widgets.dart';
 import 'moebooru_popular_page.dart';
 import 'moebooru_popular_recent_page.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
   const MoebooruHomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<MoebooruHomePage> createState() => _MoebooruHomePageState();
@@ -32,8 +30,9 @@ class MoebooruHomePage extends ConsumerStatefulWidget {
 class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
     final favoritesPageBuilder =
-        ref.watchBooruBuilder(ref.watchConfig)?.favoritesPageBuilder;
+        ref.watchBooruBuilder(config)?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
@@ -43,7 +42,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             fill: 1,
           ),
           title: const Text('Popular'),
-          onTap: () => context.navigator.push(
+          onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
@@ -63,7 +62,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             fill: 1,
           ),
           title: const Text('Hot'),
-          onTap: () => context.navigator.push(
+          onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               settings: const RouteSettings(name: 'hot'),
               builder: (_) => Scaffold(
@@ -77,7 +76,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             ),
           ),
         ),
-        if (widget.config.hasLoginDetails()) ...[
+        if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -105,7 +104,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
-        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails())
+        if (favoritesPageBuilder != null && config.hasLoginDetails())
           HomeNavigationTile(
             value: 3,
             constraints: constraints,
@@ -115,10 +114,10 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           ),
       ],
       desktopViews: [
-        MoebooruPopularPage(),
-        MoebooruPopularRecentPage(),
-        if (favoritesPageBuilder != null && ref.watchConfig.hasLoginDetails())
-          favoritesPageBuilder(context, ref.watchConfig),
+        const MoebooruPopularPage(),
+        const MoebooruPopularRecentPage(),
+        if (favoritesPageBuilder != null && config.hasLoginDetails())
+          favoritesPageBuilder(context),
       ],
     );
   }

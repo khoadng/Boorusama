@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:foundation/widgets.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/gelbooru_v2/artists/artists.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/gelbooru_v2/posts/posts_v2.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/functional.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/routes.dart';
+import '../../../core/posts/details_parts/widgets.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/search/search/routes.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../artists/artists.dart';
+import '../gelbooru_v2.dart';
+import 'posts_v2.dart';
 
 final gelbooruV2PostDetailsArtistMapProvider = StateProvider.autoDispose(
   (ref) => <int, List<String>>{},
@@ -24,127 +27,111 @@ final gelbooruV2PostDetailsCharacterMapProvider = StateProvider.autoDispose(
   (ref) => <int, Set<String>>{},
 );
 
-class GelbooruV2PostDetailsPage extends ConsumerStatefulWidget {
-  const GelbooruV2PostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
-  });
-
-  final int initialIndex;
-  final List<GelbooruV2Post> posts;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
-
+class GelbooruV2FileDetailsSection extends ConsumerWidget {
+  const GelbooruV2FileDetailsSection({super.key});
   @override
-  ConsumerState<GelbooruV2PostDetailsPage> createState() =>
-      _PostDetailPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
 
-class _PostDetailPageState extends ConsumerState<GelbooruV2PostDetailsPage> {
-  List<GelbooruV2Post> get posts => widget.posts;
-
-  @override
-  Widget build(BuildContext context) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: widget.initialIndex,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
-      toolbar: ValueListenableBuilder(
-        valueListenable: widget.controller.currentPost,
-        builder: (_, post, __) => SimplePostActionToolbar(post: post),
-      ),
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
         post: post,
         uploaderName: post.uploaderName,
       ),
-      sliverRelatedPostsBuilder: (context, post) => post.hasParent
-          ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
-                data: (data) => RelatedPostsSection(
-                  title: 'Child posts',
-                  posts: data,
-                  imageUrl: (post) => post.sampleImageUrl,
-                  onViewAll: () => goToSearchPage(
-                    context,
-                    tag: post.relationshipQuery,
-                  ),
-                  onTap: (index) => goToPostDetailsPage(
-                    context: context,
-                    posts: data,
-                    initialIndex: index,
-                  ),
+    );
+  }
+}
+
+class GelbooruV2RelatedPostsSection extends ConsumerWidget {
+  const GelbooruV2RelatedPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return post.hasParent
+        ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
+              data: (data) => SliverRelatedPostsSection(
+                title: 'Child posts',
+                posts: data,
+                imageUrl: (post) => post.sampleImageUrl,
+                onViewAll: () => goToSearchPage(
+                  context,
+                  tag: post.relationshipQuery,
                 ),
-                orElse: () => const SliverSizedBox.shrink(),
-              )
-          : const SliverSizedBox.shrink(),
-      sliverArtistPostsBuilder: (context, post) => ref
+                onTap: (index) => goToPostDetailsPageFromPosts(
+                  context: context,
+                  posts: data,
+                  initialIndex: index,
+                  initialThumbnailUrl: data[index].sampleImageUrl,
+                ),
+              ),
+              orElse: () => const SliverSizedBox.shrink(),
+            )
+        : const SliverSizedBox.shrink();
+  }
+}
+
+class GelbooruV2CharacterPostsSection extends ConsumerWidget {
+  const GelbooruV2CharacterPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return ref
+        .watch(gelbooruV2PostDetailsCharacterMapProvider)
+        .lookup(post.id)
+        .fold(
+          () => const SliverSizedBox.shrink(),
+          (tags) => tags.isNotEmpty
+              ? SliverCharacterPostList(
+                  tags: tags,
+                )
+              : const SliverSizedBox.shrink(),
+        );
+  }
+}
+
+class GelbooruV2ArtistPostsSection extends ConsumerWidget {
+  const GelbooruV2ArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return MultiSliver(
+      children: ref
           .watch(gelbooruV2PostDetailsArtistMapProvider)
           .lookup(post.id)
           .fold(
             () => [],
             (tags) => tags.isNotEmpty
                 ? tags
-                    .map((tag) => ArtistPostList(
-                          tag: tag,
-                          builder: (tag) => ref
-                              .watch(gelbooruV2ArtistPostsProvider(tag))
-                              .maybeWhen(
-                                data: (data) => SliverPreviewPostGrid(
+                    .map(
+                      (tag) => SliverArtistPostList(
+                        tag: tag,
+                        child: ref
+                            .watch(gelbooruV2ArtistPostsProvider(tag))
+                            .maybeWhen(
+                              data: (data) => SliverPreviewPostGrid(
+                                posts: data,
+                                onTap: (postIdx) =>
+                                    goToPostDetailsPageFromPosts(
+                                  context: context,
                                   posts: data,
-                                  onTap: (postIdx) => goToPostDetailsPage(
-                                    context: context,
-                                    posts: data,
-                                    initialIndex: postIdx,
-                                  ),
-                                  imageUrl: (item) => item.sampleImageUrl,
+                                  initialIndex: postIdx,
+                                  initialThumbnailUrl:
+                                      data[postIdx].sampleImageUrl,
                                 ),
-                                orElse: () =>
-                                    const SliverPreviewPostGridPlaceholder(),
+                                imageUrl: (item) => item.sampleImageUrl,
                               ),
-                        ))
+                              orElse: () =>
+                                  const SliverPreviewPostGridPlaceholder(),
+                            ),
+                      ),
+                    )
                     .toList()
                 : [],
           ),
-      sliverCharacterPostsBuilder: (context, post) => ref
-          .watch(gelbooruV2PostDetailsCharacterMapProvider)
-          .lookup(post.id)
-          .fold(
-            () => const SliverSizedBox.shrink(),
-            (tags) => tags.isNotEmpty
-                ? CharacterPostList(
-                    tags: tags,
-                  )
-                : const SliverSizedBox.shrink(),
-          ),
-      tagListBuilder: (context, post) => GelbooruV2TagsTile(
-        post: post,
-        onTagsLoaded: (tags) => _setTags(post, tags),
-      ),
     );
-  }
-
-  void _setTags(
-    GelbooruV2Post post,
-    List<TagGroupItem> tags,
-  ) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (!mounted) return;
-      ref.setGelbooruPostDetailsArtistMap(
-        post: post,
-        tags: tags,
-      );
-
-      ref.setGelbooruPostDetailsCharacterMap(
-        post: post,
-        tags: tags,
-      );
-    });
   }
 }
 
@@ -188,12 +175,7 @@ extension GelbooruV2ArtistMapProviderX on WidgetRef {
 class GelbooruV2TagsTile extends ConsumerStatefulWidget {
   const GelbooruV2TagsTile({
     super.key,
-    required this.post,
-    this.onTagsLoaded,
   });
-
-  final Post post;
-  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
 
   @override
   ConsumerState<GelbooruV2TagsTile> createState() => _GelbooruV2TagsTileState();
@@ -205,20 +187,32 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
     if (expanded) {
-      ref.listen(gelbooruV2TagsFromIdProvider(widget.post.id),
-          (previous, next) {
+      ref.listen(gelbooruV2TagsFromIdProvider(post.id), (previous, next) {
         next.when(
           data: (data) {
             if (!mounted) return;
 
             if (data.isNotEmpty) {
-              if (widget.onTagsLoaded != null) {
-                widget.onTagsLoaded!(createTagGroupItems(data));
-              }
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                if (!mounted) return;
+                final groups = createTagGroupItems(data);
+
+                ref
+                  ..setGelbooruPostDetailsArtistMap(
+                    post: post,
+                    tags: groups,
+                  )
+                  ..setGelbooruPostDetailsCharacterMap(
+                    post: post,
+                    tags: groups,
+                  );
+              });
             }
 
-            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+            if (data.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');
             }
@@ -232,27 +226,27 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
       });
     }
 
-    return error == null
-        ? TagsTile(
-            tags: expanded
-                ? ref
-                    .watch(gelbooruV2TagsFromIdProvider(widget.post.id))
-                    .maybeWhen(
-                      data: (data) => createTagGroupItems(data),
-                      orElse: () => null,
-                    )
-                : null,
-            post: widget.post,
-            onExpand: () => setState(() => expanded = true),
-            onCollapse: () {
-              // Don't set expanded to false to prevent rebuilding the tags list
-              setState(() => error = null);
-            },
-            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-          )
-        : BasicTagList(
-            tags: widget.post.tags.toList(),
-            onTap: (tag) => goToSearchPage(context, tag: tag),
-          );
+    return SliverToBoxAdapter(
+      child: error == null
+          ? TagsTile(
+              tags: expanded
+                  ? ref.watch(gelbooruV2TagsFromIdProvider(post.id)).maybeWhen(
+                        data: (data) => createTagGroupItems(data),
+                        orElse: () => null,
+                      )
+                  : null,
+              post: post,
+              onExpand: () => setState(() => expanded = true),
+              onCollapse: () {
+                // Don't set expanded to false to prevent rebuilding the tags list
+                setState(() => error = null);
+              },
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+            )
+          : BasicTagList(
+              tags: post.tags.toList(),
+              onTap: (tag) => goToSearchPage(context, tag: tag),
+            ),
+    );
   }
 }

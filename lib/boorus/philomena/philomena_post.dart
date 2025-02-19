@@ -3,21 +3,15 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
 
 class PhilomenaPost extends Equatable
-    with
-        MediaInfoMixin,
-        TranslatedMixin,
-        ImageInfoMixin,
-        VideoInfoMixin,
-        TagListCheckMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements Post {
   PhilomenaPost({
     required this.id,
-    this.createdAt,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
@@ -25,7 +19,6 @@ class PhilomenaPost extends Equatable
     required this.rating,
     required this.isTranslated,
     required this.hasParentOrChildren,
-    this.parentId,
     required this.source,
     required this.score,
     required this.duration,
@@ -45,6 +38,8 @@ class PhilomenaPost extends Equatable
     required this.representation,
     required this.uploaderId,
     required this.metadata,
+    this.createdAt,
+    this.parentId,
   });
 
   @override
@@ -134,7 +129,6 @@ Set<String>? _findArtistFromTags(Set<String> tags) {
 }
 
 class PhilomenaRepresentation extends Equatable {
-
   const PhilomenaRepresentation({
     required this.full,
     required this.large,

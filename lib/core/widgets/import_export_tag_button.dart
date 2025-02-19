@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../foundation/clipboard.dart';
+import '../foundation/display.dart';
+import 'booru_popup_menu_button.dart';
 import 'import_tag_dialog.dart';
 
 const _kHint =
@@ -16,9 +16,9 @@ const _kHint =
 
 class ImportExportTagButton extends ConsumerWidget {
   const ImportExportTagButton({
-    super.key,
     required this.tags,
     required this.onImport,
+    super.key,
   });
 
   final List<String> tags;

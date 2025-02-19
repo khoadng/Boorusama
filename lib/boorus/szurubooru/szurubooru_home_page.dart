@@ -2,25 +2,27 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
+import '../../core/configs/ref.dart';
+import '../../core/home/home_navigation_tile.dart';
+import '../../core/home/home_page_scaffold.dart';
+import '../../core/home/side_menu_tile.dart';
+import '../../core/posts/favorites/routes.dart';
 import 'szurubooru.dart';
 
-class SzurubooruHomePage extends StatelessWidget {
+class SzurubooruHomePage extends ConsumerWidget {
   const SzurubooruHomePage({
     super.key,
-    required this.config,
   });
 
-  final BooruConfig config;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
     return HomePageScaffold(
       mobileMenu: [
         if (config.hasLoginDetails()) ...[
@@ -29,7 +31,7 @@ class SzurubooruHomePage extends StatelessWidget {
             title: Text('profile.favorites'.tr()),
             onTap: () => goToFavoritesPage(context),
           ),
-        ]
+        ],
       ],
       desktopMenuBuilder: (context, constraints) => [
         if (config.hasLoginDetails()) ...[
@@ -44,7 +46,7 @@ class SzurubooruHomePage extends StatelessWidget {
       ],
       desktopViews: [
         if (config.hasLoginDetails()) ...[
-          SzurubooruFavoritesPage(username: config.name),
+          const SzurubooruFavoritesPage(),
         ],
       ],
     );

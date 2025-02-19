@@ -6,14 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/foundation/clipboard.dart';
-import 'package:boorusama/foundation/theme.dart';
+import '../../../core/configs/create.dart';
+import '../../../core/foundation/clipboard.dart';
 
 class GelbooruApiKeyField extends ConsumerWidget {
   const GelbooruApiKeyField({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -30,8 +29,8 @@ class GelbooruApiKeyField extends ConsumerWidget {
 
 class GelbooruLoginField extends ConsumerWidget {
   const GelbooruLoginField({
-    super.key,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;
@@ -49,9 +48,9 @@ class GelbooruLoginField extends ConsumerWidget {
 
 class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
   const GelbooruConfigPasteFromClipboardButton({
-    super.key,
     required this.login,
     required this.apiKey,
+    super.key,
   });
 
   final TextEditingController login;
@@ -61,7 +60,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return FilledButton.icon(
       style: FilledButton.styleFrom(
-        backgroundColor: context.colorScheme.secondaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       ),
       onPressed: () => AppClipboard.paste('text/plain').then(
         (value) {
@@ -75,12 +74,12 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
       ),
       icon: Icon(
         Symbols.content_paste,
-        color: context.colorScheme.onSecondaryContainer,
+        color: Theme.of(context).colorScheme.onSecondaryContainer,
       ),
       label: Text(
         'Paste from clipboard',
         style: TextStyle(
-          color: context.colorScheme.onSecondaryContainer,
+          color: Theme.of(context).colorScheme.onSecondaryContainer,
         ),
       ),
     );
@@ -89,7 +88,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
 
 (String uid, String key) extractValues(String? input) {
   if (input == null) return ('', '');
-  final Map<String, String> values = {};
+  final values = <String, String>{};
   final exp = RegExp(r'&(\w+)=(\w+)');
 
   final matches = exp.allMatches(input);

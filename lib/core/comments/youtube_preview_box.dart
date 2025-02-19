@@ -9,14 +9,12 @@ import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/images/images.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../foundation/url_launcher.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
-    super.key,
     required this.uri,
+    super.key,
   });
 
   final Uri uri;
@@ -24,8 +22,9 @@ class YoutubePreviewBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
+      final dio = Dio();
       return FutureBuilder<PreviewUrlData>(
-        future: Dio()
+        future: dio
             .getUri(uri)
             .then((value) => value.data)
             .then((value) => parseHtmlAsync(value, uri.toString())),
@@ -41,13 +40,15 @@ class YoutubePreviewBox extends StatelessWidget {
                   children: [
                     Text(
                       data.siteName,
-                      style: context.textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     TextButton(
                       onPressed: () => launchExternalUrl(uri),
                       child: Text(
                         data.title,
-                        style: context.textTheme.titleMedium!
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
                             .copyWith(color: Colors.blue),
                       ),
                     ),
@@ -62,8 +63,8 @@ class YoutubePreviewBox extends StatelessWidget {
                                   const BorderRadius.all(Radius.circular(8)),
                               child: ExtendedImage.network(
                                 data.previewImage!,
+                                dio: dio,
                                 fit: BoxFit.contain,
-                                cacheMaxAge: kDefaultImageCacheDuration,
                               ),
                             ),
                             if (data.isVideo)
@@ -124,12 +125,13 @@ PreviewUrlData parseHtml(String text) {
   final html = parse(text);
   final metas = html.getElementsByTagName('meta');
 
-  final props = metas
-      .where((e) => e.attributes['property']?.isNotEmpty ?? false)
-      .map((e) => _MetaElement(
-            e.attributes['property']!,
-            e.attributes['content'] ?? '',
-          ));
+  final props =
+      metas.where((e) => e.attributes['property']?.isNotEmpty ?? false).map(
+            (e) => _MetaElement(
+              e.attributes['property']!,
+              e.attributes['content'] ?? '',
+            ),
+          );
 
   final propMap = {for (final p in props) p.property: p.content};
 

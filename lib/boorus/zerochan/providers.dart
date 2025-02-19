@@ -1,21 +1,27 @@
 // Package imports:
+import 'package:booru_clients/zerochan.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/zerochan/types/types.dart';
-import 'package:boorusama/clients/zerochan/zerochan_client.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/path.dart' as path;
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/ref.dart';
+import '../../core/foundation/loggers.dart';
+import '../../core/foundation/path.dart' as path;
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/tag.dart';
 import 'zerochan_post.dart';
 
 final zerochanClientProvider =
-    Provider.family<ZerochanClient, BooruConfig>((ref, config) {
-  final dio = newDio(ref.watch(dioArgsProvider(config)));
+    Provider.family<ZerochanClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
   final logger = ref.watch(loggerProvider);
 
   return ZerochanClient(
@@ -24,12 +30,13 @@ final zerochanClientProvider =
   );
 });
 
-final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final zerochanPostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(zerochanClientProvider(config));
+    final client = ref.watch(zerochanClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -40,35 +47,37 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         return posts
-            .map((e) => ZerochanPost(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: e.thumbnail ?? '',
-                  sampleImageUrl: e.sampleUrl() ?? '',
-                  originalImageUrl: e.fileUrl() ?? '',
-                  tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
-                  rating: Rating.general,
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.from(e.source),
-                  score: 0,
-                  duration: 0,
-                  fileSize: 0,
-                  format: path.extension(e.thumbnail ?? ''),
-                  hasSound: null,
-                  height: e.height?.toDouble() ?? 0,
-                  md5: '',
-                  videoThumbnailUrl: '',
-                  videoUrl: '',
-                  width: e.width?.toDouble() ?? 0,
-                  uploaderId: null,
-                  uploaderName: null,
-                  createdAt: null,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => ZerochanPost(
+                id: e.id ?? 0,
+                thumbnailImageUrl: e.thumbnail ?? '',
+                sampleImageUrl: e.sampleUrl() ?? '',
+                originalImageUrl: e.fileUrl() ?? '',
+                tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
+                rating: Rating.general,
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.from(e.source),
+                score: 0,
+                duration: 0,
+                fileSize: 0,
+                format: path.extension(e.thumbnail ?? ''),
+                hasSound: null,
+                height: e.height?.toDouble() ?? 0,
+                md5: '',
+                videoThumbnailUrl: '',
+                videoUrl: '',
+                width: e.width?.toDouble() ?? 0,
+                uploaderId: null,
+                uploaderName: null,
+                createdAt: null,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -77,7 +86,7 @@ final zerochanPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final zerochanAutoCompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(zerochanClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
@@ -88,16 +97,18 @@ final zerochanAutoCompleteRepoProvider =
       final tags = await client.getAutocomplete(query: query.toLowerCase());
 
       return tags
-          .where((e) =>
-              e.type !=
-              'Meta') // Can't search posts by meta tags for some reason
-          .map((e) => AutocompleteData(
-                label: e.value?.toLowerCase() ?? '',
-                value: e.value?.toLowerCase() ?? '',
-                postCount: e.total,
-                antecedent: e.alias?.toLowerCase().replaceAll(' ', '_'),
-                category: e.type?.toLowerCase().replaceAll(' ', '_') ?? '',
-              ))
+          .where(
+            (e) => e.type != 'Meta',
+          ) // Can't search posts by meta tags for some reason
+          .map(
+            (e) => AutocompleteData(
+              label: e.value?.toLowerCase() ?? '',
+              value: e.value?.toLowerCase() ?? '',
+              postCount: e.total,
+              antecedent: e.alias?.toLowerCase().replaceAll(' ', '_'),
+              category: e.type?.toLowerCase().replaceAll(' ', '_') ?? '',
+            ),
+          )
           .toList();
     },
   );
@@ -106,17 +117,19 @@ final zerochanAutoCompleteRepoProvider =
 final zerochanTagsFromIdProvider =
     FutureProvider.autoDispose.family<List<Tag>, int>(
   (ref, id) async {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     final client = ref.watch(zerochanClientProvider(config));
 
     final data = await client.getTagsFromPostId(postId: id);
 
     return data
         .where((e) => e.value != null)
-        .map((e) => Tag.noCount(
-              name: e.value!.toLowerCase().replaceAll(' ', '_'),
-              category: zerochanStringToTagCategory(e.type),
-            ))
+        .map(
+          (e) => Tag.noCount(
+            name: e.value!.toLowerCase().replaceAll(' ', '_'),
+            category: zerochanStringToTagCategory(e.type),
+          ),
+        )
         .toList();
   },
 );

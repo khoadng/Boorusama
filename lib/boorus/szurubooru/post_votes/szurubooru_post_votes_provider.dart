@@ -1,29 +1,28 @@
 // Package imports:
+import 'package:booru_clients/szurubooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/functional.dart';
-import '../favorites/favorites.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/current.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/votes/providers.dart';
 import '../providers.dart';
 import '../szurubooru_post.dart';
 import 'post_votes.dart';
 
 class SzurubooruPostVotesNotifier
-    extends FamilyNotifier<IMap<int, SzurubooruPostVote?>, BooruConfig>
+    extends FamilyNotifier<IMap<int, SzurubooruPostVote?>, BooruConfigAuth>
     with VotesNotifierMixin<SzurubooruPostVote, SzurubooruPost> {
   @override
-  IMap<int, SzurubooruPostVote?> build(BooruConfig arg) {
+  IMap<int, SzurubooruPostVote?> build(BooruConfigAuth arg) {
     return <int, SzurubooruPostVote?>{}.lock;
   }
 
   void _removeLocalFavorite(int postId) {
-    ref
-        .read(szurubooruFavoritesProvider(arg).notifier)
-        .removeLocalFavorite(postId);
+    ref.read(favoritesProvider(arg).notifier).removeLocalFavorite(postId);
   }
 
   SzurubooruClient get client => ref.read(szurubooruClientProvider(arg));
@@ -72,7 +71,9 @@ class SzurubooruPostVotesNotifier
 }
 
 final szurubooruPostVotesProvider = NotifierProvider.family<
-    SzurubooruPostVotesNotifier, IMap<int, SzurubooruPostVote?>, BooruConfig>(
+    SzurubooruPostVotesNotifier,
+    IMap<int, SzurubooruPostVote?>,
+    BooruConfigAuth>(
   SzurubooruPostVotesNotifier.new,
   dependencies: [
     currentBooruConfigProvider,
@@ -82,7 +83,7 @@ final szurubooruPostVotesProvider = NotifierProvider.family<
 final szurubooruPostVoteProvider =
     Provider.autoDispose.family<SzurubooruPostVote?, int>(
   (ref, postId) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     return ref.watch(szurubooruPostVotesProvider(config))[postId];
   },
 );

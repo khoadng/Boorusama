@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/foundation/crypto.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/create.dart';
+import 'config_hashing.dart';
 
 class MoebooruPasswordField extends ConsumerStatefulWidget {
   const MoebooruPasswordField({
@@ -60,7 +60,7 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
         password = value;
         final hashed = hashBooruPasswordSHA1(
           url: config.url,
-          booru: config.createBooruFrom(booruFactory),
+          booru: config.auth.createBooruFrom(booruFactory),
           password: value,
         );
         ref.editNotifier.updateApiKey(hashed);
@@ -71,19 +71,21 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
 
 class MoebooruHashedPasswordField extends ConsumerWidget {
   const MoebooruHashedPasswordField({
-    super.key,
     required this.passwordController,
+    super.key,
   });
 
   final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hashedPassword = ref.watch(editBooruConfigProvider(
-      ref.watch(editBooruConfigIdProvider),
-    ).select((value) => value.apiKey));
+    final hashedPassword = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.apiKey),
+    );
 
-    return hashedPassword.isNotEmpty == true
+    return hashedPassword.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
@@ -91,15 +93,15 @@ class MoebooruHashedPasswordField extends ConsumerWidget {
                 FaIcon(
                   FontAwesomeIcons.hashtag,
                   size: 16,
-                  color: context.colorScheme.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     hashedPassword,
-                    style: context.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                   ),
                 ),
                 IconButton(

@@ -2,18 +2,13 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
+import '../../../core/settings/settings.dart';
 
 class E621Post extends Equatable
-    with
-        MediaInfoMixin,
-        TranslatedMixin,
-        ImageInfoMixin,
-        VideoInfoMixin,
-        TagListCheckMixin
+    with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
     implements Post {
   E621Post({
     required this.id,
@@ -154,8 +149,7 @@ class E621Post extends Equatable
 extension PostImageX on E621Post {
   bool get hasFullView => originalImageUrl.isNotEmpty && !isVideo;
 
-  String thumbnailFromSettings(ImageListingSettings settings) =>
-      switch (settings.imageQuality) {
+  String thumbnailFromSettings(ImageQuality settings) => switch (settings) {
         ImageQuality.automatic => sampleImageUrl,
         ImageQuality.low => thumbnailImageUrl,
         ImageQuality.high => sampleImageUrl,

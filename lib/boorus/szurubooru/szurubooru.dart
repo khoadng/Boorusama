@@ -2,38 +2,58 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/szurubooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
-import 'package:boorusama/boorus/szurubooru/providers.dart';
-import 'package:boorusama/core/comments/comments.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/comment.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/failsafe.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/foundation/html.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/search/widgets.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../core/widgets/widgets.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
 import 'create_szurubooru_config_page.dart';
+import 'post_votes/szurubooru_post_action_toolbar.dart';
+import 'providers.dart';
 import 'szurubooru_home_page.dart';
+import 'szurubooru_post.dart';
 import 'szurubooru_post_details_page.dart';
 
 class SzurubooruBuilder
     with
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
+        DefaultTagColorsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
@@ -77,55 +97,35 @@ class SzurubooruBuilder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => SzurubooruCommentPage(postId: postId);
+      (context, useAppBar, postId) => SzurubooruCommentPage(
+            postId: postId,
+            useAppBar: useAppBar,
+          );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => SzurubooruFavoritesPage(username: config.name);
-
-  @override
-  FavoriteAdder? get favoriteAdder => (postId, ref) => ref
-      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
-      .add(postId)
-      .then((value) => true);
-
-  @override
-  FavoriteRemover? get favoriteRemover => (postId, ref) => ref
-      .read(szurubooruFavoritesProvider(ref.readConfig).notifier)
-      .remove(postId)
-      .then((value) => true);
+      (context) => const SzurubooruFavoritesPage();
 
   @override
   HomePageBuilder get homePageBuilder =>
-      (context, config) => SzurubooruHomePage(
-            config: config,
-          );
+      (context) => const SzurubooruHomePage();
 
   @override
   SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
       SzurubooruSearchPage(initialQuery: initialQuery);
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => SzurubooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => SzurubooruPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts,
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<SzurubooruPost>(),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
@@ -139,23 +139,96 @@ class SzurubooruBuilder
       'source': (post, config) => post.source.url,
     },
   );
+
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
+      DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
+      DetailsPart.tags: (context) => const SzurubooruTagListSection(),
+      DetailsPart.fileDetails: (context) =>
+          const SzurubooruFileDetailsSection(),
+    },
+  );
+}
+
+class SzurubooruRepository implements BooruRepository {
+  const SzurubooruRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(szurubooruPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(szurubooruAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return SzurubooruFavoriteRepository(ref, config);
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => SzurubooruClient(
+          baseUrl: config.url,
+          dio: dio,
+          username: config.login,
+          token: config.apiKey,
+        ).getPosts().then((value) => true);
+  }
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {
   const SzurubooruSearchPage({
-    super.key,
     required this.initialQuery,
+    super.key,
   });
 
   final String? initialQuery;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final postRepo = ref.watch(szurubooruPostRepoProvider(config));
 
     return SearchPageScaffold(
-      noticeBuilder: (context) => !config.hasLoginDetails()
+      noticeBuilder: (context) => !config.auth.hasLoginDetails()
           ? InfoContainer(
               contentBuilder: (context) => const AppHtml(
                 data:
@@ -172,31 +245,36 @@ class SzurubooruSearchPage extends ConsumerWidget {
 
 class SzurubooruCommentPage extends ConsumerWidget {
   const SzurubooruCommentPage({
-    super.key,
     required this.postId,
+    required this.useAppBar,
+    super.key,
   });
 
   final int postId;
+  final bool useAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final client = ref.watch(szurubooruClientProvider(ref.watchConfig));
+    final client = ref.watch(szurubooruClientProvider(ref.watchConfigAuth));
 
     return CommentPageScaffold(
       postId: postId,
+      useAppBar: useAppBar,
       fetcher: (id) => client.getComments(postId: postId).then(
             (value) => value
-                .map((e) => SimpleComment(
-                      id: e.id ?? 0,
-                      body: e.text ?? '',
-                      createdAt: e.creationTime != null
-                          ? DateTime.parse(e.creationTime!)
-                          : DateTime(1),
-                      updatedAt: e.lastEditTime != null
-                          ? DateTime.parse(e.lastEditTime!)
-                          : DateTime(1),
-                      creatorName: e.user?.name ?? '',
-                    ))
+                .map(
+                  (e) => SimpleComment(
+                    id: e.id ?? 0,
+                    body: e.text ?? '',
+                    createdAt: e.creationTime != null
+                        ? DateTime.parse(e.creationTime!)
+                        : DateTime(1),
+                    updatedAt: e.lastEditTime != null
+                        ? DateTime.parse(e.lastEditTime!)
+                        : DateTime(1),
+                    creatorName: e.user?.name ?? '',
+                  ),
+                )
                 .toList(),
           ),
     );
@@ -204,21 +282,37 @@ class SzurubooruCommentPage extends ConsumerWidget {
 }
 
 class SzurubooruFavoritesPage extends ConsumerWidget {
-  const SzurubooruFavoritesPage({
-    super.key,
+  const SzurubooruFavoritesPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
+    return BooruConfigAuthFailsafe(
+      builder: (_) => SzurubooruFavoritesPageInternal(
+        username: config.login!,
+      ),
+    );
+  }
+}
+
+class SzurubooruFavoritesPageInternal extends ConsumerWidget {
+  const SzurubooruFavoritesPageInternal({
     required this.username,
+    super.key,
   });
 
   final String username;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'fav:${config.login?.replaceAll(' ', '_')}';
+    final config = ref.watchConfigSearch;
+    final query = 'fav:${config.auth.login?.replaceAll(' ', '_')}';
 
     return FavoritesPageScaffold(
-        favQueryBuilder: () => query,
-        fetcher: (page) =>
-            ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page));
+      favQueryBuilder: () => query,
+      fetcher: (page) =>
+          ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page),
+    );
   }
 }

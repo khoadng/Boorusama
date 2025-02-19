@@ -1,45 +1,57 @@
 // Package imports:
+import 'package:booru_clients/moebooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
+import '../../../../core/blacklists/providers.dart';
+import '../../../../core/configs/config.dart';
+import '../../../../core/configs/ref.dart';
+import '../../../../core/foundation/caching.dart';
+import '../../../../core/posts/filter/filter.dart';
+import '../../../../core/posts/post/post.dart';
+import '../../../../core/posts/post/providers.dart';
+import '../../../../core/posts/post/tags.dart';
+import '../../../../core/posts/rating/rating.dart';
+import '../../../../core/posts/sources/source.dart';
+import '../../../../core/search/queries/providers.dart';
+import '../../../../core/settings/providers.dart';
+import '../../moebooru.dart';
+import 'posts.dart';
 
 final moebooruPostRepoProvider =
-    Provider.family<PostRepository<MoebooruPost>, BooruConfig>(
+    Provider.family<PostRepository<MoebooruPost>, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(moebooruClientProvider(config));
+    final client = ref.watch(moebooruClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) => client
           .getPosts(
             page: page,
             tags: tags,
             limit: limit,
           )
-          .then((value) => value
-              .map((e) => postDtoToPost(
+          .then(
+            (value) => value
+                .map(
+                  (e) => postDtoToPost(
                     e,
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
                     ),
-                  ))
-              .toList()
-              .toResult()),
+                  ),
+                )
+                .toList()
+                .toResult(),
+          ),
       getSettings: () async => ref.read(imageListingSettingsProvider),
     );
   },
 );
 
 final moebooruPopularRepoProvider =
-    Provider.family<MoebooruPopularRepository, BooruConfig>(
+    Provider.family<MoebooruPopularRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(moebooruClientProvider(config));
 
@@ -51,7 +63,7 @@ final moebooruPopularRepoProvider =
 );
 
 final moebooruArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository, BooruConfig>(
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
     return PostRepositoryCacher(
       repository: ref.watch(moebooruPostRepoProvider(config)),
@@ -64,7 +76,7 @@ final moebooruPostDetailsChildrenProvider =
     FutureProvider.family.autoDispose<List<Post>?, Post>(
   (ref, post) async {
     if (!post.hasParentOrChildren) return null;
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
     final repo = ref.watch(moebooruPostRepoProvider(config));
 
     final query =
@@ -78,9 +90,10 @@ final moebooruPostDetailsChildrenProvider =
 
 final moebooruPostDetailsArtistProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigSearch;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = await ref.watch(blacklistTagsProvider(config).future);
+  final blacklistedTags =
+      await ref.watch(blacklistTagsProvider(config.auth).future);
 
   final r = await repo.getPostsFromTagsOrEmpty(tag);
 
@@ -92,9 +105,10 @@ final moebooruPostDetailsArtistProvider =
 
 final moebooruPostDetailsCharacterProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigSearch;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = await ref.watch(blacklistTagsProvider(config).future);
+  final blacklistedTags =
+      await ref.watch(blacklistTagsProvider(config.auth).future);
 
   final r = await repo.getPostsFromTagsOrEmpty(tag);
 
@@ -119,7 +133,7 @@ MoebooruPost postDtoToPost(PostDto postDto, PostMetadata? metadata) {
     largeImageUrl: postDto.jpegUrl ?? '',
     sampleImageUrl: postDto.sampleUrl ?? '',
     originalImageUrl: postDto.fileUrl ?? '',
-    tags: postDto.tags != null ? postDto.tags!.split(' ').toSet() : {},
+    tags: postDto.tags.splitTagString(),
     source: PostSource.from(postDto.source),
     rating: mapStringToRating(postDto.rating ?? ''),
     hasComment: false,

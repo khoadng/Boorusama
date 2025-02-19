@@ -1,8 +1,8 @@
 part of 'sankaku.dart';
 
-final sankakuClientProvider = Provider.family<SankakuClient, BooruConfig>(
+final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
     final booruFactory = ref.watch(booruFactoryProvider);
     final booru = booruFactory.create(type: config.booruType);
 
@@ -24,13 +24,13 @@ final sankakuPseudoIdGeneratorProvider = Provider((ref) {
 });
 
 final sankakuPostRepoProvider =
-    Provider.family<PostRepository<SankakuPost>, BooruConfig>(
+    Provider.family<PostRepository<SankakuPost>, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(sankakuClientProvider(config));
+    final client = ref.watch(sankakuClientProvider(config.auth));
     final idGenerator = ref.watch(sankakuPseudoIdGeneratorProvider);
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -45,38 +45,50 @@ final sankakuPostRepoProvider =
               final hasChilren = e.hasChildren ?? false;
               final hasParentOrChildren = hasParent || hasChilren;
               final artistTags = e.tags
-                      ?.where((e) =>
-                          TagCategory.fromLegacyId(e.type) ==
-                          TagCategory.artist())
-                      .map((e) => Tag(
-                            name: e.tagName ?? '????',
-                            category: TagCategory.artist(),
-                            postCount: e.postCount ?? 0,
-                          ))
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.artist(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.artist(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
                       .toList() ??
                   [];
 
               final characterTags = e.tags
-                      ?.where((e) =>
-                          TagCategory.fromLegacyId(e.type) ==
-                          TagCategory.character())
-                      .map((e) => Tag(
-                            name: e.tagName ?? '????',
-                            category: TagCategory.character(),
-                            postCount: e.postCount ?? 0,
-                          ))
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.character(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.character(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
                       .toList() ??
                   [];
 
               final copyrightTags = e.tags
-                      ?.where((e) =>
-                          TagCategory.fromLegacyId(e.type) ==
-                          TagCategory.copyright())
-                      .map((e) => Tag(
-                            name: e.tagName ?? '????',
-                            category: TagCategory.copyright(),
-                            postCount: e.postCount ?? 0,
-                          ))
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.copyright(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.copyright(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
                       .toList() ??
                   [];
               final timestamp = e.createdAt?.s;
@@ -99,8 +111,7 @@ final sankakuPostRepoProvider =
                 thumbnailImageUrl: e.previewUrl ?? '',
                 sampleImageUrl: e.sampleUrl ?? '',
                 originalImageUrl: e.fileUrl ?? '',
-                tags:
-                    e.tags?.map((e) => e.tagName).whereNotNull().toSet() ?? {},
+                tags: e.tags?.map((e) => e.tagName).nonNulls.toSet() ?? {},
                 rating: mapStringToRating(e.rating),
                 hasComment: e.hasComments ?? false,
                 isTranslated: false,
@@ -138,26 +149,30 @@ final sankakuPostRepoProvider =
 );
 
 final sankakuAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = ref.watch(sankakuClientProvider(config));
 
   return AutocompleteRepositoryBuilder(
     persistentStorageKey:
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
-    autocomplete: (query) =>
-        client.getAutocomplete(query: query).then((value) => value
-            .map((e) => AutocompleteData(
+    autocomplete: (query) => client.getAutocomplete(query: query).then(
+          (value) => value
+              .map(
+                (e) => AutocompleteData(
                   label: e.name?.toLowerCase().replaceAll('_', ' ') ?? '???',
                   value: e.tagName ?? '???',
                   postCount: e.count,
                   category: e.type?.toString(),
-                ))
-            .toList()),
+                ),
+              )
+              .toList(),
+        ),
   );
 });
 
 final sankakuArtistPostRepo =
-    Provider.family<PostRepository<SankakuPost>, BooruConfig>((ref, config) {
+    Provider.family<PostRepository<SankakuPost>, BooruConfigSearch>(
+        (ref, config) {
   return PostRepositoryCacher(
     keyBuilder: (tags, page, {limit}) =>
         '${tags.split(' ').join('-')}_${page}_$limit',
@@ -169,10 +184,10 @@ final sankakuArtistPostRepo =
 final sankakuArtistPostsProvider = FutureProvider.autoDispose
     .family<List<SankakuPost>, String?>((ref, artistName) async {
   return ref
-      .watch(sankakuArtistPostRepo(ref.watchConfig))
+      .watch(sankakuArtistPostRepo(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfig).future),
+        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
       );
 });
 

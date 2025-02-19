@@ -1,10 +1,12 @@
 // Package imports:
+import 'package:booru_clients/gelbooru.dart';
+import 'package:foundation/foundation.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/clients/gelbooru/types/types.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/time.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
 import 'gelbooru_post.dart';
 
 GelbooruPost gelbooruPostDtoToGelbooruPostNoMetadata(PostDto dto) =>
@@ -12,11 +14,11 @@ GelbooruPost gelbooruPostDtoToGelbooruPostNoMetadata(PostDto dto) =>
 
 String decodeHtmlEntities(String input) {
   return input
-      .replaceAll("&#039;", "'")
-      .replaceAll("&quot;", '"')
-      .replaceAll("&amp;", "&")
-      .replaceAll("&lt;", "<")
-      .replaceAll("&gt;", ">");
+      .replaceAll('&#039;', "'")
+      .replaceAll('&quot;', '"')
+      .replaceAll('&amp;', '&')
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>');
 }
 
 GelbooruPost gelbooruPostDtoToGelbooruPost(

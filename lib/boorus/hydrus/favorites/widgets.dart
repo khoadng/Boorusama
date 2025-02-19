@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/hydrus/hydrus.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/favorites/favorites.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/favorites/widgets.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import '../hydrus.dart';
 import 'favorites.dart';
 
 class HydrusFavoritesPage extends ConsumerWidget {
@@ -20,9 +20,9 @@ class HydrusFavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
-    return ref.watch(ratingServiceNameProvider(config)).when(
+    return ref.watch(ratingServiceNameProvider(config.auth)).when(
           data: (serviceName) => serviceName == null || serviceName.isEmpty
               ? _buildError()
               : Builder(
@@ -57,17 +57,17 @@ class HydrusFavoritesPage extends ConsumerWidget {
 
 class HydrusFavoritePostButton extends ConsumerWidget {
   const HydrusFavoritePostButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final isFaved = ref.watch(hydrusFavoriteProvider(post.id));
-    final favNotifier = ref.watch(hydrusFavoritesProvider(config).notifier);
+    final config = ref.watchConfigAuth;
+    final isFaved = ref.watch(favoriteProvider(post.id));
+    final favNotifier = ref.watch(favoritesProvider(config).notifier);
 
     return FavoritePostButton(
       isFaved: isFaved,
@@ -80,33 +80,30 @@ class HydrusFavoritePostButton extends ConsumerWidget {
 
 class HydrusQuickFavoriteButton extends ConsumerWidget {
   const HydrusQuickFavoriteButton({
-    super.key,
     required this.post,
+    super.key,
   });
 
   final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watchBooruBuilder(config);
-    final favoriteAdder = booruBuilder?.favoriteAdder;
-    final favoriteRemover = booruBuilder?.favoriteRemover;
+    final config = ref.watchConfigAuth;
+    final notifier = ref.watch(favoritesProvider(config).notifier);
 
     return ref.watch(hydrusCanFavoriteProvider(config)).when(
-          data: (canFavorite) =>
-              canFavorite && favoriteAdder != null && favoriteRemover != null
-                  ? QuickFavoriteButton(
-                      isFaved: ref.watch(hydrusFavoriteProvider(post.id)),
-                      onFavToggle: (isFaved) async {
-                        if (isFaved) {
-                          await favoriteAdder(post.id, ref);
-                        } else {
-                          await favoriteRemover(post.id, ref);
-                        }
-                      },
-                    )
-                  : const SizedBox.shrink(),
+          data: (canFavorite) => canFavorite
+              ? QuickFavoriteButton(
+                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  onFavToggle: (isFaved) async {
+                    if (isFaved) {
+                      await notifier.add(post.id);
+                    } else {
+                      await notifier.remove(post.id);
+                    }
+                  },
+                )
+              : const SizedBox.shrink(),
           loading: () => const SizedBox.shrink(),
           error: (error, _) => const SizedBox.shrink(),
         );

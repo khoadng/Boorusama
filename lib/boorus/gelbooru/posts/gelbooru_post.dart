@@ -2,9 +2,9 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/image.dart';
-import 'package:boorusama/foundation/video.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/posts/rating/rating.dart';
+import '../../../core/posts/sources/source.dart';
 
 class GelbooruPost extends Equatable
     with
@@ -12,8 +12,7 @@ class GelbooruPost extends Equatable
         TranslatedMixin,
         ImageInfoMixin,
         VideoInfoMixin,
-        NoTagDetailsMixin,
-        TagListCheckMixin
+        NoTagDetailsMixin
     implements Post {
   const GelbooruPost({
     required this.format,
@@ -40,7 +39,7 @@ class GelbooruPost extends Equatable
 
   factory GelbooruPost.empty() => GelbooruPost(
         format: '',
-        height: 0.0,
+        height: 0,
         id: 0,
         md5: '',
         originalImageUrl: '',
@@ -49,7 +48,7 @@ class GelbooruPost extends Equatable
         source: PostSource.none(),
         tags: const {},
         thumbnailImageUrl: '',
-        width: 0.0,
+        width: 0,
         hasComment: false,
         hasParentOrChildren: false,
         fileSize: 0,

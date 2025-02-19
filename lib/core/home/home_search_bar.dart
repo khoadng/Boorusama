@@ -5,34 +5,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/app_update/app_update.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
+import '../app_update/providers.dart';
+import '../app_update/types.dart';
+import '../boorus/engine/engine.dart';
+import '../boorus/engine/providers.dart';
+import '../foundation/display.dart';
+import '../foundation/url_launcher.dart';
+import '../search/histories/providers.dart';
+import '../search/search/routes.dart';
+import '../search/search/src/widgets/search_app_bar.dart';
+import '../search/search/widgets.dart';
+import '../search/selected_tags/providers.dart';
+import '../settings/providers.dart';
+import '../tags/configs/providers.dart';
+import '../theme.dart';
+import 'home_page_controller.dart';
 
 class HomeSearchBar extends ConsumerWidget {
   const HomeSearchBar({
     super.key,
-    this.onMenuTap,
-    this.onTap,
   });
-
-  final VoidCallback? onMenuTap;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final homeController = InheritedHomePageController.maybeOf(context);
+
     return BooruSearchBar(
       enabled: false,
       trailing: ref.watch(appUpdateStatusProvider).maybeWhen(
@@ -42,7 +44,7 @@ class HomeSearchBar extends ConsumerWidget {
                   icon: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: context.colorScheme.error,
+                      color: Theme.of(context).colorScheme.error,
                       shape: BoxShape.circle,
                     ),
                     child: const FaIcon(
@@ -56,9 +58,6 @@ class HomeSearchBar extends ConsumerWidget {
                       routeSettings:
                           const RouteSettings(name: 'app_update_notice'),
                       builder: (context) => Dialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -75,7 +74,9 @@ class HomeSearchBar extends ConsumerWidget {
                                   children: [
                                     Text(
                                       'app_update.update_available',
-                                      style: context.textTheme.titleLarge,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
                                     ).tr(),
                                   ],
                                 ),
@@ -91,17 +92,21 @@ class HomeSearchBar extends ConsumerWidget {
                                 children: [
                                   Text(
                                     'app_update.whats_new',
-                                    style:
-                                        context.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ).tr(),
                                 ],
                               ),
                               Flexible(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 4),
+                                    vertical: 8,
+                                    horizontal: 4,
+                                  ),
                                   child: SingleChildScrollView(
                                     child: Row(
                                       children: [
@@ -120,11 +125,12 @@ class HomeSearchBar extends ConsumerWidget {
                                 children: [
                                   TextButton(
                                     style: TextButton.styleFrom(
-                                      foregroundColor:
-                                          context.colorScheme.onSurface,
+                                      foregroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                                     ),
                                     onPressed: () {
-                                      context.navigator.pop();
+                                      Navigator.of(context).pop();
                                     },
                                     child: const Text('app_update.later').tr(),
                                   ),
@@ -132,7 +138,7 @@ class HomeSearchBar extends ConsumerWidget {
                                   FilledButton(
                                     onPressed: () {
                                       launchExternalUrlString(d.storeUrl);
-                                      context.navigator.pop();
+                                      Navigator.of(context).pop();
                                     },
                                     child: const Text('app_update.update').tr(),
                                   ),
@@ -149,14 +155,14 @@ class HomeSearchBar extends ConsumerWidget {
             },
             orElse: () => const SizedBox.shrink(),
           ),
-      leading: onMenuTap != null
-          ? IconButton(
-              splashRadius: 16,
-              icon: const Icon(Symbols.menu),
-              onPressed: onMenuTap,
-            )
-          : null,
-      onTap: onTap,
+      leading: IconButton(
+        splashRadius: 16,
+        icon: const Icon(Symbols.menu),
+        onPressed: () {
+          homeController?.openMenu();
+        },
+      ),
+      onTap: () => goToSearchPage(context),
     );
   }
 }
@@ -175,18 +181,18 @@ class _VersionChangeVisualizedText extends StatelessWidget {
         children: [
           TextSpan(
             text: status.currentVersion,
-            style: context.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: context.theme.hintColor,
-            ),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.hintColor,
+                ),
           ),
           const TextSpan(text: '  ➞  '),
           TextSpan(
             text: status.storeVersion,
-            style: context.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: context.colorScheme.error,
-            ),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.error,
+                ),
           ),
         ],
       ),
@@ -196,24 +202,21 @@ class _VersionChangeVisualizedText extends StatelessWidget {
 
 class SliverHomeSearchBar extends ConsumerWidget {
   const SliverHomeSearchBar({
-    super.key,
-    required this.controller,
-    this.selectedTagString,
     required this.onSearch,
+    super.key,
+    this.selectedTagString,
     this.selectedTagController,
   });
 
-  final HomePageController controller;
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     return SliverHomeSearchBarInternal(
-      controller: controller,
       selectedTagString: selectedTagString,
       onSearch: onSearch,
       selectedTagController: selectedTagController,
@@ -224,15 +227,13 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
 class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
   const SliverHomeSearchBarInternal({
-    super.key,
-    required this.controller,
-    this.selectedTagString,
     required this.onSearch,
-    this.selectedTagController,
     required this.booruBuilder,
+    super.key,
+    this.selectedTagString,
+    this.selectedTagController,
   });
 
-  final HomePageController controller;
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
@@ -245,12 +246,21 @@ class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
 
 class _SliverHomeSearchBarState
     extends ConsumerState<SliverHomeSearchBarInternal> {
-  late final selectedTagController = widget.selectedTagController ??
-      SelectedTagController.fromBooruBuilder(
-        builder: widget.booruBuilder,
-      );
+  late final SelectedTagController selectedTagController;
 
   late final selectedTagString = widget.selectedTagString ?? ValueNotifier('');
+
+  @override
+  void initState() {
+    super.initState();
+    final tagInfo = ref.read(tagInfoProvider);
+
+    selectedTagController = widget.selectedTagController ??
+        SelectedTagController.fromBooruBuilder(
+          builder: widget.booruBuilder,
+          tagInfo: tagInfo,
+        );
+  }
 
   @override
   void dispose() {
@@ -261,64 +271,49 @@ class _SliverHomeSearchBarState
     super.dispose();
   }
 
-  bool get isDesktop => kPreferredLayout.isDesktop;
-
-  bool get isTablet => MediaQuery.sizeOf(context).shortestSide >= 550;
-
-  bool get isMobileLandscape =>
-      kPreferredLayout.isMobile &&
-      MediaQuery.orientationOf(context).isLandscape;
-
   @override
   Widget build(BuildContext context) {
-    if (isDesktop) {
-      return _buildPinned(context);
-    } else if (isMobileLandscape) {
-      return isTablet
-          ? _buildPinned(context)
+    final colorScheme = Theme.of(context).colorScheme;
+    final persistentSearchBar = ref.watch(
+      settingsProvider.select((value) => value.persistSearchBar),
+    );
+
+    if (context.isLargeScreen) {
+      return MediaQuery.sizeOf(context).height >= 550
+          ? SliverPinnedHeader(
+              child: ColoredBox(
+                color: colorScheme.surface,
+                child: _buildDesktop(),
+              ),
+            )
           : SliverToBoxAdapter(
               child: _buildDesktop(),
             );
     } else {
-      final homeSearchBar = HomeSearchBar(
-        onMenuTap: widget.controller.openMenu,
-        onTap: () => goToSearchPage(context),
-      );
       return SliverAppBar(
-        backgroundColor: context.theme.scaffoldBackgroundColor,
+        backgroundColor: colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
         title: LayoutBuilder(
-          builder: (context, constraints) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (constraints.maxWidth < 600)
-                  Expanded(child: homeSearchBar)
-                else
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 500,
-                    ),
-                    child: homeSearchBar,
+          builder: (context, constraints) => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: kSearchAppBarWidth,
                   ),
-              ],
-            );
-          },
+                  child: const HomeSearchBar(),
+                ),
+              ),
+            ],
+          ),
         ),
         floating: true,
         snap: true,
+        pinned: persistentSearchBar,
         automaticallyImplyLeading: false,
       );
     }
-  }
-
-  Widget _buildPinned(BuildContext context) {
-    return SliverPinnedHeader(
-      child: ColoredBox(
-        color: context.colorScheme.surface,
-        child: _buildDesktop(),
-      ),
-    );
   }
 
   Widget _buildDesktop() {

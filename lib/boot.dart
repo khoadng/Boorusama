@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
@@ -6,42 +7,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/users/users.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/blacklists/blacklists.dart';
-import 'package:boorusama/core/bookmarks/bookmarks.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/favorited_tags/favorited_tags.dart';
-import 'package:boorusama/core/search_histories/search_histories.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/analytics.dart';
-import 'package:boorusama/foundation/app_info.dart';
-import 'package:boorusama/foundation/device_info_service.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/loggers/loggers.dart';
-import 'package:boorusama/foundation/mobile.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/package_info.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/tracking.dart';
-import 'app.dart';
-import 'foundation/i18n.dart';
+import 'boorus/providers.dart';
+import 'core/app.dart';
+import 'core/blacklists/src/data/providers.dart';
+import 'core/bookmarks/providers.dart';
+import 'core/boorus/booru/booru.dart';
+import 'core/boorus/booru/providers.dart';
+import 'core/boorus/engine/providers.dart';
+import 'core/cache/providers.dart';
+import 'core/configs/config.dart';
+import 'core/configs/current.dart';
+import 'core/configs/manage.dart';
+import 'core/foundation/loggers.dart';
+import 'core/foundation/mobile.dart';
+import 'core/foundation/path.dart';
+import 'core/foundation/platform.dart';
+import 'core/foundation/windows.dart' as window;
+import 'core/http/http.dart';
+import 'core/http/providers.dart';
+import 'core/info/app_info.dart';
+import 'core/info/device_info.dart';
+import 'core/info/package_info.dart';
+import 'core/settings/providers.dart';
+import 'core/settings/settings.dart';
+import 'core/tags/categories/providers.dart';
+import 'core/tags/configs/providers.dart';
+import 'core/tags/favorites/providers.dart';
+import 'core/utils/file_utils.dart';
+import 'core/widgets/widgets.dart';
 
 Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
   final deviceInfo =
@@ -73,6 +75,10 @@ Future<void> boot(BootLogger bootLogger) async {
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
 
+  if (isDesktopPlatform()) {
+    await window.initialize();
+  }
+
   bootLogger.l("Load database's directory");
   final dbDirectory = isAndroid()
       ? await getApplicationDocumentsDirectory()
@@ -80,26 +86,6 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Initialize Hive');
   Hive.init(dbDirectory.path);
-
-  bootLogger.l('Register search history adapter');
-  Hive.registerAdapter(SearchHistoryHiveObjectAdapter());
-  bootLogger.l('Register bookmark adapter');
-  Hive.registerAdapter(BookmarkHiveObjectAdapter());
-  bootLogger.l('Register favorite tag adapter');
-  Hive.registerAdapter(FavoriteTagHiveObjectAdapter());
-
-  if (isDesktopPlatform()) {
-    bootLogger.l('Initialize window manager');
-    doWhenWindowReady(() {
-      const iPhoneSize = Size(375, 812);
-      const initialSize = Size(1000, 700);
-      const minSize = Size(500, 500);
-      appWindow.minSize = kPreferredLayout.isMobile ? iPhoneSize : minSize;
-      appWindow.size = kPreferredLayout.isMobile ? iPhoneSize : initialSize;
-      appWindow.alignment = Alignment.center;
-      appWindow.show();
-    });
-  }
 
   bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
@@ -111,13 +97,7 @@ Future<void> boot(BootLogger bootLogger) async {
   final booruFactory = BooruFactory.from(boorus);
 
   bootLogger.l('Initialize settings repository');
-  final settingRepository = SettingsRepositoryLoggerInterceptor(
-    SettingsRepositoryHive(
-      Hive.openBox('settings'),
-    ),
-    logger: logger,
-  );
-
+  final settingRepository = await createSettingsRepo(logger: logger);
   bootLogger.l('Set certificate to trusted certificates');
   try {
     // https://stackoverflow.com/questions/69511057/flutter-on-android-7-certificate-verify-failed-with-letsencrypt-ssl-cert-after-s
@@ -130,41 +110,29 @@ Future<void> boot(BootLogger bootLogger) async {
     // ignore errors here, maybe it's already trusted
   }
 
-  Box<String> booruConfigBox;
-  bootLogger.l('Initialize booru config box');
-  if (await Hive.boxExists('booru_configs')) {
-    bootLogger.l('Open booru config box');
-    booruConfigBox = await Hive.openBox<String>('booru_configs');
-  } else {
-    bootLogger.l('Create booru config box');
-    booruConfigBox = await Hive.openBox<String>('booru_configs');
-    bootLogger.l('Add default booru config');
-    final id = await booruConfigBox
-        .add(HiveBooruConfigRepository.defaultValue(booruFactory));
-
-    final settings =
-        await settingRepository.load().run().then((value) => value.fold(
+  final booruUserRepo = await createBooruConfigsRepo(
+    logger: bootLogger,
+    booruFactory: booruFactory,
+    onCreateNew: (id) async {
+      final settings = await settingRepository.load().run().then(
+            (value) => value.fold(
               (l) => Settings.defaultSettings,
               (r) => r,
-            ));
+            ),
+          );
 
-    bootLogger.l('Save default booru config');
-    await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
-  }
-
-  bootLogger.l('Total booru config: ${booruConfigBox.length}');
-
-  bootLogger.l('Initialize booru user repository');
-  final booruUserRepo = HiveBooruConfigRepository(box: booruConfigBox);
+      bootLogger.l('Save default booru config');
+      await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
+    },
+  );
 
   bootLogger.l('Load settings');
-  final settings =
-      await settingRepository.load().run().then((value) => value.fold(
-            (l) => Settings.defaultSettings,
-            (r) => r,
-          ));
-
-  bootLogger.l('Settings: ${settings.toJson()}');
+  final settings = await settingRepository.load().run().then(
+        (value) => value.fold(
+          (l) => Settings.defaultSettings,
+          (r) => r,
+        ),
+      );
 
   fvp.registerWith(
     options: {
@@ -178,54 +146,23 @@ Future<void> boot(BootLogger bootLogger) async {
     },
   );
 
-  bootLogger.l('Load current booru config');
+  bootLogger
+    ..l('Settings: ${settings.toJson()}')
+    ..l('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  Box<String> userMetatagBox;
-  bootLogger.l('Initialize user metatag box');
-  if (await Hive.boxExists('user_metatags')) {
-    bootLogger.l('Open user metatag box');
-    userMetatagBox = await Hive.openBox<String>('user_metatags');
-  } else {
-    bootLogger.l('Create user metatag box');
-    userMetatagBox = await Hive.openBox<String>('user_metatags');
-    for (final e in [
-      'age',
-      'rating',
-      'order',
-      'score',
-      'id',
-      'user',
-    ]) {
-      await userMetatagBox.put(e, e);
-    }
-  }
-  final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
-
-  bootLogger.l('Initialize search history repository');
-  final searchHistoryBox =
-      await Hive.openBox<SearchHistoryHiveObject>('search_history');
-  final searchHistoryRepo = SearchHistoryRepositoryHive(
-    db: searchHistoryBox,
+  final favoriteTagsRepoOverride = await createFavoriteTagOverride(
+    bootLogger: bootLogger,
   );
 
-  bootLogger.l('Initialize favorite tag repository');
-  final favoriteTagsBox =
-      await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
-  final favoriteTagsRepo = FavoriteTagRepositoryHive(
-    favoriteTagsBox,
+  final bookmarkRepoOverride = await createBookmarkRepoProviderOverride(
+    bootLogger: bootLogger,
   );
 
-  bootLogger.l('Initialize global blacklisted tag repository');
-  final globalBlacklistedTags = HiveBlacklistedTagRepository();
-  await globalBlacklistedTags.init();
-
-  bootLogger.l('Initialize bookmark repository');
-  final bookmarkBox = await Hive.openBox<BookmarkHiveObject>('favorites');
-  final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
+  initBlacklistTagRepo();
 
   final tempPath = await getAppTemporaryDirectory();
 
@@ -235,18 +172,12 @@ Future<void> boot(BootLogger bootLogger) async {
     path: tempPath.path,
   );
 
-  bootLogger.l('Initialize danbooru creator box');
-  final danbooruCreatorBox = await Hive.openBox(
-    '${Uri.encodeComponent(initialConfig?.url ?? 'danbooru')}_creators_v1',
-    path: tempPath.path,
-  );
-
   bootLogger.l('Initialize package info');
   final packageInfo = await PackageInfo.fromPlatform();
 
-  bootLogger.l('Initialize tag info');
-  final tagInfo =
-      await TagInfoService.create().then((value) => value.getInfo());
+  final tagInfoOverride = await createTagInfoOverride(
+    bootLogger: bootLogger,
+  );
 
   bootLogger.l('Initialize device info');
   final deviceInfo =
@@ -257,23 +188,6 @@ Future<void> boot(BootLogger bootLogger) async {
 
   bootLogger.l('Load supported languages');
   final supportedLanguages = await loadLanguageNames();
-
-  bootLogger.l('Initialize tracking');
-  final (firebaseAnalytics, crashlyticsReporter) = await initializeTracking(
-    settings,
-    logger: logger,
-  );
-
-  if (initialConfig != null && firebaseAnalytics != null) {
-    firebaseAnalytics.changeCurrentAnalyticConfig(initialConfig);
-  }
-
-  bootLogger.l('Initialize error handlers');
-  initializeErrorHandlers(crashlyticsReporter);
-
-  bootLogger.l('Initialize download notifications');
-  final downloadNotifications = await DownloadNotifications.create();
-  final bulkDownloadNotifications = await BulkDownloadNotifications.create();
 
   FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;
@@ -290,66 +204,57 @@ Future<void> boot(BootLogger bootLogger) async {
   HttpOverrides.global = AppHttpOverrides();
 
   // Prepare for Android 15
-  showSystemStatus();
+  unawaited(showSystemStatus());
 
-  logger.logI('Start up',
-      'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms');
+  logger.logI(
+    'Start up',
+    'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
+  );
   stopwatch.stop();
 
-  void run() {
-    runApp(
-      Reboot(
-        initialConfigs: allConfigs,
-        initialConfig: initialConfig ?? BooruConfig.empty,
-        builder: (context, config, configs) => BooruLocalization(
-          child: ProviderScope(
-            overrides: [
-              favoriteTagRepoProvider.overrideWithValue(favoriteTagsRepo),
-              searchHistoryRepoProvider.overrideWithValue(searchHistoryRepo),
-              booruFactoryProvider.overrideWithValue(booruFactory),
-              tagInfoProvider.overrideWithValue(tagInfo),
-              settingsRepoProvider.overrideWithValue(settingRepository),
-              settingsProvider.overrideWith(() => SettingsNotifier(settings)),
-              booruConfigRepoProvider.overrideWithValue(booruUserRepo),
-              booruConfigProvider.overrideWith(() => BooruConfigNotifier(
-                    initialConfigs: configs,
-                  )),
-              initialSettingsBooruConfigProvider.overrideWithValue(config),
-              globalBlacklistedTagRepoProvider
-                  .overrideWithValue(globalBlacklistedTags),
-              httpCacheDirProvider.overrideWithValue(tempPath),
-              loggerProvider.overrideWithValue(logger),
-              bookmarkRepoProvider.overrideWithValue(bookmarkRepo),
-              downloadNotificationProvider
-                  .overrideWithValue(downloadNotifications),
-              bulkDownloadNotificationProvider
-                  .overrideWithValue(bulkDownloadNotifications),
-              deviceInfoProvider.overrideWithValue(deviceInfo),
-              danbooruUserMetatagRepoProvider
-                  .overrideWithValue(userMetatagRepo),
-              packageInfoProvider.overrideWithValue(packageInfo),
-              appInfoProvider.overrideWithValue(appInfo),
-              appLoggerProvider.overrideWithValue(appLogger),
-              supportedLanguagesProvider.overrideWithValue(supportedLanguages),
-              danbooruCreatorHiveBoxProvider
-                  .overrideWithValue(danbooruCreatorBox),
-              miscDataBoxProvider.overrideWithValue(miscDataBox),
-              booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
-              if (firebaseAnalytics != null)
-                analyticsProvider.overrideWithValue(firebaseAnalytics),
-              if (crashlyticsReporter != null)
-                errorReporterProvider.overrideWithValue(crashlyticsReporter),
-            ],
-            child: App(
-              appName: appInfo.appName,
-              initialSettings: settings,
+  bootLogger.l('Run app');
+
+  runApp(
+    Reboot(
+      initialData: RebootData(
+        config: initialConfig ?? BooruConfig.empty,
+        configs: allConfigs,
+        settings: settings,
+      ),
+      builder: (context, data) => BooruLocalization(
+        child: ProviderScope(
+          overrides: [
+            booruEngineRegistryProvider.overrideWith(
+              (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
             ),
-          ),
+            favoriteTagsRepoOverride,
+            booruFactoryProvider.overrideWithValue(booruFactory),
+            tagInfoOverride,
+            settingsRepoProvider.overrideWithValue(settingRepository),
+            settingsNotifierProvider
+                .overrideWith(() => SettingsNotifier(data.settings)),
+            initialSettingsProvider.overrideWithValue(data.settings),
+            booruConfigRepoProvider.overrideWithValue(booruUserRepo),
+            booruConfigProvider.overrideWith(
+              () => BooruConfigNotifier(
+                initialConfigs: data.configs,
+              ),
+            ),
+            initialSettingsBooruConfigProvider.overrideWithValue(data.config),
+            httpCacheDirProvider.overrideWithValue(tempPath),
+            loggerProvider.overrideWithValue(logger),
+            bookmarkRepoOverride,
+            deviceInfoProvider.overrideWithValue(deviceInfo),
+            packageInfoProvider.overrideWithValue(packageInfo),
+            appInfoProvider.overrideWithValue(appInfo),
+            appLoggerProvider.overrideWithValue(appLogger),
+            supportedLanguagesProvider.overrideWithValue(supportedLanguages),
+            miscDataBoxProvider.overrideWithValue(miscDataBox),
+            booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
+          ],
+          child: const App(),
         ),
       ),
-    );
-  }
-
-  bootLogger.l('Run app');
-  run();
+    ),
+  );
 }

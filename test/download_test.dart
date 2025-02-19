@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/downloads.dart';
+import 'package:boorusama/core/downloads/path/validator.dart';
 
 void main() {
   group('[userspace internal storage test]', () {
@@ -110,7 +110,9 @@ void main() {
 
     test('subdirectory of public folders', () {
       expect(
-          isPublicDirectories('/storage/emulated/10/Download/Documents'), true);
+        isPublicDirectories('/storage/emulated/10/Download/Documents'),
+        true,
+      );
     });
   });
 }

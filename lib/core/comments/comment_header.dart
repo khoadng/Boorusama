@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/string.dart';
+import '../theme.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
-    super.key,
     required this.authorName,
     required this.authorTitleColor,
     required this.createdAt,
+    super.key,
     this.onTap,
   });
 
@@ -30,7 +30,7 @@ class CommentHeader extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Text(
-            authorName.replaceUnderscoreWithSpace(),
+            authorName.replaceAll('_', ' '),
             style: TextStyle(
               color: authorTitleColor,
               fontSize: 15,
@@ -43,7 +43,10 @@ class CommentHeader extends StatelessWidget {
         ),
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
-          style: const TextStyle(color: Colors.grey, fontSize: 12),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.hintColor,
+            fontSize: 12,
+          ),
         ),
       ],
     );

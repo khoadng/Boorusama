@@ -1,10 +1,9 @@
 // Package imports:
+import 'package:booru_clients/moebooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/clients/moebooru/moebooru_client.dart';
-import 'package:boorusama/clients/moebooru/types/types.dart';
-import 'package:boorusama/foundation/http/request_deduplicator_mixin.dart';
+import '../../../../core/http/http.dart';
 import 'tag_summary.dart';
 import 'tag_summary_repository.dart';
 import 'tag_summary_repository_file.dart';
@@ -78,11 +77,13 @@ List<TagSummary> convertTagSummaryDtoToTagSummaryList(
       }
     }
 
-    tagSummaryList.add(TagSummary(
-      category: category ?? 0,
-      name: name,
-      otherNames: otherNames.isEmpty ? [] : List<String>.from(otherNames),
-    ));
+    tagSummaryList.add(
+      TagSummary(
+        category: category ?? 0,
+        name: name,
+        otherNames: otherNames.isEmpty ? [] : List<String>.from(otherNames),
+      ),
+    );
   }
 
   return tagSummaryList;

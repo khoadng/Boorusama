@@ -1,25 +1,33 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
+import 'package:booru_clients/szurubooru.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/boorus/szurubooru/favorites/favorites.dart';
-import 'package:boorusama/clients/szurubooru/szurubooru_client.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/path.dart';
-import 'package:boorusama/functional.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/foundation/path.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/tag.dart';
+import '../../core/utils/color_utils.dart';
 import 'post_votes/post_votes.dart';
 import 'szurubooru_post.dart';
 
-final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
+final szurubooruClientProvider =
+    Provider.family<SzurubooruClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return SzurubooruClient(
       dio: dio,
@@ -30,12 +38,13 @@ final szurubooruClientProvider = Provider.family<SzurubooruClient, BooruConfig>(
   },
 );
 
-final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final szurubooruPostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(szurubooruClientProvider(config));
+    final client = ref.watch(szurubooruClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -44,67 +53,73 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         final categories =
-            await ref.read(szurubooruTagCategoriesProvider(config).future);
+            await ref.read(szurubooruTagCategoriesProvider(config.auth).future);
 
         final data = posts.posts
-            .map((e) => SzurubooruPost(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: e.thumbnailUrl ?? '',
-                  sampleImageUrl: e.contentUrl ?? '',
-                  originalImageUrl: e.contentUrl ?? '',
-                  tags: e.tags
-                          ?.map((e) => e.names?.firstOrNull)
-                          .whereNotNull()
-                          .toSet() ??
-                      {},
-                  tagDetails: e.tags
-                          ?.map((e) => Tag(
-                                name: e.names?.firstOrNull ?? '???',
-                                category: categories.firstWhereOrNull(
-                                        (element) =>
-                                            element.name == e.category) ??
-                                    TagCategory.general(),
-                                postCount: e.usages ?? 0,
-                              ))
-                          .toList() ??
-                      [],
-                  rating: switch (e.safety?.toLowerCase()) {
-                    'safe' => Rating.general,
-                    'questionable' => Rating.questionable,
-                    'sketchy' => Rating.questionable,
-                    'unsafe' => Rating.explicit,
-                    _ => Rating.general,
-                  },
-                  hasComment: (e.commentCount ?? 0) > 0,
-                  isTranslated: (e.noteCount ?? 0) > 0,
-                  hasParentOrChildren: (e.relationCount ?? 0) > 0,
-                  source: PostSource.from(e.source),
-                  score: e.score ?? 0,
-                  duration: 0,
-                  fileSize: e.fileSize ?? 0,
-                  format: extension(e.contentUrl ?? ''),
-                  hasSound: e.flags?.contains('sound'),
-                  height: e.canvasHeight?.toDouble() ?? 0,
-                  md5: e.checksumMD5 ?? '',
-                  videoThumbnailUrl: e.thumbnailUrl ?? '',
-                  videoUrl: e.contentUrl ?? '',
-                  width: e.canvasWidth?.toDouble() ?? 0,
-                  createdAt: e.creationTime != null
-                      ? DateTime.tryParse(e.creationTime!)
-                      : null,
-                  uploaderName: e.user?.name,
-                  ownFavorite: e.ownFavorite ?? false,
-                  favoriteCount: e.favoriteCount ?? 0,
-                  commentCount: e.commentCount ?? 0,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => SzurubooruPost(
+                id: e.id ?? 0,
+                thumbnailImageUrl: e.thumbnailUrl ?? '',
+                sampleImageUrl: e.contentUrl ?? '',
+                originalImageUrl: e.contentUrl ?? '',
+                tags:
+                    e.tags?.map((e) => e.names?.firstOrNull).nonNulls.toSet() ??
+                        {},
+                tagDetails: e.tags
+                        ?.map(
+                          (e) => Tag(
+                            name: e.names?.firstOrNull ?? '???',
+                            category: categories.firstWhereOrNull(
+                                  (element) => element.name == e.category,
+                                ) ??
+                                TagCategory.general(),
+                            postCount: e.usages ?? 0,
+                          ),
+                        )
+                        .toList() ??
+                    [],
+                rating: switch (e.safety?.toLowerCase()) {
+                  'safe' => Rating.general,
+                  'questionable' => Rating.questionable,
+                  'sketchy' => Rating.questionable,
+                  'unsafe' => Rating.explicit,
+                  _ => Rating.general,
+                },
+                hasComment: (e.commentCount ?? 0) > 0,
+                isTranslated: (e.noteCount ?? 0) > 0,
+                hasParentOrChildren: (e.relationCount ?? 0) > 0,
+                source: PostSource.from(e.source),
+                score: e.score ?? 0,
+                duration: 0,
+                fileSize: e.fileSize ?? 0,
+                format: extension(e.contentUrl ?? ''),
+                hasSound: e.flags?.contains('sound'),
+                height: e.canvasHeight?.toDouble() ?? 0,
+                md5: e.checksumMD5 ?? '',
+                videoThumbnailUrl: e.thumbnailUrl ?? '',
+                videoUrl: e.contentUrl ?? '',
+                width: e.canvasWidth?.toDouble() ?? 0,
+                createdAt: e.creationTime != null
+                    ? DateTime.tryParse(e.creationTime!)
+                    : null,
+                uploaderName: e.user?.name,
+                ownFavorite: e.ownFavorite ?? false,
+                favoriteCount: e.favoriteCount ?? 0,
+                commentCount: e.commentCount ?? 0,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList();
 
-        ref.read(szurubooruFavoritesProvider(config).notifier).preload(data);
-        ref.read(szurubooruPostVotesProvider(config).notifier).getVotes(data);
+        ref.read(favoritesProvider(config.auth).notifier).preload(data);
+        unawaited(
+          ref
+              .read(szurubooruPostVotesProvider(config.auth).notifier)
+              .getVotes(data),
+        );
 
         return data.toResult(
           total: posts.total,
@@ -116,7 +131,7 @@ final szurubooruPostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final szurubooruAutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
+    Provider.family<AutocompleteRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(szurubooruClientProvider(config));
 
@@ -130,17 +145,18 @@ final szurubooruAutocompleteRepoProvider =
             await ref.read(szurubooruTagCategoriesProvider(config).future);
 
         return tags
-            .map((e) => AutocompleteData(
-                  label: e.names?.firstOrNull
-                          ?.toLowerCase()
-                          .replaceAll('_', ' ') ??
-                      '???',
-                  value: e.names?.firstOrNull?.toLowerCase() ?? '???',
-                  category: categories
-                      .firstWhereOrNull((element) => element.name == e.category)
-                      ?.name,
-                  postCount: e.usages,
-                ))
+            .map(
+              (e) => AutocompleteData(
+                label:
+                    e.names?.firstOrNull?.toLowerCase().replaceAll('_', ' ') ??
+                        '???',
+                value: e.names?.firstOrNull?.toLowerCase() ?? '???',
+                category: categories
+                    .firstWhereOrNull((element) => element.name == e.category)
+                    ?.name,
+                postCount: e.usages,
+              ),
+            )
             .toList();
       },
     );
@@ -148,61 +164,56 @@ final szurubooruAutocompleteRepoProvider =
 );
 
 final szurubooruTagCategoriesProvider =
-    FutureProvider.family<List<TagCategory>, BooruConfig>(
+    FutureProvider.family<List<TagCategory>, BooruConfigAuth>(
   (ref, config) async {
     final client = ref.read(szurubooruClientProvider(config));
 
     final categories = await client.getTagCategories();
 
     return categories
-        .mapIndexed((index, e) => TagCategory(
-              id: index,
-              name: e.name ?? '???',
-              order: e.order,
-              darkColor: ColorUtils.hexToColor(e.color),
-              lightColor: ColorUtils.hexToColor(e.color),
-            ))
+        .mapIndexed(
+          (index, e) => TagCategory(
+            id: index,
+            name: e.name ?? '???',
+            order: e.order,
+            darkColor: ColorUtils.hexToColor(e.color),
+            lightColor: ColorUtils.hexToColor(e.color),
+          ),
+        )
         .toList();
   },
 );
 
-String _ratingToSzurubooruRatingString(Rating rating) => switch (rating) {
-      Rating.unknown => 'sketchy',
-      Rating.explicit => 'unsafe',
-      Rating.questionable => 'sketchy',
-      Rating.sensitive => 'sketchy',
-      Rating.general => 'safe',
-    };
+class SzurubooruFavoriteRepository extends FavoriteRepository<SzurubooruPost> {
+  SzurubooruFavoriteRepository(this.ref, this.config);
 
-class SzurubooruTagQueryComposer implements TagQueryComposer {
-  SzurubooruTagQueryComposer({
-    required this.config,
-  });
+  final Ref ref;
+  final BooruConfigAuth config;
 
-  final BooruConfig config;
-  late final TagQueryComposer _composer = DefaultTagQueryComposer(
-    config: config,
-    ratingTagsFilter: switch (config.ratingFilter) {
-      BooruConfigRatingFilter.none => [],
-      BooruConfigRatingFilter.hideNSFW => [
-          '-rating:sketchy,unsafe',
-        ],
-      BooruConfigRatingFilter.hideExplicit => [
-          '-rating:unsafe',
-        ],
-      BooruConfigRatingFilter.custom =>
-        config.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => [],
-              (ratings) => [
-                ...ratings.map(
-                    (e) => '-rating:${_ratingToSzurubooruRatingString(e)}'),
-              ],
-            ),
-    },
-  );
+  SzurubooruClient get client => ref.read(szurubooruClientProvider(config));
 
   @override
-  List<String> compose(List<String> tags) {
-    return _composer.compose(tags);
+  bool canFavorite() => config.hasLoginDetails();
+
+  @override
+  Future<AddFavoriteStatus> addToFavorites(int postId) async {
+    try {
+      await client.addToFavorites(postId: postId);
+
+      await ref
+          .read(szurubooruPostVotesProvider(config).notifier)
+          .upvote(postId, localOnly: true);
+
+      return AddFavoriteStatus.success;
+    } catch (e) {
+      return AddFavoriteStatus.failure;
+    }
   }
+
+  @override
+  Future<bool> removeFromFavorites(int postId) async =>
+      client.removeFromFavorites(postId: postId).then((value) => true);
+
+  @override
+  bool isPostFavorited(SzurubooruPost post) => post.ownFavorite;
 }

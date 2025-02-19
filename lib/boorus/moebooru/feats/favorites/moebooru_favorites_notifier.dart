@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import '../../../../core/configs/ref.dart';
+import '../../moebooru.dart';
 
 CancelToken _cancelToken = CancelToken();
 
@@ -31,7 +31,7 @@ class MoebooruFavoritesNotifier extends FamilyNotifier<Set<String>?, int> {
     _cancelToken = CancelToken();
 
     try {
-      final client = ref.watch(moebooruClientProvider(ref.readConfig));
+      final client = ref.watch(moebooruClientProvider(ref.readConfigAuth));
 
       final users = await client.getFavoriteUsers(
         postId: arg,

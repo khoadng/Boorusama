@@ -5,25 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/infinite_post_list_scaffold.dart';
-import 'package:boorusama/core/search/search.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/display.dart';
+import '../boorus/engine/providers.dart';
+import '../configs/ref.dart';
+import '../foundation/display.dart';
+import '../home/home_search_bar.dart';
+import '../posts/count/widgets.dart';
+import '../posts/listing/widgets.dart';
+import '../posts/post/providers.dart';
+import '../search/selected_tags/providers.dart';
+import '../tags/configs/providers.dart';
+import '../widgets/widgets.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {
   const MobileHomePageScaffold({
     super.key,
-    required this.controller,
-    required this.onSearchTap,
   });
-
-  final HomePageController controller;
-  final void Function() onSearchTap;
 
   @override
   ConsumerState<MobileHomePageScaffold> createState() =>
@@ -34,7 +30,8 @@ class _MobileHomePageScaffoldState
     extends ConsumerState<MobileHomePageScaffold> {
   final selectedTagString = ValueNotifier('');
   late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.readBooruBuilder(ref.readConfig),
+    builder: ref.read(currentBooruBuilderProvider),
+    tagInfo: ref.read(tagInfoProvider),
   );
 
   @override
@@ -46,26 +43,24 @@ class _MobileHomePageScaffoldState
 
   @override
   Widget build(BuildContext context) {
-    final postRepo = ref.watch(postRepoProvider(ref.watchConfig));
+    final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return PostScope(
       fetcher: (page) {
         return postRepo.getPostsFromController(selectedTagController, page);
       },
-      builder: (context, postController, errors) => InfinitePostListScaffold(
-        errors: errors,
+      builder: (context, postController) => PostGrid(
         controller: postController,
         sliverHeaders: [
           SliverHomeSearchBar(
             selectedTagController: selectedTagController,
-            controller: widget.controller,
             selectedTagString: selectedTagString,
             onSearch: () {
               postController.refresh();
             },
           ),
           const SliverAppAnnouncementBanner(),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             SliverResultHeader(
               selectedTagString: selectedTagString,
               controller: postController,

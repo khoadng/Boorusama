@@ -4,27 +4,32 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/moebooru/feats/favorites/favorites.dart';
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
-import 'package:boorusama/boorus/moebooru/moebooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
-import 'widgets/moebooru_comment_section.dart';
-import 'widgets/moebooru_information_section.dart';
-import 'widgets/moebooru_related_post_section.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/providers.dart';
+import '../../../core/posts/details/routes.dart';
+import '../../../core/posts/details/widgets.dart';
+import '../../../core/posts/details_parts/widgets.dart';
+import '../../../core/posts/post/post.dart';
+import '../../../core/search/search/routes.dart';
+import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/tag/tag.dart';
+import '../../../core/widgets/widgets.dart';
+import '../feats/favorites/favorites.dart';
+import '../feats/posts/posts.dart';
+import '../feats/tags/tags.dart';
+import '../moebooru.dart';
 
 final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>, Post>((ref, post) async {
-  final config = ref.watchConfig;
+  final config = ref.watchConfigAuth;
 
   final allTagMap = await ref.watch(moebooruAllTagsProvider(config).future);
 
@@ -48,41 +53,68 @@ List<TagGroupItem> createMoebooruTagGroupItems(
   return tagGroups;
 }
 
-class MoebooruPostDetailsPage extends ConsumerStatefulWidget {
-  const MoebooruPostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialPage,
-    required this.onExit,
-    required this.onPageChanged,
-    required this.controller,
-  });
-
-  final List<MoebooruPost> posts;
-  final int initialPage;
-  final void Function(int page) onExit;
-  final void Function(int page) onPageChanged;
-  final PostDetailsController<Post> controller;
+class MoebooruPostDetailsPage extends StatelessWidget {
+  const MoebooruPostDetailsPage({super.key});
 
   @override
-  ConsumerState<MoebooruPostDetailsPage> createState() =>
+  Widget build(BuildContext context) {
+    final data = PostDetails.of<MoebooruPost>(context);
+
+    return MoebooruPostDetailsPageInternal(
+      data: data,
+    );
+  }
+}
+
+class MoebooruPostDetailsPageInternal extends ConsumerStatefulWidget {
+  const MoebooruPostDetailsPageInternal({
+    required this.data,
+    super.key,
+  });
+
+  final PostDetailsData<MoebooruPost> data;
+
+  @override
+  ConsumerState<MoebooruPostDetailsPageInternal> createState() =>
       _MoebooruPostDetailsPageState();
 }
 
 class _MoebooruPostDetailsPageState
-    extends ConsumerState<MoebooruPostDetailsPage> {
-  List<MoebooruPost> get posts => widget.posts;
+    extends ConsumerState<MoebooruPostDetailsPageInternal> {
+  late PostDetailsData<MoebooruPost> data = widget.data;
+
+  List<MoebooruPost> get posts => data.posts;
+  PostDetailsController<MoebooruPost> get controller => data.controller;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadFavoriteUsers(posts[widget.initialPage].id);
+      _loadFavoriteUsers(posts[controller.initialPage].id);
     });
+
+    data.controller.currentPage.addListener(_onPageChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant MoebooruPostDetailsPageInternal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.data != widget.data) {
+      controller.currentPage.removeListener(_onPageChanged);
+      setState(() {
+        data = widget.data;
+        controller.currentPage.addListener(_onPageChanged);
+      });
+    }
+  }
+
+  void _onPageChanged() {
+    _loadFavoriteUsers(posts[controller.currentPage.value].id);
   }
 
   Future<void> _loadFavoriteUsers(int postId) async {
-    final config = ref.readConfig;
+    final config = ref.readConfigAuth;
     final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
 
     await booru?.whenMoebooru(
@@ -99,41 +131,138 @@ class _MoebooruPostDetailsPageState
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    controller.currentPage.removeListener(_onPageChanged);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return PostDetailsPageScaffold(
+      controller: controller,
       posts: posts,
-      initialIndex: widget.initialPage,
-      onExit: widget.onExit,
-      onPageChangeIndexed: widget.onPageChanged,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+      topRightButtonsBuilder: (controller) => [
+        GeneralMoreActionButton(
+          post: InheritedPost.of<MoebooruPost>(context),
+          onStartSlideshow: config.hasLoginDetails()
+              ? null
+              : () => controller.startSlideshow(),
+        ),
+      ],
+    );
+  }
+}
+
+class MoebooruTagListSection extends ConsumerWidget {
+  const MoebooruTagListSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<MoebooruPost>(context);
+
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        initialExpanded: true,
         post: post,
-        uploaderName: post.uploaderName,
+        tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
+              data: (tags) => tags,
+              orElse: () => null,
+            ),
+        onTagTap: (tag) => goToSearchPage(
+          context,
+          tag: tag.rawName,
+        ),
       ),
-      sliverRelatedPostsBuilder: (context, post) =>
-          MoebooruRelatedPostsSection(post: post),
-      sliverArtistPostsBuilder: (context, post) => ref
-          .watch(moebooruPostDetailTagGroupProvider(post))
-          .maybeWhen(
+    );
+  }
+}
+
+class MoebooruCharacterListSection extends ConsumerWidget {
+  const MoebooruCharacterListSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+    final post = InheritedPost.of<MoebooruPost>(context);
+
+    return ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
+          data: (tags) {
+            final artistTags = _extractArtist(config, tags);
+            final characterTags = _extractCharacter(config, tags);
+
+            return artistTags != null && artistTags.isNotEmpty
+                ? ref
+                    .watch(moebooruPostDetailsArtistProvider(artistTags.first))
+                    .maybeWhen(
+                      data: (_) {
+                        return characterTags != null && characterTags.isNotEmpty
+                            ? SliverCharacterPostList(tags: characterTags)
+                            : const SliverSizedBox.shrink();
+                      },
+                      orElse: () => const SliverSizedBox.shrink(),
+                    )
+                : const SliverSizedBox.shrink();
+          },
+          orElse: () => const SliverSizedBox.shrink(),
+        );
+  }
+}
+
+Set<String>? _extractCharacter(
+  BooruConfigAuth booruConfig,
+  List<TagGroupItem>? tagGroups,
+) {
+  if (tagGroups == null) return null;
+
+  final tag = tagGroups.firstWhereOrNull(
+    (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character(),
+  );
+  final characterTags = tag?.tags.map((e) => e.rawName).toSet();
+  return characterTags;
+}
+
+List<String>? _extractArtist(
+  BooruConfigAuth booruConfig,
+  List<TagGroupItem>? tagGroups,
+) {
+  if (tagGroups == null) return null;
+
+  final tag = tagGroups.firstWhereOrNull(
+    (e) => TagCategory.fromLegacyId(e.category) == TagCategory.artist(),
+  );
+  final artistTags = tag?.tags.map((e) => e.rawName).toList();
+  return artistTags;
+}
+
+class MoebooruArtistPostsSection extends ConsumerWidget {
+  const MoebooruArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+    final post = InheritedPost.of<MoebooruPost>(context);
+
+    return MultiSliver(
+      children: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
             data: (tags) {
               final artistTags = _extractArtist(config, tags);
 
               return artistTags != null && artistTags.isNotEmpty
                   ? artistTags
                       .map(
-                        (tag) => ArtistPostList(
+                        (tag) => SliverArtistPostList(
                           tag: tag,
-                          builder: (tag) => ref
+                          child: ref
                               .watch(moebooruPostDetailsArtistProvider(tag))
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
                                   posts: data,
-                                  onTap: (postIdx) => goToPostDetailsPage(
+                                  onTap: (postIdx) =>
+                                      goToPostDetailsPageFromPosts(
                                     context: context,
                                     posts: data,
                                     initialIndex: postIdx,
+                                    initialThumbnailUrl:
+                                        data[postIdx].thumbnailImageUrl,
                                   ),
                                   imageUrl: (item) => item.thumbnailImageUrl,
                                 ),
@@ -147,140 +276,78 @@ class _MoebooruPostDetailsPageState
             },
             orElse: () => [],
           ),
-      sliverCharacterPostsBuilder: (context, post) {
-        return ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
-              data: (tags) {
-                final artistTags = _extractArtist(config, tags);
-                final characterTags = _extractCharacter(config, tags);
-
-                return artistTags != null && artistTags.isNotEmpty
-                    ? ref
-                        .watch(
-                            moebooruPostDetailsArtistProvider(artistTags.first))
-                        .maybeWhen(
-                          data: (_) {
-                            return characterTags != null &&
-                                    characterTags.isNotEmpty
-                                ? CharacterPostList(tags: characterTags)
-                                : const SliverSizedBox.shrink();
-                          },
-                          orElse: () => const SliverSizedBox.shrink(),
-                        )
-                    : const SliverSizedBox.shrink();
-              },
-              orElse: () => const SliverSizedBox.shrink(),
-            );
-      },
-      tagListBuilder: (context, post) => TagsTile(
-        initialExpanded: true,
-        post: post,
-        tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
-              data: (tags) => tags,
-              orElse: () => null,
-            ),
-        onTagTap: (tag) => goToSearchPage(
-          context,
-          tag: tag.rawName,
-        ),
-      ),
-      toolbar: MoebooruPostDetailsActionToolbar(controller: widget.controller),
-      commentsBuilder: (context, post) => MoebooruCommentSection(post: post),
-      topRightButtonsBuilder: (currentPage, expanded, post, controller) => [
-        GeneralMoreActionButton(
-          post: post,
-          onStartSlideshow: config.hasLoginDetails()
-              ? null
-              : () => controller.startSlideshow(),
-        ),
-      ],
-      infoBuilder: (context, post) =>
-          ref.watch(moebooruAllTagsProvider(config)).maybeWhen(
-                data: (tags) {
-                  final tagGroups =
-                      createMoebooruTagGroupItems(post.tags, tags);
-
-                  return MoebooruInformationSection(
-                    post: post,
-                    tags: tagGroups,
-                  );
-                },
-                orElse: () => const SizedBox.shrink(),
-              ),
-      onPageChanged: (post) {
-        _loadFavoriteUsers(post.id);
-      },
     );
   }
+}
 
-  List<String>? _extractArtist(
-    BooruConfig booruConfig,
-    List<TagGroupItem>? tagGroups,
-  ) {
-    if (tagGroups == null) return null;
+class MoebooruFileDetailsSection extends ConsumerWidget {
+  const MoebooruFileDetailsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<MoebooruPost>(context);
 
-    final tag = tagGroups.firstWhereOrNull(
-        (e) => TagCategory.fromLegacyId(e.category) == TagCategory.artist());
-    final artistTags = tag?.tags.map((e) => e.rawName).toList();
-    return artistTags;
-  }
-
-  Set<String>? _extractCharacter(
-    BooruConfig booruConfig,
-    List<TagGroupItem>? tagGroups,
-  ) {
-    if (tagGroups == null) return null;
-
-    final tag = tagGroups.firstWhereOrNull(
-        (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character());
-    final characterTags = tag?.tags.map((e) => e.rawName).toSet();
-    return characterTags;
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
+        post: post,
+        uploaderName: post.uploaderName,
+      ),
+    );
   }
 }
 
 class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
   const MoebooruPostDetailsActionToolbar({
     super.key,
-    required this.controller,
   });
-
-  final PostDetailsController controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
+    final post = InheritedPost.of<MoebooruPost>(context);
     final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
 
-    return ValueListenableBuilder(
-      valueListenable: controller.currentPost,
-      builder: (_, post, __) {
-        final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+    return SliverToBoxAdapter(
+      child: booru?.whenMoebooru(
+            data: (data) => data.supportsFavorite(config.url)
+                ? _Toolbar(post: post)
+                : DefaultPostActionToolbar(post: post),
+            orElse: () => DefaultPostActionToolbar(post: post),
+          ) ??
+          DefaultPostActionToolbar(post: post),
+    );
+  }
+}
 
-        return booru?.whenMoebooru(
-                data: (data) => data.supportsFavorite(config.url)
-                    ? SimplePostActionToolbar(
-                        isFaved: ref
-                            .watch(moebooruFavoritesProvider(post.id))
-                            ?.contains(config.login),
-                        addFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .favoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        removeFavorite: () => ref
-                            .read(moebooruClientProvider(config))
-                            .unfavoritePost(postId: post.id)
-                            .then((value) {
-                          notifier.clear();
-                        }),
-                        isAuthorized: config.hasLoginDetails(),
-                        forceHideFav: !config.hasLoginDetails(),
-                        post: post,
-                      )
-                    : SimplePostActionToolbar(post: post),
-                orElse: () => SimplePostActionToolbar(post: post)) ??
-            SimplePostActionToolbar(post: post);
-      },
+class _Toolbar extends ConsumerWidget {
+  const _Toolbar({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+    final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+
+    return SimplePostActionToolbar(
+      isFaved:
+          ref.watch(moebooruFavoritesProvider(post.id))?.contains(config.login),
+      addFavorite: () => ref
+          .read(moebooruClientProvider(config))
+          .favoritePost(postId: post.id)
+          .then((value) {
+        notifier.clear();
+      }),
+      removeFavorite: () => ref
+          .read(moebooruClientProvider(config))
+          .unfavoritePost(postId: post.id)
+          .then((value) {
+        notifier.clear();
+      }),
+      isAuthorized: config.hasLoginDetails(),
+      forceHideFav: !config.hasLoginDetails(),
+      post: post,
     );
   }
 }

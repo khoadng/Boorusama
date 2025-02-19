@@ -3,23 +3,27 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/manage/manage.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/settings/settings.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/app_update/app_update.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/permissions.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
+import '../core/boorus/engine/providers.dart';
+import '../core/bulk_downloads/providers.dart';
+import '../core/cache/providers.dart';
+import '../core/changelogs/utils.dart';
+import '../core/configs/config.dart';
+import '../core/configs/current.dart';
+import '../core/configs/manage.dart';
+import '../core/configs/ref.dart';
+import '../core/configs/widgets.dart';
+import '../core/foundation/display.dart';
+import '../core/foundation/permissions.dart';
+import '../core/foundation/platform.dart';
+import '../core/foundation/toast.dart';
+import '../core/home/empty_booru_config_home_page.dart';
+import '../core/settings/providers.dart';
+import '../core/settings/settings.dart';
+import '../core/theme.dart';
+import '../core/widgets/widgets.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({
@@ -35,7 +39,9 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.showChangelogDialogIfNeeded();
+      final miscBox = ref.read(miscDataBoxProvider);
+
+      ref.showChangelogDialogIfNeeded(miscBox);
     });
   }
 
@@ -76,9 +82,10 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (context.isLandscapeLayout) ...[
+                if (context.isLargeScreen) ...[
                   SafeArea(
                     right: false,
+                    bottom: false,
                     child: _SidebarSettingsListener(
                       builder: (_, bottom, __) => bottom
                           ? const SizedBox.shrink()
@@ -101,7 +108,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
               ],
             ),
           ),
-          if (context.isLandscapeLayout)
+          if (context.isLargeScreen)
             _SidebarSettingsListener(
               builder: (_, bottom, hideLabel) => bottom
                   ? SizedBox(
@@ -127,7 +134,8 @@ class _SidebarSettingsListener extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pos = ref.watch(
-        settingsProvider.select((value) => value.booruConfigSelectorPosition));
+      settingsProvider.select((value) => value.booruConfigSelectorPosition),
+    );
     final hideLabel = ref
         .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 
@@ -147,13 +155,13 @@ class _Boorus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final booruBuilder = ref.watch(booruBuilderProvider);
+    final config = ref.watchConfigSearch;
+    final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
     if (booruBuilder != null) {
       return Builder(
         key: ValueKey(config),
-        builder: (context) => booruBuilder.homePageBuilder(context, config),
+        builder: (context) => booruBuilder.homePageBuilder(context),
       );
     } else {
       final availableConfigs = ref.watch(booruConfigProvider);
@@ -173,14 +181,14 @@ class _Boorus extends ConsumerWidget {
           children: [
             Text(
               'Current selected profile is invalid',
-              style: context.textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            if (availableConfigs.isNotEmpty == true)
+            if (availableConfigs.isNotEmpty)
               Text(
                 'Select a profile from the list below to continue',
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: context.theme.hintColor,
-                ),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.hintColor,
+                    ),
               ),
             const SizedBox(height: 16),
             Expanded(

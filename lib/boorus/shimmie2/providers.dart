@@ -1,18 +1,22 @@
 // Package imports:
+import 'package:booru_clients/shimmie2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/shimmie2/shimmie2_client.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/foundation/path.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/configs/config.dart';
+import '../../core/foundation/path.dart';
+import '../../core/http/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/settings/providers.dart';
 
-final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfig>(
+final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
-    final dio = newDio(ref.watch(dioArgsProvider(config)));
+    final dio = ref.watch(dioProvider(config));
 
     return Shimmie2Client(
       dio: dio,
@@ -21,12 +25,13 @@ final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfig>(
   },
 );
 
-final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final shimmie2PostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(shimmie2ClientProvider(config));
+    final client = ref.watch(shimmie2ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -35,35 +40,37 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         return posts
-            .map((e) => Shimmie2Post(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: e.previewUrl ?? '',
-                  sampleImageUrl: e.fileUrl ?? '',
-                  originalImageUrl: e.fileUrl ?? '',
-                  tags: e.tags?.toSet() ?? {},
-                  rating: mapStringToRating(e.rating),
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.from(e.source),
-                  score: e.score ?? 0,
-                  duration: 0,
-                  fileSize: 0,
-                  format: extension(e.fileName ?? ''),
-                  hasSound: null,
-                  height: e.height?.toDouble() ?? 0,
-                  md5: e.md5 ?? '',
-                  videoThumbnailUrl: e.previewUrl ?? '',
-                  videoUrl: e.fileUrl ?? '',
-                  width: e.width?.toDouble() ?? 0,
-                  createdAt: e.date,
-                  uploaderId: null,
-                  uploaderName: e.author,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => Shimmie2Post(
+                id: e.id ?? 0,
+                thumbnailImageUrl: e.previewUrl ?? '',
+                sampleImageUrl: e.fileUrl ?? '',
+                originalImageUrl: e.fileUrl ?? '',
+                tags: e.tags?.toSet() ?? {},
+                rating: mapStringToRating(e.rating),
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.from(e.source),
+                score: e.score ?? 0,
+                duration: 0,
+                fileSize: 0,
+                format: extension(e.fileName ?? ''),
+                hasSound: null,
+                height: e.height?.toDouble() ?? 0,
+                md5: e.md5 ?? '',
+                videoThumbnailUrl: e.previewUrl ?? '',
+                videoUrl: e.fileUrl ?? '',
+                width: e.width?.toDouble() ?? 0,
+                createdAt: e.date,
+                uploaderId: null,
+                uploaderName: e.author,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -73,7 +80,7 @@ final shimmie2PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final shimmie2AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>(
+    Provider.family<AutocompleteRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(shimmie2ClientProvider(config));
 
@@ -84,11 +91,13 @@ final shimmie2AutocompleteRepoProvider =
         final tags = await client.getAutocomplete(query: query);
 
         return tags
-            .map((e) => AutocompleteData(
-                  label: e.value?.toLowerCase().replaceAll('_', ' ') ?? '???',
-                  value: e.value?.toLowerCase() ?? '???',
-                  postCount: e.count,
-                ))
+            .map(
+              (e) => AutocompleteData(
+                label: e.value?.toLowerCase().replaceAll('_', ' ') ?? '???',
+                value: e.value?.toLowerCase() ?? '???',
+                postCount: e.count,
+              ),
+            )
             .toList();
       },
     );

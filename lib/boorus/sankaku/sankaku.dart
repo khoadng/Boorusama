@@ -2,44 +2,65 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/sankaku.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/boorus/sankaku/create_sankaku_config_page.dart';
-import 'package:boorusama/boorus/sankaku/sankaku_home_page.dart';
-import 'package:boorusama/clients/sankaku/sankaku_client.dart';
-import 'package:boorusama/clients/sankaku/types/common.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/artist_page_scaffold.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/caching/caching.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/router.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/booru/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/foundation/caching.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/routes.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/scaffolds/artist_page_scaffold.dart';
+import '../../core/search/queries/providers.dart';
+import '../../core/search/search/routes.dart';
+import '../../core/settings/providers.dart';
+import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
+import 'create_sankaku_config_page.dart';
+import 'sankaku_home_page.dart';
 import 'sankaku_post.dart';
 
 part 'sankaku_provider.dart';
 
 class SankakuBuilder
     with
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
+        DefaultTagColorsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
@@ -83,28 +104,20 @@ class SankakuBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => const SankakuHomePage();
+  HomePageBuilder get homePageBuilder => (context) => const SankakuHomePage();
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => SankakuPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as SankakuPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => SankakuPostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as SankakuPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as SankakuPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<SankakuPost>(),
+        );
+      };
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
@@ -113,21 +126,8 @@ class SankakuBuilder
           );
 
   @override
-  FavoriteAdder? get favoriteAdder => null;
-
-  @override
-  FavoriteRemover? get favoriteRemover => null;
-
-  @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? SankakuFavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context) => const SankakuFavoritesPage();
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -147,117 +147,126 @@ class SankakuBuilder
       'source': (post, config) => sanitizedUrl(config.downloadUrl),
     },
   );
-}
-
-class SankakuPostDetailsPage extends ConsumerWidget {
-  const SankakuPostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onExit,
-    required this.onPageChanged,
-  });
-
-  final List<SankakuPost> posts;
-  final int initialIndex;
-  final void Function(int page) onPageChanged;
-  final void Function(int page) onExit;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialIndex,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      parts: kDefaultPostDetailsNoSourceParts,
-      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
-          ? post.artistTags
-              .map((tag) => ArtistPostList(
-                    tag: tag,
-                    builder: (tag) => ref
-                        .watch(sankakuArtistPostsProvider(
-                            post.artistTags.firstOrNull))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
-                            ),
-                            imageUrl: (item) => item.sampleImageUrl,
-                          ),
-                          orElse: () =>
-                              const SliverPreviewPostGridPlaceholder(),
-                        ),
-                  ))
-              .toList()
-          : [],
-      tagListBuilder: (context, post) => SankakuTagsTile(post: post),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
-    );
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<SankakuPost>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<SankakuPost>(),
+    },
+    full: {
+      DetailsPart.info: (context) =>
+          const DefaultInheritedInformationSection<SankakuPost>(
+            showSource: true,
+          ),
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<SankakuPost>(),
+      DetailsPart.tags: (context) => const SankakuTagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<SankakuPost>(),
+      DetailsPart.artistPosts: (context) => const SankakuArtistPostsSection(),
+    },
+  );
+}
+
+class SankakuRepository implements BooruRepository {
+  const SankakuRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(sankakuPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(sankakuAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => SankakuClient(
+          baseUrl: config.url,
+          dio: dio,
+          username: config.login,
+          password: config.apiKey,
+        ).getPosts().then((value) => true);
   }
 }
 
-class SankakuPostDetailsDesktopPage extends ConsumerWidget {
-  const SankakuPostDetailsDesktopPage({
-    super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-  });
-
-  final int initialIndex;
-  final List<SankakuPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
-
+class SankakuArtistPostsSection extends ConsumerWidget {
+  const SankakuArtistPostsSection({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      infoBuilder: (context, post) => SimpleInformationSection(
-        post: post,
-        showSource: true,
-      ),
-      sliverArtistPostsBuilder: (context, post) => post.artistTags.isNotEmpty
+    final post = InheritedPost.of<SankakuPost>(context);
+
+    return MultiSliver(
+      children: post.artistTags.isNotEmpty
           ? post.artistTags
-              .map((tag) => ArtistPostList(
-                    tag: tag,
-                    builder: (tag) => ref
-                        .watch(sankakuArtistPostsProvider(
-                            post.artistTags.firstOrNull))
-                        .maybeWhen(
-                          data: (data) => SliverPreviewPostGrid(
-                            posts: data,
-                            onTap: (postIdx) => goToPostDetailsPage(
-                              context: context,
-                              posts: data,
-                              initialIndex: postIdx,
-                            ),
-                            imageUrl: (item) => item.sampleImageUrl,
-                          ),
-                          orElse: () =>
-                              const SliverPreviewPostGridPlaceholder(),
+              .map(
+                (tag) => SliverArtistPostList(
+                  tag: tag,
+                  child: ref
+                      .watch(
+                        sankakuArtistPostsProvider(
+                          post.artistTags.firstOrNull,
                         ),
-                  ))
+                      )
+                      .maybeWhen(
+                        data: (data) => SliverPreviewPostGrid(
+                          posts: data,
+                          onTap: (postIdx) => goToPostDetailsPageFromPosts(
+                            context: context,
+                            posts: data,
+                            initialIndex: postIdx,
+                            initialThumbnailUrl: data[postIdx].sampleImageUrl,
+                          ),
+                          imageUrl: (item) => item.sampleImageUrl,
+                        ),
+                        orElse: () => const SliverPreviewPostGridPlaceholder(),
+                      ),
+                ),
+              )
               .toList()
           : [],
-      tagListBuilder: (context, post) => SankakuTagsTile(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-      parts: kDefaultPostDetailsNoSourceParts,
     );
   }
 }
@@ -265,37 +274,38 @@ class SankakuPostDetailsDesktopPage extends ConsumerWidget {
 class SankakuTagsTile extends StatelessWidget {
   const SankakuTagsTile({
     super.key,
-    required this.post,
   });
-
-  final SankakuPost post;
 
   @override
   Widget build(BuildContext context) {
-    return TagsTile(
-      post: post,
-      initialExpanded: true,
-      tags: createTagGroupItems([
-        ...post.artistDetailsTags,
-        ...post.characterDetailsTags,
-        ...post.copyrightDetailsTags,
-      ]),
-      onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+    final post = InheritedPost.of<SankakuPost>(context);
+
+    return SliverToBoxAdapter(
+      child: TagsTile(
+        post: post,
+        initialExpanded: true,
+        tags: createTagGroupItems([
+          ...post.artistDetailsTags,
+          ...post.characterDetailsTags,
+          ...post.copyrightDetailsTags,
+        ]),
+        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+      ),
     );
   }
 }
 
 class SankakuArtistPage extends ConsumerWidget {
   const SankakuArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

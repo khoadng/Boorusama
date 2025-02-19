@@ -2,33 +2,49 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/shimmie2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru_v2/gelbooru_v2.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/dart.dart';
-import 'package:boorusama/router.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru_v2/gelbooru_v2.dart';
+import 'providers.dart';
 
 class Shimmie2Builder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultTagColorMixin,
+        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
@@ -71,10 +87,17 @@ class Shimmie2Builder
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => Shimmie2PostDetailsPage(
-            payload: payload,
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as Shimmie2Post).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<Shimmie2Post>(),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
@@ -91,31 +114,89 @@ class Shimmie2Builder
       'source': (post, config) => post.source.url,
     },
   );
-}
-
-class Shimmie2PostDetailsPage extends ConsumerWidget {
-  const Shimmie2PostDetailsPage({
-    super.key,
-    required this.payload,
-  });
-
-  final DetailsPayload payload;
 
   @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagList<Shimmie2Post>(),
+      DetailsPart.fileDetails: (context) => const Shimmie2FileDetailsSection(),
+    },
+  );
+}
+
+class Shimmie2Repository implements BooruRepository {
+  const Shimmie2Repository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(shimmie2PostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(emptyAutocompleteRepoProvider);
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => Shimmie2Client(baseUrl: config.url, dio: dio)
+        .getPosts()
+        .then((value) => true);
+  }
+}
+
+class Shimmie2FileDetailsSection extends ConsumerWidget {
+  const Shimmie2FileDetailsSection({super.key});
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: payload.posts,
-      initialIndex: payload.initialIndex,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      onExit: (page) => payload.scrollController?.scrollToIndex(page),
-      tagListBuilder: (context, post) => BasicTagList(
-        tags: post.tags.toList(),
-        unknownCategoryColor: ref.watch(tagColorProvider('general')),
-        onTap: (tag) => goToSearchPage(context, tag: tag),
-      ),
-      fileDetailsBuilder: (context, post) => DefaultFileDetailsSection(
+    final post = InheritedPost.of<Shimmie2Post>(context);
+
+    return SliverToBoxAdapter(
+      child: DefaultFileDetailsSection(
         post: post,
-        uploaderName: castOrNull<SimplePost>(post)?.uploaderName,
+        uploaderName: post.uploaderName,
       ),
     );
   }

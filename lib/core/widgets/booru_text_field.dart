@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import '../settings/providers.dart';
 
 class BooruTextField extends ConsumerWidget {
   const BooruTextField({
@@ -49,7 +49,7 @@ class BooruTextField extends ConsumerWidget {
     this.cursorOpacityAnimates,
     this.cursorColor,
     this.keyboardAppearance,
-    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.scrollPadding = const EdgeInsets.all(20),
     this.enableInteractiveSelection,
     this.selectionControls,
     this.onTap,
@@ -62,7 +62,7 @@ class BooruTextField extends ConsumerWidget {
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = true,
     this.enableIMEPersonalizedLearning,
     this.canRequestFocus = true,
     this.spellCheckConfiguration,
@@ -120,7 +120,7 @@ class BooruTextField extends ConsumerWidget {
   final ContentInsertionConfiguration? contentInsertionConfiguration;
   final Clip clipBehavior;
   final String? restorationId;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
   final bool? enableIMEPersonalizedLearning;
   final bool canRequestFocus;
   final SpellCheckConfiguration? spellCheckConfiguration;
@@ -128,7 +128,11 @@ class BooruTextField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final enableIncognitoModeForKeyboard = ref.watch(
+      settingsProvider.select(
+        (value) => value.enableIncognitoModeForKeyboard,
+      ),
+    );
 
     return TextField(
       key: key,
@@ -183,9 +187,9 @@ class BooruTextField extends ConsumerWidget {
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
       restorationId: restorationId,
-      scribbleEnabled: scribbleEnabled,
-      enableIMEPersonalizedLearning: enableIMEPersonalizedLearning ??
-          !settings.enableIncognitoModeForKeyboard,
+      // stylusHandwritingEnabled: stylusHandwritingEnabled,
+      enableIMEPersonalizedLearning:
+          enableIMEPersonalizedLearning ?? !enableIncognitoModeForKeyboard,
       canRequestFocus: canRequestFocus,
       spellCheckConfiguration: spellCheckConfiguration,
       magnifierConfiguration: magnifierConfiguration,

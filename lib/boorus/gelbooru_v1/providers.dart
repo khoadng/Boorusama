@@ -1,11 +1,12 @@
 part of 'gelbooru_v1.dart';
 
-final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
+final gelbooruV1PostRepoProvider =
+    Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final client = ref.watch(gelbooruV1ClientProvider(config));
+    final client = ref.watch(gelbooruV1ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      tagComposer: ref.watch(tagQueryComposerProvider(config)),
+      getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetch: (tags, page, {limit}) async {
         final posts = await client.getPosts(
@@ -14,35 +15,37 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
         );
 
         return posts
-            .map((e) => GelbooruV1Post(
-                  id: e.id ?? 0,
-                  thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
-                  sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
-                  originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
-                  tags: e.tags?.split(' ').toSet() ?? {},
-                  rating: mapStringToRating(e.rating),
-                  hasComment: false,
-                  isTranslated: false,
-                  hasParentOrChildren: false,
-                  source: PostSource.none(),
-                  score: e.score ?? 0,
-                  duration: 0,
-                  fileSize: 0,
-                  format: extension(e.fileUrl ?? ''),
-                  hasSound: null,
-                  height: 0,
-                  md5: e.md5 ?? '',
-                  videoThumbnailUrl: e.previewUrl ?? '',
-                  videoUrl: e.fileUrl ?? '',
-                  width: 0,
-                  uploaderId: null,
-                  createdAt: null,
-                  uploaderName: null,
-                  metadata: PostMetadata(
-                    page: page,
-                    search: tags.join(' '),
-                  ),
-                ))
+            .map(
+              (e) => GelbooruV1Post(
+                id: e.id ?? 0,
+                thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
+                sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
+                originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
+                tags: e.tags.splitTagString(),
+                rating: mapStringToRating(e.rating),
+                hasComment: false,
+                isTranslated: false,
+                hasParentOrChildren: false,
+                source: PostSource.none(),
+                score: e.score ?? 0,
+                duration: 0,
+                fileSize: 0,
+                format: extension(e.fileUrl ?? ''),
+                hasSound: null,
+                height: 0,
+                md5: e.md5 ?? '',
+                videoThumbnailUrl: e.previewUrl ?? '',
+                videoUrl: e.fileUrl ?? '',
+                width: 0,
+                uploaderId: null,
+                createdAt: null,
+                uploaderName: null,
+                metadata: PostMetadata(
+                  page: page,
+                  search: tags.join(' '),
+                ),
+              ),
+            )
             .toList()
             .toResult();
       },
@@ -51,7 +54,7 @@ final gelbooruV1PostRepoProvider = Provider.family<PostRepository, BooruConfig>(
 );
 
 final gelbooruV1AutocompleteRepoProvider =
-    Provider.family<AutocompleteRepository, BooruConfig>((ref, config) {
+    Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
   final client = GelbooruClient.gelbooru();
 
   return AutocompleteRepositoryBuilder(
@@ -62,21 +65,23 @@ final gelbooruV1AutocompleteRepoProvider =
       final dtos = await client.autocomplete(term: query);
 
       return dtos
-          .map((e) => AutocompleteData(
-                label: e.label ?? '<Unknown>',
-                value: e.value ?? '<Unknown>',
-              ))
+          .map(
+            (e) => AutocompleteData(
+              label: e.label ?? '<Unknown>',
+              value: e.value ?? '<Unknown>',
+            ),
+          )
           .toList();
     },
   );
 });
 
 final gelbooruV1ClientProvider =
-    Provider.family<GelbooruV1Client, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<GelbooruV1Client, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return GelbooruV1Client(
-    baseUrl: booruConfig.url,
+    baseUrl: config.url,
     dio: dio,
   );
 });

@@ -4,25 +4,23 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/e621/favorites/favorites.dart';
-import 'package:boorusama/boorus/e621/popular/e621_popular_page.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/home/home.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/router.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/home/home_navigation_tile.dart';
+import '../../../core/home/home_page_scaffold.dart';
+import '../../../core/home/side_menu_tile.dart';
+import '../../../core/posts/favorites/routes.dart';
+import '../../../core/widgets/widgets.dart';
+import '../favorites/favorites.dart';
+import '../popular/e621_popular_page.dart';
 
 class E621HomePage extends ConsumerStatefulWidget {
   const E621HomePage({
     super.key,
-    required this.config,
   });
-
-  final BooruConfig config;
 
   @override
   ConsumerState<E621HomePage> createState() => _E621HomePageState();
@@ -31,22 +29,26 @@ class E621HomePage extends ConsumerStatefulWidget {
 class _E621HomePageState extends ConsumerState<E621HomePage> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
 
     return HomePageScaffold(
       mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.explore),
           title: const Text('Popular'),
-          onTap: () => context.navigator.push(CupertinoPageRoute(
+          onTap: () => Navigator.of(context).push(
+            CupertinoPageRoute(
               settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Popular'),
-                    ),
-                    body: const CustomContextMenuOverlay(
-                        child: E621PopularPage()),
-                  ))),
+                appBar: AppBar(
+                  title: const Text('Popular'),
+                ),
+                body: const CustomContextMenuOverlay(
+                  child: E621PopularPage(),
+                ),
+              ),
+            ),
+          ),
         ),
         if (config.hasLoginDetails()) ...[
           SideMenuTile(
@@ -54,7 +56,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             title: Text('profile.favorites'.tr()),
             onTap: () => goToFavoritesPage(context),
           ),
-        ]
+        ],
       ],
       desktopMenuBuilder: (context, constraints) => [
         HomeNavigationTile(
@@ -77,9 +79,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       desktopViews: [
         const E621PopularPage(),
         if (config.hasLoginDetails()) ...[
-          E621FavoritesPage(
-            username: config.login!,
-          ),
+          const E621FavoritesPage(),
         ],
       ],
     );

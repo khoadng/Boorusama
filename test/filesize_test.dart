@@ -1,8 +1,6 @@
 // Package imports:
 import 'package:flutter_test/flutter_test.dart';
-
-// Project imports:
-import 'package:boorusama/foundation/filesize.dart';
+import 'package:foundation/foundation.dart';
 
 abstract class S {
   static const int kb = 1024;
@@ -70,8 +68,10 @@ void main() {
   });
 
   test('Handles large file sizes without overflow', () {
-    expect(Filesize.tryParse(9223372036854775807),
-        '8.00 EB'); // Max 64-bit integer
+    expect(
+      Filesize.tryParse(9223372036854775807),
+      '8.00 EB',
+    ); // Max 64-bit integer
   });
 
   test('Handles custom units', () {

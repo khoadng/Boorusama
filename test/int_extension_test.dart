@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/utils/int_utils.dart';
+import 'package:boorusama/core/utils/int_utils.dart';
 
 void main() {
   testDigitCount();

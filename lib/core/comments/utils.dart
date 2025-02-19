@@ -1,34 +1,30 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/flutter.dart';
-import 'package:boorusama/foundation/animations.dart';
-import 'package:boorusama/foundation/display.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../foundation/display.dart';
+import '../foundation/widgets/side_sheet.dart';
 
 Future<T?> showCommentPage<T>(
   BuildContext context, {
   required int postId,
-  RouteSettings? settings,
   required Widget Function(BuildContext context, bool useAppBar) builder,
+  RouteSettings? settings,
 }) =>
     Screen.of(context).size == ScreenSize.small
-        ? showMaterialModalBottomSheet<T>(
-            context: context,
-            settings: settings,
-            duration: AppDurations.bottomSheet,
-            builder: (context) => builder(context, true),
+        ? Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: (context) => builder(context, true),
+            ),
           )
         : showSideSheetFromRight(
             settings: settings,
-            width: context.screenWidth * 0.41,
+            width: MediaQuery.sizeOf(context).width * 0.41,
             body: Container(
               color: Colors.transparent,
               padding:
@@ -38,7 +34,7 @@ Future<T?> showCommentPage<T>(
                   Container(
                     height: kToolbarHeight * 0.8,
                     decoration: BoxDecoration(
-                      color: context.colorScheme.surface,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(6),
                       ),
@@ -49,7 +45,7 @@ Future<T?> showCommentPage<T>(
                         const SizedBox(width: 8),
                         Text(
                           'comment.comments',
-                          style: context.textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ).tr(),
                         const Spacer(),
                         Material(
@@ -57,7 +53,7 @@ Future<T?> showCommentPage<T>(
                           child: InkWell(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
-                            onTap: context.navigator.pop,
+                            onTap: Navigator.of(context).pop,
                             child: const Icon(Symbols.close),
                           ),
                         ),
@@ -73,3 +69,20 @@ Future<T?> showCommentPage<T>(
             ),
             context: context,
           );
+
+String parse(
+  String text,
+  RegExp pattern,
+  String Function(Match match) replace,
+) =>
+    text.replaceAllMapped(pattern, replace);
+
+String linkify({
+  required String? title,
+  required String? address,
+  bool underline = false,
+}) {
+  String underline_() => underline ? '' : 'style="text-decoration:none"';
+
+  return '<a href="$address" ${underline_()}>$title</a>';
+}

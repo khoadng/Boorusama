@@ -3,21 +3,24 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/settings/widgets/widgets.dart';
-import 'package:boorusama/foundation/i18n.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../configs/ref.dart';
+import '../downloads/downloader.dart';
+import '../foundation/url_launcher.dart';
+import '../posts/post/post.dart';
+import '../posts/post/routes.dart';
+import '../posts/post/tags.dart';
+import '../settings/routes.dart';
+import '../tags/tag/routes.dart';
+import '../theme.dart';
+import 'booru_popup_menu_button.dart';
 
 class GeneralMoreActionButton extends ConsumerWidget {
   const GeneralMoreActionButton({
-    super.key,
     required this.post,
+    super.key,
     this.onDownload,
     this.onStartSlideshow,
   });
@@ -28,15 +31,15 @@ class GeneralMoreActionButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booru = ref.watchConfig;
+    final booru = ref.watchConfigAuth;
 
     return SizedBox(
       width: 40,
       child: Material(
-        color: Colors.black.withOpacity(0.5),
+        color: context.extendedColorScheme.surfaceContainerOverlay,
         shape: const CircleBorder(),
         child: BooruPopupMenuButton(
-          iconColor: Colors.white,
+          iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
           onSelected: (value) {
             switch (value) {
               case 'download':
@@ -45,29 +48,23 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 } else {
                   ref.download(post);
                 }
-                break;
               case 'view_in_browser':
                 launchExternalUrl(
                   post.getUriLink(booru.url),
                 );
-                break;
               case 'show_tag_list':
                 goToShowTaglistPage(
-                  ref,
+                  context,
                   post.extractTags(),
                 );
-                break;
               case 'view_original':
                 goToOriginalImagePage(context, post);
-                break;
               case 'start_slideshow':
                 if (onStartSlideshow != null) {
                   onStartSlideshow!();
                 }
-                break;
               case 'settings':
                 openImageViewerSettingsPage(context);
-                break;
               // ignore: no_default_cases
               default:
             }

@@ -2,15 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/theme.dart';
 import 'home_page_controller.dart';
 
 class SideMenuTile extends StatelessWidget {
   const SideMenuTile({
-    super.key,
     required this.icon,
     required this.title,
     required this.onTap,
+    super.key,
   });
 
   final Widget icon;
@@ -23,40 +22,35 @@ class SideMenuTile extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
+      child: InkWell(
+        onTap: () {
+          // Workaround to make the animation smoother
+          Future.delayed(
+            const Duration(milliseconds: 250),
+            () {
+              if (context.mounted) {
+                homeController?.closeMenu();
+              }
+            },
+          );
+          onTap();
+        },
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: InkWell(
-          onTap: () {
-            // Workaround to make the animation smoother
-            Future.delayed(
-              Duration(milliseconds: 250),
-              () {
-                if (context.mounted) {
-                  homeController?.closeMenu();
-                }
-              },
-            );
-            onTap();
-          },
-          customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: DefaultTextStyle(
-            style: context.textTheme.titleSmall ?? const TextStyle(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 4,
-              ),
-              child: Row(
-                children: [
-                  icon,
-                  const SizedBox(width: 12),
-                  title,
-                ],
-              ),
+        child: DefaultTextStyle(
+          style: Theme.of(context).textTheme.titleSmall ?? const TextStyle(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12,
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 8),
+                icon,
+                const SizedBox(width: 12),
+                title,
+              ],
             ),
           ),
         ),

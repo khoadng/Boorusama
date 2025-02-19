@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../feats/posts/posts.dart';
 
 class PeriodToggleSwitch extends StatelessWidget {
   const PeriodToggleSwitch({
-    super.key,
     required this.onToggle,
+    super.key,
   });
 
   final void Function(MoebooruTimePeriod period) onToggle;

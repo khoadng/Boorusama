@@ -2,36 +2,54 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/moebooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/clients/moebooru/moebooru_client.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/foundation/networking/networking.dart';
-import 'package:boorusama/functional.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/home/custom_home.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/scaffolds/scaffolds.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
+import '../gelbooru/gelbooru.dart';
 import 'configs/create_moebooru_config_page.dart';
+import 'feats/autocomplete/autocomplete.dart';
 import 'feats/posts/posts.dart';
+import 'feats/tags/tags.dart';
+import 'pages/moebooru_favorites_page.dart';
 import 'pages/moebooru_home_page.dart';
-import 'pages/moebooru_post_details_desktop_page.dart';
+import 'pages/moebooru_popular_page.dart';
+import 'pages/moebooru_popular_recent_page.dart';
 import 'pages/moebooru_post_details_page.dart';
+import 'pages/widgets/moebooru_comment_section.dart';
+import 'pages/widgets/moebooru_information_section.dart';
+import 'pages/widgets/moebooru_related_post_section.dart';
 
 final moebooruClientProvider =
-    Provider.family<MoebooruClient, BooruConfig>((ref, booruConfig) {
-  final dio = newDio(ref.watch(dioArgsProvider(booruConfig)));
+    Provider.family<MoebooruClient, BooruConfigAuth>((ref, config) {
+  final dio = ref.watch(dioProvider(config));
 
   return MoebooruClient.custom(
-    baseUrl: booruConfig.url,
-    login: booruConfig.login,
-    apiKey: booruConfig.apiKey,
+    baseUrl: config.url,
+    login: config.login,
+    apiKey: config.apiKey,
     dio: dio,
   );
 });
@@ -39,15 +57,16 @@ final moebooruClientProvider =
 class MoebooruBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultBooruUIMixin,
         DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
+        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
@@ -75,8 +94,7 @@ class MoebooruBuilder
           );
 
   @override
-  HomePageBuilder get homePageBuilder =>
-      (context, config) => MoebooruHomePage(config: config);
+  HomePageBuilder get homePageBuilder => (context) => const MoebooruHomePage();
 
   @override
   UpdateConfigPageBuilder get updateConfigPageBuilder => (
@@ -107,36 +125,20 @@ class MoebooruBuilder
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
-      (context, config) => config.hasLoginDetails()
-          ? MoebooruFavoritesPage(username: config.login!)
-          : const Scaffold(
-              body: Center(
-                child: Text(
-                    'You need to provide login details to use this feature.'),
-              ),
-            );
+      (context) => const MoebooruFavoritesPage();
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => MoebooruPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as MoebooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => MoebooruPostDetailsPage(
-              initialPage: controller.currentPage.value,
-              controller: controller,
-              posts: payload.posts.map((e) => e as MoebooruPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as MoebooruPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const MoebooruPostDetailsPage(),
+        );
+      };
 
   @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
@@ -152,40 +154,120 @@ class MoebooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
-}
-
-class MoebooruFavoritesPage extends ConsumerWidget {
-  const MoebooruFavoritesPage({
-    super.key,
-    required this.username,
-  });
-
-  final String username;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
-    final query = 'vote:3:$username order:vote';
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kMoebooruAltHomeView;
 
-    return FavoritesPageScaffold(
-      favQueryBuilder: () => query,
-      fetcher: (page) =>
-          ref.read(moebooruPostRepoProvider(config)).getPosts(query, page),
-    );
+  @override
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.info: (context) => const MoebooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const MoebooruPostDetailsActionToolbar(),
+    },
+    full: {
+      DetailsPart.info: (context) => const MoebooruInformationSection(),
+      DetailsPart.toolbar: (context) =>
+          const MoebooruPostDetailsActionToolbar(),
+      DetailsPart.tags: (context) => const MoebooruTagListSection(),
+      DetailsPart.fileDetails: (context) => const MoebooruFileDetailsSection(),
+      DetailsPart.artistPosts: (context) => const MoebooruArtistPostsSection(),
+      DetailsPart.relatedPosts: (context) =>
+          const MoebooruRelatedPostsSection(),
+      DetailsPart.comments: (context) => const MoebooruCommentSection(),
+      DetailsPart.characterList: (context) =>
+          const MoebooruCharacterListSection(),
+    },
+  );
+}
+
+class MoebooruRepository implements BooruRepository {
+  const MoebooruRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
+  }
+
+  @override
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(moebooruPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(moebooruAutocompleteRepoProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(moebooruTagRepoProvider(config));
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => MoebooruClient(
+          baseUrl: config.url,
+          dio: dio,
+          login: config.login,
+          passwordHashed: config.apiKey,
+        ).getPosts().then((value) => true);
   }
 }
 
+final kMoebooruAltHomeView = {
+  ...kDefaultAltHomeView,
+  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
+    displayName: 'profile.favorites',
+    builder: (context, _) => const MoebooruFavoritesPage(),
+  ),
+  const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
+    displayName: 'Popular',
+    builder: (context, _) => const MoebooruPopularPage(),
+  ),
+  const CustomHomeViewKey('hot'): CustomHomeDataBuilder(
+    displayName: 'Hot',
+    builder: (context, _) => const MoebooruPopularRecentPage(),
+  ),
+};
+
 class MoebooruArtistPage extends ConsumerWidget {
   const MoebooruArtistPage({
-    super.key,
     required this.artistName,
+    super.key,
   });
 
   final String artistName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigSearch;
 
     return ArtistPageScaffold(
       artistName: artistName,

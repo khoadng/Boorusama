@@ -2,19 +2,33 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/zerochan.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru_builder.dart';
-import 'package:boorusama/boorus/danbooru/danbooru.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/downloads/downloads.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/core/tags/tags.dart';
-import 'package:boorusama/core/widgets/widgets.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/router.dart';
-import '../../core/configs/create/create.dart';
+import '../../core/autocompletes/autocompletes.dart';
+import '../../core/blacklists/blacklist.dart';
+import '../../core/blacklists/providers.dart';
+import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/config.dart';
+import '../../core/configs/create.dart';
+import '../../core/configs/manage.dart';
+import '../../core/downloads/filename.dart';
+import '../../core/downloads/urls.dart';
+import '../../core/http/providers.dart';
+import '../../core/notes/notes.dart';
+import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/widgets.dart';
+import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/post/post.dart';
+import '../../core/posts/sources/source.dart';
+import '../../core/search/search/routes.dart';
+import '../../core/tags/tag/providers.dart';
+import '../../core/tags/tag/tag.dart';
+import '../danbooru/danbooru.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';
 
@@ -24,7 +38,6 @@ const kZerochanCustomDownloadFileNameFormat =
 class ZerochanBuilder
     with
         FavoriteNotSupportedMixin,
-        PostCountNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         DefaultThumbnailUrlMixin,
@@ -33,6 +46,8 @@ class ZerochanBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         UnknownMetatagsMixin,
+        DefaultTagColorsMixin,
+        DefaultTagSuggestionsItemBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
@@ -75,31 +90,23 @@ class ZerochanBuilder
           );
 
   @override
-  PostDetailsPageBuilder get postDetailsPageBuilder =>
-      (context, config, payload) => PostDetailsLayoutSwitcher(
-            initialIndex: payload.initialIndex,
-            posts: payload.posts,
-            scrollController: payload.scrollController,
-            desktop: (controller) => ZerochanPostDetailsDesktopPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as ZerochanPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-            mobile: (controller) => ZerochanPostDetailsPage(
-              initialIndex: controller.currentPage.value,
-              posts: payload.posts.map((e) => e as ZerochanPost).toList(),
-              onExit: (page) => controller.onExit(page),
-              onPageChanged: (page) => controller.setPage(page),
-            ),
-          );
+  PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
+        final posts = payload.posts.map((e) => e as ZerochanPost).toList();
+
+        return PostDetailsScope(
+          initialIndex: payload.initialIndex,
+          initialThumbnailUrl: payload.initialThumbnailUrl,
+          posts: posts,
+          scrollController: payload.scrollController,
+          child: const DefaultPostDetailsPage<ZerochanPost>(),
+        );
+      };
 
   @override
-  TagColorBuilder get tagColorBuilder => (brightness, tagType) {
-        final colors =
-            brightness.isLight ? TagColors.dark() : TagColors.light();
+  TagColorBuilder get tagColorBuilder => (options) {
+        final colors = options.colors;
 
-        return switch (tagType) {
+        return switch (options.tagType) {
           'mangaka' ||
           'studio' ||
           // This is from a fallback in case the tag is already searched in other boorus
@@ -132,74 +139,85 @@ class ZerochanBuilder
       'source': (post, config) => post.source.url,
     },
   );
-}
-
-class ZerochanPostDetailsPage extends ConsumerWidget {
-  const ZerochanPostDetailsPage({
-    super.key,
-    required this.posts,
-    required this.initialIndex,
-    required this.onPageChanged,
-    required this.onExit,
-  });
-
-  final List<ZerochanPost> posts;
-  final int initialIndex;
-  final void Function(int page) onPageChanged;
-  final void Function(int page) onExit;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageScaffold(
-      posts: posts,
-      initialIndex: initialIndex,
-      swipeImageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-      onExit: onExit,
-      onPageChangeIndexed: onPageChanged,
-    );
+  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<ZerochanPost>(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar<ZerochanPost>(),
+      DetailsPart.source: (context) =>
+          const DefaultInheritedSourceSection<ZerochanPost>(),
+      DetailsPart.tags: (context) => const ZerochanTagsTile(),
+      DetailsPart.fileDetails: (context) =>
+          const DefaultInheritedFileDetailsSection<ZerochanPost>(),
+    },
+  );
+}
+
+class ZerochanRepository implements BooruRepository {
+  const ZerochanRepository({required this.ref});
+
+  @override
+  final Ref ref;
+
+  @override
+  PostCountRepository? postCount(BooruConfigSearch config) {
+    return null;
   }
-}
-
-class ZerochanPostDetailsDesktopPage extends ConsumerWidget {
-  const ZerochanPostDetailsDesktopPage({
-    super.key,
-    required this.initialIndex,
-    required this.posts,
-    required this.onExit,
-    required this.onPageChanged,
-  });
-
-  final int initialIndex;
-  final List<ZerochanPost> posts;
-  final void Function(int index) onExit;
-  final void Function(int page) onPageChanged;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PostDetailsPageDesktopScaffold(
-      initialIndex: initialIndex,
-      posts: posts,
-      onExit: onExit,
-      onPageChanged: onPageChanged,
-      imageUrlBuilder: defaultPostImageUrlBuilder(ref),
-      tagListBuilder: (context, post) => ZerochanTagsTile(post: post),
-      toolbarBuilder: (context, post) => SimplePostActionToolbar(post: post),
-      topRightButtonsBuilder: (currentPage, expanded, post) =>
-          GeneralMoreActionButton(post: post),
-    );
+  PostRepository<Post> post(BooruConfigSearch config) {
+    return ref.read(zerochanPostRepoProvider(config));
+  }
+
+  @override
+  AutocompleteRepository autocomplete(BooruConfigAuth config) {
+    return ref.read(emptyAutocompleteRepoProvider);
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.read(emptyNoteRepoProvider);
+  }
+
+  @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(emptyTagRepoProvider);
+  }
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const UrlInsidePostExtractor();
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return EmptyFavoriteRepository();
+  }
+
+  @override
+  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
+    return GlobalBlacklistTagRefRepository(ref);
+  }
+
+  @override
+  BooruSiteValidator? siteValidator(BooruConfigAuth config) {
+    final dio = ref.watch(dioProvider(config));
+
+    return () => ZerochanClient(dio: dio, baseUrl: config.url)
+        .getPosts(strict: true)
+        .then((value) => true);
   }
 }
 
 class ZerochanTagsTile extends ConsumerStatefulWidget {
   const ZerochanTagsTile({
     super.key,
-    required this.post,
-    this.onTagsLoaded,
   });
-
-  final Post post;
-  final void Function(List<TagGroupItem> tags)? onTagsLoaded;
 
   @override
   ConsumerState<ZerochanTagsTile> createState() => _ZerochanTagsTileState();
@@ -211,19 +229,21 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
 
   @override
   Widget build(BuildContext context) {
+    final post = InheritedPost.of<ZerochanPost>(context);
+
     if (expanded) {
-      ref.listen(zerochanTagsFromIdProvider(widget.post.id), (previous, next) {
+      ref.listen(zerochanTagsFromIdProvider(post.id), (previous, next) {
         next.when(
           data: (data) {
             if (!mounted) return;
 
-            if (data.isNotEmpty) {
-              if (widget.onTagsLoaded != null) {
-                widget.onTagsLoaded!(createTagGroupItems(data));
-              }
-            }
+            // if (data.isNotEmpty) {
+            //   if (widget.onTagsLoaded != null) {
+            //     widget.onTagsLoaded!(createTagGroupItems(data));
+            //   }
+            // }
 
-            if (data.isEmpty && widget.post.tags.isNotEmpty) {
+            if (data.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');
             }
@@ -237,27 +257,27 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
       });
     }
 
-    return error == null
-        ? TagsTile(
-            tags: expanded
-                ? ref
-                    .watch(zerochanTagsFromIdProvider(widget.post.id))
-                    .maybeWhen(
-                      data: (data) => createTagGroupItems(data),
-                      orElse: () => null,
-                    )
-                : null,
-            post: widget.post,
-            onExpand: () => setState(() => expanded = true),
-            onCollapse: () {
-              // Don't set expanded to false to prevent rebuilding the tags list
-              setState(() => error = null);
-            },
-            onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
-          )
-        : BasicTagList(
-            tags: widget.post.tags.toList(),
-            onTap: (tag) => goToSearchPage(context, tag: tag),
-          );
+    return SliverToBoxAdapter(
+      child: error == null
+          ? TagsTile(
+              tags: expanded
+                  ? ref.watch(zerochanTagsFromIdProvider(post.id)).maybeWhen(
+                        data: (data) => createTagGroupItems(data),
+                        orElse: () => null,
+                      )
+                  : null,
+              post: post,
+              onExpand: () => setState(() => expanded = true),
+              onCollapse: () {
+                // Don't set expanded to false to prevent rebuilding the tags list
+                setState(() => error = null);
+              },
+              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
+            )
+          : BasicTagList(
+              tags: post.tags.toList(),
+              onTap: (tag) => goToSearchPage(context, tag: tag),
+            ),
+    );
   }
 }

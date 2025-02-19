@@ -1,7 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/tags/tags.dart';
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
-import 'package:boorusama/string.dart';
+import '../../../../core/autocompletes/autocompletes.dart';
+import '../tags/tags.dart';
 
 List<AutocompleteData> convertTagSummaryToAutocompleteData(
   TagSummary tagSummary,
@@ -14,24 +13,27 @@ List<AutocompleteData> convertTagSummaryToAutocompleteData(
       : null;
   final category = tagSummary.category.toString();
 
-  final List<AutocompleteData> autocompleteDataList = [
+  final autocompleteDataList = <AutocompleteData>[
     AutocompleteData(
-      label: label.replaceUnderscoreWithSpace(),
+      label: label.replaceAll('_', ' '),
       value: value,
       type: type,
       category: category,
-    )
+    ),
   ];
 
   if (antecedents.isNotEmpty) {
-    autocompleteDataList
-        .addAll(antecedents.map((antecedent) => AutocompleteData(
-              label: label,
-              value: label,
-              antecedent: antecedent,
-              type: type,
-              category: category,
-            )));
+    autocompleteDataList.addAll(
+      antecedents.map(
+        (antecedent) => AutocompleteData(
+          label: label,
+          value: label,
+          antecedent: antecedent,
+          type: type,
+          category: category,
+        ),
+      ),
+    );
   }
 
   return autocompleteDataList;

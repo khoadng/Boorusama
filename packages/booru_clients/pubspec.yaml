@@ -1,0 +1,19 @@
+name: booru_clients
+description: Clients for various Booru sites.
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+resolution: workspace
+
+dependencies:
+  collection: ^1.17.0
+  dio: ^5.7.0
+  equatable: ^2.0.7
+  html: ^0.15.4
+  path: ^1.8.3
+  xml: ^6.5.0
+
+dev_dependencies:
+  lints: ^5.0.0

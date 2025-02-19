@@ -1,7 +1,8 @@
+// Package imports:
+import 'package:booru_clients/e621.dart';
+
 // Project imports:
-import 'package:boorusama/clients/e621/e621_client.dart';
-import 'package:boorusama/clients/e621/types/types.dart';
-import 'package:boorusama/core/configs/configs.dart';
+import '../../../core/configs/config.dart';
 import 'e621_tag.dart';
 import 'e621_tag_category.dart';
 
@@ -19,7 +20,7 @@ class E621TagRepositoryApi implements E621TagRepository {
   );
 
   final E621Client client;
-  final BooruConfig booruConfig;
+  final BooruConfigAuth booruConfig;
 
   @override
   Future<List<E621Tag>> getTagsWithWildcard(
@@ -38,10 +39,12 @@ E621Tag e621TagDtoToTag(TagDto dto) {
     name: dto.name ?? '',
     postCount: dto.postCount ?? 0,
     relatedTags: dto.relatedTags
-            ?.map((e) => E621RelatedTag(
-                  tag: e.tag,
-                  score: e.score,
-                ))
+            ?.map(
+              (e) => E621RelatedTag(
+                tag: e.tag,
+                score: e.score,
+              ),
+            )
             .toList() ??
         [],
     relatedTagsUpdatedAt:

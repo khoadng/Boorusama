@@ -5,23 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru_v2/comments/comments.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/scaffolds/scaffolds.dart';
+import '../../../core/configs/ref.dart';
+import '../../../core/scaffolds/scaffolds.dart';
+import 'comments.dart';
 
 class GelbooruV2CommentPage extends ConsumerWidget {
   const GelbooruV2CommentPage({
-    super.key,
     required this.postId,
+    required this.useAppBar,
+    super.key,
   });
 
   final int postId;
+  final bool useAppBar;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
+    final config = ref.watchConfigAuth;
     return CommentPageScaffold(
       postId: postId,
+      useAppBar: useAppBar,
       fetcher: (postId) =>
           ref.watch(gelbooruV2CommentRepoProvider(config)).getComments(postId),
     );

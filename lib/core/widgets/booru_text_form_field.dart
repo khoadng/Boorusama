@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/providers.dart';
+import '../settings/providers.dart';
 
 class BooruTextFormField extends ConsumerWidget {
   const BooruTextFormField({
@@ -51,7 +51,7 @@ class BooruTextFormField extends ConsumerWidget {
     this.cursorRadius,
     this.cursorColor,
     this.keyboardAppearance,
-    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.scrollPadding = const EdgeInsets.all(20),
     this.enableInteractiveSelection,
     this.selectionControls,
     this.buildCounter,
@@ -69,7 +69,7 @@ class BooruTextFormField extends ConsumerWidget {
     this.cursorOpacityAnimates,
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = true,
     this.canRequestFocus = true,
   });
 
@@ -131,12 +131,14 @@ class BooruTextFormField extends ConsumerWidget {
   final bool? cursorOpacityAnimates;
   final ContentInsertionConfiguration? contentInsertionConfiguration;
   final Clip clipBehavior;
-  final bool scribbleEnabled;
+  final bool stylusHandwritingEnabled;
   final bool canRequestFocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final enableIncognitoModeForKeyboard = ref.watch(
+      settingsProvider.select((value) => value.enableIncognitoModeForKeyboard),
+    );
 
     return TextFormField(
       key: key,
@@ -189,8 +191,8 @@ class BooruTextFormField extends ConsumerWidget {
       autovalidateMode: autovalidateMode,
       scrollController: scrollController,
       restorationId: restorationId,
-      enableIMEPersonalizedLearning: enableIMEPersonalizedLearning ??
-          !settings.enableIncognitoModeForKeyboard,
+      enableIMEPersonalizedLearning:
+          enableIMEPersonalizedLearning ?? !enableIncognitoModeForKeyboard,
       mouseCursor: mouseCursor,
       spellCheckConfiguration: spellCheckConfiguration,
       magnifierConfiguration: magnifierConfiguration,
@@ -199,7 +201,7 @@ class BooruTextFormField extends ConsumerWidget {
       cursorOpacityAnimates: cursorOpacityAnimates,
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
-      scribbleEnabled: scribbleEnabled,
+      // stylusHandwritingEnabled: stylusHandwritingEnabled,
       canRequestFocus: canRequestFocus,
     );
   }

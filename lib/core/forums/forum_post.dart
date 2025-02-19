@@ -1,7 +1,9 @@
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 // Project imports:
-import 'package:boorusama/foundation/error.dart';
-import 'package:boorusama/foundation/http/http.dart';
-import 'package:boorusama/functional.dart';
+import '../foundation/error.dart';
+import '../http/http.dart';
 
 abstract class ForumPost {
   int get id;
@@ -46,9 +48,11 @@ class ForumPostRepositoryBuilder<T extends ForumPost>
     int? limit,
   }) =>
       TaskEither.Do(($) async {
-        final value = await $(tryFetchRemoteData(
-          fetcher: () => fetch(topicId, page: page, limit: limit),
-        ));
+        final value = await $(
+          tryFetchRemoteData(
+            fetcher: () => fetch(topicId, page: page, limit: limit),
+          ),
+        );
 
         return value;
       });

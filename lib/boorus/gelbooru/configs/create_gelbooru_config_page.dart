@@ -7,14 +7,15 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/gelbooru/gelbooru.dart';
-import 'package:boorusama/boorus/providers.dart';
-import 'package:boorusama/core/configs/configs.dart';
-import 'package:boorusama/core/configs/create/create.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/toast.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/widgets/widgets.dart';
+import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/providers.dart';
+import '../../../core/configs/config.dart';
+import '../../../core/configs/create.dart';
+import '../../../core/foundation/toast.dart';
+import '../../../core/foundation/url_launcher.dart';
+import '../../../core/theme.dart';
+import '../../../core/widgets/widgets.dart';
+import '../gelbooru.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -33,7 +34,12 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       backgroundColor: backgroundColor,
       initialTab: initialTab,
       authTab: const GelbooruAuthView(),
-      hasRatingFilter: true,
+      searchTab: const DefaultBooruConfigSearchView(
+        hasRatingFilter: true,
+      ),
+      imageViewerTab: const BooruConfigViewerView(
+        autoLoadNotes: DefaultAutoFetchNotesSwitch(),
+      ),
     );
   }
 }
@@ -47,12 +53,16 @@ class GelbooruAuthView extends ConsumerStatefulWidget {
 
 class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   late final loginController = TextEditingController(
-    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-        .select((value) => value.login)),
+    text: ref.read(
+      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+          .select((value) => value.login),
+    ),
   );
   late final apiKeyController = TextEditingController(
-    text: ref.read(editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-        .select((value) => value.apiKey)),
+    text: ref.read(
+      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
+          .select((value) => value.apiKey),
+    ),
   );
 
   @override
@@ -66,8 +76,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
     final passHash = ref.watch(
-        editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-            .select((value) => value.passHash));
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
+          .select((value) => value.passHash),
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -78,20 +89,20 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const SizedBox(height: 16),
           Text(
             'Basic Auth',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             'Provide this information to view your favorites. This only provides read access to your account.',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
           ),
           const SizedBox(height: 24),
           GelbooruLoginField(
@@ -104,11 +115,11 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const SizedBox(height: 8),
           RichText(
             text: TextSpan(
-              style: context.textTheme.titleSmall?.copyWith(
-                color: context.theme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.hintColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
               children: [
                 const TextSpan(
                   text: '*Log in to your account on the browser, visit ',
@@ -118,11 +129,12 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       launchExternalUrlString(
-                          getGelbooruProfileUrl(config.url));
+                        getGelbooruProfileUrl(config.url),
+                      );
                     },
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const TextSpan(
@@ -159,37 +171,38 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const SizedBox(height: 8),
           Text(
             'Advanced Auth',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
             'Provide this information allows you to edit your favorites. This provides write access to your account. Note that if you change your password, you need to log in again.',
-            style: context.textTheme.titleSmall?.copyWith(
-              color: context.theme.hintColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          passHash == null
-              ? _buildLoginButton(context, config: config)
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildLoginStatus(config),
-                    const SizedBox(height: 8),
-                    WarningContainer(
-                      margin: EdgeInsets.zero,
-                      title: "About the heart button's state",
-                      contentBuilder: (context) => const Text(
-                        "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
-                      ),
-                    ),
-                  ],
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
                 ),
+          ),
+          if (passHash == null)
+            _buildLoginButton(context, config: config)
+          else
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildLoginStatus(config),
+                const SizedBox(height: 8),
+                WarningContainer(
+                  margin: EdgeInsets.zero,
+                  title: "About the heart button's state",
+                  contentBuilder: (context) => const Text(
+                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -206,7 +219,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
       margin: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         border: Border.all(
-          color: context.colorScheme.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -222,7 +235,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Row(
             children: [
               RawChip(
-                backgroundColor: context.colorScheme.secondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 onPressed: () {
                   _openBrowser(config);
                 },
@@ -230,7 +244,8 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               ),
               const SizedBox(width: 8),
               RawChip(
-                backgroundColor: context.colorScheme.secondaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
@@ -244,7 +259,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   }
 
   void _openBrowser(BooruConfig config) {
-    final loginUrl = ref.read(booruProvider(config))?.getLoginUrl();
+    final loginUrl = ref.read(booruProvider(config.auth))?.getLoginUrl();
 
     if (loginUrl == null) {
       showErrorToast(context, 'Login URL for this booru is not available');
@@ -264,7 +279,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
 
               if (pashHash != null) {
                 ref.editNotifier.updatePassHash(
-                  () => pashHash.value,
+                  pashHash.value,
                 );
                 if (uid != null) {
                   ref.editNotifier.updateLogin(uid.value);
@@ -294,7 +309,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         children: [
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: context.colorScheme.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             ),
             onPressed: () {
               _openBrowser(config);
@@ -302,7 +317,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             child: Text(
               title ?? 'Login with Browser',
               style: TextStyle(
-                color: context.colorScheme.onSecondaryContainer,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
               ),
             ),
           ),

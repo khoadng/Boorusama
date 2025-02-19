@@ -1,5 +1,5 @@
-// Project imports:
-import 'package:boorusama/clients/e621/e621_client.dart';
+// Package imports:
+import 'package:booru_clients/e621.dart';
 
 abstract interface class E621FavoritesRepository {
   Future<bool> addToFavorites(int postId);

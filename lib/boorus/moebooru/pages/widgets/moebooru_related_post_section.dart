@@ -3,38 +3,41 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/moebooru/feats/posts/posts.dart';
-import 'package:boorusama/core/posts/posts.dart';
-import 'package:boorusama/router.dart';
-import 'package:boorusama/widgets/sliver_sized_box.dart';
+import '../../../../core/posts/details/details.dart';
+import '../../../../core/posts/details/routes.dart';
+import '../../../../core/posts/details_parts/widgets.dart';
+import '../../../../core/posts/post/post.dart';
+import '../../../../core/search/search/routes.dart';
+import '../../feats/posts/posts.dart';
 
 class MoebooruRelatedPostsSection extends ConsumerWidget {
   const MoebooruRelatedPostsSection({
     super.key,
-    required this.post,
   });
-
-  final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<MoebooruPost>(context);
+
     final postsAsync = ref.watch(moebooruPostDetailsChildrenProvider(post));
 
     return postsAsync.maybeWhen(
       data: (posts) => posts != null
-          ? RelatedPostsSection(
+          ? SliverRelatedPostsSection(
               posts: posts,
               imageUrl: (item) => item.sampleImageUrl,
               onViewAll: () => goToSearchPage(
                 context,
                 tag: post.relationshipQuery,
               ),
-              onTap: (index) => goToPostDetailsPage(
+              onTap: (index) => goToPostDetailsPageFromPosts(
                 context: context,
                 posts: posts,
                 initialIndex: index,
+                initialThumbnailUrl: posts[index].sampleImageUrl,
               ),
             )
           : const SliverSizedBox(),

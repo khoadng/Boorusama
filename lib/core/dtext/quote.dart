@@ -5,21 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/html.dart';
-import 'package:boorusama/foundation/theme.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
+import '../foundation/html.dart';
+import '../foundation/url_launcher.dart';
+import '../theme.dart';
 
 class Quote extends StatelessWidget {
-  const Quote({super.key, required this.text});
+  const Quote({required this.text, super.key});
   final String text;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         border: Border.all(
-          color: context.theme.hintColor,
+          color: Theme.of(context).colorScheme.hintColor,
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6),

@@ -2,13 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/loggers/loggers.dart';
 import 'boot.dart';
+import 'core/foundation/loggers.dart';
 
 void main() async {
-  final bootLogger = BootLogger();
+  final bootLogger = BootLogger()..l("Initialize Flutter's widgets binding");
 
-  bootLogger.l("Initialize Flutter's widgets binding");
   WidgetsFlutterBinding.ensureInitialized();
   try {
     bootLogger.l('Booting...');
