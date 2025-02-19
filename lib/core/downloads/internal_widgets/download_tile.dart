@@ -96,7 +96,7 @@ class DownloadTileBuilder extends StatelessWidget {
                   children: [
                     if (siteUrl != null)
                       BooruLogo(
-                        source: siteUrl!,
+                        source: siteUrl,
                         width: 18,
                         height: 18,
                       ),

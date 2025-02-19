@@ -30,13 +30,14 @@ class WebsiteLogo extends ConsumerWidget {
     this.size = _faviconSize,
   });
 
-  final String url;
+  final String? url;
   final double size;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
+    final url = this.url;
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -45,24 +46,30 @@ class WebsiteLogo extends ConsumerWidget {
         minWidth: size,
         minHeight: size,
       ),
-      child: ExtendedImage.network(
-        url,
-        dio: dio,
-        clearMemoryCacheIfFailed: false,
-        fit: BoxFit.cover,
-        placeholderWidget: Container(
-          padding: const EdgeInsets.all(6),
-          child: const CircularProgressIndicator(
-            strokeWidth: 1,
-          ),
-        ),
-        errorWidget: Card(
-          child: FaIcon(
-            FontAwesomeIcons.globe,
-            size: _calcFailedIconSize(size),
-            color: Colors.blue,
-          ),
-        ),
+      child: url != null
+          ? ExtendedImage.network(
+              url,
+              dio: dio,
+              clearMemoryCacheIfFailed: false,
+              fit: BoxFit.cover,
+              placeholderWidget: Container(
+                padding: const EdgeInsets.all(8),
+                child: const CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                ),
+              ),
+              errorWidget: _buildFallback(),
+            )
+          : _buildFallback(),
+    );
+  }
+
+  Widget _buildFallback() {
+    return Card(
+      child: FaIcon(
+        FontAwesomeIcons.globe,
+        size: _calcFailedIconSize(size),
+        color: Colors.blue,
       ),
     );
   }

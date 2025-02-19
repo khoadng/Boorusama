@@ -2,16 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
-import '../configs/ref.dart';
-import '../http/providers.dart';
 import '../posts/sources/source.dart';
+import 'widgets.dart';
 
 class BooruLogo extends ConsumerWidget {
   const BooruLogo({
@@ -43,7 +40,7 @@ class BooruLogo extends ConsumerWidget {
 
   static bool _isFixed(BooruType booruType) => booruType == BooruType.hydrus;
 
-  final String source;
+  final String? source;
   final double? width;
   final double? height;
   final bool _isFixedIcon;
@@ -54,37 +51,30 @@ class BooruLogo extends ConsumerWidget {
       return _buildAssetImage(source);
     }
 
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
-
     return PostSource.from(source).whenWeb(
       (s) => FittedBox(
         child: s.faviconType == FaviconType.network
-            ? ExtendedImage.network(
-                dio: dio,
-                s.faviconUrl,
-                width: width ?? 24,
-                height: height ?? 24,
-                fit: BoxFit.cover,
-                clearMemoryCacheIfFailed: false,
-                errorWidget: FaIcon(
-                  FontAwesomeIcons.globe,
-                  size: width,
-                  color: Colors.blue,
-                ),
+            ? WebsiteLogo(
+                url: s.faviconUrl,
+                size: width ?? _kFallbackSize,
               )
             : _buildAssetImage(s.faviconUrl),
       ),
-      () => const SizedBox.shrink(),
+      () => WebsiteLogo(
+        url: source,
+        size: width ?? _kFallbackSize,
+      ),
     );
   }
 
   Widget _buildAssetImage(url) {
     return Image.asset(
       url,
-      width: width ?? 28,
-      height: height ?? 28,
+      width: width ?? _kFallbackSize,
+      height: height ?? _kFallbackSize,
       fit: BoxFit.cover,
     );
   }
 }
+
+const _kFallbackSize = 28.0;
