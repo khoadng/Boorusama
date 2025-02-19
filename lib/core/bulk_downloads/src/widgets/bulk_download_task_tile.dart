@@ -11,7 +11,6 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
 import '../../../downloads/manager.dart';
 import '../../../foundation/clipboard.dart';
 import '../../../foundation/toast.dart';
@@ -85,7 +84,7 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            _Logo(session),
+                            if (session.stats.coverUrl != null) _Logo(session),
                             Expanded(
                               child: Row(
                                 mainAxisAlignment:
@@ -377,10 +376,13 @@ class _Logo extends ConsumerWidget {
     final stats = session.stats;
 
     return stats != DownloadSessionStats.empty
-        ? BooruLogo.fromConfig(
-            ref.watchConfigAuth,
-            width: 18,
-            height: 18,
+        ? Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: BooruLogo(
+              source: stats.siteUrl,
+              width: 18,
+              height: 18,
+            ),
           )
         : const SizedBox.shrink();
   }
@@ -416,28 +418,25 @@ class _InfoText extends ConsumerWidget {
       totalItemText,
     ].nonNulls.join(' • ');
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text(
-        switch (status) {
-          DownloadSessionStatus.pending =>
-            DownloadTranslations.createdStatus.tr(),
-          DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
-              pageProgress.completed,
-            ).tr(),
-          DownloadSessionStatus.failed => 'Error',
-          DownloadSessionStatus.interrupted => 'Interrupted',
-          DownloadSessionStatus.allSkipped =>
-            DownloadTranslations.allSkippedStatus.tr(),
-          _ => infoText,
-        },
-        maxLines: 1,
-        overflow: TextOverflow.fade,
-        softWrap: false,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.hintColor,
-          fontSize: 12,
-        ),
+    return Text(
+      switch (status) {
+        DownloadSessionStatus.pending =>
+          DownloadTranslations.createdStatus.tr(),
+        DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
+            pageProgress.completed,
+          ).tr(),
+        DownloadSessionStatus.failed => 'Error',
+        DownloadSessionStatus.interrupted => 'Interrupted',
+        DownloadSessionStatus.allSkipped =>
+          DownloadTranslations.allSkippedStatus.tr(),
+        _ => infoText,
+      },
+      maxLines: 1,
+      overflow: TextOverflow.fade,
+      softWrap: false,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.hintColor,
+        fontSize: 12,
       ),
     );
   }
