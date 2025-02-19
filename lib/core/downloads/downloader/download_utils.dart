@@ -175,7 +175,7 @@ Future<void> _download(
   void Function()? onStarted,
 }) async {
   final booruConfig = ref.readConfig;
-  final service = ref.read(downloadServiceProvider(booruConfig.auth));
+  final service = ref.read(downloadServiceProvider);
   final fileNameBuilder =
       ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
   final logger = ref.read(loggerProvider);

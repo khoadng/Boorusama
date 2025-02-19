@@ -8,11 +8,8 @@ import '../urls/download_url.dart';
 import 'background_downloader.dart';
 import 'download_service.dart';
 
-final downloadServiceProvider =
-    Provider.family<DownloadService, BooruConfigAuth>(
-  (ref, config) {
-    return BackgroundDownloader();
-  },
+final downloadServiceProvider = Provider<DownloadService>(
+  (ref) => BackgroundDownloader(),
 );
 
 final downloadFileUrlExtractorProvider =

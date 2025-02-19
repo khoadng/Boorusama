@@ -354,7 +354,7 @@ List<Override> getTestOverrides({
     currentReadOnlyBooruConfigAuthProvider.overrideWithValue(booruConfigAuth),
     currentReadOnlyBooruConfigProvider.overrideWithValue(booruConfig),
     postRepoProvider.overrideWith((__, _) => DummyPostRepository()),
-    downloadServiceProvider.overrideWith((__, _) => DummyDownloadService()),
+    downloadServiceProvider.overrideWith((_) => DummyDownloadService()),
     loggerProvider.overrideWithValue(DummyLogger()),
     mediaPermissionManagerProvider.overrideWithValue(
       mediaPermissionManager ?? MockMediaPermissionManager(),

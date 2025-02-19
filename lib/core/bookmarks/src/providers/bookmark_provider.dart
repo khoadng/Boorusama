@@ -232,30 +232,34 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     List<Bookmark> bookmarks,
   ) async {
     final settings = ref.read(settingsProvider);
+    final downloader = ref.read(downloadServiceProvider);
+    final headers = {
+      AppHttpHeaders.userAgentHeader:
+          ref.read(userAgentProvider(config.auth.booruType)),
+      ...ref.read(extraHttpHeaderProvider(config.auth)),
+      ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
+    };
+
     final tasks = bookmarks
         .map(
-          (bookmark) => ref
-              .read(downloadServiceProvider(config.auth))
+          (bookmark) => downloader
               .downloadWithSettings(
-            settings,
-            config: config,
-            url: bookmark.originalUrl,
-            metadata: DownloaderMetadata(
-              thumbnailUrl: bookmark.thumbnailUrl,
-              fileSize: null,
-              siteUrl: bookmark.sourceUrl,
-              group: null,
-            ),
-            filename: bookmark.md5 + extension(bookmark.originalUrl),
-            headers: {
-              AppHttpHeaders.userAgentHeader:
-                  ref.read(userAgentProvider(config.auth.booruType)),
-              ...ref.read(extraHttpHeaderProvider(config.auth)),
-              ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
-            },
-          ).run(),
+                settings,
+                config: config,
+                url: bookmark.originalUrl,
+                metadata: DownloaderMetadata(
+                  thumbnailUrl: bookmark.thumbnailUrl,
+                  fileSize: null,
+                  siteUrl: bookmark.sourceUrl,
+                  group: null,
+                ),
+                filename: bookmark.md5 + extension(bookmark.originalUrl),
+                headers: headers,
+              )
+              .run(),
         )
         .toList();
+
     await Future.wait(tasks);
   }
 }

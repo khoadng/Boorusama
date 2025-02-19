@@ -765,8 +765,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      final config = ref.readConfigAuth;
-      final downloader = ref.read(downloadServiceProvider(config));
+      final downloader = ref.read(downloadServiceProvider);
 
       await _updateSession(
         sessionId,
@@ -949,8 +948,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         page = 1;
       }
 
-      final config = ref.readConfigAuth;
-      final downloader = ref.read(downloadServiceProvider(config));
+      final downloader = ref.read(downloadServiceProvider);
 
       // Continue downloading items that were paused
       unawaited(downloader.resumeAll(sessionId));
@@ -1018,8 +1016,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
   Future<void> cancelSession(String sessionId) async {
     try {
-      final config = ref.readConfigAuth;
-      final downloader = ref.read(downloadServiceProvider(config));
+      final downloader = ref.read(downloadServiceProvider);
       final session = await _withRepo((repo) => repo.getSession(sessionId));
       final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
       final notification =
@@ -1410,8 +1407,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     required int endPage,
     required DownloadConfigs? downloadConfigs,
   }) async {
-    final config = ref.readConfigAuth;
-    final fallbackDownloader = ref.read(downloadServiceProvider(config));
+    final fallbackDownloader = ref.read(downloadServiceProvider);
     final downloader = downloadConfigs?.downloader ?? fallbackDownloader;
 
     for (var currentPage = startPage; currentPage <= endPage; currentPage++) {
