@@ -11,7 +11,6 @@ enum DownloadSessionStatus {
   completed,
   allSkipped,
   failed,
-  interrupted,
   paused,
   suspended,
   cancelled;

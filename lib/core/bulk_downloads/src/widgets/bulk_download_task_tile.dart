@@ -426,7 +426,6 @@ class _InfoText extends ConsumerWidget {
             pageProgress.completed,
           ).tr(),
         DownloadSessionStatus.failed => 'Error',
-        DownloadSessionStatus.interrupted => 'Interrupted',
         DownloadSessionStatus.allSkipped =>
           DownloadTranslations.allSkippedStatus.tr(),
         _ => infoText,
@@ -456,7 +455,6 @@ class _Subtitle extends ConsumerWidget {
 
     return status == DownloadSessionStatus.running ||
             status == DownloadSessionStatus.dryRun ||
-            status == DownloadSessionStatus.interrupted ||
             status == DownloadSessionStatus.paused
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,14 +507,6 @@ class _ProgressBar extends ConsumerWidget {
 
     return switch (status) {
       DownloadSessionStatus.dryRun => _buildLinear(),
-      DownloadSessionStatus.interrupted =>
-        ref.watch(percentCompletedFromDbProvider(sessionId)).maybeWhen(
-              data: (progress) => _buildPercent(
-                progress,
-                animateFromLastPercent: false,
-              ),
-              orElse: () => _buildLinear(),
-            ),
       _ => Builder(
           builder: (context) {
             final progressMap = ref.watch(
