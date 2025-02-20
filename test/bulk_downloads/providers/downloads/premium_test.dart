@@ -12,6 +12,7 @@ import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'common.dart';
 
 const _defaultConfigs = DownloadTestConstants.defaultConfigs;
+final _auth = DownloadTestConstants.defaultAuthConfig;
 
 void main() {
   late Database db;
@@ -163,7 +164,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       final task =
           await repository.createTask(DownloadTestConstants.defaultOptions);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
 
       // Set session to running state
       await repository.updateSession(
@@ -197,7 +198,7 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
       final task =
           await repository.createTask(DownloadTestConstants.defaultOptions);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
 
       // Set session to suspended state
       await repository.updateSession(

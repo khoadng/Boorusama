@@ -3,6 +3,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
@@ -345,6 +346,15 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     if (value.isEmpty) return null;
 
     return value;
+  }
+
+  String computeHash() {
+    final key = '$booruId$booruIdHint$url$apiKey$login$passHash';
+
+    final bytes = utf8.encode(key);
+    final digest = sha256.convert(bytes);
+
+    return digest.toString();
   }
 
   @override

@@ -18,10 +18,12 @@ import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
+import '../pages/auth_config_changed_dialog.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/providers.dart';
 import '../types/bulk_download_error_interpreter.dart';
 import '../types/bulk_download_session.dart';
+import '../types/download_configs.dart';
 import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/l10n.dart';
@@ -379,7 +381,7 @@ class _Logo extends ConsumerWidget {
         ? Padding(
             padding: const EdgeInsets.only(right: 4),
             child: BooruLogo(
-              source: stats.siteUrl,
+              source: session.session.siteUrl,
               width: 18,
               height: 18,
             ),
@@ -642,9 +644,19 @@ class _ResumeSuspensionButton extends ConsumerWidget {
         FontAwesomeIcons.play,
       ),
       onPressed: () {
-        ref
-            .read(bulkDownloadProvider.notifier)
-            .resumeSuspendedSession(sessionId);
+        ref.read(bulkDownloadProvider.notifier).resumeSuspendedSession(
+          sessionId,
+          downloadConfigs: DownloadConfigs(
+            authChangedConfirmation: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AuthConfigChangedDialog(session: session),
+              );
+
+              return confirmed ?? false;
+            },
+          ),
+        );
       },
     );
   }
@@ -666,7 +678,19 @@ class _ResumeAllButton extends ConsumerWidget {
         FontAwesomeIcons.play,
       ),
       onPressed: () {
-        ref.read(bulkDownloadProvider.notifier).resumeSession(sessionId);
+        ref.read(bulkDownloadProvider.notifier).resumeSession(
+          sessionId,
+          downloadConfigs: DownloadConfigs(
+            authChangedConfirmation: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AuthConfigChangedDialog(session: session),
+              );
+
+              return confirmed ?? false;
+            },
+          ),
+        );
       },
     );
   }

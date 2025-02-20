@@ -367,13 +367,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     final androidSdkVersion = downloadConfigs?.androidSdkVersion;
+    final config = ref.readConfigAuth;
 
     if (!options.valid(androidSdkInt: androidSdkVersion)) {
       throw const InvalidDownloadOptionsError();
     }
 
     final task = await _withRepo((repo) => repo.createTask(options));
-    final _ = await _withRepo((repo) => repo.createSession(task));
+    final _ = await _withRepo((repo) => repo.createSession(task, config));
     await _loadTasks();
 
     return;
@@ -844,6 +845,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
+      final authOk = await _ensureAuthConfigIntegrity(
+        session,
+        downloadConfigs: downloadConfigs,
+      );
+
+      if (!authOk) {
+        return;
+      }
+
       // Reset to initial page so we can start from the beginning
       // This is to ensure that we don't miss any items, completed items will be skipped anyway
       const page = 1;
@@ -903,6 +913,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final task = await _withRepo((repo) => repo.getTask(taskId));
       if (task == null) {
         state = state.copyWith(error: TaskNotFoundError.new);
+        return;
+      }
+
+      final authOk = await _ensureAuthConfigIntegrity(
+        currentSession,
+        downloadConfigs: downloadConfigs,
+      );
+
+      if (!authOk) {
         return;
       }
 
@@ -1005,7 +1024,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadTask task, {
     DownloadConfigs? downloadConfigs,
   }) async {
-    final initialSession = await _withRepo((repo) => repo.createSession(task));
+    final config = ref.readConfigAuth;
+    final initialSession =
+        await _withRepo((repo) => repo.createSession(task, config));
 
     await _startDownloadWithSession(
       task,
@@ -1194,6 +1215,35 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     await _loadTasks();
+  }
+
+  Future<bool> _ensureAuthConfigIntegrity(
+    DownloadSession currentSession, {
+    DownloadConfigs? downloadConfigs,
+  }) async {
+    // Check if auth config is not changed
+    final currentAuthHash = ref.readConfigAuth.computeHash();
+    final sessionAuthHash = currentSession.authHash;
+
+    if (sessionAuthHash != currentAuthHash) {
+      final confirmation = downloadConfigs?.authChangedConfirmation;
+
+      if (confirmation != null) {
+        final confirmed = await confirmation();
+        if (!confirmed) {
+          return false;
+        }
+      } else {
+        state = state.copyWith(
+          error: () => Exception(
+            'Current profile is different from the session profile',
+          ),
+        );
+        return false;
+      }
+    }
+
+    return true;
   }
 
   void clearUnseenFinishedSessions() {

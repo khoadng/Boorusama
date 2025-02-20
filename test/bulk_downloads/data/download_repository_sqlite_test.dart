@@ -8,6 +8,7 @@ import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
+import '../providers/downloads/common.dart';
 
 final _options = DownloadOptions(
   path: '/test/path',
@@ -18,6 +19,8 @@ final _options = DownloadOptions(
   concurrency: 5,
   tags: SearchTagSet.fromList(const ['tag1', 'tag2']),
 );
+
+final _auth = DownloadTestConstants.defaultAuthConfig;
 
 void main() {
   late Database db;
@@ -42,7 +45,7 @@ void main() {
         expect(result!.id, equals(task.id));
 
         // Create and verify session
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
         var sessionResult = await repository.getSession(session.id);
         expect(sessionResult, isNotNull);
         expect(sessionResult!.taskId, equals(task.id));
@@ -80,7 +83,7 @@ void main() {
 
       test('should update record by download ID', () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         final record = DownloadRecord(
           url: 'https://example.com/image.jpg',
@@ -115,7 +118,7 @@ void main() {
     group('foreign key SET NULL behavior', () {
       test('sessions should handle null task_id after task deletion', () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         // Create some records for the session
         await repository.createRecord(
@@ -154,7 +157,7 @@ void main() {
       test('statistics should handle null session_id after session deletion',
           () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         // Insert test statistics
         db.execute(
@@ -214,7 +217,7 @@ void main() {
     group('session soft deletion', () {
       test('should soft delete session and exclude from queries', () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         // Add some records
         await repository.createRecord(
@@ -264,7 +267,7 @@ void main() {
       test('should exclude soft deleted sessions from active sessions',
           () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         // Verify session appears in active sessions initially
         var activeSessions = await repository.getActiveSessions();
@@ -281,7 +284,7 @@ void main() {
       test('should exclude soft deleted sessions from completed sessions',
           () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         // Complete the session
         await repository.completeSession(session.id);
@@ -301,14 +304,14 @@ void main() {
       test('should handle re-creating session with same ID after soft deletion',
           () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
         final sessionId = session.id;
 
         // Delete session
         await repository.deleteSession(sessionId);
 
         // Try to create a new session with the same ID
-        final newSession = await repository.createSession(task);
+        final newSession = await repository.createSession(task, _auth);
         expect(
           newSession.id,
           isNot(equals(sessionId)),
@@ -325,7 +328,7 @@ void main() {
 
       test('should handle session statistics after soft deletion', () async {
         final task = await repository.createTask(_options);
-        final session = await repository.createSession(task);
+        final session = await repository.createSession(task, _auth);
 
         // Add records and update statistics
         await repository.createRecord(

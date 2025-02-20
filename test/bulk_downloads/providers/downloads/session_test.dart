@@ -14,11 +14,13 @@ import 'package:boorusama/core/bulk_downloads/src/types/bulk_download_error.dart
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_repository.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
+import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'common.dart';
 
 final _options = DownloadTestConstants.defaultOptions;
 const _defaultConfigs = DownloadTestConstants.defaultConfigs;
+final _auth = DownloadTestConstants.defaultAuthConfig;
 
 void main() {
   late Database db;
@@ -189,7 +191,7 @@ void main() {
         () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
 
       // Session starts as pending
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -378,7 +380,7 @@ void main() {
       // Arrange
       final task = await repository.createTask(_options);
       final notifier = container.read(bulkDownloadProvider.notifier);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
 
       // Act
       await notifier.cancelSession(session.id);
@@ -486,7 +488,7 @@ void main() {
         () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Mark session as completed
@@ -718,7 +720,7 @@ void main() {
     test('should not pause non-running session', () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
@@ -737,7 +739,7 @@ void main() {
     test('should not resume non-paused session', () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
@@ -791,7 +793,7 @@ void main() {
     test('should not suspend non-running session', () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
@@ -847,7 +849,7 @@ void main() {
     test('should not resume non-suspended session', () async {
       // Arrange
       final task = await repository.createTask(_options);
-      final session = await repository.createSession(task);
+      final session = await repository.createSession(task, _auth);
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Act
@@ -1273,6 +1275,109 @@ void main() {
       // Assert
       final session = await repository.getSession(sessionId);
       expect(session?.status, equals(DownloadSessionStatus.running));
+    });
+  });
+
+  group('Session Auth Config Integrity', () {
+    test(
+        'should allow resume of suspended session with different auth config when confirmed',
+        () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final initialConfig = DownloadTestConstants.defaultAuthConfig;
+      final session = await repository.createSession(task, initialConfig);
+
+      // Manually set session to suspended
+      await repository.updateSession(
+        session.id,
+        status: DownloadSessionStatus.suspended,
+        currentPage: 2,
+        totalPages: 4,
+      );
+
+      // Simulate auth config change
+      final newContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        overrideConfig: BooruConfigAuth(
+          booruId: initialConfig.booruId,
+          booruIdHint: initialConfig.booruIdHint,
+          url: 'different-url',
+          apiKey: 'different-key',
+          login: 'different-login',
+          passHash: 'different-hash',
+          proxySettings: null,
+        ),
+      );
+
+      // Act - resume with confirmation
+      final newNotifier = newContainer.read(bulkDownloadProvider.notifier);
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      await newNotifier.resumeSuspendedSession(
+        session.id,
+        downloadConfigs: _defaultConfigs.copyWith(
+          authChangedConfirmation: () async => true,
+        ),
+      );
+
+      // Assert
+      final state = newContainer.read(bulkDownloadProvider);
+      expect(state.error, isNull);
+
+      // Verify session is running
+      final updatedSession = await repository.getSession(session.id);
+      expect(updatedSession?.status, equals(DownloadSessionStatus.running));
+    });
+
+    test(
+        'should cancel resume of suspended session when auth change is not confirmed',
+        () async {
+      // Arrange
+      final task = await repository.createTask(_options);
+      final initialConfig = DownloadTestConstants.defaultAuthConfig;
+      final initialSession =
+          await repository.createSession(task, initialConfig);
+
+      // Manually set session to suspended
+      await repository.updateSession(
+        initialSession.id,
+        status: DownloadSessionStatus.suspended,
+        currentPage: 2,
+        totalPages: 4,
+      );
+
+      // Simulate auth config change
+      final newContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        overrideConfig: BooruConfigAuth(
+          booruId: initialConfig.booruId,
+          booruIdHint: initialConfig.booruIdHint,
+          url: 'different-url',
+          apiKey: 'different-key',
+          login: 'different-login',
+          passHash: 'different-hash',
+          proxySettings: null,
+        ),
+      );
+
+      // Act - resume with rejection
+      final newNotifier = newContainer.read(bulkDownloadProvider.notifier);
+      await newNotifier.resumeSuspendedSession(
+        initialSession.id,
+        downloadConfigs: _defaultConfigs.copyWith(
+          authChangedConfirmation: () async => false,
+        ),
+      );
+
+      // Assert
+      final state = newContainer.read(bulkDownloadProvider);
+      expect(state.error, isNull); // No error when user cancels
+
+      // Verify session remains suspended
+      final session = await repository.getSession(initialSession.id);
+      expect(session?.status, equals(DownloadSessionStatus.suspended));
     });
   });
 }

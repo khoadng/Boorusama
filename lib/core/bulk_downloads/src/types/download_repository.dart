@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 
 // Project imports:
+import '../../../configs/config.dart';
 import 'bulk_download_session.dart';
 import 'download_options.dart';
 import 'download_record.dart';
@@ -21,7 +22,10 @@ abstract class DownloadRepository {
   Future<List<DownloadTask>> getTasksByIds(List<String> ids);
   Future<void> deleteTask(String id);
 
-  Future<DownloadSession> createSession(DownloadTask task);
+  Future<DownloadSession> createSession(
+    DownloadTask task,
+    BooruConfigAuth auth,
+  );
   Future<DownloadSession?> getSession(String id);
   Future<List<DownloadSession>> getSessionsByTaskId(String taskId);
   Future<List<DownloadSession>> getSessionsByStatus(

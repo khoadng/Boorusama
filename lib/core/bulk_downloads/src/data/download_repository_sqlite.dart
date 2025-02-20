@@ -8,6 +8,7 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:uuid/uuid.dart';
 
 // Project imports:
+import '../../../configs/config.dart';
 import '../../../database/utils.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
@@ -82,6 +83,8 @@ class DownloadRepositorySqlite
           error TEXT,
           task TEXT NOT NULL,
           deleted_at INTEGER,
+          auth_hash TEXT,
+          site_url TEXT,
           FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
         )
       ''')
@@ -245,7 +248,10 @@ class DownloadRepositorySqlite
   }
 
   @override
-  Future<DownloadSession> createSession(DownloadTask task) async {
+  Future<DownloadSession> createSession(
+    DownloadTask task,
+    BooruConfigAuth auth,
+  ) async {
     final session = DownloadSession(
       id: _uuid.v4(),
       taskId: task.id,
@@ -253,13 +259,16 @@ class DownloadRepositorySqlite
       startedAt: DateTime.now(),
       currentPage: 1,
       status: DownloadSessionStatus.pending,
+      authHash: auth.computeHash(),
+      siteUrl: auth.url,
     );
 
     db.execute(
       '''
       INSERT INTO download_sessions (
-        id, task_id, started_at, completed_at, current_page, status, total_pages, task
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        id, task_id, started_at, completed_at, current_page, status, 
+        total_pages, task, auth_hash, site_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ''',
       [
         session.id,
@@ -270,6 +279,8 @@ class DownloadRepositorySqlite
         session.status.name,
         session.totalPages,
         jsonEncode(task.toJson()),
+        session.authHash,
+        session.siteUrl,
       ],
     );
     return session;
@@ -463,6 +474,8 @@ class DownloadRepositorySqlite
             .byName(row['session_status'] as String),
         totalPages: row['total_pages'] as int?,
         error: row['error'] as String?,
+        siteUrl: row['site_url'] as String?,
+        authHash: row['auth_hash'] as String?,
       );
 
       final stats = DownloadSessionStats(

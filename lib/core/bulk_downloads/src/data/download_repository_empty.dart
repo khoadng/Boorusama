@@ -1,4 +1,5 @@
 // Project imports:
+import '../../../configs/config.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
 import '../types/download_record.dart';
@@ -27,7 +28,10 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<void> deleteTask(String id) async {}
 
   @override
-  Future<DownloadSession> createSession(DownloadTask task) async {
+  Future<DownloadSession> createSession(
+    DownloadTask task,
+    BooruConfigAuth auth,
+  ) async {
     throw Exception('Empty repository, cannot create session');
   }
 

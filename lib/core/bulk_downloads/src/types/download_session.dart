@@ -34,6 +34,8 @@ class DownloadSession extends Equatable {
     this.totalPages,
     this.error,
     this.task,
+    this.authHash,
+    this.siteUrl,
   });
 
   final String id;
@@ -45,6 +47,8 @@ class DownloadSession extends Equatable {
   final DownloadSessionStatus status;
   final String? error;
   final DownloadTask? task;
+  final String? authHash;
+  final String? siteUrl;
 
   DownloadSession copyWith({
     String? id,
@@ -55,6 +59,8 @@ class DownloadSession extends Equatable {
     int? totalPages,
     DownloadSessionStatus? status,
     String? error,
+    String? authHash,
+    String? siteUrl,
   }) {
     return DownloadSession(
       id: id ?? this.id,
@@ -65,6 +71,9 @@ class DownloadSession extends Equatable {
       totalPages: totalPages ?? this.totalPages,
       status: status ?? this.status,
       error: error ?? this.error,
+      task: task,
+      authHash: authHash ?? this.authHash,
+      siteUrl: siteUrl ?? this.siteUrl,
     );
   }
 
@@ -79,5 +88,7 @@ class DownloadSession extends Equatable {
         status,
         error,
         task,
+        authHash,
+        siteUrl,
       ];
 }

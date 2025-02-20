@@ -47,6 +47,8 @@ CREATE TABLE download_sessions (
     error TEXT,
     task TEXT NOT NULL,
     deleted_at INTEGER,
+    auth_hash TEXT,
+    site_url TEXT,
     FOREIGN KEY(task_id) REFERENCES download_tasks(id) ON DELETE SET NULL
 );
 

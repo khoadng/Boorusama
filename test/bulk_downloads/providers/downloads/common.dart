@@ -76,6 +76,8 @@ class DownloadTestConstants {
     directoryExistChecker: AlwaysExistsDirectoryExistChecker(),
   );
 
+  static final defaultAuthConfig = booruConfigAuth;
+
   static final posts = [
     // page 1
     DummyPost(
@@ -313,6 +315,7 @@ ProviderContainer createBulkDownloadContainer({
   MediaPermissionManager? mediaPermissionManager,
   bool hasPremium = true,
   Stream<TaskUpdate>? taskUpdateStream,
+  BooruConfigAuth? overrideConfig,
 }) {
   when(() => booruBuilder.downloadFilenameBuilder).thenReturn(
     dummyDownloadFileNameBuilder,
@@ -327,12 +330,12 @@ ProviderContainer createBulkDownloadContainer({
       notifications: DummyBulkNotification(),
       hasPremium: hasPremium,
       taskUpdateStream: taskUpdateStream,
+      overrideConfig: overrideConfig,
     ),
   );
 
   addTearDown(() {
     reset(booruBuilder);
-
     container.dispose();
   });
 
@@ -346,12 +349,15 @@ List<Override> getTestOverrides({
   BulkDownloadNotifications? notifications,
   bool hasPremium = true,
   Stream<TaskUpdate>? taskUpdateStream,
+  BooruConfigAuth? overrideConfig,
 }) {
   return [
     internalDownloadRepositoryProvider.overrideWith((_) => downloadRepository),
     currentReadOnlyBooruConfigSearchProvider
         .overrideWithValue(booruConfigSearch),
-    currentReadOnlyBooruConfigAuthProvider.overrideWithValue(booruConfigAuth),
+    currentReadOnlyBooruConfigAuthProvider.overrideWithValue(
+      overrideConfig ?? booruConfigAuth,
+    ),
     currentReadOnlyBooruConfigProvider.overrideWithValue(booruConfig),
     postRepoProvider.overrideWith((__, _) => DummyPostRepository()),
     downloadServiceProvider.overrideWith((_) => DummyDownloadService()),

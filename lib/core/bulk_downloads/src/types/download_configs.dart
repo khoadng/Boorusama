@@ -25,6 +25,7 @@ class DownloadConfigs {
     this.delayBetweenRequests,
     this.onDownloadStart,
     this.androidSdkVersion,
+    this.authChangedConfirmation,
   });
 
   DownloadConfigs copyWith({
@@ -43,6 +44,7 @@ class DownloadConfigs {
     Duration? delayBetweenRequests,
     VoidCallback? onDownloadStart,
     int? androidSdkVersion,
+    Future<bool> Function()? authChangedConfirmation,
   }) {
     return DownloadConfigs(
       downloader: downloader ?? this.downloader,
@@ -63,6 +65,8 @@ class DownloadConfigs {
       delayBetweenRequests: delayBetweenRequests ?? this.delayBetweenRequests,
       onDownloadStart: onDownloadStart ?? this.onDownloadStart,
       androidSdkVersion: androidSdkVersion ?? this.androidSdkVersion,
+      authChangedConfirmation:
+          authChangedConfirmation ?? this.authChangedConfirmation,
     );
   }
 
@@ -81,6 +85,7 @@ class DownloadConfigs {
   final Duration? delayBetweenRequests;
   final VoidCallback? onDownloadStart;
   final int? androidSdkVersion;
+  final Future<bool> Function()? authChangedConfirmation;
 }
 
 abstract class DownloadExistChecker {
