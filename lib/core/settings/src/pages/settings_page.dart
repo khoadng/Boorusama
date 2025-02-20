@@ -16,10 +16,12 @@ import '../../../boorus/engine/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../configs/routes.dart';
 import '../../../foundation/scrolling.dart';
+import '../../../foundation/toast.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../info/app_info.dart';
 import '../../../premiums/premiums.dart';
 import '../../../premiums/providers.dart';
+import '../../../premiums/routes.dart';
 import '../../../theme.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -92,13 +94,6 @@ final _entries = [
     icon: FontAwesomeIcons.shieldHalved,
     content: PrivacyPage(),
   ),
-  if (kPremiumEnabled && !kForcePremium)
-    const SettingEntry(
-      name: '/settings/premium',
-      title: kPremiumBrandNameFull,
-      icon: FontAwesomeIcons.solidStar,
-      content: PremiumPage(),
-    ),
 ];
 
 const double _kThresholdWidth = 650;
@@ -438,6 +433,44 @@ class SettingsPageOtherSection extends ConsumerWidget {
         _SettingsSection(
           label: 'settings.other_settings'.tr(),
         ),
+        if (ref.watch(hasPremiumProvider))
+          ref.watch(premiumManagementURLProvider).maybeWhen(
+                data: (url) => SettingTile(
+                  title: 'Manage Subscription',
+                  leading: const FaIcon(
+                    FontAwesomeIcons.solidStar,
+                  ),
+                  onTap: () => url != null
+                      ? launchExternalUrl(
+                          Uri.parse(url),
+                          mode: LaunchMode.externalApplication,
+                        )
+                      : showErrorToast(
+                          context,
+                          'Failed to open subscription management',
+                        ),
+                ),
+                orElse: () => SettingTile(
+                  title: 'Manage Subscription',
+                  leading: const FaIcon(
+                    FontAwesomeIcons.solidStar,
+                  ),
+                  onTap: () {
+                    showErrorToast(
+                      context,
+                      'Failed to open subscription management',
+                    );
+                  },
+                ),
+              )
+        else if (kPremiumEnabled && !kForcePremium)
+          SettingTile(
+            title: kPremiumBrandNameFull,
+            leading: const FaIcon(
+              FontAwesomeIcons.solidStar,
+            ),
+            onTap: () => goToPremiumPage(context),
+          ),
         SettingTile(
           title: 'settings.changelog'.tr(),
           leading: const FaIcon(
