@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,6 +103,9 @@ class _PostDetailPageScaffoldState<T extends Post>
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
   final _isInitPage = ValueNotifier(true);
 
+  Timer? _autoHideVideoControlsTimer;
+  bool _videoControlsHiddenByTimer = false;
+
   List<T> get posts => _posts;
 
   @override
@@ -120,6 +126,10 @@ class _PostDetailPageScaffoldState<T extends Post>
               posts[widget.controller.initialPage],
             );
       }
+
+      if (posts[widget.controller.initialPage].isVideo) {
+        _startAutoHideVideoControlsTimer();
+      }
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
@@ -133,6 +143,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     _transformController.dispose();
     _volumeKeyPageNavigator.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
+    _autoHideVideoControlsTimer?.cancel();
 
     super.dispose();
   }
@@ -141,6 +152,38 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   bool _isDefaultEngine(VideoPlayerEngine engine) {
     return engine != VideoPlayerEngine.mdk;
+  }
+
+  void _startAutoHideVideoControlsTimer() {
+    final hideOverlay = ref.read(settingsProvider).hidePostDetailsOverlay;
+
+    if (hideOverlay) return;
+
+    _clearAutoHideVideoControlsTimer();
+
+    _autoHideVideoControlsTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        _controller
+          ..hideBottomSheet()
+          ..hideOverlay();
+
+        _videoControlsHiddenByTimer = true;
+      }
+    });
+  }
+
+  void _clearAutoHideVideoControlsTimer() {
+    _autoHideVideoControlsTimer?.cancel();
+    _autoHideVideoControlsTimer = null;
+
+    // if the video controls are hidden by the timer, show them again
+    if (_videoControlsHiddenByTimer) {
+      _controller
+        ..showOverlay()
+        ..showBottomSheet();
+    }
+
+    _videoControlsHiddenByTimer = false;
   }
 
   SlideshowOptions toSlideShowOptions(Settings settings) {
@@ -269,6 +312,8 @@ class _PostDetailPageScaffoldState<T extends Post>
       body: PostDetailsPageView(
         disableAnimation: reduceAnimations,
         onPageChanged: (page) {
+          final post = posts[page];
+
           widget.controller.setPage(
             page,
             useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
@@ -277,21 +322,25 @@ class _PostDetailPageScaffoldState<T extends Post>
           _isInitPage.value = false;
 
           if (_controller.overlay.value) {
-            if (posts[page].isVideo) {
+            if (post.isVideo) {
               _controller.enableHoverToControlOverlay();
             } else {
               _controller.disableHoverToControlOverlay();
             }
           }
 
-          ref
-              .read(postShareProvider(posts[page]).notifier)
-              .updateInformation(posts[page]);
+          if (post.isVideo) {
+            _startAutoHideVideoControlsTimer();
+          } else {
+            _clearAutoHideVideoControlsTimer();
+          }
+
+          ref.read(postShareProvider(post).notifier).updateInformation(post);
 
           final config = ref.readConfig;
 
           if (config.autoFetchNotes) {
-            ref.read(notesProvider(config.auth).notifier).load(posts[page]);
+            ref.read(notesProvider(config.auth).notifier).load(post);
           }
         },
         sheetStateStorage: SheetStateStorageBuilder(
