@@ -152,12 +152,14 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   void _isVideoPlayingChanged() {
-    // force overlay to be on when video is not playing
-    if (!widget.controller.isVideoPlaying.value) {
-      _controller.disableHoverToControlOverlay();
-    } else {
-      if (widget.controller.currentPost.value.isVideo) {
-        _controller.enableHoverToControlOverlay();
+    if (context.isLargeScreen && isDesktopPlatform()) {
+      // force overlay to be on when video is not playing
+      if (!widget.controller.isVideoPlaying.value) {
+        _controller.disableHoverToControlOverlay();
+      } else {
+        if (widget.controller.currentPost.value.isVideo) {
+          _controller.enableHoverToControlOverlay();
+        }
       }
     }
   }
