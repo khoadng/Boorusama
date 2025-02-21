@@ -306,7 +306,6 @@
         "bulk": {
             "all_done_notification_message": "Todos os downloads foram concluídos"
         },
-        "bulk_download_tag_confirmation": "As tags abaixo vão ser baixadas",
         "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito",
         "bulk_download_download_more": "Baixar mais",
         "bulk_download": "Download em massa",
