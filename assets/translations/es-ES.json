@@ -329,7 +329,6 @@
             "one": "{} imagen omitida",
             "other": "{} imagenes omitidas"
         },
-        "bulk_download_download_more": "Descargar mas",
         "open_app_settings": "Abrir Ajustes",
         "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
         "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
