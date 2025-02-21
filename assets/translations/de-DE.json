@@ -320,8 +320,7 @@
         "bulk_download_folder_select_warning": "Die App kann Dateien nur in öffentlichen Verzeichnissen <b>({0})</b> in Android 11+ speichern. <div>SD-Karten werden ebenfalls nicht unterstützt.</div> <div>Bitte wähle einen anderen Standort.</div> <div>Die Version dieses Geräts ist {1}.</div>",
         "bulk_download_select_a_folder": "Ordner auswählen",
         "bulk_download_downloaded_counter": {
-            "one": "{} Bild heruntergeladen",
-            "other": "{} Bilder heruntergeladen"
+            "one": "{} Bild heruntergeladen"
         },
         "open_app_settings": "Einstellungen öffnen",
         "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich.",
