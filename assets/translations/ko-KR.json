@@ -332,7 +332,6 @@
         "download": "다운로드",
         "bulk_download": "일괄 다운로드",
         "bulk_download_save_to_folder": "폴더에 저장",
-        "bulk_download_total_count": "전체",
         "bulk_download_done_confirm": "완료",
         "bulk_download_cancel": "취소",
         "bulk_download_duplicate": "복제",
