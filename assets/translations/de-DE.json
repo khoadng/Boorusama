@@ -327,7 +327,6 @@
             "one": "{} Bild übersprungen",
             "other": "{} Bilder übersprungen"
         },
-        "bulk_download_download_more": "Mehr herunterladen",
         "open_app_settings": "Einstellungen öffnen",
         "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich.",
         "app_restart_request": "Damit diese Änderung wirksam wird, muss die App neu gestartet werden",
