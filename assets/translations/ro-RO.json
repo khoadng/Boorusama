@@ -321,7 +321,6 @@
         "bulk_download_save_to_folder": "Salvați într-un dosar",
         "bulk_download_done_confirm": "Terminat",
         "bulk_download_cancel": "Anulați",
-        "bulk_download_duplicate": "Duplicați",
         "bulk_download_invalid_folder_name_error": "Un dosar nu poate conține următoarele caractere: ",
         "bulk_download_folder_select_warning": "Aplicația poate să salveze fișiere doar în dosare publice <b>({0})</b> începând cu Android 11. <div> Cardurile SD nu sunt de asemenea suportate. </div> <div>Selectați altă locație.</div> <div>Versiunea dispozitivului este {1}.</div>",
         "bulk_download_select_a_folder": "Selectați un dosar",
