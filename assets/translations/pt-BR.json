@@ -299,7 +299,6 @@
             "all_done_notification_message": "Todos os downloads foram concluídos"
         },
         "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito",
-        "bulk_download": "Download em massa",
         "bulk_download_folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <div>Cartões SD também não são suportados.</div> <div>Por favor escolha outro local.</div> <div>A versão deste dispositivo é {1}.</div>"
     },
     "forum": {
