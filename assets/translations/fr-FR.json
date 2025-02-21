@@ -333,7 +333,6 @@
     },
     "download": {
         "download": "Télécharger",
-        "bulk_download": "Téléchargement en masse",
         "bulk_download_save_to_folder": "Enregistrer dans un dossier",
         "bulk_download_done_confirm": "Terminé",
         "bulk_download_invalid_folder_name_error": "Un dossier ne peut contenir aucun des caractères suivants : ",
