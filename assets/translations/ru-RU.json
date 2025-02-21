@@ -334,9 +334,6 @@
             "other": "Скачать {} изображений",
             "one": "Скачать {} изображение"
         },
-        "bulk_download_skipped_counter": {
-            "one": "{} изображение пропущено"
-        },
         "bulk": {
             "all_done_notification_message": "Все загрузки завершены"
         }
