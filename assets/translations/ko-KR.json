@@ -334,7 +334,6 @@
         "bulk_download_save_to_folder": "폴더에 저장",
         "bulk_download_done_confirm": "완료",
         "bulk_download_cancel": "취소",
-        "bulk_download_duplicate": "복제",
         "bulk_download_invalid_folder_name_error": "폴더 이름에 다음 문자들을 포함할 수 없습니다: ",
         "bulk_download_folder_select_warning": "Android 11 이상 기기에서는 앱이 다음 공개 디렉터리(<b>{0}</b>) 안의 파일만 다운로드할 수 있습니다. <br><br> 올바른 저장 위치 예시: <br><b>[내장 메모리]</b> /storage/emulated/0/Download <br><b>[SD 카드]</b> /storage/A1B2-C3D4/Download<br><br> 다른 디렉터리를 선택하거나, 없다면 새로 만들어 주세요. <br> 현재 기기의 Android 버전은 <b>{1}</b>입니다.",
         "bulk_download_select_a_folder": "폴더 선택",
