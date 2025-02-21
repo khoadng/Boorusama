@@ -314,7 +314,6 @@
     },
     "download": {
         "download": "Tải ảnh",
-        "bulk_download": "Tải ảnh số lượng lớn",
         "bulk_download_save_to_folder": "Lưu vào thư mục",
         "bulk_download_done_confirm": "Xong",
         "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các kí tự sau: ",
