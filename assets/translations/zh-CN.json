@@ -344,7 +344,6 @@
             "other": "{} 张图片已跳过",
             "one": "{} 张图片已跳过"
         },
-        "bulk_download_download_more": "下载更多",
         "open_app_settings": "打开设置",
         "storage_permission_explanation": "需要存储权限来保存文件。",
         "app_restart_request": "该修改需要重启应用生效",
