@@ -317,7 +317,6 @@
     },
     "download": {
         "download": "",
-        "bulk_download": "",
         "bulk_download_save_to_folder": "",
         "bulk_download_done_confirm": "",
         "bulk_download_invalid_folder_name_error": "",
