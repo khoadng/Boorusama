@@ -291,8 +291,7 @@
         "open_app_settings": "Відкрити налаштування",
         "bulk_download_select_a_folder": "Виберіть папку",
         "bulk_download_downloaded_counter": {
-            "one": "{} зображення завантажено",
-            "other": "{} зображень завантажено"
+            "one": "{} зображення завантажено"
         },
         "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу"
     },
