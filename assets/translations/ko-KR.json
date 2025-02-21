@@ -337,8 +337,7 @@
         "bulk_download_folder_select_warning": "Android 11 이상 기기에서는 앱이 다음 공개 디렉터리(<b>{0}</b>) 안의 파일만 다운로드할 수 있습니다. <br><br> 올바른 저장 위치 예시: <br><b>[내장 메모리]</b> /storage/emulated/0/Download <br><b>[SD 카드]</b> /storage/A1B2-C3D4/Download<br><br> 다른 디렉터리를 선택하거나, 없다면 새로 만들어 주세요. <br> 현재 기기의 Android 버전은 <b>{1}</b>입니다.",
         "bulk_download_select_a_folder": "폴더 선택",
         "bulk_download_downloaded_counter": {
-            "one": "{} 개 이미지 다운로드됨",
-            "other": "{} 개 이미지 다운로드됨"
+            "one": "{} 개 이미지 다운로드됨"
         },
         "open_app_settings": "설정 열기",
         "storage_permission_explanation": "다운로드한 파일을 저장하려면 저장 권한이 필요합니다.",
