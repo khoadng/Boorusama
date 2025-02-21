@@ -289,7 +289,6 @@
             "one": "{} зображення пропущено"
         },
         "storage_permission_explanation": "Дозвіл на доступ до сховища необхідний для збереження завантажених файлів.",
-        "bulk_download_tag_confirmation": "Зображення з наступними тегами будуть завантажені",
         "bulk_download_duplicate": "Дублікат",
         "image_counter": {
             "other": "Скачати {} зображень",
