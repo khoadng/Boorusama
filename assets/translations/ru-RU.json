@@ -321,7 +321,6 @@
         "bulk_download_save_to_folder": "Сохранить в",
         "bulk_download_done_confirm": "Готово",
         "bulk_download_cancel": "Отмена",
-        "bulk_download_duplicate": "Дубликат",
         "bulk_download_invalid_folder_name_error": "Название папки не может содержать следующие символы: ",
         "bulk_download_folder_select_warning": "Приложение может сохранять файлы только в публичные папки <b>({0})</b> в Android 11+. <div>SD карты также не поддерживаются.</div> <div>Пожалуйста, выберите другое расположение.</div> <div>Версия этого устройства - {1}.</div>",
         "bulk_download_select_a_folder": "Выберите папку",
