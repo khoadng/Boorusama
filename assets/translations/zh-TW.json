@@ -303,7 +303,6 @@
         "bulk_download_save_to_folder": "儲存至資料夾",
         "bulk_download_invalid_folder_name_error": "資料夾不可包含以下字符： ",
         "bulk_download_folder_select_warning": "在 Android 11+ 上，此應用程式僅能儲存在 內部公共資料夾 <b>({0})</b> 中. <div>不支援SD卡。</div> <div>請選擇其他路徑。</div> <div>此裝置的版本是 {1}.</div>",
-        "bulk_download_select_a_folder": "選擇一個資料夾",
         "open_app_settings": "開啟設定",
         "storage_permission_explanation": "需要儲存權限以儲存下載文件",
         "app_restart_request": "請重新啟動應用程式以使此更改生效",
