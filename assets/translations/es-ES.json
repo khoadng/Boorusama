@@ -325,9 +325,6 @@
             "one": "Una {} imagen descargada",
             "other": "{} imagenes descargadas"
         },
-        "bulk_download_skipped_counter": {
-            "one": "{} imagen omitida"
-        },
         "open_app_settings": "Abrir Ajustes",
         "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
         "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
