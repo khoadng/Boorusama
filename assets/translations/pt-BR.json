@@ -294,7 +294,6 @@
             "other": "{} imagens baixadas"
         },
         "bulk_download_skipped_counter": {
-            "other": "{} imagens puladas",
             "one": "{} imagem pulada"
         },
         "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
