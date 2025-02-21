@@ -314,7 +314,6 @@
     "download": {
         "download": "Download",
         "bulk_download": "Bulk-Download",
-        "bulk_download_tag_confirmation": "Die folgenden Tags werden heruntergeladen",
         "bulk_download_save_to_folder": "In Ordner speichern",
         "bulk_download_total_count": "Gesamt",
         "bulk_download_done_count": "Fertig",
