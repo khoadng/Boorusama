@@ -258,7 +258,6 @@
     "download": {
         "download": "Last ned",
         "bulk_download": "",
-        "bulk_download_tag_confirmation": "",
         "bulk_download_save_to_folder": "Lagre i mappe",
         "bulk_download_total_count": "",
         "bulk_download_done_count": "Ferdig",
