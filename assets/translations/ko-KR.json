@@ -341,8 +341,7 @@
             "other": "{} 개 이미지 다운로드됨"
         },
         "bulk_download_skipped_counter": {
-            "one": "{} 개 이미지 건너뜀",
-            "other": "{} 개 이미지 건너뜀"
+            "one": "{} 개 이미지 건너뜀"
         },
         "open_app_settings": "설정 열기",
         "storage_permission_explanation": "다운로드한 파일을 저장하려면 저장 권한이 필요합니다.",
