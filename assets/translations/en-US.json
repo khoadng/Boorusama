@@ -330,7 +330,6 @@
     },
     "download": {
         "download": "Download",
-        "bulk_download": "Bulk download",
         "bulk_download_save_to_folder": "Save to folder",
         "bulk_download_done_confirm": "Done",
         "bulk_download_invalid_folder_name_error": "A folder cannot contain any of the following characters: ",
