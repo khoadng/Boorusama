@@ -345,7 +345,6 @@
             "other": "{} images téléchargées"
         },
         "bulk_download_skipped_counter": {
-            "one": "{} image passée",
             "many": "{} images passées"
         },
         "open_app_settings": "Ouvrir les paramètres",
