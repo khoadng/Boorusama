@@ -332,7 +332,6 @@
         "download": "Download",
         "bulk_download": "Bulk download",
         "bulk_download_save_to_folder": "Save to folder",
-        "bulk_download_total_count": "Total",
         "bulk_download_done_confirm": "Done",
         "bulk_download_cancel": "Cancel",
         "bulk_download_duplicate": "Duplicate",
