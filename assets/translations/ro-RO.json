@@ -328,8 +328,7 @@
             "other": "{} imagini descărcate"
         },
         "bulk_download_skipped_counter": {
-            "one": "{} imagine omisă",
-            "other": "{} imagini omise"
+            "one": "{} imagine omisă"
         },
         "open_app_settings": "Deschideți setări",
         "storage_permission_explanation": "Permisiunea de stocare este necesară pentru a stoca fișierele descărcate.",
