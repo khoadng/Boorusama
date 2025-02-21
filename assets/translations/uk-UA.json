@@ -281,7 +281,6 @@
         "bulk_download_total_count": "Всього",
         "bulk_download": "Масове завантаження",
         "bulk_download_done_confirm": "Готово",
-        "bulk_download_done_count": "Завантажено",
         "bulk_download_cancel": "Відміна",
         "bulk_download_save_to_folder": "Зберегти в",
         "bulk_download_skipped_counter": {
