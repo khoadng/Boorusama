@@ -201,7 +201,6 @@
     "download": {
         "download": "ダウンロード",
         "bulk_download_save_to_folder": "フォルダに保存",
-        "bulk_download_total_count": "合計",
         "bulk_download_cancel": "キャンセル",
         "open_app_settings": "設定を開く",
         "bulk": {
