@@ -328,7 +328,6 @@
             "other": "{} ảnh bị lượt bỏ",
             "one": "{} ảnh bị lượt bỏ"
         },
-        "bulk_download_download_more": "Tải thêm",
         "open_app_settings": "Mở cài đặt",
         "storage_permission_explanation": "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
         "app_restart_request": "Cần khởi động lại app để thay đổi được áp dụng",
