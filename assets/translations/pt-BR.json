@@ -287,7 +287,6 @@
         "download": "Download",
         "bulk_download_invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
         "open_app_settings": "Abrir configuração",
-        "bulk_download_done_confirm": "Feito",
         "bulk_download_save_to_folder": "Salvar para a pasta",
         "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
         "bulk_download_select_a_folder": "Selecione uma pasta",
