@@ -333,7 +333,6 @@
         "bulk_download": "批量下载",
         "bulk_download_save_to_folder": "保存到文件夹",
         "bulk_download_done_confirm": "完成",
-        "bulk_download_cancel": "取消",
         "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符： ",
         "bulk_download_folder_select_warning": "在Android 11+系统中，此应用只能将文件保存在内部公共路径<b>({0})</b>中。<br><br>有效保存位置示例：<br><b>[内部]</b> /storage/emulated/0/Download <br><b>[SD卡]</b> /storage/A1B2-C3D4/Download<br><br>请选择其他路径，若不存在请新建。<br>此设备版本为<b>{1}</b>。",
         "bulk_download_select_a_folder": "选择文件夹",
