@@ -340,7 +340,6 @@
         "bulk_download_folder_select_warning": "L'application peut télécharger des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <br><br>Exemples d'emplacements valides :<br><b>[Interne]</b> /storage/emulated/0/Download <br><b>[Carte SD]</b> /storage/A1B2-C3D4/Download<br><br>Merci de choisir un autre répertoire ou d'en créer un nouveau si cela n'existe pas. <br>Cet appareil a la version <b>{1}</b>.",
         "bulk_download_select_a_folder": "Sélectionnez un fichier",
         "bulk_download_downloaded_counter": {
-            "one": "{} image téléchargée",
             "many": "{} images téléchargées"
         },
         "bulk_download_skipped_counter": {
