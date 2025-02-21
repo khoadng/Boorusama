@@ -317,7 +317,6 @@
         "bulk_download_save_to_folder": "In Ordner speichern",
         "bulk_download_done_confirm": "Fertig",
         "bulk_download_cancel": "Abbrechen",
-        "bulk_download_duplicate": "Duplikat",
         "bulk_download_invalid_folder_name_error": "Ein Ordner darf keines der folgenden Zeichen enthalten: ",
         "bulk_download_folder_select_warning": "Die App kann Dateien nur in öffentlichen Verzeichnissen <b>({0})</b> in Android 11+ speichern. <div>SD-Karten werden ebenfalls nicht unterstützt.</div> <div>Bitte wähle einen anderen Standort.</div> <div>Die Version dieses Geräts ist {1}.</div>",
         "bulk_download_select_a_folder": "Ordner auswählen",
