@@ -328,8 +328,7 @@
             "other": ""
         },
         "bulk_download_skipped_counter": {
-            "one": "",
-            "other": ""
+            "one": ""
         },
         "open_app_settings": "",
         "storage_permission_explanation": "",
