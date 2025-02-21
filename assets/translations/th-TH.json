@@ -317,26 +317,9 @@
     },
     "download": {
         "download": "ดาวน์โหลด",
-        "bulk_download": "การดาวน์โหลดเป็นชุด",
-        "bulk_download_tag_confirmation": "แท็กที่อยู่ด้านล่างนี้จะถูกดาวน์โหลดทั้งหมด",
         "bulk_download_save_to_folder": "บันทึกไปที่โฟลเดอร์",
-        "bulk_download_total_count": "จำนวนทั้งหมด",
-        "bulk_download_done_count": "เสร็จสิ้นแล้ว",
-        "bulk_download_done_confirm": "เสร็จ",
-        "bulk_download_cancel": "ยกเลิก",
-        "bulk_download_duplicate": "ซ้ำกัน",
         "bulk_download_invalid_folder_name_error": "โฟลเดอร์จะต้องไม่มีตัวอักษรตามที่ระบุดังนี้: ",
         "bulk_download_folder_select_warning": "แอปสามารถบันทึกไฟล์ไว้ในโฟลเดอร์ที่เข้าถึงได้อย่างสาธารณะได้แก่ <b>({0})</b> ในตั้งแต่ Android เวอร์ชั่น 11 เป็นต้นไป <div>และไม่รองรับการบันทึกไฟล์ลงเมมโมรี่การ์ด (SD การ์ด) ด้วยเช่นกัน</div> <div>โปรดเลือกที่จะบันทึกในที่อื่น</div> <div>อุปกรณ์นี้ใช้งาน Android เวอร์ชั่น {1}</div>",
-        "bulk_download_select_a_folder": "เลือกโฟลเดอร์",
-        "bulk_download_downloaded_counter": {
-            "one": "ดาวน์โหลดภาพจำนวน {} ภาพเรียบร้อย",
-            "other": "ดาวน์โหลดภาพจำนวน {} ภาพเรียบร้อย"
-        },
-        "bulk_download_skipped_counter": {
-            "one": "มีภาพจำนวน {} ภาพที่ถูกข้าม",
-            "other": "มีภาพจำนวน {} ภาพที่ถูกข้าม"
-        },
-        "bulk_download_download_more": "ดาวน์โหลดเพิ่มเติม",
         "open_app_settings": "ตั้งค่าการเปิด",
         "storage_permission_explanation": "จำเป็นต้องให้การอนุญาตเข้าถึงพื้นที่จัดเก็บบนเครื่องเพื่อบันทึกไฟล์ที่ดาวน์โหลด",
         "app_restart_request": "คุณจำเป็นต้องรีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงนี้มีผล",

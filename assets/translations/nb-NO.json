@@ -257,26 +257,9 @@
     },
     "download": {
         "download": "Last ned",
-        "bulk_download": "",
-        "bulk_download_tag_confirmation": "",
         "bulk_download_save_to_folder": "Lagre i mappe",
-        "bulk_download_total_count": "",
-        "bulk_download_done_count": "Ferdig",
-        "bulk_download_done_confirm": "Ferdig",
-        "bulk_download_cancel": "Avbryt",
-        "bulk_download_duplicate": "Dupliser",
         "bulk_download_invalid_folder_name_error": "",
         "bulk_download_folder_select_warning": "",
-        "bulk_download_select_a_folder": "Velg en mappe",
-        "bulk_download_downloaded_counter": {
-            "one": "",
-            "other": ""
-        },
-        "bulk_download_skipped_counter": {
-            "one": "",
-            "other": ""
-        },
-        "bulk_download_download_more": "",
         "open_app_settings": "Åpne innstillinger",
         "storage_permission_explanation": "",
         "app_restart_request": "",

@@ -278,32 +278,15 @@
             "all_done_notification_message": "Всі завантаження завершено"
         },
         "download": "Скачати",
-        "bulk_download_total_count": "Всього",
-        "bulk_download": "Масове завантаження",
-        "bulk_download_done_confirm": "Готово",
-        "bulk_download_done_count": "Завантажено",
-        "bulk_download_cancel": "Відміна",
         "bulk_download_save_to_folder": "Зберегти в",
-        "bulk_download_skipped_counter": {
-            "other": "{} зображень пропущено",
-            "one": "{} зображення пропущено"
-        },
         "storage_permission_explanation": "Дозвіл на доступ до сховища необхідний для збереження завантажених файлів.",
-        "bulk_download_tag_confirmation": "Зображення з наступними тегами будуть завантажені",
-        "bulk_download_duplicate": "Дублікат",
         "image_counter": {
             "other": "Скачати {} зображень",
             "one": "Скачати {} зображення"
         },
         "bulk_download_invalid_folder_name_error": "Назва папки не маже мати наступний символ: ",
         "bulk_download_folder_select_warning": "Програма може завантажувати лише файли в загальнодоступних каталогах <b>({0})</b> для Android 11+. <br><br> Приклади дійсного розташування:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD-карта]</b> /storage/A1B2- C3D4/Завантажити<br><br>Будь ласка, виберіть інший каталог або створіть новий, якщо він не існує. <br>Версія цього пристрою <b>{1}</b>.",
-        "bulk_download_download_more": "Скачати більше",
         "open_app_settings": "Відкрити налаштування",
-        "bulk_download_select_a_folder": "Виберіть папку",
-        "bulk_download_downloaded_counter": {
-            "one": "{} зображення завантажено",
-            "other": "{} зображень завантажено"
-        },
         "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу"
     },
     "blacklisted_tags": {
