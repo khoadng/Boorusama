@@ -318,7 +318,6 @@
         "bulk_download": "Descargar Masiva",
         "bulk_download_save_to_folder": "Guardar a carpeta",
         "bulk_download_done_confirm": "Terminado",
-        "bulk_download_cancel": "Cancelar",
         "bulk_download_invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
         "bulk_download_folder_select_warning": "La aplicación solo puede almacenar archivos en directorios públicos <b>({0})</b> en Android 11+. <div>Las tarjetas SD tampoco son compatibles.</div> <div>Por favor, elija otra ubicación.</div> <div>La versión de este dispositivo es {1}.</div>",
         "bulk_download_select_a_folder": "Selecciona una carpeta",
