@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
 import '../../../../configs/config.dart';
+import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/route_utils.dart';
@@ -32,54 +33,73 @@ class DetailsConfigPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Widgets'),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _Title(
-              title: 'Preview widgets',
-              onPressed: () => goToDetailsLayoutManagerPage(
-                context,
-                params: DetailsLayoutManagerParams(
-                  details: previewDetails,
-                  availableParts: uiBuilder.buildablePreviewParts.toSet(),
-                  defaultParts: uiBuilder.preview.keys.toSet(),
-                  onUpdate: (parts) {
-                    onLayoutUpdated(
-                      layout.copyWith(
-                        previewDetails: () => parts,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _Title(
+                      title: 'Preview widgets',
+                      onPressed: () => goToDetailsLayoutManagerPage(
+                        context,
+                        params: DetailsLayoutManagerParams(
+                          details: previewDetails,
+                          availableParts:
+                              uiBuilder.buildablePreviewParts.toSet(),
+                          defaultParts: uiBuilder.preview.keys.toSet(),
+                          onUpdate: (parts) {
+                            onLayoutUpdated(
+                              layout.copyWith(
+                                previewDetails: () => parts,
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                    _WidgetList(parts: previewDetails),
+                    const SizedBox(height: 24),
+                    _Title(
+                      title: 'Full informaton widgets',
+                      onPressed: () => goToDetailsLayoutManagerPage(
+                        context,
+                        params: DetailsLayoutManagerParams(
+                          details: details,
+                          availableParts: uiBuilder.full.keys.toSet(),
+                          defaultParts: uiBuilder.full.keys.toSet(),
+                          onUpdate: (parts) {
+                            onLayoutUpdated(
+                              layout.copyWith(
+                                details: () => parts,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    _WidgetList(parts: details),
+                  ],
                 ),
               ),
             ),
-            _WidgetList(parts: previewDetails),
-            const SizedBox(height: 24),
-            _Title(
-              title: 'Full informaton widgets',
-              onPressed: () => goToDetailsLayoutManagerPage(
-                context,
-                params: DetailsLayoutManagerParams(
-                  details: details,
-                  availableParts: uiBuilder.full.keys.toSet(),
-                  defaultParts: uiBuilder.full.keys.toSet(),
-                  onUpdate: (parts) {
-                    onLayoutUpdated(
-                      layout.copyWith(
-                        details: () => parts,
-                      ),
-                    );
-                  },
-                ),
-              ),
+          ),
+          SafeArea(
+            child: Text(
+              'All changes are saved to your current profile.',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.hintColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
             ),
-            _WidgetList(parts: details),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

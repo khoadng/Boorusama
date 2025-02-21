@@ -52,6 +52,7 @@ class WebsiteLogo extends ConsumerWidget {
               dio: dio,
               clearMemoryCacheIfFailed: false,
               fit: BoxFit.cover,
+              retries: 1,
               placeholderWidget: Container(
                 padding: const EdgeInsets.all(8),
                 child: const CircularProgressIndicator(
