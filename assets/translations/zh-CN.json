@@ -330,7 +330,6 @@
     },
     "download": {
         "download": "下载",
-        "bulk_download": "批量下载",
         "bulk_download_save_to_folder": "保存到文件夹",
         "bulk_download_done_confirm": "完成",
         "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符： ",
