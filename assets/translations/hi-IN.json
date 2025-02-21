@@ -324,8 +324,7 @@
         "bulk_download_folder_select_warning": "",
         "bulk_download_select_a_folder": "",
         "bulk_download_downloaded_counter": {
-            "one": "",
-            "other": ""
+            "one": ""
         },
         "open_app_settings": "",
         "storage_permission_explanation": "",
