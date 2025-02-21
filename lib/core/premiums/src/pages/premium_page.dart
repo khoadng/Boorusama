@@ -235,15 +235,22 @@ class _RestorePremiumButton extends ConsumerWidget {
   }
 
   void restore(WidgetRef ref, BuildContext context) {
+    final navigator = Navigator.of(context);
+
     ref.read(subscriptionNotifierProvider.notifier).restoreSubscription().then(
       (res) {
         if (context.mounted) {
           if (res) {
-            showSimpleSnackBar(
-              context: context,
-              content: const Text('Subscription restored!'),
-              duration: const Duration(seconds: 2),
-            );
+            final navigatorContext = navigatorKey.currentContext;
+            navigator.pop();
+
+            if (navigatorContext != null) {
+              showSimpleSnackBar(
+                context: navigatorContext,
+                content: const Text('Subscription restored!'),
+                duration: const Duration(seconds: 2),
+              );
+            }
           } else {
             _showFailedRestore(context);
           }
