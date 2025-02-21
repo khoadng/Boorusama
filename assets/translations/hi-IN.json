@@ -320,7 +320,6 @@
         "bulk_download": "",
         "bulk_download_save_to_folder": "",
         "bulk_download_total_count": "",
-        "bulk_download_done_count": "",
         "bulk_download_done_confirm": "",
         "bulk_download_cancel": "",
         "bulk_download_duplicate": "",
