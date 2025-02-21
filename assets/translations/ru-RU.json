@@ -318,7 +318,6 @@
     "download": {
         "download": "Скачать",
         "bulk_download": "Массовая загрузка",
-        "bulk_download_tag_confirmation": "Изображения со следующими тегами будут загружены",
         "bulk_download_save_to_folder": "Сохранить в",
         "bulk_download_total_count": "Всего",
         "bulk_download_done_count": "Загружено",
