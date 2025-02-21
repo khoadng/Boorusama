@@ -341,8 +341,7 @@
         "bulk_download_select_a_folder": "Sélectionnez un fichier",
         "bulk_download_downloaded_counter": {
             "one": "{} image téléchargée",
-            "many": "{} images téléchargées",
-            "other": "{} images téléchargées"
+            "many": "{} images téléchargées"
         },
         "bulk_download_skipped_counter": {
             "many": "{} images passées"
