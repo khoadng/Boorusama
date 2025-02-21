@@ -281,9 +281,6 @@
         "bulk_download": "Масове завантаження",
         "bulk_download_done_confirm": "Готово",
         "bulk_download_save_to_folder": "Зберегти в",
-        "bulk_download_skipped_counter": {
-            "one": "{} зображення пропущено"
-        },
         "storage_permission_explanation": "Дозвіл на доступ до сховища необхідний для збереження завантажених файлів.",
         "image_counter": {
             "other": "Скачати {} зображень",
