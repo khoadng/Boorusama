@@ -337,8 +337,7 @@
         "bulk_download_folder_select_warning": "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>.",
         "bulk_download_select_a_folder": "Select a folder",
         "bulk_download_downloaded_counter": {
-            "one": "{} image downloaded",
-            "other": "{} images downloaded"
+            "one": "{} image downloaded"
         },
         "open_app_settings": "Open settings",
         "storage_permission_explanation": "Storage permission is needed to store download files.",
