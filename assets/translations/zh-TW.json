@@ -312,7 +312,6 @@
         "bulk_download_skipped_counter": {
             "other": "{} 張圖片已略過"
         },
-        "bulk_download_download_more": "下載更多",
         "open_app_settings": "開啟設定",
         "storage_permission_explanation": "需要儲存權限以儲存下載文件",
         "app_restart_request": "請重新啟動應用程式以使此更改生效",
