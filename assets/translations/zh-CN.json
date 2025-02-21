@@ -331,7 +331,6 @@
     "download": {
         "download": "下载",
         "bulk_download": "批量下载",
-        "bulk_download_tag_confirmation": "以下标签的图像会被下载",
         "bulk_download_save_to_folder": "保存到文件夹",
         "bulk_download_total_count": "合计",
         "bulk_download_done_count": "完成",
