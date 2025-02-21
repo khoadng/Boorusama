@@ -1,15 +1,15 @@
-# Prereleased-2025.2.10
-- Introduce Boorusama Plus that allows users to support the development of the app and unlock additional features like theme, home screen, layout customization, and more.
-- Major image viewer and video player overhaul
-- Make the app more responsive on larger screen devices
-- Proxy support (HTTP, SOCKS5)
-- Add a new image list layout: Classic
-- Add a new backup method to quickly transfer data between devices in the same network
-- Add a new option to auto fetch notes when viewing a post
-- Add a new option to keep search bar visible when scrolling
-- Support viewing bulk download history
-- Support navigating between posts using volume keys
-- Various bug fixes and UI/UX improvements
+# Prereleased-2025.2.21
+- Introduce Boorusama Plus that unlocks additional features like theme, home screen, layout customization, and more.
+- Major image viewer and video player overhaul.
+- Make the app more responsive on larger screen devices.
+- Improve bulk download with more features like download list, download history, templates, and more
+- Proxy support (HTTP, SOCKS5).
+- Add a new image list layout: Classic.
+- Add a new backup method to quickly transfer data between devices in the same network.
+- Add a new option to automatically fetch notes when viewing a post.
+- Add a new option to keep search bar visible when scrolling.
+- Support navigating between posts using volume keys.
+- Various bug fixes and UI/UX improvements.
 
 # 3.22.6
 - Minor scrolling/swiping tweaks.
