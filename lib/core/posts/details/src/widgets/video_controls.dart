@@ -14,8 +14,8 @@ import '../../../../videos/more_options_control_button.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
-import '../../../../videos/video_progress.dart';
 import '../../../../videos/video_progress_bar.dart';
+import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import 'post_details_controller.dart';
 
@@ -52,12 +52,6 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
     final isLarge = context.isLargeScreen;
     final surfaceColor = Theme.of(context).colorScheme.surface;
 
-    final useDefaultEngine = ref.watch(
-      settingsProvider.select(
-        (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
-      ),
-    );
-
     return Stack(
       children: [
         Positioned.fill(
@@ -70,98 +64,61 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           ),
         ),
         LayoutBuilder(
-          builder: (context, constraints) {
-            return SafeArea(
-              top: false,
-              left: isLarge,
-              right: isLarge,
-              bottom: isLarge,
-              child: Container(
-                padding: isLarge ? const EdgeInsets.all(8) : null,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        const Spacer(),
-                        if (constraints.maxWidth < _kMinWidth) ...rightControls,
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const SizedBox(width: 4),
-                        ValueListenableBuilder(
-                          valueListenable: controller.currentPost,
-                          builder: (_, post, __) => PlayPauseButton(
-                            padding: !isLarge ? const EdgeInsets.all(8) : null,
-                            isPlaying: controller.isVideoPlaying,
-                            onPlayingChanged: (value) {
-                              if (value) {
-                                controller.pauseVideo(
-                                  post.id,
-                                  post.isWebm,
-                                  useDefaultEngine,
-                                );
-                              } else if (!value) {
-                                controller.playVideo(
-                                  post.id,
-                                  post.isWebm,
-                                  useDefaultEngine,
-                                );
-                              } else {
-                                // do nothing
-                              }
-                            },
-                          ),
-                        ),
-                        ValueListenableBuilder(
-                          valueListenable: controller.videoProgress,
-                          builder: (_, progress, __) => VideoTimeText(
-                            duration: progress.position,
-                            forceHigherThanOneSecond: false,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Container(
-                            color: Colors.transparent,
-                            height: 28,
-                            child: ValueListenableBuilder(
-                              valueListenable: controller.currentPost,
-                              builder: (_, post, __) => ValueListenableBuilder(
-                                valueListenable: controller.videoProgress,
-                                builder: (_, progress, __) =>
-                                    ValueListenableBuilder(
-                                  valueListenable:
-                                      controller.isVideoInitializing,
-                                  builder: (_, initializing, __) => _buildBar(
-                                    context,
-                                    progress,
-                                    post,
-                                    useDefaultEngine,
-                                    initializing,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        ValueListenableBuilder(
-                          valueListenable: controller.videoProgress,
-                          builder: (_, progress, __) => VideoTimeText(
-                            duration: progress.duration,
-                            forceHigherThanOneSecond: true,
-                          ),
-                        ),
-                        if (constraints.maxWidth >= _kMinWidth)
-                          ...rightControls,
-                      ],
-                    ),
-                  ],
-                ),
+          builder: (context, constraints) => SafeArea(
+            top: false,
+            left: isLarge,
+            right: isLarge,
+            bottom: isLarge,
+            child: Container(
+              padding: isLarge ? const EdgeInsets.all(8) : null,
+              child: _buildControls(
+                isLarge,
+                constraints,
+                rightControls,
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildControls(
+    bool isLarge,
+    BoxConstraints constraints,
+    List<Widget> rightControls,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            const Spacer(),
+            if (constraints.maxWidth < _kMinWidth) ...rightControls,
+          ],
+        ),
+        const SizedBox(height: 4),
+        Consumer(
+          builder: (context, ref, child) {
+            final useDefaultEngine = ref.watch(
+              settingsProvider.select(
+                (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+              ),
+            );
+
+            return Row(
+              children: [
+                const SizedBox(width: 4),
+                _buildPlayPauseButton(isLarge, useDefaultEngine),
+                _buildLeftTime(),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: _buildBar(useDefaultEngine),
+                ),
+                const SizedBox(width: 4),
+                _buildRightTime(),
+                if (constraints.maxWidth >= _kMinWidth) ...rightControls,
+              ],
             );
           },
         ),
@@ -169,49 +126,101 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
     );
   }
 
-  Widget _buildBar(
-    BuildContext context,
-    VideoProgress progress,
-    T post,
-    bool useDefaultEngine,
-    bool initializing,
-  ) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return VideoProgressBar(
-      indeterminate: initializing,
-      duration: progress.duration,
-      position: progress.position,
-      buffered: const [],
-      onDragStart: () {
-        // pause the video when dragging
-        controller.pauseVideo(
-          post.id,
-          post.isWebm,
-          useDefaultEngine,
-        );
-      },
-      onDragEnd: () {
-        // resume the video when dragging ends
-        controller.playVideo(
-          post.id,
-          post.isWebm,
-          useDefaultEngine,
-        );
-      },
-      seekTo: (position) => controller.onVideoSeekTo(
-        position,
-        post.id,
-        post.isWebm,
-        useDefaultEngine,
+  Widget _buildRightTime() {
+    return ValueListenableBuilder(
+      valueListenable: controller.videoProgress,
+      builder: (_, progress, __) => VideoTimeText(
+        duration: progress.duration,
+        forceHigherThanOneSecond: true,
       ),
-      barHeight: 3,
-      handleHeight: 6,
-      drawShadow: true,
-      backgroundColor: colorScheme.hintColor.withValues(alpha: 0.2),
-      playedColor: colorScheme.primary,
-      bufferedColor: colorScheme.hintColor,
-      handleColor: colorScheme.primary,
+    );
+  }
+
+  Widget _buildLeftTime() {
+    return ValueListenableBuilder(
+      valueListenable: controller.videoProgress,
+      builder: (_, progress, __) => VideoTimeText(
+        duration: progress.position,
+        forceHigherThanOneSecond: false,
+      ),
+    );
+  }
+
+  Widget _buildPlayPauseButton(bool isLarge, bool useDefaultEngine) {
+    return ValueListenableBuilder(
+      valueListenable: controller.currentPost,
+      builder: (_, post, __) => PlayPauseButton(
+        padding: !isLarge ? const EdgeInsets.all(8) : null,
+        isPlaying: controller.isVideoPlaying,
+        onPlayingChanged: (value) {
+          if (value) {
+            controller.pauseVideo(
+              post.id,
+              post.isWebm,
+              useDefaultEngine,
+            );
+          } else if (!value) {
+            controller.playVideo(
+              post.id,
+              post.isWebm,
+              useDefaultEngine,
+            );
+          } else {
+            // do nothing
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildBar(bool useDefaultEngine) {
+    return Container(
+      color: Colors.transparent,
+      height: 28,
+      child: MultiValueListenableBuilder3(
+        first: controller.currentPost,
+        second: controller.videoProgress,
+        third: controller.isVideoInitializing,
+        builder: (context, post, progress, initializing) {
+          final colorScheme = Theme.of(context).colorScheme;
+
+          return VideoProgressBar(
+            indeterminate: initializing,
+            duration: progress.duration,
+            position: progress.position,
+            buffered: const [],
+            onDragStart: () {
+              // pause the video when dragging
+              controller.pauseVideo(
+                post.id,
+                post.isWebm,
+                useDefaultEngine,
+              );
+            },
+            onDragEnd: () {
+              // resume the video when dragging ends
+              controller.playVideo(
+                post.id,
+                post.isWebm,
+                useDefaultEngine,
+              );
+            },
+            seekTo: (position) => controller.onVideoSeekTo(
+              position,
+              post.id,
+              post.isWebm,
+              useDefaultEngine,
+            ),
+            barHeight: 3,
+            handleHeight: 6,
+            drawShadow: true,
+            backgroundColor: colorScheme.hintColor.withValues(alpha: 0.2),
+            playedColor: colorScheme.primary,
+            bufferedColor: colorScheme.hintColor,
+            handleColor: colorScheme.primary,
+          );
+        },
+      ),
     );
   }
 }
