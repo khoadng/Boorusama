@@ -316,7 +316,6 @@
     "download": {
         "download": "Descargar",
         "bulk_download": "Descargar Masiva",
-        "bulk_download_tag_confirmation": "Las etiquetas a continuación serán descargadas",
         "bulk_download_save_to_folder": "Guardar a carpeta",
         "bulk_download_total_count": "Total",
         "bulk_download_done_count": "Terminado",
