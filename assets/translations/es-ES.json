@@ -326,8 +326,7 @@
             "other": "{} imagenes descargadas"
         },
         "bulk_download_skipped_counter": {
-            "one": "{} imagen omitida",
-            "other": "{} imagenes omitidas"
+            "one": "{} imagen omitida"
         },
         "open_app_settings": "Abrir Ajustes",
         "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
