@@ -24,6 +24,7 @@ import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
+import '../../../selected_tags/tag.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
 import '../views/search_landing_view.dart';
@@ -44,6 +45,7 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
 const _kSearchBarHeight = kToolbarHeight * 1.2;
 const _kSelectedTagHeight = 56;
 const _kViewTopPadding = 8;
+const _kMultiSelectTopHeight = kToolbarHeight;
 
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
@@ -105,6 +107,8 @@ class _SearchPageScaffoldState<T extends Post>
     curve: Curves.easeInOut,
   );
 
+  final _multiSelectController = MultiSelectController<T>();
+
   @override
   void initState() {
     super.initState();
@@ -137,9 +141,34 @@ class _SearchPageScaffoldState<T extends Post>
 
     _tagsController.addListener(_onSelectedTagChanged);
     _controller.tagString.addListener(_onTagChanged);
+
+    _previousMultiSelectState = _multiSelectController.multiSelectEnabled;
+    _multiSelectController.multiSelectNotifier
+        .addListener(_onMultiSelectChanged);
+  }
+
+  void _onMultiSelectChanged() {
+    final currentSelected = _multiSelectController.multiSelectEnabled;
+
+    if (_previousMultiSelectState != currentSelected) {
+      final currentOffset = _scrollController.offset;
+      final offsetSearchHeight = _calcSearchRegionHeight(_tagsController.value);
+      final sign = currentSelected ? -1 : 1;
+      final jumpTo =
+          (currentOffset + sign * (offsetSearchHeight + _kMultiSelectTopHeight))
+              .clamp(0, double.infinity)
+              .toDouble();
+
+      // Scroll backward to compensate for the change in height
+      _scrollController.jumpTo(jumpTo);
+
+      _previousMultiSelectState = currentSelected;
+    }
   }
 
   var _searchBarOffset = 0.0;
+
+  late bool? _previousMultiSelectState;
 
   void _onTagChanged() {
     // check if scroll controller is attached
@@ -169,6 +198,8 @@ class _SearchPageScaffoldState<T extends Post>
   void dispose() {
     _tagsController.removeListener(_onSelectedTagChanged);
     _controller.tagString.removeListener(_onTagChanged);
+    _multiSelectController.multiSelectNotifier
+        .removeListener(_onMultiSelectChanged);
 
     _subscriptions.dispose();
     _controller.dispose();
@@ -176,6 +207,7 @@ class _SearchPageScaffoldState<T extends Post>
     _scrollController.dispose();
     _searchBarAnimController.dispose();
     _searchBarCurve.dispose();
+    _multiSelectController.dispose();
 
     super.dispose();
   }
@@ -279,9 +311,7 @@ class _SearchPageScaffoldState<T extends Post>
                 ),
                 _buildSuggestions(context),
                 NotificationListener<ScrollNotification>(
-                  onNotification: (notification) {
-                    return true;
-                  },
+                  onNotification: (notification) => true,
                   child: AnimatedBuilder(
                     animation: _searchBarCurve,
                     builder: (context, child) {
@@ -293,20 +323,27 @@ class _SearchPageScaffoldState<T extends Post>
                             builder: (_, state, __) => ValueListenableBuilder(
                               valueListenable: _tagsController,
                               builder: (_, selectedTags, __) {
-                                final hasSelectedTag = selectedTags.isNotEmpty;
-                                final searchRegionHeight = _kSearchBarHeight +
-                                    (hasSelectedTag ? _kSelectedTagHeight : 0);
+                                final searchRegionHeight =
+                                    _calcSearchRegionHeight(selectedTags);
 
-                                return Positioned(
-                                  top: searchOnce
-                                      ? state == SearchState.suggestions
-                                          ? 0
-                                          : -(_searchBarCurve.value *
-                                              searchRegionHeight)
-                                      : 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: child!,
+                                return ValueListenableBuilder(
+                                  valueListenable: _multiSelectController
+                                      .multiSelectNotifier,
+                                  builder: (context, multiSelect, _) {
+                                    return Positioned(
+                                      top: multiSelect
+                                          ? -searchRegionHeight
+                                          : searchOnce
+                                              ? state == SearchState.suggestions
+                                                  ? 0
+                                                  : -(_searchBarCurve.value *
+                                                      searchRegionHeight)
+                                              : 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: child!,
+                                    );
+                                  },
                                 );
                               },
                             ),
@@ -323,6 +360,13 @@ class _SearchPageScaffoldState<T extends Post>
         ),
       ),
     );
+  }
+
+  double _calcSearchRegionHeight(List<TagSearchItem> selectedTags) {
+    final hasSelectedTag = selectedTags.isNotEmpty;
+    final searchRegionHeight =
+        _kSearchBarHeight + (hasSelectedTag ? _kSelectedTagHeight : 0);
+    return searchRegionHeight;
   }
 
   Widget _buildSearchRegion(BuildContext context) {
@@ -531,6 +575,7 @@ class _SearchPageScaffoldState<T extends Post>
       child: SafeArea(
         bottom: false,
         child: PostGrid<T>(
+          multiSelectController: _multiSelectController,
           scrollController: _scrollController,
           controller: controller,
           itemBuilder: widget.itemBuilder != null
