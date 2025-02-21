@@ -337,7 +337,6 @@
         "bulk_download_folder_select_warning": "在Android 11+系统中，此应用只能将文件保存在内部公共路径<b>({0})</b>中。<br><br>有效保存位置示例：<br><b>[内部]</b> /storage/emulated/0/Download <br><b>[SD卡]</b> /storage/A1B2-C3D4/Download<br><br>请选择其他路径，若不存在请新建。<br>此设备版本为<b>{1}</b>。",
         "bulk_download_select_a_folder": "选择文件夹",
         "bulk_download_downloaded_counter": {
-            "other": "{} 张图片已下载",
             "one": "{} 张图片已下载"
         },
         "open_app_settings": "打开设置",
