@@ -10,7 +10,6 @@ import '../../images/booru_image.dart';
 import '../../theme.dart';
 import '../../utils/flutter_utils.dart';
 import '../../widgets/widgets.dart';
-import '../l10n.dart';
 import '../urls/sanitizer.dart';
 
 class DownloadTileBuilder extends StatelessWidget {
@@ -121,7 +120,7 @@ class DownloadTileBuilder extends StatelessWidget {
                           visualDensity: const ShrinkVisualDensity(),
                         ),
                         onPressed: onCancel,
-                        child: const Text(DownloadTranslations.cancel).tr(),
+                        child: const Text('generic.action.cancel').tr(),
                       )
                     else
                       const SizedBox(

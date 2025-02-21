@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../foundation/toast.dart';
@@ -14,6 +15,7 @@ import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
 import '../routes/routes.dart';
 import '../types/download_configs.dart';
+import '../types/l10n.dart';
 import '../types/saved_download_task.dart';
 
 class SavedTaskListTile extends ConsumerWidget {
@@ -175,14 +177,14 @@ class _ModalOptions extends StatelessWidget {
           const DragLine(),
           const SizedBox(height: 8),
           ListTile(
-            title: const Text('Run'),
+            title: const Text(DownloadTranslations.runTemplate).tr(),
             onTap: () {
               onRun();
               navigator.pop();
             },
           ),
           ListTile(
-            title: const Text('Duplicate'),
+            title: const Text('generic.action.duplicate').tr(),
             onTap: () {
               onDuplicate();
               navigator.pop();
@@ -190,11 +192,11 @@ class _ModalOptions extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              'Delete',
+              'generic.action.delete',
               style: TextStyle(
                 color: colorScheme.error,
               ),
-            ),
+            ).tr(),
             onTap: () {
               onDelete();
               navigator.pop();

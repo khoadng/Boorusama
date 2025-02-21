@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../downloads/l10n.dart';
 import '../../../info/device_info.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
@@ -57,7 +56,7 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    DownloadTranslations.cancel,
+                    'generic.action.cancel',
                   ).tr(),
                 ),
               ),
