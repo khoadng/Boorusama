@@ -321,7 +321,6 @@
         "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
         "bulk_download_select_a_folder": "Chọn một thư mục",
         "bulk_download_downloaded_counter": {
-            "other": "Đã tải {} ảnh",
             "one": "Đã tải {} ảnh"
         },
         "open_app_settings": "Mở cài đặt",
