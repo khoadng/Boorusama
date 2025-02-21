@@ -332,7 +332,6 @@
         "download": "下载",
         "bulk_download": "批量下载",
         "bulk_download_save_to_folder": "保存到文件夹",
-        "bulk_download_total_count": "合计",
         "bulk_download_done_confirm": "完成",
         "bulk_download_cancel": "取消",
         "bulk_download_duplicate": "复制",
