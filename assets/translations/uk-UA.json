@@ -280,7 +280,6 @@
         "download": "Скачати",
         "bulk_download": "Масове завантаження",
         "bulk_download_done_confirm": "Готово",
-        "bulk_download_cancel": "Відміна",
         "bulk_download_save_to_folder": "Зберегти в",
         "bulk_download_skipped_counter": {
             "other": "{} зображень пропущено",
