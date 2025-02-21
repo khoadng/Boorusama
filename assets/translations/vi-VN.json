@@ -325,7 +325,6 @@
             "one": "Đã tải {} ảnh"
         },
         "bulk_download_skipped_counter": {
-            "other": "{} ảnh bị lượt bỏ",
             "one": "{} ảnh bị lượt bỏ"
         },
         "open_app_settings": "Mở cài đặt",
