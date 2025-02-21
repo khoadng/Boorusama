@@ -290,9 +290,6 @@
         "bulk_download_folder_select_warning": "Програма може завантажувати лише файли в загальнодоступних каталогах <b>({0})</b> для Android 11+. <br><br> Приклади дійсного розташування:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD-карта]</b> /storage/A1B2- C3D4/Завантажити<br><br>Будь ласка, виберіть інший каталог або створіть новий, якщо він не існує. <br>Версія цього пристрою <b>{1}</b>.",
         "open_app_settings": "Відкрити налаштування",
         "bulk_download_select_a_folder": "Виберіть папку",
-        "bulk_download_downloaded_counter": {
-            "one": "{} зображення завантажено"
-        },
         "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу"
     },
     "blacklisted_tags": {
