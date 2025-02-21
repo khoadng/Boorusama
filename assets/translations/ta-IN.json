@@ -330,7 +330,6 @@
     },
     "download": {
         "download": "பதிவிறக்கம்",
-        "bulk_download": "மொத்த பதிவிறக்க",
         "bulk_download_save_to_folder": "கோப்புறையில் சேமிக்கவும்",
         "bulk_download_done_confirm": "முடிந்தது",
         "bulk_download_invalid_folder_name_error": "ஒரு கோப்புறையில் பின்வரும் எழுத்துக்கள் எதுவும் இருக்க முடியாது: ",
