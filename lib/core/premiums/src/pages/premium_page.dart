@@ -47,7 +47,7 @@ class PremiumPage extends ConsumerWidget {
                   builder: (context) => const PremiumThanksDialog(),
                 );
               } else if (success == false) {
-                _showFailedPurchase(context);
+                // Purchase cancelled, do nothing
               }
             },
             loading: () {},
