@@ -7,7 +7,7 @@ class DownloadTranslations {
   static const String copyPath = 'Copy path';
   static const String createdStatus = 'Created';
   static const String download = 'download.download';
-  static const String addToQueue = 'Queue';
+  static const String addToQueue = 'Add to List';
   static const String allSkippedStatus = 'Completed with no new files';
   static String inProgressStatus(int? completed) =>
       'Scanning${completed != null ? ' page $completed ' : ''}...';

@@ -74,6 +74,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
         spacing: 16,
         children: [
           Expanded(
+            flex: 3,
             child: ElevatedButton(
               style: FilledButton.styleFrom(
                 disabledBackgroundColor: Colors.transparent,
@@ -100,7 +101,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 5,
             child: FilledButton(
               style: FilledButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,

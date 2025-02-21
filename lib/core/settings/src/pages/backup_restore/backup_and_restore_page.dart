@@ -310,7 +310,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildBulkDownloads() {
     return BackupRestoreTile(
       leadingIcon: Symbols.folder_zip,
-      title: 'Bulk Downloads',
+      title: 'Bulk downloads',
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
