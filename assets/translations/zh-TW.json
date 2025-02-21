@@ -300,7 +300,6 @@
     },
     "download": {
         "download": "下載",
-        "bulk_download": "批次下載",
         "bulk_download_save_to_folder": "儲存至資料夾",
         "bulk_download_done_confirm": "完成",
         "bulk_download_invalid_folder_name_error": "資料夾不可包含以下字符： ",
