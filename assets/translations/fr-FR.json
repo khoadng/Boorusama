@@ -349,7 +349,6 @@
             "many": "{} images passées",
             "other": "{} images passées"
         },
-        "bulk_download_download_more": "Télécharger plus",
         "open_app_settings": "Ouvrir les paramètres",
         "storage_permission_explanation": "L'autorisation de stockage est nécessaire pour stocker les fichiers téléchargés.",
         "app_restart_request": "Redémarrez l'application pour que le changement soit effectif",
