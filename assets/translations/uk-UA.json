@@ -278,7 +278,6 @@
             "all_done_notification_message": "Всі завантаження завершено"
         },
         "download": "Скачати",
-        "bulk_download_total_count": "Всього",
         "bulk_download": "Масове завантаження",
         "bulk_download_done_confirm": "Готово",
         "bulk_download_cancel": "Відміна",
