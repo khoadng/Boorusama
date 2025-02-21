@@ -346,8 +346,7 @@
         },
         "bulk_download_skipped_counter": {
             "one": "{} image passée",
-            "many": "{} images passées",
-            "other": "{} images passées"
+            "many": "{} images passées"
         },
         "open_app_settings": "Ouvrir les paramètres",
         "storage_permission_explanation": "L'autorisation de stockage est nécessaire pour stocker les fichiers téléchargés.",
