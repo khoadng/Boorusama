@@ -260,7 +260,6 @@
         "bulk_download": "",
         "bulk_download_save_to_folder": "Lagre i mappe",
         "bulk_download_total_count": "",
-        "bulk_download_done_count": "Ferdig",
         "bulk_download_done_confirm": "Ferdig",
         "bulk_download_cancel": "Avbryt",
         "bulk_download_duplicate": "Dupliser",
