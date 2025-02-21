@@ -290,8 +290,7 @@
         "bulk_download_done_confirm": "Feito",
         "bulk_download_save_to_folder": "Salvar para a pasta",
         "bulk_download_downloaded_counter": {
-            "one": "{} imagem baixada",
-            "other": "{} imagens baixadas"
+            "one": "{} imagem baixada"
         },
         "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
         "bulk_download_select_a_folder": "Selecione uma pasta",
