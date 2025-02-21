@@ -330,7 +330,6 @@
     },
     "download": {
         "download": "다운로드",
-        "bulk_download": "일괄 다운로드",
         "bulk_download_save_to_folder": "폴더에 저장",
         "bulk_download_done_confirm": "완료",
         "bulk_download_invalid_folder_name_error": "폴더 이름에 다음 문자들을 포함할 수 없습니다: ",
