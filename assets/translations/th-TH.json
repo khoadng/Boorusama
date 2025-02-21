@@ -317,7 +317,6 @@
     },
     "download": {
         "download": "ดาวน์โหลด",
-        "bulk_download": "การดาวน์โหลดเป็นชุด",
         "bulk_download_save_to_folder": "บันทึกไปที่โฟลเดอร์",
         "bulk_download_done_confirm": "เสร็จ",
         "bulk_download_invalid_folder_name_error": "โฟลเดอร์จะต้องไม่มีตัวอักษรตามที่ระบุดังนี้: ",
