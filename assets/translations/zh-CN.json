@@ -340,9 +340,6 @@
             "other": "{} 张图片已下载",
             "one": "{} 张图片已下载"
         },
-        "bulk_download_skipped_counter": {
-            "one": "{} 张图片已跳过"
-        },
         "open_app_settings": "打开设置",
         "storage_permission_explanation": "需要存储权限来保存文件。",
         "app_restart_request": "该修改需要重启应用生效",
