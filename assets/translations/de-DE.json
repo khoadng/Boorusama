@@ -324,8 +324,7 @@
             "other": "{} Bilder heruntergeladen"
         },
         "bulk_download_skipped_counter": {
-            "one": "{} Bild übersprungen",
-            "other": "{} Bilder übersprungen"
+            "one": "{} Bild übersprungen"
         },
         "open_app_settings": "Einstellungen öffnen",
         "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich.",
