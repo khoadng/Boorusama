@@ -220,7 +220,6 @@
         "bulk_download_invalid_folder_name_error": "Назва папкі не можа ўтрымліваць наступныя сімвалы: ",
         "bulk_download_folder_select_warning": "Прылажэнне можа захоўваць файлы толькі ў публічныя папкі <b>({0})</b> у Android 11+. <div>SD карты не падтрымліваюцца.</div> <div>Калі ласка, выберыце іншае размяшчэнне.</div> <div>Версія гэтага ўстройства - {1}.</div>",
         "bulk_download_select_a_folder": "Выберыце папку",
-        "bulk_download_download_more": "Скачаць больш",
         "open_app_settings": "Адкрыць настройкі",
         "storage_permission_explanation": "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
         "app_restart_request": "Вам неабходна перазапусціць прылажэнне, каб змяненне ўступіла ў сілу"
