@@ -16,15 +16,15 @@ echo "Building $appname version $version for $FLAVOR"
 case $FLAVOR in
   dev)
     flutter build macos --release --flavor dev --dart-define-from-file env/dev.json -t lib/main.dart \
-    && cp -r build/macos/Build/Products/Release/boorusama.app build/boorusama.app \
-    && create-dmg --hdiutil-quiet build/${appname}-${version}-dev.dmg build/boorusama.app \
-    && rm -rf build/boorusama.app
+    && cp -r build/macos/Build/Products/Release-dev/Boorusama-DEV.app build/Boorusama-DEV.app \
+    && create-dmg --hdiutil-quiet build/${appname}-${version}-dev.dmg build/Boorusama-DEV.app \
+    && rm -rf build/Boorusama-DEV.app
     ;;
   prod)
     flutter build macos --release --flavor prod --dart-define-from-file env/prod.json -t lib/main.dart \
-    && cp -r build/macos/Build/Products/Release/boorusama.app build/boorusama.app \
-    && create-dmg --hdiutil-quiet build/${appname}-${version}.dmg build/boorusama.app \
-    && rm -rf build/boorusama.app
+    && cp -r build/macos/Build/Products/Release-prod/Boorusama.app build/Boorusama.app \
+    && create-dmg --hdiutil-quiet build/${appname}-${version}.dmg build/Boorusama.app \
+    && rm -rf build/Boorusama.app
     ;;
   *)
     echo "Invalid flavor provided"
