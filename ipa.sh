@@ -16,7 +16,7 @@ case $FLAVOR in
   dev)
     flutter build ios --release --no-codesign --flavor dev --dart-define-from-file env/dev.json -t lib/main.dart \
     && mkdir build/Payload \
-    && cp -r build/ios/Release-iphoneos/Runner.app/ build/Payload/Runner.app/ \
+    && cp -r build/ios/Release-dev-iphoneos/Boorusama-DEV.app/ build/Payload/Boorusama-DEV.app/ \
     && cd build \
     && zip -ro ${appname}_${version}-dev.ipa Payload \
     && rm -rf Payload
@@ -24,7 +24,7 @@ case $FLAVOR in
   prod)
     flutter build ios --release --no-codesign --flavor prod --dart-define-from-file env/prod.json -t lib/main.dart \
     && mkdir build/Payload \
-    && cp -r build/ios/Release-iphoneos/Runner.app/ build/Payload/Runner.app/ \
+    && cp -r build/ios/Release-prod-iphoneos/Boorusama.app/ build/Payload/Boorusama.app/ \
     && cd build \
     && zip -ro ${appname}_${version}.ipa Payload \
     && rm -rf Payload
