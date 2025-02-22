@@ -55,7 +55,7 @@ class SelectedTagList extends StatelessWidget {
             },
             itemBuilder: {
               0: const Text('search.remove_all_selected').tr(),
-              1: const Text('download.bulk_download').tr(),
+              1: const Text('sideMenu.bulk_download').tr(),
             },
           ),
           Expanded(
