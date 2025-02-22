@@ -109,7 +109,10 @@ dependencies:
   rich_text_controller: ^1.4.2
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  searchfield: ^1.2.1
+  searchfield:
+    git:
+      url: https://github.com/khoadng/searchfield.git
+      ref: fix-highlight-null-2
   share_handler: ^0.0.20
   share_plus: ^10.0.2
   shelf: ^1.4.1
