@@ -41,19 +41,19 @@ class GelbooruFavoritesPageInternal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
     final query = 'fav:$uid';
+    final notifier = ref.watch(favoritesProvider(config.auth).notifier);
+    final repo = ref.watch(gelbooruPostRepoProvider(config));
 
     return FavoritesPageScaffold(
       favQueryBuilder: () => query,
       fetcher: (page) => TaskEither.Do(($) async {
-        final r = await $(
-          ref.read(gelbooruPostRepoProvider(config)).getPosts(query, page),
-        );
+        final r = await $(repo.getPosts(query, page));
 
         // all posts from this page are already favorited by the user
-        ref.read(favoritesProvider(config.auth).notifier).preloadInternal(
-              r.posts,
-              selfFavorited: (post) => true,
-            );
+        notifier.preloadInternal(
+          r.posts,
+          selfFavorited: (post) => true,
+        );
 
         return r;
       }),
