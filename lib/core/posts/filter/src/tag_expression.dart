@@ -1,10 +1,61 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../rating/rating.dart';
 import 'tag_expression_type.dart';
+import 'types/downvotes_type.dart';
+import 'types/rating_type.dart';
+import 'types/score_type.dart';
+import 'types/source_type.dart';
+import 'types/uploader_id_type.dart';
+
+const kDefaultTagParser = TagExpressionParser(
+  parsers: [
+    RatingTypeParser(),
+    UploaderIdTypeParser(),
+    SourceTypeParser(),
+    ScoreTypeParser(),
+    DownvotesTypeParser(),
+  ],
+);
+
+class TagExpressionParser {
+  const TagExpressionParser({
+    required List<TagExpressionTypeParser> parsers,
+  }) : _parsers = parsers;
+
+  final List<TagExpressionTypeParser> _parsers;
+
+  TagExpression parse(String expression) {
+    final isNegative = expression.startsWith('-');
+    final isOr = expression.startsWith('~');
+    final hasOperator = isNegative || isOr;
+    final value = expression.substring(hasOperator ? 1 : 0).toLowerCase();
+    final type = _parseType(value);
+
+    return TagExpression(
+      expression: value,
+      isNegative: isNegative,
+      isOr: isOr,
+      type: type,
+    );
+  }
+
+  TagExpressionType _parseType(String exp) {
+    final colonIndex = exp.indexOf(':');
+    if (colonIndex == -1 || colonIndex == exp.length - 1) return TagType(exp);
+
+    final prefix = exp.substring(0, colonIndex);
+    final value = exp.substring(colonIndex + 1);
+
+    for (final parser in _parsers) {
+      if (parser.canParse(prefix)) {
+        return parser.parse(exp, value);
+      }
+    }
+    return TagType(exp);
+  }
+}
 
 class TagExpression extends Equatable {
   const TagExpression({
@@ -14,25 +65,14 @@ class TagExpression extends Equatable {
     required this.type,
   });
 
-  factory TagExpression.parse(String expression) {
-    final isNegative = expression.startsWith('-');
-    final isOr = expression.startsWith('~');
-    final hasOperator = isNegative || isOr;
-    final value = expression.substring(hasOperator ? 1 : 0).toLowerCase();
-    final type = _getType(value);
-    return TagExpression(
-      expression: value,
-      isNegative: isNegative,
-      isOr: isOr,
-      type: type,
-    );
-  }
+  factory TagExpression.parse(
+    String expression, {
+    TagExpressionParser parser = kDefaultTagParser,
+  }) =>
+      parser.parse(expression);
 
   String get rawString {
-    final operator = switch ((
-      isNegative,
-      isOr,
-    )) {
+    final operator = switch ((isNegative, isOr)) {
       (true, false) => '-',
       (false, true) => '~',
       _ => '',
@@ -55,69 +95,4 @@ class TagExpression extends Equatable {
 
 extension TagExpressionX on Iterable<TagExpression> {
   String get rawString => map((e) => e.rawString).join(' ');
-}
-
-TagExpressionType _getType(String expression) {
-  final exp = expression;
-  final colonIndex = exp.indexOf(':');
-
-  // Early return if no colon
-  if (colonIndex == -1) return TagType(exp);
-
-  final prefix = exp.substring(0, colonIndex);
-  final value =
-      colonIndex < exp.length - 1 ? exp.substring(colonIndex + 1) : '';
-
-  switch (prefix) {
-    case 'rating':
-      return RatingType(exp, mapStringToRating(value));
-
-    case 'uploaderid':
-      return UploaderIdType(exp, int.tryParse(value) ?? -1);
-
-    case 'source':
-      if (value.isEmpty) return TagType(exp);
-
-      final firstChar = value.getFirstCharacter();
-      final lastChar = value.getLastCharacter();
-
-      // *aaa* is a wildcard for any string
-      // *aaa is a wildcard for any string that ends with "aaa"
-      // aaa* is a wildcard for any string that starts with "aaa"
-      // aaa is a exact match
-      final position = switch ((firstChar, lastChar)) {
-        ('*', '*') => WildCardPosition.both,
-        ('*', _) => WildCardPosition.start,
-        (_, '*') => WildCardPosition.end,
-        _ => WildCardPosition.none,
-      };
-
-      final source = switch (position) {
-        WildCardPosition.both => value.substring(1, value.length - 1),
-        WildCardPosition.start => value.substring(1),
-        WildCardPosition.end => value.substring(0, value.length - 1),
-        WildCardPosition.none => value,
-      };
-
-      return SourceType(exp, source.toLowerCase(), position);
-
-    case 'score':
-      final lessThanIndex = value.indexOf('<');
-      if (lessThanIndex == -1) return TagType(exp);
-      return ScoreType(
-        exp,
-        int.tryParse(value.substring(lessThanIndex + 1)) ?? 0,
-      );
-
-    case 'downvotes':
-      final greaterThanIndex = value.indexOf('>');
-      if (greaterThanIndex == -1) return TagType(exp);
-      return DownvotesType(
-        exp,
-        int.tryParse(value.substring(greaterThanIndex + 1)) ?? 0,
-      );
-
-    default:
-      return TagType(exp);
-  }
 }

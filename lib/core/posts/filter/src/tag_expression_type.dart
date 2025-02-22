@@ -1,53 +1,25 @@
 // Project imports:
-import '../../rating/rating.dart';
+import 'tag_filter_data.dart';
 
-sealed class TagExpressionType {
+abstract interface class TagExpressionTypeParser {
+  /// Returns true if this parser can handle the given prefix.
+  bool canParse(String prefix);
+
+  /// Parses the given expression into a TagExpressionType.
+  TagExpressionType parse(String exp, String value);
+}
+
+abstract class TagExpressionType {
   const TagExpressionType(this.value);
   final String value;
+
+  /// Returns true if the [filterData] satisfies this expression.
+  bool evaluate(TagFilterData filterData);
 }
 
 final class TagType extends TagExpressionType {
   const TagType(super.value);
-}
 
-final class RatingType extends TagExpressionType {
-  const RatingType(super.value, this.rating);
-
-  final Rating rating;
-}
-
-final class UploaderIdType extends TagExpressionType {
-  const UploaderIdType(super.value, this.uploaderId);
-
-  final int uploaderId;
-}
-
-final class SourceType extends TagExpressionType {
-  const SourceType(
-    super.value,
-    this.source,
-    this.wildCardPosition,
-  );
-
-  final String source;
-  final WildCardPosition wildCardPosition;
-}
-
-final class ScoreType extends TagExpressionType {
-  const ScoreType(super.value, this.score);
-
-  final int score;
-}
-
-final class DownvotesType extends TagExpressionType {
-  const DownvotesType(super.value, this.downvotes);
-
-  final int downvotes;
-}
-
-enum WildCardPosition {
-  start,
-  end,
-  both,
-  none,
+  @override
+  bool evaluate(TagFilterData filterData) => filterData.tags.contains(value);
 }

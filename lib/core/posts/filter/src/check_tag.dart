@@ -1,6 +1,5 @@
 // Project imports:
 import 'tag_expression.dart';
-import 'tag_expression_type.dart';
 import 'tag_filter_data.dart';
 
 bool checkIfTagsContainsRawTagExpression(
@@ -21,94 +20,34 @@ bool checkIfTagsContainsTagExpression(
   final TagFilterData filterData,
   final List<TagExpression> expressions,
 ) {
-  final tags = filterData.tags;
-  final source = filterData.source;
+  // Separate AND and OR expressions.
+  final andExpressions = expressions.where((e) => !e.isOr).toList();
+  final orExpressions = expressions.where((e) => e.isOr).toList();
 
-  var hasOrExpressions = false;
-  var anyOrSatisfied = false;
+  // Check all AND expressions.
+  for (final exp in andExpressions) {
+    final result = exp.type.evaluate(filterData);
+    if (exp.isNegative) {
+      if (result) {
+        return false;
+      }
+    } else {
+      if (!result) {
+        return false;
+      }
+    }
+  }
 
-  // Process each tag in the expression
-  for (final expression in expressions) {
-    final type = expression.type;
-    final isNegative = expression.isNegative;
-    final isOr = expression.isOr;
-    final value = expression.expression;
-
-    if (isOr) {
-      hasOrExpressions = true;
-      if (tags.contains(value)) {
-        anyOrSatisfied = true;
-      }
-    }
-
-    // Handle metatag "rating"
-    if (type is RatingType && !isNegative) {
-      if (filterData.rating != type.rating) {
-        return false;
-      }
-    }
-    // Handle uploaderid "uploaderid"
-    else if (type is UploaderIdType) {
-      if (filterData.uploaderId != type.uploaderId) {
-        return false;
-      }
-    }
-    // Handle source "source"
-    else if (type is SourceType && source != null) {
-      // find the first index of ':' and get the substring after it
-      final targetSource = type.source;
-      final wildCardPosition = type.wildCardPosition;
-
-      if (wildCardPosition == WildCardPosition.both) {
-        if (!source.contains(targetSource)) {
-          return false;
-        }
-      } else if (wildCardPosition == WildCardPosition.start) {
-        if (!source.endsWith(targetSource)) {
-          return false;
-        }
-      } else if (wildCardPosition == WildCardPosition.end) {
-        if (!source.startsWith(targetSource)) {
-          return false;
-        }
-      } else if (filterData.source != targetSource) {
-        return false;
-      }
-    }
-    // Handle NOT operator with metatag "rating"
-    else if (type is RatingType && isNegative) {
-      if (filterData.rating == type.rating) {
-        return false;
-      }
-    }
-    // Handle metatag "score"
-    else if (type is ScoreType) {
-      if (!(filterData.score < type.score)) {
-        return false;
-      }
-      // Handle metatag "downvotes"
-    } else if (type is DownvotesType) {
-      if (filterData.downvotes == null ||
-          !(filterData.downvotes! > type.downvotes)) {
-        return false;
-      }
-    }
-    // Handle NOT operator
-    else if (isNegative) {
-      if (tags.contains(value)) {
-        return false;
-      }
-    }
-    // Default AND operation
-    else if (!tags.contains(value) && !isOr) {
+  // For any OR expressions, at least one must be satisfied if any exist.
+  if (orExpressions.isNotEmpty) {
+    final orSatisfied = orExpressions.any((exp) {
+      final result = exp.type.evaluate(filterData);
+      return exp.isNegative ? !result : result;
+    });
+    if (!orSatisfied) {
       return false;
     }
   }
 
-  // OR operation check
-  if (hasOrExpressions && !anyOrSatisfied) {
-    return false;
-  }
-
-  return true; // If all checks pass, return true
+  return true;
 }
