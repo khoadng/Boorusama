@@ -78,7 +78,6 @@ Dio newGenericDio({
       DioCacheInterceptor(
         options: CacheOptions(
           store: HiveCacheStore(cacheDir.path),
-          maxStale: const Duration(days: 7),
           hitCacheOnErrorExcept: nonCacheableStatusCodes,
         ),
       ),
