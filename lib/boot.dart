@@ -18,7 +18,6 @@ import 'package:stack_trace/stack_trace.dart';
 // Project imports:
 import 'boorus/providers.dart';
 import 'core/app.dart';
-import 'core/blacklists/src/data/providers.dart';
 import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
@@ -162,8 +161,6 @@ Future<void> boot(BootLogger bootLogger) async {
     bootLogger: bootLogger,
   );
 
-  initBlacklistTagRepo();
-
   final tempPath = await getAppTemporaryDirectory();
 
   bootLogger.l('Initialize misc data box');
@@ -258,3 +255,12 @@ Future<void> boot(BootLogger bootLogger) async {
     ),
   );
 }
+
+//FIXME: Duplicate code with the one in boot
+final dbPathProvider = FutureProvider<String>((ref) async {
+  final dbDirectory = isAndroid()
+      ? await getApplicationDocumentsDirectory()
+      : await getApplicationSupportDirectory();
+
+  return dbDirectory.path;
+});
