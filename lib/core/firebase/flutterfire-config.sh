@@ -11,6 +11,7 @@ case $1 in
       --project=boorusama-dev \
       --out=lib/core/firebase/firebase_options_dev.dart \
       --ios-bundle-id=com.degenk.boorusama.dev \
+      --ios-build-config=Release-dev \
       --ios-out=ios/flavors/dev/GoogleService-Info.plist \
       --macos-bundle-id=com.degenk.boorusama.dev \
       --macos-out=macos/flavors/dev/GoogleService-Info.plist \
@@ -22,6 +23,7 @@ case $1 in
       --project=boorusama-40f9d \
       --out=lib/core/firebase/firebase_options_prod.dart \
       --ios-bundle-id=com.degenk.boorusama \
+      --ios-build-config=Release-prod \
       --ios-out=ios/flavors/prod/GoogleService-Info.plist \
       --macos-bundle-id=com.degenk.boorusama \
       --macos-out=macos/flavors/prod/GoogleService-Info.plist \
