@@ -183,10 +183,14 @@ class BulkDownloadNotifications {
       return;
     }
 
-    await _flutterLocalNotificationsPlugin?.cancel(id);
-    _activeNotifications
-      ..remove(sessionId)
-      ..remove(id.toString());
+    try {
+      await _flutterLocalNotificationsPlugin?.cancel(id);
+      _activeNotifications
+        ..remove(sessionId)
+        ..remove(id.toString());
+    } catch (e) {
+      // Failed on native side, i'm not sure what to do here so just skip to prevent failed download
+    }
   }
 
   void dispose() {
