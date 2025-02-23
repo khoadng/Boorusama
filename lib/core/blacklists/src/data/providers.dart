@@ -11,7 +11,11 @@ import 'hive/tag_repository.dart';
 final globalBlacklistedTagRepoProvider =
     FutureProvider<GlobalBlacklistedTagRepository>(
   (ref) async {
-    Hive.registerAdapter(BlacklistedTagHiveObjectAdapter());
+    final adapter = BlacklistedTagHiveObjectAdapter();
+
+    if (!Hive.isAdapterRegistered(adapter.typeId)) {
+      Hive.registerAdapter(adapter);
+    }
 
     final dbPath = await ref.watch(dbPathProvider.future);
 
