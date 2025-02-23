@@ -24,7 +24,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     this.initialHideOverlay = false,
     bool hoverToControlOverlay = false,
     this.maxSize = 0.7,
-    this.sheetDragThreshold = 200,
+    this.thresholdSizeToExpand = 0.02,
     SlideshowOptions slideshowOptions = const SlideshowOptions(),
   })  : currentPage = ValueNotifier(initialPage),
         _slideshowOptions = slideshowOptions,
@@ -37,7 +37,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final int totalPage;
   final bool initialHideOverlay;
   final double maxSize;
-  final double sheetDragThreshold;
+  final double thresholdSizeToExpand;
   final bool disableAnimation;
 
   late SlideshowOptions _slideshowOptions;
@@ -300,11 +300,23 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   Future<void> dragEnd() async {
-    if (verticalPosition.value.abs() <= sheetDragThreshold) {
+    final size = sheetController.size;
+
+    if (size > thresholdSizeToExpand) {
+      unawaited(expandToSnapPoint());
+
+      return;
+    }
+
+    final threshold = _sheetController.sizeToPixels(thresholdSizeToExpand);
+
+    if (verticalPosition.value.abs() <= threshold) {
       // Animate back to original position
       await resetSheet(
         duration: const Duration(milliseconds: 150),
       );
+    } else {
+      verticalPosition.value = 0.0;
     }
 
     showBottomSheet();
