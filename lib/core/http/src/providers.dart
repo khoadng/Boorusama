@@ -19,7 +19,6 @@ import 'dio/dio_options.dart';
 
 final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final cookieJar = ref.watch(cookieJarProvider);
-  final cacheDir = ref.watch(httpCacheDirProvider);
   final userAgent = ref.watch(userAgentProvider(config.booruType));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
@@ -27,7 +26,6 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   return newDio(
     options: DioOptions(
       cookieJar: cookieJar,
-      cacheDir: cacheDir,
       baseUrl: config.url,
       userAgent: userAgent,
       authConfig: config,
