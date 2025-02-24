@@ -10,6 +10,7 @@ import '../../../downloads/l10n.dart' as d;
 import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
+import '../../../router.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
@@ -37,8 +38,9 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final navigatorContext = navigatorKey.currentContext;
 
-    void showSnackBar(String message) {
+    void showSnackBar(BuildContext context, String message) {
       if (showStartNotification) {
         showSimpleSnackBar(
           context: context,
@@ -90,7 +92,10 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                       notifier.queueDownloadLater(
                         options,
                       );
-                      showSnackBar('Created');
+
+                      if (navigatorContext != null) {
+                        showSnackBar(navigatorContext, 'Created');
+                      }
 
                       Navigator.of(context).pop();
                     }
@@ -116,7 +121,12 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                           options,
                           downloadConfigs: DownloadConfigs(
                             onDownloadStart: () {
-                              showSnackBar('Download started');
+                              if (navigatorContext != null) {
+                                showSnackBar(
+                                  navigatorContext,
+                                  'Download started',
+                                );
+                              }
                             },
                           ),
                         );

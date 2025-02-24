@@ -29,10 +29,17 @@ class MobileHomePageScaffold extends ConsumerStatefulWidget {
 class _MobileHomePageScaffoldState
     extends ConsumerState<MobileHomePageScaffold> {
   final selectedTagString = ValueNotifier('');
-  late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.read(currentBooruBuilderProvider),
-    tagInfo: ref.read(tagInfoProvider),
-  );
+  late final SelectedTagController selectedTagController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedTagController = SelectedTagController.fromBooruBuilder(
+      builder: ref.read(currentBooruBuilderProvider),
+      tagInfo: ref.read(tagInfoProvider),
+    );
+  }
 
   @override
   void dispose() {

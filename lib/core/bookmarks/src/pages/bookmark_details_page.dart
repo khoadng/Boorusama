@@ -13,6 +13,7 @@ import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
+import '../../../posts/post/post.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/widgets.dart';
@@ -80,7 +81,9 @@ class _BookmarkDetailsPageState
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
-      imageUrlBuilder: (post) => post.sampleImageUrl,
+      // Needed to prevent type inference error
+      // ignore: avoid_types_on_closure_parameters
+      imageUrlBuilder: (Post post) => post.sampleImageUrl,
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),

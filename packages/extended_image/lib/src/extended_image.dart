@@ -11,6 +11,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
 
 import 'dio_extended_image_provider.dart';
+import 'retry_utils.dart';
 import 'utils.dart';
 
 const kDefaultImageCacheDuration = Duration(days: 2);
@@ -71,6 +72,7 @@ class ExtendedImage extends StatefulWidget {
     bool cacheRawData = false,
     String? imageCacheName,
     Duration? cacheMaxAge,
+    FetchStrategy? fetchStrategy,
     required Dio dio,
     this.controller,
     this.placeholderWidget,
@@ -93,6 +95,7 @@ class ExtendedImage extends StatefulWidget {
             cacheRawData: cacheRawData,
             imageCacheName: imageCacheName,
             cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
+            fetchStrategy: fetchStrategy,
           ),
           compressionRatio: compressionRatio,
           maxBytes: maxBytes,

@@ -31,7 +31,6 @@ class PostDetailsPageView extends StatefulWidget {
     required this.itemBuilder,
     required this.checkIfLargeScreen,
     super.key,
-    this.thresholdSizeToExpand = 0.06,
     this.maxSize = 0.7,
     this.controller,
     this.onSwipeDownThresholdReached,
@@ -51,7 +50,6 @@ class PostDetailsPageView extends StatefulWidget {
       sheetBuilder;
   final int itemCount;
   final IndexedWidgetBuilder itemBuilder;
-  final double thresholdSizeToExpand;
   final double maxSize;
   final double swipeDownThreshold;
 
@@ -281,7 +279,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.sheetState.value = SheetState.hidden;
     }
 
-    if (dis <= 150 && _controller.isExpanded) {
+    if (dis <= 200 && _controller.isExpanded) {
       // Delay to next frame to wait for the sheet state to change before showing the overlay
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.showBottomSheet();
@@ -795,14 +793,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     _controller.freestyleMoveOffset.value = Offset.zero;
-
-    final size = _controller.sheetController.size;
-
-    if (size > widget.thresholdSizeToExpand) {
-      _controller.expandToSnapPoint();
-
-      return;
-    }
 
     _controller.dragEnd();
   }

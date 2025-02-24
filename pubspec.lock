@@ -1529,10 +1529,11 @@ packages:
   searchfield:
     dependency: "direct main"
     description:
-      name: searchfield
-      sha256: "9d091c2731868926e2aeb9ac551d1b9116a4533a424373119509d754ae0d0f45"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: fix-highlight-null-2
+      resolved-ref: "37028f26b23952a3df844098586117c7675fd633"
+      url: "https://github.com/khoadng/searchfield.git"
+    source: git
     version: "1.2.4"
   share_handler:
     dependency: "direct main"

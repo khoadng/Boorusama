@@ -21,6 +21,13 @@ case $FLAVOR in
     mv "build/app/outputs/bundle/devRelease/app-dev-release.aab" "build/app/outputs/bundle/devRelease/$appname-$version-dev.aab"
     ;;
   prod)
+    # Check that REVENUECAT_GOOGLE_API_KEY is provided in env/prod.json
+    API_KEY=$(jq -r '.REVENUECAT_GOOGLE_API_KEY' env/prod.json)
+    if [ -z "$API_KEY" ]; then
+      echo "Error: REVENUECAT_GOOGLE_API_KEY is empty in env/prod.json"
+      exit 1
+    fi
+  
     flutter build appbundle --release --flavor prod --dart-define-from-file env/prod.json
     mv "build/app/outputs/bundle/prodRelease/app-prod-release.aab" "build/app/outputs/bundle/prodRelease/$appname-$version.aab"
     ;;

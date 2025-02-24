@@ -1,4 +1,4 @@
-# Prereleased-2025.2.21
+# 4.0.0
 - Introduce Boorusama Plus that unlocks additional features like theme, home screen, layout customization, and more.
 - Major image viewer and video player overhaul.
 - Make the app more responsive on larger screen devices.

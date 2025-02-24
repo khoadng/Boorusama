@@ -13,6 +13,8 @@ import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'retry_utils.dart';
+
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>
     with ExtendedImageProvider<ExtendedNetworkImageProvider>
@@ -35,6 +37,7 @@ class DioExtendedNetworkImageProvider
     this.cancelToken,
     this.imageCacheName,
     this.cacheMaxAge,
+    this.fetchStrategy,
   });
 
   /// The [Dio] client that'll be used to make image fetch requests.
@@ -96,6 +99,8 @@ class DioExtendedNetworkImageProvider
   @override
   final Duration? cacheMaxAge;
 
+  final FetchStrategy? fetchStrategy;
+
   @override
   ImageStreamCompleter loadImage(
     ExtendedNetworkImageProvider key,
@@ -140,51 +145,44 @@ class DioExtendedNetworkImageProvider
       key == this,
       'The key provided to obtainKey must be the same key that was used to obtain this ImageStreamCompleter',
     );
-    final md5Key = cacheKey ?? keyToMd5(key.url);
-    ui.Codec? result;
-    if (cache) {
-      try {
-        final data = await _loadCache(
-          key,
-          chunkEvents,
-          md5Key,
-        );
-        if (data != null) {
-          result = await instantiateImageCodec(data, decode);
-        }
-      } catch (e) {
-        if (printError) {
-          if (kDebugMode) {
-            print(e);
-          }
-        }
-      }
-    }
 
-    if (result == null) {
-      try {
-        final data = await _loadNetwork(
-          key,
-          chunkEvents,
-        );
-        if (data != null) {
-          result = await instantiateImageCodec(data, decode);
-        }
-      } catch (e) {
-        if (printError) {
-          if (kDebugMode) {
-            print(e);
-          }
-        }
-      }
-    }
-
-    //Failed to load
-    if (result == null) {
+    final bytes = await _fetchImageBytes(chunkEvents);
+    if (bytes == null) {
       return Future<ui.Codec>.error(StateError('Failed to load $url.'));
     }
 
-    return result;
+    return instantiateImageCodec(bytes, decode);
+  }
+
+  /// Reads image bytes following these steps:
+  ///  1. If caching is enabled, try to read from disk (using _loadCache).
+  ///  2. If not found, retrieve from network (using _loadNetwork).
+  ///  3. If caching is enabled and network returned data, write it to disk.
+  Future<Uint8List?> _fetchImageBytes(
+    StreamController<ImageChunkEvent>? chunkEvents,
+  ) async {
+    final uId = cacheKey ?? keyToMd5(url);
+    Uint8List? data;
+
+    if (cache) {
+      data = await _loadCache(this, chunkEvents, uId);
+      if (data != null) return data;
+    }
+
+    // Fallback: load from network.
+    data = await _loadNetwork(this, chunkEvents);
+    if (data != null && cache) {
+      final cacheDir = await _getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, uId));
+      try {
+        await cacheFile.writeAsBytes(data);
+      } catch (e) {
+        _print('Failed to write cache: $e');
+
+        return null;
+      }
+    }
+    return data;
   }
 
   /// Get the image from cache folder.
@@ -193,44 +191,27 @@ class DioExtendedNetworkImageProvider
     StreamController<ImageChunkEvent>? chunkEvents,
     String md5Key,
   ) async {
-    final cacheImagesDirectory = Directory(
-      join((await getTemporaryDirectory()).path, cacheImageFolderName),
-    );
-    Uint8List? data;
-    // exist, try to find cache image file
-    if (cacheImagesDirectory.existsSync()) {
-      final cacheFlie = File(join(cacheImagesDirectory.path, md5Key));
-      if (cacheFlie.existsSync()) {
+    try {
+      final cacheDir = await _getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, md5Key));
+
+      if (cacheFile.existsSync()) {
         if (key.cacheMaxAge != null) {
           final now = DateTime.now();
-          final fs = cacheFlie.statSync();
-          if (now.subtract(key.cacheMaxAge!).isAfter(fs.changed)) {
-            await cacheFlie.delete(recursive: true);
+          final fs = cacheFile.statSync();
+          if (now.subtract(key.cacheMaxAge!).isAfter(fs.modified)) {
+            await cacheFile.delete(recursive: true);
           } else {
-            data = await cacheFlie.readAsBytes();
+            return await cacheFile.readAsBytes();
           }
         } else {
-          data = await cacheFlie.readAsBytes();
+          return await cacheFile.readAsBytes();
         }
       }
+    } catch (e) {
+      _print('Error reading cache: $e');
     }
-    // create folder
-    else {
-      await cacheImagesDirectory.create();
-    }
-    // load from network
-    if (data == null) {
-      data = await _loadNetwork(
-        key,
-        chunkEvents,
-      );
-      if (data != null) {
-        // cache image file
-        await File(join(cacheImagesDirectory.path, md5Key)).writeAsBytes(data);
-      }
-    }
-
-    return data;
+    return null;
   }
 
   /// Get the image from network.
@@ -240,7 +221,16 @@ class DioExtendedNetworkImageProvider
   ) async {
     try {
       final resolved = Uri.base.resolve(key.url);
-      final response = await _tryGetResponse(resolved, chunkEvents);
+
+      final response = await tryGetResponse(
+        resolved,
+        chunkEvents,
+        dio: dio,
+        headers: headers,
+        cancelToken: cancelToken,
+        fetchStrategy: fetchStrategy,
+      );
+
       if (response == null || response.data == null) {
         return null;
       }
@@ -254,70 +244,47 @@ class DioExtendedNetworkImageProvider
 
       return bytes;
     } on OperationCanceledError catch (_) {
-      if (printError) {
-        if (kDebugMode) {
-          print('User cancel request $url.');
-        }
-      }
+      _print('User cancel request $url.');
       return Future<Uint8List>.error(StateError('User cancel request $url.'));
     } catch (e) {
-      if (printError) {
-        if (kDebugMode) {
-          print(e);
-        }
-      }
-      // [ExtendedImage.clearMemoryCacheIfFailed] can clear cache
-      // Depending on where the exception was thrown, the image cache may not
-      // have had a chance to track the key in the cache at all.
-      // Schedule a microtask to give the cache a chance to add the key.
-      // scheduleMicrotask(() {
-      //   PaintingBinding.instance.imageCache.evict(key);
-      // });
-      // rethrow;
+      _print(e);
     } finally {
       await chunkEvents?.close();
     }
     return null;
   }
 
-  // Http get with cancel, delay try again
-  Future<Response<List<int>>?> _tryGetResponse(
-    Uri resolved,
+  @override
+  Future<Uint8List?> getNetworkImageData({
     StreamController<ImageChunkEvent>? chunkEvents,
-  ) async {
-    cancelToken?.throwIfCancellationRequested();
-    return RetryHelper.tryRun<Response<List<int>>>(
-      () async {
-        return CancellationTokenSource.register(
-          cancelToken,
-          dio.getUri<List<int>>(
-            resolved,
-            options: Options(
-              responseType: ResponseType.bytes,
-              headers: headers,
-              receiveTimeout: timeLimit,
-              validateStatus: (status) => status == HttpStatus.ok,
-            ),
-            onReceiveProgress: chunkEvents != null
-                ? (count, total) {
-                    // Only add event if controller is not closed and total is valid
-                    if (!chunkEvents.isClosed && total >= 0) {
-                      chunkEvents.add(
-                        ImageChunkEvent(
-                          cumulativeBytesLoaded: count,
-                          expectedTotalBytes: total,
-                        ),
-                      );
-                    }
-                  }
-                : null,
-          ),
-        );
-      },
-      cancelToken: cancelToken,
-      timeRetry: timeRetry,
-      retries: retries,
+  }) async {
+    return _fetchImageBytes(chunkEvents);
+  }
+
+  Directory? tempDir;
+
+  Future<Directory> _getTempDir() async {
+    tempDir ??= await getTemporaryDirectory();
+
+    return tempDir!;
+  }
+
+  Future<Directory> _getCacheDirectory() async {
+    final cacheDir = Directory(
+      join((await _getTempDir()).path, cacheImageFolderName),
     );
+    if (!cacheDir.existsSync()) {
+      await cacheDir.create(recursive: true);
+    }
+    return cacheDir;
+  }
+
+  void _print(Object error) {
+    if (printError) {
+      if (kDebugMode) {
+        print(error);
+      }
+    }
   }
 
   @override
@@ -334,7 +301,6 @@ class DioExtendedNetworkImageProvider
         timeRetry == other.timeRetry &&
         cache == other.cache &&
         cacheKey == other.cacheKey &&
-        //headers == other.headers &&
         retries == other.retries &&
         imageCacheName == other.imageCacheName &&
         cacheMaxAge == other.cacheMaxAge;
@@ -350,7 +316,6 @@ class DioExtendedNetworkImageProvider
         timeRetry,
         cache,
         cacheKey,
-        //headers,
         retries,
         imageCacheName,
         cacheMaxAge,
@@ -358,26 +323,4 @@ class DioExtendedNetworkImageProvider
 
   @override
   String toString() => 'DioExtendedNetworkImageProvider("$url", scale: $scale)';
-
-  @override
-
-  /// Get network image data from cached
-  Future<Uint8List?> getNetworkImageData({
-    StreamController<ImageChunkEvent>? chunkEvents,
-  }) async {
-    final uId = cacheKey ?? keyToMd5(url);
-
-    if (cache) {
-      return _loadCache(
-        this,
-        chunkEvents,
-        uId,
-      );
-    }
-
-    return _loadNetwork(
-      this,
-      chunkEvents,
-    );
-  }
 }
