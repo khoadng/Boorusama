@@ -113,11 +113,7 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
     try {
       await FirebaseAnalytics.instance.logEvent(
         name: name,
-        parameters: parameters != null && parameters.isNotEmpty
-            ? {
-                ...parameters,
-              }
-            : null,
+        parameters: sanitizeParameters(parameters),
       );
     } on Exception catch (e) {
       if (kDebugMode) {
@@ -135,12 +131,7 @@ extension FirebaseAnalyticsX on FirebaseAnalytics {
     try {
       await logScreenView(
         screenName: screenName,
-        parameters: parameters != null && parameters.isNotEmpty
-            ? {
-                for (final entry in parameters.entries)
-                  if (entry.value != null) entry.key: entry.value,
-              }
-            : null,
+        parameters: sanitizeParameters(parameters),
       );
     } on Exception catch (e) {
       if (kDebugMode) {
@@ -148,6 +139,14 @@ extension FirebaseAnalyticsX on FirebaseAnalytics {
       }
     }
   }
+}
+
+Map<String, Object>? sanitizeParameters(Map<String, dynamic>? parameters) {
+  if (parameters == null || parameters.isEmpty) return null;
+  return {
+    for (final entry in parameters.entries)
+      if (entry.value != null) entry.key: entry.value,
+  };
 }
 
 typedef ScreenNameExtractor = String? Function(RouteSettings settings);
