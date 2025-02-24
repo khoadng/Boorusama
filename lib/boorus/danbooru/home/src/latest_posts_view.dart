@@ -32,10 +32,17 @@ class LatestView extends ConsumerStatefulWidget {
 class _LatestViewState extends ConsumerState<LatestView> {
   final _autoScrollController = AutoScrollController();
   final _selectedMostSearchedTag = ValueNotifier('');
-  late final selectedTagController = SelectedTagController.fromBooruBuilder(
-    builder: ref.read(currentBooruBuilderProvider),
-    tagInfo: ref.read(tagInfoProvider),
-  );
+  late final SelectedTagController selectedTagController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedTagController = SelectedTagController.fromBooruBuilder(
+      builder: ref.read(currentBooruBuilderProvider),
+      tagInfo: ref.read(tagInfoProvider),
+    );
+  }
 
   @override
   void dispose() {
