@@ -143,6 +143,7 @@ class Settings extends Equatable {
       imageGridPadding: 16,
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
+      showFavoriteStatus: false,
     ),
     colors: null,
     safeMode: true,
@@ -504,6 +505,7 @@ class ImageListingSettings extends Equatable {
     required this.imageGridPadding,
     required this.imageGridAspectRatio,
     required this.postsPerPage,
+    required this.showFavoriteStatus,
   });
 
   ImageListingSettings.fromJson(Map<String, dynamic> json)
@@ -531,7 +533,8 @@ class ImageListingSettings extends Equatable {
         postsPerPage = json['postsPerPage'] ?? 60,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
-        imageGridSpacing = json['imageGridSpacing'] ?? 4;
+        imageGridSpacing = json['imageGridSpacing'] ?? 4,
+        showFavoriteStatus = json['showFavoriteStatus'] ?? false;
   final GridSize gridSize;
   final ImageListType imageListType;
   final ImageQuality imageQuality;
@@ -545,6 +548,7 @@ class ImageListingSettings extends Equatable {
   final double imageGridPadding;
   final double imageGridAspectRatio;
   final int postsPerPage;
+  final bool showFavoriteStatus;
 
   bool get blurExplicitMedia =>
       mediaBlurCondition == MediaBlurCondition.explicitOnly;
@@ -565,6 +569,7 @@ class ImageListingSettings extends Equatable {
     double? imageGridPadding,
     double? imageGridAspectRatio,
     int? postsPerPage,
+    bool? showFavoriteStatus,
   }) {
     return ImageListingSettings(
       gridSize: gridSize ?? this.gridSize,
@@ -582,6 +587,7 @@ class ImageListingSettings extends Equatable {
       imageGridPadding: imageGridPadding ?? this.imageGridPadding,
       imageGridAspectRatio: imageGridAspectRatio ?? this.imageGridAspectRatio,
       postsPerPage: postsPerPage ?? this.postsPerPage,
+      showFavoriteStatus: showFavoriteStatus ?? this.showFavoriteStatus,
     );
   }
 
@@ -599,6 +605,7 @@ class ImageListingSettings extends Equatable {
         'imageGridPadding': imageGridPadding,
         'imageGridAspectRatio': imageGridAspectRatio,
         'postsPerPage': postsPerPage,
+        'showFavoriteStatus': showFavoriteStatus,
       };
 
   @override
@@ -616,5 +623,6 @@ class ImageListingSettings extends Equatable {
         imageGridPadding,
         imageGridAspectRatio,
         postsPerPage,
+        showFavoriteStatus,
       ];
 }
