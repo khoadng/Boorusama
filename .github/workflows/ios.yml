@@ -56,9 +56,8 @@ jobs:
         run: |
           export PATH="$PATH":"$HOME/.pub-cache/bin"
           dart pub global activate flutterfire_cli
-          flutterfire configure --token=$FIREBASE_TOKEN --yes --platforms=ios --project=boorusama-kvan --out=lib/core/firebase/firebase_options_dev.dart --ios-build-config=Debug-dev --ios-bundle-id=com.degenk.boorusama.dev --ios-out=ios/flavors/dev/GoogleService-Info.plist
-          flutterfire configure --token=$FIREBASE_TOKEN --yes --platforms=ios --project=boorusama-kvan --out=lib/core/firebase/firebase_options_prod.dart --ios-build-config=Release --ios-bundle-id=com.degenk.boorusama --ios-out=ios/flavors/prod/GoogleService-Info.plist
-          yes | flutterfire configure --token=$FIREBASE_TOKEN --platforms=ios --project=boorusama-kvan --overwrite-firebase-options
+          flutterfire configure --token=$FIREBASE_TOKEN --yes --platforms=ios --project=boorusama-kvan --out=lib/core/firebase/firebase_options_dev.dart --ios-build-config=Release-dev --ios-bundle-id=com.degenk.boorusama.dev --ios-out=ios/flavors/dev/GoogleService-Info.plist
+          flutterfire configure --token=$FIREBASE_TOKEN --yes --platforms=ios --project=boorusama-kvan --out=lib/core/firebase/firebase_options_prod.dart --ios-build-config=Release-prod --ios-bundle-id=com.degenk.boorusama --ios-out=ios/flavors/prod/GoogleService-Info.plist
 
       - name: Build
         run: |
