@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 // Project imports:
 import '../../../../../../core/router.dart';
 import '../pages/danbooru_profile_page.dart';
-import '../pages/user_details_page.dart';
+import '../pages/danbooru_user_details_page.dart';
 
 final danbooruProfileRoutes = GoRoute(
   path: '/danbooru/profile',
@@ -32,7 +32,7 @@ final danbooruUserDetailsRoutes = GoRoute(
           );
         }
 
-        return UserDetailsPage(
+        return DanbooruUserDetailsPage(
           uid: userId,
         );
       },

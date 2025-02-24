@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/configs/failsafe.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../user/providers.dart';
-import 'user_details_page.dart';
+import 'danbooru_user_details_page.dart';
 
 class DanbooruProfilePage extends ConsumerWidget {
   const DanbooruProfilePage({
@@ -31,7 +31,7 @@ class DanbooruProfilePage extends ConsumerWidget {
       return const UnauthorizedPage();
     }
 
-    return UserDetailsPage(
+    return DanbooruUserDetailsPage(
       uid: userId,
       hasAppBar: hasAppBar,
       isSelf: true,
