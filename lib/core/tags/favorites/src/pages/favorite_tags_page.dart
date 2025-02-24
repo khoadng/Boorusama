@@ -191,15 +191,10 @@ class FavoriteTagsPage extends ConsumerWidget {
                   final tag = tags[index];
                   ref.read(favoriteTagsProvider.notifier).remove(tag.name);
                 case 'edit':
-                  showModalBottomSheet(
+                  showBooruModalBottomSheet(
                     context: context,
                     routeSettings:
                         const RouteSettings(name: 'edit_favorite_tag'),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16),
-                      ),
-                    ),
                     builder: (context) => EditFavoriteTagSheet(
                       initialValue: tag,
                       title: tag.name,

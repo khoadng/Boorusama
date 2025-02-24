@@ -73,144 +73,143 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      child: Container(
-        margin: EdgeInsets.only(
-          left: 12,
-          right: 12,
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 24, bottom: 8),
-              child: Text(
-                widget.title ?? 'saved_search.add_saved_search'.tr(),
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            BooruTextField(
-              autofocus: true,
-              controller: queryTextController,
-              maxLines: null,
-              decoration: InputDecoration(
-                hintText: 'saved_search.saved_search_query'.tr(),
-                suffixIcon: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () {
-                      goToQuickSearchPage(
-                        context,
-                        ref: ref,
-                        onSelected: (tag, _) {
-                          final baseOffset =
-                              max(0, queryTextController.selection.baseOffset);
-                          queryTextController
-                            ..text = queryTextController.text.addCharAtPosition(
-                              tag,
-                              baseOffset,
-                            )
-                            ..selection = TextSelection.fromPosition(
-                              TextPosition(
-                                offset: baseOffset + tag.length,
-                              ),
-                            );
-                        },
-                        onSubmitted: (context, text, _) {
-                          Navigator.of(context).pop();
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+    final navigator = Navigator.of(context);
 
-                          queryTextController.text =
-                              '${queryTextController.text} $text';
-                        },
-                      );
-                    },
-                    child: const Icon(Symbols.add),
-                  ),
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Text(
+              widget.title ?? 'saved_search.add_saved_search'.tr(),
+              style: textTheme.titleLarge,
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          BooruTextField(
+            autofocus: true,
+            controller: queryTextController,
+            maxLines: null,
+            decoration: InputDecoration(
+              hintText: 'saved_search.saved_search_query'.tr(),
+              suffixIcon: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () {
+                    goToQuickSearchPage(
+                      context,
+                      ref: ref,
+                      onSelected: (tag, _) {
+                        final baseOffset =
+                            max(0, queryTextController.selection.baseOffset);
+                        queryTextController
+                          ..text = queryTextController.text.addCharAtPosition(
+                            tag,
+                            baseOffset,
+                          )
+                          ..selection = TextSelection.fromPosition(
+                            TextPosition(
+                              offset: baseOffset + tag.length,
+                            ),
+                          );
+                      },
+                      onSubmitted: (context, text, _) {
+                        navigator.pop();
+
+                        queryTextController.text =
+                            '${queryTextController.text} $text';
+                      },
+                    );
+                  },
+                  child: const Icon(Symbols.add),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            BooruTextField(
-              controller: labelTextController,
-              maxLines: null,
-              decoration: InputDecoration(
-                hintText: 'saved_search.saved_search_labels'.tr(),
-                suffixIcon: ValueListenableBuilder(
-                  valueListenable: labelsHasText,
-                  builder: (context, hasText, _) => hasText
-                      ? _ClearTextButton(
-                          onTap: () => labelTextController.clear(),
-                        )
-                      : const SizedBox.shrink(),
-                ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          BooruTextField(
+            controller: labelTextController,
+            maxLines: null,
+            decoration: InputDecoration(
+              hintText: 'saved_search.saved_search_labels'.tr(),
+              suffixIcon: ValueListenableBuilder(
+                valueListenable: labelsHasText,
+                builder: (context, hasText, _) => hasText
+                    ? _ClearTextButton(
+                        onTap: () => labelTextController.clear(),
+                      )
+                    : const SizedBox.shrink(),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Text(
-                'saved_search.saved_search_labels_description'.tr(),
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.hintColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.italic,
+          ),
+          Container(
+            margin: const EdgeInsets.all(8),
+            child: Text(
+              'saved_search.saved_search_labels_description'.tr(),
+              style: textTheme.titleSmall?.copyWith(
+                color: colorScheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 8, bottom: 8),
+            child: OverflowBar(
+              alignment: MainAxisAlignment.spaceAround,
+              children: [
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    foregroundColor: colorScheme.onSurface,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 28),
-              child: OverflowBar(
-                alignment: MainAxisAlignment.spaceAround,
-                children: [
-                  FilledButton(
+                  ),
+                  onPressed: () {
+                    navigator.pop();
+                  },
+                  child: const Text('generic.action.cancel').tr(),
+                ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: queryHasText,
+                  builder: (context, enable, _) => FilledButton(
                     style: FilledButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.onSurface,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                      foregroundColor: colorScheme.onPrimary,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('generic.action.cancel').tr(),
+                    onPressed: enable
+                        ? () {
+                            widget.onSubmit(
+                              queryTextController.text,
+                              labelTextController.text,
+                            );
+                            navigator.pop();
+                          }
+                        : null,
+                    child: const Text('generic.action.ok').tr(),
                   ),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: queryHasText,
-                    builder: (context, enable, _) => FilledButton(
-                      style: FilledButton.styleFrom(
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onPrimary,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                        ),
-                      ),
-                      onPressed: enable
-                          ? () {
-                              widget.onSubmit(
-                                queryTextController.text,
-                                labelTextController.text,
-                              );
-                              Navigator.of(context).pop();
-                            }
-                          : null,
-                      child: const Text('generic.action.ok').tr(),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

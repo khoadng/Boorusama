@@ -75,7 +75,7 @@ class _AddButton extends ConsumerWidget {
       icon: const Icon(Symbols.add),
       onPressed: () {
         if (hasSavedTaskLocked != true) {
-          showModalBottomSheet(
+          showBooruModalBottomSheet(
             context: context,
             builder: (context) => BulkDownloadEditSavedTaskPage(
               savedTask: SavedDownloadTask.empty(),

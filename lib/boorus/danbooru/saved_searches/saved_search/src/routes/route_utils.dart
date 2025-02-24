@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/router.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../pages/edit_saved_search_sheet.dart';
 import '../types/saved_search.dart';
 
@@ -12,12 +13,11 @@ void goToSavedSearchCreatePage(
   String? initialValue,
 }) {
   if (kPreferredLayout.isMobile) {
-    showModalBottomSheet(
+    showBooruModalBottomSheet(
       context: context,
       routeSettings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       builder: (_) => CreateSavedSearchSheet(
         initialValue: initialValue,
       ),
@@ -59,12 +59,11 @@ void goToSavedSearchPatchPage(
   BuildContext context,
   SavedSearch savedSearch,
 ) {
-  showModalBottomSheet(
+  showBooruModalBottomSheet(
     context: context,
     routeSettings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
     builder: (_) => EditSavedSearchSheet(
       savedSearch: savedSearch,
     ),

@@ -9,6 +9,7 @@ import '../../../boorus/booru/booru.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/download_utils.dart';
 import '../../../router.dart';
+import '../../../widgets/widgets.dart';
 import '../pages/create_download_options_sheet.dart';
 
 Future<void> goToBulkDownloadCompletedPage(BuildContext context) async {
@@ -48,9 +49,8 @@ void goToNewBulkDownloadTaskPage(
     return;
   }
 
-  showModalBottomSheet(
+  showBooruModalBottomSheet(
     context: context,
-    scrollControlDisabledMaxHeightRatio: 0.9,
     routeSettings: const RouteSettings(name: 'bulk_download_create'),
     builder: (_) => CreateDownloadOptionsSheet(
       initialValue: initialValue,

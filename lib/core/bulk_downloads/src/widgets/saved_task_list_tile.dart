@@ -79,7 +79,7 @@ class SavedTaskListTile extends ConsumerWidget {
             borderRadius: BorderRadius.circular(8),
             onTap: enableTap
                 ? () async {
-                    await showModalBottomSheet(
+                    await showBooruModalBottomSheet(
                       context: context,
                       routeSettings:
                           const RouteSettings(name: 'bulk_download_create'),

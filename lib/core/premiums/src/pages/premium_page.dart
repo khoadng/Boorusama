@@ -199,13 +199,12 @@ class _GetPremiumButton extends ConsumerWidget {
   }
 
   Future<dynamic> _showPlans(BuildContext context, WidgetRef ref) {
-    return showModalBottomSheet(
+    return showBooruModalBottomSheet(
       enableDrag: false,
       context: context,
       routeSettings: const RouteSettings(name: 'select_subscription_plan'),
-      builder: (modalContext) {
-        return const PremiumPurchaseModal();
-      },
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      builder: (_) => const PremiumPurchaseModal(),
     );
   }
 }

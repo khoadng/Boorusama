@@ -12,6 +12,7 @@ import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/info/package_info.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/rating/rating.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
 import '../../../users/user/providers.dart';
@@ -94,7 +95,7 @@ Future<bool?> goToMassEditRatingSheet(
   WidgetRef ref,
   List<DanbooruPost> posts,
 ) {
-  return showModalBottomSheet<bool?>(
+  return showBooruModalBottomSheet<bool?>(
     context: context,
     builder: (context) {
       return MassEditRatingSheet(
@@ -155,7 +156,7 @@ class MassEditRatingSheet extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 24,
-                vertical: 16,
+                vertical: 8,
               ),
               child: FilledButton(
                 onPressed: selectedRating != null
