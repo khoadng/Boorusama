@@ -14,7 +14,7 @@ import 'dio_extended_image_provider.dart';
 import 'retry_utils.dart';
 import 'utils.dart';
 
-const kDefaultImageCacheDuration = Duration(days: 2);
+const kDefaultImageCacheDuration = Duration(hours: 1);
 
 /// extended image base on official
 /// [Image]
