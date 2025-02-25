@@ -56,8 +56,23 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
     super.dispose();
   }
 
+  void _onSubmit() {
+    final newValue = widget.initialValue.copyWith(
+      labels: () => labelTextController.text.isEmpty
+          ? null
+          : labelTextController.text.split(' '),
+    );
+
+    widget.onSubmit(newValue);
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(
         left: 12,
@@ -70,7 +85,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
             padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Text(
               widget.title ?? 'Edit',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: textTheme.titleLarge,
             ),
           ),
           const SizedBox(
@@ -78,7 +93,12 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
           ),
           BooruTextField(
             controller: labelTextController,
-            maxLines: null,
+            minLines: 1,
+            maxLines: 5,
+            onSubmitted: (_) {
+              _onSubmit();
+            },
+            textInputAction: TextInputAction.done,
             decoration: const InputDecoration(
               label: Text('Labels'),
             ),
@@ -87,12 +107,12 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
             margin: const EdgeInsets.all(8),
             child: Text(
               '*A list of label to help categorize this tag. Space delimited.',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.italic,
-                  ),
+              style: textTheme.titleSmall?.copyWith(
+                color: colorScheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ),
           Container(
@@ -102,9 +122,8 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
               children: [
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onSurface,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    foregroundColor: colorScheme.onSurface,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
@@ -116,21 +135,12 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    foregroundColor: colorScheme.onPrimary,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
                   ),
-                  onPressed: () {
-                    widget.onSubmit(
-                      widget.initialValue.copyWith(
-                        labels: () => labelTextController.text.isEmpty
-                            ? null
-                            : labelTextController.text.split(' '),
-                      ),
-                    );
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: _onSubmit,
                   child: const Text('generic.action.ok').tr(),
                 ),
               ],

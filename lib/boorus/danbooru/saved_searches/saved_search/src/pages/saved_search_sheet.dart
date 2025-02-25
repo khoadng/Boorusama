@@ -99,7 +99,9 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
           BooruTextField(
             autofocus: true,
             controller: queryTextController,
-            maxLines: null,
+            minLines: 1,
+            maxLines: 5,
+            textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               hintText: 'saved_search.saved_search_query'.tr(),
               suffixIcon: Material(
@@ -142,7 +144,9 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
           ),
           BooruTextField(
             controller: labelTextController,
-            maxLines: null,
+            minLines: 1,
+            maxLines: 2,
+            textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               hintText: 'saved_search.saved_search_labels'.tr(),
               suffixIcon: ValueListenableBuilder(
