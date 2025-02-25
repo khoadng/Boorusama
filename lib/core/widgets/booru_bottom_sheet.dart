@@ -42,8 +42,10 @@ class BooruBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
-            SingleChildScrollView(
-              child: child,
+            Flexible(
+              child: SingleChildScrollView(
+                child: child,
+              ),
             ),
           ],
         ),

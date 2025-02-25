@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../../core/foundation/display.dart';
+import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../post/post.dart';
 import '../pages/add_to_favorite_group_page.dart';
-import '../pages/create_favorite_group_dialog.dart';
+import '../pages/create_favorite_group_sheet.dart';
 import '../types/danbooru_favorite_group.dart';
 
 Future<bool?> goToAddToFavoriteGroupSelectionPage(
@@ -32,13 +32,13 @@ Future<Object?> goToFavoriteGroupCreatePage(
   BuildContext context, {
   bool enableManualPostInput = true,
 }) {
-  return showGeneralDialog(
+  return showBooruModalBottomSheet(
     context: context,
+    resizeToAvoidBottomInset: true,
     routeSettings: const RouteSettings(
       name: 'favorite_group_create',
     ),
-    pageBuilder: (___, _, __) => EditFavoriteGroupDialog(
-      padding: kPreferredLayout.isMobile ? 0 : 8,
+    builder: (_) => EditFavoriteGroupSheet(
       title: 'favorite_groups.create_group'.tr(),
       enableManualDataInput: enableManualPostInput,
     ),
@@ -49,14 +49,14 @@ Future<Object?> goToFavoriteGroupEditPage(
   BuildContext context,
   DanbooruFavoriteGroup group,
 ) {
-  return showGeneralDialog(
+  return showBooruModalBottomSheet(
     context: context,
+    resizeToAvoidBottomInset: true,
     routeSettings: const RouteSettings(
       name: 'favorite_group_edit',
     ),
-    pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
+    builder: (_) => EditFavoriteGroupSheet(
       initialData: group,
-      padding: kPreferredLayout.isMobile ? 0 : 8,
       title: 'favorite_groups.edit_group'.tr(),
     ),
   );
