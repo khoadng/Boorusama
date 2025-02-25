@@ -11,6 +11,7 @@ import '../../boorus/booru/booru.dart';
 import '../../boorus/booru/providers.dart';
 import '../../configs/config.dart';
 import '../../foundation/loggers.dart';
+import '../../foundation/platform.dart';
 import '../../info/app_info.dart';
 import '../../info/package_info.dart';
 import 'cookie_jar_providers.dart';
@@ -22,6 +23,7 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final userAgent = ref.watch(userAgentProvider(config.booruType));
   final loggerService = ref.watch(loggerProvider);
   final booruFactory = ref.watch(booruFactoryProvider);
+  final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
 
   return newDio(
     options: DioOptions(
@@ -32,6 +34,7 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       loggerService: loggerService,
       booruFactory: booruFactory,
       proxySettings: config.proxySettings,
+      cronetAvailable: cronetAvailable,
     ),
   );
 });

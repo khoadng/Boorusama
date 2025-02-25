@@ -16,6 +16,7 @@ class DioOptions {
     required this.loggerService,
     required this.booruFactory,
     required this.proxySettings,
+    required this.cronetAvailable,
   });
 
   final CookieJar cookieJar;
@@ -25,4 +26,5 @@ class DioOptions {
   final Logger loggerService;
   final BooruFactory booruFactory;
   final ProxySettings? proxySettings;
+  final bool cronetAvailable;
 }

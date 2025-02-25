@@ -203,6 +203,9 @@ Future<void> boot(BootLogger bootLogger) async {
   // Prepare for Android 15
   unawaited(showSystemStatus());
 
+  bootLogger.l('Check Google Play Services availability');
+  final googleApiAvailable = await isGooglePlayServiceAvailable();
+
   logger.logI(
     'Start up',
     'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
@@ -248,6 +251,9 @@ Future<void> boot(BootLogger bootLogger) async {
             supportedLanguagesProvider.overrideWithValue(supportedLanguages),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
             booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
+            isGooglePlayServiceAvailableProvider.overrideWithValue(
+              googleApiAvailable,
+            ),
           ],
           child: const App(),
         ),

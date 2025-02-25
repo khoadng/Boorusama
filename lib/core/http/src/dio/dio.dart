@@ -28,6 +28,7 @@ Dio newGenericDio({
   bool? supportsHttp2,
   Map<String, dynamic>? headers,
   ProxySettings? proxySettings,
+  bool? cronetAvailable,
 }) {
   final dio = Dio(
     BaseOptions(
@@ -42,6 +43,7 @@ Dio newGenericDio({
       userAgent: userAgent,
       supportsHttp2: supportsHttp2,
       proxy: proxySettings,
+      cronetAvailable: cronetAvailable,
     );
 
   dio.interceptors.add(ImageRequestDeduplicateInterceptor());
@@ -74,6 +76,7 @@ Dio newDio({required DioOptions options}) {
     logger: options.loggerService,
     supportsHttp2: supportsHttp2,
     proxySettings: options.proxySettings,
+    cronetAvailable: options.cronetAvailable,
   );
 
   final context = navigatorKey.currentContext;
@@ -94,6 +97,7 @@ HttpClientAdapter _createHttpClientAdapter({
   String? userAgent,
   bool? supportsHttp2,
   ProxySettings? proxy,
+  bool? cronetAvailable,
 }) {
   final proxySettings = proxy != null
       ? proxy.enable
@@ -103,23 +107,7 @@ HttpClientAdapter _createHttpClientAdapter({
   final proxyAddress = proxySettings?.getProxyAddress();
   final hasHttp2Support = supportsHttp2 ?? false;
 
-  if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
-    logger?.logI('Network', 'Using native adapter');
-    return newNativeAdapter(
-      userAgent: userAgent,
-    );
-  } else if (hasHttp2Support && proxySettings == null) {
-    logger?.logI(
-      'Network',
-      'Using HTTP2 adapter',
-    );
-
-    return Http2Adapter(
-      ConnectionManager(
-        idleTimeout: const Duration(seconds: 30),
-      ),
-    );
-  } else {
+  HttpClientAdapter createDefaultAdapter() {
     logger?.logI('Network', 'Using default adapter');
     return IOHttpClientAdapter(
       createHttpClient: proxySettings != null && proxyAddress != null
@@ -171,6 +159,35 @@ HttpClientAdapter _createHttpClientAdapter({
             }
           : null,
     );
+  }
+
+  HttpClientAdapter createNativeAdapter() {
+    logger?.logI('Network', 'Using native adapter');
+
+    return newNativeAdapter(
+      userAgent: userAgent,
+    );
+  }
+
+  if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
+    return isAndroid()
+        ? cronetAvailable == true
+            ? createNativeAdapter()
+            : createDefaultAdapter()
+        : createNativeAdapter();
+  } else if (hasHttp2Support && proxySettings == null) {
+    logger?.logI(
+      'Network',
+      'Using HTTP2 adapter',
+    );
+
+    return Http2Adapter(
+      ConnectionManager(
+        idleTimeout: const Duration(seconds: 30),
+      ),
+    );
+  } else {
+    return createDefaultAdapter();
   }
 }
 
