@@ -42,7 +42,12 @@ final danbooruCurrentUserProvider =
       baseUrl: config.url,
       apiKey: config.apiKey,
       login: config.login,
-    ).getProfile().then((value) => value.data['id']);
+    ).getProfile().then(
+          (value) => switch (value) {
+            final Map m => m['id'],
+            _ => null,
+          },
+        );
 
     id = switch (data) {
       final int i => i,
