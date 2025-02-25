@@ -52,11 +52,47 @@ class BooruBottomSheet extends StatelessWidget {
   }
 }
 
+class _ResizeToAvoidBottomInset extends StatelessWidget {
+  const _ResizeToAvoidBottomInset({
+    required this.child,
+    this.resizeToAvoidBottomInset = false,
+  });
+
+  final bool resizeToAvoidBottomInset;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return resizeToAvoidBottomInset
+        ? _ViewInsetBottomPadding(child: child)
+        : child;
+  }
+}
+
+class _ViewInsetBottomPadding extends StatelessWidget {
+  const _ViewInsetBottomPadding({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: child,
+    );
+  }
+}
+
 Future<T?> showBooruModalBottomSheet<T>({
   required BuildContext context,
   required Widget Function(BuildContext context) builder,
   RouteSettings? routeSettings,
   bool enableDrag = true,
+  bool resizeToAvoidBottomInset = false,
   Color? backgroundColor,
 }) {
   return showModalBottomSheet<T>(
@@ -65,9 +101,12 @@ Future<T?> showBooruModalBottomSheet<T>({
     enableDrag: enableDrag,
     routeSettings: routeSettings,
     scrollControlDisabledMaxHeightRatio: 0.9,
-    builder: (context) => BooruBottomSheet(
-      backgroundColor: backgroundColor,
-      child: builder(context),
+    builder: (context) => _ResizeToAvoidBottomInset(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      child: BooruBottomSheet(
+        backgroundColor: backgroundColor,
+        child: builder(context),
+      ),
     ),
   );
 }

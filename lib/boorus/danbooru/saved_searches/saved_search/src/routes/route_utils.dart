@@ -15,6 +15,7 @@ void goToSavedSearchCreatePage(
   if (kPreferredLayout.isMobile) {
     showBooruModalBottomSheet(
       context: context,
+      resizeToAvoidBottomInset: true,
       routeSettings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
@@ -61,6 +62,7 @@ void goToSavedSearchPatchPage(
 ) {
   showBooruModalBottomSheet(
     context: context,
+    resizeToAvoidBottomInset: true,
     routeSettings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),

@@ -195,6 +195,7 @@ class FavoriteTagsPage extends ConsumerWidget {
                     context: context,
                     routeSettings:
                         const RouteSettings(name: 'edit_favorite_tag'),
+                    resizeToAvoidBottomInset: true,
                     builder: (context) => EditFavoriteTagSheet(
                       initialValue: tag,
                       title: tag.name,

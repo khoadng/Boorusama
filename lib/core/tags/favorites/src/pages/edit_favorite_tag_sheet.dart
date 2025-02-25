@@ -92,6 +92,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
             height: 16,
           ),
           BooruTextField(
+            autofocus: true,
             controller: labelTextController,
             minLines: 1,
             maxLines: 5,
