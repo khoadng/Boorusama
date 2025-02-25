@@ -75,6 +75,13 @@ extension SessionActionX on BulkDownloadSession {
         ? false
         : true;
   }
+
+  bool get canViewInvidualProgresses {
+    final status = session.status;
+
+    return status == DownloadSessionStatus.running ||
+        status == DownloadSessionStatus.paused;
+  }
 }
 
 class BulkDownloadProgressNotifier extends Notifier<Map<String, double>> {
