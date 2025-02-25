@@ -14,6 +14,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
+import '../../foundation/url_launcher.dart';
 import '../../http/http.dart';
 import '../../settings/routes.dart';
 import '../../theme.dart';
@@ -419,6 +420,12 @@ class SimpleDownloadTile extends ConsumerWidget {
         final TaskProgressUpdate p =>
           p.hasTimeRemaining ? p.timeRemaining : null,
       },
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (_) => _ModalOptions(task: task),
+        );
+      },
       onCancel: task.canCancel ? onCancel : null,
       builder: (_) => RawDownloadTile(
         fileName: task.task.filename,
@@ -574,6 +581,37 @@ class _TaskSubtitle extends ConsumerWidget {
       style: TextStyle(
         color: theme.colorScheme.hintColor,
         fontSize: 12,
+      ),
+    );
+  }
+}
+
+class _ModalOptions extends StatelessWidget {
+  const _ModalOptions({
+    required this.task,
+  });
+
+  final TaskUpdate task;
+
+  @override
+  Widget build(BuildContext context) {
+    final navigator = Navigator.of(context);
+
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 8),
+          const DragLine(),
+          const SizedBox(height: 8),
+          ListTile(
+            title: const Text('post.detail.view_in_browser').tr(),
+            onTap: () {
+              launchExternalUrlString(task.task.url);
+              navigator.pop();
+            },
+          ),
+        ],
       ),
     );
   }

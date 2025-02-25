@@ -23,6 +23,7 @@ class DownloadTileBuilder extends StatelessWidget {
     this.thumbnailUrl,
     this.onCancel,
     this.siteUrl,
+    this.onLongPress,
   });
 
   final String? thumbnailUrl;
@@ -33,6 +34,7 @@ class DownloadTileBuilder extends StatelessWidget {
   final Widget Function(String)? builder;
   final void Function()? onCancel;
   final String? siteUrl;
+  final void Function()? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -60,79 +62,82 @@ class DownloadTileBuilder extends StatelessWidget {
       timeRemainingText,
     ].nonNulls.join(' • ');
 
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 8,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 60,
-            child: thumbnailUrl.toOption().fold(
-                  () => SizedBox(
-                    height: 60,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.tertiaryContainer,
-                      child: const Icon(
-                        Symbols.image,
-                        color: Colors.white,
+    return InkWell(
+      onLongPress: onLongPress,
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 8,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 60,
+              child: thumbnailUrl.toOption().fold(
+                    () => SizedBox(
+                      height: 60,
+                      child: Card(
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        child: const Icon(
+                          Symbols.image,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
+                    (t) => _Thumbnail(url: t),
                   ),
-                  (t) => _Thumbnail(url: t),
-                ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (siteUrl != null)
-                      BooruLogo(
-                        source: siteUrl,
-                        width: 18,
-                        height: 18,
-                      ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(
-                          infoText,
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.hintColor,
-                            fontSize: 12,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (siteUrl != null)
+                        BooruLogo(
+                          source: siteUrl,
+                          width: 18,
+                          height: 18,
+                        ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            infoText,
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.hintColor,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    if (onCancel != null)
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          visualDensity: const ShrinkVisualDensity(),
+                      if (onCancel != null)
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            visualDensity: const ShrinkVisualDensity(),
+                          ),
+                          onPressed: onCancel,
+                          child: const Text('generic.action.cancel').tr(),
+                        )
+                      else
+                        const SizedBox(
+                          height: 32,
                         ),
-                        onPressed: onCancel,
-                        child: const Text('generic.action.cancel').tr(),
-                      )
-                    else
-                      const SizedBox(
-                        height: 32,
-                      ),
-                  ],
-                ),
-                builder?.call(url) ?? const SizedBox.shrink(),
-              ],
+                    ],
+                  ),
+                  builder?.call(url) ?? const SizedBox.shrink(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
