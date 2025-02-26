@@ -12,6 +12,7 @@ import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
 import '../../../../settings/widgets.dart';
+import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../widgets/post_grid_controller.dart';
 
@@ -29,7 +30,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
     return InkWell(
       customBorder: const CircleBorder(),
-      onTap: () => showModalBottomSheet(
+      onTap: () => showBooruModalBottomSheet(
         context: context,
         routeSettings: const RouteSettings(name: 'grid_config'),
         builder: (_) => PostGridActionSheet(
@@ -101,134 +102,126 @@ class PostGridActionSheet extends ConsumerWidget {
     );
 
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
-    return Material(
-      color: colorScheme.surfaceContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListingSettingsInteractionBlocker(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 4,
-              ),
-              child: Theme(
-                data: theme.copyWith(
-                  listTileTheme: ListTileTheme.of(context).copyWith(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                    ),
-                    visualDensity: VisualDensity.comfortable,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListingSettingsInteractionBlocker(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4,
+              vertical: 4,
+            ),
+            child: Theme(
+              data: theme.copyWith(
+                listTileTheme: ListTileTheme.of(context).copyWith(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 4,
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SettingsTile<PageMode>(
-                      title: const Text('settings.result_layout.result_layout')
-                          .tr(),
-                      selectedOption: pageMode,
-                      items: const [...PageMode.values],
-                      onChanged: (value) => onModeChanged(value),
-                      optionBuilder: (value) => Text(value.localize()).tr(),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    SettingsTile<GridSize>(
-                      title:
-                          const Text('settings.image_grid.grid_size.grid_size')
-                              .tr(),
-                      selectedOption: gridSize,
-                      items: GridSize.values,
-                      onChanged: (value) => onGridChanged(value),
-                      optionBuilder: (value) => Text(value.localize().tr()),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    SettingsTile<ImageListType>(
-                      title: const Text('settings.image_list.image_list').tr(),
-                      selectedOption: imageListType,
-                      items: ImageListType.values,
-                      onChanged: (value) => onImageListChanged(value),
-                      optionBuilder: (value) => Text(value.localize()).tr(),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    SettingsTile<ImageQuality>(
-                      title: const Text(
-                        'settings.image_grid.image_quality.image_quality',
-                      ).tr(),
-                      selectedOption: imageQuality,
-                      items: [...ImageQuality.values]
-                        ..remove(ImageQuality.original),
-                      onChanged: (value) => onImageQualityChanged(value),
-                      optionBuilder: (value) => Text(value.localize()).tr(),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                  ],
+                  visualDensity: VisualDensity.comfortable,
                 ),
               ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SettingsTile<PageMode>(
+                    title:
+                        const Text('settings.result_layout.result_layout').tr(),
+                    selectedOption: pageMode,
+                    items: const [...PageMode.values],
+                    onChanged: (value) => onModeChanged(value),
+                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  SettingsTile<GridSize>(
+                    title: const Text('settings.image_grid.grid_size.grid_size')
+                        .tr(),
+                    selectedOption: gridSize,
+                    items: GridSize.values,
+                    onChanged: (value) => onGridChanged(value),
+                    optionBuilder: (value) => Text(value.localize().tr()),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  SettingsTile<ImageListType>(
+                    title: const Text('settings.image_list.image_list').tr(),
+                    selectedOption: imageListType,
+                    items: ImageListType.values,
+                    onChanged: (value) => onImageListChanged(value),
+                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  SettingsTile<ImageQuality>(
+                    title: const Text(
+                      'settings.image_grid.image_quality.image_quality',
+                    ).tr(),
+                    selectedOption: imageQuality,
+                    items: [...ImageQuality.values]
+                      ..remove(ImageQuality.original),
+                    onChanged: (value) => onImageQualityChanged(value),
+                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ),
             ),
-            if (postStatsPageBuilder != null) ...[
-              const Divider(),
-              ValueListenableBuilder(
-                valueListenable: postController.refreshingNotifier,
-                builder: (_, refreshing, __) => ValueListenableBuilder(
-                  valueListenable: postController.itemsNotifier,
-                  builder: (_, items, __) => !refreshing && items.isEmpty
-                      ? const SizedBox.shrink()
-                      : ListTile(
-                          title: Row(
-                            children: [
-                              const Text('Stats for nerds'),
-                              if (refreshing)
-                                Container(
-                                  margin: const EdgeInsets.only(left: 8),
-                                  width: 12,
-                                  height: 12,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
+          ),
+          if (postStatsPageBuilder != null) ...[
+            const Divider(),
+            ValueListenableBuilder(
+              valueListenable: postController.refreshingNotifier,
+              builder: (_, refreshing, __) => ValueListenableBuilder(
+                valueListenable: postController.itemsNotifier,
+                builder: (_, items, __) => !refreshing && items.isEmpty
+                    ? const SizedBox.shrink()
+                    : ListTile(
+                        title: Row(
+                          children: [
+                            const Text('Stats for nerds'),
+                            if (refreshing)
+                              Container(
+                                margin: const EdgeInsets.only(left: 8),
+                                width: 12,
+                                height: 12,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
                                 ),
-                            ],
-                          ),
-                          onTap: !refreshing
-                              ? () {
-                                  Navigator.of(context).pop();
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    useSafeArea: true,
-                                    routeSettings: const RouteSettings(
-                                      name: 'post_statistics',
-                                    ),
-                                    builder: (_) => postStatsPageBuilder(
-                                      context,
-                                      postController.items,
-                                    ),
-                                  );
-                                }
-                              : null,
+                              ),
+                          ],
                         ),
-                ),
+                        onTap: !refreshing
+                            ? () {
+                                Navigator.of(context).pop();
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  useSafeArea: true,
+                                  routeSettings: const RouteSettings(
+                                    name: 'post_statistics',
+                                  ),
+                                  builder: (_) => postStatsPageBuilder(
+                                    context,
+                                    postController.items,
+                                  ),
+                                );
+                              }
+                            : null,
+                      ),
               ),
-              const SizedBox(height: 4),
-            ],
-            FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                openAppearancePage(context);
-              },
-              child: const Text('More'),
             ),
-            SizedBox(
-              height: MediaQuery.viewPaddingOf(context).bottom,
-            ),
+            const SizedBox(height: 4),
           ],
-        ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              openAppearancePage(context);
+            },
+            child: const Text('More'),
+          ),
+        ],
       ),
     );
   }

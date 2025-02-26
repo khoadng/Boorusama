@@ -199,7 +199,7 @@ class DioExtendedNetworkImageProvider
         if (key.cacheMaxAge != null) {
           final now = DateTime.now();
           final fs = cacheFile.statSync();
-          if (now.subtract(key.cacheMaxAge!).isAfter(fs.modified)) {
+          if (now.subtract(key.cacheMaxAge!).isAfter(fs.changed)) {
             await cacheFile.delete(recursive: true);
           } else {
             return await cacheFile.readAsBytes();

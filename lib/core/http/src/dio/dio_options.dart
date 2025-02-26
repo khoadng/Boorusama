@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
 
@@ -13,21 +10,21 @@ import '../../../proxy/proxy.dart';
 class DioOptions {
   DioOptions({
     required this.cookieJar,
-    required this.cacheDir,
     required this.baseUrl,
     required this.userAgent,
     required this.authConfig,
     required this.loggerService,
     required this.booruFactory,
     required this.proxySettings,
+    required this.cronetAvailable,
   });
 
   final CookieJar cookieJar;
-  final Directory cacheDir;
   final String baseUrl;
   final String userAgent;
   final BooruConfigAuth authConfig;
   final Logger loggerService;
   final BooruFactory booruFactory;
   final ProxySettings? proxySettings;
+  final bool cronetAvailable;
 }

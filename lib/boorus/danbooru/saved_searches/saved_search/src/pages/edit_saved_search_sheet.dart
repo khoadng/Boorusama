@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/animations.dart';
 import '../../../../../../core/foundation/toast.dart';
+import '../../../../../../core/router.dart';
 import '../providers/saved_searches_notifier.dart';
 import '../types/saved_search.dart';
 import 'saved_search_sheet.dart';
@@ -25,6 +26,7 @@ class CreateSavedSearchSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier =
         ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
+    final navigatorContext = navigatorKey.currentContext;
 
     return SavedSearchSheet(
       initialValue: initialValue != null
@@ -33,11 +35,13 @@ class CreateSavedSearchSheet extends ConsumerWidget {
       onSubmit: (query, label) => notifier.create(
         query: query,
         label: label,
-        onCreated: (data) => showSimpleSnackBar(
-          context: context,
-          duration: AppDurations.shortToast,
-          content: const Text('saved_search.saved_search_added').tr(),
-        ),
+        onCreated: navigatorContext != null
+            ? (data) => showSimpleSnackBar(
+                  context: navigatorContext,
+                  duration: AppDurations.shortToast,
+                  content: const Text('saved_search.saved_search_added').tr(),
+                )
+            : null,
       ),
     );
   }
@@ -55,6 +59,7 @@ class EditSavedSearchSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier =
         ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
+    final navigatorContext = navigatorKey.currentContext;
 
     return SavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
@@ -63,13 +68,15 @@ class EditSavedSearchSheet extends ConsumerWidget {
         id: savedSearch.id,
         label: label,
         query: query,
-        onUpdated: (data) => showSimpleSnackBar(
-          context: context,
-          duration: AppDurations.shortToast,
-          content: const Text(
-            'saved_search.saved_search_updated',
-          ).tr(),
-        ),
+        onUpdated: navigatorContext != null
+            ? (data) => showSimpleSnackBar(
+                  context: navigatorContext,
+                  duration: AppDurations.shortToast,
+                  content: const Text(
+                    'saved_search.saved_search_updated',
+                  ).tr(),
+                )
+            : null,
       ),
     );
   }

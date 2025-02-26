@@ -383,22 +383,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.8.0+1"
-  dio_cache_interceptor:
-    dependency: "direct main"
-    description:
-      name: dio_cache_interceptor
-      sha256: "1346705a2057c265014d7696e3e2318b560bfb00b484dac7f9b01e2ceaebb07d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.5.1"
-  dio_cache_interceptor_hive_store:
-    dependency: "direct main"
-    description:
-      name: dio_cache_interceptor_hive_store
-      sha256: "449b36541216cb20543228081125ad2995eb9712ec35bd030d85663ea1761895"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.2"
   dio_http2_adapter:
     dependency: "direct main"
     description:
@@ -837,6 +821,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.8.0"
+  google_api_availability:
+    dependency: "direct main"
+    description:
+      name: google_api_availability
+      sha256: "3e9548cfd991d983d11425a2436d5bd957d048c279cc9e145ffe3f36fd847385"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
+  google_api_availability_android:
+    dependency: transitive
+    description:
+      name: google_api_availability_android
+      sha256: f52dc44fc1931d87df6078c0127047bd2d945f69bef926de96f8dfa919d6936e
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  google_api_availability_platform_interface:
+    dependency: transitive
+    description:
+      name: google_api_availability_platform_interface
+      sha256: "65b7da62fe5b582bb3d508628ad827d36d890710ea274766a992a56fa5420da6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   graphs:
     dependency: transitive
     description:

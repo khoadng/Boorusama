@@ -22,21 +22,12 @@ class PremiumPurchaseModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const modal = _PurchaseInProgressUIBlocker(
-      child: _PremiumModalContainer(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _BackButtonBlocker(),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DragLine(),
-              ],
-            ),
-            _SubscriptionPlans(),
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _BackButtonBlocker(),
+          _SubscriptionPlans(),
+        ],
       ),
     );
 
@@ -110,7 +101,6 @@ class _SubscriptionPlans extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 16),
         const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -167,7 +157,7 @@ class _SubscriptionPlans extends ConsumerWidget {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(
-            top: 32,
+            top: 16,
             bottom: 16,
           ),
           child: SizedBox(
@@ -214,36 +204,6 @@ class _PurchaseButton extends ConsumerWidget {
                 ),
               ),
             ),
-      ),
-    );
-  }
-}
-
-class _PremiumModalContainer extends StatelessWidget {
-  const _PremiumModalContainer({
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 4,
-          ),
-          child: child,
-        ),
       ),
     );
   }

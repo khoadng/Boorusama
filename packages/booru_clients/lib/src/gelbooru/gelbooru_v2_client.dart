@@ -241,19 +241,23 @@ class GelbooruV2Client with GelbooruClientFavorites {
     final html = parse(response.data);
     final sideBar = html.getElementById('tag-sidebar');
     final copyrightTags =
-        sideBar?.getElementsByClassName('tag-type-copyright tag');
+        sideBar?.querySelectorAll('li.tag-type-copyright') ?? [];
     final characterTags =
-        sideBar?.getElementsByClassName('tag-type-character tag');
-    final artistTags = sideBar?.getElementsByClassName('tag-type-artist tag');
-    final generalTags = sideBar?.getElementsByClassName('tag-type-general tag');
-    final metaTags = sideBar?.getElementsByClassName('tag-type-meta tag');
+        sideBar?.querySelectorAll('li.tag-type-character') ?? [];
+    final artistTags = sideBar?.querySelectorAll('li.tag-type-artist') ?? [];
+    final generalTags = sideBar?.querySelectorAll('li.tag-type-general') ?? [];
+
+    final metaTags = sideBar?.querySelectorAll('li.tag-type-meta') ?? [];
+    final metadataTags =
+        sideBar?.querySelectorAll('li.tag-type-metadata') ?? [];
+    final effectiveMetaTags = metaTags.isNotEmpty ? metaTags : metadataTags;
 
     return [
-      for (final tag in artistTags ?? []) TagDto.fromHtml(tag, 1),
-      for (final tag in copyrightTags ?? []) TagDto.fromHtml(tag, 3),
-      for (final tag in characterTags ?? []) TagDto.fromHtml(tag, 4),
-      for (final tag in generalTags ?? []) TagDto.fromHtml(tag, 0),
-      for (final tag in metaTags ?? []) TagDto.fromHtml(tag, 5),
+      for (final tag in artistTags) TagDto.fromHtml(tag, 1),
+      for (final tag in copyrightTags) TagDto.fromHtml(tag, 3),
+      for (final tag in characterTags) TagDto.fromHtml(tag, 4),
+      for (final tag in generalTags) TagDto.fromHtml(tag, 0),
+      for (final tag in effectiveMetaTags) TagDto.fromHtml(tag, 5),
     ];
   }
 }

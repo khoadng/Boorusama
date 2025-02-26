@@ -56,91 +56,98 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
     super.dispose();
   }
 
+  void _onSubmit() {
+    final newValue = widget.initialValue.copyWith(
+      labels: () => labelTextController.text.isEmpty
+          ? null
+          : labelTextController.text.split(' '),
+    );
+
+    widget.onSubmit(newValue);
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      child: Container(
-        margin: EdgeInsets.only(
-          left: 12,
-          right: 12,
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 24, bottom: 8),
-              child: Text(
-                widget.title ?? 'Edit',
-                style: Theme.of(context).textTheme.titleLarge,
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Text(
+              widget.title ?? 'Edit',
+              style: textTheme.titleLarge,
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          BooruTextField(
+            autofocus: true,
+            controller: labelTextController,
+            minLines: 1,
+            maxLines: 5,
+            onSubmitted: (_) {
+              _onSubmit();
+            },
+            textInputAction: TextInputAction.done,
+            decoration: const InputDecoration(
+              label: Text('Labels'),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(8),
+            child: Text(
+              '*A list of label to help categorize this tag. Space delimited.',
+              style: textTheme.titleSmall?.copyWith(
+                color: colorScheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.italic,
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            BooruTextField(
-              controller: labelTextController,
-              maxLines: null,
-              decoration: const InputDecoration(
-                label: Text('Labels'),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Text(
-                '*A list of label to help categorize this tag. Space delimited.',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.hintColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.italic,
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 8, bottom: 8),
+            child: OverflowBar(
+              alignment: MainAxisAlignment.spaceAround,
+              children: [
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    foregroundColor: colorScheme.onSurface,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 8, bottom: 28),
-              child: OverflowBar(
-                alignment: MainAxisAlignment.spaceAround,
-                children: [
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.onSurface,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.surfaceContainerHighest,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('generic.action.cancel').tr(),
                   ),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('generic.action.cancel').tr(),
+                ),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    foregroundColor: colorScheme.onPrimary,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
                     ),
-                    onPressed: () {
-                      widget.onSubmit(
-                        widget.initialValue.copyWith(
-                          labels: () => labelTextController.text.isEmpty
-                              ? null
-                              : labelTextController.text.split(' '),
-                        ),
-                      );
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('generic.action.ok').tr(),
                   ),
-                ],
-              ),
+                  onPressed: _onSubmit,
+                  child: const Text('generic.action.ok').tr(),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

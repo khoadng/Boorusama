@@ -108,7 +108,9 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                       ),
                                       backgroundColor:
                                           colorScheme.secondaryContainer,
-                                    ),
+                                    )
+                                  else if (session.canViewInvidualProgresses)
+                                    const _MoreIndicator(),
                                 ],
                               ),
                             ),
@@ -136,6 +138,41 @@ class BulkDownloadTaskTile extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _MoreIndicator extends StatelessWidget {
+  const _MoreIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SizedBox(
+      height: 18,
+      child: Row(
+        children: [
+          SizedBox(
+            height: double.infinity,
+            child: Text(
+              'tag.related.more',
+              style: TextStyle(
+                color: colorScheme.hintColor,
+                fontSize: 11,
+              ),
+            ).tr(),
+          ),
+          SizedBox(
+            height: double.infinity,
+            child: Icon(
+              Symbols.chevron_forward,
+              color: colorScheme.hintColor,
+              size: 18,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -305,11 +342,9 @@ class _DetailsInkWell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = session.id;
-    final status = session.session.status;
 
     return InkWell(
-      onTap: status == DownloadSessionStatus.running ||
-              status == DownloadSessionStatus.paused
+      onTap: session.canViewInvidualProgresses
           ? () {
               final updates = ref.read(downloadTaskUpdatesProvider).all(id);
 
