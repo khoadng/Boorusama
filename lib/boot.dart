@@ -183,9 +183,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Initialize i18n');
   await ensureI18nInitialized();
 
-  bootLogger.l('Load supported languages');
-  final supportedLanguages = await loadLanguageNames();
-
   FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;
     if (stack is Chain) return stack.toTrace().vmTrace;
@@ -248,7 +245,6 @@ Future<void> boot(BootLogger bootLogger) async {
             packageInfoProvider.overrideWithValue(packageInfo),
             appInfoProvider.overrideWithValue(appInfo),
             appLoggerProvider.overrideWithValue(appLogger),
-            supportedLanguagesProvider.overrideWithValue(supportedLanguages),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
             booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
             isGooglePlayServiceAvailableProvider.overrideWithValue(

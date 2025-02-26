@@ -1,9 +1,13 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Project imports:
-import 'language.dart';
+import '../../foundation.dart';
 
-final supportedLanguagesProvider = Provider<List<BooruLanguage>>((ref) {
-  throw UnimplementedError();
+final supportedLanguagesProvider =
+    FutureProvider<List<BooruLanguage>>((ref) async {
+  final names = await loadLanguageNames();
+
+  final supportedLanguages = names..sort((a, b) => a.name.compareTo(b.name));
+
+  return supportedLanguages;
 });
