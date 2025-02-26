@@ -51,12 +51,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     return const BookmarkState(bookmarks: IMap.empty());
   }
 
-  BookmarkRepository get bookmarkRepository => ref.read(bookmarkRepoProvider);
+  Future<BookmarkRepository> get bookmarkRepository =>
+      ref.read(bookmarkRepoProvider.future);
 
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
-  }) {
-    return bookmarkRepository.getAllBookmarks().run().then(
+  }) async {
+    return (await bookmarkRepository).getAllBookmarks().run().then(
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
@@ -77,8 +78,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onError,
   }) async {
     try {
-      final bookmarks =
-          await bookmarkRepository.addBookmarks(booruId, booruUrl, posts);
+      final bookmarks = await (await bookmarkRepository)
+          .addBookmarks(booruId, booruUrl, posts);
       onSuccess?.call();
 
       final map = IMap.fromIterables(
@@ -101,7 +102,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       final bookmark =
-          await bookmarkRepository.addBookmark(booruId, booruUrl, post);
+          await (await bookmarkRepository).addBookmark(booruId, booruUrl, post);
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.add(bookmark.originalUrl, bookmark),
@@ -117,7 +118,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onError,
   }) async {
     try {
-      await bookmarkRepository.removeBookmark(bookmark);
+      await (await bookmarkRepository).removeBookmark(bookmark);
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.remove(bookmark.originalUrl),
@@ -133,7 +134,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onError,
   }) async {
     try {
-      await bookmarkRepository.updateBookmark(bookmark);
+      await (await bookmarkRepository).updateBookmark(bookmark);
       onSuccess?.call();
 
       state = state.copyWith(
@@ -202,7 +203,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             )
             .toList();
 
-        await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
+        await (await bookmarkRepository).addBookmarkWithBookmarks(bookmarks);
         await getAllBookmarks();
 
         if (context.mounted) {

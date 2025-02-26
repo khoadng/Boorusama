@@ -342,7 +342,8 @@ class ImportDataNotifier
 
           case 'bookmarks':
             final currentBookmarks = ref.read(bookmarkProvider).bookmarks;
-            final bookmarkRepository = ref.read(bookmarkRepoProvider);
+            final bookmarkRepository =
+                await ref.read(bookmarkRepoProvider.future);
             final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
 
             final res = await dio.get('/bookmarks');

@@ -18,7 +18,6 @@ import 'package:stack_trace/stack_trace.dart';
 // Project imports:
 import 'boorus/providers.dart';
 import 'core/app.dart';
-import 'core/bookmarks/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
 import 'core/boorus/engine/providers.dart';
@@ -40,7 +39,6 @@ import 'core/settings/providers.dart';
 import 'core/settings/settings.dart';
 import 'core/tags/categories/providers.dart';
 import 'core/tags/configs/providers.dart';
-import 'core/tags/favorites/providers.dart';
 import 'core/utils/file_utils.dart';
 import 'core/widgets/widgets.dart';
 
@@ -153,14 +151,6 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  final favoriteTagsRepoOverride = await createFavoriteTagOverride(
-    bootLogger: bootLogger,
-  );
-
-  final bookmarkRepoOverride = await createBookmarkRepoProviderOverride(
-    bootLogger: bootLogger,
-  );
-
   final tempPath = await getAppTemporaryDirectory();
 
   bootLogger.l('Initialize misc data box');
@@ -224,7 +214,6 @@ Future<void> boot(BootLogger bootLogger) async {
             booruEngineRegistryProvider.overrideWith(
               (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
             ),
-            favoriteTagsRepoOverride,
             booruFactoryProvider.overrideWithValue(booruFactory),
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),
@@ -240,7 +229,6 @@ Future<void> boot(BootLogger bootLogger) async {
             initialSettingsBooruConfigProvider.overrideWithValue(data.config),
             httpCacheDirProvider.overrideWithValue(tempPath),
             loggerProvider.overrideWithValue(logger),
-            bookmarkRepoOverride,
             deviceInfoProvider.overrideWithValue(deviceInfo),
             packageInfoProvider.overrideWithValue(packageInfo),
             appInfoProvider.overrideWithValue(appInfo),
