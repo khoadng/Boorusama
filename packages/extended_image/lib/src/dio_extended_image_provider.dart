@@ -13,6 +13,7 @@ import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'fetch_strategy.dart';
 import 'retry_utils.dart';
 
 class DioExtendedNetworkImageProvider
@@ -28,9 +29,6 @@ class DioExtendedNetworkImageProvider
     this.scale = 1.0,
     this.headers,
     this.cache = false,
-    this.retries = 3,
-    this.timeLimit,
-    this.timeRetry = const Duration(milliseconds: 100),
     this.cacheKey,
     this.printError = true,
     this.cacheRawData = false,
@@ -53,18 +51,6 @@ class DioExtendedNetworkImageProvider
   /// data here.
   @override
   final bool cacheRawData;
-
-  /// The time limit to request image
-  @override
-  final Duration? timeLimit;
-
-  /// The time to retry to request
-  @override
-  final int retries;
-
-  /// The time duration to retry to request
-  @override
-  final Duration timeRetry;
 
   /// Whether cache image to local
   @override
@@ -99,7 +85,18 @@ class DioExtendedNetworkImageProvider
   @override
   final Duration? cacheMaxAge;
 
-  final FetchStrategy? fetchStrategy;
+  final FetchStrategyBuilder? fetchStrategy;
+
+  @override
+  int get retries => fetchStrategy?.maxAttempts ?? 3;
+
+  @override
+  Duration get timeRetry =>
+      fetchStrategy?.initialPauseBetweenRetries ??
+      const Duration(milliseconds: 100);
+
+  @override
+  Duration? get timeLimit => fetchStrategy?.timeout;
 
   @override
   ImageStreamCompleter loadImage(
@@ -292,16 +289,15 @@ class DioExtendedNetworkImageProvider
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is ExtendedNetworkImageProvider &&
+    return other is DioExtendedNetworkImageProvider &&
         url == other.url &&
         scale == other.scale &&
         cacheRawData == other.cacheRawData &&
         timeLimit == other.timeLimit &&
+        fetchStrategy == other.fetchStrategy &&
         cancelToken == other.cancelToken &&
-        timeRetry == other.timeRetry &&
         cache == other.cache &&
         cacheKey == other.cacheKey &&
-        retries == other.retries &&
         imageCacheName == other.imageCacheName &&
         cacheMaxAge == other.cacheMaxAge;
   }
@@ -312,11 +308,10 @@ class DioExtendedNetworkImageProvider
         scale,
         cacheRawData,
         timeLimit,
+        fetchStrategy,
         cancelToken,
-        timeRetry,
         cache,
         cacheKey,
-        retries,
         imageCacheName,
         cacheMaxAge,
       );

@@ -52,7 +52,12 @@ class WebsiteLogo extends ConsumerWidget {
               dio: dio,
               clearMemoryCacheIfFailed: false,
               fit: BoxFit.cover,
-              retries: 1,
+              fetchStrategy: const FetchStrategyBuilder(
+                maxAttempts: 1,
+                timeout: Duration(seconds: 5),
+                initialPauseBetweenRetries: Duration(milliseconds: 100),
+                silent: true,
+              ),
               placeholderWidget: Container(
                 padding: const EdgeInsets.all(8),
                 child: const CircularProgressIndicator(
