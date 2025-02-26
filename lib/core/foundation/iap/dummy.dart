@@ -26,15 +26,7 @@ class DummyPurchaser implements Purchaser {
   Future<List<Package>> getAvailablePackages() async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // append best value data that is compared to monthly subscription
-    final monthly = packages
-        .firstWhereOrNull((element) => element.type == PackageType.monthly);
-
-    final data = monthly != null
-        ? packages.map((e) => e.withDealFrom(monthly)).toList()
-        : packages;
-
-    return data;
+    return packages;
   }
 
   @override

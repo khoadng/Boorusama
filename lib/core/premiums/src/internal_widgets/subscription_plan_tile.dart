@@ -56,7 +56,7 @@ class SubscriptionPlanTile extends StatelessWidget {
                     switch (package.type) {
                       null => '???',
                       PackageType.monthly => 'Monthly',
-                      PackageType.annual => 'Yearly',
+                      PackageType.annual => 'Annual',
                     },
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,

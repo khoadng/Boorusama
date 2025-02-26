@@ -95,8 +95,6 @@ class _SubscriptionPlans extends ConsumerWidget {
   }
 
   Widget _buildPlans(BuildContext context, PremiumPurchaseState state) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -122,24 +120,13 @@ class _SubscriptionPlans extends ConsumerWidget {
               return SubscriptionPlanTile(
                 selected: package == state.selectedPackage,
                 package: package,
-                saveIndicator: package.bestValue?.savings.toOption().fold(
+                saveIndicator: package
+                    .getAnnualToMonthlyDeal(state.availablePackages)
+                    ?.savings
+                    .toOption()
+                    .fold(
                       () => null,
-                      (value) => IgnorePointer(
-                        child: RawCompactChip(
-                          label: Text(
-                            '-${(value * 100).toStringAsFixed(0)}%',
-                            style: TextStyle(
-                              color: colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          backgroundColor: colorScheme.primaryContainer,
-                        ),
-                      ),
+                      (value) => DiscountChip(value: value),
                     ),
                 onTap: () => notifier.selectPackage(package),
               );
@@ -166,6 +153,37 @@ class _SubscriptionPlans extends ConsumerWidget {
             child: CircularProgressIndicator(),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DiscountChip extends StatelessWidget {
+  const DiscountChip({
+    required this.value,
+    super.key,
+  });
+
+  final double value;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return IgnorePointer(
+      child: RawCompactChip(
+        label: Text(
+          '-${(value * 100).toStringAsFixed(0)}%',
+          style: TextStyle(
+            color: colorScheme.onPrimaryContainer,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+        backgroundColor: colorScheme.primaryContainer,
       ),
     );
   }
