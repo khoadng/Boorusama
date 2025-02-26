@@ -36,20 +36,20 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
 
   @override
   void dispose() {
-    super.dispose();
     pagingController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchPage(int pageKey) async {
     final config = ref.readConfigAuth;
+    final creatorsNotifier =
+        ref.read(danbooruCreatorsProvider(config).notifier);
 
     final topics = await ref
         .read(danbooruForumTopicRepoProvider(config))
         .getForumTopicsOrEmpty(pageKey);
 
-    await ref
-        .watch(danbooruCreatorsProvider(config).notifier)
-        .load(topics.map((e) => e.creatorId).toList());
+    await creatorsNotifier.load(topics.map((e) => e.creatorId).toList());
 
     if (!mounted) return;
 
