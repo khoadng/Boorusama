@@ -47,5 +47,17 @@ Future<IAP> _initDummyIap() async {
 final subscriptionPackagesProvider =
     FutureProvider.autoDispose<List<Package>>((ref) async {
   final iap = await ref.watch(iapProvider.future);
-  return iap.purchaser.getAvailablePackages();
+  final availablePackages = await iap.purchaser.getAvailablePackages();
+
+  // sort annual packages first
+  final packages = availablePackages.toList()
+    ..sort((a, b) {
+      if (a.type == PackageType.annual) {
+        return -1;
+      }
+
+      return 1;
+    });
+
+  return packages;
 });

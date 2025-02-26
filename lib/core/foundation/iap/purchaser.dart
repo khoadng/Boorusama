@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -22,15 +23,19 @@ extension PackageX on Package {
         null => 0,
       };
 
-  Package withDealFrom(Package? other) => switch (other) {
-        null => this,
-        final Package p => copyWith(
-            deal: () => _compareWith(p),
-          ),
-      };
+  DealData? getAnnualToMonthlyDeal(List<Package> all) {
+    if (type == PackageType.annual) {
+      final others = all.where(
+        (element) => element.product.id != product.id,
+      );
+      final other = others.firstWhereOrNull(
+        (element) => element.type == PackageType.monthly,
+      );
 
-  DealData? _compareWith(Package other) {
-    if (type != PackageType.monthly) {
+      if (other == null) {
+        return null;
+      }
+
       final savingsPercent = 1 - (annualPrice / other.annualPrice);
 
       return DealData(
@@ -68,31 +73,17 @@ class Package extends Equatable {
     required this.id,
     required this.product,
     required this.type,
-    this.bestValue,
   });
 
   final String id;
   final ProductDetails product;
   final PackageType? type;
-  final DealData? bestValue;
-
-  Package copyWith({
-    DealData? Function()? deal,
-  }) {
-    return Package(
-      bestValue: deal != null ? deal() : bestValue,
-      id: id,
-      product: product,
-      type: type,
-    );
-  }
 
   @override
   List<Object?> get props => [
         id,
         product,
         type,
-        bestValue,
       ];
 }
 
