@@ -87,6 +87,7 @@ final philomenaPostRepoProvider =
                 thumbTiny: e.representations?.thumbTiny ?? '',
               ),
               uploaderId: e.uploaderId,
+              uploaderName: e.uploader,
               metadata: PostMetadata(
                 page: page,
                 search: tags.join(' '),

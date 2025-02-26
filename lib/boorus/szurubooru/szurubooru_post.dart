@@ -97,6 +97,7 @@ class SzurubooruPost extends Equatable
   @override
   int? get uploaderId => null;
 
+  @override
   final String? uploaderName;
 
   @override

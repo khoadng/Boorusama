@@ -38,6 +38,7 @@ class DummyPost implements Post {
     this.tags = const {},
     this.thumbnailImageUrl = '',
     this.uploaderId,
+    this.uploaderName,
     this.videoThumbnailUrl = '',
     this.videoUrl = '',
     this.width = 0,
@@ -109,6 +110,8 @@ class DummyPost implements Post {
   final String thumbnailImageUrl;
   @override
   final int? uploaderId;
+  @override
+  final String? uploaderName;
   @override
   final String videoThumbnailUrl;
   @override

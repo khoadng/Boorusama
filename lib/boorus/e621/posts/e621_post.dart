@@ -143,6 +143,9 @@ class E621Post extends Equatable
   final int? uploaderId;
 
   @override
+  String? get uploaderName => null;
+
+  @override
   final PostMetadata? metadata;
 }
 

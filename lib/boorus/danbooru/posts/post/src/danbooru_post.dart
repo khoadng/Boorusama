@@ -186,6 +186,9 @@ class DanbooruPost extends Equatable
   final PostMetadata? metadata;
 
   @override
+  String? get uploaderName => null;
+
+  @override
   List<Object?> get props => [
         id,
         tags,

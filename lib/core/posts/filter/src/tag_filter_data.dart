@@ -8,6 +8,7 @@ class TagFilterData {
     required this.score,
     this.downvotes,
     this.uploaderId,
+    this.uploaderName,
     this.source,
     this.id,
   });
@@ -18,6 +19,7 @@ class TagFilterData {
         score = 0,
         source = null,
         uploaderId = null,
+        uploaderName = null,
         id = null,
         downvotes = null;
 
@@ -26,6 +28,7 @@ class TagFilterData {
   final int score;
   final int? downvotes;
   final int? uploaderId;
+  final String? uploaderName;
   final String? source;
   final int? id;
 }

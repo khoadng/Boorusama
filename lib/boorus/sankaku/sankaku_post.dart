@@ -36,6 +36,7 @@ class SankakuPost extends Equatable
     required this.characterDetailsTags,
     required this.copyrightDetailsTags,
     required this.uploaderId,
+    required this.uploaderName,
     required this.metadata,
     this.createdAt,
     this.parentId,
@@ -119,6 +120,9 @@ class SankakuPost extends Equatable
 
   @override
   final int? uploaderId;
+
+  @override
+  final String? uploaderName;
 
   final String sankakuId;
 

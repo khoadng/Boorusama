@@ -37,6 +37,7 @@ class PhilomenaPost extends Equatable
     required this.downvotes,
     required this.representation,
     required this.uploaderId,
+    required this.uploaderName,
     required this.metadata,
     this.createdAt,
     this.parentId,
@@ -117,6 +118,9 @@ class PhilomenaPost extends Equatable
 
   @override
   final int? uploaderId;
+
+  @override
+  final String? uploaderName;
 
   @override
   final PostMetadata? metadata;

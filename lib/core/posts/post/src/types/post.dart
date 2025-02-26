@@ -38,6 +38,7 @@ abstract class Post
   int get score;
   int? get downvotes;
   int? get uploaderId;
+  String? get uploaderName;
 
   PostMetadata? get metadata;
 

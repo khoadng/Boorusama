@@ -455,6 +455,51 @@ void main() {
           true,
         );
       });
+
+      test('should match tag with specific uploader name', () {
+        expect(
+          checkIfTagsContainsRawTagExpression(
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              uploaderName: 'testUser',
+            ),
+            'a uploader:testUser',
+          ),
+          true,
+        );
+      });
+
+      test('should not match tag with different uploader name', () {
+        expect(
+          checkIfTagsContainsRawTagExpression(
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              uploaderName: 'testUser',
+            ),
+            'a uploader:otherUser',
+          ),
+          false,
+        );
+      });
+
+      test('should match uploader name case-insensitively', () {
+        expect(
+          checkIfTagsContainsRawTagExpression(
+            TagFilterData(
+              tags: {'a', 'b', 'c'},
+              rating: Rating.explicit,
+              score: 0,
+              uploaderName: 'TestUser',
+            ),
+            'a uploader:testuser',
+          ),
+          true,
+        );
+      });
     });
 
     group('NOT + Metatags', () {

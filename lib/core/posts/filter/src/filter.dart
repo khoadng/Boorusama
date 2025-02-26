@@ -56,6 +56,7 @@ extension PostFilterX on Post {
         score: score,
         downvotes: downvotes,
         uploaderId: uploaderId,
+        uploaderName: uploaderName,
         source: switch (source) {
           final WebSource w => w.url,
           final NonWebSource nw => nw.value,

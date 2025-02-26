@@ -143,6 +143,7 @@ class GelbooruV2Post extends Equatable
   @override
   final int? uploaderId;
 
+  @override
   final String? uploaderName;
 
   final bool hasNotes;

@@ -106,6 +106,7 @@ class MoebooruPost extends Equatable
   @override
   final int? uploaderId;
 
+  @override
   final String? uploaderName;
 
   @override
