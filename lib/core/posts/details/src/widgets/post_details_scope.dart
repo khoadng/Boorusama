@@ -35,13 +35,20 @@ class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostDetailsLayoutSwitcherState<T extends Post>
     extends ConsumerState<PostDetailsScope<T>> {
-  late PostDetailsController<T> controller = PostDetailsController<T>(
-    scrollController: widget.scrollController,
-    initialPage: widget.initialIndex,
-    initialThumbnailUrl: widget.initialThumbnailUrl,
-    posts: widget.posts,
-    reduceAnimations: ref.read(settingsProvider).reduceAnimations,
-  );
+  late PostDetailsController<T> controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = PostDetailsController<T>(
+      scrollController: widget.scrollController,
+      initialPage: widget.initialIndex,
+      initialThumbnailUrl: widget.initialThumbnailUrl,
+      posts: widget.posts,
+      reduceAnimations: ref.read(settingsProvider).reduceAnimations,
+    );
+  }
 
   @override
   void dispose() {
