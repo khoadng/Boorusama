@@ -791,12 +791,11 @@ packages:
   fvp:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "7090c3a926b295747cccb1333895417ab8a85584"
-      resolved-ref: "7090c3a926b295747cccb1333895417ab8a85584"
-      url: "https://github.com/wang-bin/fvp.git"
-    source: git
-    version: "0.28.0"
+      name: fvp
+      sha256: f5012756985f7c8c19caaea2d65baf8a6cf5fee9fe520e1fabb8bc61e1d5f468
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.30.0"
   gal:
     dependency: "direct main"
     description:
