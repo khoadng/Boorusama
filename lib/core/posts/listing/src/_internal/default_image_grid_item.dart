@@ -29,6 +29,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     required this.autoScrollController,
     required this.controller,
     required this.useHero,
+    this.onTap,
     super.key,
   });
 
@@ -37,6 +38,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final AutoScrollController autoScrollController;
   final PostGridController<T> controller;
   final bool useHero;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -87,15 +89,16 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                           return SliverPostGridImageGridItem(
                             post: post,
                             multiSelectEnabled: multiSelect,
-                            onTap: () {
-                              goToPostDetailsPageFromController(
-                                context: context,
-                                controller: controller,
-                                initialIndex: index,
-                                scrollController: autoScrollController,
-                                initialThumbnailUrl: imgUrl,
-                              );
-                            },
+                            onTap: onTap ??
+                                () {
+                                  goToPostDetailsPageFromController(
+                                    context: context,
+                                    controller: controller,
+                                    initialIndex: index,
+                                    scrollController: autoScrollController,
+                                    initialThumbnailUrl: imgUrl,
+                                  );
+                                },
                             quickActionButton: !multiSelect
                                 ? DefaultImagePreviewQuickActionButton(
                                     post: post,

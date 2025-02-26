@@ -36,6 +36,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     required this.multiSelectEnabled,
     super.key,
     this.blockOverlay,
+    this.leadingIcons,
   });
 
   final T post;
@@ -46,6 +47,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
   final int? score;
   final BlockOverlayItem? blockOverlay;
   final bool multiSelectEnabled;
+  final List<Widget>? leadingIcons;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,6 +76,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
               );
 
               return ImageGridItem(
+                leadingIcons: leadingIcons,
                 borderRadius: BorderRadius.circular(imageBorderRadius),
                 isGif: post.isGif,
                 isAI: post.isAI,

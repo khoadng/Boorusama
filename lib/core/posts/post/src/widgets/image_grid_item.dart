@@ -42,6 +42,7 @@ class ImageGridItem extends StatelessWidget {
     this.isGif = false,
     this.quickActionButton,
     this.borderRadius,
+    this.leadingIcons,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -60,6 +61,7 @@ class ImageGridItem extends StatelessWidget {
   final bool isGif;
   final Widget? quickActionButton;
   final BorderRadius? borderRadius;
+  final List<Widget>? leadingIcons;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +108,7 @@ class ImageGridItem extends StatelessWidget {
         child: Wrap(
           spacing: 1,
           children: [
+            if (leadingIcons != null) ...leadingIcons!,
             if (isGif)
               const ImageOverlayIcon(
                 icon: Symbols.gif,
