@@ -12,6 +12,7 @@ import '../../../../bookmarks/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
 import '../../../post/post.dart';
+import 'post_duplicate_checker.dart';
 import 'post_grid_controller.dart';
 
 class PostScope<T extends Post> extends ConsumerStatefulWidget {
@@ -19,6 +20,7 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
     required this.fetcher,
     required this.builder,
     super.key,
+    this.duplicateCheckMode = DuplicateCheckMode.id,
   });
 
   final PostGridFetcher<T> fetcher;
@@ -27,6 +29,8 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
     PostGridController<T> controller,
   ) builder;
 
+  final DuplicateCheckMode duplicateCheckMode;
+
   @override
   ConsumerState<PostScope<T>> createState() => _PostScopeState();
 }
@@ -34,6 +38,9 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
 class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
   late final _controller = PostGridController<T>(
     fetcher: widget.fetcher,
+    duplicateTracker: PostDuplicateTracker<T>(
+      mode: widget.duplicateCheckMode,
+    ),
     blacklistedTagsFetcher: () {
       if (!mounted) return Future.value({});
 

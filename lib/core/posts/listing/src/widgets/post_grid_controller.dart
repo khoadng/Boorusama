@@ -11,6 +11,7 @@ import '../../../../settings/settings.dart';
 import '../../../../utils/collection_utils.dart';
 import '../../../filter/filter.dart';
 import '../../../post/post.dart';
+import 'post_duplicate_checker.dart';
 
 const _kFirstPage = 1;
 const _kJumpStep = 1;
@@ -31,10 +32,12 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     required this.fetcher,
     required this.blacklistedTagsFetcher,
     required this.mountedChecker,
+    required PostDuplicateTracker<T> duplicateTracker,
     this.debounceDuration = const Duration(milliseconds: 500),
     PageMode pageMode = PageMode.infinite,
     this.blacklistedUrlsFetcher,
-  }) : _pageMode = pageMode;
+  })  : _pageMode = pageMode,
+        _duplicateTracker = duplicateTracker;
 
   final PostGridFetcher<T> fetcher;
   PageMode _pageMode;
@@ -49,7 +52,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   List<T> _items = [];
   List<T> _filteredItems = [];
-  Set<int> _keys = {};
+
+  final PostDuplicateTracker<T> _duplicateTracker;
+
   int _page = _kFirstPage;
   bool _hasMore = true;
   bool _loading = false;
@@ -327,8 +332,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     final data = [..._items]
       ..removeWhere((e) => postIds.contains(itemIdExtractor(e)));
 
-    // remove keys
-    _keys = data.map((e) => itemIdExtractor(e)).toSet();
+    _duplicateTracker.rebuildFrom(data);
 
     _items = data;
     _setFilteringItems(data);
@@ -337,10 +341,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   Future<void> _addAll(List<T> newItems) async {
     for (final item in newItems) {
-      final key = item.id;
-      if (!_keys.contains(key)) {
+      if (!_duplicateTracker.isDuplicate(item)) {
         _items.add(item);
-        _keys.add(key);
+        _duplicateTracker.trackItem(item);
       }
     }
 
@@ -367,7 +370,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _items.clear();
     _filteredItems.clear();
     _setFilteringItems([]);
-    _keys.clear();
+    _duplicateTracker.clear();
     tagCounts.value = {};
     hasBlacklist.value = false;
     activeFilters.value = {};
