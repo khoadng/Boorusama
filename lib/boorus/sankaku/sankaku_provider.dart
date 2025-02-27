@@ -20,7 +20,7 @@ final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
 );
 
 final sankakuPseudoIdGeneratorProvider = Provider((ref) {
-  return SankakuWorkaroundIdGenerator();
+  return PostIdGenerator();
 });
 
 final sankakuPostRepoProvider =

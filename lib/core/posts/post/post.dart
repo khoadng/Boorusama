@@ -7,3 +7,4 @@ export 'src/types/post_quality.dart';
 export 'src/types/post_repository.dart';
 export 'src/mixins/translatable_mixin.dart';
 export 'src/mixins/post_mixin.dart';
+export 'src/types/post_id_generator.dart';
