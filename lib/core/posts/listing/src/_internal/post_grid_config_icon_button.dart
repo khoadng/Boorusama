@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:material_symbols_icons/symbols.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -12,6 +12,7 @@ import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
 import '../../../../settings/widgets.dart';
+import '../../../../theme/theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../widgets/post_grid_controller.dart';
@@ -19,49 +20,77 @@ import '../widgets/post_grid_controller.dart';
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({
     required this.postController,
+    required this.multiSelectController,
     super.key,
   });
 
   final PostGridController<Post> postController;
+  final MultiSelectController<Post> multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
 
-    return InkWell(
-      customBorder: const CircleBorder(),
-      onTap: () => showBooruModalBottomSheet(
-        context: context,
-        routeSettings: const RouteSettings(name: 'grid_config'),
-        builder: (_) => PostGridActionSheet(
-          postController: postController,
-          onModeChanged: (mode) => settingsNotifier.updateWith(
-            (s) => s.copyWith(
-              listing: s.listing.copyWith(pageMode: mode),
-            ),
-          ),
-          onGridChanged: (grid) => settingsNotifier.updateWith(
-            (s) => s.copyWith(
-              listing: s.listing.copyWith(gridSize: grid),
-            ),
-          ),
-          onImageListChanged: (imageListType) => settingsNotifier.updateWith(
-            (s) => s.copyWith(
-              listing: s.listing.copyWith(imageListType: imageListType),
-            ),
-          ),
-          onImageQualityChanged: (imageQuality) => settingsNotifier.updateWith(
-            (s) => s.copyWith(
-              listing: s.listing.copyWith(imageQuality: imageQuality),
-            ),
+    return ValueListenableBuilder(
+      valueListenable: multiSelectController.multiSelectNotifier,
+      builder: (context, multiSelect, child) {
+        return !multiSelect
+            ? Container(
+                width: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: context.extendedColorScheme.surfaceContainerOverlay,
+                ),
+                child: BooruPopupMenuButton(
+                  offset: const Offset(0, 48),
+                  iconColor:
+                      context.extendedColorScheme.onSurfaceContainerOverlay,
+                  onSelected: (value) {
+                    if (value == 'options') {
+                      _showViewOptions(context, settingsNotifier);
+                    } else if (value == 'select') {
+                      multiSelectController.enableMultiSelect();
+                    }
+                  },
+                  itemBuilder: {
+                    'select': const Text('Select').tr(),
+                    'options': const Text('View Options').tr(),
+                  },
+                ),
+              )
+            : const SizedBox.shrink();
+      },
+    );
+  }
+
+  Future<void> _showViewOptions(
+    BuildContext context,
+    SettingsNotifier settingsNotifier,
+  ) {
+    return showBooruModalBottomSheet(
+      context: context,
+      routeSettings: const RouteSettings(name: 'grid_config'),
+      builder: (_) => PostGridActionSheet(
+        postController: postController,
+        onModeChanged: (mode) => settingsNotifier.updateWith(
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(pageMode: mode),
           ),
         ),
-      ),
-      child: Container(
-        margin: const EdgeInsets.all(4),
-        child: const Icon(
-          Symbols.settings,
-          fill: 1,
+        onGridChanged: (grid) => settingsNotifier.updateWith(
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(gridSize: grid),
+          ),
+        ),
+        onImageListChanged: (imageListType) => settingsNotifier.updateWith(
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(imageListType: imageListType),
+          ),
+        ),
+        onImageQualityChanged: (imageQuality) => settingsNotifier.updateWith(
+          (s) => s.copyWith(
+            listing: s.listing.copyWith(imageQuality: imageQuality),
+          ),
         ),
       ),
     );

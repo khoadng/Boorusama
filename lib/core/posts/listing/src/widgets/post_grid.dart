@@ -108,7 +108,9 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
             multiSelectController: _multiSelectController,
             controller: widget.controller,
             safeArea: widget.safeArea,
-            gridHeader: _GridHeader<T>(),
+            gridHeader: _GridHeader<T>(
+              multiSelectController: _multiSelectController,
+            ),
             topPageIndicator: Consumer(
               builder: (_, ref, __) {
                 final visibleAtTop = ref.watch(
@@ -238,11 +240,13 @@ final _expandedProvider = StateProvider.autoDispose<bool?>((ref) => null);
 
 class _GridHeader<T extends Post> extends ConsumerWidget {
   const _GridHeader({
+    required this.multiSelectController,
     this.axis = Axis.horizontal,
     super.key,
   });
 
   final Axis axis;
+  final MultiSelectController<T> multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -309,6 +313,7 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
                     trailing: axis == Axis.horizontal
                         ? PostGridConfigIconButton(
                             postController: controller,
+                            multiSelectController: multiSelectController,
                           )
                         : null,
                     onClosed: () {

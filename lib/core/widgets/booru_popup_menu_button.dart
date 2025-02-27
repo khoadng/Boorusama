@@ -42,6 +42,7 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
               weight: 400,
             ),
       iconColor: iconColor,
+      padding: EdgeInsets.zero,
       itemBuilder: (context) => [
         for (final item in itemBuilder.entries)
           PopupMenuItem(
