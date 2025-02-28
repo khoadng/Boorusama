@@ -37,8 +37,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     this.onRefresh,
     this.sliverHeaders,
     this.scrollController,
-    this.extendBody = false,
-    this.extendBodyHeight,
     this.footer,
     this.header,
     this.blacklistedIdString,
@@ -54,9 +52,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
   final void Function() onPreviousPage;
   final List<Widget>? sliverHeaders;
   final AutoScrollController? scrollController;
-
-  final bool extendBody;
-  final double? extendBodyHeight;
 
   final bool refreshAtStart;
   final bool enablePullToRefresh;
@@ -219,19 +214,9 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                   controller.fetchMore();
                 }
               },
-              child: widget.extendBody
-                  ? Padding(
-                      padding: EdgeInsets.only(
-                        bottom: widget.extendBodyHeight ??
-                            kBottomNavigationBarHeight,
-                      ),
-                      child: BooruScrollToTopButton(
-                        onPressed: _onScrollToTop,
-                      ),
-                    )
-                  : BooruScrollToTopButton(
-                      onPressed: _onScrollToTop,
-                    ),
+              child: BooruScrollToTopButton(
+                onPressed: _onScrollToTop,
+              ),
             ),
             body: ConditionalParentWidget(
               condition: kPreferredLayout.isMobile,
