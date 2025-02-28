@@ -26,8 +26,8 @@ class QuickPreviewImageDialog extends StatelessWidget {
             body: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.sizeOf(context).height * 0.8,
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+                  maxWidth: MediaQuery.sizeOf(context).width * 0.85,
                 ),
                 child: child,
               ),

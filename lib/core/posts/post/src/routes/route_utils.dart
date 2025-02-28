@@ -33,6 +33,7 @@ void goToImagePreviewPage(BuildContext context, Post post) {
       child: BooruImage(
         fit: BoxFit.contain,
         imageUrl: post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
+        placeholderUrl: post.thumbnailImageUrl,
       ),
     ),
   );
