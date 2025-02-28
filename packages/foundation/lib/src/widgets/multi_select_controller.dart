@@ -10,8 +10,16 @@ class MultiSelectController<T> extends ChangeNotifier {
 
   bool get multiSelectEnabled => _multiSelectEnabled;
 
-  void enableMultiSelect() {
+  void enableMultiSelect({
+    List<T>? initialSelected,
+  }) {
     _setMultiSelect(true);
+
+    if (initialSelected != null) {
+      _selectedItems.addAll(initialSelected);
+      notifySelectedItems();
+    }
+
     notifyListeners();
   }
 

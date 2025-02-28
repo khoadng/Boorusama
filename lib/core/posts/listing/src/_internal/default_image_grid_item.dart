@@ -55,7 +55,9 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
               builder: (_, ref, __) => GeneralPostContextMenu(
                 hasAccount: ref.watchConfigAuth.hasLoginDetails(),
                 onMultiSelect: () {
-                  multiSelectController.enableMultiSelect();
+                  multiSelectController.enableMultiSelect(
+                    initialSelected: [post],
+                  );
                 },
                 post: post,
               ),

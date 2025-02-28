@@ -61,7 +61,9 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
             contextMenu: contextMenu ??
                 DanbooruPostContextMenu(
                   onMultiSelect: () {
-                    multiSelectController.enableMultiSelect();
+                    multiSelectController.enableMultiSelect(
+                      initialSelected: [post],
+                    );
                   },
                   post: post,
                 ),
