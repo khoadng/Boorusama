@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -30,6 +31,8 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
+    final postStatsPageBuilder =
+        ref.watch(currentBooruBuilderProvider)?.postStatisticsPageBuilder;
 
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
@@ -50,10 +53,26 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                       _showViewOptions(context, settingsNotifier);
                     } else if (value == 'select') {
                       multiSelectController.enableMultiSelect();
+                    } else if (value == 'stats') {
+                      if (postStatsPageBuilder != null) {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            settings: const RouteSettings(
+                              name: 'post_statistics',
+                            ),
+                            builder: (_) => postStatsPageBuilder(
+                              context,
+                              postController.items,
+                            ),
+                          ),
+                        );
+                      }
                     }
                   },
                   itemBuilder: {
                     'select': const Text('Select').tr(),
+                    if (postStatsPageBuilder != null)
+                      'stats': const Text('Stats').tr(),
                     'options': const Text('View Options').tr(),
                   },
                 ),
@@ -116,9 +135,6 @@ class PostGridActionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final postStatsPageBuilder =
-        ref.watch(currentBooruBuilderProvider)?.postStatisticsPageBuilder;
-
     final gridSize = ref
         .watch(imageListingSettingsProvider.select((value) => value.gridSize));
     final imageListType = ref.watch(
@@ -198,57 +214,18 @@ class PostGridActionSheet extends ConsumerWidget {
               ),
             ),
           ),
-          if (postStatsPageBuilder != null) ...[
-            const Divider(),
-            ValueListenableBuilder(
-              valueListenable: postController.refreshingNotifier,
-              builder: (_, refreshing, __) => ValueListenableBuilder(
-                valueListenable: postController.itemsNotifier,
-                builder: (_, items, __) => !refreshing && items.isEmpty
-                    ? const SizedBox.shrink()
-                    : ListTile(
-                        title: Row(
-                          children: [
-                            const Text('Stats for nerds'),
-                            if (refreshing)
-                              Container(
-                                margin: const EdgeInsets.only(left: 8),
-                                width: 12,
-                                height: 12,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                          ],
-                        ),
-                        onTap: !refreshing
-                            ? () {
-                                Navigator.of(context).pop();
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  useSafeArea: true,
-                                  routeSettings: const RouteSettings(
-                                    name: 'post_statistics',
-                                  ),
-                                  builder: (_) => postStatsPageBuilder(
-                                    context,
-                                    postController.items,
-                                  ),
-                                );
-                              }
-                            : null,
-                      ),
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 4,
             ),
-            const SizedBox(height: 4),
-          ],
-          FilledButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              openAppearancePage(context);
-            },
-            child: const Text('More'),
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                openAppearancePage(context);
+              },
+              child: const Text('More'),
+            ),
           ),
         ],
       ),
