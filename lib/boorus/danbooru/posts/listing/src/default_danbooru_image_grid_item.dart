@@ -131,16 +131,11 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                       );
 
                       return multiSelect
-                          ? ValueListenableBuilder(
-                              valueListenable:
-                                  multiSelectController.selectedItemsNotifier,
-                              builder: (_, selectedItems, __) => SelectableItem(
-                                index: index,
-                                isSelected: selectedItems.contains(post),
-                                onTap: () =>
-                                    multiSelectController.toggleSelection(post),
-                                itemBuilder: (context, isSelected) => item,
-                              ),
+                          ? DefaultSelectableItem(
+                              multiSelectController: multiSelectController,
+                              index: index,
+                              post: post,
+                              item: item,
                             )
                           : item;
                     },

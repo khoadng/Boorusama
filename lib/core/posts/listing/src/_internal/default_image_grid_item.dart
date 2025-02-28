@@ -18,6 +18,7 @@ import '../../../details/routes.dart';
 import '../../../post/post.dart';
 import '../../../post/widgets.dart';
 import '../widgets/default_post_list_context_menu_region.dart';
+import '../widgets/default_selectable_item.dart';
 import '../widgets/general_post_context_menu.dart';
 import '../widgets/post_grid_controller.dart';
 import '../widgets/sliver_post_grid_image_grid_item.dart';
@@ -120,16 +121,11 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                       );
 
                       return multiSelect
-                          ? ValueListenableBuilder(
-                              valueListenable:
-                                  multiSelectController.selectedItemsNotifier,
-                              builder: (_, selectedItems, __) => SelectableItem(
-                                index: index,
-                                isSelected: selectedItems.contains(post),
-                                onTap: () =>
-                                    multiSelectController.toggleSelection(post),
-                                itemBuilder: (context, isSelected) => item,
-                              ),
+                          ? DefaultSelectableItem(
+                              multiSelectController: multiSelectController,
+                              index: index,
+                              post: post,
+                              item: item,
                             )
                           : item;
                     },

@@ -162,10 +162,12 @@ class SelectableItem extends StatefulWidget {
     required this.onTap,
     required this.itemBuilder,
     required this.index,
+    this.onLongPress,
   });
   final int index;
   final bool isSelected;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
   final IndexedWidgetBuilder itemBuilder;
 
   @override
@@ -215,6 +217,7 @@ class _SelectableItemState extends State<SelectableItem>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) => Transform.scale(
