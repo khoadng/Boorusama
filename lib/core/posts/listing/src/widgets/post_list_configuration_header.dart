@@ -17,7 +17,6 @@ typedef HiddenData = ({
 class PostListConfigurationHeader extends StatefulWidget {
   const PostListConfigurationHeader({
     required this.hiddenCount,
-    required this.onClosed,
     required this.postCount,
     required this.blacklistControls,
     super.key,
@@ -28,7 +27,6 @@ class PostListConfigurationHeader extends StatefulWidget {
     this.onExpansionChanged,
   });
 
-  final VoidCallback onClosed;
   final Widget? trailing;
   final int? hiddenCount;
   final bool hasBlacklist;
@@ -76,12 +74,6 @@ class _PostListConfigurationHeaderState
                     ? const Icon(Symbols.keyboard_arrow_right)
                     : const Icon(Symbols.keyboard_arrow_down),
                 controlAffinity: ListTileControlAffinity.leading,
-                trailing: widget.axis == Axis.horizontal && expanded
-                    ? IconButton(
-                        onPressed: widget.onClosed,
-                        icon: const Icon(Symbols.close),
-                      )
-                    : null,
                 onExpansionChanged: (value) => {
                   setState(() {
                     expanded = value;
@@ -114,12 +106,10 @@ class _PostListConfigurationHeaderState
                                 ),
                               ),
                         const Spacer(),
-                        if (expanded)
-                          const SizedBox.shrink()
-                        else
-                          FittedBox(
-                            child: widget.trailing,
-                          ),
+                        FittedBox(
+                          child: widget.trailing,
+                        ),
+                        const SizedBox(width: 4),
                       ],
                     );
                   },

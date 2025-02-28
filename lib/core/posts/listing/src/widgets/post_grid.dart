@@ -8,8 +8,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../foundation/animations.dart';
-import '../../../../foundation/toast.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
@@ -316,45 +314,6 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
                             multiSelectController: multiSelectController,
                           )
                         : null,
-                    onClosed: () {
-                      final hasCustomListing =
-                          ref.read(hasCustomListingSettingsProvider);
-
-                      if (hasCustomListing) {
-                        showErrorToast(
-                          context,
-                          'Cannot hide header when using custom listing',
-                        );
-                        return;
-                      }
-
-                      final settingsNotifier =
-                          ref.read(settingsNotifierProvider.notifier)
-                            ..updateWith(
-                              (s) => s.copyWith(
-                                listing: s.listing.copyWith(
-                                  showPostListConfigHeader: false,
-                                ),
-                              ),
-                            );
-                      showSimpleSnackBar(
-                        duration: AppDurations.extraLongToast,
-                        context: context,
-                        content: const Text(
-                          'You can always show this header again in Settings.',
-                        ),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () => settingsNotifier.updateWith(
-                            (s) => s.copyWith(
-                              listing: s.listing.copyWith(
-                                showPostListConfigHeader: true,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
                     hiddenCount: tagCounts.totalNonDuplicatesPostCount,
                   ),
                 );

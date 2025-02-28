@@ -164,7 +164,6 @@ class PreviewHome extends StatelessWidget {
                   (previousValue, element) => previousValue + element.count,
                 ),
                 postCount: 100,
-                onClosed: () => {},
                 onExpansionChanged: (value) => {},
               ),
             ),

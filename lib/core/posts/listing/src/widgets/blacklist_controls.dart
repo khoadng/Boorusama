@@ -76,9 +76,11 @@ class BlacklistControls extends StatelessWidget {
     ];
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: kPreferredLayout.isMobile ? 8 : 0,
+      padding: EdgeInsets.only(
+        left: 8,
+        right: 8,
+        top: kPreferredLayout.isMobile ? 4 : 0,
+        bottom: 12,
       ),
       child: axis == Axis.horizontal
           ? Builder(
