@@ -66,8 +66,6 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final footerHeight = widget.footer != null ? 52.0 : 0.0;
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
@@ -78,11 +76,7 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
       ),
       body: Stack(
         children: [
-          _AnimatedBody(
-            multiSelect: multiSelect,
-            body: widget.child,
-            footerHeight: footerHeight,
-          ),
+          widget.child,
           if (widget.footer != null)
             Positioned(
               left: 0,
@@ -99,35 +93,6 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
   }
 }
 
-class _AnimatedBody extends StatelessWidget {
-  const _AnimatedBody({
-    required this.multiSelect,
-    required this.body,
-    required this.footerHeight,
-  });
-
-  final bool multiSelect;
-  final Widget body;
-  final double? footerHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
-    final bottom = multiSelect && footerHeight != null
-        ? bottomPadding + footerHeight!
-        : 0.0;
-
-    return AnimatedPadding(
-      duration: _kAnimDuration,
-      curve: Curves.easeInOut,
-      padding: EdgeInsets.only(
-        bottom: bottom,
-      ),
-      child: body,
-    );
-  }
-}
-
 class _AnimatedFooter extends StatelessWidget {
   const _AnimatedFooter({
     required this.multiSelect,
@@ -139,16 +104,21 @@ class _AnimatedFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: AnimatedSlide(
-        duration: _kAnimDuration,
-        curve: Curves.easeInOut,
-        offset: multiSelect ? Offset.zero : const Offset(0, 1),
-        child: AnimatedOpacity(
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color: multiSelect ? colorScheme.surface : Colors.transparent,
+      child: SafeArea(
+        top: false,
+        child: AnimatedSlide(
           duration: _kAnimDuration,
-          opacity: multiSelect ? 1.0 : 0.0,
-          child: multiSelect ? footer : const SizedBox.shrink(),
+          curve: Curves.easeInOut,
+          offset: multiSelect ? Offset.zero : const Offset(0, 1),
+          child: AnimatedOpacity(
+            duration: _kAnimDuration,
+            opacity: multiSelect ? 1.0 : 0.0,
+            child: multiSelect ? footer : const SizedBox.shrink(),
+          ),
         ),
       ),
     );

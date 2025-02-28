@@ -39,7 +39,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
           ValueListenableBuilder(
             valueListenable: controller.selectedItemsNotifier,
             builder: (context, selectedPosts, child) {
-              return IconButton(
+              return MultiSelectButton(
                 onPressed: selectedPosts.isNotEmpty
                     ? () async {
                         final shouldEnd =
@@ -53,6 +53,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                       }
                     : null,
                 icon: const Icon(Symbols.add),
+                name: 'Add to group',
               );
             },
           ),
@@ -63,7 +64,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                       ? ValueListenableBuilder(
                           valueListenable: controller.selectedItemsNotifier,
                           builder: (context, selectedPosts, child) {
-                            return IconButton(
+                            return MultiSelectButton(
                               onPressed: selectedPosts.isNotEmpty
                                   ? () async {
                                       final shouldEnd =
@@ -78,6 +79,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                                     }
                                   : null,
                               icon: const Icon(Symbols.edit_square),
+                              name: 'Edit rating',
                             );
                           },
                         )
