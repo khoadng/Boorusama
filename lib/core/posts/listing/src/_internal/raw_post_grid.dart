@@ -207,17 +207,24 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                   ),
                 ),
           child: Scaffold(
-            extendBody: true,
-            floatingActionButton: ScrollToTop(
-              scrollController: _autoScrollController,
-              onBottomReached: () {
-                if (controller.pageMode == PageMode.infinite && hasMore) {
-                  widget.onLoadMore?.call();
-                  controller.fetchMore();
-                }
-              },
-              child: BooruScrollToTopButton(
-                onPressed: _onScrollToTop,
+            floatingActionButton: ValueListenableBuilder(
+              valueListenable: _multiSelectController.multiSelectNotifier,
+              builder: (_, multiSelect, __) => Padding(
+                padding: multiSelect
+                    ? const EdgeInsets.only(bottom: 48)
+                    : EdgeInsets.zero,
+                child: ScrollToTop(
+                  scrollController: _autoScrollController,
+                  onBottomReached: () {
+                    if (controller.pageMode == PageMode.infinite && hasMore) {
+                      widget.onLoadMore?.call();
+                      controller.fetchMore();
+                    }
+                  },
+                  child: BooruScrollToTopButton(
+                    onPressed: _onScrollToTop,
+                  ),
+                ),
               ),
             ),
             body: ConditionalParentWidget(
@@ -317,18 +324,12 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                           ),
                         ),
                       ),
-                      const SliverSizedBox(
-                        height: 4,
-                      ),
                       if (pageMode == PageMode.paginated)
                         ConditionalValueListenableBuilder(
                           valueListenable: refreshing,
                           useFalseChildAsCache: true,
                           falseChild: SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: widget.topPageIndicator,
-                            ),
+                            child: widget.topPageIndicator,
                           ),
                           trueChild: const SliverSizedBox.shrink(),
                         ),
@@ -363,7 +364,9 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                             ),
                           ),
                         ),
-                      const _SliverBottomGridPadding(),
+                      _SliverBottomGridPadding(
+                        multiSelectController: _multiSelectController,
+                      ),
                     ],
                   ),
                 ),
@@ -460,12 +463,21 @@ class _CustomScrollView extends StatelessWidget {
 }
 
 class _SliverBottomGridPadding extends StatelessWidget {
-  const _SliverBottomGridPadding();
+  const _SliverBottomGridPadding({
+    required this.multiSelectController,
+  });
+
+  final MultiSelectController<Post> multiSelectController;
 
   @override
   Widget build(BuildContext context) {
-    return SliverSizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom + 12,
+    return ValueListenableBuilder(
+      valueListenable: multiSelectController.multiSelectNotifier,
+      builder: (_, multiSelect, __) {
+        return SliverSizedBox(
+          height: multiSelect ? 36 : 0,
+        );
+      },
     );
   }
 }

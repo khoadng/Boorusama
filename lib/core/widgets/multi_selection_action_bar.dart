@@ -13,7 +13,7 @@ class MultiSelectionActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: 12,
+        top: 4,
       ),
       child: OverflowBar(
         alignment: MainAxisAlignment.center,

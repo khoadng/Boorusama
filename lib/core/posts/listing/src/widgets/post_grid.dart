@@ -117,7 +117,10 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                 );
 
                 return visibleAtTop
-                    ? _PageIndicator<T>()
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _PageIndicator<T>(),
+                      )
                     : const SizedBox.shrink();
               },
             ),

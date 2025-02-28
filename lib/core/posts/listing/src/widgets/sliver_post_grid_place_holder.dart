@@ -42,48 +42,53 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageGridAspectRatio = aspectRatio ?? 1;
     final perPage = postsPerPage ?? 20;
 
-    return Builder(
-      builder: (context) {
-        final crossAxisCount = calculateGridCount(
-          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
-          gridSize,
-        );
+    return SliverPadding(
+      padding: const EdgeInsets.only(
+        top: 8,
+      ),
+      sliver: Builder(
+        builder: (context) {
+          final crossAxisCount = calculateGridCount(
+            constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
+            gridSize,
+          );
 
-        return switch (imageListType) {
-          ImageListType.masonry => SliverMasonryGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: imageGridSpacing,
-              crossAxisSpacing: imageGridSpacing,
-              childCount: perPage,
-              addRepaintBoundaries: false,
-              addAutomaticKeepAlives: false,
-              addSemanticIndexes: false,
-              itemBuilder: (context, index) {
-                return createRandomPlaceholderContainer(
-                  context,
-                  borderRadius: imageBorderRadius,
-                );
-              },
-            ),
-          _ => SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: imageGridAspectRatio,
+          return switch (imageListType) {
+            ImageListType.masonry => SliverMasonryGrid.count(
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: imageGridSpacing,
                 crossAxisSpacing: imageGridSpacing,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, _) => ImagePlaceHolder(
-                  borderRadius: imageBorderRadius,
-                ),
                 childCount: perPage,
                 addRepaintBoundaries: false,
                 addAutomaticKeepAlives: false,
                 addSemanticIndexes: false,
+                itemBuilder: (context, index) {
+                  return createRandomPlaceholderContainer(
+                    context,
+                    borderRadius: imageBorderRadius,
+                  );
+                },
               ),
-            ),
-        };
-      },
+            _ => SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: imageGridAspectRatio,
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: imageGridSpacing,
+                  crossAxisSpacing: imageGridSpacing,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, _) => ImagePlaceHolder(
+                    borderRadius: imageBorderRadius,
+                  ),
+                  childCount: perPage,
+                  addRepaintBoundaries: false,
+                  addAutomaticKeepAlives: false,
+                  addSemanticIndexes: false,
+                ),
+              ),
+          };
+        },
+      ),
     );
   }
 }
