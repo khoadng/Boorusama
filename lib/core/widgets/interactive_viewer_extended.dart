@@ -135,6 +135,5 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
       CurveTween(curve: Curves.easeInOut).animate(_animationController),
     );
     _animationController.forward(from: 0);
-    _controller.value = endMatrix;
   }
 }
