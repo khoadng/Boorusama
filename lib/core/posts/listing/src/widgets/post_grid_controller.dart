@@ -37,7 +37,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     PageMode pageMode = PageMode.infinite,
     this.blacklistedUrlsFetcher,
   })  : _pageMode = pageMode,
-        _duplicateTracker = duplicateTracker;
+        _duplicateTracker = duplicateTracker,
+        _eventController = StreamController<PostControllerEvent>.broadcast();
 
   final PostGridFetcher<T> fetcher;
   PageMode _pageMode;
@@ -87,6 +88,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   final hasBlacklist = ValueNotifier(false);
 
   final errors = ValueNotifier<BooruError?>(null);
+
+  final StreamController<PostControllerEvent> _eventController;
+  Stream<PostControllerEvent> get events => _eventController.stream;
 
   Future<PostResult<T>> _refreshPosts() => _fetchPosts(_kFirstPage);
 
@@ -217,6 +221,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   }) async {
     if (_refreshing) return;
     _setRefreshing(true);
+    _eventController.add(const PostControllerRefreshStarted());
     _page = switch (_pageMode) {
       PageMode.infinite => _kFirstPage,
       PageMode.paginated => maintainPage ? _page : _kFirstPage,
@@ -238,6 +243,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _hasMore = newItems.posts.isNotEmpty;
     count.value = newItems.total;
     _setRefreshing(false);
+    _eventController.add(const PostControllerRefreshCompleted());
     notifyListeners();
   }
 
@@ -394,6 +400,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   @override
   void dispose() {
+    _eventController.close();
     _debounceTimer?.cancel();
 
     itemsNotifier.dispose();
@@ -470,4 +477,16 @@ Map<String, Set<int>> _countInIsolate<T extends Post>(
   } catch (e) {
     return {};
   }
+}
+
+abstract class PostControllerEvent {
+  const PostControllerEvent();
+}
+
+class PostControllerRefreshStarted extends PostControllerEvent {
+  const PostControllerRefreshStarted();
+}
+
+class PostControllerRefreshCompleted extends PostControllerEvent {
+  const PostControllerRefreshCompleted();
 }
