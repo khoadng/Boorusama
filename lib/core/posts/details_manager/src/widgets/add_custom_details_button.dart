@@ -18,7 +18,7 @@ class AddCustomDetailsButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 12,
+        horizontal: 16,
         vertical: 8,
       ),
       child: DottedBorderButton(

@@ -49,24 +49,36 @@ class SliverCharacterPostList extends ConsumerWidget {
             ),
           ),
           const SliverSizedBox(height: 4),
-          SliverGrid.count(
-            crossAxisCount: 2,
-            childAspectRatio: 4.5,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-            children: tags
-                .map(
-                  (tag) => BooruChip(
-                    borderRadius: BorderRadius.circular(4),
-                    color: ref.watch(tagColorProvider('character')),
-                    onPressed: () => goToCharacterPage(context, tag),
-                    label: Text(
-                      tag.replaceAll('_', ' '),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-                .toList(),
+          SliverLayoutBuilder(
+            builder: (_, constraints) {
+              return SliverGrid.count(
+                crossAxisCount: switch (constraints.crossAxisExtent) {
+                  >= 550 => 4,
+                  >= 450 => 3,
+                  _ => 2,
+                },
+                childAspectRatio: switch (constraints.crossAxisExtent) {
+                  >= 550 => 2.5,
+                  >= 450 => 3.5,
+                  _ => 4,
+                },
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                children: tags
+                    .map(
+                      (tag) => BooruChip(
+                        borderRadius: BorderRadius.circular(4),
+                        color: ref.watch(tagColorProvider('character')),
+                        onPressed: () => goToCharacterPage(context, tag),
+                        label: Text(
+                          tag.replaceAll('_', ' '),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                    .toList(),
+              );
+            },
           ),
         ],
       ),
