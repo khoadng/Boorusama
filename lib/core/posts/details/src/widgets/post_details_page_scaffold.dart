@@ -417,7 +417,10 @@ class _PostDetailPageScaffoldState<T extends Post>
               onTap: onItemTap,
               child: InteractiveViewerExtended(
                 controller: _transformController,
-                enable: !state.isExpanded,
+                enable: switch (state.isExpanded) {
+                  true => context.isLargeScreen,
+                  false => true,
+                },
                 onZoomUpdated: _controller.onZoomUpdated,
                 onTap: onItemTap,
                 onDoubleTap:
