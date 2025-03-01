@@ -124,6 +124,7 @@ class BooruRawImage extends StatelessWidget {
                   height: height,
                   fit: fit,
                   gaplessPlayback: gaplessPlayback,
+                  fetchStrategy: _fetchStrategy,
                   placeholderWidget: placeholderUrl.toOption().fold(
                         () => imagePlaceHolder,
                         (url) => Builder(
@@ -145,6 +146,7 @@ class BooruRawImage extends StatelessWidget {
                                     width: width,
                                     height: height,
                                     fit: fit,
+                                    fetchStrategy: _fetchStrategy,
                                     placeholderWidget: imagePlaceHolder,
                                   )
                                 : imagePlaceHolder;
@@ -161,6 +163,12 @@ class BooruRawImage extends StatelessWidget {
     );
   }
 }
+
+const _fetchStrategy = FetchStrategyBuilder(
+  initialPauseBetweenRetries: Duration(milliseconds: 500),
+  // Nothing we can do about it, just ignore the error to avoid spamming the logs
+  silent: true,
+);
 
 bool _shouldLoadPlaceholderUrl({
   required String placeholderUrl,
