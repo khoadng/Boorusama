@@ -46,6 +46,10 @@ class BooruImage extends ConsumerWidget {
     final imageQualitySettings = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageQuality),
     );
+    final fallbackAspectRatio = ref.watch(
+      imageListingSettingsProvider
+          .select((value) => value.imageGridAspectRatio),
+    );
 
     return BooruRawImage(
       dio: dio,
@@ -53,7 +57,7 @@ class BooruImage extends ConsumerWidget {
       placeholderUrl: placeholderUrl,
       borderRadius: borderRadius,
       fit: fit,
-      aspectRatio: aspectRatio,
+      aspectRatio: aspectRatio ?? fallbackAspectRatio,
       forceFill: forceFill,
       isLargeImage: imageQualitySettings != ImageQuality.low,
       forceLoadPlaceholder: forceLoadPlaceholder,
