@@ -10,6 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../foundation/display/media_query_utils.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
+import '../../../settings/settings.dart';
 import '../../details/routes.dart';
 import '../../listing/list.dart';
 import '../../post/post.dart';
@@ -154,14 +155,9 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
 
 SliverGridDelegate _getGridDelegate(double crossAxisExtent) {
   return SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: calculateGridCountFromParameters(
+    crossAxisCount: calculateGridCount(
       crossAxisExtent,
-      const GridParameters(
-        baseColumns: 3,
-        baseWidth: 400,
-        columnWidthIncrement: 70,
-        growthFactor: 0.6,
-      ),
+      GridSize.small,
     ),
     mainAxisSpacing: 4,
     crossAxisSpacing: 4,
