@@ -23,6 +23,7 @@ class TagSuggestionItems extends ConsumerWidget {
     this.borderRadius,
     this.elevation,
     this.emptyBuilder,
+    this.padding,
   }) : _tags = tags;
 
   // This is needed cause this one can be used outside of config scope
@@ -35,12 +36,12 @@ class TagSuggestionItems extends ConsumerWidget {
   final BorderRadiusGeometry? borderRadius;
   final double? elevation;
   final Widget Function()? emptyBuilder;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watchBooruBuilder(config);
     final tagSuggestionItemBuilder = booruBuilder?.tagSuggestionItemBuilder;
-    final viewPadding = MediaQuery.viewPaddingOf(context);
 
     return _tags.isNotEmpty
         ? Material(
@@ -49,9 +50,10 @@ class TagSuggestionItems extends ConsumerWidget {
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ).copyWith(bottom: viewPadding.bottom),
+              padding: padding ??
+                  const EdgeInsets.symmetric(
+                    horizontal: 12,
+                  ).copyWith(bottom: 16),
               itemCount: _tags.length,
               itemBuilder: (context, index) {
                 final tag = _tags[index];
