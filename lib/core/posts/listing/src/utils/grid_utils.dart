@@ -33,6 +33,10 @@ int calculateGridCount(double width, GridSize size) {
   );
 }
 
+int calculateGridCountFromParameters(double width, GridParameters parameters) {
+  return _calculateGridCount(width, parameters);
+}
+
 /// Parameters that control grid column calculation.
 class GridParameters {
   const GridParameters({
