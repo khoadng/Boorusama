@@ -784,13 +784,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           .where((e) => e != DownloadRecordStatus.completed)
           .toList();
 
-      final records = await _withRepo(
-        (repo) => repo.getRecordsBySessionIdAndStatuses(
-          sessionId,
-          nonCompletedStatuses,
-        ),
-      );
-
       await _withRepo(
         (repo) => repo.updateRecordsByStatus(
           sessionId,
@@ -799,9 +792,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         ),
       );
 
-      await downloader.cancelTasksWithIds(
-        records.map((e) => e.downloadId).nonNulls.toList(),
-      );
+      await downloader.cancelAll(sessionId);
     } catch (e) {
       state = state.copyWith(error: () => e);
     }
@@ -1061,9 +1052,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      final records =
-          await _withRepo((repo) => repo.getRecordsBySessionId(sessionId));
-
       await _updateSession(
         sessionId,
         status: DownloadSessionStatus.cancelled,
@@ -1078,9 +1066,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       );
 
       unawaited(
-        downloader.cancelTasksWithIds(
-          records.map((e) => e.downloadId).nonNulls.toList(),
-        ),
+        downloader.cancelAll(sessionId),
       );
 
       progressNotifier.removeSession(sessionId);

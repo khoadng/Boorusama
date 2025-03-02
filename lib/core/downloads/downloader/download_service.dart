@@ -107,7 +107,7 @@ abstract class DownloadService {
     Map<String, String>? headers,
   });
 
-  Future<bool> cancelTasksWithIds(List<String> ids);
+  Future<bool> cancelAll(String group);
 
   Future<void> pauseAll(String group);
 

@@ -246,7 +246,7 @@ class DummyDownloadService implements DownloadService {
   }
 
   @override
-  Future<bool> cancelTasksWithIds(List<String> ids) {
+  Future<bool> cancelAll(String group) {
     return Future.value(true);
   }
 

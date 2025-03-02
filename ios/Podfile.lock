@@ -400,7 +400,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  background_downloader: 3ca0e156ad83a9fc1c8300f5f7c38e94e2d0bf51
+  background_downloader: a05c77d32a0d70615b9c04577aa203535fc924ff
   bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
   connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
   cupertino_http: 1a3a0f163c1b26e7f1a293b33d476e0fde7a64ec
