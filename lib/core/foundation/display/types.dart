@@ -41,7 +41,7 @@ extension DisplayX on BuildContext {
 
   bool get isLargeScreen =>
       kPreferredLayout.isDesktop ||
-      (kPreferredLayout.isMobile && MediaQuery.sizeOf(this).width > 650);
+      (kPreferredLayout.isMobile && MediaQuery.sizeOf(this).width > 760);
 }
 
 extension OrientationX on Orientation {

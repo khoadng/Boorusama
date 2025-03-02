@@ -65,6 +65,9 @@ class _PostListConfigurationHeaderState
             horizontalTitleGap: 0,
             minVerticalPadding: 0,
             visualDensity: const ShrinkVisualDensity(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
         child: widget.hasBlacklist

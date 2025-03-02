@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
+import '../../downloads/urls.dart';
 import 'reporter.dart';
 
 void initializeErrorHandlers(ErrorReporter? reporter) {
@@ -51,9 +52,12 @@ ErrorCallback? onAsyncFlutterUncaughtError(
 ) =>
     (error, stack) {
       if (reporter.isRemoteErrorReportingSupported) {
-        // Ignore 304 errors
         if (error is DioException) {
+          // Ignore 304 errors
           if (error.response?.statusCode == 304) return true;
+          // Ignore image loading errors
+          final uri = error.requestOptions.uri.toString();
+          if (_isImageUrl(uri)) return true;
         }
 
         reporter.recordError(error, stack);
@@ -61,3 +65,15 @@ ErrorCallback? onAsyncFlutterUncaughtError(
 
       return true;
     };
+
+const _kExtensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'};
+
+bool _isImageUrl(String url) {
+  final ext = sanitizedExtension(url);
+
+  if (ext.isEmpty) return false;
+
+  final effectiveExt = !ext.startsWith('.') ? '.$ext' : ext;
+
+  return _kExtensions.contains(effectiveExt.toLowerCase());
+}

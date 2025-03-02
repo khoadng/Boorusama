@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -18,7 +19,6 @@ import '../widgets/sliver_post_grid_place_holder.dart';
 
 class SliverPostGrid<T extends Post> extends StatelessWidget {
   const SliverPostGrid({
-    required this.constraints,
     required this.postController,
     required this.itemBuilder,
     super.key,
@@ -31,7 +31,6 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
     this.postsPerPage,
   });
 
-  final BoxConstraints? constraints;
   final PostGridController<T> postController;
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
@@ -127,21 +126,25 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
             );
           }
 
-          return ValueListenableBuilder(
-            valueListenable: postController.refreshingNotifier,
-            builder: (_, refreshing, __) {
-              return refreshing
-                  ? SliverPostGridPlaceHolder(
-                      constraints: constraints,
-                      padding: padding,
-                      listType: listType,
-                      size: size,
-                      spacing: spacing,
-                      aspectRatio: aspectRatio,
-                      borderRadius: borderRadius,
-                      postsPerPage: postsPerPage,
-                    )
-                  : _buildGrid(context);
+          return SliverLayoutBuilder(
+            builder: (context, constraints) {
+              return ValueListenableBuilder(
+                valueListenable: postController.refreshingNotifier,
+                builder: (_, refreshing, __) {
+                  return refreshing
+                      ? SliverPostGridPlaceHolder(
+                          constraints: constraints,
+                          padding: padding,
+                          listType: listType,
+                          size: size,
+                          spacing: spacing,
+                          aspectRatio: aspectRatio,
+                          borderRadius: borderRadius,
+                          postsPerPage: postsPerPage,
+                        )
+                      : _buildGrid(context, constraints);
+                },
+              );
             },
           );
         },
@@ -151,12 +154,15 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
 
   void _onErrorRetry() => postController.refresh();
 
-  Widget _buildGrid(BuildContext context) {
+  Widget _buildGrid(
+    BuildContext context,
+    SliverConstraints? constraints,
+  ) {
     return ValueListenableBuilder(
       valueListenable: postController.itemsNotifier,
       builder: (_, data, __) {
         final crossAxisCount = calculateGridCount(
-          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
+          constraints?.crossAxisExtent ?? MediaQuery.sizeOf(context).width,
           size ?? GridSize.normal,
         );
         final imageListType = listType ?? ImageListType.standard;

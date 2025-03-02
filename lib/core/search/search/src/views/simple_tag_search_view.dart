@@ -154,6 +154,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                       config: config,
                       backgroundColor: Theme.of(context).colorScheme.surface,
                       tags: tags,
+                      padding: EdgeInsets.zero,
                       onItemTap: (tag) {
                         if (isMultiple) {
                           textEditingController.text = textEditingController
