@@ -40,6 +40,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
         return !multiSelect
             ? Container(
                 width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: context.extendedColorScheme.surfaceContainerOverlay,
