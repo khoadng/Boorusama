@@ -61,9 +61,6 @@ jobs:
           bash lib/core/firebase/flutterfire-config.sh dev
           bash lib/core/firebase/flutterfire-config.sh prod
 
-#          flutterfire configure --token=$FIREBASE_TOKEN --yes --platforms=ios --project=boorusama-dev --out=lib/core/firebase/firebase_options_dev.dart --ios-build-config=Release-dev --ios-bundle-id=com.degenk.boorusama.dev --ios-out=ios/flavors/dev/GoogleService-Info.plist
-#          flutterfire configure --token=$FIREBASE_TOKEN --yes --platforms=ios --project=boorusama-40f9d --out=lib/core/firebase/firebase_options_prod.dart --ios-build-config=Release-prod --ios-bundle-id=com.degenk.boorusama --ios-out=ios/flavors/prod/GoogleService-Info.plist
-
       - name: Build
         run: |
           flutter build ios --release --no-codesign --flavor dev --dart-define-from-file env/dev.json -t lib/main.dart -v

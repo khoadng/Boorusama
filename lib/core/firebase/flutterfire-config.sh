@@ -33,7 +33,7 @@ ANDROID_ARGS="--android-package-name=${APP_ID} --android-out=android/app/src/${F
 ARGS=""
 
 # if CI_PLATFORMS is set, use it to determine the platform
-# comma separated list of platforms
+# example: CI_PLATFORMS=ios,android
 if [[ -n $CI_PLATFORMS ]]; then
   ARGS="--token=$FIREBASE_TOKEN --yes --platforms=$CI_PLATFORMS"
   for platform in $(echo $CI_PLATFORMS | tr "," "\n"); do
