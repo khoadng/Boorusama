@@ -11,9 +11,9 @@ int calculateGridCount(double width, GridSize size) {
 
 int _getSmallGridColumns(double width) {
   return switch (width) {
-    < 400 => 3,
-    < 500 => 4,
-    < 600 => 5,
+    < 500 => 3,
+    < 600 => 4,
+    < 700 => 5,
     < 800 => 6,
     < 1000 => 7,
     < 1200 => 8,
@@ -28,8 +28,8 @@ int _getSmallGridColumns(double width) {
 
 int _getNormalGridColumns(double width) {
   return switch (width) {
-    < 400 => 2,
-    < 550 => 3,
+    < 500 => 2,
+    < 600 => 3,
     < 700 => 4,
     < 950 => 5,
     < 1300 => 6,
@@ -43,8 +43,8 @@ int _getNormalGridColumns(double width) {
 
 int _getLargeGridColumns(double width) {
   return switch (width) {
-    < 400 => 1,
-    < 650 => 2,
+    < 500 => 1,
+    < 700 => 2,
     < 900 => 3,
     < 1400 => 4,
     < 1900 => 5,
