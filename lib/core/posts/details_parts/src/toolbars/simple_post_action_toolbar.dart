@@ -119,12 +119,9 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: OverflowBar(
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: children,
-      ),
+    return OverflowBar(
+      alignment: MainAxisAlignment.spaceEvenly,
+      children: children,
     );
   }
 }

@@ -53,8 +53,8 @@ class _ArtistSectionState extends State<ArtistSection> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
+      padding: const EdgeInsets.only(
+        bottom: 8,
       ),
       child: Wrap(
         children: [

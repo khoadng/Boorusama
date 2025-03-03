@@ -74,7 +74,7 @@ class InformationSection extends ConsumerWidget {
     return Padding(
       padding: padding ??
           const EdgeInsets.only(
-            top: 12,
+            top: 4,
             bottom: 4,
             left: 12,
             right: 12,
