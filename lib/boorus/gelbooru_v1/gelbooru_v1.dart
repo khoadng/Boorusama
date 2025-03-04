@@ -160,7 +160,7 @@ class GelbooruV1Repository implements BooruRepository {
 
   @override
   BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
-    return GlobalBlacklistTagRefRepository(ref);
+    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
   }
 
   @override

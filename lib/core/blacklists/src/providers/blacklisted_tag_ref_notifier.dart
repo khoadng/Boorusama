@@ -23,7 +23,7 @@ final blacklistTagsRefRepoProvider =
       return blacklistTagRefRepo;
     }
 
-    return GlobalBlacklistTagRefRepository(ref);
+    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
   },
 );
 
@@ -45,9 +45,17 @@ class BlacklistedTagsNotifier
   @override
   FutureOr<BlacklistedTagsState> build(BooruConfigAuth arg) async {
     final repo = ref.watch(blacklistTagsRefRepoProvider(arg));
-    final tags = await repo.getBlacklistedTags(arg);
+    final booruSpecificBlacklistedTags = await repo.getBlacklistedTags(arg);
 
-    return BlacklistedTagsState(tags: tags);
+    final globalBlacklistedTags =
+        ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
+
+    return BlacklistedTagsState(
+      tags: {
+        ...globalBlacklistedTags,
+        ...booruSpecificBlacklistedTags,
+      },
+    );
   }
 }
 
@@ -63,17 +71,15 @@ final blacklistTagsProvider = FutureProvider.autoDispose
       .then((value) => value.tags);
 });
 
-class GlobalBlacklistTagRefRepository implements BlacklistTagRefRepository {
-  GlobalBlacklistTagRefRepository(this.ref);
+class EmptyBooruSpecificBlacklistTagRefRepository
+    implements BlacklistTagRefRepository {
+  EmptyBooruSpecificBlacklistTagRefRepository(this.ref);
 
   @override
   final Ref ref;
 
   @override
   Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
-    final globalBlacklistedTags =
-        ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
-
-    return globalBlacklistedTags;
+    return {};
   }
 }

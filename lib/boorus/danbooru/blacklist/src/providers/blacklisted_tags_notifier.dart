@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/blacklist.dart';
-import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/boorus/booru/booru.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/current.dart';
@@ -143,11 +142,9 @@ class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
   Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
     final currentUser =
         await ref.watch(danbooruCurrentUserProvider(config).future);
-    final globalBlacklistedTags =
-        ref.watch(globalBlacklistedTagsProvider).map((e) => e.name);
 
     if (currentUser == null) {
-      return globalBlacklistedTags.toSet();
+      return {};
     }
 
     final danbooruBlacklistedTags =
@@ -156,7 +153,6 @@ class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
     final censoredTagsBanned = booru.hasCensoredTagsBanned(config.url) ?? false;
 
     return {
-      ...globalBlacklistedTags,
       if (danbooruBlacklistedTags != null) ...danbooruBlacklistedTags,
       if (!isUnverified &&
           censoredTagsBanned &&
