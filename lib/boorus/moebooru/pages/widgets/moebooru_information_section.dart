@@ -48,6 +48,7 @@ class MoebooruInformationSection extends ConsumerWidget {
                   context,
                   artist,
                 ),
+                showSource: true,
               );
             },
             orElse: () => const SizedBox.shrink(),
