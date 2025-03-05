@@ -128,17 +128,8 @@ class BackgroundDownloader implements DownloadService {
   }
 
   @override
-  Future<void> resumeAll(String group) async {
-    final tasks = await FileDownloader().allTasks(
-      group: group,
-    );
-
-    final taskFutures = tasks
-        .whereType<DownloadTask>()
-        .map((task) => FileDownloader().resume(task))
-        .toList();
-
-    await Future.wait(taskFutures);
+  Future<void> resumeAll(String group) {
+    return FileDownloader().resumeAll(group: group);
   }
 }
 
