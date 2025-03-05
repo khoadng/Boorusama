@@ -32,6 +32,21 @@ class FileDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fileSizeText = post.fileSize > 0
+        ? ' • ${Filesize.parse(post.fileSize, round: 1)}'
+        : '';
+
+    final resolutionText = post.width > 0 && post.height > 0
+        ? '${post.width.toInt()}x${post.height.toInt()} • '
+        : '';
+
+    // if start with a dot, remove it
+    final fileFormatText = post.format.startsWith('.')
+        ? post.format.substring(1).toUpperCase()
+        : post.format.toUpperCase();
+
+    final ratingText = rating.name.getFirstCharacter().toUpperCase();
+
     return DetailsWidgetSeparator(
       child: Theme(
         data: Theme.of(context).copyWith(
@@ -44,124 +59,79 @@ class FileDetailsSection extends StatelessWidget {
           dividerColor: Colors.transparent,
         ),
         child: RemoveLeftPaddingOnLargeScreen(
-          child: _buildTile(),
+          child: ExpansionTile(
+            initiallyExpanded: initialExpanded,
+            title: Text(
+              'post.detail.file_details'.tr(),
+            ),
+            subtitle: Text(
+              '$resolutionText$fileFormatText$fileSizeText • $ratingText',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.hintColor,
+              ),
+            ),
+            children: [
+              const SizedBox(height: 16),
+              FileDetailTile(
+                title: 'ID',
+                valueLabel: post.id.toString(),
+                valueTrailing: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    child: const Icon(
+                      Symbols.content_copy,
+                      size: 18,
+                    ),
+                    onTap: () {
+                      AppClipboard.copyWithDefaultToast(
+                        context,
+                        post.id.toString(),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              FileDetailTile(
+                title: 'post.detail.rating'.tr(),
+                valueLabel: rating.name.pascalCase,
+              ),
+              if (post.fileSize > 0)
+                FileDetailTile(
+                  title: 'post.detail.size'.tr(),
+                  valueLabel: Filesize.parse(post.fileSize, round: 1),
+                ),
+              if (post.width > 0 && post.height > 0)
+                FileDetailTile(
+                  title: 'post.detail.resolution'.tr(),
+                  valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
+                ),
+              FileDetailTile(
+                title: 'post.detail.file_format'.tr(),
+                valueLabel: post.format,
+              ),
+              if (post.isVideo && post.duration > 0)
+                FileDetailTile(
+                  title: 'Duration',
+                  valueLabel: '${post.duration.toInt()} seconds',
+                ),
+              if (uploader != null)
+                FileDetailTile(
+                  title: 'Uploader',
+                  value: uploader,
+                ),
+              if (customDetails != null) ...[
+                for (final detail in customDetails!.entries)
+                  FileDetailTile(
+                    title: detail.key,
+                    value: detail.value,
+                  ),
+              ],
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTile() {
-    return LayoutBuilder(
-      builder: (context, contraints) {
-        final fileSizeText = post.fileSize > 0
-            ? ' • ${Filesize.parse(post.fileSize, round: 1)}'
-            : '';
-
-        final resolutionText = post.width > 0 && post.height > 0
-            ? '${post.width.toInt()}x${post.height.toInt()} • '
-            : '';
-
-        // if start with a dot, remove it
-        final fileFormatText = post.format.startsWith('.')
-            ? post.format.substring(1).toUpperCase()
-            : post.format.toUpperCase();
-
-        final ratingText = rating.name.getFirstCharacter().toUpperCase();
-
-        final children = [
-          FileDetailTile(
-            title: 'ID',
-            valueLabel: post.id.toString(),
-            valueTrailing: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                child: const Icon(
-                  Symbols.content_copy,
-                  size: 18,
-                ),
-                onTap: () {
-                  AppClipboard.copyWithDefaultToast(
-                    context,
-                    post.id.toString(),
-                  );
-                },
-              ),
-            ),
-          ),
-          FileDetailTile(
-            title: 'post.detail.rating'.tr(),
-            valueLabel: rating.name.pascalCase,
-          ),
-          if (post.fileSize > 0)
-            FileDetailTile(
-              title: 'post.detail.size'.tr(),
-              valueLabel: Filesize.parse(post.fileSize, round: 1),
-            ),
-          if (post.width > 0 && post.height > 0)
-            FileDetailTile(
-              title: 'post.detail.resolution'.tr(),
-              valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
-            ),
-          FileDetailTile(
-            title: 'post.detail.file_format'.tr(),
-            valueLabel: post.format,
-          ),
-          if (post.isVideo && post.duration > 0)
-            FileDetailTile(
-              title: 'Duration',
-              valueLabel: '${post.duration.toInt()} seconds',
-            ),
-          if (uploader != null)
-            FileDetailTile(
-              title: 'Uploader',
-              value: uploader,
-            ),
-          if (customDetails != null) ...[
-            for (final detail in customDetails!.entries)
-              FileDetailTile(
-                title: detail.key,
-                value: detail.value,
-              ),
-          ],
-        ];
-
-        return ExpansionTile(
-          initiallyExpanded: initialExpanded,
-          title: Text(
-            'post.detail.file_details'.tr(),
-          ),
-          subtitle: Text(
-            '$resolutionText$fileFormatText$fileSizeText • $ratingText',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.hintColor,
-            ),
-          ),
-          children: contraints.maxWidth < 480
-              ? children
-              : [
-                  const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children:
-                              children.sublist(0, (children.length / 2).ceil()),
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children:
-                              children.sublist((children.length / 2).ceil()),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-        );
-      },
     );
   }
 }

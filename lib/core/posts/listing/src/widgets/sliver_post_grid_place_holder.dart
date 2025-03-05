@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +24,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     this.postsPerPage,
   });
 
-  final SliverConstraints? constraints;
+  final BoxConstraints? constraints;
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
   final GridSize? size;
@@ -46,7 +45,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     return Builder(
       builder: (context) {
         final crossAxisCount = calculateGridCount(
-          constraints?.crossAxisExtent ?? MediaQuery.sizeOf(context).width,
+          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
           gridSize,
         );
 

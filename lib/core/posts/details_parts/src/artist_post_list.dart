@@ -89,33 +89,35 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverLayoutBuilder(
-      builder: (_, constraints) => SliverGrid.builder(
-        itemCount: posts.length,
-        gridDelegate: _getGridDelegate(constraints.crossAxisExtent),
-        itemBuilder: (context, index) {
-          final post = posts[index];
-
-          return ImageGridItem(
-            isGif: post.isGif,
-            isAI: post.isAI,
-            onTap: () => goToPostDetailsPageFromPosts(
-              context: context,
-              posts: posts,
-              initialIndex: index,
-              initialThumbnailUrl: post.thumbnailImageUrl,
-            ),
-            isAnimated: post.isAnimated,
-            isTranslated: post.isTranslated,
-            image: BooruImage(
-              forceFill: true,
-              imageUrl: imageUrl(post),
-              placeholderUrl: post.thumbnailImageUrl,
-              fit: BoxFit.cover,
-            ),
-          );
-        },
+    return SliverGrid.builder(
+      itemCount: posts.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
       ),
+      itemBuilder: (context, index) {
+        final post = posts[index];
+
+        return ImageGridItem(
+          isGif: post.isGif,
+          isAI: post.isAI,
+          onTap: () => goToPostDetailsPageFromPosts(
+            context: context,
+            posts: posts,
+            initialIndex: index,
+            initialThumbnailUrl: post.thumbnailImageUrl,
+          ),
+          isAnimated: post.isAnimated,
+          isTranslated: post.isTranslated,
+          image: BooruImage(
+            forceFill: true,
+            imageUrl: imageUrl(post),
+            placeholderUrl: post.thumbnailImageUrl,
+            fit: BoxFit.cover,
+          ),
+        );
+      },
     );
   }
 }
@@ -130,35 +132,25 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverLayoutBuilder(
-      builder: (_, constraints) => SliverGrid.builder(
-        itemCount: itemCount,
-        addRepaintBoundaries: false,
-        addSemanticIndexes: false,
-        addAutomaticKeepAlives: false,
-        gridDelegate: _getGridDelegate(constraints.crossAxisExtent),
-        itemBuilder: (context, index) => Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .surfaceContainerHigh
-                .withValues(alpha: 0.5),
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-          ),
+    return SliverGrid.builder(
+      itemCount: itemCount,
+      addRepaintBoundaries: false,
+      addSemanticIndexes: false,
+      addAutomaticKeepAlives: false,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+      ),
+      itemBuilder: (context, index) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHigh
+              .withValues(alpha: 0.5),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),
     );
   }
-}
-
-SliverGridDelegate _getGridDelegate(double crossAxisExtent) {
-  return SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: switch (crossAxisExtent) {
-      >= 700 => 5,
-      >= 500 => 4,
-      _ => 3,
-    },
-    mainAxisSpacing: 4,
-    crossAxisSpacing: 4,
-  );
 }
