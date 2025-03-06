@@ -634,7 +634,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             return !post.isVideo
                 ? DecoratedSliver(
                     decoration: decoration,
-                    sliver: multiSliver,
+                    sliver: SliverPadding(
+                      padding: const EdgeInsets.only(top: 8),
+                      sliver: multiSliver,
+                    ),
                   )
                 : multiSliver;
           },
