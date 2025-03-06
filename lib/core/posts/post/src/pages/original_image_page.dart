@@ -185,23 +185,13 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   }
 
   Widget _buildImage() {
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
-
-    return InteractiveViewerExtended(
+    return _ImageViewer(
+      imageUrl: widget.imageUrl,
       onZoomUpdated: (value) {
         setState(() {
           zoom = value;
         });
       },
-      child: ExtendedImage.network(
-        widget.imageUrl,
-        dio: dio,
-        headers: {
-          ...ref.watch(extraHttpHeaderProvider(config)),
-          ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-        },
-      ),
     );
   }
 
@@ -213,5 +203,58 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     } else {
       hideSystemStatus();
     }
+  }
+}
+
+class _ImageViewer extends ConsumerStatefulWidget {
+  const _ImageViewer({
+    required this.imageUrl,
+    required this.onZoomUpdated,
+  });
+
+  final String imageUrl;
+  final void Function(bool) onZoomUpdated;
+
+  @override
+  ConsumerState<_ImageViewer> createState() => __ImageViewerState();
+}
+
+class __ImageViewerState extends ConsumerState<_ImageViewer> {
+  final _controller = ExtendedImageController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
+    final dio = ref.watch(dioProvider(config));
+
+    return InteractiveViewerExtended(
+      onZoomUpdated: widget.onZoomUpdated,
+      child: ExtendedImage.network(
+        widget.imageUrl,
+        dio: dio,
+        controller: _controller,
+        headers: {
+          ...ref.watch(extraHttpHeaderProvider(config)),
+          ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
+        },
+        placeholderWidget: ValueListenableBuilder(
+          valueListenable: _controller.progress,
+          builder: (context, progress, child) {
+            return Center(
+              child: CircularProgressIndicator(
+                value: progress,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

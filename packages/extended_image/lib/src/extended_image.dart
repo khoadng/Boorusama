@@ -399,6 +399,12 @@ class _ExtendedImageState extends State<ExtendedImage>
       _imageStreamListener = ImageStreamListener(
         _handleImageFrame,
         onError: _loadFailed,
+        onChunk: (event) {
+          _controller.updateBytesLoaded(
+            event.cumulativeBytesLoaded,
+            event.expectedTotalBytes,
+          );
+        },
       );
     }
     return _imageStreamListener!;
@@ -529,9 +535,30 @@ class ExtendedImageController extends ChangeNotifier {
   final LoadState initialLoadState;
   late final loadState = ValueNotifier(initialLoadState);
   late final imageInfo = ValueNotifier<ImageInfo?>(null);
+  late final progress = ValueNotifier<double?>(null);
+
+  final _cumulativeBytesLoaded = ValueNotifier<int?>(null);
+  final _expectedTotalBytes = ValueNotifier<int?>(null);
+
+  int? get cumulativeBytesLoaded => _cumulativeBytesLoaded.value;
+  int? get expectedTotalBytes => _expectedTotalBytes.value;
+
+  void updateBytesLoaded(int loaded, int? total) {
+    _cumulativeBytesLoaded.value = loaded;
+    _expectedTotalBytes.value = total;
+
+    if (total != null && total > 0) {
+      progress.value = loaded / total;
+    }
+  }
 
   void changeLoadState(LoadState state) {
     loadState.value = state;
+    if (state != LoadState.loading) {
+      _cumulativeBytesLoaded.value = null;
+      _expectedTotalBytes.value = null;
+      progress.value = null;
+    }
   }
 
   void clearImage() {
@@ -565,7 +592,9 @@ class ExtendedImageController extends ChangeNotifier {
   void dispose() {
     clearImage();
     loadState.dispose();
-
+    progress.dispose();
+    _cumulativeBytesLoaded.dispose();
+    _expectedTotalBytes.dispose();
     super.dispose();
   }
 }
