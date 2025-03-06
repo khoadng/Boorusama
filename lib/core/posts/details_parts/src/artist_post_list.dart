@@ -11,6 +11,7 @@ import '../../../foundation/display/media_query_utils.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../details/routes.dart';
+import '../../details/widgets.dart';
 import '../../post/post.dart';
 import '../../post/tags.dart';
 import '../../post/widgets.dart';
@@ -89,33 +90,33 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverLayoutBuilder(
-      builder: (_, constraints) => SliverGrid.builder(
-        itemCount: posts.length,
-        gridDelegate: _getGridDelegate(constraints.crossAxisExtent),
-        itemBuilder: (context, index) {
-          final post = posts[index];
+    final constraints = PostDetailsSheetConstraints.of(context);
 
-          return ImageGridItem(
-            isGif: post.isGif,
-            isAI: post.isAI,
-            onTap: () => goToPostDetailsPageFromPosts(
-              context: context,
-              posts: posts,
-              initialIndex: index,
-              initialThumbnailUrl: post.thumbnailImageUrl,
-            ),
-            isAnimated: post.isAnimated,
-            isTranslated: post.isTranslated,
-            image: BooruImage(
-              forceFill: true,
-              imageUrl: imageUrl(post),
-              placeholderUrl: post.thumbnailImageUrl,
-              fit: BoxFit.cover,
-            ),
-          );
-        },
-      ),
+    return SliverGrid.builder(
+      itemCount: posts.length,
+      gridDelegate: _getGridDelegate(constraints?.maxWidth),
+      itemBuilder: (context, index) {
+        final post = posts[index];
+
+        return ImageGridItem(
+          isGif: post.isGif,
+          isAI: post.isAI,
+          onTap: () => goToPostDetailsPageFromPosts(
+            context: context,
+            posts: posts,
+            initialIndex: index,
+            initialThumbnailUrl: post.thumbnailImageUrl,
+          ),
+          isAnimated: post.isAnimated,
+          isTranslated: post.isTranslated,
+          image: BooruImage(
+            forceFill: true,
+            imageUrl: imageUrl(post),
+            placeholderUrl: post.thumbnailImageUrl,
+            fit: BoxFit.cover,
+          ),
+        );
+      },
     );
   }
 }
@@ -130,34 +131,38 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverLayoutBuilder(
-      builder: (_, constraints) => SliverGrid.builder(
-        itemCount: itemCount,
-        addRepaintBoundaries: false,
-        addSemanticIndexes: false,
-        addAutomaticKeepAlives: false,
-        gridDelegate: _getGridDelegate(constraints.crossAxisExtent),
-        itemBuilder: (context, index) => Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .surfaceContainerHigh
-                .withValues(alpha: 0.5),
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-          ),
+    final constraints = PostDetailsSheetConstraints.of(context);
+
+    return SliverGrid.builder(
+      itemCount: itemCount,
+      addRepaintBoundaries: false,
+      addSemanticIndexes: false,
+      addAutomaticKeepAlives: false,
+      gridDelegate: _getGridDelegate(constraints?.maxWidth),
+      itemBuilder: (context, index) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHigh
+              .withValues(alpha: 0.5),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),
     );
   }
 }
 
-SliverGridDelegate _getGridDelegate(double crossAxisExtent) {
+SliverGridDelegate _getGridDelegate(double? width) {
+  final crossAxisCount = width != null
+      ? switch (width) {
+          >= 700 => 5,
+          >= 500 => 4,
+          _ => 3,
+        }
+      : 3;
+
   return SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: switch (crossAxisExtent) {
-      >= 700 => 5,
-      >= 500 => 4,
-      _ => 3,
-    },
+    crossAxisCount: crossAxisCount,
     mainAxisSpacing: 4,
     crossAxisSpacing: 4,
   );

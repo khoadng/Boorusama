@@ -104,20 +104,45 @@ class RawPostDetailsInfoSheet extends StatelessWidget {
     return ScrollConfiguration(
       // We need the overscroll notifications for closing/collapsing the sheet
       behavior: const MaterialScrollBehavior(),
-      child: CustomScrollView(
-        controller: scrollController,
-        physics: const AlwaysScrollableScrollPhysics(
-          parent: ClampingScrollPhysics(),
-        ),
-        slivers: [
-          const SliverSizedBox(height: 16),
-          ...slivers,
-          SliverSizedBox(
-            height: MediaQuery.paddingOf(context).bottom,
+      child: LayoutBuilder(
+        builder: (context, constraints) => PostDetailsSheetConstraints(
+          maxWidth: constraints.maxWidth,
+          child: CustomScrollView(
+            controller: scrollController,
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: ClampingScrollPhysics(),
+            ),
+            slivers: [
+              const SliverSizedBox(height: 16),
+              ...slivers,
+              SliverSizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
+  }
+}
+
+class PostDetailsSheetConstraints extends InheritedWidget {
+  const PostDetailsSheetConstraints({
+    required this.maxWidth,
+    required super.child,
+    super.key,
+  });
+
+  static PostDetailsSheetConstraints? of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<PostDetailsSheetConstraints>();
+  }
+
+  final double maxWidth;
+
+  @override
+  bool updateShouldNotify(covariant PostDetailsSheetConstraints oldWidget) {
+    return maxWidth != oldWidget.maxWidth;
   }
 }
 
