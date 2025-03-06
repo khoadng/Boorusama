@@ -446,6 +446,23 @@ class BooruConfigSearch extends Equatable {
   List<Object?> get props => [filter, auth];
 }
 
+class BooruConfigFilter extends Equatable {
+  const BooruConfigFilter({
+    required this.auth,
+  });
+
+  factory BooruConfigFilter.fromConfig(BooruConfig config) {
+    return BooruConfigFilter(
+      auth: BooruConfigAuth.fromConfig(config),
+    );
+  }
+
+  final BooruConfigAuth auth;
+
+  @override
+  List<Object?> get props => [auth];
+}
+
 mixin BooruConfigAuthMixin {
   int? get booruIdHint;
   int get booruId;
@@ -502,6 +519,7 @@ extension BooruConfigX on BooruConfig {
 
   BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
   BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
+  BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
 
   bool get autoFetchNotes =>
       viewerNotesFetchBehavior == BooruConfigViewerNotesFetchBehavior.auto;

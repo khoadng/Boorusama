@@ -18,7 +18,7 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
       .watch(danbooruPostRepoProvider(config))
       .getPostsFromTagWithBlacklist(
         tag: tag,
-        blacklist: ref.watch(blacklistTagsProvider(config.auth).future),
+        blacklist: ref.watch(currentBlacklistTagsProvider.future),
       );
 
   posts.removeWhere((e) => e.isBanned);
@@ -36,7 +36,7 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
       .watch(danbooruPostRepoProvider(config))
       .getPostsFromTagWithBlacklist(
         tag: post.relationshipQuery,
-        blacklist: ref.watch(blacklistTagsProvider(config.auth).future),
+        blacklist: ref.watch(currentBlacklistTagsProvider.future),
         softLimit: null,
       );
 });

@@ -41,6 +41,12 @@ final currentReadOnlyBooruConfigSearchProvider = Provider<BooruConfigSearch>(
   name: 'currentReadOnlyBooruConfigSearchProvider',
 );
 
+final currentReadOnlyBooruConfigFilterProvider = Provider<BooruConfigFilter>(
+  (ref) =>
+      ref.watch(currentBooruConfigProvider.select((value) => value.filter)),
+  name: 'currentReadOnlyBooruConfigFilterProvider',
+);
+
 final currentReadOnlyBooruConfigGestureProvider = Provider<PostGestureConfig?>(
   (ref) => ref
       .watch(currentBooruConfigProvider.select((value) => value.postGestures)),

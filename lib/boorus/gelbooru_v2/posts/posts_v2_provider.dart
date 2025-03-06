@@ -50,7 +50,7 @@ final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
       .watch(gelbooruV2PostRepoProvider(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: post.relationshipQuery,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
+        blacklist: ref.watch(currentBlacklistTagsProvider.future),
       );
 });
 

@@ -122,7 +122,8 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfigAuth;
+    final configFilter = ref.watchConfigFilter;
+    final config = configFilter.auth;
 
     final userId = ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
           data: (user) => user?.id,
@@ -130,7 +131,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         );
 
     ref.listen(
-      trendingTagsProvider(config),
+      trendingTagsProvider(configFilter),
       (previous, next) {
         // Only used to prevent the provider from being disposed
       },

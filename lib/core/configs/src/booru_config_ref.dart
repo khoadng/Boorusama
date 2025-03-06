@@ -24,6 +24,12 @@ extension BooruWidgetRef on WidgetRef {
   BooruConfigSearch get watchConfigSearch =>
       watch(currentReadOnlyBooruConfigSearchProvider);
 
+  BooruConfigFilter get readConfigFilter =>
+      read(currentReadOnlyBooruConfigFilterProvider);
+
+  BooruConfigFilter get watchConfigFilter =>
+      watch(currentReadOnlyBooruConfigFilterProvider);
+
   PostGestureConfig? get watchPostGestures =>
       watch(currentReadOnlyBooruConfigGestureProvider);
 
@@ -50,6 +56,12 @@ extension BooruAutoDisposeProviderRef<T> on Ref<T> {
 
   BooruConfigSearch get watchConfigSearch =>
       watch(currentReadOnlyBooruConfigSearchProvider);
+
+  BooruConfigFilter get readConfigFilter =>
+      read(currentReadOnlyBooruConfigFilterProvider);
+
+  BooruConfigFilter get watchConfigFilter =>
+      watch(currentReadOnlyBooruConfigFilterProvider);
 
   LayoutConfigs? get readLayoutConfigs =>
       read(currentReadOnlyBooruConfigLayoutProvider);

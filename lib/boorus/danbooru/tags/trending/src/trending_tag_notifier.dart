@@ -15,19 +15,19 @@ import 'search.dart';
 import 'trending_tag_provider.dart';
 
 final trendingTagsProvider = AsyncNotifierProvider.autoDispose
-    .family<TrendingTagNotifier, List<Search>, BooruConfigAuth>(
+    .family<TrendingTagNotifier, List<Search>, BooruConfigFilter>(
   TrendingTagNotifier.new,
 );
 
 class TrendingTagNotifier
-    extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfigAuth> {
+    extends AutoDisposeFamilyAsyncNotifier<List<Search>, BooruConfigFilter> {
   @override
-  FutureOr<List<Search>> build(BooruConfigAuth arg) {
+  FutureOr<List<Search>> build(BooruConfigFilter arg) {
     return fetch();
   }
 
   PopularSearchRepository get popularSearchRepository =>
-      ref.read(popularSearchProvider(arg));
+      ref.read(popularSearchProvider(arg.auth));
 
   Future<List<Search>> fetch() async {
     final bl = await ref.read(blacklistTagsProvider(arg).future);
@@ -48,12 +48,12 @@ class TrendingTagNotifier
         searches.where((s) => !excludedTags.contains(s.keyword)).toList();
 
     final tags = await ref
-        .read(tagRepoProvider(arg))
+        .read(tagRepoProvider(arg.auth))
         .getTagsByName(filtered.map((e) => e.keyword).toSet(), 1);
 
     await ref
         .read(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(arg.booruType, tags);
+        .saveTagIfNotExist(arg.auth.booruType, tags);
 
     return filtered;
   }

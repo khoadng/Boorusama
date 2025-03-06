@@ -21,7 +21,7 @@ class TrendingSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
+    final config = ref.watchConfigFilter;
 
     return ref.watch(top15TrendingTagsProvider(config)).when(
           data: (tags) => Column(

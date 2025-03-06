@@ -53,7 +53,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                 ),
                 child: Consumer(
                   builder: (_, ref, __) {
-                    final config = ref.watchConfigAuth;
+                    final config = ref.watchConfigFilter;
                     final blacklistEntries = ref
                         .watch(blacklistTagEntriesProvider(config))
                         .valueOrNull;
@@ -214,7 +214,7 @@ class EditBlacklistActionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
+    final config = ref.watchConfigFilter;
 
     return ref.watch(blacklistTagEntriesProvider(config)).when(
           data: (entries) {
@@ -240,7 +240,7 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                                   filterQuality: FilterQuality.none,
                                 ),
                               BlacklistSource.booruSpecific => BooruLogo(
-                                  source: config.url,
+                                  source: config.auth.url,
                                   width: 24,
                                   height: 24,
                                 ),
@@ -251,7 +251,7 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                               goToGlobalBlacklistedTagsPage(context);
                             } else {
                               //FIXME: if more booru specific blacklist pages are added, we should move this to the builder
-                              if (config.booruType == BooruType.danbooru) {
+                              if (config.auth.booruType == BooruType.danbooru) {
                                 goToBlacklistedTagPage(context);
                               }
                             }

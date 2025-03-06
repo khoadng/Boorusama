@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
+import '../../../configs/ref.dart';
 import '../types/blacklisted_tag_repository.dart';
 import 'global_blacklisted_tag_notifier.dart';
 
@@ -41,11 +42,12 @@ class BlacklistedTagsState extends Equatable {
 }
 
 class BlacklistedTagsNotifier
-    extends FamilyAsyncNotifier<BlacklistedTagsState, BooruConfigAuth> {
+    extends FamilyAsyncNotifier<BlacklistedTagsState, BooruConfigFilter> {
   @override
-  FutureOr<BlacklistedTagsState> build(BooruConfigAuth arg) async {
-    final repo = ref.watch(blacklistTagsRefRepoProvider(arg));
-    final booruSpecificBlacklistedTags = await repo.getBlacklistedTags(arg);
+  FutureOr<BlacklistedTagsState> build(BooruConfigFilter arg) async {
+    final repo = ref.watch(blacklistTagsRefRepoProvider(arg.auth));
+    final booruSpecificBlacklistedTags =
+        await repo.getBlacklistedTags(arg.auth);
 
     final globalBlacklistedTags =
         ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
@@ -70,22 +72,28 @@ class BlacklistedTagsNotifier
 }
 
 final blacklistedTagsNotifierProvider = AsyncNotifierProvider.family<
-    BlacklistedTagsNotifier, BlacklistedTagsState, BooruConfigAuth>(
+    BlacklistedTagsNotifier, BlacklistedTagsState, BooruConfigFilter>(
   BlacklistedTagsNotifier.new,
 );
 
 final blacklistTagEntriesProvider = FutureProvider.autoDispose
-    .family<Set<BlacklistedTagEntry>, BooruConfigAuth>((ref, config) {
+    .family<Set<BlacklistedTagEntry>, BooruConfigFilter>((ref, config) {
   return ref
       .watch(blacklistedTagsNotifierProvider(config).future)
       .then((value) => value.tags);
 });
 
 final blacklistTagsProvider = FutureProvider.autoDispose
-    .family<Set<String>, BooruConfigAuth>((ref, config) {
+    .family<Set<String>, BooruConfigFilter>((ref, config) {
   return ref
       .watch(blacklistedTagsNotifierProvider(config).future)
       .then((value) => value.tags.map((e) => e.tag).toSet());
+});
+
+final currentBlacklistTagsProvider =
+    FutureProvider.autoDispose<Set<String>>((ref) {
+  final config = ref.watchConfigFilter;
+  return ref.watch(blacklistTagsProvider(config).future);
 });
 
 class EmptyBooruSpecificBlacklistTagRefRepository

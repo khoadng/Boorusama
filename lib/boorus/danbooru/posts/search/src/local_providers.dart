@@ -14,7 +14,7 @@ import 'trending_tag.dart';
 const _kTrendingTagCount = 15;
 
 final top15TrendingTagsProvider = FutureProvider.autoDispose
-    .family<List<TrendingTag>, BooruConfigAuth>((ref, config) async {
+    .family<List<TrendingTag>, BooruConfigFilter>((ref, config) async {
   final tags = await ref.watch(trendingTagsProvider(config).future);
 
   final trendingTags = <TrendingTag>[];

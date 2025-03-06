@@ -11,6 +11,7 @@ import 'package:path/path.dart';
 import '../../../analytics.dart';
 import '../../../blacklists/providers.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../downloads/filename/generator_impl.dart';
@@ -437,7 +438,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadSession session, {
     DownloadConfigs? downloadConfigs,
   }) async {
-    final authConfig = ref.readConfigAuth;
     final config = ref.readConfig;
 
     final path = task.path;
@@ -459,7 +459,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final settings = downloadConfigs?.settings ?? fallbackSettings;
 
     final fallbackDownloadFileUrlExtractor =
-        ref.read(downloadFileUrlExtractorProvider(authConfig));
+        ref.read(downloadFileUrlExtractorProvider(config.auth));
     final downloadFileUrlExtractor =
         downloadConfigs?.urlExtractor ?? fallbackDownloadFileUrlExtractor;
 
@@ -472,7 +472,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         fallbackFileNameBuilder;
 
     final fallbackBlacklistedTags =
-        await ref.read(blacklistTagsProvider(authConfig).future);
+        await ref.read(blacklistTagsProvider(config.filter).future);
     final blacklistedTags =
         downloadConfigs?.blacklistedTags ?? fallbackBlacklistedTags;
     final patterns = blacklistedTags

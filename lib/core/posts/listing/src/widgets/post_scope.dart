@@ -44,7 +44,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
     blacklistedTagsFetcher: () {
       if (!mounted) return Future.value({});
 
-      return ref.read(blacklistTagsProvider(ref.readConfigAuth).future);
+      return ref.read(blacklistTagsProvider(ref.readConfigFilter).future);
     },
     pageMode: ref
         .read(imageListingSettingsProvider.select((value) => value.pageMode)),
@@ -83,7 +83,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
         },
       )
       ..listen(
-        blacklistTagsProvider(ref.watchConfigAuth),
+        blacklistTagsProvider(ref.watchConfigFilter),
         (previous, next) {
           if (previous != next) {
             next.when(

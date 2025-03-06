@@ -92,8 +92,7 @@ final moebooruPostDetailsArtistProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
   final config = ref.watchConfigSearch;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags =
-      await ref.watch(blacklistTagsProvider(config.auth).future);
+  final blacklistedTags = await ref.watch(currentBlacklistTagsProvider.future);
 
   final r = await repo.getPostsFromTagsOrEmpty(tag);
 
@@ -107,8 +106,7 @@ final moebooruPostDetailsCharacterProvider =
     FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
   final config = ref.watchConfigSearch;
   final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags =
-      await ref.watch(blacklistTagsProvider(config.auth).future);
+  final blacklistedTags = await ref.watch(currentBlacklistTagsProvider.future);
 
   final r = await repo.getPostsFromTagsOrEmpty(tag);
 

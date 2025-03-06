@@ -188,7 +188,7 @@ final sankakuArtistPostsProvider = FutureProvider.autoDispose
       .watch(sankakuArtistPostRepo(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
+        blacklist: ref.watch(currentBlacklistTagsProvider.future),
       );
 });
 

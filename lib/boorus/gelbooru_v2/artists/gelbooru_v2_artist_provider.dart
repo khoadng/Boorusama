@@ -27,6 +27,6 @@ final gelbooruV2ArtistPostsProvider = FutureProvider.autoDispose
       .watch(gelbooruV2ArtistPostRepo(ref.watchConfigSearch))
       .getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(ref.watchConfigAuth).future),
+        blacklist: ref.watch(currentBlacklistTagsProvider.future),
       );
 });
