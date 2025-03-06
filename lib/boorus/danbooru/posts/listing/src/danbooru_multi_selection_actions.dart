@@ -53,7 +53,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                       }
                     : null,
                 icon: const Icon(Symbols.add),
-                name: 'Add to group',
+                name: 'Add to Group',
               );
             },
           ),
@@ -79,7 +79,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                                     }
                                   : null,
                               icon: const Icon(Symbols.edit_square),
-                              name: 'Edit rating',
+                              name: 'Edit Rating',
                             );
                           },
                         )

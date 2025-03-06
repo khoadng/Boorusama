@@ -6,9 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../boorus/danbooru/blacklist/routes.dart';
+import '../../../../blacklists/providers.dart';
+import '../../../../blacklists/routes.dart';
+import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
@@ -45,36 +51,92 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                   shape: BoxShape.circle,
                   color: context.extendedColorScheme.surfaceContainerOverlay,
                 ),
-                child: BooruPopupMenuButton(
-                  offset: const Offset(0, 48),
-                  iconColor:
-                      context.extendedColorScheme.onSurfaceContainerOverlay,
-                  onSelected: (value) {
-                    if (value == 'options') {
-                      _showViewOptions(context, settingsNotifier);
-                    } else if (value == 'select') {
-                      multiSelectController.enableMultiSelect();
-                    } else if (value == 'stats') {
-                      if (postStatsPageBuilder != null) {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            settings: const RouteSettings(
-                              name: 'post_statistics',
-                            ),
-                            builder: (_) => postStatsPageBuilder(
-                              context,
-                              postController.items,
+                child: Consumer(
+                  builder: (_, ref, __) {
+                    final config = ref.watchConfigAuth;
+                    final blacklistEntries = ref
+                        .watch(blacklistTagEntriesProvider(config))
+                        .valueOrNull;
+
+                    return BooruPopupMenuButton(
+                      offset: const Offset(0, 36),
+                      iconColor:
+                          context.extendedColorScheme.onSurfaceContainerOverlay,
+                      onSelected: (value) {
+                        if (value == 'options') {
+                          _showViewOptions(context, settingsNotifier);
+                        } else if (value == 'select') {
+                          multiSelectController.enableMultiSelect();
+                        } else if (value == 'stats') {
+                          if (postStatsPageBuilder != null) {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                settings: const RouteSettings(
+                                  name: 'post_statistics',
+                                ),
+                                builder: (_) => postStatsPageBuilder(
+                                  context,
+                                  postController.items,
+                                ),
+                              ),
+                            );
+                          }
+                        } else if (value == 'edit_blacklist') {
+                          // check if all entries are global then just open the global blacklist page
+                          final isGlobal = blacklistEntries?.every(
+                                (element) =>
+                                    element.source == BlacklistSource.global,
+                              ) ??
+                              false;
+
+                          if (isGlobal) {
+                            goToGlobalBlacklistedTagsPage(context);
+                          } else {
+                            showBooruModalBottomSheet(
+                              context: context,
+                              routeSettings: const RouteSettings(
+                                name: 'edit_blacklist_select',
+                              ),
+                              builder: (_) => const EditBlacklistActionSheet(),
+                            );
+                          }
+                        }
+                      },
+                      itemBuilder: {
+                        // 'select': const Text('Select').tr(),
+                        'select': PostGridConfigOptionTile(
+                          title: const Text('Select').tr(),
+                          icon: const Icon(
+                            Symbols.select_all,
+                            size: 18,
+                          ),
+                        ),
+                        if (postStatsPageBuilder != null)
+                          'stats': PostGridConfigOptionTile(
+                            title: const Text('Stats').tr(),
+                            icon: const Icon(
+                              Symbols.bar_chart,
+                              size: 18,
                             ),
                           ),
-                        );
-                      }
-                    }
-                  },
-                  itemBuilder: {
-                    'select': const Text('Select').tr(),
-                    if (postStatsPageBuilder != null)
-                      'stats': const Text('Stats').tr(),
-                    'options': const Text('View Options').tr(),
+                        if (blacklistEntries != null &&
+                            blacklistEntries.isNotEmpty)
+                          'edit_blacklist': PostGridConfigOptionTile(
+                            title: const Text('Edit Blacklist').tr(),
+                            icon: const Icon(
+                              Symbols.block,
+                              size: 18,
+                            ),
+                          ),
+                        'options': PostGridConfigOptionTile(
+                          title: const Text('View Options').tr(),
+                          icon: const Icon(
+                            Symbols.settings,
+                            size: 18,
+                          ),
+                        ),
+                      },
+                    );
                   },
                 ),
               )
@@ -114,6 +176,107 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class PostGridConfigOptionTile extends StatelessWidget {
+  const PostGridConfigOptionTile({
+    required this.title,
+    required this.icon,
+    super.key,
+  });
+
+  final Widget title;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Theme(
+          data: Theme.of(context).copyWith(
+            iconTheme: IconThemeData(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          child: icon,
+        ),
+        const SizedBox(width: 12),
+        title,
+      ],
+    );
+  }
+}
+
+class EditBlacklistActionSheet extends ConsumerWidget {
+  const EditBlacklistActionSheet({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+
+    return ref.watch(blacklistTagEntriesProvider(config)).when(
+          data: (entries) {
+            final sources = entries.map((e) => e.source).toSet();
+
+            return sources.isNotEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...sources.map(
+                        (e) => ListTile(
+                          leading: Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: switch (e) {
+                              BlacklistSource.global => Image.asset(
+                                  'assets/images/logo.png',
+                                  width: 24,
+                                  height: 24,
+                                  isAntiAlias: true,
+                                  filterQuality: FilterQuality.none,
+                                ),
+                              BlacklistSource.booruSpecific => BooruLogo(
+                                  source: config.url,
+                                  width: 24,
+                                  height: 24,
+                                ),
+                            },
+                          ),
+                          onTap: () {
+                            if (e == BlacklistSource.global) {
+                              goToGlobalBlacklistedTagsPage(context);
+                            } else {
+                              //FIXME: if more booru specific blacklist pages are added, we should move this to the builder
+                              if (config.booruType == BooruType.danbooru) {
+                                goToBlacklistedTagPage(context);
+                              }
+                            }
+                            Navigator.of(context).pop();
+                          },
+                          title: switch (e) {
+                            BlacklistSource.global =>
+                              const Text('Edit Global Blacklist').tr(),
+                            BlacklistSource.booruSpecific =>
+                              const Text("Edit Booru's Specific Blacklist")
+                                  .tr(),
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                : const Center(
+                    child: Text('No blacklisted tags'),
+                  );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => Center(
+            child: Text(error.toString()),
+          ),
+        );
   }
 }
 

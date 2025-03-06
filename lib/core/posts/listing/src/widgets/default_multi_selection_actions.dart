@@ -116,7 +116,7 @@ class MultiSelectButton extends StatelessWidget {
       ),
       onTap: onPressed,
       child: SizedBox(
-        width: 80,
+        width: 100,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

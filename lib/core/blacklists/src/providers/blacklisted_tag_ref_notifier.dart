@@ -34,7 +34,7 @@ class BlacklistedTagsState extends Equatable {
 
   const BlacklistedTagsState.empty() : tags = const {};
 
-  final Set<String> tags;
+  final Set<BlacklistedTagEntry> tags;
 
   @override
   List<Object?> get props => [tags];
@@ -52,8 +52,18 @@ class BlacklistedTagsNotifier
 
     return BlacklistedTagsState(
       tags: {
-        ...globalBlacklistedTags,
-        ...booruSpecificBlacklistedTags,
+        ...globalBlacklistedTags.map(
+          (e) => BlacklistedTagEntry(
+            tag: e,
+            source: BlacklistSource.global,
+          ),
+        ),
+        ...booruSpecificBlacklistedTags.map(
+          (e) => BlacklistedTagEntry(
+            tag: e,
+            source: BlacklistSource.booruSpecific,
+          ),
+        ),
       },
     );
   }
@@ -64,11 +74,18 @@ final blacklistedTagsNotifierProvider = AsyncNotifierProvider.family<
   BlacklistedTagsNotifier.new,
 );
 
+final blacklistTagEntriesProvider = FutureProvider.autoDispose
+    .family<Set<BlacklistedTagEntry>, BooruConfigAuth>((ref, config) {
+  return ref
+      .watch(blacklistedTagsNotifierProvider(config).future)
+      .then((value) => value.tags);
+});
+
 final blacklistTagsProvider = FutureProvider.autoDispose
     .family<Set<String>, BooruConfigAuth>((ref, config) {
   return ref
       .watch(blacklistedTagsNotifierProvider(config).future)
-      .then((value) => value.tags);
+      .then((value) => value.tags.map((e) => e.tag).toSet());
 });
 
 class EmptyBooruSpecificBlacklistTagRefRepository
@@ -82,4 +99,22 @@ class EmptyBooruSpecificBlacklistTagRefRepository
   Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
     return {};
   }
+}
+
+enum BlacklistSource {
+  global,
+  booruSpecific,
+}
+
+class BlacklistedTagEntry extends Equatable {
+  const BlacklistedTagEntry({
+    required this.tag,
+    required this.source,
+  });
+
+  final String tag;
+  final BlacklistSource source;
+
+  @override
+  List<Object?> get props => [tag, source];
 }
