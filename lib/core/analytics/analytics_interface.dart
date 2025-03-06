@@ -29,7 +29,7 @@ Map<String, dynamic> defaultParamsExtractor(
       'hint_site': config.auth.booruType.name,
       'url': Uri.tryParse(config.url)?.host,
       'has_login': config.apiKey != null && config.apiKey!.isNotEmpty,
-      'rating': config.filter.ratingVerdict,
+      'rating': config.search.filter.ratingVerdict,
     },
     'viewport_aspect_ratio': aspectRatioNum,
   };

@@ -369,8 +369,9 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
       ];
 }
 
-class BooruConfigFilter extends Equatable with BooruConfigFilterMixin {
-  const BooruConfigFilter({
+class BooruConfigSearchFilter extends Equatable
+    with BooruConfigSearchFilterMixin {
+  const BooruConfigSearchFilter({
     required this.ratingFilter,
     required this.granularRatingFilters,
     required this.alwaysIncludeTags,
@@ -378,8 +379,8 @@ class BooruConfigFilter extends Equatable with BooruConfigFilterMixin {
     required this.bannedPostVisibility,
   });
 
-  factory BooruConfigFilter.fromConfig(BooruConfig config) {
-    return BooruConfigFilter(
+  factory BooruConfigSearchFilter.fromConfig(BooruConfig config) {
+    return BooruConfigSearchFilter(
       ratingFilter: config.ratingFilter,
       granularRatingFilters: config.granularRatingFilters,
       alwaysIncludeTags: config.alwaysIncludeTags,
@@ -431,12 +432,12 @@ class BooruConfigSearch extends Equatable {
 
   factory BooruConfigSearch.fromConfig(BooruConfig config) {
     return BooruConfigSearch(
-      filter: BooruConfigFilter.fromConfig(config),
+      filter: BooruConfigSearchFilter.fromConfig(config),
       auth: BooruConfigAuth.fromConfig(config),
     );
   }
 
-  final BooruConfigFilter filter;
+  final BooruConfigSearchFilter filter;
   final BooruConfigAuth auth;
 
   BooruType get booruType => auth.booruType;
@@ -473,7 +474,7 @@ mixin BooruConfigAuthMixin {
   bool get hasSoftSFW => url == kDanbooruSafeUrl;
 }
 
-mixin BooruConfigFilterMixin {
+mixin BooruConfigSearchFilterMixin {
   Set<Rating>? get granularRatingFilters;
   BooruConfigBannedPostVisibility get bannedPostVisibility;
 
@@ -500,7 +501,6 @@ extension BooruConfigX on BooruConfig {
       };
 
   BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
-  BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
   BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
 
   bool get autoFetchNotes =>
