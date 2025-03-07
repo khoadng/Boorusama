@@ -3,6 +3,7 @@ import '../../proxy/proxy.dart';
 import '../../settings/settings.dart';
 import '../../theme/theme_configs.dart';
 import 'booru_config.dart';
+import 'create/search_blacklist.dart';
 import 'data/booru_config_data.dart';
 import 'gestures.dart';
 import 'rating_parser.dart';
@@ -50,6 +51,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
           ? null
           : ThemeConfigs.fromJsonString(booruConfigData.theme),
       alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
+      blacklistConfigs: booruConfigData.blacklistConfigs != null
+          ? BlacklistConfigs.fromJsonString(booruConfigData.blacklistConfigs)
+          : null,
       layout: booruConfigData.layout != null
           ? LayoutConfigs.fromJsonString(booruConfigData.layout)
           : null,
@@ -88,6 +92,7 @@ extension BooruConfigConverter on BooruConfig {
       listing: listing?.toJsonString(),
       theme: theme?.toJsonString(),
       alwaysIncludeTags: alwaysIncludeTags,
+      blacklistConfigs: blacklistConfigs?.toJsonString(),
       layout: layout?.toJsonString(),
       proxySettings: proxySettings?.toJsonString(),
       viewerNotesFetchBehavior: viewerNotesFetchBehavior?.index,

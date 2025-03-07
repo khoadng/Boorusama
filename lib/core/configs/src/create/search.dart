@@ -17,6 +17,7 @@ import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
 import 'providers.dart';
 import 'riverpod_widgets.dart';
+import 'search_blacklist.dart';
 
 class DefaultBooruConfigSearchView extends ConsumerWidget {
   const DefaultBooruConfigSearchView({
@@ -136,6 +137,20 @@ class BooruConfigSearchView extends ConsumerWidget {
                   builder: (data) => _EffectiveTagPreview(
                     configData: data,
                   ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Divider(),
+          const EnableAdditionalBlacklistSwitch(),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: BooruConfigDataProvider(
+                  builder: (data) => const AdditionalBlacklistedTags(),
                 ),
               ),
             ],
@@ -263,6 +278,8 @@ class _EffectiveTagPreview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     final tags = ref.watch(
       editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
           .select((value) => value.alwaysIncludeTags),
@@ -280,94 +297,122 @@ class _EffectiveTagPreview extends ConsumerWidget {
 
     final rawTags = tagComposer.compose([]);
 
+    return TagListPreview(
+      header: Text(
+        'Preview',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+      ),
+      content: Wrap(
+        runAlignment: WrapAlignment.center,
+        spacing: 5,
+        runSpacing: 5,
+        children: [
+          IgnorePointer(
+            child: RawCompactChip(
+              backgroundColor: Colors.transparent,
+              label: Text(
+                '<any search query>',
+                style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurfaceVariant
+                      .withValues(alpha: 0.6),
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ),
+          ...rawTags.map(
+            (e) => TagSearchConfigChip(tag: e),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TagListPreview extends StatelessWidget {
+  const TagListPreview({
+    required this.content,
+    required this.header,
+    super.key,
+  });
+
+  final Widget content;
+  final Widget header;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 12,
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainer
-            .withValues(alpha: 0.6),
+        color: colorScheme.surfaceContainer.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context)
-              .colorScheme
-              .outlineVariant
-              .withValues(alpha: 0.6),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.6),
           width: 0.5,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Preview',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-          ),
+          header,
           const SizedBox(height: 8),
-          Wrap(
-            runAlignment: WrapAlignment.center,
-            spacing: 5,
-            runSpacing: 5,
-            children: [
-              IgnorePointer(
-                child: RawCompactChip(
-                  backgroundColor: Colors.transparent,
-                  label: Text(
-                    '<any search query>',
-                    style: TextStyle(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurfaceVariant
-                          .withValues(alpha: 0.6),
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ),
-              ...rawTags.map(
-                (e) => RawCompactChip(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 4,
-                    horizontal: 8,
-                  ),
-                  label: RichText(
-                    text: TextSpan(
-                      children: [
-                        if (e.startsWith('-'))
-                          TextSpan(
-                            text: '—',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        TextSpan(
-                          text: e.startsWith('-') ? e.substring(1) : e,
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSecondaryContainer,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.secondaryContainer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          content,
         ],
+      ),
+    );
+  }
+}
+
+class TagSearchConfigChip extends StatelessWidget {
+  const TagSearchConfigChip({
+    required this.tag,
+    super.key,
+  });
+
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return RawCompactChip(
+      padding: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 8,
+      ),
+      label: RichText(
+        text: TextSpan(
+          children: [
+            if (tag.startsWith('-'))
+              TextSpan(
+                text: '—',
+                style: TextStyle(
+                  color: colorScheme.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            TextSpan(
+              text: tag.startsWith('-') ? tag.substring(1) : tag,
+              style: TextStyle(
+                color: colorScheme.onSecondaryContainer,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: colorScheme.secondaryContainer,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
       ),
     );
   }

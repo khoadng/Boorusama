@@ -15,6 +15,7 @@ import '../../../../blacklists/routes.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
+import '../../../../configs/routes.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/settings.dart';
@@ -103,7 +104,6 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         }
                       },
                       itemBuilder: {
-                        // 'select': const Text('Select').tr(),
                         'select': PostGridConfigOptionTile(
                           title: const Text('Select').tr(),
                           icon: const Icon(
@@ -215,6 +215,7 @@ class EditBlacklistActionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigFilter;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return ref.watch(blacklistTagEntriesProvider(config)).when(
           data: (entries) {
@@ -244,11 +245,21 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                                   width: 24,
                                   height: 24,
                                 ),
+                              BlacklistSource.config => Icon(
+                                  Icons.settings,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
                             },
                           ),
                           onTap: () {
                             if (e == BlacklistSource.global) {
                               goToGlobalBlacklistedTagsPage(context);
+                            } else if (e == BlacklistSource.config) {
+                              goToUpdateBooruConfigPage(
+                                context,
+                                config: ref.readConfig,
+                                initialTab: 'search',
+                              );
                             } else {
                               //FIXME: if more booru specific blacklist pages are added, we should move this to the builder
                               if (config.auth.booruType == BooruType.danbooru) {
@@ -263,6 +274,8 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                             BlacklistSource.booruSpecific =>
                               const Text("Edit Booru's Specific Blacklist")
                                   .tr(),
+                            BlacklistSource.config =>
+                              const Text('Edit Profile Blacklist').tr(),
                           },
                         ),
                       ),

@@ -15,6 +15,7 @@ import '../edit_booru_config_id.dart';
 import '../gestures.dart';
 import '../manage/booru_config_provider.dart';
 import '../types.dart';
+import 'search_blacklist.dart';
 
 final editBooruConfigIdProvider = Provider.autoDispose<EditBooruConfigId>(
   (ref) => throw UnimplementedError(),
@@ -202,4 +203,9 @@ class EditBooruConfigNotifier
             ? BooruConfigViewerNotesFetchBehavior.auto
             : BooruConfigViewerNotesFetchBehavior.manual,
       );
+
+  void updateBlacklistConfigs(
+    BlacklistConfigs? blacklistConfigs,
+  ) =>
+      state = state.copyWith(blacklistConfigs: () => blacklistConfigs);
 }

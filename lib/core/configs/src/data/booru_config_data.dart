@@ -9,6 +9,7 @@ import '../../../settings/settings.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../utils/int_utils.dart';
 import '../booru_config.dart';
+import '../create/search_blacklist.dart';
 import '../gestures.dart';
 import '../rating_parser.dart';
 import '../types.dart';
@@ -35,6 +36,7 @@ class BooruConfigData extends Equatable {
     required this.listing,
     required this.theme,
     required this.alwaysIncludeTags,
+    required this.blacklistConfigs,
     required this.layout,
     required this.proxySettings,
     required this.viewerNotesFetchBehavior,
@@ -71,6 +73,7 @@ class BooruConfigData extends Equatable {
         listing: null,
         theme: null,
         alwaysIncludeTags: null,
+        blacklistConfigs: null,
         layout: null,
         proxySettings: null,
         viewerNotesFetchBehavior: null,
@@ -103,6 +106,7 @@ class BooruConfigData extends Equatable {
         listing: json['listing'] as String?,
         theme: json['theme'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+        blacklistConfigs: json['blacklistConfigs'] as String?,
         layout: json['layout'] as String?,
         proxySettings: json['proxySettings'] as String?,
         viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] as int?,
@@ -134,6 +138,7 @@ class BooruConfigData extends Equatable {
       'listing': listing,
       'theme': theme,
       'alwaysIncludeTags': alwaysIncludeTags,
+      'blacklistConfigs': blacklistConfigs,
       'layout': layout,
       'proxySettings': proxySettings,
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior,
@@ -160,6 +165,7 @@ class BooruConfigData extends Equatable {
   final String? listing;
   final String? theme;
   final String? alwaysIncludeTags;
+  final String? blacklistConfigs;
   final String? layout;
   final String? proxySettings;
   final int? viewerNotesFetchBehavior;
@@ -186,6 +192,7 @@ class BooruConfigData extends Equatable {
         listing,
         theme,
         alwaysIncludeTags,
+        blacklistConfigs,
         layout,
         proxySettings,
         viewerNotesFetchBehavior,
@@ -207,6 +214,10 @@ extension BooruConfigDataX on BooruConfigData {
 
   ThemeConfigs? get themeTyped {
     return ThemeConfigs.fromJsonString(theme);
+  }
+
+  BlacklistConfigs? get blacklistConfigsTyped {
+    return BlacklistConfigs.fromJsonString(blacklistConfigs);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
@@ -279,6 +290,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     ListingConfigs? Function()? listing,
     ThemeConfigs? Function()? theme,
     String? Function()? alwaysIncludeTags,
+    BlacklistConfigs? Function()? blacklistConfigs,
     LayoutConfigs? Function()? layout,
     ProxySettings? Function()? proxySettings,
     BooruConfigViewerNotesFetchBehavior? Function()? viewerNotesFetchBehavior,
@@ -326,6 +338,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       alwaysIncludeTags: alwaysIncludeTags != null
           ? alwaysIncludeTags()
           : this.alwaysIncludeTags,
+      blacklistConfigs: blacklistConfigs != null
+          ? blacklistConfigs()?.toJsonString()
+          : this.blacklistConfigs,
       layout: layout != null ? layout()?.toJsonString() : this.layout,
       proxySettings: proxySettings != null
           ? proxySettings()?.toJsonString()

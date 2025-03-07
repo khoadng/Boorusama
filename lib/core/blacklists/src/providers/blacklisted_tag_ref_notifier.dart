@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
+import '../../../configs/src/create/search_blacklist.dart';
 import '../types/blacklisted_tag_repository.dart';
 import 'global_blacklisted_tag_notifier.dart';
 
@@ -53,21 +54,57 @@ class BlacklistedTagsNotifier
         ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
 
     return BlacklistedTagsState(
-      tags: {
-        ...globalBlacklistedTags.map(
-          (e) => BlacklistedTagEntry(
-            tag: e,
-            source: BlacklistSource.global,
+      tags: _combineTags(
+        {
+          ...globalBlacklistedTags.map(
+            (e) => BlacklistedTagEntry(
+              tag: e,
+              source: BlacklistSource.global,
+            ),
           ),
-        ),
-        ...booruSpecificBlacklistedTags.map(
-          (e) => BlacklistedTagEntry(
-            tag: e,
-            source: BlacklistSource.booruSpecific,
+          ...booruSpecificBlacklistedTags.map(
+            (e) => BlacklistedTagEntry(
+              tag: e,
+              source: BlacklistSource.booruSpecific,
+            ),
           ),
-        ),
-      },
+        },
+        arg.blacklistConfigs,
+      ),
     );
+  }
+}
+
+Set<BlacklistedTagEntry> _combineTags(
+  Set<BlacklistedTagEntry> currentTags,
+  BlacklistConfigs? configs,
+) {
+  if (configs == null) return currentTags;
+
+  if (!configs.enable) return currentTags;
+
+  final mode = BlacklistCombinationMode.fromString(configs.combinationMode);
+  final blacklistTags = configs.blacklistedTagsList;
+
+  if (mode == BlacklistCombinationMode.replace) {
+    return blacklistTags
+        .map(
+          (e) => BlacklistedTagEntry(
+            tag: e,
+            source: BlacklistSource.config,
+          ),
+        )
+        .toSet();
+  } else {
+    return {
+      ...currentTags,
+      ...blacklistTags.map(
+        (e) => BlacklistedTagEntry(
+          tag: e,
+          source: BlacklistSource.config,
+        ),
+      ),
+    };
   }
 }
 
@@ -112,6 +149,7 @@ class EmptyBooruSpecificBlacklistTagRefRepository
 enum BlacklistSource {
   global,
   booruSpecific,
+  config,
 }
 
 class BlacklistedTagEntry extends Equatable {

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,8 +9,12 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
+import '../../../../configs/routes.dart';
+import '../../../../configs/src/create/search_blacklist.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
+import '../../../../theme/theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../_internal/default_image_grid_item.dart';
@@ -280,31 +285,37 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
                     horizontal: imageGridPadding,
                   ),
                   child: PostListConfigurationHeader(
-                    blacklistControls: BlacklistControls(
-                      hiddenTags: activeFilters.keys
-                          .map(
-                            (e) => (
-                              name: e,
-                              count: tagCounts[e]?.length ?? 0,
-                              active: activeFilters[e] ?? false,
-                            ),
-                          )
-                          .where((e) => e.count > 0)
-                          .toList(),
-                      onDisableAll: () {
-                        controller.disableAllTags();
-                      },
-                      onEnableAll: () {
-                        controller.enableAllTags();
-                      },
-                      onChanged: (tag, hide) {
-                        if (hide) {
-                          controller.enableTag(tag);
-                        } else {
-                          controller.disableTag(tag);
-                        }
-                      },
-                      axis: axis,
+                    blacklistControls: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BlacklistControls(
+                          hiddenTags: activeFilters.keys
+                              .map(
+                                (e) => (
+                                  name: e,
+                                  count: tagCounts[e]?.length ?? 0,
+                                  active: activeFilters[e] ?? false,
+                                ),
+                              )
+                              .where((e) => e.count > 0)
+                              .toList(),
+                          onDisableAll: () {
+                            controller.disableAllTags();
+                          },
+                          onEnableAll: () {
+                            controller.enableAllTags();
+                          },
+                          onChanged: (tag, hide) {
+                            if (hide) {
+                              controller.enableTag(tag);
+                            } else {
+                              controller.disableTag(tag);
+                            }
+                          },
+                          axis: axis,
+                        ),
+                        const _BlacklistedTagsInterceptedNotice(),
+                      ],
                     ),
                     axis: axis,
                     postCount: controller.total,
@@ -325,6 +336,73 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _BlacklistedTagsInterceptedNotice extends ConsumerWidget {
+  const _BlacklistedTagsInterceptedNotice();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final config = ref.watchConfig;
+    final enable = config.blacklistConfigs?.enable;
+    final mode = config.blacklistConfigs?.combinationMode;
+
+    if (enable != true) {
+      return const SizedBox.shrink();
+    }
+
+    if (mode == null) {
+      return const SizedBox.shrink();
+    }
+
+    final blacklistConfigsMode = BlacklistCombinationMode.fromString(mode);
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        bottom: 12,
+      ),
+      child: RichText(
+        text: TextSpan(
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: colorScheme.hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+          children: [
+            if (blacklistConfigsMode == BlacklistCombinationMode.replace)
+              const TextSpan(
+                text: 'Replaced by ',
+              )
+            else
+              const TextSpan(
+                text: 'Merged with ',
+              ),
+            TextSpan(
+              text: "Profile's blacklist",
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  goToUpdateBooruConfigPage(
+                    context,
+                    config: config,
+                    initialTab: 'search',
+                  );
+                },
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const TextSpan(
+              text: ' settings.',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
