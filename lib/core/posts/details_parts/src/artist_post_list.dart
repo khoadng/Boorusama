@@ -110,7 +110,7 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
           isAnimated: post.isAnimated,
           isTranslated: post.isTranslated,
           image: BooruImage(
-            forceFill: true,
+            forceCover: true,
             imageUrl: imageUrl(post),
             placeholderUrl: post.thumbnailImageUrl,
             fit: BoxFit.cover,

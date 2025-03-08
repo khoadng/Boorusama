@@ -251,7 +251,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(
             imageBorderRadius,
           ),
-          forceFill: imageListType == ImageListType.standard,
+          forceCover: imageListType == ImageListType.standard,
           fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
           placeholderUrl: post.thumbnailImageUrl,
           gaplessPlayback: true,

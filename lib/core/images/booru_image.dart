@@ -25,7 +25,7 @@ class BooruImage extends ConsumerWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
-    this.forceFill = false,
+    this.forceCover = false,
     this.forceLoadPlaceholder = false,
     this.gaplessPlayback = false,
   });
@@ -35,7 +35,7 @@ class BooruImage extends ConsumerWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
-  final bool forceFill;
+  final bool forceCover;
   final bool forceLoadPlaceholder;
   final bool gaplessPlayback;
 
@@ -58,7 +58,7 @@ class BooruImage extends ConsumerWidget {
       borderRadius: borderRadius,
       fit: fit,
       aspectRatio: aspectRatio ?? fallbackAspectRatio,
-      forceFill: forceFill,
+      forceCover: forceCover,
       isLargeImage: imageQualitySettings != ImageQuality.low,
       forceLoadPlaceholder: forceLoadPlaceholder,
       headers: {
@@ -67,6 +67,7 @@ class BooruImage extends ConsumerWidget {
         ...ref.watch(extraHttpHeaderProvider(config)),
         ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
+      gaplessPlayback: gaplessPlayback,
     );
   }
 }
@@ -80,7 +81,7 @@ class BooruRawImage extends StatelessWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
-    this.forceFill = false,
+    this.forceCover = false,
     this.headers = const {},
     this.isLargeImage = false,
     this.forceLoadPlaceholder = false,
@@ -93,7 +94,7 @@ class BooruRawImage extends StatelessWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
-  final bool forceFill;
+  final bool forceCover;
   final Map<String, String> headers;
   final bool isLargeImage;
   final bool forceLoadPlaceholder;
@@ -106,12 +107,12 @@ class BooruRawImage extends StatelessWidget {
     );
 
     return NullableAspectRatio(
-      aspectRatio: forceFill || fit == BoxFit.contain ? null : aspectRatio,
+      aspectRatio: forceCover || fit == BoxFit.contain ? null : aspectRatio,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth.roundToDouble();
           final height = constraints.maxHeight.roundToDouble();
-          final fit = this.fit ?? (forceFill ? BoxFit.cover : BoxFit.contain);
+          final fit = this.fit ?? (forceCover ? BoxFit.cover : BoxFit.contain);
           final borderRadius = this.borderRadius ?? _defaultRadius;
 
           return imageUrl.isNotEmpty
