@@ -416,6 +416,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               // let the user tap the image to toggle overlay
               onTap: onItemTap,
               child: InteractiveViewerExtended(
+                contentSize: Size(post.width, post.height),
                 controller: _transformController,
                 enable: switch (state.isExpanded) {
                   true => context.isLargeScreen,
