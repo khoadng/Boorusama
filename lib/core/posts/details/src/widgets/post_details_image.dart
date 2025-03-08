@@ -108,6 +108,9 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       placeholderUrl: placeholderImageUrl,
       aspectRatio: post.aspectRatio,
       forceCover: post.aspectRatio != null,
+      imageHeight: post.height,
+      imageWidth: post.width,
+      forceFill: true,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
     );

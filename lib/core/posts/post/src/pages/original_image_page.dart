@@ -21,6 +21,8 @@ class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({
     required this.imageUrl,
     required this.id,
+    required this.aspectRatio,
+    required this.contentSize,
     super.key,
   });
 
@@ -28,10 +30,17 @@ class OriginalImagePage extends ConsumerStatefulWidget {
     Post post, {
     super.key,
   })  : imageUrl = post.originalImageUrl,
+        aspectRatio = post.aspectRatio,
+        contentSize = Size(
+          post.width,
+          post.height,
+        ),
         id = post.id;
 
   final String imageUrl;
   final int id;
+  final double? aspectRatio;
+  final Size? contentSize;
 
   @override
   ConsumerState<OriginalImagePage> createState() => _OriginalImagePageState();
@@ -151,10 +160,17 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
               ),
           ],
         ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: ValueListenableBuilder(
+        body: InteractiveViewerExtended(
+          contentSize: widget.contentSize,
+          onZoomUpdated: (value) {
+            setState(() {
+              zoom = value;
+            });
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              ValueListenableBuilder(
                 valueListenable: turn,
                 builder: (context, value, child) => RotationTransition(
                   turns: AlwaysStoppedAnimation(value),
@@ -162,21 +178,21 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 ),
                 child: _buildImage(),
               ),
-            ),
-            AnimatedSwitcher(
-              duration: Durations.extralong1,
-              reverseDuration: const Duration(milliseconds: 10),
-              child: overlay
-                  ? ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: <Color>[
-                        const Color.fromARGB(60, 0, 0, 0),
-                        Colors.black12.withValues(alpha: 0),
-                      ],
-                    )
-                  : null,
-            ),
-          ],
+              AnimatedSwitcher(
+                duration: Durations.extralong1,
+                reverseDuration: const Duration(milliseconds: 10),
+                child: overlay
+                    ? ShadowGradientOverlay(
+                        alignment: Alignment.topCenter,
+                        colors: <Color>[
+                          const Color.fromARGB(60, 0, 0, 0),
+                          Colors.black12.withValues(alpha: 0),
+                        ],
+                      )
+                    : null,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -185,11 +201,8 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   Widget _buildImage() {
     return _ImageViewer(
       imageUrl: widget.imageUrl,
-      onZoomUpdated: (value) {
-        setState(() {
-          zoom = value;
-        });
-      },
+      aspectRatio: widget.aspectRatio,
+      contentSize: widget.contentSize,
     );
   }
 
@@ -207,11 +220,13 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 class _ImageViewer extends ConsumerStatefulWidget {
   const _ImageViewer({
     required this.imageUrl,
-    required this.onZoomUpdated,
+    required this.aspectRatio,
+    required this.contentSize,
   });
 
   final String imageUrl;
-  final void Function(bool) onZoomUpdated;
+  final double? aspectRatio;
+  final Size? contentSize;
 
   @override
   ConsumerState<_ImageViewer> createState() => __ImageViewerState();
@@ -229,22 +244,23 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveViewerExtended(
-      onZoomUpdated: widget.onZoomUpdated,
-      child: BooruImage(
-        imageUrl: widget.imageUrl,
-        controller: _controller,
-        borderRadius: BorderRadius.zero,
-        placeholderWidget: ValueListenableBuilder(
-          valueListenable: _controller.progress,
-          builder: (context, progress, child) {
-            return Center(
-              child: CircularProgressIndicator(
-                value: progress,
-              ),
-            );
-          },
-        ),
+    return BooruImage(
+      imageUrl: widget.imageUrl,
+      controller: _controller,
+      borderRadius: BorderRadius.zero,
+      aspectRatio: widget.aspectRatio,
+      imageHeight: widget.contentSize?.height,
+      imageWidth: widget.contentSize?.width,
+      forceFill: true,
+      placeholderWidget: ValueListenableBuilder(
+        valueListenable: _controller.progress,
+        builder: (context, progress, child) {
+          return Center(
+            child: CircularProgressIndicator(
+              value: progress,
+            ),
+          );
+        },
       ),
     );
   }

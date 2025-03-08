@@ -25,7 +25,10 @@ class BooruImage extends ConsumerWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
+    this.imageWidth,
+    this.imageHeight,
     this.forceCover = false,
+    this.forceFill = false,
     this.forceLoadPlaceholder = false,
     this.gaplessPlayback = false,
     this.placeholderWidget,
@@ -37,7 +40,10 @@ class BooruImage extends ConsumerWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
+  final double? imageWidth;
+  final double? imageHeight;
   final bool forceCover;
+  final bool forceFill;
   final bool forceLoadPlaceholder;
   final bool gaplessPlayback;
   final Widget? placeholderWidget;
@@ -62,7 +68,10 @@ class BooruImage extends ConsumerWidget {
       borderRadius: borderRadius,
       fit: fit,
       aspectRatio: aspectRatio ?? fallbackAspectRatio,
+      imageWidth: imageWidth,
+      imageHeight: imageHeight,
       forceCover: forceCover,
+      forceFill: forceFill,
       isLargeImage: imageQualitySettings != ImageQuality.low,
       forceLoadPlaceholder: forceLoadPlaceholder,
       headers: {
@@ -87,7 +96,10 @@ class BooruRawImage extends StatelessWidget {
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
+    this.imageWidth,
+    this.imageHeight,
     this.forceCover = false,
+    this.forceFill = false,
     this.headers = const {},
     this.isLargeImage = false,
     this.forceLoadPlaceholder = false,
@@ -102,7 +114,10 @@ class BooruRawImage extends StatelessWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
+  final double? imageWidth;
+  final double? imageHeight;
   final bool forceCover;
+  final bool forceFill;
   final Map<String, String> headers;
   final bool isLargeImage;
   final bool forceLoadPlaceholder;
@@ -122,7 +137,19 @@ class BooruRawImage extends StatelessWidget {
         builder: (context, constraints) {
           final width = constraints.maxWidth.roundToDouble();
           final height = constraints.maxHeight.roundToDouble();
-          final fit = this.fit ?? (forceCover ? BoxFit.cover : BoxFit.contain);
+          final fit = this.fit ??
+              // If the image is larger than the layout, just fill it to prevent distortion
+              (forceFill &&
+                      _shouldForceFill(
+                        constraints.biggest,
+                        imageWidth,
+                        imageHeight,
+                      )
+                  ? BoxFit.fill
+                  // Cover is for the standard grid that crops the image to fit the aspect ratio
+                  : forceCover
+                      ? BoxFit.cover
+                      : BoxFit.contain);
           final borderRadius = this.borderRadius ?? _defaultRadius;
 
           return imageUrl.isNotEmpty
@@ -203,6 +230,19 @@ bool _shouldLoadPlaceholderUrl({
   if (placeholder == imageUrl) return false;
 
   return true;
+}
+
+bool _shouldForceFill(
+  Size containerSize,
+  double? imageWidth,
+  double? imageHeight,
+) {
+  if (imageWidth == null || imageHeight == null) return false;
+
+  if (containerSize.height < imageHeight) return true;
+  if (containerSize.width < imageWidth) return true;
+
+  return false;
 }
 
 class ImagePlaceHolder extends StatelessWidget {
