@@ -28,6 +28,8 @@ class BooruImage extends ConsumerWidget {
     this.forceCover = false,
     this.forceLoadPlaceholder = false,
     this.gaplessPlayback = false,
+    this.placeholderWidget,
+    this.controller,
   });
 
   final String imageUrl;
@@ -38,6 +40,8 @@ class BooruImage extends ConsumerWidget {
   final bool forceCover;
   final bool forceLoadPlaceholder;
   final bool gaplessPlayback;
+  final Widget? placeholderWidget;
+  final ExtendedImageController? controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,6 +72,8 @@ class BooruImage extends ConsumerWidget {
         ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
       gaplessPlayback: gaplessPlayback,
+      placeholderWidget: placeholderWidget,
+      controller: controller,
     );
   }
 }
@@ -86,6 +92,8 @@ class BooruRawImage extends StatelessWidget {
     this.isLargeImage = false,
     this.forceLoadPlaceholder = false,
     this.gaplessPlayback = false,
+    this.placeholderWidget,
+    this.controller,
   });
 
   final Dio dio;
@@ -99,6 +107,8 @@ class BooruRawImage extends StatelessWidget {
   final bool isLargeImage;
   final bool forceLoadPlaceholder;
   final bool gaplessPlayback;
+  final Widget? placeholderWidget;
+  final ExtendedImageController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -126,34 +136,36 @@ class BooruRawImage extends StatelessWidget {
                   fit: fit,
                   gaplessPlayback: gaplessPlayback,
                   fetchStrategy: _fetchStrategy,
-                  placeholderWidget: placeholderUrl.toOption().fold(
-                        () => imagePlaceHolder,
-                        (url) => Builder(
-                          builder: (context) {
-                            final hasNetworkPlaceholder =
-                                _shouldLoadPlaceholderUrl(
-                              placeholderUrl: url,
-                              imageUrl: imageUrl,
-                              isLargeImage: isLargeImage,
-                              forceLoadPlaceholder: forceLoadPlaceholder,
-                            );
+                  controller: controller,
+                  placeholderWidget: placeholderWidget ??
+                      placeholderUrl.toOption().fold(
+                            () => imagePlaceHolder,
+                            (url) => Builder(
+                              builder: (context) {
+                                final hasNetworkPlaceholder =
+                                    _shouldLoadPlaceholderUrl(
+                                  placeholderUrl: url,
+                                  imageUrl: imageUrl,
+                                  isLargeImage: isLargeImage,
+                                  forceLoadPlaceholder: forceLoadPlaceholder,
+                                );
 
-                            return hasNetworkPlaceholder
-                                ? ExtendedImage.network(
-                                    url,
-                                    dio: dio,
-                                    headers: headers,
-                                    borderRadius: borderRadius,
-                                    width: width,
-                                    height: height,
-                                    fit: fit,
-                                    fetchStrategy: _fetchStrategy,
-                                    placeholderWidget: imagePlaceHolder,
-                                  )
-                                : imagePlaceHolder;
-                          },
-                        ),
-                      ),
+                                return hasNetworkPlaceholder
+                                    ? ExtendedImage.network(
+                                        url,
+                                        dio: dio,
+                                        headers: headers,
+                                        borderRadius: borderRadius,
+                                        width: width,
+                                        height: height,
+                                        fit: fit,
+                                        fetchStrategy: _fetchStrategy,
+                                        placeholderWidget: imagePlaceHolder,
+                                      )
+                                    : imagePlaceHolder;
+                              },
+                            ),
+                          ),
                   errorWidget: ErrorPlaceholder(
                     borderRadius: borderRadius,
                   ),

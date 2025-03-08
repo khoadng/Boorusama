@@ -11,11 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/mobile.dart';
-import '../../../../http/providers.dart';
-import '../../../../images/providers.dart';
+import '../../../../images/booru_image.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
 
@@ -231,19 +229,12 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
-
     return InteractiveViewerExtended(
       onZoomUpdated: widget.onZoomUpdated,
-      child: ExtendedImage.network(
-        widget.imageUrl,
-        dio: dio,
+      child: BooruImage(
+        imageUrl: widget.imageUrl,
         controller: _controller,
-        headers: {
-          ...ref.watch(extraHttpHeaderProvider(config)),
-          ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-        },
+        borderRadius: BorderRadius.zero,
         placeholderWidget: ValueListenableBuilder(
           valueListenable: _controller.progress,
           builder: (context, progress, child) {
