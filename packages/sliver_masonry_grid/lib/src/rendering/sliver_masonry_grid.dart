@@ -300,39 +300,7 @@ class RenderSliverMasonryGrid extends RenderSliverMultiBoxAdaptor {
       }
     }
 
-    /* 
-      When there is only one child in the grid (i.e. no sibling exists), it is possible 
-      that the child’s main axis extent is significantly larger than the viewport. In such 
-      cases, performing the usual iterative layout may result in excessive layout cycles 
-      or even trigger errors like "A RenderViewport exceeded its maximum number of layout cycles."
-
-      To address this, we perform a "fast-path" layout when a sole child’s extent exceeds 
-      a dynamic threshold derived from the current viewport's remaining paint extent plus 
-      a safety margin.
-
-      If the child's extent exceeds this threshold, we bypass the regular layout loop and 
-      directly set the sliver's geometry based on the child's size. This avoids expensive 
-      recomputation and prevents layout cycle errors.
-    */
-    if (firstChild != null && childAfter(firstChild!) == null) {
-      firstChild!.layout(childConstraints, parentUsesSize: true);
-      final childExtent = paintExtentOf(firstChild!);
-      // Derive a dynamic threshold based on the viewport.
-      final safetyMargin = 500.0;
-      final dynamicThreshold = constraints.remainingPaintExtent + safetyMargin;
-
-      if (childExtent > dynamicThreshold) {
-        geometry = SliverGeometry(
-          scrollExtent: childExtent,
-          paintExtent: math.min(childExtent, constraints.remainingPaintExtent),
-          cacheExtent: math.min(childExtent, constraints.remainingCacheExtent),
-          maxPaintExtent: childExtent,
-          hasVisualOverflow: true,
-        );
-        childManager.didFinishLayout();
-        return;
-      }
-    }
+    // We have at least one child.
 
     // These variables track the range of children that we have laid out. Within
     // this range, the children have consecutive indices. Outside this range,
