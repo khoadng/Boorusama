@@ -11,11 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/mobile.dart';
-import '../../../../http/providers.dart';
-import '../../../../images/providers.dart';
+import '../../../../images/booru_image.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
 
@@ -23,6 +21,8 @@ class OriginalImagePage extends ConsumerStatefulWidget {
   const OriginalImagePage({
     required this.imageUrl,
     required this.id,
+    required this.aspectRatio,
+    required this.contentSize,
     super.key,
   });
 
@@ -30,10 +30,17 @@ class OriginalImagePage extends ConsumerStatefulWidget {
     Post post, {
     super.key,
   })  : imageUrl = post.originalImageUrl,
+        aspectRatio = post.aspectRatio,
+        contentSize = Size(
+          post.width,
+          post.height,
+        ),
         id = post.id;
 
   final String imageUrl;
   final int id;
+  final double? aspectRatio;
+  final Size? contentSize;
 
   @override
   ConsumerState<OriginalImagePage> createState() => _OriginalImagePageState();
@@ -153,10 +160,17 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
               ),
           ],
         ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: ValueListenableBuilder(
+        body: InteractiveViewerExtended(
+          contentSize: widget.contentSize,
+          onZoomUpdated: (value) {
+            setState(() {
+              zoom = value;
+            });
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              ValueListenableBuilder(
                 valueListenable: turn,
                 builder: (context, value, child) => RotationTransition(
                   turns: AlwaysStoppedAnimation(value),
@@ -164,44 +178,31 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 ),
                 child: _buildImage(),
               ),
-            ),
-            AnimatedSwitcher(
-              duration: Durations.extralong1,
-              reverseDuration: const Duration(milliseconds: 10),
-              child: overlay
-                  ? ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: <Color>[
-                        const Color.fromARGB(60, 0, 0, 0),
-                        Colors.black12.withValues(alpha: 0),
-                      ],
-                    )
-                  : null,
-            ),
-          ],
+              AnimatedSwitcher(
+                duration: Durations.extralong1,
+                reverseDuration: const Duration(milliseconds: 10),
+                child: overlay
+                    ? ShadowGradientOverlay(
+                        alignment: Alignment.topCenter,
+                        colors: <Color>[
+                          const Color.fromARGB(60, 0, 0, 0),
+                          Colors.black12.withValues(alpha: 0),
+                        ],
+                      )
+                    : null,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildImage() {
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
-
-    return InteractiveViewerExtended(
-      onZoomUpdated: (value) {
-        setState(() {
-          zoom = value;
-        });
-      },
-      child: ExtendedImage.network(
-        widget.imageUrl,
-        dio: dio,
-        headers: {
-          ...ref.watch(extraHttpHeaderProvider(config)),
-          ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-        },
-      ),
+    return _ImageViewer(
+      imageUrl: widget.imageUrl,
+      aspectRatio: widget.aspectRatio,
+      contentSize: widget.contentSize,
     );
   }
 
@@ -213,5 +214,54 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     } else {
       hideSystemStatus();
     }
+  }
+}
+
+class _ImageViewer extends ConsumerStatefulWidget {
+  const _ImageViewer({
+    required this.imageUrl,
+    required this.aspectRatio,
+    required this.contentSize,
+  });
+
+  final String imageUrl;
+  final double? aspectRatio;
+  final Size? contentSize;
+
+  @override
+  ConsumerState<_ImageViewer> createState() => __ImageViewerState();
+}
+
+class __ImageViewerState extends ConsumerState<_ImageViewer> {
+  final _controller = ExtendedImageController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BooruImage(
+      imageUrl: widget.imageUrl,
+      controller: _controller,
+      borderRadius: BorderRadius.zero,
+      aspectRatio: widget.aspectRatio,
+      imageHeight: widget.contentSize?.height,
+      imageWidth: widget.contentSize?.width,
+      forceFill: true,
+      placeholderWidget: ValueListenableBuilder(
+        valueListenable: _controller.progress,
+        builder: (context, progress, child) {
+          return Center(
+            child: CircularProgressIndicator(
+              value: progress,
+            ),
+          );
+        },
+      ),
+    );
   }
 }

@@ -50,7 +50,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                 image: imageBuilder != null
                     ? imageBuilder!(post)
                     : BooruImage(
-                        forceFill: true,
+                        forceCover: true,
                         aspectRatio: 0.6,
                         imageUrl: imageUrl(post),
                         placeholderUrl: post.thumbnailImageUrl,

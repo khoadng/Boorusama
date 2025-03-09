@@ -52,7 +52,7 @@ class FileDetailsSection extends StatelessWidget {
 
   Widget _buildTile() {
     return LayoutBuilder(
-      builder: (context, contraints) {
+      builder: (context, constraints) {
         final fileSizeText = post.fileSize > 0
             ? ' • ${Filesize.parse(post.fileSize, round: 1)}'
             : '';
@@ -137,7 +137,7 @@ class FileDetailsSection extends StatelessWidget {
               color: Theme.of(context).colorScheme.hintColor,
             ),
           ),
-          children: contraints.maxWidth < 480
+          children: constraints.maxWidth < 480
               ? children
               : [
                   const SizedBox(height: 16),

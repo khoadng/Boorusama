@@ -10,6 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../router.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../widgets/widgets.dart';
+import '../../details/widgets.dart';
 
 class SliverCharacterPostList extends ConsumerWidget {
   const SliverCharacterPostList({
@@ -22,6 +23,23 @@ class SliverCharacterPostList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (tags.isEmpty) return const SliverSizedBox.shrink();
+
+    final maxWidth = PostDetailsSheetConstraints.of(context)?.maxWidth;
+
+    final crossAxisCount = maxWidth != null
+        ? switch (maxWidth) {
+            >= 550 => 4,
+            >= 450 => 3,
+            _ => 2,
+          }
+        : 2;
+    final childAspectRatio = maxWidth != null
+        ? switch (maxWidth) {
+            >= 550 => 2.5,
+            >= 450 => 3.5,
+            _ => 4.0,
+          }
+        : 4.0;
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
@@ -49,36 +67,24 @@ class SliverCharacterPostList extends ConsumerWidget {
             ),
           ),
           const SliverSizedBox(height: 4),
-          SliverLayoutBuilder(
-            builder: (_, constraints) {
-              return SliverGrid.count(
-                crossAxisCount: switch (constraints.crossAxisExtent) {
-                  >= 550 => 4,
-                  >= 450 => 3,
-                  _ => 2,
-                },
-                childAspectRatio: switch (constraints.crossAxisExtent) {
-                  >= 550 => 2.5,
-                  >= 450 => 3.5,
-                  _ => 4,
-                },
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
-                children: tags
-                    .map(
-                      (tag) => BooruChip(
-                        borderRadius: BorderRadius.circular(4),
-                        color: ref.watch(tagColorProvider('character')),
-                        onPressed: () => goToCharacterPage(context, tag),
-                        label: Text(
-                          tag.replaceAll('_', ' '),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                    .toList(),
-              );
-            },
+          SliverGrid.count(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: childAspectRatio,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            children: tags
+                .map(
+                  (tag) => BooruChip(
+                    borderRadius: BorderRadius.circular(4),
+                    color: ref.watch(tagColorProvider('character')),
+                    onPressed: () => goToCharacterPage(context, tag),
+                    label: Text(
+                      tag.replaceAll('_', ' '),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),

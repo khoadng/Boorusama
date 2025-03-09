@@ -1,7 +1,15 @@
 // Project imports:
 import '../../../../settings/settings.dart';
 
-int calculateGridCount(double width, GridSize size) {
+int calculateGridCount(double? width, GridSize size) {
+  if (width == null) {
+    return switch (size) {
+      GridSize.small => 3,
+      GridSize.normal => 2,
+      GridSize.large => 1,
+    };
+  }
+
   return switch (size) {
     GridSize.small => _getSmallGridColumns(width),
     GridSize.normal => _getNormalGridColumns(width),
