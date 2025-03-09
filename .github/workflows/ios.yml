@@ -2,7 +2,7 @@ name: "build ipa dev"
 
 on:
   schedule:
-    - cron: '0 0 */1 * *' # once per day
+    - cron: '0 0 * * 2' # every Tuesday
   workflow_dispatch:
 
 concurrency:
