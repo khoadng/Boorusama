@@ -215,12 +215,11 @@ Matrix4 _calcZoomMatrixFromSize({
   required Size contentSize,
   required Offset focalPoint,
 }) {
-  // Make sure we don't divide by zero.
-  if (containerSize.width == 0 || containerSize.height == 0) {
+  if (!_isValidSize(contentSize) || !_isValidSize(containerSize)) {
     return Matrix4.identity();
   }
 
-  // Calculate the scale so that the content's width matches the container's width.
+  // Calculate the scale so that the content's width or height matches the container.
   final scale = max(
     contentSize.width / containerSize.width,
     contentSize.height / containerSize.height,
@@ -248,18 +247,19 @@ Matrix4 _calcZoomMatrixFromZoomValue({
 }
 
 double _calcMaxScale(Size? contentSize, Size containerSize) {
-  // Make sure we not divide by zero.
-  if (containerSize.width == 0 || containerSize.height == 0) {
+  if (contentSize == null) {
     return _kFallbackMaxScale;
   }
 
-  return contentSize == null
-      ? _kFallbackMaxScale
-      : max(
-            contentSize.width / containerSize.width,
-            contentSize.height / containerSize.height,
-          ) *
-          _kScaleMultiplier;
+  if (!_isValidSize(contentSize) || !_isValidSize(containerSize)) {
+    return _kFallbackMaxScale;
+  }
+
+  return max(
+        contentSize.width / containerSize.width,
+        contentSize.height / containerSize.height,
+      ) *
+      _kScaleMultiplier;
 }
 
 // Utility function to calculate the translation needed to center the scaled tap position.
@@ -272,3 +272,6 @@ Offset _calculateCenteringTranslation({
   final scaledTap = tapPosition * scale;
   return containerCenter - scaledTap;
 }
+
+bool _isValidSize(Size? size) =>
+    size != null && size.width != 0 && size.height != 0;
