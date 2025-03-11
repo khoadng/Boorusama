@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../blacklists/providers.dart';
+import '../../../configs/ref.dart';
 import '../../../downloads/l10n.dart' as d;
 import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../foundation/toast.dart';
@@ -215,45 +217,67 @@ class _CreateDownloadOptionsRawSheetState
           ),
         ),
         if (widget.advancedToggle)
-          SwitchListTile(
-            title: const Text(
-              DownloadTranslations.showAdvancedOptions,
-            ).tr(),
-            value: advancedOptions,
-            onChanged: (value) {
-              setState(() {
-                advancedOptions = value;
-              });
-            },
+          Column(
+            children: [
+              SwitchListTile(
+                title: const Text(
+                  DownloadTranslations.showAdvancedOptions,
+                ).tr(),
+                value: advancedOptions,
+                onChanged: (value) {
+                  setState(() {
+                    advancedOptions = value;
+                  });
+                },
+              ),
+              if (showAll) const Divider(),
+            ],
           ),
         if (showAll || advancedOptions) ...[
-          SwitchListTile(
-            title: const Text(
-              DownloadTranslations.enableNotifications,
-            ).tr(),
-            value: options.notifications,
-            onChanged: (value) {
-              notifier.setNotifications(value);
-            },
+          _buildExcludedTags(textTheme, colorScheme),
+          SettingsCard(
+            title: 'Other options',
+            child: Column(
+              children: [
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ),
+                  title: const Text(
+                    DownloadTranslations.enableNotifications,
+                  ).tr(),
+                  value: options.notifications,
+                  onChanged: (value) {
+                    notifier.setNotifications(value);
+                  },
+                ),
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ),
+                  title: const Text(d.DownloadTranslations.skipDownloadIfExists)
+                      .tr(),
+                  value: options.skipIfExists,
+                  onChanged: (value) {
+                    notifier.setSkipIfExists(value);
+                  },
+                ),
+                SettingsTile(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  title: const Text('settings.download.quality').tr(),
+                  selectedOption:
+                      options.quality ?? DownloadQuality.original.name,
+                  items: DownloadQuality.values.map((e) => e.name).toList(),
+                  onChanged: (value) {
+                    notifier.setQuality(value);
+                  },
+                  optionBuilder: (value) =>
+                      Text('settings.download.qualities.$value').tr(),
+                ),
+              ],
+            ),
           ),
-          SwitchListTile(
-            title: const Text(d.DownloadTranslations.skipDownloadIfExists).tr(),
-            value: options.skipIfExists,
-            onChanged: (value) {
-              notifier.setSkipIfExists(value);
-            },
-          ),
-          SettingsTile(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            title: const Text('settings.download.quality').tr(),
-            selectedOption: options.quality ?? DownloadQuality.original.name,
-            items: DownloadQuality.values.map((e) => e.name).toList(),
-            onChanged: (value) {
-              notifier.setQuality(value);
-            },
-            optionBuilder: (value) =>
-                Text('settings.download.qualities.$value').tr(),
-          ),
+          const SizedBox(height: 8),
         ],
         Container(
           padding: const EdgeInsets.symmetric(
@@ -263,6 +287,132 @@ class _CreateDownloadOptionsRawSheetState
           child: widget.actions,
         ),
       ],
+    );
+  }
+
+  Widget _buildExcludedTags(TextTheme textTheme, ColorScheme colorScheme) {
+    return SettingsCard(
+      title: 'Excluded tags',
+      child: ref.watch(blacklistTagsProvider(ref.watchConfigFilter)).when(
+            data: (rawTags) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 16,
+                  ),
+                  child: Text(
+                    rawTags.isNotEmpty
+                        ? '${rawTags.length} tags from blacklist'
+                        : 'No blacklisted tags',
+                    style: TextStyle(
+                      color: colorScheme.onSurface,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                // SwitchListTile(
+                //   contentPadding: const EdgeInsets.symmetric(
+                //     horizontal: 4,
+                //   ),
+                //   title: const Text(
+                //     'Use blacklist',
+                //   ).tr(),
+                //   subtitle: Text(
+                //     rawTags.isNotEmpty
+                //         ? 'Excludes ${rawTags.length} tags'
+                //         : 'No blacklisted tags',
+                //   ),
+                //   value: true,
+                //   onChanged: (value) {
+                //     // notifier.setSkipIfExists(value);
+                //   },
+                // ),
+              ],
+            ),
+            error: (error, _) => Text(
+              error.toString(),
+              style: TextStyle(
+                color: colorScheme.error,
+              ),
+            ),
+            loading: () => const CircularProgressIndicator(),
+          ),
+    );
+  }
+}
+
+class SettingsCard extends StatelessWidget {
+  const SettingsCard({
+    required this.child,
+    super.key,
+    this.onTap,
+    this.padding,
+    this.title,
+  });
+
+  final Widget child;
+  final void Function()? onTap;
+  final EdgeInsetsGeometry? padding;
+  final String? title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+    final title = this.title;
+
+    return Container(
+      margin: padding ??
+          const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+          ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 8,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    title.toUpperCase(),
+                    style: textTheme.titleSmall?.copyWith(
+                      color: colorScheme.hintColor,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          Material(
+            color: colorScheme.surfaceContainerHigh,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: InkWell(
+              customBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              onTap: onTap,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                ),
+                child: child,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -376,9 +376,11 @@ class TagSearchConfigChip extends StatelessWidget {
   const TagSearchConfigChip({
     required this.tag,
     super.key,
+    this.backgroundColor,
   });
 
   final String tag;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -410,7 +412,7 @@ class TagSearchConfigChip extends StatelessWidget {
           ],
         ),
       ),
-      backgroundColor: colorScheme.secondaryContainer,
+      backgroundColor: backgroundColor ?? colorScheme.secondaryContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
       ),

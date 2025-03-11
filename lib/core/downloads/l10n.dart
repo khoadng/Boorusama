@@ -16,8 +16,7 @@ class DownloadTranslations {
   static const String downloadSelectFolderWarning =
       'download.bulk_download_folder_select_warning';
 
-  static const String skipDownloadIfExists =
-      'Ignore files that already downloaded';
+  static const String skipDownloadIfExists = 'Skip existing files';
   static const String skipDownloadIfExistsExplanation =
       "This will prevent downloading files that already exist in the folder. This is useful when you don't want to download the same file multiple times.";
 }
