@@ -212,7 +212,13 @@
         "image_viewer": {
             "image_viewer": "Visor de Imagenes",
             "full_res_as_default": "Mostrar La mas alta resolucion por defecto",
-            "full_res_notice": "Tomará un tiempo cargar, dependiendo del tamaño de la imagen"
+            "full_res_notice": "Tomará un tiempo cargar, dependiendo del tamaño de la imagen",
+            "slideshow": "Presentación",
+            "slideshow_mode": "Modo presentación",
+            "slideshow_modes": {
+                "random": "Aleatorio"
+            },
+            "slideshow_interval": "Intervalo de presentación"
         },
         "image_detail": {
             "image_detail": "Calidad de la Imagen"
