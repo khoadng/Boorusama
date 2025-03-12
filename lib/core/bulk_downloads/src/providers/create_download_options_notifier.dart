@@ -1,9 +1,13 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../info/device_info.dart';
 import '../../../search/histories/history.dart';
+import '../../../search/selected_tags/tag.dart';
 import '../types/download_options.dart';
 
 class CreateDownloadOptionsNotifier
@@ -18,6 +22,7 @@ class CreateDownloadOptionsNotifier
       perPage: arg.perPage,
       concurrency: arg.concurrency,
       tags: arg.tags,
+      blacklistedTags: arg.blacklistedTags,
     );
   }
 
@@ -75,6 +80,26 @@ class CreateDownloadOptionsNotifier
   void setConcurrency(int value) {
     state = state.copyWith(
       concurrency: value,
+    );
+  }
+
+  void addBlacklistedTag(String tag) {
+    final currentTags = queryAsList(state.blacklistedTags);
+
+    final newTags = [...currentTags, tag];
+
+    state = state.copyWith(
+      blacklistedTags: () => jsonEncode(newTags),
+    );
+  }
+
+  void removeBlacklistedTag(String tag) {
+    final currentTags = queryAsList(state.blacklistedTags);
+
+    final newTags = currentTags.where((t) => t != tag).toList();
+
+    state = state.copyWith(
+      blacklistedTags: () => jsonEncode(newTags),
     );
   }
 

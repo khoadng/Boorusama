@@ -493,4 +493,49 @@ void main() {
       );
     });
   });
+
+  group('Blacklisted Tags', () {
+    test('should merge blacklisted tags from task and configuration', () async {
+      // Arrange
+      final task = await repository.createTask(
+        _options.copyWith(
+          blacklistedTags: () => '["tag1", "tag2"]', // Task-level blacklist
+        ),
+      );
+
+      final notifier = container.read(bulkDownloadProvider.notifier);
+
+      // Act
+      await notifier.downloadFromTask(
+        task,
+        downloadConfigs: _defaultConfigs.copyWith(
+          blacklistedTags: {'tag3', 'tag4'}, // Config-level blacklist
+        ),
+      );
+
+      // Assert
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final records = await repository.getRecordsBySessionId(sessions.first.id);
+
+      // Posts with ids 1 and 2 should be filtered out since they contain blacklisted tags
+      final recordUrls = records.map((r) => r.url).toList();
+      expect(
+        recordUrls.contains('test-original-url-1'),
+        isFalse,
+        reason: 'Post with tag1,tag2 should be filtered out',
+      );
+      expect(
+        recordUrls.contains('test-original-url-2'),
+        isFalse,
+        reason: 'Post with tag3,tag4 should be filtered out',
+      );
+
+      // Other posts should still be present
+      expect(
+        recordUrls.contains('test-original-url-3'),
+        isTrue,
+        reason: 'Posts without blacklisted tags should remain',
+      );
+    });
+  });
 }

@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../blacklists/providers.dart';
+import '../../../configs/create.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/l10n.dart' as d;
 import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../foundation/toast.dart';
 import '../../../info/device_info.dart';
 import '../../../router.dart';
+import '../../../search/search/routes.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
@@ -239,7 +242,10 @@ class _CreateDownloadOptionsRawSheetState
             ],
           ),
         if (showAll || advancedOptions) ...[
-          _buildExcludedTags(textTheme, colorScheme),
+          _ExcludedTagsSection(
+            options: options,
+            notifier: notifier,
+          ),
           SettingsCard(
             title: 'Other options',
             child: Column(
@@ -294,8 +300,25 @@ class _CreateDownloadOptionsRawSheetState
       ],
     );
   }
+}
 
-  Widget _buildExcludedTags(TextTheme textTheme, ColorScheme colorScheme) {
+class _ExcludedTagsSection extends ConsumerWidget {
+  const _ExcludedTagsSection({
+    required this.options,
+    required this.notifier,
+  });
+
+  final DownloadOptions options;
+  final CreateDownloadOptionsNotifier notifier;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    final extraTags = queryAsList(options.blacklistedTags);
+    final config = ref.watchConfigAuth;
+
     return SettingsCard(
       title: 'Excluded tags',
       padding: const EdgeInsets.only(
@@ -305,43 +328,75 @@ class _CreateDownloadOptionsRawSheetState
         bottom: 8,
       ),
       child: ref.watch(blacklistTagEntriesProvider(ref.watchConfigFilter)).when(
-            data: (rawTags) => Column(
+            data: (tags) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  rawTags.isNotEmpty
-                      ? () {
-                          final grouped = rawTags.groupBy(
-                            (e) => e.source,
-                          );
-
-                          final sb = StringBuffer();
-                          for (final entry in grouped.entries) {
-                            sb.write(
-                              '• ${entry.value.length} tags from ${entry.key.displayString}\n',
-                            );
-                          }
-
-                          return sb.toString().trim();
-                        }()
-                      : 'No blacklisted tags',
+                  _buildTitle(tags),
                   style: TextStyle(
                     color: colorScheme.onSurface,
                     fontSize: 16,
                   ),
                 ),
-                // const SizedBox(height: 8),
-                // TextButton.icon(
-                //   style: TextButton.styleFrom(
-                //     foregroundColor: colorScheme.onSurface,
-                //     iconColor: colorScheme.onSurface,
-                //   ),
-                //   label: const Text('Add custom tags'),
-                //   icon: const Icon(Icons.add),
-                //   onPressed: () {},
-                // ),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Exclude additional tags from this batch',
+                        style: textTheme.titleMedium?.copyWith(
+                          color: colorScheme.hintColor,
+                        ),
+                      ),
+                      Wrap(
+                        runAlignment: WrapAlignment.center,
+                        spacing: 5,
+                        runSpacing: 5,
+                        children: [
+                          ...extraTags.map(
+                            (e) => Chip(
+                              backgroundColor: colorScheme.surfaceContainer,
+                              label: Text(e.replaceAll('_', ' ')),
+                              deleteIcon: Icon(
+                                Symbols.close,
+                                size: 16,
+                                color: colorScheme.error,
+                              ),
+                              onDeleted: () {
+                                notifier.removeBlacklistedTag(e);
+                              },
+                            ),
+                          ),
+                          IconButton(
+                            iconSize: 28,
+                            splashRadius: 20,
+                            onPressed: () {
+                              goToQuickSearchPage(
+                                context,
+                                ref: ref,
+                                initialConfig: config,
+                                onSubmitted: (context, text, _) {
+                                  Navigator.of(context).pop();
+                                  notifier.addBlacklistedTag(text);
+                                },
+                                onSelected: (tag, _) {
+                                  notifier.addBlacklistedTag(tag);
+                                },
+                              );
+                            },
+                            icon: const Icon(Symbols.add),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             error: (error, _) => Text(
@@ -353,6 +408,23 @@ class _CreateDownloadOptionsRawSheetState
             loading: () => const CircularProgressIndicator(),
           ),
     );
+  }
+
+  String _buildTitle(Set<BlacklistedTagEntry> tags) {
+    if (tags.isEmpty) {
+      return 'No blacklisted tags';
+    }
+
+    final grouped = tags.groupBy((e) => e.source);
+    final sb = StringBuffer();
+
+    for (final entry in grouped.entries) {
+      sb.write(
+        '• ${entry.value.length} tags from ${entry.key.displayString}\n',
+      );
+    }
+
+    return sb.toString().trim();
   }
 }
 

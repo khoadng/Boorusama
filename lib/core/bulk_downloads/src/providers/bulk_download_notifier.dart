@@ -475,7 +475,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         await ref.read(blacklistTagsProvider(config.filter).future);
     final blacklistedTags =
         downloadConfigs?.blacklistedTags ?? fallbackBlacklistedTags;
-    final patterns = blacklistedTags
+    final effectiveBlacklistedTags = {
+      ...queryAsList(task.blacklistedTags),
+      ...blacklistedTags,
+    };
+    final patterns = effectiveBlacklistedTags
         .map((tag) => tag.split(' ').map(TagExpression.parse).toList())
         .toList();
 

@@ -156,7 +156,7 @@ class DownloadRepositorySqlite
         '''
         UPDATE download_tasks 
         SET path = ?, notifications = ?, skip_if_exists = ?, quality = ?, 
-            updated_at = ?, per_page = ?, concurrency = ?, tags = ? 
+            updated_at = ?, per_page = ?, concurrency = ?, tags = ?, blacklisted_tags = ? 
         WHERE id = ?
         ''',
         [
@@ -168,6 +168,7 @@ class DownloadRepositorySqlite
           newTask.perPage,
           newTask.concurrency,
           newTask.tags,
+          newTask.blacklistedTags,
           taskId,
         ],
       );
@@ -188,14 +189,15 @@ class DownloadRepositorySqlite
       perPage: options.perPage,
       concurrency: options.concurrency,
       tags: options.tags.toString(),
+      blacklistedTags: options.blacklistedTags?.toString(),
     );
 
     db.execute(
       '''
       INSERT INTO download_tasks (
         id, path, notifications, skip_if_exists, quality, 
-        created_at, updated_at, per_page, concurrency, tags
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        created_at, updated_at, per_page, concurrency, tags, blacklisted_tags
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ''',
       [
         task.id,
@@ -208,6 +210,7 @@ class DownloadRepositorySqlite
         task.perPage,
         task.concurrency,
         task.tags,
+        task.blacklistedTags,
       ],
     );
     return task;
@@ -340,6 +343,7 @@ class DownloadRepositorySqlite
         t.per_page,
         t.concurrency,
         t.tags,
+        t.blacklisted_tags,
         r.thumbnail_url as cover_url,
         r.source_url as site_url,
         COUNT(r.url) as total_items,
@@ -369,6 +373,7 @@ class DownloadRepositorySqlite
         perPage: row['per_page'] as int,
         concurrency: row['concurrency'] as int,
         tags: row['tags'] as String?,
+        blacklistedTags: row['blacklisted_tags'] as String?,
       );
       final stats = DownloadSessionStats(
         id: null,
@@ -972,7 +977,8 @@ class DownloadRepositorySqlite
         t.updated_at as task_updated_at,
         t.per_page,
         t.concurrency,
-        t.tags
+        t.tags,
+        t.blacklisted_tags
       FROM saved_download_tasks s
       INNER JOIN download_tasks t ON s.task_id = t.id
       ORDER BY s.created_at DESC
@@ -992,6 +998,7 @@ class DownloadRepositorySqlite
         perPage: row['per_page'] as int,
         concurrency: row['concurrency'] as int,
         tags: row['tags'] as String?,
+        blacklistedTags: row['blacklisted_tags'] as String?,
       );
 
       return SavedDownloadTask(
@@ -1032,7 +1039,8 @@ class DownloadRepositorySqlite
         t.updated_at as task_updated_at,
         t.per_page,
         t.concurrency,
-        t.tags
+        t.tags,
+        t.blacklisted_tags
       FROM saved_download_tasks s
       INNER JOIN download_tasks t ON s.task_id = t.id
       WHERE s.id = ?
@@ -1056,6 +1064,7 @@ class DownloadRepositorySqlite
       perPage: row['per_page'] as int,
       concurrency: row['concurrency'] as int,
       tags: row['tags'] as String?,
+      blacklistedTags: row['blacklisted_tags'] as String?,
     );
 
     return SavedDownloadTask(

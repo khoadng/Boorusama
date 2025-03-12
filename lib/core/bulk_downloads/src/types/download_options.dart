@@ -17,6 +17,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
     required this.concurrency,
     required this.tags,
     this.quality,
+    this.blacklistedTags,
   });
 
   factory DownloadOptions.initial({
@@ -42,6 +43,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       perPage: task.perPage,
       concurrency: task.concurrency,
       tags: SearchTagSet.fromString(task.tags),
+      blacklistedTags: task.blacklistedTags,
     );
   }
 
@@ -58,6 +60,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       perPage: perPage,
       concurrency: concurrency,
       tags: tags.toString(),
+      blacklistedTags: blacklistedTags,
     );
   }
 
@@ -68,6 +71,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
   final int perPage;
   final int concurrency;
   final SearchTagSet tags;
+  final String? blacklistedTags;
 
   DownloadOptions copyWith({
     String? path,
@@ -77,6 +81,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
     int? perPage,
     int? concurrency,
     SearchTagSet? tags,
+    String? Function()? blacklistedTags,
   }) {
     return DownloadOptions(
       path: path ?? this.path,
@@ -86,6 +91,8 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       perPage: perPage ?? this.perPage,
       concurrency: concurrency ?? this.concurrency,
       tags: tags ?? this.tags,
+      blacklistedTags:
+          blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
     );
   }
 
@@ -101,6 +108,7 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
         perPage,
         concurrency,
         tags,
+        blacklistedTags,
       ];
 }
 

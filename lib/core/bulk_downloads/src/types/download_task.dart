@@ -16,6 +16,7 @@ class DownloadTask extends Equatable {
     required this.concurrency,
     this.quality,
     this.tags,
+    this.blacklistedTags,
   });
 
   factory DownloadTask.empty() {
@@ -46,6 +47,7 @@ class DownloadTask extends Equatable {
         perPage: json['perPage'] as int? ?? 20,
         concurrency: json['concurrency'] as int? ?? 1,
         tags: json['tags'] as String?,
+        blacklistedTags: json['blacklistedTags'] as String?,
       );
 
   final String id;
@@ -58,6 +60,7 @@ class DownloadTask extends Equatable {
   final int perPage;
   final int concurrency;
   final String? tags;
+  final String? blacklistedTags;
 
   String? get prettyTags => tags == null
       ? null
@@ -71,6 +74,7 @@ class DownloadTask extends Equatable {
     int? perPage,
     int? concurrency,
     String? tags,
+    String? blacklistedTags,
   }) =>
       DownloadTask(
         id: id,
@@ -83,6 +87,7 @@ class DownloadTask extends Equatable {
         perPage: perPage ?? this.perPage,
         concurrency: concurrency ?? this.concurrency,
         tags: tags ?? this.tags,
+        blacklistedTags: blacklistedTags ?? this.blacklistedTags,
       );
 
   Map<String, dynamic> toJson() => {
@@ -96,6 +101,7 @@ class DownloadTask extends Equatable {
         'perPage': perPage,
         'concurrency': concurrency,
         'tags': tags,
+        'blacklistedTags': blacklistedTags,
       };
 
   @override
@@ -110,5 +116,6 @@ class DownloadTask extends Equatable {
         perPage,
         concurrency,
         tags,
+        blacklistedTags,
       ];
 }
