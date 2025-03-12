@@ -17,6 +17,7 @@ import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
 import '../../../theme.dart';
+import '../../../utils/collection_utils.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
@@ -195,6 +196,10 @@ class _CreateDownloadOptionsRawSheetState
           onRemove: notifier.removeTag,
           onHistoryTap: notifier.addFromSearchHistory,
         ),
+        if (!widget.advancedToggle)
+          const Divider(
+            height: 16,
+          ),
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
@@ -293,43 +298,49 @@ class _CreateDownloadOptionsRawSheetState
   Widget _buildExcludedTags(TextTheme textTheme, ColorScheme colorScheme) {
     return SettingsCard(
       title: 'Excluded tags',
-      child: ref.watch(blacklistTagsProvider(ref.watchConfigFilter)).when(
+      padding: const EdgeInsets.only(
+        top: 8,
+        left: 12,
+        right: 12,
+        bottom: 8,
+      ),
+      child: ref.watch(blacklistTagEntriesProvider(ref.watchConfigFilter)).when(
             data: (rawTags) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 16,
-                  ),
-                  child: Text(
-                    rawTags.isNotEmpty
-                        ? '${rawTags.length} tags from blacklist'
-                        : 'No blacklisted tags',
-                    style: TextStyle(
-                      color: colorScheme.onSurface,
-                      fontSize: 16,
-                    ),
+                Text(
+                  rawTags.isNotEmpty
+                      ? () {
+                          final grouped = rawTags.groupBy(
+                            (e) => e.source,
+                          );
+
+                          final sb = StringBuffer();
+                          for (final entry in grouped.entries) {
+                            sb.write(
+                              '• ${entry.value.length} tags from ${entry.key.displayString}\n',
+                            );
+                          }
+
+                          return sb.toString().trim();
+                        }()
+                      : 'No blacklisted tags',
+                  style: TextStyle(
+                    color: colorScheme.onSurface,
+                    fontSize: 16,
                   ),
                 ),
-                // SwitchListTile(
-                //   contentPadding: const EdgeInsets.symmetric(
-                //     horizontal: 4,
+                // const SizedBox(height: 8),
+                // TextButton.icon(
+                //   style: TextButton.styleFrom(
+                //     foregroundColor: colorScheme.onSurface,
+                //     iconColor: colorScheme.onSurface,
                 //   ),
-                //   title: const Text(
-                //     'Use blacklist',
-                //   ).tr(),
-                //   subtitle: Text(
-                //     rawTags.isNotEmpty
-                //         ? 'Excludes ${rawTags.length} tags'
-                //         : 'No blacklisted tags',
-                //   ),
-                //   value: true,
-                //   onChanged: (value) {
-                //     // notifier.setSkipIfExists(value);
-                //   },
+                //   label: const Text('Add custom tags'),
+                //   icon: const Icon(Icons.add),
+                //   onPressed: () {},
                 // ),
               ],
             ),
@@ -350,12 +361,14 @@ class SettingsCard extends StatelessWidget {
     required this.child,
     super.key,
     this.onTap,
+    this.margin,
     this.padding,
     this.title,
   });
 
   final Widget child;
   final void Function()? onTap;
+  final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
   final String? title;
 
@@ -367,7 +380,7 @@ class SettingsCard extends StatelessWidget {
     final title = this.title;
 
     return Container(
-      margin: padding ??
+      margin: margin ??
           const EdgeInsets.only(
             left: 16,
             right: 16,
@@ -404,9 +417,10 @@ class SettingsCard extends StatelessWidget {
               ),
               onTap: onTap,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
+                padding: padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: 8,
+                    ),
                 child: child,
               ),
             ),

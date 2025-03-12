@@ -147,9 +147,13 @@ class EmptyBooruSpecificBlacklistTagRefRepository
 }
 
 enum BlacklistSource {
-  global,
-  booruSpecific,
-  config,
+  global('Global Blacklist'),
+  booruSpecific('Site Blacklist'),
+  config('Profile Blacklist');
+
+  const BlacklistSource(this.displayString);
+
+  final String displayString;
 }
 
 class BlacklistedTagEntry extends Equatable {
