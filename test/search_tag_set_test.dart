@@ -8,16 +8,6 @@ import 'package:boorusama/core/search/selected_tags/tag_search_item.dart';
 
 void main() {
   group('SearchTagSet', () {
-    test('create from string - simple tags', () {
-      final set = SearchTagSet.fromString('tag1 tag2 tag3');
-      expect(set.toString(), equals('["tag1","tag2","tag3"]'));
-    });
-
-    test('create from string - json format', () {
-      final set = SearchTagSet.fromString('["tag1","tag2","tag3"]');
-      expect(set.toString(), equals('["tag1","tag2","tag3"]'));
-    });
-
     test('add single tag', () {
       final set = SearchTagSet()..addTag('test_tag');
       expect(set.toString(), equals('["test_tag"]'));
@@ -73,11 +63,6 @@ void main() {
       expect(set.toString(), equals(''));
     });
 
-    test('handle whitespace properly', () {
-      final set = SearchTagSet.fromString('  tag1    tag2  tag3  ');
-      expect(set.toString(), equals('["tag1","tag2","tag3"]'));
-    });
-
     test('handle duplicate tags', () {
       final set = SearchTagSet()
         ..addTag('tag1')
@@ -85,11 +70,6 @@ void main() {
         ..addTag('tag2')
         ..addTag('tag2');
       expect(set.toString(), equals('["tag1","tag2"]'));
-    });
-
-    test('handle malformed JSON input', () {
-      final set = SearchTagSet.fromString('[not valid json}');
-      expect(set.toString(), equals('["[not","valid","json}"]'));
     });
 
     test('handle mixed operators', () {
@@ -139,6 +119,79 @@ void main() {
     test('list getter should return empty list for empty set', () {
       final set = SearchTagSet();
       expect(set.list, isEmpty);
+    });
+  });
+
+  group('queryAsList', () {
+    test('handle null input', () {
+      expect(queryAsList(null), equals([]));
+    });
+
+    test('parse simple space-delimited tags', () {
+      expect(
+        queryAsList('tag1 tag2 tag3'),
+        equals(['tag1', 'tag2', 'tag3']),
+      );
+    });
+
+    test('parse JSON array format', () {
+      expect(
+        queryAsList('["tag1","tag2","tag3"]'),
+        equals(['tag1', 'tag2', 'tag3']),
+      );
+    });
+
+    test('handle whitespace properly', () {
+      expect(
+        queryAsList('  tag1    tag2  tag3  '),
+        equals(['tag1', 'tag2', 'tag3']),
+      );
+    });
+
+    test('handle malformed JSON input', () {
+      expect(
+        queryAsList('[not valid json}'),
+        equals(['[not', 'valid', 'json}']),
+      );
+    });
+
+    test('handle empty string', () {
+      expect(queryAsList(''), equals([]));
+    });
+
+    test('handle JSON array with non-string values', () {
+      expect(
+        queryAsList('["tag1", 123, "tag2", true]'),
+        equals(['tag1', 'tag2']),
+      );
+    });
+
+    test('handle JSON array with empty strings', () {
+      expect(
+        queryAsList('["tag1", "", "tag2", "  "]'),
+        equals(['tag1', 'tag2']),
+      );
+    });
+
+    test('handle special characters', () {
+      expect(
+        queryAsList('tag#1 tag@2 tag%3'),
+        equals(['tag#1', 'tag@2', 'tag%3']),
+      );
+    });
+
+    test('handle nested JSON arrays', () {
+      expect(
+        queryAsList('["tag1",["tag2","tag3"],"tag4"]'),
+        equals(['tag1', 'tag4']), // nested arrays are ignored
+      );
+    });
+
+    test('handle unicode characters', () {
+      expect(
+        queryAsList('タグ1 タグ2 タグ3'),
+        equals(['タグ1', 'タグ2', 'タグ3']),
+      );
     });
   });
 }
