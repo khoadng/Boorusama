@@ -21,13 +21,14 @@ class FavoriteTagHiveObjectAdapter extends TypeAdapter<FavoriteTagHiveObject> {
       createdAt: fields[1] as DateTime,
       updatedAt: fields[2] as DateTime?,
       labels: (fields[3] as List?)?.cast<String>(),
+      queryType: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, FavoriteTagHiveObject obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class FavoriteTagHiveObjectAdapter extends TypeAdapter<FavoriteTagHiveObject> {
       ..writeByte(2)
       ..write(obj.updatedAt)
       ..writeByte(3)
-      ..write(obj.labels);
+      ..write(obj.labels)
+      ..writeByte(4)
+      ..write(obj.queryType);
   }
 
   @override

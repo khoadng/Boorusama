@@ -104,8 +104,8 @@ class TagEditExpandContent extends ConsumerWidget {
                   goToQuickSearchPage(
                     context,
                     ref: ref,
-                    onSelected: (tag, isMultiple) {
-                      if (isMultiple) {
+                    onSelected: (tag, isRaw) {
+                      if (isRaw) {
                         final tags = tag.split(' ');
 
                         notifier.addTags(tags);

@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../cache/providers.dart';
+import '../../../../tags/favorites/favorited.dart';
 import '../../../histories/all.dart';
 import '../../../selected_tags/tag_search_item.dart';
 import '../pages/selected_tag_edit_dialog.dart';
@@ -17,7 +18,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   const SearchLandingView({
     super.key,
     this.onHistoryTap,
-    this.onTagTap,
+    this.onFavTagTap,
     this.onRawTagTap,
     this.metatags,
     this.trending,
@@ -29,7 +30,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   });
 
   final ValueChanged<SearchHistory>? onHistoryTap;
-  final ValueChanged<String>? onTagTap;
+  final ValueChanged<FavoriteTag>? onFavTagTap;
   final ValueChanged<String>? onRawTagTap;
   final Widget? metatags;
   final Widget? trending;
@@ -164,8 +165,8 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     );
   }
 
-  void _onTagTap(String value, WidgetRef ref) {
-    widget.onTagTap?.call(value);
+  void _onTagTap(FavoriteTag value, WidgetRef ref) {
+    widget.onFavTagTap?.call(value);
   }
 
   void _onHistoryTap(SearchHistory value, WidgetRef ref) {

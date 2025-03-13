@@ -16,12 +16,6 @@ mixin QueryTypeMixin {
       return [];
     }
   }
-
-  static QueryType? parseQueryType(String? type) {
-    if (type == 'simple') return QueryType.simple;
-    if (type == 'list') return QueryType.list;
-    return null;
-  }
 }
 
 enum QueryType {

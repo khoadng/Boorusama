@@ -2,6 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
+import '../../../../search/selected_tags/tag.dart';
 import '../types/favorite_tag.dart';
 import 'favorite_tag_hive_object.dart';
 
@@ -51,6 +52,7 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
   Future<FavoriteTag> create({
     required String name,
     List<String>? labels,
+    QueryType? queryType,
   }) async {
     final now = DateTime.now();
     final obj = FavoriteTagHiveObject(
@@ -58,6 +60,7 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
       createdAt: now,
       updatedAt: now,
       labels: labels,
+      queryType: queryType?.name,
     );
 
     await box.put(obj.name, obj);

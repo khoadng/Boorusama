@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import '../../../../tags/favorites/src/types/favorite_tag.dart';
 import '../../../histories/history.dart';
 import '../../../queries/query.dart';
 import '../../../queries/query_utils.dart';
@@ -43,6 +44,12 @@ class SearchPageController extends ChangeNotifier {
       tag,
       operator: filterOperator,
     );
+
+    textController.clear();
+  }
+
+  void tapFavTag(FavoriteTag tag) {
+    tagsController.addTagFromFavTag(tag);
 
     textController.clear();
   }

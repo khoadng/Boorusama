@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../boorus/engine/engine.dart';
 import '../../tags/configs/configs.dart';
+import '../../tags/favorites/favorited.dart';
 import '../../tags/metatag/metatag.dart';
 import '../histories/history.dart';
 import '../queries/filter_operator.dart';
@@ -31,6 +32,11 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
 
   void addTagFromSearchHistory(SearchHistory history) {
     _tagSet.addTagFromSearchHistory(history);
+    value = _tagSet.tags;
+  }
+
+  void addTagFromFavTag(FavoriteTag tag) {
+    _tagSet.addTagFromFavTag(tag);
     value = _tagSet.tags;
   }
 

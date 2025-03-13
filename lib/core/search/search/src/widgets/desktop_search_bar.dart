@@ -172,11 +172,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     reverseScheme: true,
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainer,
-                    onTagTap: (value) {
-                      selectedTagController.addTag(
-                        value,
-                        operator: getFilterOperator(textEditingController.text),
-                      );
+                    onFavTagTap: (value) {
+                      selectedTagController.addTagFromFavTag(value);
                       FocusScope.of(context).unfocus();
                     },
                     onRawTagTap: (value) => selectedTagController.addTag(

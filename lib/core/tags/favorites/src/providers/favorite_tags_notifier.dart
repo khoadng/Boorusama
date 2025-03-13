@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/toast.dart';
+import '../../../../search/selected_tags/tag.dart';
 import '../types/favorite_tag.dart';
 import 'providers.dart';
 
@@ -47,6 +48,7 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
     String tag, {
     List<String>? labels,
     void Function(String tag)? onDuplicate,
+    bool? isRaw,
   }) async {
     if (tag.isEmpty) return;
 
@@ -68,6 +70,7 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
       labels: labels != null && labels.isNotEmpty
           ? labels.where((e) => e.isNotEmpty).toList()
           : null,
+      queryType: isRaw == true ? QueryType.simple : null,
     );
 
     final tags = await repo.getAll();

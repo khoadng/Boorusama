@@ -2,6 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
+import '../../../../search/selected_tags/tag.dart';
 import '../types/favorite_tag.dart';
 
 part 'favorite_tag_hive_object.g.dart';
@@ -13,6 +14,7 @@ class FavoriteTagHiveObject {
     required this.createdAt,
     required this.updatedAt,
     required this.labels,
+    this.queryType,
   });
 
   @HiveField(0)
@@ -26,6 +28,9 @@ class FavoriteTagHiveObject {
 
   @HiveField(3)
   List<String>? labels;
+
+  @HiveField(4)
+  String? queryType;
 }
 
 FavoriteTag favoriteTagHiveObjectToFavoriteTag(FavoriteTagHiveObject obj) {
@@ -34,6 +39,7 @@ FavoriteTag favoriteTagHiveObjectToFavoriteTag(FavoriteTagHiveObject obj) {
     createdAt: obj.createdAt,
     updatedAt: obj.updatedAt,
     labels: obj.labels,
+    queryType: parseQueryType(obj.queryType),
   );
 }
 
@@ -43,5 +49,6 @@ FavoriteTagHiveObject favoriteTagToFavoriteTagHiveObject(FavoriteTag tag) {
     createdAt: tag.createdAt,
     updatedAt: tag.updatedAt,
     labels: tag.labels,
+    queryType: tag.queryType?.name,
   );
 }

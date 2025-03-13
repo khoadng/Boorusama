@@ -538,8 +538,8 @@ class _SearchPageScaffoldState<T extends Post>
                 onHistoryTap: (value) {
                   _controller.tapHistoryTag(value);
                 },
-                onTagTap: (value) {
-                  _controller.tapTag(value);
+                onFavTagTap: (value) {
+                  _controller.tapFavTag(value);
                 },
                 onRawTagTap: (value) => _tagsController.addTag(
                   value,
@@ -682,8 +682,8 @@ class _SearchOptionsView extends ConsumerWidget {
               value,
             );
           },
-          onTagTap: (value) {
-            controller.tapTag(value);
+          onFavTagTap: (value) {
+            controller.tapFavTag(value);
           },
           onRawTagTap: (value) {
             controller.tagsController.addTag(

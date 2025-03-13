@@ -24,7 +24,7 @@ class FavoriteTagsSection extends ConsumerWidget {
   });
 
   final String selectedLabel;
-  final ValueChanged<String>? onTagTap;
+  final ValueChanged<FavoriteTag>? onTagTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,7 +58,7 @@ class FavoriteTagsSection extends ConsumerWidget {
 
         return RawChip(
           visualDensity: VisualDensity.compact,
-          onPressed: () => onTagTap?.call(tag.name),
+          onPressed: () => onTagTap?.call(tag),
           label: Text(
             tag.name.replaceAll('_', ' '),
             style: TextStyle(

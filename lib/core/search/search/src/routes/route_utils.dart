@@ -35,12 +35,11 @@ void goToSearchPage(
 void goToQuickSearchPage(
   BuildContext context, {
   required WidgetRef ref,
-  required void Function(String tag, bool isMultiple) onSelected,
+  required void Function(String tag, bool isRaw) onSelected,
   bool ensureValidTag = false,
   BooruConfigAuth? initialConfig,
   Widget Function(String text)? floatingActionButton,
-  void Function(BuildContext context, String text, bool isMultiple)?
-      onSubmitted,
+  void Function(BuildContext context, String text, bool isRaw)? onSubmitted,
   Widget Function(TextEditingController controller)? emptyBuilder,
 }) {
   showSimpleTagSearchView(

@@ -1,12 +1,16 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-class FavoriteTag extends Equatable {
+// Project imports:
+import '../../../../search/selected_tags/tag.dart';
+
+class FavoriteTag extends Equatable with QueryTypeMixin {
   const FavoriteTag({
     required this.name,
     required this.createdAt,
     required this.updatedAt,
     required this.labels,
+    this.queryType,
   });
 
   factory FavoriteTag.fromJson(Map<String, dynamic> json) => FavoriteTag(
@@ -32,17 +36,28 @@ class FavoriteTag extends Equatable {
   final DateTime? updatedAt;
   final List<String>? labels;
 
+  @override
+  String get query => name;
+
+  /// null is just a single tag
+  /// simple is a raw query
+  /// list is a list of tags
+  @override
+  final QueryType? queryType;
+
   FavoriteTag copyWith({
     String? name,
     DateTime? createdAt,
     DateTime? Function()? updatedAt,
     List<String>? Function()? labels,
+    QueryType? Function()? queryType,
   }) =>
       FavoriteTag(
         name: name ?? this.name,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt != null ? updatedAt() : this.updatedAt,
         labels: labels != null ? labels() : this.labels,
+        queryType: queryType != null ? queryType() : this.queryType,
       );
 
   Map<String, dynamic> toJson() => {
@@ -50,6 +65,7 @@ class FavoriteTag extends Equatable {
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt?.toIso8601String(),
         'labels': labels,
+        'queryType': queryType,
       };
 
   @override
@@ -58,6 +74,7 @@ class FavoriteTag extends Equatable {
         createdAt,
         updatedAt,
         labels,
+        queryType,
       ];
 }
 
@@ -95,6 +112,8 @@ abstract class FavoriteTagRepository {
   Future<FavoriteTag> create({
     required String name,
     List<String>? labels,
+    // if null then it's a single tag
+    QueryType? queryType,
   });
 
   Future<List<FavoriteTag>> createFrom(List<FavoriteTag> tags);

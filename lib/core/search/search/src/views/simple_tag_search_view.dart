@@ -46,12 +46,12 @@ class SimpleTagSearchView extends ConsumerStatefulWidget {
   });
 
   final BooruConfigAuth? initialConfig;
-  final void Function(String tag, bool isMultiple) onSelected;
+  final void Function(String tag, bool isRaw) onSelected;
   final bool ensureValidTag;
   final bool closeOnSelected;
   final Widget Function(String currentText)? floatingActionButton;
   final Widget? backButton;
-  final void Function(BuildContext context, String text, bool isMultiple)?
+  final void Function(BuildContext context, String text, bool isRaw)?
       onSubmitted;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
   final Widget Function(TextEditingController controller)? emptyBuilder;
@@ -72,8 +72,8 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
     focus.dispose();
   }
 
-  String _getQuery(String text, isMultiple) {
-    return isMultiple ? text.lastQuery ?? text : text;
+  String _getQuery(String text, isRaw) {
+    return isRaw ? text.lastQuery ?? text : text;
   }
 
   @override
@@ -83,12 +83,12 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
         ref.watch(suggestionsNotifierProvider(config).notifier);
 
     final inputType = ref.watch(selectedInputTypeSelectorProvider);
-    final isMultiple = inputType == InputType.multiple;
+    final isRaw = inputType == InputType.raw;
 
     return ValueListenableBuilder(
       valueListenable: textEditingController,
       builder: (context, query, child) {
-        final q = _getQuery(query.text, isMultiple);
+        final q = _getQuery(query.text, isRaw);
         final suggestionTags = ref.watch(suggestionProvider(q));
         final tags = widget.ensureValidTag
             ? suggestionTags.where((e) => e.category != null).toIList()
@@ -108,7 +108,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                         focus: focus,
                         controller: textEditingController,
                         leading: widget.backButton,
-                        trailing: isMultiple
+                        trailing: isRaw
                             ? Padding(
                                 padding: const EdgeInsets.only(right: 8),
                                 child: ValueListenableBuilder(
@@ -122,7 +122,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                                               onTap: () {
                                                 widget.onSelected(
                                                   query.text.trimRight(),
-                                                  isMultiple,
+                                                  isRaw,
                                                 );
                                                 if (widget.closeOnSelected) {
                                                   Navigator.of(context).pop();
@@ -134,9 +134,9 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                             : null,
                         autofocus: true,
                         onSubmitted: (text) =>
-                            widget.onSubmitted?.call(context, text, isMultiple),
+                            widget.onSubmitted?.call(context, text, isRaw),
                         onChanged: (value) {
-                          final query = _getQuery(value, isMultiple);
+                          final query = _getQuery(value, isRaw);
 
                           suggestionNotifier.getSuggestions(query);
                         },
@@ -156,7 +156,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                       tags: tags,
                       padding: EdgeInsets.zero,
                       onItemTap: (tag) {
-                        if (isMultiple) {
+                        if (isRaw) {
                           textEditingController.text = textEditingController
                               .text
                               .replaceLastQuery(tag.value);
@@ -166,10 +166,10 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                           if (widget.closeOnSelected) {
                             Navigator.of(context).pop();
                           }
-                          widget.onSelected(tag.value, isMultiple);
+                          widget.onSelected(tag.value, isRaw);
                         }
                       },
-                      currentQuery: isMultiple
+                      currentQuery: isRaw
                           ? query.text.lastQuery ?? query.text
                           : query.text,
                     ),
@@ -198,7 +198,7 @@ final selectedInputTypeSelectorProvider =
 
 enum InputType {
   single,
-  multiple,
+  raw,
 }
 
 class InputSelectorButton extends ConsumerWidget {
