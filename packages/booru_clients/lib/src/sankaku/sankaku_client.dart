@@ -7,11 +7,30 @@ import 'types/types.dart';
 const _kFakeBrowserHeader =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0';
 
-const _kSankakuHeader = {
+const _kFallbackSankakuHeader = {
   'User-Agent': _kFakeBrowserHeader,
   'Content-Type': 'application/json',
   'Accept': 'application/json',
 };
+
+const _kSankakuApiUrl = 'https://sankakuapi.com';
+
+const _kSankakuKnownUrls = [
+  'chan.sankakucomplex.com',
+  'beta.sankakucomplex.com',
+  'sankaku.app',
+  'sankakucomplex.com',
+];
+
+String _convertBaseUrlToApiUrl(String url) {
+  for (final knownUrl in _kSankakuKnownUrls) {
+    if (url.contains(knownUrl)) {
+      return _kSankakuApiUrl;
+    }
+  }
+
+  return url;
+}
 
 class SankakuClient {
   SankakuClient({
@@ -25,21 +44,9 @@ class SankakuClient {
     _dio = dio ?? Dio();
     _baseUrl = baseUrl;
 
-    var url = baseUrl;
-
-    if (url.startsWith('https://chan.')) {
-      url = url.replaceFirst('https://chan.', 'https://capi-v2.');
-    } else if (url.startsWith('https://beta.')) {
-      url = url.replaceFirst('https://beta.', 'https://capi-v2.');
-    } else if (url == 'https://sankaku.app/') {
-      url = 'https://capi-v2.sankakucomplex.com';
-    } else if (url == 'https://sankakucomplex.com/') {
-      url = 'https://capi-v2.sankakucomplex.com';
-    }
-
     _dio.options = BaseOptions(
-      baseUrl: url,
-      headers: headers ?? _kSankakuHeader,
+      baseUrl: _convertBaseUrlToApiUrl(baseUrl),
+      headers: headers ?? _kFallbackSankakuHeader,
     );
 
     _authStore = authStore ?? InMemoryAuthStore();
