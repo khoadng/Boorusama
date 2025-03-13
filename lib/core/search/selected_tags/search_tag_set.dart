@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../tags/metatag/metatag.dart';
 import '../histories/history.dart';
 import '../queries/filter_operator.dart';
+import 'query.dart';
 import 'tag_search_item.dart';
 
 class SearchTagSet extends Equatable {

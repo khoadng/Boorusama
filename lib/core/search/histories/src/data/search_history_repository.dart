@@ -1,4 +1,5 @@
 // Project imports:
+import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 
 const String kSearchHistoryTable = 'search_history';

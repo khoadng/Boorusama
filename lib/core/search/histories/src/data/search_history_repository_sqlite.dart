@@ -4,6 +4,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
 import '../../../../database/utils.dart';
+import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 import 'search_history_repository.dart';
 

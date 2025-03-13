@@ -1,24 +1,10 @@
-// Dart imports:
-import 'dart:convert';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-enum QueryType {
-  /// Example: `tag1 -tag2`
-  simple,
+// Project imports:
+import '../../selected_tags/tag.dart';
 
-  /// Example: ["tag1", "tag2", "tag3"]
-  list,
-}
-
-QueryType? parseQueryType(String? type) => switch (type) {
-      'simple' => QueryType.simple,
-      'list' => QueryType.list,
-      _ => null
-    };
-
-class SearchHistory extends Equatable {
+class SearchHistory extends Equatable with QueryTypeMixin {
   const SearchHistory({
     required this.query,
     required this.createdAt,
@@ -45,10 +31,12 @@ class SearchHistory extends Equatable {
         siteUrl: siteUrl,
       );
 
+  @override
   final String query;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int searchCount;
+  @override
   final QueryType? queryType;
   final String booruTypeName;
   final String siteUrl;
@@ -82,20 +70,4 @@ class SearchHistory extends Equatable {
         booruTypeName,
         siteUrl,
       ];
-}
-
-extension SearchHistoryX on SearchHistory {
-  List<String> queryAsList() {
-    if (queryType != QueryType.list) return [];
-
-    final json = jsonDecode(query);
-
-    if (json is! List) return [];
-
-    try {
-      return [for (final tag in json) tag as String];
-    } catch (e) {
-      return [];
-    }
-  }
 }

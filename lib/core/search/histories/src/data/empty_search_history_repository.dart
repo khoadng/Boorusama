@@ -1,6 +1,5 @@
 // Project imports:
-
-// Project imports:
+import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 import 'search_history_repository.dart';
 

@@ -10,6 +10,7 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../foundation/platform.dart';
+import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 
 class SearchHistorySection extends StatelessWidget {

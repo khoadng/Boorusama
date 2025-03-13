@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../configs/ref.dart';
 import '../../selected_tags/selected_tag_controller.dart';
+import '../../selected_tags/tag.dart';
 import 'data/providers.dart';
 import 'search_history.dart';
 import 'search_history_state.dart';
