@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../favorite_tags_sort_type.dart';
+import '../types/favorite_tags_sort_type.dart';
 
 class FavoriteTagConfigSheet extends StatelessWidget {
   const FavoriteTagConfigSheet({

@@ -1,2 +1,2 @@
-export 'src/providers.dart';
-export 'src/favorite_tags_notifier.dart';
+export 'src/providers/providers.dart';
+export 'src/providers/favorite_tags_notifier.dart';

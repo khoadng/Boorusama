@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../favorite_tag.dart';
-import '../favorite_tags_notifier.dart';
+import '../providers/favorite_tags_notifier.dart';
+import '../types/favorite_tag.dart';
 import '../widgets/favorite_tag_add_tag_to_label_button.dart';
 
 class FavoriteTagLabelDetailsPage extends ConsumerWidget {

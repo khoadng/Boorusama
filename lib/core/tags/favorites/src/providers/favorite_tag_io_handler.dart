@@ -2,11 +2,11 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../backups/data_converter.dart';
-import '../../../backups/data_io_handler.dart';
-import '../../../backups/types.dart';
-import '../../../configs/src/export_import/booru_config_io_handler.dart';
-import 'favorite_tag.dart';
+import '../../../../backups/data_converter.dart';
+import '../../../../backups/data_io_handler.dart';
+import '../../../../backups/types.dart';
+import '../../../../configs/src/export_import/booru_config_io_handler.dart';
+import '../types/favorite_tag.dart';
 
 class FavoriteTagsIOHandler {
   FavoriteTagsIOHandler({

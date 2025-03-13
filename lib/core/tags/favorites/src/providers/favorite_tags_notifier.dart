@@ -6,8 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
-import 'favorite_tag.dart';
+import '../../../../foundation/toast.dart';
+import '../types/favorite_tag.dart';
 import 'providers.dart';
 
 final favoriteTagsProvider =

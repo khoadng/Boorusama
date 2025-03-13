@@ -10,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../theme.dart';
 import '../../../../utils/stream/text_editing_controller_utils.dart';
-import '../favorite_tag.dart';
+import '../types/favorite_tag.dart';
 
 class EditFavoriteTagSheet extends ConsumerStatefulWidget {
   const EditFavoriteTagSheet({

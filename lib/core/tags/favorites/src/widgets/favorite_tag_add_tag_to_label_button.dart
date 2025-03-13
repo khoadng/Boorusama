@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../search/search/routes.dart';
-import '../favorite_tags_notifier.dart';
+import '../providers/favorite_tags_notifier.dart';
 
 class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
   const FavoriteTagAddTagToLabelButton({

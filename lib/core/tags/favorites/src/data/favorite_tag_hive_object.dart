@@ -2,7 +2,7 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../favorite_tag.dart';
+import '../types/favorite_tag.dart';
 
 part 'favorite_tag_hive_object.g.dart';
 

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../favorite_tag.dart';
-import '../favorite_tags_notifier.dart';
-import '../favorite_tags_sort_type.dart';
+import '../providers/favorite_tags_notifier.dart';
+import '../types/favorite_tag.dart';
+import '../types/favorite_tags_sort_type.dart';
 
 class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
   const FavoriteTagsFilterScope({
