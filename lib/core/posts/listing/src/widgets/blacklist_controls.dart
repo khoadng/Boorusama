@@ -172,17 +172,28 @@ class _TagPages extends ConsumerWidget {
           itemPerPage: threshold,
           onPrevious: () {
             final page = currentPage - 1;
-            ref.read(_currentPageProvider.notifier).state = page;
+            _setPage(page, ref);
           },
           onNext: () {
             final page = currentPage + 1;
-            ref.read(_currentPageProvider.notifier).state = page;
+            _setPage(page, ref);
           },
-          onPageSelect: (page) =>
-              ref.read(_currentPageProvider.notifier).state = page,
+          onPageSelect: (page) {
+            _setPage(page, ref);
+          },
         ),
       ],
     );
+  }
+
+  void _setPage(int page, WidgetRef ref) {
+    // make sure page is within bounds
+    final effectivePage = page.clamp(
+      1,
+      calculateTotalPage(allTags.length, threshold) ?? 1,
+    );
+
+    ref.read(_currentPageProvider.notifier).state = effectivePage;
   }
 }
 
