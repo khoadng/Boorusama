@@ -15,11 +15,19 @@ class MultiSelectionActionBar extends StatelessWidget {
       padding: const EdgeInsets.only(
         top: 8,
       ),
-      child: OverflowBar(
-        alignment: MainAxisAlignment.center,
-        spacing: 4,
-        children: children,
-      ),
+      child: children.length < 4
+          ? OverflowBar(
+              alignment: MainAxisAlignment.center,
+              spacing: 4,
+              children: children,
+            )
+          : SizedBox(
+              height: 52,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: children,
+              ),
+            ),
     );
   }
 }
