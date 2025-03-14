@@ -282,6 +282,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     final reduceAnimations =
         ref.watch(settingsProvider.select((value) => value.reduceAnimations));
 
+    final auth = ref.watchConfigAuth;
+
     void onItemTap() {
       final controller = widget.controller;
 
@@ -353,7 +355,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         checkIfLargeScreen: () => context.isLargeScreen,
         controller: _controller,
         onExit: () {
-          ref.invalidate(notesProvider(ref.readConfigAuth));
+          ref.invalidate(notesProvider(auth));
 
           widget.controller.onExit();
         },
