@@ -12,6 +12,7 @@ import '../../../core/boorus/booru/booru.dart';
 import '../../../core/boorus/booru/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/create.dart';
+import '../../../core/foundation/toast.dart';
 import 'config_hashing.dart';
 
 class MoebooruPasswordField extends ConsumerStatefulWidget {
@@ -57,10 +58,20 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
           return;
         }
 
+        final booru = config.auth.createBooruFrom(booruFactory);
+
+        if (booru == null) {
+          showErrorToast(
+            context,
+            'Invalid booru, this profile seems to be corrupted, please delete it and create a new one',
+          );
+          return;
+        }
+
         password = value;
         final hashed = hashBooruPasswordSHA1(
           url: config.url,
-          booru: config.auth.createBooruFrom(booruFactory),
+          booru: booru,
           password: value,
         );
         ref.editNotifier.updateApiKey(hashed);
