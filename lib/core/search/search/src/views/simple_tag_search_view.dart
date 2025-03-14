@@ -67,9 +67,10 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 
   @override
   void dispose() {
-    super.dispose();
     textEditingController.dispose();
     focus.dispose();
+
+    super.dispose();
   }
 
   String _getQuery(String text, isRaw) {
@@ -78,6 +79,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final config = widget.initialConfig ?? ref.watchConfigAuth;
     final suggestionNotifier =
         ref.watch(suggestionsNotifierProvider(config).notifier);
@@ -99,8 +101,10 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
           body: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -111,25 +115,21 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                         trailing: isRaw
                             ? Padding(
                                 padding: const EdgeInsets.only(right: 8),
-                                child: ValueListenableBuilder(
-                                  valueListenable: textEditingController,
-                                  builder: (context, query, child) =>
-                                      query.text.isEmpty
-                                          ? const _AddButton(
-                                              onTap: null,
-                                            )
-                                          : _AddButton(
-                                              onTap: () {
-                                                widget.onSelected(
-                                                  query.text.trimRight(),
-                                                  isRaw,
-                                                );
-                                                if (widget.closeOnSelected) {
-                                                  Navigator.of(context).pop();
-                                                }
-                                              },
-                                            ),
-                                ),
+                                child: query.text.isEmpty
+                                    ? const _AddButton(
+                                        onTap: null,
+                                      )
+                                    : _AddButton(
+                                        onTap: () {
+                                          widget.onSelected(
+                                            query.text.trimRight(),
+                                            isRaw,
+                                          );
+                                          if (widget.closeOnSelected) {
+                                            Navigator.of(context).pop();
+                                          }
+                                        },
+                                      ),
                               )
                             : null,
                         autofocus: true,
@@ -152,7 +152,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: TagSuggestionItems(
                       config: config,
-                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      backgroundColor: colorScheme.surface,
                       tags: tags,
                       padding: EdgeInsets.zero,
                       onItemTap: (tag) {
@@ -194,7 +194,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
 }
 
 final selectedInputTypeSelectorProvider =
-    StateProvider.autoDispose<InputType>((ref) => InputType.single);
+    StateProvider<InputType>((ref) => InputType.single);
 
 enum InputType {
   single,
@@ -239,12 +239,14 @@ class _AddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Semantics(
       button: true,
       child: Material(
         color: onTap == null
-            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)
-            : Theme.of(context).colorScheme.primary,
+            ? colorScheme.onSurface.withValues(alpha: 0.1)
+            : colorScheme.primary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           customBorder: RoundedRectangleBorder(
@@ -255,7 +257,7 @@ class _AddButton extends StatelessWidget {
             margin: const EdgeInsets.all(4),
             child: Icon(
               Symbols.add,
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: colorScheme.onPrimary,
             ),
           ),
         ),
