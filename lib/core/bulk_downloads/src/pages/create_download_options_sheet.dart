@@ -18,7 +18,6 @@ import '../../../theme.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
-import '../types/bulk_download_error.dart';
 import '../types/download_configs.dart';
 import '../types/download_options.dart';
 import '../types/l10n.dart';
@@ -68,6 +67,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
           .select((value) => value.androidDeviceInfo?.version.sdkInt),
     );
     final validOptions = options.valid(androidSdkInt: androidSdkInt);
+    final navigator = Navigator.of(context);
 
     return CreateDownloadOptionsRawSheet(
       initial: initial,
@@ -90,13 +90,17 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                   ? () {
                       notifier.queueDownloadLater(
                         options,
+                        onOptionsError: (e) {
+                          showErrorToast(context, e.message);
+                        },
                       );
 
-                      if (navigatorContext != null) {
+                      if (navigatorContext != null &&
+                          navigatorContext.mounted) {
                         showSnackBar(navigatorContext, 'Created');
                       }
 
-                      Navigator.of(context).pop();
+                      navigator.pop();
                     }
                   : null,
               child: const Text(
@@ -115,25 +119,24 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
               ),
               onPressed: validOptions
                   ? () {
-                      try {
-                        notifier.downloadFromOptions(
-                          options,
-                          downloadConfigs: DownloadConfigs(
-                            onDownloadStart: () {
-                              if (navigatorContext != null) {
-                                showSnackBar(
-                                  navigatorContext,
-                                  'Download started',
-                                );
-                              }
-                            },
-                          ),
-                        );
+                      notifier.downloadFromOptions(
+                        options,
+                        downloadConfigs: DownloadConfigs(
+                          onDownloadStart: () {
+                            if (navigatorContext != null) {
+                              showSnackBar(
+                                navigatorContext,
+                                'Download started',
+                              );
+                            }
+                          },
+                        ),
+                        onOptionsError: (e) {
+                          showErrorToast(context, e.message);
+                        },
+                      );
 
-                        Navigator.of(context).pop();
-                      } on BulkDownloadOptionsError catch (e) {
-                        showErrorToast(context, e.message);
-                      }
+                      navigator.pop();
                     }
                   : null,
               child: const Text(
