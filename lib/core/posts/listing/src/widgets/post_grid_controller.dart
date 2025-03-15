@@ -439,20 +439,30 @@ List<T> _filterInIsolate<T extends Post>(
 Future<Map<String, Set<int>>> _count<T extends Post>(
   Iterable<T> posts,
   Iterable<String> tags,
-) =>
-    Isolate.run(
-      () => _countInIsolate(posts, tags),
-    );
+) async {
+  // If there are no tags, return an empty map to prevent isolate overhead
+  if (tags.isEmpty) return {};
+
+  return Isolate.run(
+    () => _countInIsolate(posts, tags),
+  );
+}
 
 Future<List<T>> __filter<T extends Post>(
   List<T> items,
   Map<String, Set<int>> tagCounts,
   Map<String, bool> activeFilters,
   Set<String> blacklistedUrls,
-) =>
-    Isolate.run(
-      () => _filterInIsolate(items, tagCounts, activeFilters, blacklistedUrls),
-    );
+) async {
+  // If there are no tags, active filters, or blacklisted urls, return the items as is to prevent isolate overhead
+  if (tagCounts.isEmpty && activeFilters.isEmpty && blacklistedUrls.isEmpty) {
+    return items;
+  }
+
+  return Isolate.run(
+    () => _filterInIsolate(items, tagCounts, activeFilters, blacklistedUrls),
+  );
+}
 
 Map<String, Set<int>> _countInIsolate<T extends Post>(
   Iterable<T> posts,
