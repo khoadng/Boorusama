@@ -8,7 +8,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
-import '../../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../../core/posts/post/post.dart';
 import '../../../../../../../core/settings/providers.dart';
@@ -88,57 +87,27 @@ class _DanbooruInfinitePostIdListState
             );
           },
         ),
-        builder: (context, controller) => DanbooruPostGridController(
+        builder: (context, controller) => PostGrid(
           controller: controller,
-          child: PostGrid(
+          itemBuilder: (
+            context,
+            index,
+            multiSelectController,
+            scrollController,
+            useHero,
+          ) =>
+              DefaultDanbooruImageGridItem(
+            index: index,
+            multiSelectController: multiSelectController,
+            autoScrollController: scrollController,
             controller: controller,
-            itemBuilder: (
-              context,
-              index,
-              multiSelectController,
-              scrollController,
-              useHero,
-            ) =>
-                DefaultDanbooruImageGridItem(
-              index: index,
-              multiSelectController: multiSelectController,
-              autoScrollController: scrollController,
-              controller: controller,
-              useHero: useHero,
-            ),
-            sliverHeaders: [
-              if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
-            ],
+            useHero: useHero,
           ),
+          sliverHeaders: [
+            if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
+          ],
         ),
       ),
     );
-  }
-}
-
-// InheritedWidget to provide danbooru post grid controller to its children
-class DanbooruPostGridController extends InheritedWidget {
-  const DanbooruPostGridController({
-    required this.controller,
-    required super.child,
-    super.key,
-  });
-
-  final PostGridController<DanbooruPost> controller;
-
-  static PostGridController<DanbooruPost> of(BuildContext context) {
-    final provider = context
-        .dependOnInheritedWidgetOfExactType<DanbooruPostGridController>();
-
-    if (provider == null) {
-      throw Exception('DanbooruPostGridControllerProvider not found');
-    }
-
-    return provider.controller;
-  }
-
-  @override
-  bool updateShouldNotify(DanbooruPostGridController oldWidget) {
-    return controller != oldWidget.controller;
   }
 }

@@ -31,6 +31,24 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
 
   final DuplicateCheckMode duplicateCheckMode;
 
+  static PostGridController<T>? maybeOf<T extends Post>(BuildContext context) {
+    final inherited =
+        context.dependOnInheritedWidgetOfExactType<_PostScope<T>>();
+
+    return inherited?.controller;
+  }
+
+  static PostGridController<T> of<T extends Post>(BuildContext context) {
+    final inherited =
+        context.dependOnInheritedWidgetOfExactType<_PostScope<T>>();
+
+    if (inherited == null) {
+      throw Exception('No PostScope found in the widget tree');
+    }
+
+    return inherited.controller;
+  }
+
   @override
   ConsumerState<PostScope<T>> createState() => _PostScopeState();
 }
@@ -100,9 +118,23 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
         },
       );
 
-    return widget.builder(
-      context,
-      _controller,
+    return _PostScope<T>(
+      controller: _controller,
+      child: widget.builder(context, _controller),
     );
+  }
+}
+
+class _PostScope<T extends Post> extends InheritedWidget {
+  const _PostScope({
+    required this.controller,
+    required super.child,
+    super.key,
+  });
+  final PostGridController<T> controller;
+
+  @override
+  bool updateShouldNotify(_PostScope oldWidget) {
+    return controller != oldWidget.controller;
   }
 }

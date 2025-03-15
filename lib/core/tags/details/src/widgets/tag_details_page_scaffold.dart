@@ -36,10 +36,10 @@ class TagDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<TagDetailsPageScaffold<T>> createState() =>
-      _DanbooruTagDetailsPageState<T>();
+      _TagDetailsPageState<T>();
 }
 
-class _DanbooruTagDetailsPageState<T extends Post>
+class _TagDetailsPageState<T extends Post>
     extends ConsumerState<TagDetailsPageScaffold<T>> {
   @override
   Widget build(BuildContext context) {

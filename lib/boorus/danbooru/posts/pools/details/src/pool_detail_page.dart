@@ -13,9 +13,11 @@ import '../../../../../../core/bulk_downloads/routes.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/html.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
+import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/utils/html_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../post/post.dart';
 import '../../pool/pool.dart';
 import 'providers/providers.dart';
 import 'types/query_utils.dart';
@@ -100,28 +102,31 @@ class PoolDetailPage extends ConsumerWidget {
               orElse: () => const SliverSizedBox.shrink(),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8,
-            ),
-            sliver: SliverToBoxAdapter(
-              child: Builder(
-                builder: (context) {
-                  return PoolCategoryToggleSwitch(
-                    onToggle: (order) {
-                      ref
-                          .read(selectedPoolDetailsOrderProvider.notifier)
-                          .state = order;
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        DanbooruPostGridController.of(context).refresh();
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
+          const _ToggleSwitch(),
         ],
+      ),
+    );
+  }
+}
+
+class _ToggleSwitch extends ConsumerWidget {
+  const _ToggleSwitch();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ),
+      sliver: SliverToBoxAdapter(
+        child: PoolCategoryToggleSwitch(
+          onToggle: (order) {
+            ref.read(selectedPoolDetailsOrderProvider.notifier).state = order;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              PostScope.of<DanbooruPost>(context).refresh();
+            });
+          },
+        ),
       ),
     );
   }
