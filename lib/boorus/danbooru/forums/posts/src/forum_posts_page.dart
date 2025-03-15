@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
@@ -38,59 +38,75 @@ class DanbooruForumPostsPage extends ConsumerStatefulWidget {
 
 class _DanbooruForumPostsPageState
     extends ConsumerState<DanbooruForumPostsPage> {
-  late final pagingController = PagingController<int, DanbooruForumPost>(
-    firstPageKey: DanbooruForumUtils.getFirstPageKey(
-      responseCount: widget.topic.responseCount,
-    ),
+  late var currentPage = DanbooruForumUtils.getFirstPageKey(
+    responseCount: widget.topic.responseCount,
   );
+  List<DanbooruForumPost> posts = [];
+  var isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    pagingController.addPageRequestListener(_fetchPage);
+    _fetchPage(currentPage);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    pagingController.dispose();
-  }
+  Future<void> _fetchPage(int page) async {
+    if (isLoading) return;
 
-  Future<void> _fetchPage(int pageKey) async {
-    if (pageKey <= 0) {
-      pagingController.appendLastPage([]);
-      return;
-    }
+    setState(() {
+      isLoading = true;
+    });
 
-    final posts = await ref
+    final newPosts = await ref
         .read(danbooruForumPostRepoProvider(ref.readConfigAuth))
         .getForumPostsOrEmpty(
           widget.topic.id,
-          page: pageKey,
+          page: page,
           limit: DanbooruForumUtils.postPerPage,
         );
 
     if (!mounted) return;
 
-    pagingController.appendPage(posts, pageKey - 1);
+    setState(() {
+      posts = newPosts;
+      isLoading = false;
+      currentPage = page;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final totalPages = calculateTotalPage(
+      widget.topic.responseCount,
+      DanbooruForumUtils.postPerPage,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.topic.title),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: PagedListView(
-          pagingController: pagingController,
-          builderDelegate: PagedChildBuilderDelegate<DanbooruForumPost>(
-            itemBuilder: (context, post, index) => _buildPost(post),
-            firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
-            newPageProgressIndicatorBuilder: (context) => _buildLoading(),
+      body: Column(
+        children: [
+          if (totalPages != null && totalPages > 1)
+            PageSelector(
+              currentPage: totalPages - currentPage + 1,
+              totalResults: widget.topic.responseCount,
+              itemPerPage: DanbooruForumUtils.postPerPage,
+              onPageSelect: (page) => _fetchPage(totalPages - page + 1),
+              onNext: () => _fetchPage(currentPage - 1),
+              onPrevious: () => _fetchPage(currentPage + 1),
+              showLastPage: true,
+            ),
+          Expanded(
+            child: isLoading
+                ? _buildLoading()
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) => _buildPost(posts[index]),
+                  ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -159,6 +159,7 @@ class PageSelector extends StatefulWidget {
     this.onNext,
     required this.onPageSelect,
     this.pageInput = true,
+    this.showLastPage = false,
   });
 
   final int currentPage;
@@ -168,6 +169,7 @@ class PageSelector extends StatefulWidget {
   final VoidCallback? onNext;
   final void Function(int page) onPageSelect;
   final bool pageInput;
+  final bool showLastPage;
 
   @override
   State<PageSelector> createState() => _PageSelectorState();
@@ -176,6 +178,11 @@ class PageSelector extends StatefulWidget {
 class _PageSelectorState extends State<PageSelector> {
   @override
   Widget build(BuildContext context) {
+    final totalPages = calculateTotalPage(
+      widget.totalResults,
+      widget.itemPerPage,
+    );
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final paginationInfo = calculatePaginationInfo(
@@ -185,11 +192,21 @@ class _PageSelectorState extends State<PageSelector> {
           itemPerPage: widget.itemPerPage,
         );
 
+        final showLastPageButton = widget.showLastPage &&
+            totalPages != null &&
+            !paginationInfo.pages.contains(totalPages);
+
+        final enableNextButton = totalPages != null &&
+            widget.currentPage < totalPages &&
+            !paginationInfo.isLastPage;
+
+        final enablePreviousButton = widget.currentPage > 1;
+
         return OverflowBar(
           alignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: widget.onPrevious,
+              onPressed: !enablePreviousButton ? null : widget.onPrevious,
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
               icon: const Icon(
@@ -230,8 +247,30 @@ class _PageSelectorState extends State<PageSelector> {
               _PageInputBox(
                 onSubmit: onSubmit,
               ),
+            if (showLastPageButton)
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => widget.onPageSelect(totalPages),
+                child: Container(
+                  constraints: const BoxConstraints(
+                    minWidth: 50,
+                    maxWidth: 80,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    '$totalPages',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                ),
+              ),
             IconButton(
-              onPressed: paginationInfo.isLastPage ? null : widget.onNext,
+              onPressed: !enableNextButton ? null : widget.onNext,
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
               icon: const Icon(
