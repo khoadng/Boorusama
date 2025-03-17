@@ -275,6 +275,16 @@ class PostDetailsPageViewController extends ChangeNotifier
     }
   }
 
+  void showAllUI() {
+    showOverlay();
+    showBottomSheet();
+  }
+
+  void hideAllUI() {
+    if (overlay.value) hideOverlay();
+    if (bottomSheet.value) hideBottomSheet();
+  }
+
   void dragUpdate(DragUpdateDetails details) {
     if (isExpanded) return;
 
@@ -472,14 +482,12 @@ class PostDetailsPageViewController extends ChangeNotifier
     zoom.value = value;
     if (value) {
       if (!initialHideOverlay) {
-        hideOverlay();
-        hideBottomSheet();
+        hideAllUI();
       }
       disableAllSwiping();
     } else {
       if (!initialHideOverlay) {
-        showOverlay();
-        showBottomSheet();
+        showAllUI();
       }
       enableAllSwiping();
     }
@@ -491,7 +499,7 @@ class PostDetailsPageViewController extends ChangeNotifier
 
   Future<void> startSlideshow() async {
     slideshow.value = true;
-    if (overlay.value) hideOverlay();
+    hideAllUI();
 
     final isLargeScreen = checkIfLargeScreen();
 
@@ -515,7 +523,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     slideshow.value = false;
 
     if (!initialHideOverlay) {
-      showOverlay();
+      showAllUI();
     }
 
     stopAutoSlide();
