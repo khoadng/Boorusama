@@ -30,10 +30,12 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
     required this.postController,
     required this.multiSelectController,
     super.key,
+    this.showBlacklist = true,
   });
 
   final PostGridController<Post> postController;
   final MultiSelectController<Post> multiSelectController;
+  final bool showBlacklist;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -119,7 +121,8 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                               size: 18,
                             ),
                           ),
-                        if (blacklistEntries != null &&
+                        if (showBlacklist &&
+                            blacklistEntries != null &&
                             blacklistEntries.isNotEmpty)
                           'edit_blacklist': PostGridConfigOptionTile(
                             title: const Text('Edit Blacklist').tr(),

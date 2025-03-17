@@ -70,6 +70,11 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     return isFormatVideo(effectiveFormat);
   }
 
+  BookmarkUniqueId get uniqueId => BookmarkUniqueId(
+        booruId: booruId,
+        url: originalUrl,
+      );
+
   static Bookmark empty = Bookmark(
     id: -1,
     booruId: -10,
@@ -181,3 +186,19 @@ enum BookmarkGetError {
 }
 
 typedef BookmarksOrError = TaskEither<BookmarkGetError, List<Bookmark>>;
+
+class BookmarkUniqueId extends Equatable {
+  const BookmarkUniqueId({
+    required this.booruId,
+    required this.url,
+  });
+
+  BookmarkUniqueId.fromPost(Post post, this.booruId)
+      : url = post.originalImageUrl;
+
+  final int booruId;
+  final String url;
+
+  @override
+  List<Object?> get props => [booruId, url];
+}

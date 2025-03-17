@@ -7,6 +7,7 @@ import 'package:shelf/shelf.dart';
 
 // Project imports:
 import '../../blacklists/providers.dart';
+import '../../bookmarks/bookmark.dart';
 import '../../bookmarks/providers.dart';
 import '../../bulk_downloads/providers.dart';
 import '../../configs/manage.dart';
@@ -97,9 +98,9 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Bookmarks',
       route: 'bookmarks',
       handler: (request) async {
-        final bookmarks = ref.read(bookmarkProvider).bookmarks;
-        final json =
-            bookmarks.values.map((bookmark) => bookmark.toJson()).toList();
+        final bookmarks = await (await ref.read(bookmarkRepoProvider.future))
+            .getAllBookmarksOrEmpty();
+        final json = bookmarks.map((bookmark) => bookmark.toJson()).toList();
         final jsonString = jsonEncode(json);
 
         return Response.ok(jsonString);

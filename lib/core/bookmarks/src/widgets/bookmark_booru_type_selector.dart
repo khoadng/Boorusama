@@ -18,15 +18,19 @@ class BookmarkBooruSourceUrlSelector extends ConsumerWidget {
     return Container(
       color: Theme.of(context).colorScheme.surface,
       padding: const EdgeInsets.only(bottom: 4),
-      child: ChoiceOptionSelectorList(
-        options: ref.watch(availableBooruUrlsProvider),
-        sheetTitle: 'Source',
-        onSelected: (value) {
-          ref.read(selectedBooruUrlProvider.notifier).state = value;
-        },
-        selectedOption: ref.watch(selectedBooruUrlProvider),
-        optionLabelBuilder: (value) => value ?? 'All',
-      ),
+      child: ref.watch(availableBooruUrlsProvider).when(
+            data: (data) => ChoiceOptionSelectorList(
+              options: data,
+              sheetTitle: 'Source',
+              onSelected: (value) {
+                ref.read(selectedBooruUrlProvider.notifier).state = value;
+              },
+              selectedOption: ref.watch(selectedBooruUrlProvider),
+              optionLabelBuilder: (value) => value ?? 'All',
+            ),
+            error: (error, _) => Text(error.toString()),
+            loading: () => const Center(child: CircularProgressIndicator()),
+          ),
     );
   }
 }

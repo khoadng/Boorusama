@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../core/bookmarks/bookmark.dart';
 import '../../../../../core/bookmarks/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/downloads/downloader.dart';
@@ -33,8 +34,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final isBookmarked = bookmarkState.isBookmarked(post, booruConfig.booruId);
     final hasAccount = booruConfig.hasLoginDetails();
 
     return GenericContextMenu(
@@ -67,7 +67,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             onPressed: () => ref.bookmarks
               ..removeBookmarkWithToast(
                 context,
-                bookmarkState.getBookmark(post, booruConfig.booruType)!,
+                BookmarkUniqueId.fromPost(post, booruConfig.booruId),
               ),
           ),
         if (hasAccount)

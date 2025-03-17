@@ -6,50 +6,44 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../boorus/booru/booru.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/display.dart';
 import '../../../tags/categories/providers.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../theme.dart';
+import '../../providers.dart';
 import '../types/bookmark.dart';
-import 'bookmark_provider.dart';
+import '../types/bookmark_repository.dart';
 
 enum BookmarkSortType {
   newest,
   oldest,
 }
 
-final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
-  final tags = ref.watch(selectedTagsProvider);
-  final selectedBooruUrl = ref.watch(selectedBooruUrlProvider);
-  final sortType = ref.watch(selectedBookmarkSortTypeProvider);
-  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
-
-  // Only split tags if there are any
+List<Bookmark> filterBookmarks({
+  required List<Bookmark> bookmarks,
+  required String tags,
+  required BookmarkSortType sortType,
+  String? selectedBooruUrl,
+}) {
+  // Split tags if provided, otherwise use an empty list.
   final tagsList = tags.isEmpty
       ? const <String>[]
       : tags.split(' ').where((e) => e.isNotEmpty).toList();
 
-  // Filter in a single pass without converting to values() first
+  // Filter bookmarks based on URL and tags.
   final filtered = selectedBooruUrl == null && tagsList.isEmpty
-      // No filtering needed, just sort all bookmarks
-      ? bookmarks.entries.map((e) => e.value)
-      : bookmarks.entries
-          .where(
-            (entry) =>
-                // URL filter
-                (selectedBooruUrl == null ||
-                    entry.value.sourceUrl.contains(selectedBooruUrl)) &&
-                // Tags filter
-                (tagsList.isEmpty ||
-                    tagsList.every((tag) => entry.value.tags.contains(tag))),
-          )
-          .map((e) => e.value);
+      ? bookmarks
+      : bookmarks.where(
+          (bookmark) =>
+              (selectedBooruUrl == null ||
+                  bookmark.sourceUrl.contains(selectedBooruUrl)) &&
+              (tagsList.isEmpty ||
+                  tagsList.every((tag) => bookmark.tags.contains(tag))),
+        );
 
-  // Sort filtered results
+  // Sort filtered results.
   return filtered
       .sorted(
         (a, b) => switch (sortType) {
@@ -58,28 +52,15 @@ final filteredBookmarksProvider = Provider.autoDispose<List<Bookmark>>((ref) {
         },
       )
       .toList();
-});
+}
+
 final bookmarkEditProvider = StateProvider.autoDispose<bool>((ref) => false);
 
-final tagCountProvider = Provider.autoDispose.family<int, String>((ref, tag) {
-  final tagMap = ref.watch(tagMapProvider);
+final tagCountProvider =
+    FutureProvider.autoDispose.family<int, String>((ref, tag) async {
+  final tagMap = await ref.watch(tagMapProvider.future);
 
   return tagMap[tag] ?? 0;
-});
-
-final booruTypeCountProvider =
-    Provider.autoDispose.family<int, BooruType?>((ref, booruType) {
-  if (booruType == null) {
-    return ref.watch(filteredBookmarksProvider).length;
-  }
-
-  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
-
-  return bookmarks.entries.fold(
-    0,
-    (count, entry) =>
-        intToBooruType(entry.value.booruId) == booruType ? count + 1 : count,
-  );
 });
 
 final bookmarkTagColorProvider =
@@ -102,10 +83,11 @@ final bookmarkTagColorProvider =
   dependencies: [colorSchemeProvider],
 );
 
-final tagMapProvider = Provider<Map<String, int>>((ref) {
-  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
+final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
+  final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
+      .getAllBookmarksOrEmpty();
 
-  return bookmarks.values.fold<Map<String, int>>(
+  return bookmarks.fold<Map<String, int>>(
     {},
     (map, bookmark) {
       for (final tag in bookmark.tags) {
@@ -116,11 +98,12 @@ final tagMapProvider = Provider<Map<String, int>>((ref) {
   );
 });
 
-final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
-  final tag = ref.watch(selectedTagsProvider);
+final tagSuggestionsProvider =
+    FutureProvider.autoDispose<List<String>>((ref) async {
+  final tag = ref.watch(tagInputProvider);
   if (tag.isEmpty) return const [];
 
-  final tagMap = ref.watch(tagMapProvider);
+  final tagMap = await ref.watch(tagMapProvider.future);
 
   return tagMap.entries
       .where((e) => e.key.contains(tag))
@@ -131,33 +114,23 @@ final tagSuggestionsProvider = Provider.autoDispose<List<String>>((ref) {
 });
 
 final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
+final tagInputProvider = StateProvider.autoDispose<String>((ref) => '');
+
 final selectedBooruUrlProvider = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
-final selectRowCountProvider =
-    StateProvider.autoDispose.family<int, ScreenSize>(
-  (ref, size) => switch (size) {
-    ScreenSize.small => 2,
-    ScreenSize.medium => 4,
-    ScreenSize.large => 5,
-    ScreenSize.veryLarge => 6,
-  },
-);
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(
   (ref) => BookmarkSortType.newest,
 );
 
-final availableBooruOptionsProvider = Provider.autoDispose<List<BooruType?>>(
-  (ref) => [...BooruType.values, null]
-      .sorted((a, b) => a?.stringify().compareTo(b?.stringify() ?? '') ?? 0)
-      .where((e) => ref.watch(booruTypeCountProvider(e)) > 0)
-      .toList(),
-);
+final availableBooruUrlsProvider =
+    FutureProvider.autoDispose<List<String>>((ref) async {
+  final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
+      .getAllBookmarksOrEmpty();
 
-final availableBooruUrlsProvider = Provider.autoDispose<List<String>>((ref) {
-  return ref.watch(bookmarkProvider).bookmarks.values.fold(
+  return bookmarks.fold(
     <String>{},
     (hosts, bookmark) {
       final uri = Uri.tryParse(bookmark.sourceUrl);

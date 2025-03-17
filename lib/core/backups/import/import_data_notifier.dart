@@ -341,10 +341,11 @@ class ImportDataNotifier
             );
 
           case 'bookmarks':
-            final currentBookmarks = ref.read(bookmarkProvider).bookmarks;
             final bookmarkRepository =
                 await ref.read(bookmarkRepoProvider.future);
             final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
+            final currentBookmarks =
+                await bookmarkRepository.getAllBookmarksOrEmpty();
 
             final res = await dio.get('/bookmarks');
 
@@ -357,8 +358,8 @@ class ImportDataNotifier
                 .toList()
                 // remove duplicates
                 .where(
-                  (bookmark) =>
-                      !currentBookmarks.containsKey(bookmark.originalUrl),
+                  (bookmark) => !currentBookmarks
+                      .any((e) => e.originalUrl == bookmark.originalUrl),
                 )
                 .toList();
 

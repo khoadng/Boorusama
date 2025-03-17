@@ -45,6 +45,8 @@ class PostGrid<T extends Post> extends StatefulWidget {
     this.safeArea = true,
     this.itemBuilder,
     this.body,
+    this.header,
+    this.enablePullToRefresh,
   });
 
   final List<Widget>? sliverHeaders;
@@ -55,6 +57,8 @@ class PostGrid<T extends Post> extends StatefulWidget {
   final PostGridController<T> controller;
   final IndexedSelectableWidgetBuilder<T>? itemBuilder;
   final Widget? body;
+  final Widget? header;
+  final bool? enablePullToRefresh;
 
   @override
   State<PostGrid<T>> createState() => _PostGridState();
@@ -110,9 +114,11 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
           multiSelectController: _multiSelectController,
           controller: widget.controller,
           safeArea: widget.safeArea,
-          gridHeader: _GridHeader<T>(
-            multiSelectController: _multiSelectController,
-          ),
+          enablePullToRefresh: widget.enablePullToRefresh ?? true,
+          gridHeader: widget.header ??
+              _GridHeader<T>(
+                multiSelectController: _multiSelectController,
+              ),
           topPageIndicator: Consumer(
             builder: (_, ref, __) {
               final visibleAtTop = ref.watch(

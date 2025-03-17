@@ -1,20 +1,24 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:searchfield/searchfield.dart';
 
 // Project imports:
 import '../../../foundation/display.dart';
 import '../../../foundation/html.dart';
+import '../../../search/search/widgets.dart';
 import '../../../theme.dart';
 import '../providers/bookmark_provider.dart';
 import '../providers/local_providers.dart';
 
-class BookmarkSearchBar extends ConsumerWidget {
+class BookmarkSearchBar extends ConsumerStatefulWidget {
   const BookmarkSearchBar({
     required this.focusNode,
     required this.controller,
@@ -25,110 +29,218 @@ class BookmarkSearchBar extends ConsumerWidget {
   final TextEditingController controller;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BookmarkSearchBar> createState() => _BookmarkSearchBarState();
+}
+
+class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
+  final _overlay = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.focusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(_onFocusChanged);
+    _overlay.dispose();
+
+    super.dispose();
+  }
+
+  void _onFocusChanged() {
+    final focus = widget.focusNode.hasFocus;
+
+    if (focus) {
+      _overlay.value = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 
     if (!hasBookmarks) return const SizedBox.shrink();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 12,
-      ),
-      height: kPreferredLayout.isDesktop ? 34 : null,
-      child: SearchField(
-        animationDuration: const Duration(milliseconds: 100),
-        autoCorrect: false,
-        focusNode: focusNode,
-        marginColor: Colors.transparent,
-        maxSuggestionsInViewPort: 10,
-        offset: kPreferredLayout.isDesktop
-            ? const Offset(0, 40)
-            : const Offset(0, 54),
-        scrollbarDecoration: ScrollbarDecoration(
-          thumbVisibility: false,
-        ),
-        itemHeight: kPreferredLayout.isMobile ? 42 : 40,
-        suggestionsDecoration: SuggestionDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        searchInputDecoration: SearchInputDecoration(
-          cursorColor: Theme.of(context).colorScheme.primary,
-          prefixIcon: const Icon(Symbols.search),
-          suffixIcon: ValueListenableBuilder(
-            valueListenable: controller,
-            builder: (_, value, ___) => value.text.isNotEmpty
-                ? InkWell(
-                    child: const Icon(Symbols.clear),
-                    onTap: () {
-                      controller.clear();
-                      ref.read(selectedTagsProvider.notifier).state = '';
-                    },
-                  )
-                : const SizedBox.shrink(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final suggestions = ref.watch(tagSuggestionsProvider).valueOrNull ?? [];
+        final selectedTag = ref.watch(selectedTagsProvider);
+
+        return Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
           ),
-          hintText: 'Filter...',
-        ),
-        controller: controller,
-        onTapOutside: (_) {
-          focusNode.unfocus();
-        },
-        onSuggestionTap: (p0) {
-          ref.read(selectedTagsProvider.notifier).state = '${p0.searchKey} ';
-        },
-        suggestions: ref
-            .watch(tagSuggestionsProvider)
-            .map((e) => _buildItem(e, ref))
-            .toList(),
-      ),
+          height: kPreferredLayout.isDesktop ? 34 : null,
+          child: ValueListenableBuilder(
+            valueListenable: _overlay,
+            builder: (_, overlay, __) {
+              return PortalTarget(
+                anchor: const Aligned(
+                  follower: Alignment.topCenter,
+                  target: Alignment.bottomCenter,
+                ),
+                portalFollower: _buildOverlay(
+                  constraints,
+                  suggestions,
+                  Colors.black.withValues(alpha: 0.7),
+                ),
+                visible: overlay &&
+                    suggestions.isNotEmpty &&
+                    widget.controller.text != selectedTag,
+                child: BooruSearchBar(
+                  focus: widget.focusNode,
+                  controller: widget.controller,
+                  leading: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Icon(Symbols.search),
+                  ),
+                  trailing: ValueListenableBuilder(
+                    valueListenable: widget.controller,
+                    builder: (_, value, ___) => value.text.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: InkWell(
+                              customBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Symbols.clear),
+                              onTap: () {
+                                widget.controller.clear();
+                                ref.read(selectedTagsProvider.notifier).state =
+                                    '';
+                                widget.focusNode.unfocus();
+                              },
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
-  SearchFieldListItem<String> _buildItem(String tag, WidgetRef ref) {
-    final context = ref.context;
+  Widget _buildOverlay(
+    BoxConstraints constraints,
+    List<String> suggestions,
+    Color scrimColor,
+  ) {
+    return Column(
+      children: [
+        ColoredBox(
+          color: scrimColor,
+          child: Container(
+            margin: const EdgeInsets.only(
+              top: 4,
+              left: 12,
+              right: 12,
+            ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            height: suggestions.length * 44,
+            constraints: BoxConstraints(
+              maxWidth: constraints.maxWidth,
+              maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 300),
+            ),
+            child: ListView.builder(
+              itemCount: suggestions.length,
+              itemBuilder: (context, index) {
+                final tag = suggestions[index];
 
-    return SearchFieldListItem(
-      tag,
-      item: tag,
-      child: IgnorePointer(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 4,
-            vertical: kPreferredLayout.isMobile ? 2 : 0,
+                return _buildItem(ref, tag, context);
+              },
+            ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: controller,
-                  builder: (_, value, ___) => AppHtml(
-                    style: {
-                      'p': Style(
-                        fontSize: FontSize.medium,
-                        color:
-                            ref.watch(bookmarkTagColorProvider(tag)).maybeWhen(
-                                  data: (color) => color,
-                                  orElse: () => null,
-                                ),
-                        margin: Margins.zero,
-                      ),
-                      'b': Style(
-                        fontWeight: FontWeight.w900,
-                      ),
-                    },
-                    data:
-                        '<p>${tag.replaceAll(value.text, '<b>${value.text}</b>')}</p>',
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              _overlay.value = false;
+              widget.focusNode.unfocus();
+            },
+            child: Container(
+              color: scrimColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildItem(WidgetRef ref, String tag, BuildContext context) {
+    return Material(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        onTap: () {
+          ref.read(selectedTagsProvider.notifier).state = tag;
+          widget.controller.text = tag;
+          widget.focusNode.unfocus();
+          _overlay.value = false;
+        },
+        child: IgnorePointer(
+          child: Container(
+            constraints: const BoxConstraints(
+              minHeight: 36,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4,
+            ),
+            margin: EdgeInsets.symmetric(
+              horizontal: 4,
+              vertical: kPreferredLayout.isMobile ? 4 : 0,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: widget.controller,
+                    builder: (_, value, ___) => AppHtml(
+                      style: {
+                        'p': Style(
+                          fontSize: FontSize.medium,
+                          color: ref
+                              .watch(bookmarkTagColorProvider(tag))
+                              .maybeWhen(
+                                data: (color) => color,
+                                orElse: () => null,
+                              ),
+                          margin: Margins.zero,
+                        ),
+                        'b': Style(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      },
+                      data:
+                          '<p>${tag.replaceAll(value.text, '<b>${value.text}</b>')}</p>',
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                ref.watch(tagCountProvider(tag)).toString(),
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.hintColor,
-                ),
-              ),
-            ],
+                ref.watch(tagCountProvider(tag)).maybeWhen(
+                      data: (count) => Text(
+                        count.toString(),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.hintColor,
+                        ),
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    ),
+              ],
+            ),
           ),
         ),
       ),

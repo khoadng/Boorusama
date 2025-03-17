@@ -8,13 +8,18 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
 import '../../../configs/ref.dart';
+import '../../../posts/listing/providers.dart';
+import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
 import '../providers/local_providers.dart';
 
 class BookmarkAppBar extends ConsumerWidget {
   const BookmarkAppBar({
+    required this.controller,
     super.key,
   });
+
+  final PostGridController<BookmarkPost> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,8 +29,11 @@ class BookmarkAppBar extends ConsumerWidget {
     final itemBuilder = {
       if (hasBookmarks) 'edit': const Text('Edit'),
       if (hasBookmarks)
-        'download_all': Text(
-          'Download ${ref.watch(filteredBookmarksProvider).length} bookmarks',
+        'download_all': ValueListenableBuilder(
+          valueListenable: controller.itemsNotifier,
+          builder: (_, posts, __) => Text(
+            'Download ${posts.length} bookmarks',
+          ),
         ),
     };
     return AppBar(
@@ -52,7 +60,7 @@ class BookmarkAppBar extends ConsumerWidget {
                   case 'download_all':
                     ref.bookmarks.downloadBookmarks(
                       ref.readConfig,
-                      ref.read(filteredBookmarksProvider),
+                      controller.items.map((e) => e.bookmark).toList(),
                     );
                 }
               },

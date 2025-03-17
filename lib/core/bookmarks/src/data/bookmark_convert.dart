@@ -112,9 +112,11 @@ class BookmarkPost extends SimplePost {
     required super.uploaderId,
     required this.realSourceUrl,
     required super.metadata,
+    required this.bookmark,
   });
 
   final PostSource realSourceUrl;
+  final Bookmark bookmark;
 
   @override
   String getLink(String baseUrl) =>
@@ -146,6 +148,7 @@ extension BookmarkToPost on Bookmark {
         uploaderId: null,
         realSourceUrl: PostSource.from(realSourceUrl),
         metadata: null,
+        bookmark: this,
       );
 }
 

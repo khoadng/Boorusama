@@ -6,13 +6,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../backups/types.dart';
-import '../../../boorus/booru/booru.dart';
 import '../../../configs/config.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/animations.dart';
@@ -48,7 +48,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
   BookmarkState build() {
     getAllBookmarks();
-    return const BookmarkState(bookmarks: IMap.empty());
+    return const BookmarkState(bookmarks: ISet.empty());
   }
 
   Future<BookmarkRepository> get bookmarkRepository =>
@@ -61,10 +61,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
-              bookmarks: IMap.fromIterables(
-                bookmarks.map((b) => b.originalUrl),
-                bookmarks,
-              ),
+              bookmarks: {for (final bookmark in bookmarks) bookmark.uniqueId}
+                  .toISet(),
             ),
           ),
         );
@@ -74,20 +72,23 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     int booruId,
     String booruUrl,
     Iterable<Post> posts, {
-    void Function()? onSuccess,
+    void Function(int count)? onSuccess,
     void Function()? onError,
   }) async {
     try {
-      final bookmarks = await (await bookmarkRepository)
-          .addBookmarks(booruId, booruUrl, posts);
-      onSuccess?.call();
-
-      final map = IMap.fromIterables(
-        bookmarks.map((b) => b.originalUrl),
-        bookmarks,
+      // filter out already bookmarked posts
+      final filtered = posts.where(
+        (post) => !state.isBookmarked(post, booruId),
       );
 
-      state = state.copyWith(bookmarks: state.bookmarks.addAll(map));
+      await (await bookmarkRepository)
+          .addBookmarks(booruId, booruUrl, filtered);
+      onSuccess?.call(filtered.length);
+
+      final ids =
+          filtered.map((p) => BookmarkUniqueId.fromPost(p, booruId)).toISet();
+
+      state = state.copyWith(bookmarks: state.bookmarks.addAll(ids));
     } catch (e) {
       onError?.call();
     }
@@ -101,15 +102,43 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onError,
   }) async {
     try {
+      // check if post is already bookmarked
+      if (state.isBookmarked(post, booruId)) {
+        return;
+      }
+
       final bookmark =
           await (await bookmarkRepository).addBookmark(booruId, booruUrl, post);
       onSuccess?.call();
       state = state.copyWith(
-        bookmarks: state.bookmarks.add(bookmark.originalUrl, bookmark),
+        bookmarks: state.bookmarks.add(bookmark.uniqueId),
       );
     } catch (e) {
       onError?.call();
     }
+  }
+
+  Future<void> removeBookmarkFromId(
+    BookmarkUniqueId bookmarkId, {
+    void Function()? onSuccess,
+    void Function()? onError,
+  }) async {
+    final bookmarks = await (await bookmarkRepository).getAllBookmarksOrEmpty();
+
+    final bookmark = bookmarks.firstWhereOrNull(
+      (b) => b.uniqueId == bookmarkId,
+    );
+
+    if (bookmark == null) {
+      onError?.call();
+      return;
+    }
+
+    return removeBookmark(
+      bookmark,
+      onSuccess: onSuccess,
+      onError: onError,
+    );
   }
 
   Future<void> removeBookmark(
@@ -121,28 +150,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       await (await bookmarkRepository).removeBookmark(bookmark);
       onSuccess?.call();
       state = state.copyWith(
-        bookmarks: state.bookmarks.remove(bookmark.originalUrl),
-      );
-    } catch (e) {
-      onError?.call();
-    }
-  }
-
-  Future<void> updateBookmark(
-    Bookmark bookmark, {
-    void Function()? onSuccess,
-    void Function()? onError,
-  }) async {
-    try {
-      await (await bookmarkRepository).updateBookmark(bookmark);
-      onSuccess?.call();
-
-      state = state.copyWith(
-        bookmarks: state.bookmarks.update(
-          bookmark.originalUrl,
-          (b) => bookmark,
-          ifAbsent: () => bookmark,
-        ),
+        bookmarks: state.bookmarks.remove(bookmark.uniqueId),
       );
     } catch (e) {
       onError?.call();
@@ -163,11 +171,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           return;
         }
       }
+      final bookmarks =
+          await (await bookmarkRepository).getAllBookmarksOrEmpty();
+
       final dir = Directory(path);
       final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
       final file = File(join(dir.path, 'boorusama_bookmarks_$date.json'));
-      final json =
-          state.bookmarks.values.map((bookmark) => bookmark.toJson()).toList();
+      final json = bookmarks.map((bookmark) => bookmark.toJson()).toList();
       final jsonString = jsonEncode(json);
       await file.writeAsString(jsonString);
 
@@ -199,7 +209,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             .toList()
             // remove duplicates
             .where(
-              (bookmark) => !state.bookmarks.containsKey(bookmark.originalUrl),
+              (bookmark) => !state.bookmarks.contains(bookmark.uniqueId),
             )
             .toList();
 
@@ -291,9 +301,9 @@ extension BookmarkCubitToastX on BookmarkNotifier {
       booruId,
       booruUrl,
       posts,
-      onSuccess: () => showSuccessToast(
+      onSuccess: (count) => showSuccessToast(
         context,
-        'bookmark.many_added'.tr().replaceAll('{0}', '${posts.length}'),
+        'bookmark.many_added'.tr().replaceAll('{0}', '$count'),
       ),
       onError: () =>
           showErrorToast(context, 'bookmark.failed_to_add_many'.tr()),
@@ -302,25 +312,29 @@ extension BookmarkCubitToastX on BookmarkNotifier {
 
   Future<void> removeBookmarkWithToast(
     BuildContext context,
-    Bookmark bookmark,
-  ) async {
-    await removeBookmark(
-      bookmark,
-      onSuccess: () => showSuccessToast(context, 'bookmark.removed'.tr()),
+    BookmarkUniqueId bookmarkId, {
+    void Function()? onSuccess,
+  }) async {
+    await removeBookmarkFromId(
+      bookmarkId,
+      onSuccess: () {
+        showSuccessToast(context, 'bookmark.removed'.tr());
+        onSuccess?.call();
+      },
       onError: () => showErrorToast(context, 'bookmark.failed_to_remove'.tr()),
     );
   }
 
-  Future<void> updateBookmarkWithToast(
-    BuildContext context,
-    Bookmark bookmark,
-  ) async {
-    await updateBookmark(
-      bookmark,
-      onSuccess: () => showSuccessToast(context, 'bookmark.updated'.tr()),
-      onError: () => showErrorToast(context, 'bookmark.failed_to_update'.tr()),
-    );
-  }
+  // Future<void> updateBookmarkWithToast(
+  //   BuildContext context,
+  //   Bookmark bookmark,
+  // ) async {
+  //   await updateBookmark(
+  //     bookmark,
+  //     onSuccess: () => showSuccessToast(context, 'bookmark.updated'.tr()),
+  //     onError: () => showErrorToast(context, 'bookmark.failed_to_update'.tr()),
+  //   );
+  // }
 
   Future<void> getAllBookmarksWithToast(
     BuildContext context,
@@ -339,11 +353,11 @@ class BookmarkState extends Equatable {
     required this.bookmarks,
     this.error = '',
   });
-  final IMap<String, Bookmark> bookmarks;
+  final ISet<BookmarkUniqueId> bookmarks;
   final String error;
 
   BookmarkState copyWith({
-    IMap<String, Bookmark>? bookmarks,
+    ISet<BookmarkUniqueId>? bookmarks,
     String? error,
   }) {
     return BookmarkState(
@@ -356,15 +370,9 @@ class BookmarkState extends Equatable {
   List<Object?> get props => [bookmarks, error];
 }
 
-extension BookmarkCubitX on BookmarkState {
-  // check if a post is bookmarked
-  bool isBookmarked(Post post, BooruType booru) {
-    return bookmarks.containsKey(post.originalImageUrl);
-  }
-
-  // get bookmark from Post
-  Bookmark? getBookmark(Post post, BooruType booru) {
-    return bookmarks[post.originalImageUrl];
+extension BookmarkStateX on BookmarkState {
+  bool isBookmarked(Post post, int booruId) {
+    return bookmarks.contains(BookmarkUniqueId.fromPost(post, booruId));
   }
 }
 

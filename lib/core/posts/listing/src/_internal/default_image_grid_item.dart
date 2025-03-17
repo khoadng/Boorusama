@@ -32,6 +32,10 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     required this.useHero,
     this.onTap,
     super.key,
+    this.contextMenu,
+    this.leadingIcons,
+    this.gaplessPlayback,
+    this.imageUrl,
   });
 
   final int index;
@@ -40,6 +44,10 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final PostGridController<T> controller;
   final bool useHero;
   final VoidCallback? onTap;
+  final Widget? contextMenu;
+  final List<Widget>? leadingIcons;
+  final bool? gaplessPlayback;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +60,18 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
 
           return DefaultPostListContextMenuRegion(
             isEnabled: !multiSelect,
-            contextMenu: Consumer(
-              builder: (_, ref, __) => GeneralPostContextMenu(
-                hasAccount: ref.watchConfigAuth.hasLoginDetails(),
-                onMultiSelect: () {
-                  multiSelectController.enableMultiSelect(
-                    initialSelected: [post],
-                  );
-                },
-                post: post,
-              ),
-            ),
+            contextMenu: contextMenu ??
+                Consumer(
+                  builder: (_, ref, __) => GeneralPostContextMenu(
+                    hasAccount: ref.watchConfigAuth.hasLoginDetails(),
+                    onMultiSelect: () {
+                      multiSelectController.enableMultiSelect(
+                        initialSelected: [post],
+                      );
+                    },
+                    post: post,
+                  ),
+                ),
             child: HeroMode(
               enabled: useHero,
               child: BooruHero(
@@ -82,12 +91,13 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                                 .select((v) => v.imageQuality),
                           );
 
-                          final imgUrl = gridThumbnailUrlBuilder != null
-                              ? gridThumbnailUrlBuilder(
-                                  imageQuality,
-                                  post,
-                                )
-                              : post.thumbnailImageUrl;
+                          final imgUrl = imageUrl ??
+                              (gridThumbnailUrlBuilder != null
+                                  ? gridThumbnailUrlBuilder(
+                                      imageQuality,
+                                      post,
+                                    )
+                                  : post.thumbnailImageUrl);
 
                           return SliverPostGridImageGridItem(
                             post: post,
@@ -115,7 +125,9 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                             image: _Image(
                               post: post,
                               imageUrl: imgUrl,
+                              gaplessPlayback: gaplessPlayback,
                             ),
+                            leadingIcons: leadingIcons,
                           );
                         },
                       );
@@ -145,10 +157,12 @@ class _Image<T extends Post> extends ConsumerWidget {
     required this.post,
     required this.imageUrl,
     super.key,
+    this.gaplessPlayback,
   });
 
   final T post;
   final String imageUrl;
+  final bool? gaplessPlayback;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -168,7 +182,7 @@ class _Image<T extends Post> extends ConsumerWidget {
       forceCover: imageListType == ImageListType.standard,
       fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
       placeholderUrl: post.thumbnailImageUrl,
-      gaplessPlayback: true,
+      gaplessPlayback: gaplessPlayback ?? true,
     );
   }
 }

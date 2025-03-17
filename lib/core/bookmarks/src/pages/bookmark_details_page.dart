@@ -13,35 +13,39 @@ import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
+import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/widgets.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
-import '../providers/local_providers.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({
     required this.initialIndex,
     required this.initialThumbnailUrl,
+    required this.controller,
     super.key,
   });
 
   final int initialIndex;
   final String? initialThumbnailUrl;
+  final PostGridController<BookmarkPost> controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bookmarks = ref.watch(filteredBookmarksProvider);
-    final posts = bookmarks.map((e) => e.toPost()).toList();
-
-    return PostDetailsScope(
-      initialIndex: initialIndex,
-      initialThumbnailUrl: initialThumbnailUrl,
-      posts: posts,
-      scrollController: null,
-      child: const BookmarkDetailsPageInternal(),
+    return ValueListenableBuilder(
+      valueListenable: controller.itemsNotifier,
+      builder: (_, posts, __) {
+        return PostDetailsScope(
+          initialIndex: initialIndex,
+          initialThumbnailUrl: initialThumbnailUrl,
+          posts: posts,
+          scrollController: null,
+          child: const BookmarkDetailsPageInternal(),
+        );
+      },
     );
   }
 }

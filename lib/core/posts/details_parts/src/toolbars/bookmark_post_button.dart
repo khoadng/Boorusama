@@ -7,6 +7,7 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../theme.dart';
@@ -24,9 +25,7 @@ class BookmarkPostButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
-
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final isBookmarked = bookmarkState.isBookmarked(post, booruConfig.booruId);
 
     return isBookmarked
         ? IconButton(
@@ -34,7 +33,7 @@ class BookmarkPostButton extends ConsumerWidget {
             onPressed: () {
               ref.bookmarks.removeBookmarkWithToast(
                 context,
-                bookmarkState.getBookmark(post, booruConfig.booruType)!,
+                BookmarkUniqueId.fromPost(post, booruConfig.booruId),
               );
             },
             icon: Icon(
@@ -72,9 +71,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
-
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final isBookmarked = bookmarkState.isBookmarked(post, booruConfig.booruId);
 
     return LikeButton(
       isLiked: isBookmarked,
@@ -82,7 +79,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
         if (isLiked) {
           ref.bookmarks.removeBookmarkWithToast(
             context,
-            bookmarkState.getBookmark(post, booruConfig.booruType)!,
+            BookmarkUniqueId.fromPost(post, booruConfig.booruId),
           );
         } else {
           ref.bookmarks.addBookmarkWithToast(
@@ -112,14 +109,12 @@ extension BookmarkPostX on WidgetRef {
   void toggleBookmark(Post post) {
     final booruConfig = readConfigAuth;
     final bookmarkState = read(bookmarkProvider);
-
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruType);
+    final isBookmarked = bookmarkState.isBookmarked(post, booruConfig.booruId);
 
     if (isBookmarked) {
       bookmarks.removeBookmarkWithToast(
         context,
-        bookmarkState.getBookmark(post, booruConfig.booruType)!,
+        BookmarkUniqueId.fromPost(post, booruConfig.booruId),
       );
     } else {
       bookmarks.addBookmarkWithToast(

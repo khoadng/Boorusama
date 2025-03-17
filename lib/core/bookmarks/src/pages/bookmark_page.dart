@@ -21,23 +21,28 @@ class BookmarkPage extends ConsumerStatefulWidget {
 
 class _BookmarkPageState extends ConsumerState<BookmarkPage> {
   final _searchController = TextEditingController();
-  final scrollController = AutoScrollController();
-  final focusNode = FocusNode();
+  final _scrollController = AutoScrollController();
+  final _focusNode = FocusNode();
 
   @override
   void dispose() {
-    super.dispose();
+    _searchController.removeListener(_onSearchTextChanged);
+
+    _scrollController.dispose();
     _searchController.dispose();
-    scrollController.dispose();
-    focusNode.dispose();
+    _focusNode.dispose();
+
+    super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(() {
-      ref.read(selectedTagsProvider.notifier).state = _searchController.text;
-    });
+    _searchController.addListener(_onSearchTextChanged);
+  }
+
+  void _onSearchTextChanged() {
+    ref.read(tagInputProvider.notifier).state = _searchController.text;
   }
 
   @override
@@ -45,14 +50,14 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
     return CustomContextMenuOverlay(
       child: Scaffold(
         floatingActionButton: ScrollToTop(
-          scrollController: scrollController,
+          scrollController: _scrollController,
           child: BooruScrollToTopButton(
-            onPressed: () => scrollController.jumpTo(0),
+            onPressed: () => _scrollController.jumpTo(0),
           ),
         ),
         body: BookmarkScrollView(
-          controller: scrollController,
-          focusNode: focusNode,
+          scrollController: _scrollController,
+          focusNode: _focusNode,
           searchController: _searchController,
         ),
       ),

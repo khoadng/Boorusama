@@ -2,7 +2,9 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
+import '../../../posts/listing/providers.dart';
 import '../../../router.dart';
+import '../data/bookmark_convert.dart';
 
 Future<void> goToBookmarkPage(
   BuildContext context,
@@ -18,6 +20,7 @@ Future<void> goToBookmarkDetailsPage(
   BuildContext context,
   int index, {
   required String initialThumbnailUrl,
+  required PostGridController<BookmarkPost> controller,
 }) {
   return context.push(
     Uri(
@@ -26,6 +29,9 @@ Future<void> goToBookmarkDetailsPage(
         'index': index.toString(),
       },
     ).toString(),
-    extra: initialThumbnailUrl,
+    extra: {
+      'controller': controller,
+      'initialThumbnailUrl': initialThumbnailUrl,
+    },
   );
 }
