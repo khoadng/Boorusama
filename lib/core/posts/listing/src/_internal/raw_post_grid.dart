@@ -366,6 +366,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                         ),
                       _SliverBottomGridPadding(
                         multiSelectController: _multiSelectController,
+                        pageMode: pageMode,
                       ),
                     ],
                   ),
@@ -465,17 +466,25 @@ class _CustomScrollView extends StatelessWidget {
 class _SliverBottomGridPadding extends StatelessWidget {
   const _SliverBottomGridPadding({
     required this.multiSelectController,
+    required this.pageMode,
   });
 
   final MultiSelectController<Post> multiSelectController;
+  final PageMode pageMode;
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
+
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
       builder: (_, multiSelect, __) {
         return SliverSizedBox(
-          height: multiSelect ? 36 : 0,
+          height: switch (pageMode) {
+            PageMode.infinite =>
+              multiSelect ? bottomPadding + 72 : bottomPadding,
+            PageMode.paginated => multiSelect ? 36 : 0,
+          },
         );
       },
     );
