@@ -280,10 +280,14 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     }
 
     if (dis <= 200 && _controller.isExpanded) {
-      // Delay to next frame to wait for the sheet state to change before showing the overlay
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _controller.showBottomSheet();
-      });
+      if (!_controller.previouslyForcedShowUIByDrag) {
+        // Delay to next frame to wait for the sheet state to change before showing the overlay
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _controller.showBottomSheet();
+        });
+      } else {
+        // UI was previously forced to show by drag, so we don't want to show it again here
+      }
     }
   }
 
@@ -293,6 +297,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     } else {
       if (_controller.sheetState.value == SheetState.hidden) {
         widget.onShrink?.call();
+      }
+
+      // Hide UI elements when sheet is collapsed if it was previously forced to show by drag
+      if (_controller.previouslyForcedShowUIByDrag) {
+        _controller
+          ..hideOverlay()
+          ..previouslyForcedShowUIByDrag = false;
       }
     }
 

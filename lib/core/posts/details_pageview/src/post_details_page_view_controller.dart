@@ -93,6 +93,8 @@ class PostDetailsPageViewController extends ChangeNotifier
   final forceHideBottomSheet = ValueNotifier(false);
   final cooldown = ValueNotifier(false);
 
+  var previouslyForcedShowUIByDrag = false;
+
   void attachOverlayAnimController(AnimationController? controller) {
     _overlayAnimController = controller;
 
@@ -289,6 +291,10 @@ class PostDetailsPageViewController extends ChangeNotifier
       );
       hideBottomSheet();
     } else {
+      // This is needed to prevent showing the UI when it is previously hidden
+      if (!bottomSheet.value && !overlay.value) {
+        previouslyForcedShowUIByDrag = true;
+      }
       showOverlay(
         includeSystemStatus: true,
       );
@@ -319,7 +325,12 @@ class PostDetailsPageViewController extends ChangeNotifier
       verticalPosition.value = 0.0;
     }
 
-    showBottomSheet();
+    if (previouslyForcedShowUIByDrag) {
+      previouslyForcedShowUIByDrag = false;
+      hideOverlay();
+    } else {
+      showBottomSheet();
+    }
   }
 
   void jumpToPage(int page) {
