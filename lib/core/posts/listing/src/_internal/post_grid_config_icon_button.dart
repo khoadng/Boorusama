@@ -39,10 +39,6 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
-    final postStatsPageBuilder =
-        ref.watch(currentBooruBuilderProvider)?.postStatisticsPageBuilder;
-
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
       builder: (context, multiSelect, child) {
@@ -54,96 +50,110 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                   shape: BoxShape.circle,
                   color: context.extendedColorScheme.surfaceContainerOverlay,
                 ),
-                child: Consumer(
-                  builder: (_, ref, __) {
-                    final config = ref.watchConfigFilter;
-                    final blacklistEntries = ref
-                        .watch(blacklistTagEntriesProvider(config))
-                        .valueOrNull;
-
-                    return BooruPopupMenuButton(
-                      offset: const Offset(0, 36),
-                      iconColor:
-                          context.extendedColorScheme.onSurfaceContainerOverlay,
-                      onSelected: (value) {
-                        if (value == 'options') {
-                          _showViewOptions(context, settingsNotifier);
-                        } else if (value == 'select') {
-                          multiSelectController.enableMultiSelect();
-                        } else if (value == 'stats') {
-                          if (postStatsPageBuilder != null) {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                settings: const RouteSettings(
-                                  name: 'post_statistics',
-                                ),
-                                builder: (_) => postStatsPageBuilder(
-                                  context,
-                                  postController.items,
-                                ),
-                              ),
-                            );
-                          }
-                        } else if (value == 'edit_blacklist') {
-                          // check if all entries are global then just open the global blacklist page
-                          final isGlobal = blacklistEntries?.every(
-                                (element) =>
-                                    element.source == BlacklistSource.global,
-                              ) ??
-                              false;
-
-                          if (isGlobal) {
-                            goToGlobalBlacklistedTagsPage(context);
-                          } else {
-                            showBooruModalBottomSheet(
-                              context: context,
-                              routeSettings: const RouteSettings(
-                                name: 'edit_blacklist_select',
-                              ),
-                              builder: (_) => const EditBlacklistActionSheet(),
-                            );
-                          }
-                        }
-                      },
-                      itemBuilder: {
-                        'select': PostGridConfigOptionTile(
-                          title: const Text('Select').tr(),
-                          icon: const Icon(
-                            Symbols.select_all,
-                            size: 18,
-                          ),
-                        ),
-                        if (postStatsPageBuilder != null)
-                          'stats': PostGridConfigOptionTile(
-                            title: const Text('Stats').tr(),
-                            icon: const Icon(
-                              Symbols.bar_chart,
-                              size: 18,
-                            ),
-                          ),
-                        if (showBlacklist &&
-                            blacklistEntries != null &&
-                            blacklistEntries.isNotEmpty)
-                          'edit_blacklist': PostGridConfigOptionTile(
-                            title: const Text('Edit Blacklist').tr(),
-                            icon: const Icon(
-                              Symbols.block,
-                              size: 18,
-                            ),
-                          ),
-                        'options': PostGridConfigOptionTile(
-                          title: const Text('View Options').tr(),
-                          icon: const Icon(
-                            Symbols.settings,
-                            size: 18,
-                          ),
-                        ),
-                      },
-                    );
-                  },
-                ),
+                child: _buildMenuButton(context, ref),
               )
             : const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildMenuButton(BuildContext context, WidgetRef ref) {
+    final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
+    final postStatsPageBuilder =
+        ref.watch(currentBooruBuilderProvider)?.postStatisticsPageBuilder;
+
+    return Consumer(
+      builder: (_, ref, __) {
+        final config = ref.watchConfigFilter;
+        final blacklistEntries =
+            ref.watch(blacklistTagEntriesProvider(config)).valueOrNull;
+
+        return ValueListenableBuilder(
+          valueListenable: postController.itemsNotifier,
+          builder: (_, posts, __) {
+            return posts.isNotEmpty
+                ? BooruPopupMenuButton(
+                    offset: const Offset(0, 36),
+                    iconColor:
+                        context.extendedColorScheme.onSurfaceContainerOverlay,
+                    onSelected: (value) {
+                      if (value == 'options') {
+                        _showViewOptions(context, settingsNotifier);
+                      } else if (value == 'select') {
+                        multiSelectController.enableMultiSelect();
+                      } else if (value == 'stats') {
+                        if (postStatsPageBuilder != null) {
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              settings: const RouteSettings(
+                                name: 'post_statistics',
+                              ),
+                              builder: (_) => postStatsPageBuilder(
+                                context,
+                                postController.items,
+                              ),
+                            ),
+                          );
+                        }
+                      } else if (value == 'edit_blacklist') {
+                        // check if all entries are global then just open the global blacklist page
+                        final isGlobal = blacklistEntries?.every(
+                              (element) =>
+                                  element.source == BlacklistSource.global,
+                            ) ??
+                            false;
+
+                        if (isGlobal) {
+                          goToGlobalBlacklistedTagsPage(context);
+                        } else {
+                          showBooruModalBottomSheet(
+                            context: context,
+                            routeSettings: const RouteSettings(
+                              name: 'edit_blacklist_select',
+                            ),
+                            builder: (_) => const EditBlacklistActionSheet(),
+                          );
+                        }
+                      }
+                    },
+                    itemBuilder: {
+                      'select': PostGridConfigOptionTile(
+                        title: const Text('Select').tr(),
+                        icon: const Icon(
+                          Symbols.select_all,
+                          size: 18,
+                        ),
+                      ),
+                      if (postStatsPageBuilder != null)
+                        'stats': PostGridConfigOptionTile(
+                          title: const Text('Stats').tr(),
+                          icon: const Icon(
+                            Symbols.bar_chart,
+                            size: 18,
+                          ),
+                        ),
+                      if (showBlacklist &&
+                          blacklistEntries != null &&
+                          blacklistEntries.isNotEmpty)
+                        'edit_blacklist': PostGridConfigOptionTile(
+                          title: const Text('Edit Blacklist').tr(),
+                          icon: const Icon(
+                            Symbols.block,
+                            size: 18,
+                          ),
+                        ),
+                      'options': PostGridConfigOptionTile(
+                        title: const Text('View Options').tr(),
+                        icon: const Icon(
+                          Symbols.settings,
+                          size: 18,
+                        ),
+                      ),
+                    },
+                  )
+                : const SizedBox.shrink();
+          },
+        );
       },
     );
   }
