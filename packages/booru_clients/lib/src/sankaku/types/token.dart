@@ -1,11 +1,18 @@
 class Token {
-  Token({
+  const Token({
     required this.success,
     required this.tokenType,
     required this.accessToken,
     required this.refreshToken,
     required this.currentUser,
   });
+
+  const Token.empty()
+      : success = false,
+        tokenType = null,
+        accessToken = null,
+        refreshToken = null,
+        currentUser = null;
 
   factory Token.fromJson(Map<String, dynamic> json) {
     return Token(

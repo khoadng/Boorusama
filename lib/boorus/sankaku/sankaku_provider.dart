@@ -6,7 +6,7 @@ final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
     final booruFactory = ref.watch(booruFactoryProvider);
     final booru = booruFactory.create(type: config.booruType);
 
-    return SankakuClient(
+    return SankakuClient.extended(
       dio: dio,
       baseUrl: config.url,
       username: config.login,
@@ -120,7 +120,11 @@ final sankakuPostRepoProvider =
                 score: e.totalScore ?? 0,
                 duration: e.videoDuration ?? 0,
                 fileSize: e.fileSize ?? 0,
-                format: extractFileExtension(e.fileType) ?? '',
+                format: extractFileExtension(
+                      e.fileType,
+                      fileUrl: e.fileUrl,
+                    ) ??
+                    '',
                 hasSound: null,
                 height: e.height?.toDouble() ?? 0,
                 md5: e.md5 ?? '',
@@ -192,8 +196,18 @@ final sankakuArtistPostsProvider = FutureProvider.autoDispose
       );
 });
 
-String? extractFileExtension(String? mimeType) {
-  if (mimeType == null) return null;
+String? extractFileExtension(
+  String? mimeType, {
+  String? fileUrl,
+}) {
+  if (mimeType == null) {
+    if (fileUrl == null) return null;
+
+    final ext = sanitizedExtension(fileUrl);
+
+    return ext;
+  }
+
   final parts = mimeType.split('/');
   return parts.length >= 2 ? '.${parts[1]}' : null;
 }

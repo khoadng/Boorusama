@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
+import '../sankaku_idol/sankaku_idol_client.dart';
 import 'types/types.dart';
 
 const _kFakeBrowserHeader =
@@ -51,6 +52,35 @@ class SankakuClient {
 
     _authStore = authStore ?? InMemoryAuthStore();
   }
+
+  factory SankakuClient.extended({
+    required String baseUrl,
+    Map<String, dynamic>? headers,
+    Dio? dio,
+    AuthStore? authStore,
+    String? username,
+    String? password,
+  }) {
+    final isIdol = baseUrl.contains('idol.');
+
+    return isIdol
+        ? SankakuIdolClient(
+            baseUrl: baseUrl,
+            headers: headers,
+            dio: dio,
+            username: username,
+            password: password,
+          )
+        : SankakuClient(
+            baseUrl: baseUrl,
+            headers: headers,
+            dio: dio,
+            authStore: authStore,
+            username: username,
+            password: password,
+          );
+  }
+
   late Dio _dio;
   late AuthStore _authStore;
   final String? username;
