@@ -49,12 +49,6 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
       child: Scaffold(
-        floatingActionButton: ScrollToTop(
-          scrollController: _scrollController,
-          child: BooruScrollToTopButton(
-            onPressed: () => _scrollController.jumpTo(0),
-          ),
-        ),
         body: BookmarkScrollView(
           scrollController: _scrollController,
           focusNode: _focusNode,

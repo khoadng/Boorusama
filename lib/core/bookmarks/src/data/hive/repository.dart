@@ -47,6 +47,11 @@ class BookmarkHiveRepository implements BookmarkRepository {
   }
 
   @override
+  Future<void> removeBookmarks(Iterable<Bookmark> favorites) async {
+    await _box.deleteAll(favorites.map((favorite) => favorite.id));
+  }
+
+  @override
   Future<void> updateBookmark(Bookmark favorite) async {
     await _box.put(favorite.id, favoriteToHiveObject(favorite));
   }

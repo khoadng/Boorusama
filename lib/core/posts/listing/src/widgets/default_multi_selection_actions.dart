@@ -23,9 +23,11 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
     required this.controller,
     super.key,
     this.extraActions,
+    this.bookmark = true,
   });
 
   final MultiSelectController<T> controller;
+  final bool bookmark;
   final List<Widget>? extraActions;
 
   @override
@@ -46,10 +48,11 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
               icon: const Icon(Symbols.download),
               name: 'download.download'.tr(),
             ),
-            AddBookmarksButton(
-              posts: selectedPosts,
-              onPressed: controller.disableMultiSelect,
-            ),
+            if (bookmark)
+              AddBookmarksButton(
+                posts: selectedPosts,
+                onPressed: controller.disableMultiSelect,
+              ),
             if (extraActions != null) ...extraActions!,
           ],
         );

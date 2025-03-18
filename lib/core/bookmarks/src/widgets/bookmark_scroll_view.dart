@@ -107,6 +107,41 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
             scrollController: widget.scrollController,
             controller: controller,
             enablePullToRefresh: false,
+            multiSelectActions: DefaultMultiSelectionActions(
+              controller: _multiSelectController,
+              bookmark: false,
+              extraActions: [
+                ValueListenableBuilder(
+                  valueListenable: _multiSelectController.selectedItemsNotifier,
+                  builder: (_, selectedPosts, __) {
+                    return MultiSelectButton(
+                      onPressed: selectedPosts.isNotEmpty
+                          ? () {
+                              final bookmarks =
+                                  selectedPosts.map((e) => e.bookmark).toList();
+
+                              ref
+                                  .read(bookmarkProvider.notifier)
+                                  .removeBookmarks(bookmarks)
+                                  .then((_) {
+                                if (context.mounted) {
+                                  controller.remove(
+                                    selectedPosts.map((e) => e.id).toList(),
+                                    (e) => e.id,
+                                  );
+                                }
+                              });
+
+                              _multiSelectController.disableMultiSelect();
+                            }
+                          : null,
+                      icon: const Icon(Symbols.bookmark_remove),
+                      name: 'Remove',
+                    );
+                  },
+                ),
+              ],
+            ),
             header: Container(
               margin: const EdgeInsets.symmetric(vertical: 8),
               child: Row(

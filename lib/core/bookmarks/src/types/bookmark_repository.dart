@@ -19,6 +19,7 @@ abstract class BookmarkRepository {
   );
 
   Future<void> removeBookmark(Bookmark favorite);
+  Future<void> removeBookmarks(Iterable<Bookmark> favorites);
   Future<void> updateBookmark(Bookmark favorite);
   BookmarksOrError getAllBookmarks();
 }

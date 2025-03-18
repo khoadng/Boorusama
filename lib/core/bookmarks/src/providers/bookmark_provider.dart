@@ -157,6 +157,24 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     }
   }
 
+  Future<void> removeBookmarks(
+    Iterable<Bookmark> bookmarks, {
+    void Function()? onSuccess,
+    void Function()? onError,
+  }) async {
+    try {
+      await (await bookmarkRepository).removeBookmarks(bookmarks);
+      onSuccess?.call();
+      state = state.copyWith(
+        bookmarks: state.bookmarks.difference(
+          bookmarks.map((b) => b.uniqueId).toISet(),
+        ),
+      );
+    } catch (e) {
+      onError?.call();
+    }
+  }
+
   Future<void> exportAllBookmarks(BuildContext context, String path) async {
     try {
       // request permission

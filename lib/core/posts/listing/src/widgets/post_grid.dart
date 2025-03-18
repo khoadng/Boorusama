@@ -46,6 +46,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
     this.itemBuilder,
     this.body,
     this.header,
+    this.multiSelectActions,
     this.enablePullToRefresh,
   });
 
@@ -58,6 +59,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
   final IndexedSelectableWidgetBuilder<T>? itemBuilder;
   final Widget? body;
   final Widget? header;
+  final Widget? multiSelectActions;
   final bool? enablePullToRefresh;
 
   @override
@@ -101,11 +103,11 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
             builder: (_, ref, __) {
               final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
-              final multiSelectActions =
+              final multiSelectActions = widget.multiSelectActions ??
                   booruBuilder?.multiSelectionActionsBuilder?.call(
-                context,
-                _multiSelectController,
-              );
+                    context,
+                    _multiSelectController,
+                  );
 
               return multiSelectActions ?? const SizedBox.shrink();
             },
