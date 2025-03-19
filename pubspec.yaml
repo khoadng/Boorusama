@@ -14,6 +14,7 @@ workspace:
   - packages/sliver_masonry_grid
   - packages/extended_image
   - packages/flutter_sqlite3_migration
+  - packages/retriable
 
 dependencies:
   # local packages
@@ -29,6 +30,8 @@ dependencies:
     path: packages/extended_image
   flutter_sqlite3_migration:
     path: packages/flutter_sqlite3_migration
+  retriable:
+    path: packages/retriable
 
   android_intent_plus: ^5.1.0
   animated_list_plus: ^0.5.2

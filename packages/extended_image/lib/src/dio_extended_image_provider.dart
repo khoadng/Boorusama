@@ -12,9 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'fetch_strategy.dart';
-import 'retry_utils.dart';
+import 'package:retriable/retriable.dart';
 
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>
@@ -219,13 +217,27 @@ class DioExtendedNetworkImageProvider
     try {
       final resolved = Uri.base.resolve(key.url);
 
-      final response = await tryGetResponse(
+      final response = await tryGetResponse<List<int>>(
         resolved,
-        chunkEvents,
         dio: dio,
-        headers: headers,
         cancelToken: cancelToken,
         fetchStrategy: fetchStrategy,
+        options: Options(
+          responseType: ResponseType.bytes,
+          headers: headers,
+        ),
+        onReceiveProgress: chunkEvents != null
+            ? (count, total) {
+                if (!chunkEvents.isClosed && total >= 0) {
+                  chunkEvents.add(
+                    ImageChunkEvent(
+                      cumulativeBytesLoaded: count,
+                      expectedTotalBytes: total,
+                    ),
+                  );
+                }
+              }
+            : null,
       );
 
       if (response == null || response.data == null) {

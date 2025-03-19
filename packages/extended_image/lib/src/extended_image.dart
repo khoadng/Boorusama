@@ -9,9 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
+import 'package:retriable/retriable.dart';
 
 import 'dio_extended_image_provider.dart';
-import 'fetch_strategy.dart';
 import 'utils.dart';
 
 const kDefaultImageCacheDuration = Duration(hours: 1);

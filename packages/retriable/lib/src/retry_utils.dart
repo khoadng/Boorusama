@@ -1,54 +1,41 @@
-// Dart imports:
 import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:extended_image_library/extended_image_library.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http_client_helper/http_client_helper.dart' hide Response;
 
 import 'fetch_strategy.dart';
 
-Future<Response<List<int>>?> tryGetResponse(
-  Uri resolved,
-  StreamController<ImageChunkEvent>? chunkEvents, {
+Future<Response<T>?> tryGetResponse<T>(
+  Uri uri, {
   required Dio dio,
   CancellationToken? cancelToken,
-  Map<String, String>? headers,
   FetchStrategyBuilder? fetchStrategy,
+  void Function(int count, int total)? onReceiveProgress,
+  Options? options,
 }) async {
   cancelToken?.throwIfCancellationRequested();
   final stopwatch = Stopwatch()..start();
   final builder = fetchStrategy ?? _defaultFetchStrategy;
   final strategy = builder.build();
-  var instructions = await strategy(resolved, null);
+  var instructions = await strategy(uri, null);
   _debugCheckInstructions(instructions);
   var attemptCount = 0;
   FetchFailure? lastFailure;
+
+  final effectiveOptions = options ?? Options();
 
   while (!instructions.shouldGiveUp) {
     attemptCount++;
     cancelToken?.throwIfCancellationRequested();
     try {
-      final response = await dio.getUri<List<int>>(
+      final response = await dio.getUri<T>(
         instructions.uri,
-        options: Options(
-          responseType: ResponseType.bytes,
-          headers: headers,
+        options: effectiveOptions.copyWith(
           receiveTimeout: instructions.timeout,
           validateStatus: (status) => status == HttpStatus.ok,
         ),
-        onReceiveProgress: chunkEvents != null
-            ? (count, total) {
-                if (!chunkEvents.isClosed && total >= 0) {
-                  chunkEvents.add(
-                    ImageChunkEvent(
-                      cumulativeBytesLoaded: count,
-                      expectedTotalBytes: total,
-                    ),
-                  );
-                }
-              }
-            : null,
+        onReceiveProgress: onReceiveProgress,
       );
 
       if (response.data == null) {
@@ -80,16 +67,18 @@ Future<Response<List<int>>?> tryGetResponse(
   }
 }
 
-final _defaultFetchStrategy = const FetchStrategyBuilder(
+const _defaultFetchStrategy = FetchStrategyBuilder(
   exponentialBackoffMultiplier: 2,
   initialPauseBetweenRetries: Duration(milliseconds: 500),
 );
 
 void _debugCheckInstructions(FetchInstructions? instructions) {
+  // ignore: prefer_asserts_with_message
   assert(() {
     if (instructions == null) {
       throw StateError(
-          'FetchInstructions must not be null. Check your fetch strategy.');
+        'FetchInstructions must not be null. Check your fetch strategy.',
+      );
     }
     return true;
   }());

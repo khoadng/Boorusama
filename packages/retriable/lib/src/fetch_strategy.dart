@@ -2,8 +2,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' as ui;
-import 'package:flutter/foundation.dart';
 
 bool _defaultTransientHttpStatusCodePredicate(int statusCode) {
   return defaultTransientHttpStatusCodes.contains(statusCode);
@@ -45,11 +43,11 @@ class FetchStrategyBuilder {
 
         if (!failure.isRetriableFailure ||
             failure.totalDuration > totalFetchTimeout ||
-            failure.attemptCount > maxAttempts) {
+            failure.attemptCount >= maxAttempts) {
           return FetchInstructions.giveUp(uri: uri, silent: silent);
         }
 
-        final Duration pauseBetweenRetries = initialPauseBetweenRetries *
+        final pauseBetweenRetries = initialPauseBetweenRetries *
             math.pow(exponentialBackoffMultiplier, failure.attemptCount - 1);
 
         await Future.delayed(pauseBetweenRetries);
@@ -59,14 +57,14 @@ class FetchStrategyBuilder {
 }
 
 typedef FetchStrategy = Future<FetchInstructions> Function(
-    Uri uri, FetchFailure? failure);
+  Uri uri,
+  FetchFailure? failure,
+);
 
-@immutable
-class FetchInstructions {
+class FetchInstructions<T> {
   const FetchInstructions.giveUp({
     required this.uri,
     this.silent,
-    this.alternativeImage,
   })  : shouldGiveUp = true,
         timeout = Duration.zero;
 
@@ -74,22 +72,19 @@ class FetchInstructions {
     required this.uri,
     required this.timeout,
   })  : shouldGiveUp = false,
-        silent = null,
-        alternativeImage = null;
+        silent = null;
 
   final bool shouldGiveUp;
   final Duration timeout;
   final Uri uri;
-  final Future<ui.Image>? alternativeImage;
   final bool? silent;
 
   @override
   String toString() {
-    return 'FetchInstructions(shouldGiveUp: $shouldGiveUp, timeout: $timeout, uri: $uri, slilent: $silent)';
+    return 'FetchInstructions(shouldGiveUp: $shouldGiveUp, timeout: $timeout, uri: $uri, silent: $silent)';
   }
 }
 
-@immutable
 class FetchFailure implements Exception {
   const FetchFailure({
     required this.totalDuration,
@@ -97,7 +92,7 @@ class FetchFailure implements Exception {
     this.httpStatusCode,
     this.uri,
     this.originalException,
-  }) : assert(attemptCount > 0);
+  }) : assert(attemptCount > 0, 'attemptCount must be greater than 0');
 
   final Duration totalDuration;
   final int attemptCount;
@@ -105,7 +100,7 @@ class FetchFailure implements Exception {
   final Uri? uri;
   final dynamic originalException;
 
-  get isRetriableFailure =>
+  bool get isRetriableFailure =>
       (httpStatusCode != null &&
           _defaultTransientHttpStatusCodePredicate(httpStatusCode!)) ||
       originalException is SocketException;
