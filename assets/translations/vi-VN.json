@@ -164,7 +164,9 @@
         "appearance": {
             "appearance": "Hiển thị",
             "show_scores": "Hiện điểm",
-            "show_post_list_config_header": "Hiển thị header tuỳ chỉnh"
+            "show_post_list_config_header": "Hiển thị header tuỳ chỉnh",
+            "booru_config": "Hồ sơ booru",
+            "booru_config_placement": "Vị trí hồ sơ booru"
         },
         "general": "Chung",
         "search": {
@@ -205,12 +207,24 @@
             "spacing": "Độ dãn cách",
             "corner_radius": "Bo góc",
             "aspect_ratio": "Tỉ lệ khung hình",
-            "padding": ""
+            "padding": "Độ giãn cách & tỉ lệ hiển thị"
         },
         "image_viewer": {
             "image_viewer": "Trình xem ảnh",
             "full_res_as_default": "Luôn sử dụng ảnh gốc",
-            "full_res_notice": "Thời gian tải có thể sẽ lâu hơn tùy vào kích thước của ảnh"
+            "full_res_notice": "Thời gian tải có thể sẽ lâu hơn tùy vào kích thước của ảnh",
+            "slideshow_modes": {
+                "random": "Ngẫu nhiên",
+                "forward": "Tiến tới",
+                "backward": "Lùi lại"
+            },
+            "slideshow": "Chuyển ảnh tự động",
+            "slideshow_mode": "Chế độ chuyển ảnh",
+            "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp",
+            "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
+            "mute_video": "Tắt tiếng video theo mặc định",
+            "video_section_title": "Video",
+            "slideshow_interval": "Thời gian chuyển ảnh"
         },
         "image_detail": {
             "image_detail": "Chi tiết ảnh"
@@ -257,7 +271,8 @@
                 "original": "Gốc",
                 "sample": "Mẫu",
                 "preview": "Xem trước"
-            }
+            },
+            "title": "Tải xuống"
         },
         "help_us_translate": "Hỗ trợ dịch app",
         "other_settings": "Cài đặt khác",
@@ -271,7 +286,8 @@
         "image_details": {
             "ui_overlay": {
                 "show": "Hiện",
-                "hide": "Ẩn"
+                "hide": "Ẩn",
+                "ui_overlay": "Bố cục giao diện"
             },
             "image_details": "Chi tiết hình ảnh"
         },
@@ -288,12 +304,12 @@
         "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository",
         "accessibility": {
             "accessibility": "Trợ năng",
-            "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn booru profile",
+            "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn hồ sơ booru",
             "swipeAreaToOpenSidebar": "Khu vực vuốt thanh bên",
             "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được"
         },
         "booru_settings": {
-            "edit_current_profile": "Chỉnh sửa profile hiện tại",
+            "edit_current_profile": "Chỉnh sửa hồ sơ hiện tại",
             "booru_settings": "Cài đặt Booru"
         },
         "support": "Hỗ trợ",
@@ -411,7 +427,7 @@
     },
     "booru": {
         "booru_engine_input_label": "Booru engine (*)",
-        "config_name_label": "Tên profile  (*)",
+        "config_name_label": "Tên hồ sơ  (*)",
         "site_url_label": "URL của web",
         "login_name_label": "Tên đăng nhập",
         "password_api_key_label": "API key",
@@ -420,7 +436,7 @@
         "content_filtering_label": "Lọc nội dung",
         "hide_deleted_label": "Ẩn ảnh bị xoá",
         "config_booru_confirm": "Chốt",
-        "add_a_booru_site": "Tạo profile mới",
+        "add_a_booru_site": "Tạo hồ sơ mới",
         "next_step": "Tiếp",
         "site_url": "Địa chỉ trang web",
         "unsupported_warning": "Trang booru này chưa được hỗ trợ.",
@@ -467,5 +483,13 @@
         "double_tap": "Chạm hai lần",
         "long_press": "Nhấn và giữ",
         "tap": "Chạm"
+    },
+    "time": {
+        "counters": {
+            "second": {
+                "one": "Giây",
+                "other": "Giây"
+            }
+        }
     }
 }
