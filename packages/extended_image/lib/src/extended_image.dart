@@ -9,12 +9,46 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/semantics.dart';
+import 'package:flutter_avif/flutter_avif.dart';
+import 'package:path/path.dart' as path;
 import 'package:retriable/retriable.dart';
+
+// ignore: depend_on_referenced_packages
+import 'package:flutter_avif_platform_interface/flutter_avif_platform_interface.dart'
+    as avif_platform;
 
 import 'dio_extended_image_provider.dart';
 import 'utils.dart';
 
 const kDefaultImageCacheDuration = Duration(hours: 1);
+
+bool shouldUseAvif(
+  String url, {
+  TargetPlatform? platform,
+  int? androidVersion,
+}) {
+  final endsWithAvif = _sanitizedUrl(url).endsWith('.avif');
+
+  return switch (platform) {
+    TargetPlatform.android =>
+      androidVersion == null || androidVersion > 30 ? false : endsWithAvif,
+    TargetPlatform.iOS || TargetPlatform.macOS || null => false,
+    _ => endsWithAvif,
+  };
+}
+
+String _sanitizedUrl(String url) {
+  final ext = path.extension(url);
+  final indexOfQuestionMark = ext.indexOf('?');
+
+  if (indexOfQuestionMark != -1) {
+    final trimmedExt = ext.substring(0, indexOfQuestionMark);
+
+    return url.replaceFirst(ext, trimmedExt);
+  } else {
+    return url;
+  }
+}
 
 /// extended image base on official
 /// [Image]
@@ -37,6 +71,7 @@ class ExtendedImage extends StatefulWidget {
     this.placeholderWidget,
     this.errorWidget,
   })  : assert(constraints == null || constraints.debugAssertIsValid()),
+        _avif = false,
         constraints = (width != null || height != null)
             ? constraints?.tighten(width: width, height: height) ??
                 BoxConstraints.tightFor(width: width, height: height)
@@ -74,23 +109,40 @@ class ExtendedImage extends StatefulWidget {
     this.controller,
     this.placeholderWidget,
     this.errorWidget,
+    TargetPlatform? platform,
+    int? androidVersion,
   })  : assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0),
+        _avif = shouldUseAvif(
+          url,
+          platform: platform,
+          androidVersion: androidVersion,
+        ),
         image = ExtendedResizeImage.resizeIfNeeded(
-          provider: DioExtendedNetworkImageProvider(
+          provider: shouldUseAvif(
             url,
-            dio: dio,
-            scale: scale,
-            headers: headers,
-            cache: cache,
-            cancelToken: cancelToken,
-            cacheKey: cacheKey,
-            printError: printError,
-            cacheRawData: cacheRawData,
-            imageCacheName: imageCacheName,
-            cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
-            fetchStrategy: fetchStrategy,
-          ),
+            platform: platform,
+            androidVersion: androidVersion,
+          )
+              ? CachedNetworkAvifImageProvider(
+                  url,
+                  scale: scale,
+                  headers: headers,
+                )
+              : DioExtendedNetworkImageProvider(
+                  url,
+                  dio: dio,
+                  scale: scale,
+                  headers: headers,
+                  cache: cache,
+                  cancelToken: cancelToken,
+                  cacheKey: cacheKey,
+                  printError: printError,
+                  cacheRawData: cacheRawData,
+                  imageCacheName: imageCacheName,
+                  cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
+                  fetchStrategy: fetchStrategy,
+                ),
           compressionRatio: compressionRatio,
           maxBytes: maxBytes,
           cacheWidth: cacheWidth,
@@ -105,6 +157,8 @@ class ExtendedImage extends StatefulWidget {
         assert(constraints == null || constraints.debugAssertIsValid()),
         assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0);
+
+  final bool _avif;
 
   /// when image is removed from the tree permanently, whether clear memory cache
   final bool clearMemoryCacheWhenDispose;
@@ -328,6 +382,11 @@ class _ExtendedImageState extends State<ExtendedImage>
       _imageStream!.removeListener(oldListener);
     }
     if (widget.image != oldWidget.image) {
+      if (widget._avif) {
+        final avifFfi = avif_platform.FlutterAvifPlatform.api;
+        avifFfi.disposeDecoder(key: oldWidget.image.hashCode.toString());
+      }
+
       _resolveImage();
     }
   }
@@ -479,6 +538,15 @@ class _ExtendedImageState extends State<ExtendedImage>
     }
     _imageStream!.removeListener(_getListener());
     _isListeningToStream = false;
+
+    if (_imageStream?.completer != null &&
+        (_imageStream!.completer! is AvifImageStreamCompleter) &&
+        !(_imageStream!.completer! as AvifImageStreamCompleter)
+            .getHasListeners() &&
+        !PaintingBinding.instance.imageCache.containsKey(widget.image)) {
+      final avifFfi = avif_platform.FlutterAvifPlatform.api;
+      avifFfi.disposeDecoder(key: widget.image.hashCode.toString());
+    }
   }
 
   void _updateSourceStream(ImageStream newStream, {bool rebuild = false}) {

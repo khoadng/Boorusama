@@ -10,6 +10,7 @@ import '../../../../configs/ref.dart';
 import '../../../../http/http.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/providers.dart';
+import '../../../../info/device_info.dart';
 import '../../../post/post.dart';
 
 class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
@@ -30,6 +31,7 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
 
     final config = ref.watchConfigAuth;
     final dio = ref.watch(dioProvider(config));
+    final deviceInfo = ref.watch(deviceInfoProvider);
 
     return FutureBuilder(
       // Delay to prevent the image from loading too early
@@ -56,6 +58,8 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
             ...ref.watch(extraHttpHeaderProvider(config)),
             ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
           },
+          platform: Theme.of(context).platform,
+          androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,
         );
       },
     );

@@ -14,6 +14,7 @@ dependencies:
   extended_image_library: ^4.0.1
   flutter:
     sdk: flutter
+  flutter_avif: ^3.0.0
   path: ^1.8.3
   path_provider: ^2.1.2
   retriable:

@@ -11,6 +11,7 @@ import 'package:foundation/foundation.dart';
 import '../configs/ref.dart';
 import '../http/http.dart';
 import '../http/providers.dart';
+import '../info/device_info.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
 import 'providers.dart';
@@ -60,6 +61,7 @@ class BooruImage extends ConsumerWidget {
       imageListingSettingsProvider
           .select((value) => value.imageGridAspectRatio),
     );
+    final deviceInfo = ref.watch(deviceInfoProvider);
 
     return BooruRawImage(
       dio: dio,
@@ -83,6 +85,7 @@ class BooruImage extends ConsumerWidget {
       gaplessPlayback: gaplessPlayback,
       placeholderWidget: placeholderWidget,
       controller: controller,
+      androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,
     );
   }
 }
@@ -106,6 +109,7 @@ class BooruRawImage extends StatelessWidget {
     this.gaplessPlayback = false,
     this.placeholderWidget,
     this.controller,
+    this.androidVersion,
   });
 
   final Dio dio;
@@ -124,6 +128,7 @@ class BooruRawImage extends StatelessWidget {
   final bool gaplessPlayback;
   final Widget? placeholderWidget;
   final ExtendedImageController? controller;
+  final int? androidVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +169,8 @@ class BooruRawImage extends StatelessWidget {
                   gaplessPlayback: gaplessPlayback,
                   fetchStrategy: _fetchStrategy,
                   controller: controller,
+                  platform: Theme.of(context).platform,
+                  androidVersion: androidVersion,
                   placeholderWidget: placeholderWidget ??
                       placeholderUrl.toOption().fold(
                             () => imagePlaceHolder,
@@ -188,6 +195,8 @@ class BooruRawImage extends StatelessWidget {
                                         fit: fit,
                                         fetchStrategy: _fetchStrategy,
                                         placeholderWidget: imagePlaceHolder,
+                                        platform: Theme.of(context).platform,
+                                        androidVersion: androidVersion,
                                       )
                                     : imagePlaceHolder;
                               },
