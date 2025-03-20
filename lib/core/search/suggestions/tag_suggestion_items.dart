@@ -53,7 +53,7 @@ class TagSuggestionItems extends ConsumerWidget {
               padding: padding ??
                   const EdgeInsets.symmetric(
                     horizontal: 12,
-                  ).copyWith(bottom: 16),
+                  ).copyWith(bottom: 16, top: 8),
               itemCount: _tags.length,
               itemBuilder: (context, index) {
                 final tag = _tags[index];

@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../../foundation/mobile.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
@@ -117,7 +118,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 : null,
           ),
           actions: [
-            if (kPreferredLayout.isMobile)
+            if (isMobilePlatform())
               AnimatedSwitcher(
                 duration: Durations.extralong1,
                 reverseDuration: const Duration(milliseconds: 10),
@@ -143,7 +144,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                       )
                     : null,
               ),
-            if (kPreferredLayout.isDesktop)
+            if (isDesktopPlatform())
               AnimatedSwitcher(
                 duration: Durations.extralong1,
                 reverseDuration: const Duration(milliseconds: 10),

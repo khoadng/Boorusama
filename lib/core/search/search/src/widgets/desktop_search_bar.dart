@@ -124,13 +124,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   }
 
   Widget _buildOverlay(BoxConstraints constraints) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final focusNode = FocusScope.of(context);
+    final size = MediaQuery.sizeOf(context);
+
     return Container(
       constraints: BoxConstraints(
         maxWidth: min(
-          MediaQuery.sizeOf(context).width * 0.7,
+          size.width * 0.7,
           kSearchAppBarWidth,
         ),
-        maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 400),
+        maxHeight: min(size.height * 0.8, 400),
       ),
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
@@ -143,10 +147,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 TagSuggestionItems(
                   config: ref.watchConfigAuth,
                   dense: true,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.surfaceContainer,
+                  backgroundColor: colorScheme.surfaceContainer,
                   tags: suggestionTags,
                   currentQuery: query.text,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ).copyWith(bottom: 4, top: 4),
                   onItemTap: (tag) {
                     selectedTagController.addTag(
                       tag.value,
@@ -154,7 +160,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     );
                     textEditingController.clear();
                     showSuggestions.value = false;
-                    FocusScope.of(context).unfocus();
+                    focusNode.unfocus();
                   },
                 )
               else
@@ -164,17 +170,16 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainer,
+                    color: colorScheme.surfaceContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: SearchLandingView(
                     disableAnimation: true,
                     reverseScheme: true,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainer,
+                    backgroundColor: colorScheme.surfaceContainer,
                     onFavTagTap: (value) {
                       selectedTagController.addTagFromFavTag(value);
-                      FocusScope.of(context).unfocus();
+                      focusNode.unfocus();
                     },
                     onRawTagTap: (value) => selectedTagController.addTag(
                       value,
@@ -182,7 +187,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     ),
                     onHistoryTap: (value) {
                       selectedTagController.addTagFromSearchHistory(value);
-                      FocusScope.of(context).unfocus();
+                      focusNode.unfocus();
                     },
                     metatags:
                         ref.watchConfigAuth.booruType == BooruType.danbooru
@@ -204,19 +209,18 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   right: 4,
                   child: MaterialButton(
                     minWidth: 0,
-                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    color: colorScheme.secondaryContainer,
                     shape: const CircleBorder(),
                     onPressed: () {
                       textEditingController.clear();
                       showSuggestions.value = false;
-                      FocusScope.of(context).unfocus();
+                      focusNode.unfocus();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(4),
                       child: Icon(
                         Symbols.close,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
+                        color: colorScheme.onSecondaryContainer,
                       ),
                     ),
                   ),
