@@ -455,8 +455,8 @@ Future<List<T>> __filter<T extends Post>(
   Set<String> blacklistedUrls,
 ) async {
   // If there are no tags, active filters, or blacklisted urls, return the items as is to prevent isolate overhead
-  if (tagCounts.isEmpty && activeFilters.isEmpty && blacklistedUrls.isEmpty) {
-    return items;
+  if (tagCounts.isEmpty && blacklistedUrls.isEmpty) {
+    return items.toList();
   }
 
   return Isolate.run(
