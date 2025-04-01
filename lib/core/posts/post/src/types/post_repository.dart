@@ -5,7 +5,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../foundation/error.dart';
 import '../../../../search/queries/query.dart';
-import '../../../../search/selected_tags/providers.dart';
+import '../../../../search/selected_tags/tag.dart';
 import 'post.dart';
 
 abstract class PostRepository<T extends Post> {
@@ -16,7 +16,7 @@ abstract class PostRepository<T extends Post> {
   });
 
   PostsOrError<T> getPostsFromController(
-    SelectedTagController controller,
+    SearchTagSet controller,
     int page, {
     int? limit,
   });
@@ -68,7 +68,7 @@ typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
 
 typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
     Function(
-  SelectedTagController controller,
+  SearchTagSet controller,
   int page, {
   int? limit,
 });

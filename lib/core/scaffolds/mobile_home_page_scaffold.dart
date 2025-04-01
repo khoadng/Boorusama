@@ -54,7 +54,10 @@ class _MobileHomePageScaffoldState
 
     return PostScope(
       fetcher: (page) {
-        return postRepo.getPostsFromController(selectedTagController, page);
+        return postRepo.getPostsFromController(
+          selectedTagController.tagSet,
+          page,
+        );
       },
       builder: (context, postController) => PostGrid(
         controller: postController,

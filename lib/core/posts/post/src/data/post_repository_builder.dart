@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../http/http.dart';
 import '../../../../search/queries/query.dart';
-import '../../../../search/selected_tags/providers.dart';
+import '../../../../search/selected_tags/tag.dart';
 import '../../../../settings/settings.dart';
 import '../types/post.dart';
 import '../types/post_repository.dart';
@@ -45,7 +45,7 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
 
   @override
   PostsOrError<T> getPostsFromController(
-    SelectedTagController controller,
+    SearchTagSet controller,
     int page, {
     int? limit,
   }) =>

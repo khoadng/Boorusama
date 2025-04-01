@@ -193,7 +193,7 @@ class GelbooruV1SearchPage extends ConsumerWidget {
       ),
       initialQuery: initialQuery,
       fetcher: (page, controller) => postRepo.getPostsFromController(
-        controller,
+        controller.tagSet,
         page,
       ),
     );

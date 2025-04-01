@@ -335,14 +335,19 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final config = ref.readConfigSearch;
     final postRepo = ref.read(postRepoProvider(config));
 
-    final r = await postRepo.getPostsFromTagsOrEmpty(
-      //TODO: assume space delimited tags for now, if we need to support tag with space, we need to change this
-      tags.spaceDelimitedOriginalTags,
-      page: page,
-      limit: task.perPage,
-    );
+    final r = await postRepo
+        .getPostsFromController(
+          //TODO: assume space delimited tags for now, if we need to support tag with space, we need to change this
+          tags,
+          page,
+          limit: task.perPage,
+        )
+        .run();
 
-    return r.posts;
+    return r.fold(
+      (l) => [],
+      (r) => r.posts,
+    );
   }
 
   Future<bool> _shouldExitForFreeUser() async {

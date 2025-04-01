@@ -34,7 +34,6 @@ import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/premiums/providers.dart';
 import 'package:boorusama/core/search/queries/query.dart';
-import 'package:boorusama/core/search/selected_tags/providers.dart';
 import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'package:boorusama/core/settings/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
@@ -148,7 +147,7 @@ class DummyPostRepository implements PostRepository {
 
   @override
   PostsOrError<Post> getPostsFromController(
-    SelectedTagController controller,
+    SearchTagSet controller,
     int page, {
     int? limit,
   }) =>

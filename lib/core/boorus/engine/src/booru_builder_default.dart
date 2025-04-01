@@ -275,7 +275,7 @@ class DefaultSearchPage extends ConsumerWidget {
     return SearchPageScaffold(
       initialQuery: initialQuery,
       fetcher: (page, controler) => postRepo.getPostsFromController(
-        controler,
+        controler.tagSet,
         page,
       ),
     );

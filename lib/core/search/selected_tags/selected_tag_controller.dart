@@ -28,6 +28,7 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   List<TagSearchItem> get tags => _tagSet.tags;
   List<String> get rawTags => _tagSet.rawTags;
   String get rawTagsString => _tagSet.rawTagsString;
+  SearchTagSet get tagSet => _tagSet;
 
   void addTagFromSearchHistory(SearchHistory history) {
     _tagSet.addTagFromSearchHistory(history);
