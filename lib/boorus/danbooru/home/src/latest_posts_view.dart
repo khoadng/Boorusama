@@ -61,7 +61,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
       fetcher: (page) {
         return context.isLargeScreen
             ? postRepo.getPostsFromController(
-                selectedTagController,
+                selectedTagController.tagSet,
                 page,
               )
             : postRepo.getPosts(

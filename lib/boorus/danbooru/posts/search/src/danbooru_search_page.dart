@@ -36,7 +36,7 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
 
     return SearchPageScaffold(
       fetcher: (page, controller) =>
-          postRepo.getPostsFromController(controller, page),
+          postRepo.getPostsFromController(controller.tagSet, page),
       initialQuery: widget.initialQuery,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):

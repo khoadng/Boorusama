@@ -25,19 +25,16 @@ class PostDto {
     String? baseUrl,
   }) {
     final previewUrl = xml.getAttribute('preview_url');
+    final fileUrl = xml.getAttribute('file_url');
 
     return PostDto(
       id: int.tryParse(xml.getAttribute('id') ?? ''),
       md5: xml.getAttribute('md5'),
       fileName: xml.getAttribute('file_name'),
-      fileUrl: xml.getAttribute('file_url'),
+      fileUrl: _resolveUrl(fileUrl, baseUrl),
       height: int.tryParse(xml.getAttribute('height') ?? ''),
       width: int.tryParse(xml.getAttribute('width') ?? ''),
-      previewUrl: previewUrl?.startsWith('http') == true
-          ? previewUrl
-          : baseUrl != null
-              ? '$baseUrl$previewUrl'
-              : null,
+      previewUrl: _resolveUrl(previewUrl, baseUrl),
       previewHeight: int.tryParse(xml.getAttribute('preview_height') ?? ''),
       previewWidth: int.tryParse(xml.getAttribute('preview_width') ?? ''),
       rating: xml.getAttribute('rating'),
@@ -66,4 +63,14 @@ class PostDto {
 
   @override
   String toString() => '$id: $fileUrl';
+}
+
+String? _resolveUrl(String? url, String? baseUrl) {
+  if (url == null) return null;
+
+  return url.startsWith('http')
+      ? url
+      : baseUrl != null
+          ? '$baseUrl$url'
+          : null;
 }

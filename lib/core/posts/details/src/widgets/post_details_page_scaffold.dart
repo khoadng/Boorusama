@@ -163,9 +163,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     _autoHideVideoControlsTimer = Timer(const Duration(seconds: 3), () {
       if (mounted) {
-        _controller
-          ..hideBottomSheet()
-          ..hideOverlay();
+        _controller.hideAllUI();
 
         _videoControlsHiddenByTimer = true;
       }
@@ -178,9 +176,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     // if the video controls are hidden by the timer, show them again
     if (_videoControlsHiddenByTimer) {
-      _controller
-        ..showOverlay()
-        ..showBottomSheet();
+      _controller.showAllUI();
     }
 
     _videoControlsHiddenByTimer = false;

@@ -244,9 +244,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
       // Hide UI elements when page changes
       if (_controller.initialHideOverlay && !isLargeScreen) {
-        _controller
-          ..hideOverlay()
-          ..hideBottomSheet();
+        _controller.hideAllUI();
       }
     }
   }

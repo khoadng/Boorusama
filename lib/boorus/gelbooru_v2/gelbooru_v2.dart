@@ -360,7 +360,7 @@ class GelbooruV2SearchPage extends ConsumerWidget {
     return SearchPageScaffold(
       initialQuery: initialQuery,
       fetcher: (page, controller) =>
-          postRepo.getPostsFromController(controller, page),
+          postRepo.getPostsFromController(controller.tagSet, page),
     );
   }
 }

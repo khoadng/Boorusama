@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../foundation/caching.dart';
 import '../../../../search/queries/query.dart';
-import '../../../../search/selected_tags/providers.dart';
+import '../../../../search/selected_tags/tag.dart';
 import '../types/post.dart';
 import '../types/post_repository.dart';
 
@@ -21,7 +21,7 @@ class EmptyPostRepository extends PostRepository {
 
   @override
   PostsOrError getPostsFromController(
-    SelectedTagController controller,
+    SearchTagSet controller,
     int page, {
     int? limit,
   }) =>
@@ -72,7 +72,7 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
 
   @override
   PostsOrError<T> getPostsFromController(
-    SelectedTagController controller,
+    SearchTagSet controller,
     int page, {
     int? limit,
   }) =>

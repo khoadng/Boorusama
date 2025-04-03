@@ -511,7 +511,7 @@ class HydrusSearchPage extends ConsumerWidget {
       initialQuery: initialQuery,
       fetcher: (page, controller) => ref
           .read(hydrusPostRepoProvider(config))
-          .getPostsFromController(controller, page),
+          .getPostsFromController(controller.tagSet, page),
     );
   }
 }
