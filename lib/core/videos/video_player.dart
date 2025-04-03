@@ -59,10 +59,17 @@ class _BooruVideoState extends State<BooruVideo> {
     _initVideoPlayerController();
   }
 
+  Map<String, String> _buildHeaders() => {
+        if (widget.headers != null) ...widget.headers!,
+        'Range': 'bytes=0-',
+        'Acept-Encoding': 'identity;q=1, *;q=0',
+        'Priority': 'i',
+      };
+
   void _initVideoPlayerController() {
     _videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(widget.url),
-      httpHeaders: widget.headers ?? const {},
+      httpHeaders: _buildHeaders(),
     );
 
     widget.onVideoPlayerCreated?.call(_videoPlayerController);
