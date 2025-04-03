@@ -131,7 +131,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
       valueListenable: controller.videoProgress,
       builder: (_, progress, __) => VideoTimeText(
         duration: progress.duration,
-        forceHigherThanOneSecond: true,
+        forceHigherThanOneSecond: progress.duration.inSeconds != 0,
       ),
     );
   }

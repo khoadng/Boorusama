@@ -34,6 +34,11 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
 
+  final StreamController<VideoProgress> _seekStreamController =
+      StreamController<VideoProgress>.broadcast();
+
+  Stream<VideoProgress> get seekStream => _seekStreamController.stream;
+
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
@@ -111,6 +116,13 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     } else {
       _videoControllers[id]?.seekTo(position);
     }
+
+    _seekStreamController.add(
+      VideoProgress(
+        position,
+        _videoProgress.value.duration,
+      ),
+    );
   }
 
   bool isPlaying(int id, bool isWebm, bool useDefaultEngine) {
@@ -190,6 +202,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _videoProgress.dispose();
     _isVideoPlaying.dispose();
     _isVideoInitializing.dispose();
+    _seekStreamController.close();
 
     currentPage.dispose();
     currentPost.dispose();

@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
@@ -105,6 +104,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   Timer? _autoHideVideoControlsTimer;
   bool _videoControlsHiddenByTimer = false;
+  StreamSubscription<VideoProgress>? _seekStreamSubscription;
 
   List<T> get posts => _posts;
 
@@ -133,6 +133,12 @@ class _PostDetailPageScaffoldState<T extends Post>
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
+    _seekStreamSubscription = widget.controller.seekStream.listen(
+      (event) {
+        // cancel the timer when user is seeking
+        _clearAutoHideVideoControlsTimer();
+      },
+    );
 
     _volumeKeyPageNavigator.initialize();
   }
@@ -144,6 +150,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     _volumeKeyPageNavigator.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
     _autoHideVideoControlsTimer?.cancel();
+    _autoHideVideoControlsTimer = null;
+    _seekStreamSubscription?.cancel();
 
     super.dispose();
   }
@@ -161,7 +169,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     _clearAutoHideVideoControlsTimer();
 
-    _autoHideVideoControlsTimer = Timer(const Duration(seconds: 3), () {
+    _autoHideVideoControlsTimer = Timer(const Duration(seconds: 4), () {
       if (mounted) {
         _controller.hideAllUI();
 
@@ -685,53 +693,6 @@ class _SliverBottomPadding extends StatelessWidget {
         height: MediaQuery.paddingOf(context).bottom,
       ),
     );
-  }
-}
-
-mixin PostDetailsPageMixin<T extends StatefulWidget, E extends Post>
-    on State<T> {
-  final _videoProgress = ValueNotifier(VideoProgress.zero);
-
-  //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
-  final Map<int, VideoPlayerController> _videoControllers = {};
-  final Map<int, WebmVideoController> _webmVideoControllers = {};
-
-  List<E> get posts;
-  ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
-
-  void onPageChanged(int page) {
-    _videoProgress.value = VideoProgress.zero;
-  }
-
-  void onCurrentPositionChanged(
-    double current,
-    double total,
-    String url,
-    int page,
-  ) {
-    // check if the current video is the same as the one being played
-    if (posts[page].videoUrl != url) return;
-
-    _videoProgress.value = VideoProgress(
-      Duration(milliseconds: (total * 1000).toInt()),
-      Duration(milliseconds: (current * 1000).toInt()),
-    );
-  }
-
-  void onVideoSeekTo(Duration position, int page) {
-    if (posts[page].videoUrl.endsWith('.webm')) {
-      _webmVideoControllers[page]?.seek(position.inSeconds.toDouble());
-    } else {
-      _videoControllers[page]?.seekTo(position);
-    }
-  }
-
-  void onWebmVideoPlayerCreated(WebmVideoController controller, int page) {
-    _webmVideoControllers[page] = controller;
-  }
-
-  void onVideoPlayerCreated(VideoPlayerController controller, int page) {
-    _videoControllers[page] = controller;
   }
 }
 
