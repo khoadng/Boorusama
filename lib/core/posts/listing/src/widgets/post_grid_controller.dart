@@ -36,9 +36,19 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     this.debounceDuration = const Duration(milliseconds: 500),
     PageMode pageMode = PageMode.infinite,
     this.blacklistedUrlsFetcher,
+    this.forcedPageMode = false,
+    this.initialPage,
   })  : _pageMode = pageMode,
         _duplicateTracker = duplicateTracker,
-        _eventController = StreamController<PostControllerEvent>.broadcast();
+        _eventController = StreamController<PostControllerEvent>.broadcast() {
+    // Initialize with initial page if provided
+    if (initialPage != null) {
+      _page = initialPage!;
+      pageNotifier.value = initialPage!;
+    }
+  }
+
+  final int? initialPage;
 
   final PostGridFetcher<T> fetcher;
   PageMode _pageMode;
@@ -91,6 +101,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   final StreamController<PostControllerEvent> _eventController;
   Stream<PostControllerEvent> get events => _eventController.stream;
+
+  final bool forcedPageMode;
 
   Future<PostResult<T>> _refreshPosts() => _fetchPosts(_kFirstPage);
 
@@ -197,6 +209,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
   // Set the page mode and reset the state
   void setPageMode(PageMode? newPageMode) {
+    if (forcedPageMode) return; // Skip if page mode is forced
     if (newPageMode == null || _pageMode == newPageMode) return;
 
     _pageMode = newPageMode;

@@ -11,6 +11,7 @@ import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../post/post.dart';
 import 'post_duplicate_checker.dart';
 import 'post_grid_controller.dart';
@@ -21,6 +22,8 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
     required this.builder,
     super.key,
     this.duplicateCheckMode = DuplicateCheckMode.id,
+    this.pageMode,
+    this.initialPage,
   });
 
   final PostGridFetcher<T> fetcher;
@@ -28,7 +31,8 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
     BuildContext context,
     PostGridController<T> controller,
   ) builder;
-
+  final PageMode? pageMode;
+  final int? initialPage;
   final DuplicateCheckMode duplicateCheckMode;
 
   static PostGridController<T>? maybeOf<T extends Post>(BuildContext context) {
@@ -54,33 +58,44 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
 }
 
 class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
-  late final _controller = PostGridController<T>(
-    fetcher: widget.fetcher,
-    duplicateTracker: PostDuplicateTracker<T>(
-      mode: widget.duplicateCheckMode,
-    ),
-    blacklistedTagsFetcher: () {
-      if (!mounted) return Future.value({});
+  late final PostGridController<T> _controller;
 
-      return ref.read(blacklistTagsProvider(ref.readConfigFilter).future);
-    },
-    pageMode: ref
-        .read(imageListingSettingsProvider.select((value) => value.pageMode)),
-    blacklistedUrlsFetcher: () {
-      try {
-        final settings = ref.read(settingsProvider);
+  @override
+  void initState() {
+    super.initState();
 
-        final bookmarks = settings.shouldFilterBookmarks
-            ? ref.read(bookmarkProvider).bookmarks
-            : const ISet<BookmarkUniqueId>.empty();
+    _controller = PostGridController<T>(
+      fetcher: widget.fetcher,
+      duplicateTracker: PostDuplicateTracker<T>(
+        mode: widget.duplicateCheckMode,
+      ),
+      blacklistedTagsFetcher: () {
+        if (!mounted) return Future.value({});
 
-        return bookmarks.map((e) => e.url).toSet();
-      } catch (_) {
-        return {};
-      }
-    },
-    mountedChecker: () => mounted,
-  );
+        return ref.read(blacklistTagsProvider(ref.readConfigFilter).future);
+      },
+      pageMode: widget.pageMode ??
+          ref.read(
+            imageListingSettingsProvider.select((value) => value.pageMode),
+          ),
+      blacklistedUrlsFetcher: () {
+        try {
+          final settings = ref.read(settingsProvider);
+
+          final bookmarks = settings.shouldFilterBookmarks
+              ? ref.read(bookmarkProvider).bookmarks
+              : const ISet<BookmarkUniqueId>.empty();
+
+          return bookmarks.map((e) => e.url).toSet();
+        } catch (_) {
+          return {};
+        }
+      },
+      mountedChecker: () => mounted,
+      forcedPageMode: widget.pageMode != null,
+      initialPage: widget.initialPage,
+    );
+  }
 
   @override
   void dispose() {
@@ -95,6 +110,7 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
       ..listen(
         imageListingSettingsProvider.select((value) => value.pageMode),
         (previous, next) {
+          if (widget.pageMode != null) return; // Skip if pageMode is forced
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
             _controller.setPageMode(next);

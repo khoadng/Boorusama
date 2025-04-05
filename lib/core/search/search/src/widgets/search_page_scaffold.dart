@@ -19,6 +19,7 @@ import '../../../../posts/listing/providers.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../../tags/configs/providers.dart';
 import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../../widgets/widgets.dart';
@@ -64,6 +65,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.fetcher,
     super.key,
     this.initialQuery,
+    this.initialPage,
     this.noticeBuilder,
     this.queryPattern,
     this.metatags,
@@ -73,6 +75,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   final Widget Function(BuildContext context)? noticeBuilder;
 
@@ -139,8 +142,9 @@ class _SearchPageScaffoldState<T extends Post>
       queryPattern: widget.queryPattern,
       tagsController: _tagsController,
     );
-
-    if (widget.initialQuery != null) {
+    if (widget.initialPage != null) {
+      _controller.skipToResultWithTag('');
+    } else if (widget.initialQuery != null) {
       _controller.skipToResultWithTag(widget.initialQuery!);
       ref
           .read(searchHistoryProvider.notifier)
@@ -305,6 +309,10 @@ class _SearchPageScaffoldState<T extends Post>
                                 page,
                                 _controller.tagsController,
                               ),
+                              pageMode: widget.initialPage != null
+                                  ? PageMode.paginated
+                                  : null,
+                              initialPage: widget.initialPage,
                               builder: (context, controller) {
                                 // Hacky way to get the controller
                                 _postController = controller;
