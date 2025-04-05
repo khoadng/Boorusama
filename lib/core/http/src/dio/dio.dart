@@ -13,7 +13,7 @@ import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
 import '../../../proxy/proxy.dart';
 import '../../../router.dart';
-import '../cloudflare_challenge_interceptor.dart';
+import '../../ddos_solver/protection_setup.dart';
 import '../http_utils.dart';
 import '../network_protocol.dart';
 import 'dio_ext.dart';
@@ -82,9 +82,10 @@ Dio newDio({required DioOptions options}) {
   final context = navigatorKey.currentContext;
   if (context != null) {
     dio.interceptors.add(
-      CloudflareChallengeInterceptor(
+      createInterceptor(
         cookieJar: options.cookieJar,
-        context: context,
+        contextProvider: () => context,
+        dio: dio,
       ),
     );
   }
