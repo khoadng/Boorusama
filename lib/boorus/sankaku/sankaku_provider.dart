@@ -3,19 +3,28 @@ part of 'sankaku.dart';
 final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
   (ref, config) {
     final dio = ref.watch(dioProvider(config));
-    final booruFactory = ref.watch(booruFactoryProvider);
-    final booru = booruFactory.create(type: config.booruType);
+    final booru = ref.watch(sankakuProvider);
 
     return SankakuClient.extended(
       dio: dio,
       baseUrl: config.url,
       username: config.login,
       password: config.apiKey,
-      headers: switch (booru) {
-        final Sankaku s => s.headers,
-        _ => null,
-      },
+      headers: booru.headers,
     );
+  },
+);
+
+final sankakuProvider = Provider<Sankaku>(
+  (ref) {
+    final booruDb = ref.watch(booruDbProvider);
+    final booru = booruDb.getBooru<Sankaku>();
+
+    if (booru == null) {
+      throw Exception('Booru not found for type: ${BooruType.sankaku}');
+    }
+
+    return booru;
   },
 );
 

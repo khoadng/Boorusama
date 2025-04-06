@@ -6,12 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import '../../../../../../core/boorus/booru/booru.dart';
-import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/tags/metatag/providers.dart';
+import '../../../../danbooru_provider.dart';
 import '../../../../tags/user_metatags/providers.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {
@@ -25,9 +24,9 @@ class DanbooruMetatagsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
-    final booru = ref.watch(currentBooruProvider(booruConfig));
+    final booru = ref.watch(danbooruProvider);
     final metatags = ref.watch(metatagsProvider);
-    final cheatSheet = booru?.cheetsheet(booruConfig.url);
+    final cheatSheet = booru.cheetsheet(booruConfig.url);
     final notifier = ref.watch(danbooruUserMetatagsProvider.notifier);
 
     return MetatagsSection(
@@ -37,7 +36,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
             data: (tags) => tags,
             orElse: () => null,
           ),
-      onHelpRequest: cheatSheet != null && !booruConfig.hasStrictSFW
+      onHelpRequest: !booruConfig.hasStrictSFW
           ? () {
               launchExternalUrl(
                 Uri.parse(cheatSheet),

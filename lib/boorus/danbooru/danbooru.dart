@@ -468,7 +468,7 @@ class DanbooruRepository implements BooruRepository {
     required this.booru,
   });
 
-  final Booru booru;
+  final Danbooru booru;
 
   @override
   final Ref ref;

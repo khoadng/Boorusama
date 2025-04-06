@@ -6,8 +6,6 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../boorus/booru/booru.dart';
-import '../../../boorus/booru/providers.dart';
 import '../../../foundation/toast.dart';
 import '../../../theme.dart';
 import '../booru_config.dart';
@@ -121,8 +119,6 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
   }
 
   void _openBrowser(WidgetRef ref, BuildContext context, BooruConfig config) {
-    final loginUrl = ref.read(booruProvider(config.auth))?.getLoginUrl();
-
     if (loginUrl == null) {
       showErrorToast(context, 'Login URL for this booru is not available');
       return;
@@ -131,7 +127,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CookieAccessWebViewPage(
-          url: loginUrl,
+          url: loginUrl!,
           onGet: onGetCookies,
         ),
       ),

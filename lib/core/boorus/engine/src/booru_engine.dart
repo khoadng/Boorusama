@@ -23,7 +23,7 @@ class BooruEngine {
     required this.repository,
   });
 
-  final Booru? booru;
+  final Booru booru;
   final BooruBuilder builder;
   final BooruRepository repository;
 }

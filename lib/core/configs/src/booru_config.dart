@@ -155,8 +155,8 @@ class BooruConfig extends Equatable {
   }) =>
       BooruConfig(
         id: -1,
-        booruId: booruType.toBooruId(),
-        booruIdHint: booruType.toBooruId(),
+        booruId: booruType.id,
+        booruIdHint: booruType.id,
         apiKey: null,
         login: null,
         passHash: null,
@@ -504,9 +504,6 @@ mixin BooruConfigAuthMixin {
 
     return true;
   }
-
-  Booru? createBooruFrom(BooruFactory factory) =>
-      factory.create(type: intToBooruType(booruId));
 
   bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
   bool get hasSoftSFW => url == kDanbooruSafeUrl;

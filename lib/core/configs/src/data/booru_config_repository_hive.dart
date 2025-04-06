@@ -19,7 +19,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   });
   final Box<String> box;
 
-  static String defaultValue(BooruFactory factory) => jsonEncode(
+  static String defaultValue() => jsonEncode(
         BooruConfigData.anonymous(
           booru: BooruType.danbooru,
           booruHint: BooruType.danbooru,

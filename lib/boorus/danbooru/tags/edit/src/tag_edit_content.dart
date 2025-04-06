@@ -6,10 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../core/boorus/booru/booru.dart';
-import '../../../../../core/boorus/booru/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/search/search/routes.dart';
+import '../../../danbooru_provider.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_state.dart';
 import 'tag_edit_view_controller.dart';
@@ -65,9 +64,8 @@ class TagEditExpandContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final booru =
-        ref.watch(booruFactoryProvider).create(type: config.booruType);
-    final aiTagSupport = booru?.hasAiTagSupported(config.url);
+    final booru = ref.watch(danbooruProvider);
+    final aiTagSupport = booru.hasAiTagSupported(config.url);
 
     final notifier = ref.watch(tagEditProvider.notifier);
     final expandMode =
@@ -126,7 +124,7 @@ class TagEditExpandContent extends ConsumerWidget {
                 title: 'Related',
                 mode: TagEditExpandMode.related,
               ),
-              if (aiTagSupport == true) ...[
+              if (aiTagSupport) ...[
                 const SizedBox(width: 4),
                 const TagEditModeSelectButton(
                   title: 'Suggested',

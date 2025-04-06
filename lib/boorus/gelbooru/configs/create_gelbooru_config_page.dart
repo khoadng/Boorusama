@@ -7,8 +7,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/boorus/booru/booru.dart';
-import '../../../core/boorus/booru/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/create.dart';
 import '../../../core/foundation/toast.dart';
@@ -259,7 +257,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   }
 
   void _openBrowser(BooruConfig config) {
-    final loginUrl = ref.read(booruProvider(config.auth))?.getLoginUrl();
+    final loginUrl = ref.read(gelbooruProvider).getLoginUrl();
 
     if (loginUrl == null) {
       showErrorToast(context, 'Login URL for this booru is not available');

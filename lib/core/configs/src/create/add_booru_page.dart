@@ -46,6 +46,8 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
   @override
   Widget build(BuildContext context) {
+    final booruDb = ref.watch(booruDbProvider);
+
     return switch (phase) {
       AddBooruPhase.url => AnalyticsInitStateHook(
           screenName: 'config/url_input',
@@ -53,8 +55,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
             backgroundColor: widget.backgroundColor,
             setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
             onBooruSubmit: (url) => setState(() {
-              final booruFactory = ref.read(booruFactoryProvider);
-              booru = intToBooruType(booruFactory.getBooruFromUrl(url)?.id);
+              booru = intToBooruType(booruDb.getBooruFromUrl(url)?.id);
               phase = booru == BooruType.unknown
                   ? AddBooruPhase.newUnknownBooru
                   : AddBooruPhase.newKnownBooru;

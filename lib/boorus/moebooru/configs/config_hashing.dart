@@ -7,7 +7,7 @@ import '../../../core/foundation/crypto.dart';
 
 String hashBooruPasswordSHA1({
   required String url,
-  required Booru booru,
+  required Moebooru booru,
   required String password,
 }) =>
     booru.getSalt(url).toOption().fold(

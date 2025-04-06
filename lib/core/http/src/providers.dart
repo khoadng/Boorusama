@@ -22,7 +22,7 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final cookieJar = ref.watch(cookieJarProvider);
   final userAgent = ref.watch(userAgentProvider(config.booruType));
   final loggerService = ref.watch(loggerProvider);
-  final booruFactory = ref.watch(booruFactoryProvider);
+  final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
 
   return newDio(
@@ -32,7 +32,7 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       userAgent: userAgent,
       authConfig: config,
       loggerService: loggerService,
-      booruFactory: booruFactory,
+      booruDb: booruDb,
       proxySettings: config.proxySettings,
       cronetAvailable: cronetAvailable,
     ),

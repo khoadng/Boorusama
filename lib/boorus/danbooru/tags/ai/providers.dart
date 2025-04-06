@@ -2,8 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../core/boorus/booru/booru.dart';
-import '../../../../core/boorus/booru/providers.dart';
 import '../../../../core/configs/ref.dart';
 import '../../../../core/tags/categories/providers.dart';
 import '../../../../core/tags/categories/tag_category.dart';
@@ -14,11 +12,10 @@ import 'ai.dart';
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
   (ref, postId) async {
     final config = ref.watchConfigAuth;
-    final booru =
-        ref.watch(booruFactoryProvider).create(type: config.booruType);
-    final aiTagSupport = booru?.hasAiTagSupported(config.url);
+    final booru = ref.watch(danbooruProvider);
+    final aiTagSupport = booru.hasAiTagSupported(config.url);
 
-    if (aiTagSupport == null || !aiTagSupport) return [];
+    if (!aiTagSupport) return [];
 
     final client = ref.watch(danbooruClientProvider(config));
 

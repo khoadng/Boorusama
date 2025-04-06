@@ -6,10 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../core/boorus/booru/booru.dart';
-import '../../core/boorus/booru/providers.dart';
-import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
+import 'providers.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {
   const CreateAnimePicturesConfigPage({
@@ -76,8 +74,7 @@ class AnimePicturesAuthView extends ConsumerStatefulWidget {
 class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
   @override
   Widget build(BuildContext context) {
-    final config = ref.watch(initialBooruConfigProvider);
-    final loginUrl = ref.watch(booruProvider(config.auth))?.getLoginUrl();
+    final animePictures = ref.watch(animePicturesProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -86,7 +83,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           DefaultCookieAuthConfigSection(
-            loginUrl: loginUrl,
+            loginUrl: animePictures.loginUrl,
             onGetCookies: (cookies) {
               if (cookies.isNotEmpty) {
                 final filtered = cookies

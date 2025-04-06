@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/http/providers.dart';
@@ -26,6 +28,19 @@ final animePicturesClientProvider =
       baseUrl: config.url,
       cookie: config.passHash,
     );
+  },
+);
+
+final animePicturesProvider = Provider<AnimePictures>(
+  (ref) {
+    final booruDb = ref.watch(booruDbProvider);
+    final booru = booruDb.getBooru<AnimePictures>();
+
+    if (booru == null) {
+      throw Exception('Booru not found for type: ${BooruType.animePictures}');
+    }
+
+    return booru;
   },
 );
 

@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -62,6 +64,19 @@ final gelbooruClientProvider =
     dio: dio,
   );
 });
+
+final gelbooruProvider = Provider<Gelbooru>(
+  (ref) {
+    final booruDb = ref.watch(booruDbProvider);
+    final booru = booruDb.getBooru<Gelbooru>();
+
+    if (booru == null) {
+      throw Exception('Booru not found for type: ${BooruType.gelbooru}');
+    }
+
+    return booru;
+  },
+);
 
 final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {

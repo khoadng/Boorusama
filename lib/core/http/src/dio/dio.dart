@@ -8,7 +8,6 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
-import '../../../boorus/booru/booru.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
 import '../../../proxy/proxy.dart';
@@ -61,11 +60,11 @@ Dio newGenericDio({
 
 Dio newDio({required DioOptions options}) {
   final booruConfig = options.authConfig;
-  final booruFactory = options.booruFactory;
+  final booruDb = options.booruDb;
   final baseUrl = options.baseUrl;
 
-  final booru = booruFactory.getBooruFromUrl(baseUrl) ??
-      booruFactory.getBooruFromId(booruConfig.booruId);
+  final booru = booruDb.getBooruFromUrl(baseUrl) ??
+      booruDb.getBooruFromId(booruConfig.booruId);
   final supportsHttp2 =
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
   final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;

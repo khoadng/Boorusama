@@ -53,8 +53,8 @@ class BooruConfigData extends Equatable {
     required String? imageDetaisQuality,
   }) =>
       BooruConfigData(
-        booruId: booru.toBooruId(),
-        booruIdHint: booruHint.toBooruId(),
+        booruId: booru.id,
+        booruIdHint: booruHint.id,
         apiKey: '',
         login: '',
         passHash: null,

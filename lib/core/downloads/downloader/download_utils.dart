@@ -11,7 +11,6 @@ import 'package:oktoast/oktoast.dart';
 
 // Project imports:
 import '../../analytics.dart';
-import '../../boorus/booru/booru.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/ref.dart';

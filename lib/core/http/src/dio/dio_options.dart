@@ -14,7 +14,7 @@ class DioOptions {
     required this.userAgent,
     required this.authConfig,
     required this.loggerService,
-    required this.booruFactory,
+    required this.booruDb,
     required this.proxySettings,
     required this.cronetAvailable,
   });
@@ -24,7 +24,7 @@ class DioOptions {
   final String userAgent;
   final BooruConfigAuth authConfig;
   final Logger loggerService;
-  final BooruFactory booruFactory;
+  final BooruDb booruDb;
   final ProxySettings? proxySettings;
   final bool cronetAvailable;
 }

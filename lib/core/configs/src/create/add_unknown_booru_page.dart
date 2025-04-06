@@ -177,7 +177,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                             ref.read(booruConfigProvider.notifier).addOrUpdate(
                                   id: editId,
                                   newConfig: data.copyWith(
-                                    booruIdHint: () => engine.toBooruId(),
+                                    booruIdHint: () => engine.id,
                                   ),
                                   initialData: config,
                                 );

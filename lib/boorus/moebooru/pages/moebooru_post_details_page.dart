@@ -8,8 +8,6 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../core/boorus/booru/booru.dart';
-import '../../../core/boorus/booru/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
@@ -115,19 +113,13 @@ class _MoebooruPostDetailsPageState
 
   Future<void> _loadFavoriteUsers(int postId) async {
     final config = ref.readConfigAuth;
-    final booru = config.createBooruFrom(ref.read(booruFactoryProvider));
+    final booru = ref.read(moebooruProvider);
 
-    await booru?.whenMoebooru(
-      data: (data) async {
-        if (data.supportsFavorite(config.url) && config.hasLoginDetails()) {
-          return ref
-              .read(moebooruFavoritesProvider(postId).notifier)
-              .loadFavoriteUsers();
-        }
-        return;
-      },
-      orElse: () => Future.value(),
-    );
+    if (booru.supportsFavorite(config.url) && config.hasLoginDetails()) {
+      return ref
+          .read(moebooruFavoritesProvider(postId).notifier)
+          .loadFavoriteUsers();
+    }
   }
 
   @override
@@ -304,16 +296,12 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final post = InheritedPost.of<MoebooruPost>(context);
-    final booru = config.createBooruFrom(ref.watch(booruFactoryProvider));
+    final booru = ref.watch(moebooruProvider);
 
     return SliverToBoxAdapter(
-      child: booru?.whenMoebooru(
-            data: (data) => data.supportsFavorite(config.url)
-                ? _Toolbar(post: post)
-                : DefaultPostActionToolbar(post: post),
-            orElse: () => DefaultPostActionToolbar(post: post),
-          ) ??
-          DefaultPostActionToolbar(post: post),
+      child: booru.supportsFavorite(config.url)
+          ? _Toolbar(post: post)
+          : DefaultPostActionToolbar(post: post),
     );
   }
 }

@@ -87,11 +87,23 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
 
-  bootLogger.l('Load boorus from assets');
-  final boorus = await loadBoorusFromAssets();
+  final booruParserRegistry = BooruParserRegistry()
+    ..register(AnimePicturesParser())
+    ..register(HydrusParser())
+    ..register(SzurubooruParser())
+    ..register(Shimmie2Parser())
+    ..register(PhilomenaParser())
+    ..register(SankakuParser())
+    ..register(MoebooruParser())
+    ..register(ZerochanParser())
+    ..register(E621Parser())
+    ..register(GelbooruV2Parser())
+    ..register(GelbooruV1Parser())
+    ..register(GelbooruParser())
+    ..register(DanbooruParser());
 
-  bootLogger.l('Create booru factory');
-  final booruFactory = BooruFactory.from(boorus);
+  bootLogger.l('Load boorus from assets');
+  final boorus = await loadBoorusFromAssets(booruParserRegistry);
 
   bootLogger.l('Initialize settings repository');
   final settingRepository = await createSettingsRepo(logger: logger);
@@ -109,7 +121,6 @@ Future<void> boot(BootLogger bootLogger) async {
 
   final booruUserRepo = await createBooruConfigsRepo(
     logger: bootLogger,
-    booruFactory: booruFactory,
     onCreateNew: (id) async {
       final settings = await settingRepository.load().run().then(
             (value) => value.fold(
@@ -212,9 +223,9 @@ Future<void> boot(BootLogger bootLogger) async {
         child: ProviderScope(
           overrides: [
             booruEngineRegistryProvider.overrideWith(
-              (ref) => ref.watch(booruInitEngineProvider(booruFactory)),
+              (ref) => ref.watch(booruInitEngineProvider(boorus)),
             ),
-            booruFactoryProvider.overrideWithValue(booruFactory),
+            booruDbProvider.overrideWithValue(boorus),
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),
             settingsNotifierProvider

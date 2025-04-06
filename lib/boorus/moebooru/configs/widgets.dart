@@ -8,11 +8,8 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../core/boorus/booru/booru.dart';
-import '../../../core/boorus/booru/providers.dart';
-import '../../../core/configs/config.dart';
 import '../../../core/configs/create.dart';
-import '../../../core/foundation/toast.dart';
+import '../moebooru.dart';
 import 'config_hashing.dart';
 
 class MoebooruPasswordField extends ConsumerStatefulWidget {
@@ -35,8 +32,6 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
 
   late final passwordController = widget.controller ?? TextEditingController();
 
-  BooruFactory get booruFactory => ref.read(booruFactoryProvider);
-
   @override
   void dispose() {
     super.dispose();
@@ -48,6 +43,7 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
+    final moebooru = ref.watch(moebooruProvider);
 
     return CreateBooruApiKeyField(
       controller: passwordController,
@@ -58,20 +54,10 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
           return;
         }
 
-        final booru = config.auth.createBooruFrom(booruFactory);
-
-        if (booru == null) {
-          showErrorToast(
-            context,
-            'Invalid booru, this profile seems to be corrupted, please delete it and create a new one',
-          );
-          return;
-        }
-
         password = value;
         final hashed = hashBooruPasswordSHA1(
           url: config.url,
-          booru: booru,
+          booru: moebooru,
           password: value,
         );
         ref.editNotifier.updateApiKey(hashed);

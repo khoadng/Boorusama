@@ -2,14 +2,12 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../boorus/booru/booru.dart';
 import '../../foundation/loggers.dart';
 import 'booru_config.dart';
 import 'data/booru_config_repository_hive.dart';
 
 Future<BooruConfigRepository> createBooruConfigsRepo({
   required BootLogger logger,
-  required BooruFactory booruFactory,
   required Future<void> Function(int configId) onCreateNew,
 }) async {
   Box<String> booruConfigBox;
@@ -22,8 +20,8 @@ Future<BooruConfigRepository> createBooruConfigsRepo({
     booruConfigBox = await Hive.openBox<String>('booru_configs');
     logger.l('Add default booru config');
 
-    final id = await booruConfigBox
-        .add(HiveBooruConfigRepository.defaultValue(booruFactory));
+    final id =
+        await booruConfigBox.add(HiveBooruConfigRepository.defaultValue());
 
     await onCreateNew(id);
   }

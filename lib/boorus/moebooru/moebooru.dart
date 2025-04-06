@@ -10,6 +10,8 @@ import 'package:foundation/foundation.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -53,6 +55,17 @@ final moebooruClientProvider =
     apiKey: config.apiKey,
     dio: dio,
   );
+});
+
+final moebooruProvider = Provider<Moebooru>((ref) {
+  final booruDb = ref.watch(booruDbProvider);
+  final booru = booruDb.getBooru<Moebooru>();
+
+  if (booru == null) {
+    throw Exception('Booru not found for type: ${BooruType.moebooru}');
+  }
+
+  return booru;
 });
 
 class MoebooruBuilder
