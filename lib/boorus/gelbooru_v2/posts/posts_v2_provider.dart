@@ -22,7 +22,7 @@ final gelbooruV2PostRepoProvider =
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
       fetch: client.getPostResults,
-      fetchFromController: (controller, page, {limit}) {
+      fetchFromController: (controller, page, {limit, options}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
 
         final newTags = ref.read(currentTagQueryComposerProvider).compose(tags);
@@ -59,6 +59,7 @@ extension GelbooruV2ClientX on GelbooruV2Client {
     List<String> tags,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) async {
     final posts = await getPosts(
       tags: tags,

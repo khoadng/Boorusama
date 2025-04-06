@@ -136,7 +136,12 @@ class DownloadTestConstants {
 
 class DummyPostRepository implements PostRepository {
   @override
-  PostsOrError<Post> getPosts(String tags, int page, {int? limit}) {
+  PostsOrError<Post> getPosts(
+    String tags,
+    int page, {
+    int? limit,
+    PostFetchOptions? options,
+  }) {
     final posts = DownloadTestConstants.posts
         .skip((page - 1) * DownloadTestConstants.perPage)
         .take(DownloadTestConstants.perPage)
@@ -150,6 +155,7 @@ class DummyPostRepository implements PostRepository {
     SearchTagSet controller,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) =>
       getPosts('', page);
 

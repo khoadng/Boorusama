@@ -32,7 +32,7 @@ final sankakuPostRepoProvider =
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
-      fetch: (tags, page, {limit}) async {
+      fetch: (tags, page, {limit, options}) async {
         final posts = await client.getPosts(
           tags: tags,
           page: page,

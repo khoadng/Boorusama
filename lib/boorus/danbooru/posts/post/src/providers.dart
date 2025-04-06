@@ -25,7 +25,7 @@ final danbooruPostRepoProvider =
 
   return PostRepositoryBuilder(
     getComposer: () => ref.read(currentTagQueryComposerProvider),
-    fetch: (tags, page, {limit}) async {
+    fetch: (tags, page, {limit, options}) async {
       final posts = await client
           .getPosts(
             page: page,
@@ -47,7 +47,9 @@ final danbooruPostRepoProvider =
                 .toList(),
           );
 
-      return transformPosts(ref, posts.toResult(), config);
+      return (options?.cascadeRequest ?? true)
+          ? transformPosts(ref, posts.toResult(), config)
+          : posts.toResult();
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );

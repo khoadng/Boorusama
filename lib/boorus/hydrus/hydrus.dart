@@ -103,6 +103,7 @@ final hydrusPostRepoProvider =
       List<String> tags,
       int page, {
       int? limit,
+      PostFetchOptions? options,
     }) async {
       final files = await client.getFiles(
         tags: tags,
@@ -149,7 +150,9 @@ final hydrusPostRepoProvider =
             total: files.count,
           );
 
-      ref.read(favoritesProvider(config.auth).notifier).preload(data.posts);
+      if (options?.cascadeRequest ?? true) {
+        ref.read(favoritesProvider(config.auth).notifier).preload(data.posts);
+      }
 
       return data;
     }
@@ -157,7 +160,7 @@ final hydrusPostRepoProvider =
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
-      fetchFromController: (controller, page, {limit}) {
+      fetchFromController: (controller, page, {limit, options}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
         final composer = ref.read(currentTagQueryComposerProvider);
 

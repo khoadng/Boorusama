@@ -16,6 +16,7 @@ class EmptyPostRepository extends PostRepository {
     String tags,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) =>
       TaskEither.right(PostResult.empty());
 
@@ -24,6 +25,7 @@ class EmptyPostRepository extends PostRepository {
     SearchTagSet controller,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) =>
       TaskEither.right(PostResult.empty());
 
@@ -49,6 +51,7 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
     String tags,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) =>
       TaskEither.Do(($) async {
         final tagString = tags;
@@ -75,6 +78,7 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
     SearchTagSet controller,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) =>
       repository.getPostsFromController(controller, page, limit: limit);
 }

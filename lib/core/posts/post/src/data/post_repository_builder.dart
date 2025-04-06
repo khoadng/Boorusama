@@ -26,7 +26,12 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   TagQueryComposer get tagComposer => getComposer();
 
   @override
-  PostsOrError<T> getPosts(String tags, int page, {int? limit}) =>
+  PostsOrError<T> getPosts(
+    String tags,
+    int page, {
+    int? limit,
+    PostFetchOptions? options,
+  }) =>
       TaskEither.Do(($) async {
         var lim = limit;
 
@@ -38,7 +43,12 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
 
         return $(
           tryFetchRemoteData(
-            fetcher: () => fetch(tags2, page, limit: lim),
+            fetcher: () => fetch(
+              tags2,
+              page,
+              limit: lim,
+              options: options,
+            ),
           ),
         );
       });
@@ -48,6 +58,7 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
     SearchTagSet controller,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   }) =>
       fetchFromController != null
           ? TaskEither.Do(($) async {
@@ -57,8 +68,12 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
 
               return $(
                 tryFetchRemoteData(
-                  fetcher: () =>
-                      fetchFromController!(controller, page, limit: lim),
+                  fetcher: () => fetchFromController!(
+                    controller,
+                    page,
+                    limit: lim,
+                    options: options,
+                  ),
                 ),
               );
             })
@@ -66,5 +81,6 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
               controller.rawTagsString,
               page,
               limit: limit,
+              options: options,
             );
 }

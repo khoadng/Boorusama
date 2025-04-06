@@ -45,7 +45,7 @@ final szurubooruPostRepoProvider =
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
-      fetch: (tags, page, {limit}) async {
+      fetch: (tags, page, {limit, options}) async {
         final posts = await client.getPosts(
           tags: tags,
           page: page,
@@ -115,12 +115,14 @@ final szurubooruPostRepoProvider =
             )
             .toList();
 
-        ref.read(favoritesProvider(config.auth).notifier).preload(data);
-        unawaited(
-          ref
-              .read(szurubooruPostVotesProvider(config.auth).notifier)
-              .getVotes(data),
-        );
+        if (options?.cascadeRequest ?? true) {
+          ref.read(favoritesProvider(config.auth).notifier).preload(data);
+          unawaited(
+            ref
+                .read(szurubooruPostVotesProvider(config.auth).notifier)
+                .getVotes(data),
+          );
+        }
 
         return data.toResult(
           total: posts.total,

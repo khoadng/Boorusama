@@ -23,7 +23,7 @@ final e621PostRepoProvider =
 
   return PostRepositoryBuilder(
     getComposer: () => ref.read(currentTagQueryComposerProvider),
-    fetch: (tags, page, {limit}) async {
+    fetch: (tags, page, {limit, options}) async {
       final data = await client
           .getPosts(
             page: page,
@@ -45,13 +45,14 @@ final e621PostRepoProvider =
                 .toList(),
           );
 
-      ref.read(favoritesProvider(config.auth).notifier).preload(data);
+      if (options?.cascadeRequest ?? true) {
+        ref.read(favoritesProvider(config.auth).notifier).preload(data);
+      }
 
       return data.toResult();
     },
     getSettings: () async => ref.read(imageListingSettingsProvider),
   );
-  // );
 });
 
 final e621PopularPostRepoProvider =

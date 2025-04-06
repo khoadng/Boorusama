@@ -8,17 +8,32 @@ import '../../../../search/queries/query.dart';
 import '../../../../search/selected_tags/tag.dart';
 import 'post.dart';
 
+class PostFetchOptions {
+  const PostFetchOptions({
+    this.cascadeRequest = true,
+  });
+
+  final bool cascadeRequest;
+
+  static const PostFetchOptions defaults = PostFetchOptions();
+  static const PostFetchOptions raw = PostFetchOptions(
+    cascadeRequest: false,
+  );
+}
+
 abstract class PostRepository<T extends Post> {
   PostsOrError<T> getPosts(
     String tags,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   });
 
   PostsOrError<T> getPostsFromController(
     SearchTagSet controller,
     int page, {
     int? limit,
+    PostFetchOptions? options,
   });
 
   TagQueryComposer get tagComposer;
@@ -64,6 +79,7 @@ typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
   List<String> tags,
   int page, {
   int? limit,
+  PostFetchOptions? options,
 });
 
 typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
@@ -71,6 +87,7 @@ typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
   SearchTagSet controller,
   int page, {
   int? limit,
+  PostFetchOptions? options,
 });
 
 typedef PostsOrErrorCore<T extends Post>

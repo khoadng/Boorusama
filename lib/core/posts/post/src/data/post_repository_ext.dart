@@ -8,11 +8,13 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
     String tags, {
     int? limit,
     int page = 1,
+    PostFetchOptions? options,
   }) =>
       getPosts(
         tags,
         page,
         limit: limit,
+        options: options,
       ).run().then(
             (value) => value.fold(
               (l) => PostResult.empty(),
@@ -26,11 +28,13 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
     int page = 1,
     int? hardLimit,
     int? softLimit,
+    PostFetchOptions? options,
   }) async {
     final posts = await getPostsFromTagsOrEmpty(
       tags,
       page: page,
       limit: hardLimit,
+      options: options,
     );
 
     final bl = await blacklist;
@@ -50,6 +54,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
     int page = 1,
     int? hardLimit,
     int? softLimit = 30,
+    PostFetchOptions? options,
   }) async {
     if (tag == null) return [];
 
@@ -59,6 +64,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
       blacklist: blacklist,
       hardLimit: hardLimit,
       softLimit: softLimit,
+      options: options,
     );
   }
 }

@@ -25,7 +25,7 @@ final moebooruPostRepoProvider =
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
-      fetch: (tags, page, {limit}) => client
+      fetch: (tags, page, {limit, options}) => client
           .getPosts(
             page: page,
             tags: tags,
