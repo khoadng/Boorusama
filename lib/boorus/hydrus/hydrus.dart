@@ -36,6 +36,7 @@ import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
+import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/tag/providers.dart';
@@ -290,8 +291,7 @@ class HydrusBuilder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => HydrusSearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override
@@ -500,19 +500,17 @@ class HydrusPostActionToolbar extends ConsumerWidget {
 
 class HydrusSearchPage extends ConsumerWidget {
   const HydrusSearchPage({
+    required this.params,
     super.key,
-    this.initialQuery,
-    this.initialPage,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
     return SearchPageScaffold(
-      initialQuery: initialQuery,
+      params: params,
       fetcher: (page, controller) => ref
           .read(hydrusPostRepoProvider(config))
           .getPostsFromController(controller.tagSet, page),

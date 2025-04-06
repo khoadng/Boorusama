@@ -16,12 +16,15 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
       pageBuilder: (context, state) {
         final query = state.uri.queryParameters[kInitialQueryKey];
         final pageParam = int.tryParse(state.uri.queryParameters['page'] ?? '');
+        final positionParam =
+            int.tryParse(state.uri.queryParameters['position'] ?? '');
         final customHomeViewKey = ref.read(customHomeViewKeyProvider);
 
         final page = InheritedInitialSearchQuery(
           params: SearchParams(
             initialQuery: query,
             initialPage: pageParam,
+            initialScrollPosition: positionParam,
           ),
           child: const SearchPage(),
         );

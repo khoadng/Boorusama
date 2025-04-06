@@ -14,10 +14,12 @@ void goToSearchPage(
   BuildContext context, {
   String? tag,
   int? page,
+  int? position,
 }) {
   final params = <String, String>{};
   if (tag != null) params[kInitialQueryKey] = tag;
   if (page != null) params['page'] = page.toString();
+  if (position != null) params['position'] = position.toString();
 
   context.push(
     Uri(

@@ -164,8 +164,7 @@ class DanbooruBuilder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => DanbooruSearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override

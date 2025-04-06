@@ -28,6 +28,7 @@ import '../../core/posts/post/tags.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
+import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/tag/providers.dart';
@@ -98,8 +99,7 @@ class GelbooruV1Builder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => GelbooruV1SearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override
@@ -176,13 +176,11 @@ class GelbooruV1Repository implements BooruRepository {
 
 class GelbooruV1SearchPage extends ConsumerWidget {
   const GelbooruV1SearchPage({
-    required this.initialQuery,
-    required this.initialPage,
+    required this.params,
     super.key,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -194,8 +192,7 @@ class GelbooruV1SearchPage extends ConsumerWidget {
           data: 'The app will use <b>Gelbooru</b> for tag completion.',
         ),
       ),
-      initialQuery: initialQuery,
-      initialPage: initialPage,
+      params: params,
       fetcher: (page, controller) => postRepo.getPostsFromController(
         controller.tagSet,
         page,

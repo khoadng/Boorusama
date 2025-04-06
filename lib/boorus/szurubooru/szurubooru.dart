@@ -28,6 +28,7 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
@@ -113,8 +114,7 @@ class SzurubooruBuilder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => SzurubooruSearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override
@@ -219,13 +219,11 @@ class SzurubooruRepository implements BooruRepository {
 
 class SzurubooruSearchPage extends ConsumerWidget {
   const SzurubooruSearchPage({
-    required this.initialQuery,
-    required this.initialPage,
+    required this.params,
     super.key,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -241,8 +239,7 @@ class SzurubooruSearchPage extends ConsumerWidget {
               ),
             )
           : const SizedBox.shrink(),
-      initialQuery: initialQuery,
-      initialPage: initialPage,
+      params: params,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
     );

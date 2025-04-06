@@ -32,6 +32,7 @@ import '../../../posts/statistics/stats.dart';
 import '../../../posts/statistics/widgets.dart';
 import '../../../router.dart';
 import '../../../scaffolds/scaffolds.dart';
+import '../../../search/search/src/pages/search_page.dart';
 import '../../../search/search/widgets.dart';
 import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';
@@ -227,8 +228,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => DefaultSearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override
@@ -263,21 +263,18 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
 
 class DefaultSearchPage extends ConsumerWidget {
   const DefaultSearchPage({
-    required this.initialQuery,
-    required this.initialPage,
+    required this.params,
     super.key,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return SearchPageScaffold(
-      initialQuery: initialQuery,
-      initialPage: initialPage,
+      params: params,
       fetcher: (page, controler) => postRepo.getPostsFromController(
         controler.tagSet,
         page,

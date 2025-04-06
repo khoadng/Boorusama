@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/count/widgets.dart';
+import '../../../../../core/search/search/src/pages/search_page.dart';
 import '../../../../../core/search/search/widgets.dart';
 import '../../../../../core/tags/metatag/providers.dart';
 import '../../../../../core/utils/flutter_utils.dart';
@@ -18,13 +19,11 @@ import 'widgets/trending_section.dart';
 
 class DanbooruSearchPage extends ConsumerStatefulWidget {
   const DanbooruSearchPage({
+    required this.params,
     super.key,
-    this.initialQuery,
-    this.initialPage,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
 
   @override
   ConsumerState<DanbooruSearchPage> createState() => _DanbooruSearchPageState();
@@ -39,8 +38,7 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
     return SearchPageScaffold(
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
-      initialQuery: widget.initialQuery,
-      initialPage: widget.initialPage,
+      params: widget.params,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
             TextStyle(

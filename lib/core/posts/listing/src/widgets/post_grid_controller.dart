@@ -237,7 +237,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _eventController.add(const PostControllerRefreshStarted());
     _page = switch (_pageMode) {
       PageMode.infinite => _kFirstPage,
-      PageMode.paginated => maintainPage ? _page : _kFirstPage,
+      PageMode.paginated =>
+        (maintainPage || forcedPageMode) ? _page : _kFirstPage,
     };
     count.value = null;
     notifyListeners();

@@ -176,8 +176,7 @@ class E621Builder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => E621SearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override

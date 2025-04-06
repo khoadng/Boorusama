@@ -28,6 +28,7 @@ import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../selected_tags/tag.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
+import '../pages/search_page.dart';
 import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
 import 'search_button.dart';
@@ -63,9 +64,8 @@ double _calcDisplacement(List<TagSearchItem> value) {
 class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const SearchPageScaffold({
     required this.fetcher,
+    required this.params,
     super.key,
-    this.initialQuery,
-    this.initialPage,
     this.noticeBuilder,
     this.queryPattern,
     this.metatags,
@@ -74,8 +74,11 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.itemBuilder,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
+
+  String? get initialQuery => params.initialQuery;
+  int? get initialPage => params.initialPage;
+  int? get initialScrollPosition => params.initialScrollPosition;
 
   final Widget Function(BuildContext context)? noticeBuilder;
 
@@ -123,6 +126,8 @@ class _SearchPageScaffoldState<T extends Post>
   );
 
   final _multiSelectController = MultiSelectController<T>();
+
+  var _hasScrolledToInitialPosition = false;
 
   @override
   void initState() {
@@ -230,6 +235,25 @@ class _SearchPageScaffoldState<T extends Post>
 
   PostGridController<T>? _postController;
 
+  void _setupPostControllerListener(PostGridController<T> controller) {
+    if (_postController != controller) {
+      if (widget.initialScrollPosition != null) {
+        controller.events.listen((event) {
+          if (event is PostControllerRefreshCompleted &&
+              !_hasScrolledToInitialPosition &&
+              widget.initialScrollPosition != null) {
+            _scrollController.scrollToIndex(
+              widget.initialScrollPosition!,
+            );
+            _hasScrolledToInitialPosition = true;
+          }
+        });
+      }
+
+      _postController = controller;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -315,7 +339,7 @@ class _SearchPageScaffoldState<T extends Post>
                               initialPage: widget.initialPage,
                               builder: (context, controller) {
                                 // Hacky way to get the controller
-                                _postController = controller;
+                                _setupPostControllerListener(controller);
                                 return _buildDefaultSearchResults(
                                   context,
                                   controller,

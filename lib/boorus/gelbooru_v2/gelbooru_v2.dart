@@ -28,6 +28,7 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/providers.dart';
@@ -189,8 +190,7 @@ class GelbooruV2Builder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => GelbooruV2SearchPage(
-            initialQuery: params.initialQuery,
-            initialPage: params.initialPage,
+            params: params,
           );
 
   @override
@@ -349,13 +349,11 @@ final kGelbooruV2AltHomeView = {
 
 class GelbooruV2SearchPage extends ConsumerWidget {
   const GelbooruV2SearchPage({
+    required this.params,
     super.key,
-    this.initialQuery,
-    this.initialPage,
   });
 
-  final String? initialQuery;
-  final int? initialPage;
+  final SearchParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -363,8 +361,7 @@ class GelbooruV2SearchPage extends ConsumerWidget {
     final postRepo = ref.watch(gelbooruV2PostRepoProvider(config));
 
     return SearchPageScaffold(
-      initialQuery: initialQuery,
-      initialPage: initialPage,
+      params: params,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
     );
