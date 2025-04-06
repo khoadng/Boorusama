@@ -11,6 +11,7 @@ import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/favorites/providers.dart';
 import '../../../posts/post/post.dart';
+import '../../../search/queries/query.dart';
 import '../../../tags/tag/tag.dart';
 import '../../booru/booru.dart';
 import 'booru_builder.dart';
@@ -39,6 +40,7 @@ abstract class BooruRepository {
   FavoriteRepository favorite(BooruConfigAuth config);
   BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config);
   BooruSiteValidator? siteValidator(BooruConfigAuth config);
+  TagQueryComposer tagComposer(BooruConfigSearch config);
 }
 
 class BooruEngineRegistry {

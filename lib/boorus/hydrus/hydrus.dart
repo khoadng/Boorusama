@@ -36,6 +36,7 @@ import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/settings/providers.dart';
@@ -375,6 +376,11 @@ class HydrusRepository implements BooruRepository {
           apiKey: config.apiKey ?? '',
           dio: dio,
         ).getFiles().then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DefaultTagQueryComposer(config: config);
   }
 }
 

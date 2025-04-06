@@ -38,6 +38,7 @@ import '../../core/posts/shares/widgets.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/settings/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
@@ -526,5 +527,10 @@ class DanbooruRepository implements BooruRepository {
           login: config.login,
           apiKey: config.apiKey,
         ).getPosts().then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DanbooruTagQueryComposer(config: config);
   }
 }

@@ -36,6 +36,7 @@ import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/artist_page_scaffold.dart';
 import '../../core/search/queries/providers.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
@@ -229,6 +230,11 @@ class SankakuRepository implements BooruRepository {
           username: config.login,
           password: config.apiKey,
         ).getPosts().then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DefaultTagQueryComposer(config: config);
   }
 }
 

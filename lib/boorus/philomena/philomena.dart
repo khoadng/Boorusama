@@ -27,6 +27,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
@@ -272,6 +273,11 @@ class PhilomenaRepository implements BooruRepository {
           dio: dio,
           apiKey: config.apiKey,
         ).getImages(tags: ['*']).then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DefaultTagQueryComposer(config: config);
   }
 }
 

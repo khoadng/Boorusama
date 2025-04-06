@@ -28,6 +28,7 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/tags/tag/providers.dart';
@@ -214,6 +215,11 @@ class SzurubooruRepository implements BooruRepository {
           username: config.login,
           token: config.apiKey,
         ).getPosts().then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return SzurubooruTagQueryComposer(config: config);
   }
 }
 

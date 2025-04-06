@@ -25,6 +25,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/sources/source.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
@@ -211,6 +212,11 @@ class ZerochanRepository implements BooruRepository {
     return () => ZerochanClient(dio: dio, baseUrl: config.url)
         .getPosts(strict: true)
         .then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DefaultTagQueryComposer(config: config);
   }
 }
 

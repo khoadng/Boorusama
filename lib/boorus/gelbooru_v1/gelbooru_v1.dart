@@ -28,6 +28,7 @@ import '../../core/posts/post/tags.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
+import '../../core/search/queries/tag_query_composer.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/settings/providers.dart';
@@ -171,6 +172,11 @@ class GelbooruV1Repository implements BooruRepository {
     return () => GelbooruV1Client(baseUrl: config.url, dio: dio)
         .getPosts()
         .then((value) => value.isNotEmpty);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DefaultTagQueryComposer(config: config);
   }
 }
 

@@ -28,6 +28,7 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/tags/categories/tag_category.dart';
@@ -335,6 +336,11 @@ class GelbooruV2Repository implements BooruRepository {
           userId: config.login,
           apiKey: config.apiKey,
         ).getPosts().then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return GelbooruV2TagQueryComposer(config: config);
   }
 }
 

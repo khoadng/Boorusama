@@ -30,6 +30,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/scaffolds/scaffolds.dart';
+import '../../core/search/queries/query.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
@@ -203,6 +204,11 @@ class AnimePicturesRepository implements BooruRepository {
           baseUrl: config.url,
           dio: dio,
         ).getPosts().then((value) => true);
+  }
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) {
+    return DefaultTagQueryComposer(config: config);
   }
 }
 
