@@ -40,6 +40,7 @@ final danbooruPostRepoProvider =
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
+                      limit: limit,
                     ),
                   ),
                 )

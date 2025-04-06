@@ -163,7 +163,10 @@ class DanbooruBuilder
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => DanbooruSearchPage(initialQuery: initialQuery);
+      (context, params) => DanbooruSearchPage(
+            initialQuery: params.initialQuery,
+            initialPage: params.initialPage,
+          );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {

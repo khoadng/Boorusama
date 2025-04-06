@@ -20,9 +20,11 @@ class DanbooruSearchPage extends ConsumerStatefulWidget {
   const DanbooruSearchPage({
     super.key,
     this.initialQuery,
+    this.initialPage,
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   @override
   ConsumerState<DanbooruSearchPage> createState() => _DanbooruSearchPageState();
@@ -38,6 +40,7 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
       initialQuery: widget.initialQuery,
+      initialPage: widget.initialPage,
       queryPattern: {
         RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
             TextStyle(

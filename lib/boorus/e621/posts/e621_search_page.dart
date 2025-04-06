@@ -13,9 +13,12 @@ class E621SearchPage extends ConsumerWidget {
   const E621SearchPage({
     super.key,
     this.initialQuery,
+    this.initialPage,
   });
 
   final String? initialQuery;
+  final int? initialPage;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
@@ -23,6 +26,7 @@ class E621SearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
+      initialPage: initialPage,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
     );

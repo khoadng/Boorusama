@@ -109,6 +109,7 @@ final szurubooruPostRepoProvider =
                 metadata: PostMetadata(
                   page: page,
                   search: tags.join(' '),
+                  limit: limit,
                 ),
               ),
             )

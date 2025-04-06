@@ -111,8 +111,11 @@ class SzurubooruBuilder
       (context) => const SzurubooruHomePage();
 
   @override
-  SearchPageBuilder get searchPageBuilder => (context, initialQuery) =>
-      SzurubooruSearchPage(initialQuery: initialQuery);
+  SearchPageBuilder get searchPageBuilder =>
+      (context, params) => SzurubooruSearchPage(
+            initialQuery: params.initialQuery,
+            initialPage: params.initialPage,
+          );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
@@ -217,10 +220,12 @@ class SzurubooruRepository implements BooruRepository {
 class SzurubooruSearchPage extends ConsumerWidget {
   const SzurubooruSearchPage({
     required this.initialQuery,
+    required this.initialPage,
     super.key,
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -237,6 +242,7 @@ class SzurubooruSearchPage extends ConsumerWidget {
             )
           : const SizedBox.shrink(),
       initialQuery: initialQuery,
+      initialPage: initialPage,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
     );

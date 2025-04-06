@@ -38,6 +38,7 @@ final e621PostRepoProvider =
                     PostMetadata(
                       page: page,
                       search: tags.join(' '),
+                      limit: limit,
                     ),
                   ),
                 )

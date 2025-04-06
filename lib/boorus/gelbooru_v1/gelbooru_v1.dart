@@ -97,8 +97,9 @@ class GelbooruV1Builder
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => GelbooruV1SearchPage(
-            initialQuery: initialQuery,
+      (context, params) => GelbooruV1SearchPage(
+            initialQuery: params.initialQuery,
+            initialPage: params.initialPage,
           );
 
   @override
@@ -176,10 +177,12 @@ class GelbooruV1Repository implements BooruRepository {
 class GelbooruV1SearchPage extends ConsumerWidget {
   const GelbooruV1SearchPage({
     required this.initialQuery,
+    required this.initialPage,
     super.key,
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -192,6 +195,7 @@ class GelbooruV1SearchPage extends ConsumerWidget {
         ),
       ),
       initialQuery: initialQuery,
+      initialPage: initialPage,
       fetcher: (page, controller) => postRepo.getPostsFromController(
         controller.tagSet,
         page,

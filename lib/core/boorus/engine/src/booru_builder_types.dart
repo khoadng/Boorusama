@@ -14,6 +14,7 @@ import '../../../posts/details/routes.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
+import '../../../search/search/src/pages/search_page.dart';
 import '../../../settings/settings.dart';
 import '../../../tags/configs/configs.dart';
 import '../../../tags/metatag/metatag.dart';
@@ -38,7 +39,7 @@ typedef HomePageBuilder = Widget Function(
 
 typedef SearchPageBuilder = Widget Function(
   BuildContext context,
-  String? initialQuery,
+  SearchParams params,
 );
 
 typedef PostDetailsPageBuilder = Widget Function(

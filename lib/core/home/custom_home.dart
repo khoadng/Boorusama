@@ -11,6 +11,7 @@ import '../boorus/engine/engine.dart';
 import '../bulk_downloads/widgets.dart';
 import '../configs/current.dart';
 import '../premiums/providers.dart';
+import '../search/search/src/pages/search_page.dart';
 
 const _kDefaultView = 'default';
 
@@ -86,7 +87,7 @@ final kDefaultAltHomeView = {
   const CustomHomeViewKey('search'): CustomHomeDataBuilder(
     displayName: 'settings.search.search',
     builder: (context, booruBuilder) =>
-        booruBuilder.searchPageBuilder(context, null),
+        booruBuilder.searchPageBuilder(context, const SearchParams()),
   ),
   const CustomHomeViewKey('bookmark'): CustomHomeDataBuilder(
     displayName: 'sideMenu.your_bookmarks',

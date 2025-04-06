@@ -226,8 +226,9 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => DefaultSearchPage(
-            initialQuery: initialQuery,
+      (context, params) => DefaultSearchPage(
+            initialQuery: params.initialQuery,
+            initialPage: params.initialPage,
           );
 
   @override
@@ -263,10 +264,12 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
 class DefaultSearchPage extends ConsumerWidget {
   const DefaultSearchPage({
     required this.initialQuery,
+    required this.initialPage,
     super.key,
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -274,6 +277,7 @@ class DefaultSearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
+      initialPage: initialPage,
       fetcher: (page, controler) => postRepo.getPostsFromController(
         controler.tagSet,
         page,

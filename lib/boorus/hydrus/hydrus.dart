@@ -138,6 +138,7 @@ final hydrusPostRepoProvider =
               metadata: PostMetadata(
                 page: page,
                 search: tags.join(' '),
+                limit: limit,
               ),
               ownFavorite: e.faved,
             ),
@@ -288,8 +289,9 @@ class HydrusBuilder
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => HydrusSearchPage(
-            initialQuery: initialQuery,
+      (context, params) => HydrusSearchPage(
+            initialQuery: params.initialQuery,
+            initialPage: params.initialPage,
           );
 
   @override
@@ -500,9 +502,11 @@ class HydrusSearchPage extends ConsumerWidget {
   const HydrusSearchPage({
     super.key,
     this.initialQuery,
+    this.initialPage,
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

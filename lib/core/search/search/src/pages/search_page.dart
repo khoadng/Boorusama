@@ -2,6 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -16,22 +17,23 @@ class SearchPage extends ConsumerWidget {
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
     final builder = booruBuilder?.searchPageBuilder;
 
-    final query = InheritedInitialSearchQuery.maybeOf(context)?.query;
+    final params = InheritedInitialSearchQuery.maybeOf(context)?.params ??
+        const SearchParams();
 
     return builder != null
-        ? builder(context, query)
+        ? builder(context, params)
         : const UnimplementedPage();
   }
 }
 
 class InheritedInitialSearchQuery extends InheritedWidget {
   const InheritedInitialSearchQuery({
-    required this.query,
+    required this.params,
     required super.child,
     super.key,
   });
 
-  final String? query;
+  final SearchParams params;
 
   static InheritedInitialSearchQuery? of(BuildContext context) {
     return context
@@ -45,6 +47,19 @@ class InheritedInitialSearchQuery extends InheritedWidget {
 
   @override
   bool updateShouldNotify(InheritedInitialSearchQuery oldWidget) {
-    return query != oldWidget.query;
+    return params != oldWidget.params;
   }
+}
+
+class SearchParams extends Equatable {
+  const SearchParams({
+    this.initialQuery,
+    this.initialPage,
+  });
+
+  final String? initialQuery;
+  final int? initialPage;
+
+  @override
+  List<Object?> get props => [initialQuery, initialPage];
 }

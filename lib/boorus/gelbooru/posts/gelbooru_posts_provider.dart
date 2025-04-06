@@ -59,6 +59,7 @@ extension GelbooruClientX on GelbooruClient {
                 PostMetadata(
                   page: page,
                   search: tags.join(' '),
+                  limit: limit,
                 ),
               ),
             )

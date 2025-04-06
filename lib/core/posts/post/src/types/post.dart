@@ -12,12 +12,14 @@ class PostMetadata extends Equatable {
   const PostMetadata({
     this.page,
     this.search,
+    this.limit,
   });
   final int? page;
   final String? search;
+  final int? limit;
 
   @override
-  List<Object?> get props => [page, search];
+  List<Object?> get props => [page, search, limit];
 }
 
 abstract class Post

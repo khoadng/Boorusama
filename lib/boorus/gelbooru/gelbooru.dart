@@ -211,7 +211,10 @@ class GelbooruBuilder
 
   @override
   SearchPageBuilder get searchPageBuilder =>
-      (context, initialQuery) => GelbooruSearchPage(initialQuery: initialQuery);
+      (context, params) => GelbooruSearchPage(
+            initialQuery: params.initialQuery,
+            initialPage: params.initialPage,
+          );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
@@ -367,9 +370,11 @@ class GelbooruSearchPage extends ConsumerWidget {
   const GelbooruSearchPage({
     super.key,
     this.initialQuery,
+    this.initialPage,
   });
 
   final String? initialQuery;
+  final int? initialPage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -378,6 +383,7 @@ class GelbooruSearchPage extends ConsumerWidget {
 
     return SearchPageScaffold(
       initialQuery: initialQuery,
+      initialPage: initialPage,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
     );

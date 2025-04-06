@@ -68,6 +68,7 @@ final shimmie2PostRepoProvider =
                 metadata: PostMetadata(
                   page: page,
                   search: tags.join(' '),
+                  limit: limit,
                 ),
               ),
             )

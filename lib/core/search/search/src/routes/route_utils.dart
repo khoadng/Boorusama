@@ -13,23 +13,18 @@ import '../views/simple_tag_search_view.dart';
 void goToSearchPage(
   BuildContext context, {
   String? tag,
+  int? page,
 }) {
-  if (tag == null) {
-    context.push(
-      Uri(
-        path: '/search',
-      ).toString(),
-    );
-  } else {
-    context.push(
-      Uri(
-        path: '/search',
-        queryParameters: {
-          kInitialQueryKey: tag,
-        },
-      ).toString(),
-    );
-  }
+  final params = <String, String>{};
+  if (tag != null) params[kInitialQueryKey] = tag;
+  if (page != null) params['page'] = page.toString();
+
+  context.push(
+    Uri(
+      path: '/search',
+      queryParameters: params.isEmpty ? null : params,
+    ).toString(),
+  );
 }
 
 void goToQuickSearchPage(
