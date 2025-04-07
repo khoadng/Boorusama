@@ -9,12 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -204,6 +206,40 @@ class Shimmie2FileDetailsSection extends ConsumerWidget {
         post: post,
         uploaderName: post.uploaderName,
       ),
+    );
+  }
+}
+
+BooruComponents createShimmie2() => BooruComponents(
+      parser: Shimmie2Parser(),
+      createBuilder: Shimmie2Builder.new,
+      createRepository: (ref) => Shimmie2Repository(ref: ref),
+    );
+
+class Shimmie2 extends Booru {
+  const Shimmie2({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  @override
+  final List<String> sites;
+
+  @override
+  BooruType get type => BooruType.shimmie2;
+}
+
+class Shimmie2Parser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.shimmie2;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return Shimmie2(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
     );
   }
 }

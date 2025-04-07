@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -18,6 +19,7 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/html.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -203,6 +205,40 @@ class GelbooruV1SearchPage extends ConsumerWidget {
         controller.tagSet,
         page,
       ),
+    );
+  }
+}
+
+BooruComponents createGelbooruV1() => BooruComponents(
+      parser: GelbooruV1Parser(),
+      createBuilder: GelbooruV1Builder.new,
+      createRepository: (ref) => GelbooruV1Repository(ref: ref),
+    );
+
+final class GelbooruV1 extends Booru {
+  const GelbooruV1({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  @override
+  final List<String> sites;
+
+  @override
+  BooruType get type => BooruType.gelbooruV1;
+}
+
+class GelbooruV1Parser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.gelbooruV1;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return GelbooruV1(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
     );
   }
 }

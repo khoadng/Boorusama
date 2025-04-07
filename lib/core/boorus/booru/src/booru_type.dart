@@ -1,21 +1,22 @@
 enum BooruType {
-  unknown(0),
-  danbooru(20),
-  gelbooru(21),
-  gelbooruV1(22),
-  gelbooruV2(23),
-  moebooru(24),
-  e621(25),
-  zerochan(26),
-  sankaku(27),
-  philomena(28),
-  shimmie2(29),
-  szurubooru(30),
-  hydrus(31),
-  animePictures(32);
+  unknown(0, ''),
+  danbooru(20, 'danbooru'),
+  gelbooru(21, 'gelbooru'),
+  gelbooruV1(22, 'gelbooru_v1'),
+  gelbooruV2(23, 'gelbooru_v2'),
+  moebooru(24, 'moebooru'),
+  e621(25, 'e621'),
+  zerochan(26, 'zerochan'),
+  sankaku(27, 'sankaku'),
+  philomena(28, 'philomena'),
+  shimmie2(29, 'shimmie2'),
+  szurubooru(30, 'szurubooru'),
+  hydrus(31, 'hydrus'),
+  animePictures(32, 'anime-pictures');
 
-  const BooruType(this.id);
+  const BooruType(this.id, this.yamlName);
   final int id;
+  final String yamlName;
 
   /// Maps legacy IDs to the corresponding BooruType
   static BooruType fromLegacyId(int? value) => switch (value) {
@@ -34,6 +35,14 @@ enum BooruType {
         32 => BooruType.animePictures,
         _ => BooruType.unknown
       };
+
+  static BooruType fromYamlName(String name) {
+    final normalizedName = name.toLowerCase();
+    return values.firstWhere(
+      (e) => e.yamlName == normalizedName,
+      orElse: () => BooruType.unknown,
+    );
+  }
 
   String stringify() => switch (this) {
         BooruType.unknown => 'UNKNOWN',

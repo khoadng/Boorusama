@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/danbooru.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
@@ -21,6 +22,7 @@ import '../../core/downloads/urls.dart';
 import '../../core/foundation/url_launcher.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/home/user_custom_home_builder.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -465,10 +467,7 @@ bool handleDanbooruGestureAction(
 class DanbooruRepository implements BooruRepository {
   const DanbooruRepository({
     required this.ref,
-    required this.booru,
   });
-
-  final Danbooru booru;
 
   @override
   final Ref ref;
@@ -513,7 +512,6 @@ class DanbooruRepository implements BooruRepository {
     return DanbooruBlacklistTagRepository(
       ref,
       config,
-      booru: booru,
     );
   }
 
@@ -532,5 +530,75 @@ class DanbooruRepository implements BooruRepository {
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return DanbooruTagQueryComposer(config: config);
+  }
+}
+
+BooruComponents createDanbooru() => BooruComponents(
+      parser: DanbooruParser(),
+      createBuilder: DanbooruBuilder.new,
+      createRepository: (ref) => DanbooruRepository(ref: ref),
+    );
+
+typedef DanbooruSite = ({
+  String url,
+  bool? aiTagSupport,
+  bool? censoredTagsBanned,
+});
+
+final class Danbooru extends Booru {
+  const Danbooru({
+    required super.name,
+    required super.protocol,
+    required List<DanbooruSite> sites,
+  }) : _sites = sites;
+
+  final List<DanbooruSite> _sites;
+
+  @override
+  Iterable<String> get sites => _sites.map((e) => e.url);
+
+  @override
+  BooruType get type => BooruType.danbooru;
+
+  bool hasAiTagSupported(String url) =>
+      _sites.firstWhereOrNull((e) => url.contains(e.url))?.aiTagSupport ??
+      false;
+
+  bool hasCensoredTagsBanned(String url) =>
+      _sites.firstWhereOrNull((e) => url.contains(e.url))?.censoredTagsBanned ??
+      false;
+
+  String cheetsheet(String url) {
+    return '$url/wiki_pages/help:cheatsheet';
+  }
+}
+
+class DanbooruParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.danbooru;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    final sites = <DanbooruSite>[];
+
+    for (final item in data['sites']) {
+      final url = item['url'] as String;
+      final aiTagSupport = item['ai-tag'];
+      final censoredTagsBanned = item['censored-tags-banned'];
+
+      sites.add(
+        (
+          url: url,
+          aiTagSupport: aiTagSupport,
+          censoredTagsBanned: censoredTagsBanned,
+        ),
+      );
+    }
+
+    return Danbooru(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: sites,
+    );
   }
 }

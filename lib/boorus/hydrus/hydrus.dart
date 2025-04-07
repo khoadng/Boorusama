@@ -12,6 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -22,6 +23,7 @@ import '../../core/downloads/urls.dart';
 import '../../core/home/home_navigation_tile.dart';
 import '../../core/home/home_page_scaffold.dart';
 import '../../core/home/side_menu_tile.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -523,6 +525,40 @@ class HydrusSearchPage extends ConsumerWidget {
       fetcher: (page, controller) => ref
           .read(hydrusPostRepoProvider(config))
           .getPostsFromController(controller.tagSet, page),
+    );
+  }
+}
+
+BooruComponents createHydrus() => BooruComponents(
+      parser: HydrusParser(),
+      createBuilder: HydrusBuilder.new,
+      createRepository: (ref) => HydrusRepository(ref: ref),
+    );
+
+class Hydrus extends Booru {
+  const Hydrus({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  @override
+  final List<String> sites;
+
+  @override
+  BooruType get type => BooruType.hydrus;
+}
+
+class HydrusParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.hydrus;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return Hydrus(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
     );
   }
 }

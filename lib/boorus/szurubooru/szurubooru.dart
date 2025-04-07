@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
@@ -19,6 +20,7 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/html.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -322,6 +324,40 @@ class SzurubooruFavoritesPageInternal extends ConsumerWidget {
       favQueryBuilder: () => query,
       fetcher: (page) =>
           ref.read(szurubooruPostRepoProvider(config)).getPosts(query, page),
+    );
+  }
+}
+
+BooruComponents createSzurubooru() => BooruComponents(
+      parser: SzurubooruParser(),
+      createBuilder: SzurubooruBuilder.new,
+      createRepository: (ref) => SzurubooruRepository(ref: ref),
+    );
+
+class Szurubooru extends Booru {
+  const Szurubooru({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  @override
+  final List<String> sites;
+
+  @override
+  BooruType get type => BooruType.szurubooru;
+}
+
+class SzurubooruParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.szurubooru;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return Szurubooru(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
     );
   }
 }

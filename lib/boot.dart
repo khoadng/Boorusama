@@ -16,10 +16,24 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 // Project imports:
+import 'boorus/anime-pictures/anime_pictures.dart';
+import 'boorus/danbooru/danbooru.dart';
+import 'boorus/e621/e621.dart';
+import 'boorus/gelbooru/gelbooru.dart';
+import 'boorus/gelbooru_v1/gelbooru_v1.dart';
+import 'boorus/gelbooru_v2/gelbooru_v2.dart';
+import 'boorus/hydrus/hydrus.dart';
+import 'boorus/moebooru/moebooru.dart';
+import 'boorus/philomena/philomena.dart';
 import 'boorus/providers.dart';
+import 'boorus/sankaku/sankaku.dart';
+import 'boorus/shimmie2/shimmie2.dart';
+import 'boorus/szurubooru/szurubooru.dart';
+import 'boorus/zerochan/zerochan.dart';
 import 'core/app.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
+import 'core/boorus/engine/engine.dart';
 import 'core/boorus/engine/providers.dart';
 import 'core/cache/providers.dart';
 import 'core/configs/config.dart';
@@ -87,23 +101,62 @@ Future<void> boot(BootLogger bootLogger) async {
   bootLogger.l('Load app info');
   final appInfo = await getAppInfo();
 
-  final booruParserRegistry = BooruParserRegistry()
-    ..register(AnimePicturesParser())
-    ..register(HydrusParser())
-    ..register(SzurubooruParser())
-    ..register(Shimmie2Parser())
-    ..register(PhilomenaParser())
-    ..register(SankakuParser())
-    ..register(MoebooruParser())
-    ..register(ZerochanParser())
-    ..register(E621Parser())
-    ..register(GelbooruV2Parser())
-    ..register(GelbooruV1Parser())
-    ..register(GelbooruParser())
-    ..register(DanbooruParser());
+  final booruRegistry = BooruRegistry()
+    ..register(
+      BooruType.animePictures,
+      createAnimePictures(),
+    )
+    ..register(
+      BooruType.hydrus,
+      createHydrus(),
+    )
+    ..register(
+      BooruType.szurubooru,
+      createSzurubooru(),
+    )
+    ..register(
+      BooruType.shimmie2,
+      createShimmie2(),
+    )
+    ..register(
+      BooruType.philomena,
+      createPhilomena(),
+    )
+    ..register(
+      BooruType.sankaku,
+      createSankaku(),
+    )
+    ..register(
+      BooruType.moebooru,
+      createMoebooru(),
+    )
+    ..register(
+      BooruType.zerochan,
+      createZerochan(),
+    )
+    ..register(
+      BooruType.e621,
+      createE621(),
+    )
+    ..register(
+      BooruType.gelbooruV2,
+      createGelbooruV2(),
+    )
+    ..register(
+      BooruType.gelbooruV1,
+      createGelbooruV1(),
+    )
+    ..register(
+      BooruType.gelbooru,
+      createGelbooru(),
+    )
+    ..register(
+      BooruType.danbooru,
+      createDanbooru(),
+    );
 
   bootLogger.l('Load boorus from assets');
-  final boorus = await loadBoorusFromAssets(booruParserRegistry);
+  final boorus = await loadBoorusFromAssets(booruRegistry);
 
   bootLogger.l('Initialize settings repository');
   final settingRepository = await createSettingsRepo(logger: logger);
@@ -223,7 +276,11 @@ Future<void> boot(BootLogger bootLogger) async {
         child: ProviderScope(
           overrides: [
             booruEngineRegistryProvider.overrideWith(
-              (ref) => ref.watch(booruInitEngineProvider(boorus)),
+              (ref) => ref.watch(
+                booruInitEngineProvider(
+                  (db: boorus, registry: booruRegistry),
+                ),
+              ),
             ),
             booruDbProvider.overrideWithValue(boorus),
             tagInfoOverride,

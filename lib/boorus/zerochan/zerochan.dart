@@ -9,12 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -284,6 +286,40 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
               tags: post.tags.toList(),
               onTap: (tag) => goToSearchPage(context, tag: tag),
             ),
+    );
+  }
+}
+
+BooruComponents createZerochan() => BooruComponents(
+      parser: ZerochanParser(),
+      createBuilder: ZerochanBuilder.new,
+      createRepository: (ref) => ZerochanRepository(ref: ref),
+    );
+
+class Zerochan extends Booru {
+  const Zerochan({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  @override
+  final List<String> sites;
+
+  @override
+  BooruType get type => BooruType.zerochan;
+}
+
+class ZerochanParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.zerochan;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return Zerochan(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
     );
   }
 }

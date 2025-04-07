@@ -5,18 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/boorus/booru/booru.dart';
 import '../core/boorus/engine/engine.dart';
 
+typedef EngineParams = ({
+  BooruDb db,
+  BooruRegistry registry,
+});
+
 final booruInitEngineProvider =
-    Provider.family<BooruEngineRegistry, BooruDb>((ref, db) {
+    Provider.family<BooruEngineRegistry, EngineParams>((ref, params) {
   final registry = BooruEngineRegistry();
 
-  for (final booru in db.boorus) {
+  for (final booru in params.db.boorus) {
     registry.register(
       booru.type,
-      BooruEngine(
-        booru: booru,
-        builder: booru.createBuilder(),
-        repository: booru.createRepository(ref),
-      ),
+      params.registry.createEngine(booru, ref),
     );
   }
 

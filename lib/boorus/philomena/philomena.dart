@@ -11,12 +11,14 @@ import '../../core/artists/artists.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -316,6 +318,40 @@ class PhilomenaArtistInfoSection extends ConsumerWidget {
         artistTags: post.artistTags ?? {},
         source: post.source,
       ),
+    );
+  }
+}
+
+BooruComponents createPhilomena() => BooruComponents(
+      parser: PhilomenaParser(),
+      createBuilder: PhilomenaBuilder.new,
+      createRepository: (ref) => PhilomenaRepository(ref: ref),
+    );
+
+class Philomena extends Booru {
+  const Philomena({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+  });
+
+  @override
+  final List<String> sites;
+
+  @override
+  BooruType get type => BooruType.philomena;
+}
+
+class PhilomenaParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.philomena;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return Philomena(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
     );
   }
 }

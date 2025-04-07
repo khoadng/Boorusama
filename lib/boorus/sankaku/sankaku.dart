@@ -21,6 +21,7 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/caching.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -324,6 +325,54 @@ class SankakuArtistPage extends ConsumerWidget {
                 ].join(' '),
                 page,
               ),
+    );
+  }
+}
+
+BooruComponents createSankaku() => BooruComponents(
+      parser: SankakuParser(),
+      createBuilder: SankakuBuilder.new,
+      createRepository: (ref) => SankakuRepository(ref: ref),
+    );
+
+class Sankaku extends Booru {
+  const Sankaku({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+    required this.headers,
+  });
+
+  @override
+  final List<String> sites;
+  final Map<String, dynamic> headers;
+
+  @override
+  BooruType get type => BooruType.sankaku;
+}
+
+class SankakuParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.sankaku;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    final headers = data['headers'];
+
+    final map = <String, dynamic>{};
+
+    for (final item in headers) {
+      final key = item.keys.first;
+      final value = item[item.keys.first];
+
+      map[key] = value;
+    }
+
+    return Sankaku(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+      headers: map,
     );
   }
 }

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/gelbooru.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
+import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
@@ -18,6 +20,7 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/home/custom_home.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -406,6 +409,65 @@ class GelbooruV2FavoritesPageInternal extends ConsumerWidget {
       favQueryBuilder: () => query,
       fetcher: (page) =>
           ref.read(gelbooruV2PostRepoProvider(config)).getPosts(query, page),
+    );
+  }
+}
+
+BooruComponents createGelbooruV2() => BooruComponents(
+      parser: GelbooruV2Parser(),
+      createBuilder: GelbooruV2Builder.new,
+      createRepository: (ref) => GelbooruV2Repository(ref: ref),
+    );
+
+typedef GelbooruV2Site = ({
+  String url,
+  String? apiUrl,
+});
+
+class GelbooruV2 extends Booru {
+  const GelbooruV2({
+    required super.name,
+    required super.protocol,
+    required List<GelbooruV2Site> sites,
+  }) : _sites = sites;
+
+  final List<GelbooruV2Site> _sites;
+
+  @override
+  Iterable<String> get sites => _sites.map((e) => e.url);
+
+  @override
+  BooruType get type => BooruType.gelbooruV2;
+
+  @override
+  String getApiUrl(String url) =>
+      _sites.firstWhereOrNull((e) => url.contains(e.url))?.apiUrl ?? url;
+}
+
+class GelbooruV2Parser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.gelbooruV2;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    final sites = <GelbooruV2Site>[];
+
+    for (final item in data['sites']) {
+      final url = item['url'] as String;
+      final apiUrl = item['api-url'];
+
+      sites.add(
+        (
+          url: url,
+          apiUrl: apiUrl,
+        ),
+      );
+    }
+
+    return GelbooruV2(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: sites,
     );
   }
 }

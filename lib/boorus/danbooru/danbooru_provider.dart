@@ -7,6 +7,7 @@ import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config.dart';
 import '../../core/http/providers.dart';
+import 'danbooru.dart';
 
 final danbooruClientProvider =
     Provider.family<DanbooruClient, BooruConfigAuth>((ref, config) {

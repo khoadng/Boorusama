@@ -19,6 +19,7 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/home/custom_home.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -404,6 +405,47 @@ class GelbooruSearchPage extends ConsumerWidget {
       params: params,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
+    );
+  }
+}
+
+BooruComponents createGelbooru() => BooruComponents(
+      parser: GelbooruParser(),
+      createBuilder: GelbooruBuilder.new,
+      createRepository: (ref) => GelbooruRepository(ref: ref),
+    );
+
+final class Gelbooru extends Booru with PassHashAuthMixin {
+  const Gelbooru({
+    required super.name,
+    required super.protocol,
+    required this.sites,
+    required this.loginUrl,
+  });
+
+  @override
+  final List<String> sites;
+  @override
+  final String? loginUrl;
+
+  @override
+  BooruType get type => BooruType.gelbooru;
+
+  @override
+  String? getLoginUrl() => loginUrl;
+}
+
+class GelbooruParser extends BooruParser {
+  @override
+  BooruType get booruType => BooruType.gelbooru;
+
+  @override
+  Booru parse(String name, dynamic data) {
+    return Gelbooru(
+      name: name,
+      protocol: parseProtocol(data['protocol']),
+      sites: List.from(data['sites']),
+      loginUrl: data['login-url'],
     );
   }
 }
