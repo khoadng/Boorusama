@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../theme.dart';
 import '../booru_config.dart';
 import '../data/booru_config_data.dart';
@@ -367,6 +368,7 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final engine = ref.watch(booruEngineProvider);
+    final engineRegistry = ref.watch(booruEngineRegistryProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -381,7 +383,9 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
           onChanged: (value) {
             ref.read(booruEngineProvider.notifier).state = value;
           },
-          items: BooruType.values
+          items: engineRegistry
+              .getAllBoorus()
+              .map((e) => e.type)
               .where((e) => !e.isSingleSite)
               .sorted((a, b) => a.displayName.compareTo(b.displayName))
               .map(

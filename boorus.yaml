@@ -93,3 +93,9 @@
     login-url: https://anime-pictures.net/login?lang=en
     sites:
       - https://anime-pictures.net/
+
+- hydrus:
+    protocol: https_1
+
+- szurubooru:
+    protocol: https_1

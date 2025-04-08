@@ -55,4 +55,8 @@ class BooruEngineRegistry {
   BooruRepository? getRepository(BooruType type) => _engines[type]?.repository;
 
   BooruBuilder? getBuilder(BooruType type) => _engines[type]?.builder;
+
+  List<Booru> getAllBoorus() {
+    return _engines.values.map((e) => e.booru).toList();
+  }
 }

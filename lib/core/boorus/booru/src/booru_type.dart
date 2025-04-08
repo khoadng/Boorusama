@@ -127,23 +127,6 @@ class BooruType extends Equatable {
     isSingleSite: true,
   );
 
-  static List<BooruType> get values => [
-        unknown,
-        danbooru,
-        gelbooru,
-        gelbooruV1,
-        gelbooruV2,
-        moebooru,
-        e621,
-        zerochan,
-        sankaku,
-        philomena,
-        shimmie2,
-        szurubooru,
-        hydrus,
-        animePictures,
-      ];
-
   /// Maps legacy IDs to the corresponding BooruType
   static BooruType fromLegacyId(int? value) => switch (value) {
         1 || 2 || 3 || 5 || 20 => danbooru,
@@ -161,14 +144,6 @@ class BooruType extends Equatable {
         32 => animePictures,
         _ => unknown
       };
-
-  static BooruType fromYamlName(String name) {
-    final normalizedName = name.toLowerCase();
-    return values.firstWhere(
-      (e) => e.yamlName == normalizedName,
-      orElse: () => unknown,
-    );
-  }
 
   @override
   List<Object?> get props => [id, yamlName, name, isSingleSite];

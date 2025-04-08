@@ -534,7 +534,6 @@ BooruComponents createHydrus() => BooruComponents(
         constructor: (siteDef) => Hydrus(
           name: siteDef.name,
           protocol: siteDef.protocol,
-          sites: siteDef.sites,
         ),
       ),
       createBuilder: HydrusBuilder.new,
@@ -545,11 +544,10 @@ class Hydrus extends Booru {
   const Hydrus({
     required super.name,
     required super.protocol,
-    required this.sites,
   });
 
   @override
-  final List<String> sites;
+  Iterable<String> get sites => const [];
 
   @override
   BooruType get type => BooruType.hydrus;

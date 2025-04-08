@@ -333,7 +333,6 @@ BooruComponents createSzurubooru() => BooruComponents(
         constructor: (siteDef) => Szurubooru(
           name: siteDef.name,
           protocol: siteDef.protocol,
-          sites: siteDef.sites,
         ),
       ),
       createBuilder: SzurubooruBuilder.new,
@@ -344,11 +343,10 @@ class Szurubooru extends Booru {
   const Szurubooru({
     required super.name,
     required super.protocol,
-    required this.sites,
   });
 
   @override
-  final List<String> sites;
+  Iterable<String> get sites => const [];
 
   @override
   BooruType get type => BooruType.szurubooru;

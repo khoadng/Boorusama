@@ -45,7 +45,8 @@ class BooruRegistry {
   }
 
   Booru parseFromConfig(String name, dynamic data) {
-    final type = BooruType.fromYamlName(name);
+    final type = _findBooruType(name);
+
     if (type == BooruType.unknown) {
       throw Exception('Unknown booru: $name');
     }
@@ -56,5 +57,14 @@ class BooruRegistry {
     }
 
     return components.parser.parse(name, data);
+  }
+
+  BooruType _findBooruType(String name) {
+    for (final entry in _components.entries) {
+      if (entry.key.yamlName == name) {
+        return entry.key;
+      }
+    }
+    return BooruType.unknown;
   }
 }
