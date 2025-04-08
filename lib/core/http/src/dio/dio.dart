@@ -64,7 +64,7 @@ Dio newDio({required DioOptions options}) {
   final baseUrl = options.baseUrl;
 
   final booru = booruDb.getBooruFromUrl(baseUrl) ??
-      booruDb.getBooruFromId(booruConfig.booruId);
+      booruDb.getBooruFromId(booruConfig.booruIdHint);
   final supportsHttp2 =
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
   final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;

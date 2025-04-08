@@ -70,7 +70,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   void _onSharedTextsReceived(SharedMedia media) {
     final text = media.content;
     final config = ref.readConfigAuth;
-    final booruName = config.booruType.displayName;
     final booruUrl = config.url;
 
     if (config.hasStrictSFW) return;
@@ -84,9 +83,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           settings: const RouteSettings(name: 'upload_to_booru_confirmation'),
           builder: (context) {
             return AlertDialog(
-              title: Text('Upload to $booruName'),
+              title: const Text('Upload to Danbooru'),
               content: Text(
-                'Are you sure you want to upload to $booruName?\n\n$text \n\nYou need to be logged in the browser to upload.',
+                'Are you sure you want to upload to Danbooru?\n\n$text \n\nYou need to be logged in the browser to upload.',
               ),
               actions: [
                 TextButton(

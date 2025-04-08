@@ -2,7 +2,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../boorus/booru/booru.dart';
 import '../../../foundation/loggers.dart';
 import '../../../settings/providers.dart';
 import '../../../theme/theme_configs.dart';
@@ -80,15 +79,10 @@ class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
     // if same config, do nothing
     if (booruConfig == state) return;
 
-    final old = state;
     state = booruConfig;
     final settings = ref
         .read(settingsProvider)
         .copyWith(currentBooruConfigId: booruConfig.id);
     await ref.read(settingsNotifierProvider.notifier).updateSettings(settings);
-    ref.read(loggerProvider).logI(
-          'Booru',
-          'Current booru config updated from ${intToBooruType(old.booruId)} to ${intToBooruType(booruConfig.booruId)}',
-        );
   }
 }
