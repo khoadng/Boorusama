@@ -1,108 +1,177 @@
-enum BooruType {
-  unknown(0, ''),
-  danbooru(20, 'danbooru'),
-  gelbooru(21, 'gelbooru'),
-  gelbooruV1(22, 'gelbooru_v1'),
-  gelbooruV2(23, 'gelbooru_v2'),
-  moebooru(24, 'moebooru'),
-  e621(25, 'e621'),
-  zerochan(26, 'zerochan'),
-  sankaku(27, 'sankaku'),
-  philomena(28, 'philomena'),
-  shimmie2(29, 'shimmie2'),
-  szurubooru(30, 'szurubooru'),
-  hydrus(31, 'hydrus'),
-  animePictures(32, 'anime-pictures');
+import 'package:equatable/equatable.dart';
 
-  const BooruType(this.id, this.yamlName);
-  final int id;
+class BooruType extends Equatable {
+  const BooruType._({
+    required this.name,
+    required this.yamlName,
+    required this.id,
+    required this.displayName,
+    this.canDownloadMultipleFiles = true,
+    this.hasUnknownFullImageUrl = false,
+    this.postCountMethod = PostCountMethod.notSupported,
+    this.isSingleSite = false,
+  });
+
+  final String name;
   final String yamlName;
+  final int id;
+  final String displayName;
+  final bool canDownloadMultipleFiles;
+  final bool hasUnknownFullImageUrl;
+  final PostCountMethod postCountMethod;
+  final bool isSingleSite;
+
+  static const unknown = BooruType._(
+    name: 'unknown',
+    yamlName: '',
+    id: 0,
+    displayName: 'UNKNOWN',
+    isSingleSite: true,
+  );
+
+  static const danbooru = BooruType._(
+    name: 'danbooru',
+    yamlName: 'danbooru',
+    id: 20,
+    displayName: 'Danbooru',
+    postCountMethod: PostCountMethod.endpoint,
+  );
+
+  static const gelbooru = BooruType._(
+    name: 'gelbooru',
+    yamlName: 'gelbooru',
+    id: 21,
+    displayName: 'Gelbooru 0.2.5',
+    postCountMethod: PostCountMethod.search,
+    isSingleSite: true,
+  );
+
+  static const gelbooruV1 = BooruType._(
+    name: 'gelbooruV1',
+    yamlName: 'gelbooru_v1',
+    id: 22,
+    displayName: 'Gelbooru 0.1.x',
+    hasUnknownFullImageUrl: true,
+  );
+
+  static const gelbooruV2 = BooruType._(
+    name: 'gelbooruV2',
+    yamlName: 'gelbooru_v2',
+    id: 23,
+    displayName: 'Gelbooru 0.2',
+  );
+
+  static const moebooru = BooruType._(
+    name: 'moebooru',
+    yamlName: 'moebooru',
+    id: 24,
+    displayName: 'Moebooru',
+  );
+
+  static const e621 = BooruType._(
+    name: 'e621',
+    yamlName: 'e621',
+    id: 25,
+    displayName: 'e621',
+  );
+
+  static const zerochan = BooruType._(
+    name: 'zerochan',
+    yamlName: 'zerochan',
+    id: 26,
+    displayName: 'Zerochan',
+    hasUnknownFullImageUrl: true,
+  );
+
+  static const sankaku = BooruType._(
+    name: 'sankaku',
+    yamlName: 'sankaku',
+    id: 27,
+    displayName: 'Sankaku',
+  );
+
+  static const philomena = BooruType._(
+    name: 'philomena',
+    yamlName: 'philomena',
+    id: 28,
+    displayName: 'Philomena',
+  );
+
+  static const shimmie2 = BooruType._(
+    name: 'shimmie2',
+    yamlName: 'shimmie2',
+    id: 29,
+    displayName: 'Shimmie2',
+  );
+
+  static const szurubooru = BooruType._(
+    name: 'szurubooru',
+    yamlName: 'szurubooru',
+    id: 30,
+    displayName: 'Szurubooru',
+  );
+
+  static const hydrus = BooruType._(
+    name: 'hydrus',
+    yamlName: 'hydrus',
+    id: 31,
+    displayName: 'Hydrus',
+  );
+
+  static const animePictures = BooruType._(
+    name: 'animePictures',
+    yamlName: 'anime-pictures',
+    id: 32,
+    displayName: 'Anime Pictures',
+    canDownloadMultipleFiles: false,
+    isSingleSite: true,
+  );
+
+  static List<BooruType> get values => [
+        unknown,
+        danbooru,
+        gelbooru,
+        gelbooruV1,
+        gelbooruV2,
+        moebooru,
+        e621,
+        zerochan,
+        sankaku,
+        philomena,
+        shimmie2,
+        szurubooru,
+        hydrus,
+        animePictures,
+      ];
 
   /// Maps legacy IDs to the corresponding BooruType
   static BooruType fromLegacyId(int? value) => switch (value) {
-        1 || 2 || 3 || 5 || 20 => BooruType.danbooru,
-        4 || 21 => BooruType.gelbooru,
-        6 || 7 || 8 || 10 || 24 => BooruType.moebooru,
-        9 || 23 => BooruType.gelbooruV2,
-        11 || 12 || 25 => BooruType.e621,
-        13 || 26 => BooruType.zerochan,
-        14 || 22 => BooruType.gelbooruV1,
-        27 => BooruType.sankaku,
-        28 => BooruType.philomena,
-        29 => BooruType.shimmie2,
-        30 => BooruType.szurubooru,
-        31 => BooruType.hydrus,
-        32 => BooruType.animePictures,
-        _ => BooruType.unknown
+        1 || 2 || 3 || 5 || 20 => danbooru,
+        4 || 21 => gelbooru,
+        6 || 7 || 8 || 10 || 24 => moebooru,
+        9 || 23 => gelbooruV2,
+        11 || 12 || 25 => e621,
+        13 || 26 => zerochan,
+        14 || 22 => gelbooruV1,
+        27 => sankaku,
+        28 => philomena,
+        29 => shimmie2,
+        30 => szurubooru,
+        31 => hydrus,
+        32 => animePictures,
+        _ => unknown
       };
 
   static BooruType fromYamlName(String name) {
     final normalizedName = name.toLowerCase();
     return values.firstWhere(
       (e) => e.yamlName == normalizedName,
-      orElse: () => BooruType.unknown,
+      orElse: () => unknown,
     );
   }
 
-  String stringify() => switch (this) {
-        BooruType.unknown => 'UNKNOWN',
-        BooruType.danbooru => 'Danbooru',
-        BooruType.gelbooruV1 => 'Gelbooru 0.1.x',
-        BooruType.gelbooru => 'Gelbooru 0.2.5',
-        BooruType.gelbooruV2 => 'Gelbooru 0.2',
-        BooruType.moebooru => 'Moebooru',
-        BooruType.e621 => 'e621',
-        BooruType.zerochan => 'Zerochan',
-        BooruType.sankaku => 'Sankaku',
-        BooruType.philomena => 'Philomena',
-        BooruType.shimmie2 => 'Shimmie2',
-        BooruType.szurubooru => 'Szurubooru',
-        BooruType.hydrus => 'Hydrus',
-        BooruType.animePictures => 'Anime Pictures',
-      };
-
-  bool get isGelbooruBased =>
-      this == BooruType.gelbooru ||
-      this == BooruType.gelbooruV1 ||
-      this == BooruType.gelbooruV2;
-
-  bool get isMoeBooruBased => [
-        BooruType.moebooru,
-      ].contains(this);
-
-  bool get isDanbooruBased => [
-        BooruType.danbooru,
-      ].contains(this);
-
-  bool get isE621Based => this == BooruType.e621;
-
-  bool get supportTagDetails => this == BooruType.gelbooru || isDanbooruBased;
-
-  bool get supportBlacklistedTags => isDanbooruBased;
-
-  bool get canDownloadMultipleFiles => this != BooruType.animePictures;
-
-  bool get masonryLayoutUnsupported => this == BooruType.gelbooruV1;
-
-  bool get hasUnknownFullImageUrl =>
-      this == BooruType.zerochan || this == BooruType.gelbooruV1;
-
-  PostCountMethod get postCountMethod => switch (this) {
-        BooruType.danbooru => PostCountMethod.endpoint,
-        BooruType.gelbooru => PostCountMethod.search,
-        BooruType.moebooru => PostCountMethod.notSupported,
-        BooruType.gelbooruV2 => PostCountMethod.notSupported,
-        BooruType.e621 => PostCountMethod.notSupported,
-        BooruType.zerochan => PostCountMethod.notSupported,
-        BooruType.gelbooruV1 => PostCountMethod.notSupported,
-        BooruType.sankaku => PostCountMethod.notSupported,
-        BooruType.philomena => PostCountMethod.search,
-        BooruType.shimmie2 => PostCountMethod.notSupported,
-        BooruType.szurubooru => PostCountMethod.search,
-        BooruType.hydrus => PostCountMethod.notSupported,
-        BooruType.animePictures => PostCountMethod.notSupported,
-        BooruType.unknown => PostCountMethod.notSupported,
-      };
+  @override
+  List<Object?> get props => [id, yamlName, name, isSingleSite];
 }
 
 // Backwards compatibility function - replaced by BooruType.fromLegacyId

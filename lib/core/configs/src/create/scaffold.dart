@@ -381,7 +381,7 @@ class SelectedBooruChip extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text('using ${booruType.stringify()}'),
+      subtitle: Text('using ${booruType.displayName}'),
     );
   }
 }

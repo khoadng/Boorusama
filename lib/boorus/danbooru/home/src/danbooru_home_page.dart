@@ -70,7 +70,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   void _onSharedTextsReceived(SharedMedia media) {
     final text = media.content;
     final config = ref.readConfigAuth;
-    final booruName = config.booruType.stringify();
+    final booruName = config.booruType.displayName;
     final booruUrl = config.url;
 
     if (config.hasStrictSFW) return;
