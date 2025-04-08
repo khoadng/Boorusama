@@ -17,7 +17,6 @@ import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/home/custom_home.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -366,7 +365,14 @@ final ke621AltHomeView = {
 };
 
 BooruComponents createE621() => BooruComponents(
-      parser: E621Parser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.e621,
+        constructor: (siteDef) => E621(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: E621Builder.new,
       createRepository: (ref) => E621Repository(ref: ref),
     );
@@ -383,18 +389,4 @@ class E621 extends Booru {
 
   @override
   BooruType get type => BooruType.e621;
-}
-
-class E621Parser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.e621;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return E621(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }

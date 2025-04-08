@@ -18,7 +18,6 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -323,7 +322,14 @@ class PhilomenaArtistInfoSection extends ConsumerWidget {
 }
 
 BooruComponents createPhilomena() => BooruComponents(
-      parser: PhilomenaParser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.philomena,
+        constructor: (siteDef) => Philomena(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: PhilomenaBuilder.new,
       createRepository: (ref) => PhilomenaRepository(ref: ref),
     );
@@ -340,18 +346,4 @@ class Philomena extends Booru {
 
   @override
   BooruType get type => BooruType.philomena;
-}
-
-class PhilomenaParser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.philomena;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return Philomena(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }

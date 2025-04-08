@@ -18,11 +18,6 @@ class BooruComponents {
   final BooruRepository Function(Ref ref) createRepository;
 }
 
-abstract class BooruParser {
-  BooruType get booruType;
-  Booru parse(String name, dynamic data);
-}
-
 class BooruRegistry {
   final Map<BooruType, BooruComponents> _components = {};
 

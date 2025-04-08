@@ -16,7 +16,6 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -211,7 +210,14 @@ class Shimmie2FileDetailsSection extends ConsumerWidget {
 }
 
 BooruComponents createShimmie2() => BooruComponents(
-      parser: Shimmie2Parser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.shimmie2,
+        constructor: (siteDef) => Shimmie2(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: Shimmie2Builder.new,
       createRepository: (ref) => Shimmie2Repository(ref: ref),
     );
@@ -228,18 +234,4 @@ class Shimmie2 extends Booru {
 
   @override
   BooruType get type => BooruType.shimmie2;
-}
-
-class Shimmie2Parser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.shimmie2;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return Shimmie2(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }

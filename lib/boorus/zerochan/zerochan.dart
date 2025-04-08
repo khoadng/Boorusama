@@ -16,7 +16,6 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -291,7 +290,14 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
 }
 
 BooruComponents createZerochan() => BooruComponents(
-      parser: ZerochanParser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.zerochan,
+        constructor: (siteDef) => Zerochan(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: ZerochanBuilder.new,
       createRepository: (ref) => ZerochanRepository(ref: ref),
     );
@@ -308,18 +314,4 @@ class Zerochan extends Booru {
 
   @override
   BooruType get type => BooruType.zerochan;
-}
-
-class ZerochanParser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.zerochan;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return Zerochan(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }

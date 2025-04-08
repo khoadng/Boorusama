@@ -19,7 +19,6 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/html.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -210,7 +209,14 @@ class GelbooruV1SearchPage extends ConsumerWidget {
 }
 
 BooruComponents createGelbooruV1() => BooruComponents(
-      parser: GelbooruV1Parser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.gelbooruV1,
+        constructor: (siteDef) => GelbooruV1(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: GelbooruV1Builder.new,
       createRepository: (ref) => GelbooruV1Repository(ref: ref),
     );
@@ -227,18 +233,4 @@ final class GelbooruV1 extends Booru {
 
   @override
   BooruType get type => BooruType.gelbooruV1;
-}
-
-class GelbooruV1Parser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.gelbooruV1;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return GelbooruV1(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }

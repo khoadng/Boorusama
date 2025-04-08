@@ -23,7 +23,6 @@ import '../../core/downloads/urls.dart';
 import '../../core/home/home_navigation_tile.dart';
 import '../../core/home/home_page_scaffold.dart';
 import '../../core/home/side_menu_tile.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -530,7 +529,14 @@ class HydrusSearchPage extends ConsumerWidget {
 }
 
 BooruComponents createHydrus() => BooruComponents(
-      parser: HydrusParser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.hydrus,
+        constructor: (siteDef) => Hydrus(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: HydrusBuilder.new,
       createRepository: (ref) => HydrusRepository(ref: ref),
     );
@@ -547,18 +553,4 @@ class Hydrus extends Booru {
 
   @override
   BooruType get type => BooruType.hydrus;
-}
-
-class HydrusParser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.hydrus;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return Hydrus(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }

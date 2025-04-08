@@ -20,7 +20,6 @@ import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/html.dart';
-import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
@@ -329,7 +328,14 @@ class SzurubooruFavoritesPageInternal extends ConsumerWidget {
 }
 
 BooruComponents createSzurubooru() => BooruComponents(
-      parser: SzurubooruParser(),
+      parser: YamlBooruParser.standard(
+        type: BooruType.szurubooru,
+        constructor: (siteDef) => Szurubooru(
+          name: siteDef.name,
+          protocol: siteDef.protocol,
+          sites: siteDef.sites,
+        ),
+      ),
       createBuilder: SzurubooruBuilder.new,
       createRepository: (ref) => SzurubooruRepository(ref: ref),
     );
@@ -346,18 +352,4 @@ class Szurubooru extends Booru {
 
   @override
   BooruType get type => BooruType.szurubooru;
-}
-
-class SzurubooruParser extends BooruParser {
-  @override
-  BooruType get booruType => BooruType.szurubooru;
-
-  @override
-  Booru parse(String name, dynamic data) {
-    return Szurubooru(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: List.from(data['sites']),
-    );
-  }
 }
