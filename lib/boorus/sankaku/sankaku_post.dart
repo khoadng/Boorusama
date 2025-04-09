@@ -35,6 +35,8 @@ class SankakuPost extends Equatable
     required this.artistDetailsTags,
     required this.characterDetailsTags,
     required this.copyrightDetailsTags,
+    required this.generalDetailsTags,
+    required this.metaDetailsTags,
     required this.uploaderId,
     required this.metadata,
     this.createdAt,
@@ -42,7 +44,9 @@ class SankakuPost extends Equatable
     this.downvotes,
   })  : artistTags = artistDetailsTags.map((e) => e.name).toSet(),
         characterTags = characterDetailsTags.map((e) => e.name).toSet(),
-        copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet();
+        copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet(),
+        generalTags = generalDetailsTags.map((e) => e.name).toSet(),
+        metaTags = metaDetailsTags.map((e) => e.name).toSet();
 
   @override
   final int id;
@@ -111,11 +115,19 @@ class SankakuPost extends Equatable
   @override
   final Set<String> copyrightTags;
 
+  final Set<String> generalTags;
+
+  final Set<String> metaTags;
+
   final List<Tag> artistDetailsTags;
 
   final List<Tag> characterDetailsTags;
 
   final List<Tag> copyrightDetailsTags;
+
+  final List<Tag> generalDetailsTags;
+
+  final List<Tag> metaDetailsTags;
 
   @override
   final int? uploaderId;

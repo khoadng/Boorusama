@@ -91,6 +91,39 @@ final sankakuPostRepoProvider =
                       )
                       .toList() ??
                   [];
+
+              final generalTags = e.tags
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.general(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.general(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
+                      .toList() ??
+                  [];
+
+              final metaTags = e.tags
+                      ?.where(
+                        (e) =>
+                            TagCategory.fromLegacyId(e.type) ==
+                            TagCategory.meta(),
+                      )
+                      .map(
+                        (e) => Tag(
+                          name: e.tagName ?? '????',
+                          category: TagCategory.meta(),
+                          postCount: e.postCount ?? 0,
+                        ),
+                      )
+                      .toList() ??
+                  [];
+
               final timestamp = e.createdAt?.s;
 
               // They changed the id to a string, so a workaround is needed until i can figure out a better way
@@ -130,6 +163,8 @@ final sankakuPostRepoProvider =
                 artistDetailsTags: artistTags,
                 characterDetailsTags: characterTags,
                 copyrightDetailsTags: copyrightTags,
+                generalDetailsTags: generalTags,
+                metaDetailsTags: metaTags,
                 createdAt: timestamp != null
                     ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
                     : null,
