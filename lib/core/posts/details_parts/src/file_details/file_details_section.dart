@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/clipboard.dart';
@@ -75,10 +75,13 @@ class FileDetailsSection extends StatelessWidget {
             valueTrailing: Material(
               color: Colors.transparent,
               child: InkWell(
-                customBorder: const CircleBorder(),
-                child: const Icon(
-                  Symbols.content_copy,
-                  size: 18,
+                borderRadius: BorderRadius.circular(4),
+                child: Transform.scale(
+                  scale: 0.8,
+                  child: const Icon(
+                    FontAwesomeIcons.copy,
+                    size: 20,
+                  ),
                 ),
                 onTap: () {
                   AppClipboard.copyWithDefaultToast(

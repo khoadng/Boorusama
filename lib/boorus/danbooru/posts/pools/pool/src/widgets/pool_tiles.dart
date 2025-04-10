@@ -37,18 +37,19 @@ class PoolTiles extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 8,
+            vertical: 8,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (pools.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
                     '${pools.length} Pool${pools.length > 1 ? 's' : ''}',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       color: colorScheme.outline,
                     ),
                   ),

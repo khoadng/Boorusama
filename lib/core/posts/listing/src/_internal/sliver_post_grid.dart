@@ -152,44 +152,49 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   void _onErrorRetry() => postController.refresh();
 
   Widget _buildGrid(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: postController.itemsNotifier,
-      builder: (_, data, __) {
-        final crossAxisCount = calculateGridCount(
-          constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
-          size ?? GridSize.normal,
-        );
-        final imageListType = listType ?? ImageListType.standard;
+    return SliverPadding(
+      padding: const EdgeInsets.only(
+        top: 8,
+      ),
+      sliver: ValueListenableBuilder(
+        valueListenable: postController.itemsNotifier,
+        builder: (_, data, __) {
+          final crossAxisCount = calculateGridCount(
+            constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
+            size ?? GridSize.normal,
+          );
+          final imageListType = listType ?? ImageListType.standard;
 
-        return data.isNotEmpty
-            ? switch (imageListType) {
-                ImageListType.masonry => SliverMasonryGrid.count(
-                    crossAxisCount: crossAxisCount,
-                    mainAxisSpacing: spacing ?? 4,
-                    crossAxisSpacing: spacing ?? 4,
-                    childCount: data.length,
-                    itemBuilder: itemBuilder,
-                  ),
-                _ => SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: aspectRatio ?? 1,
+          return data.isNotEmpty
+              ? switch (imageListType) {
+                  ImageListType.masonry => SliverMasonryGrid.count(
                       crossAxisCount: crossAxisCount,
                       mainAxisSpacing: spacing ?? 4,
                       crossAxisSpacing: spacing ?? 4,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      itemBuilder,
                       childCount: data.length,
+                      itemBuilder: itemBuilder,
                     ),
+                  _ => SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: aspectRatio ?? 1,
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: spacing ?? 4,
+                        crossAxisSpacing: spacing ?? 4,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        itemBuilder,
+                        childCount: data.length,
+                      ),
+                    ),
+                }
+              : const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 48),
+                    child: NoDataBox(),
                   ),
-              }
-            : const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 48),
-                  child: NoDataBox(),
-                ),
-              );
-      },
+                );
+        },
+      ),
     );
   }
 }
