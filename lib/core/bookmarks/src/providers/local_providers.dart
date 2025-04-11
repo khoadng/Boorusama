@@ -85,7 +85,10 @@ final bookmarkTagColorProvider =
 
 final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
-      .getAllBookmarksOrEmpty();
+      .getAllBookmarksOrEmpty(
+    imageUrlResolver: (booruId) =>
+        ref.read(bookmarkUrlResolverProvider(booruId)),
+  );
 
   return bookmarks.fold<Map<String, int>>(
     {},
@@ -128,7 +131,10 @@ final selectedBookmarkSortTypeProvider =
 final availableBooruUrlsProvider =
     FutureProvider.autoDispose<List<String>>((ref) async {
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
-      .getAllBookmarksOrEmpty();
+      .getAllBookmarksOrEmpty(
+    imageUrlResolver: (booruId) =>
+        ref.read(bookmarkUrlResolverProvider(booruId)),
+  );
 
   return bookmarks.fold(
     <String>{},

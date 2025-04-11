@@ -345,7 +345,10 @@ class ImportDataNotifier
                 await ref.read(bookmarkRepoProvider.future);
             final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
             final currentBookmarks =
-                await bookmarkRepository.getAllBookmarksOrEmpty();
+                await bookmarkRepository.getAllBookmarksOrEmpty(
+              imageUrlResolver: (booruId) =>
+                  ref.read(bookmarkUrlResolverProvider(booruId)),
+            );
 
             final res = await dio.get('/bookmarks');
 
@@ -354,7 +357,16 @@ class ImportDataNotifier
             final json = jsonDecode(jsonString) as List<dynamic>;
 
             final bookmarks = json
-                .map((bookmark) => Bookmark.fromJson(bookmark))
+                .map((bookmark) {
+                  final booruId = bookmark['booruId'] as int?;
+                  final resolver =
+                      ref.read(bookmarkUrlResolverProvider(booruId));
+
+                  return Bookmark.fromJson(
+                    bookmark,
+                    imageUrlResolver: resolver,
+                  );
+                })
                 .toList()
                 // remove duplicates
                 .where(

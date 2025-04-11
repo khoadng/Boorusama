@@ -13,6 +13,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../backups/types.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../configs/config.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/animations.dart';
@@ -28,6 +29,7 @@ import '../../../settings/providers.dart';
 import '../data/providers.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
+import '../types/image_url_resolver.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -44,6 +46,17 @@ final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   return bookmarks.isNotEmpty;
 });
 
+//FIXME: should be handled in booru repository
+final bookmarkUrlResolverProvider =
+    Provider.autoDispose.family<ImageUrlResolver, int?>((ref, booruId) {
+  final booruType = intToBooruType(booruId);
+
+  return switch (booruType) {
+    BooruType.gelbooru => const GelbooruImageUrlResolver(),
+    _ => const DefaultImageUrlResolver(),
+  };
+});
+
 class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
   BookmarkState build() {
@@ -57,7 +70,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
   }) async {
-    return (await bookmarkRepository).getAllBookmarks().run().then(
+    return (await bookmarkRepository)
+        .getAllBookmarks(
+          imageUrlResolver: (booruId) =>
+              ref.read(bookmarkUrlResolverProvider(booruId)),
+        )
+        .run()
+        .then(
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
@@ -81,8 +100,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         (post) => !state.isBookmarked(post, booruId),
       );
 
-      await (await bookmarkRepository)
-          .addBookmarks(booruId, booruUrl, filtered);
+      await (await bookmarkRepository).addBookmarks(
+        booruId,
+        booruUrl,
+        filtered,
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
       onSuccess?.call(filtered.length);
 
       final ids =
@@ -107,8 +131,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         return;
       }
 
-      final bookmark =
-          await (await bookmarkRepository).addBookmark(booruId, booruUrl, post);
+      final bookmark = await (await bookmarkRepository).addBookmark(
+        booruId,
+        booruUrl,
+        post,
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.add(bookmark.uniqueId),
@@ -123,7 +152,10 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onSuccess,
     void Function()? onError,
   }) async {
-    final bookmarks = await (await bookmarkRepository).getAllBookmarksOrEmpty();
+    final bookmarks = await (await bookmarkRepository).getAllBookmarksOrEmpty(
+      imageUrlResolver: (booruId) =>
+          ref.read(bookmarkUrlResolverProvider(booruId)),
+    );
 
     final bookmark = bookmarks.firstWhereOrNull(
       (b) => b.uniqueId == bookmarkId,
@@ -189,8 +221,10 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           return;
         }
       }
-      final bookmarks =
-          await (await bookmarkRepository).getAllBookmarksOrEmpty();
+      final bookmarks = await (await bookmarkRepository).getAllBookmarksOrEmpty(
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
 
       final dir = Directory(path);
       final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
@@ -221,9 +255,18 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     try {
       final jsonString = await file.readAsString();
       final json = jsonDecode(jsonString) as List<dynamic>;
+
       try {
         final bookmarks = json
-            .map((bookmark) => Bookmark.fromJson(bookmark))
+            .map((bookmark) {
+              final booruId = bookmark['booruId'] as int?;
+              final resolver = ref.read(bookmarkUrlResolverProvider(booruId));
+
+              return Bookmark.fromJson(
+                bookmark,
+                imageUrlResolver: resolver,
+              );
+            })
             .toList()
             // remove duplicates
             .where(
@@ -396,4 +439,36 @@ extension BookmarkStateX on BookmarkState {
 
 extension BookmarkNotifierX on WidgetRef {
   BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
+}
+
+class GelbooruImageUrlResolver implements ImageUrlResolver {
+  const GelbooruImageUrlResolver();
+
+  @override
+  String resolveImageUrl(String url) {
+    // Handle the img3 to img4 migration
+    final uri = Uri.tryParse(url);
+
+    if (uri == null) {
+      return url; // Return original if URL is invalid
+    }
+
+    // Check if this is a gelbooru URL
+    if (uri.host.contains('gelbooru.com')) {
+      // Handle specific subdomain changes
+      if (uri.host == 'img3.gelbooru.com') {
+        // Create new URL with updated subdomain
+        final newUri = uri.replace(host: 'img4.gelbooru.com');
+        return newUri.toString();
+      }
+    }
+
+    return url; // Return original if no patterns match
+  }
+
+  @override
+  String resolvePreviewUrl(String url) => resolveImageUrl(url);
+
+  @override
+  String resolveThumbnailUrl(String url) => resolveImageUrl(url);
 }

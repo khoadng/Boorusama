@@ -7,6 +7,7 @@ import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../posts/sources/source.dart';
 import '../types/bookmark.dart';
+import '../types/image_url_resolver.dart';
 import 'hive/object.dart';
 
 // map BoxError to BookmarkGetError
@@ -18,6 +19,7 @@ BookmarkGetError mapBoxErrorToBookmarkGetError(BoxError error) =>
 
 Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
   Iterable<BookmarkHiveObject> hiveObjects,
+  ImageUrlResolver Function(int? booruId) imageUrlResolver,
 ) =>
     Either.tryCatch(
       () => hiveObjects
@@ -37,6 +39,7 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
               tags: hiveObject.tags?.toSet() ?? {},
               realSourceUrl: hiveObject.realSourceUrl,
               format: hiveObject.format,
+              imageUrlResolver: imageUrlResolver(hiveObject.booruId),
             ),
           )
           .toList(),
@@ -48,6 +51,7 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
 // map BookmarkHiveObject to Bookmark
 Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
   BookmarkHiveObject hiveObject,
+  ImageUrlResolver Function(int? booruId) imageUrlResolver,
 ) =>
     Either.tryCatch(
       () => Bookmark(
@@ -65,6 +69,7 @@ Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
         tags: hiveObject.tags?.toSet() ?? {},
         realSourceUrl: hiveObject.realSourceUrl,
         format: hiveObject.format,
+        imageUrlResolver: imageUrlResolver(hiveObject.booruId),
       ),
       (o, s) => BookmarkGetError.nullField,
     );
@@ -153,7 +158,10 @@ extension BookmarkToPost on Bookmark {
 }
 
 extension PostToBookmark on Post {
-  Bookmark toBookmark() => Bookmark(
+  Bookmark toBookmark({
+    required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+  }) =>
+      Bookmark(
         id: id,
         booruId: -1,
         createdAt: createdAt ?? DateTime.now(),
@@ -168,5 +176,6 @@ extension PostToBookmark on Post {
         tags: tags,
         realSourceUrl: source.url,
         format: format,
+        imageUrlResolver: imageUrlResolver(-1),
       );
 }

@@ -294,6 +294,8 @@ class SankakuTagsTile extends StatelessWidget {
           ...post.artistDetailsTags,
           ...post.characterDetailsTags,
           ...post.copyrightDetailsTags,
+          ...post.generalDetailsTags,
+          ...post.metaDetailsTags,
         ]),
         onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),

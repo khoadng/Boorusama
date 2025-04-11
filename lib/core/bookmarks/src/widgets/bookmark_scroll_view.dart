@@ -69,7 +69,10 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
           final bookmarks = filterBookmarks(
             tags: selectedTags,
             bookmarks: await (await ref.read(bookmarkRepoProvider.future))
-                .getAllBookmarksOrEmpty(),
+                .getAllBookmarksOrEmpty(
+              imageUrlResolver: (booruId) =>
+                  ref.read(bookmarkUrlResolverProvider(booruId)),
+            ),
             sortType: sortType,
             selectedBooruUrl: selectedBooruUrl,
           );

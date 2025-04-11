@@ -98,7 +98,12 @@ class _BookmarkDetailsPageState
           onDownload: (post) {
             ref.bookmarks.downloadBookmarks(
               ref.readConfig,
-              [post.toBookmark()],
+              [
+                post.toBookmark(
+                  imageUrlResolver: (booruId) =>
+                      ref.read(bookmarkUrlResolverProvider(booruId)),
+                ),
+              ],
             );
           },
         ),
@@ -153,7 +158,12 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
               showDownloadStartToast(context);
               ref.bookmarks.downloadBookmarks(
                 ref.watchConfig,
-                [post.toBookmark()],
+                [
+                  post.toBookmark(
+                    imageUrlResolver: (booruId) =>
+                        ref.read(bookmarkUrlResolverProvider(booruId)),
+                  ),
+                ],
               );
             },
             icon: const Icon(

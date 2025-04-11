@@ -7,6 +7,7 @@ import '../../../../posts/post/post.dart';
 import '../../../../posts/sources/source.dart';
 import '../../types/bookmark.dart';
 import '../../types/bookmark_repository.dart';
+import '../../types/image_url_resolver.dart';
 import '../bookmark_convert.dart';
 import 'object.dart';
 
@@ -16,7 +17,12 @@ class BookmarkHiveRepository implements BookmarkRepository {
   final Box<BookmarkHiveObject> _box;
 
   @override
-  Future<Bookmark> addBookmark(int booruId, String booruUrl, Post post) async {
+  Future<Bookmark> addBookmark(
+    int booruId,
+    String booruUrl,
+    Post post, {
+    required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+  }) async {
     final now = DateTime.now();
 
     final favoriteHiveObject = BookmarkHiveObject(
@@ -36,9 +42,10 @@ class BookmarkHiveRepository implements BookmarkRepository {
     );
     final id = await _box.add(favoriteHiveObject);
 
-    return tryMapBookmarkHiveObjectToBookmark(favoriteHiveObject)
-        .getOrElse((_) => Bookmark.empty)
-        .copyWith(id: id);
+    return tryMapBookmarkHiveObjectToBookmark(
+      favoriteHiveObject,
+      imageUrlResolver,
+    ).getOrElse((_) => Bookmark.empty).copyWith(id: id);
   }
 
   @override
@@ -57,11 +64,14 @@ class BookmarkHiveRepository implements BookmarkRepository {
   }
 
   @override
-  BookmarksOrError getAllBookmarks() => TaskEither.fromEither(
+  BookmarksOrError getAllBookmarks({
+    required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+  }) =>
+      TaskEither.fromEither(
         tryGetBoxValues(_box).mapLeft(mapBoxErrorToBookmarkGetError),
       ).flatMap(
         (objects) => TaskEither.fromEither(
-          tryMapBookmarkHiveObjectsToBookmarks(objects),
+          tryMapBookmarkHiveObjectsToBookmarks(objects, imageUrlResolver),
         ),
       );
 
@@ -69,9 +79,17 @@ class BookmarkHiveRepository implements BookmarkRepository {
   Future<List<Bookmark>> addBookmarks(
     int booruId,
     String booruUrl,
-    Iterable<Post> posts,
-  ) async {
-    final futures = posts.map((post) => addBookmark(booruId, booruUrl, post));
+    Iterable<Post> posts, {
+    required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+  }) async {
+    final futures = posts.map(
+      (post) => addBookmark(
+        booruId,
+        booruUrl,
+        post,
+        imageUrlResolver: imageUrlResolver,
+      ),
+    );
 
     return Future.wait(futures);
   }
