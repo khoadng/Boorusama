@@ -352,7 +352,16 @@ class ImportDataNotifier
             final json = jsonDecode(jsonString) as List<dynamic>;
 
             final bookmarks = json
-                .map((bookmark) => Bookmark.fromJson(bookmark))
+                .map((bookmark) {
+                  final booruId = bookmark['booruId'] as int?;
+                  final resolver =
+                      ref.read(bookmarkUrlResolverProvider(booruId));
+
+                  return Bookmark.fromJson(
+                    bookmark,
+                    imageUrlResolver: resolver,
+                  );
+                })
                 .toList()
                 // remove duplicates
                 .where(

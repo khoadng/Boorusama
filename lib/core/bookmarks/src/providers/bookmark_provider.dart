@@ -28,6 +28,7 @@ import '../../../settings/providers.dart';
 import '../data/providers.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
+import '../types/image_url_resolver.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -44,6 +45,17 @@ final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   return bookmarks.isNotEmpty;
 });
 
+//FIXME: should be handled in booru repository
+final bookmarkUrlResolverProvider =
+    Provider.autoDispose.family<ImageUrlResolver, int?>((ref, booruId) {
+  final booruType = intToBooruType(booruId);
+
+  return switch (booruType) {
+    BooruType.gelbooru => const GelbooruImageUrlResolver(),
+    _ => const DefaultImageUrlResolver(),
+  };
+});
+
 class BookmarkNotifier extends Notifier<BookmarkState> {
   @override
   BookmarkState build() {
@@ -56,7 +68,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   Future<void> getAllBookmarks({
     void Function(BookmarkGetError error)? onError,
   }) {
-    return bookmarkRepository.getAllBookmarks().run().then(
+    return bookmarkRepository
+        .getAllBookmarks(
+          imageUrlResolver: (booruId) =>
+              ref.read(bookmarkUrlResolverProvider(booruId)),
+        )
+        .run()
+        .then(
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
@@ -77,8 +95,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onError,
   }) async {
     try {
-      final bookmarks =
-          await bookmarkRepository.addBookmarks(booruId, booruUrl, posts);
+      final bookmarks = await bookmarkRepository.addBookmarks(
+        booruId,
+        booruUrl,
+        posts,
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
       onSuccess?.call();
 
       final map = IMap.fromIterables(
@@ -100,8 +123,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     void Function()? onError,
   }) async {
     try {
-      final bookmark =
-          await bookmarkRepository.addBookmark(booruId, booruUrl, post);
+      final bookmark = await bookmarkRepository.addBookmark(
+        booruId,
+        booruUrl,
+        post,
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.add(bookmark.originalUrl, bookmark),
@@ -192,9 +220,18 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     try {
       final jsonString = await file.readAsString();
       final json = jsonDecode(jsonString) as List<dynamic>;
+
       try {
         final bookmarks = json
-            .map((bookmark) => Bookmark.fromJson(bookmark))
+            .map((bookmark) {
+              final booruId = bookmark['booruId'] as int?;
+              final resolver = ref.read(bookmarkUrlResolverProvider(booruId));
+
+              return Bookmark.fromJson(
+                bookmark,
+                imageUrlResolver: resolver,
+              );
+            })
             .toList()
             // remove duplicates
             .where(
@@ -369,4 +406,36 @@ extension BookmarkCubitX on BookmarkState {
 
 extension BookmarkNotifierX on WidgetRef {
   BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
+}
+
+class GelbooruImageUrlResolver implements ImageUrlResolver {
+  const GelbooruImageUrlResolver();
+
+  @override
+  String resolveImageUrl(String url) {
+    // Handle the img3 to img4 migration
+    final uri = Uri.tryParse(url);
+
+    if (uri == null) {
+      return url; // Return original if URL is invalid
+    }
+
+    // Check if this is a gelbooru URL
+    if (uri.host.contains('gelbooru.com')) {
+      // Handle specific subdomain changes
+      if (uri.host == 'img3.gelbooru.com') {
+        // Create new URL with updated subdomain
+        final newUri = uri.replace(host: 'img4.gelbooru.com');
+        return newUri.toString();
+      }
+    }
+
+    return url; // Return original if no patterns match
+  }
+
+  @override
+  String resolvePreviewUrl(String url) => resolveImageUrl(url);
+
+  @override
+  String resolveThumbnailUrl(String url) => resolveImageUrl(url);
 }

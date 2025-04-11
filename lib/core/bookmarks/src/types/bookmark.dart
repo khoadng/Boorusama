@@ -5,16 +5,17 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../foundation/path.dart';
 import '../../../posts/post/post.dart';
+import 'image_url_resolver.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
-  const Bookmark({
+  Bookmark({
     required this.id,
     required this.booruId,
     required this.createdAt,
     required this.updatedAt,
-    required this.thumbnailUrl,
-    required this.sampleUrl,
-    required this.originalUrl,
+    required String thumbnailUrl,
+    required String sampleUrl,
+    required String originalUrl,
     required this.sourceUrl,
     required this.width,
     required this.height,
@@ -22,9 +23,16 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required this.tags,
     required this.realSourceUrl,
     required this.format,
-  });
+    required ImageUrlResolver imageUrlResolver,
+  })  : _originalUrl = originalUrl,
+        _sampleUrl = sampleUrl,
+        _thumbnailUrl = thumbnailUrl,
+        _resolver = imageUrlResolver;
 
-  factory Bookmark.fromJson(Map<String, dynamic> json) {
+  factory Bookmark.fromJson(
+    Map<String, dynamic> json, {
+    required ImageUrlResolver imageUrlResolver,
+  }) {
     return Bookmark(
       id: json['id'] as int,
       booruId: json['booruId'] as int,
@@ -40,16 +48,19 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       tags: _parseTags(json['tags']),
       realSourceUrl: json['realSourceUrl'] as String?,
       format: json['format'] as String?,
+      imageUrlResolver: imageUrlResolver,
     );
   }
+
+  final String _originalUrl;
+  final String _sampleUrl;
+  final String _thumbnailUrl;
+  final ImageUrlResolver _resolver;
 
   final int id;
   final int booruId;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String thumbnailUrl;
-  final String sampleUrl;
-  final String originalUrl;
   final String sourceUrl;
   @override
   final double width;
@@ -60,6 +71,10 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   final Set<String> tags;
   final String? realSourceUrl;
   final String? format;
+
+  String get originalUrl => _resolver.resolveImageUrl(_originalUrl);
+  String get sampleUrl => _resolver.resolvePreviewUrl(_sampleUrl);
+  String get thumbnailUrl => _resolver.resolveThumbnailUrl(_thumbnailUrl);
 
   bool get isVideo {
     final ext = extension(originalUrl);
@@ -85,6 +100,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     tags: const {},
     realSourceUrl: null,
     format: null,
+    imageUrlResolver: const DefaultImageUrlResolver(),
   );
 
   @override
@@ -107,7 +123,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
 
   Bookmark copyWith({
     int? id,
-    int? booruId,
+    // int? booruId,
     DateTime? createdAt,
     DateTime? updatedAt,
     String? thumbnailUrl,
@@ -123,7 +139,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   }) {
     return Bookmark(
       id: id ?? this.id,
-      booruId: booruId ?? this.booruId,
+      booruId: booruId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
@@ -137,6 +153,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       realSourceUrl:
           realSourceUrl != null ? realSourceUrl() : this.realSourceUrl,
       format: format != null ? format() : this.format,
+      imageUrlResolver: _resolver,
     );
   }
 
@@ -146,9 +163,9 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       'booruId': booruId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      'thumbnailUrl': thumbnailUrl,
-      'sampleUrl': sampleUrl,
-      'originalUrl': originalUrl,
+      'thumbnailUrl': _thumbnailUrl,
+      'sampleUrl': _sampleUrl,
+      'originalUrl': _originalUrl,
       'sourceUrl': sourceUrl,
       'width': width,
       'height': height,
