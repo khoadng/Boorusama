@@ -1,3 +1,6 @@
+// Project imports:
+import '../../sankaku/types/types.dart';
+
 class PostIdolDto {
   PostIdolDto({
     this.id,
@@ -42,14 +45,16 @@ class PostIdolDto {
 
   factory PostIdolDto.fromJson(Map<String, dynamic> json) {
     return PostIdolDto(
-      id: json['id'],
+      id: SankakuId.maybeFrom(json['id']),
       createdAt: json['created_at'],
       tags: (json['tags'] as List<dynamic>?)
           ?.map((e) => TagIdolDto.fromJson(e))
           .toList(),
       author: json['author'],
       approver: json['approver'],
-      parent: json['parent'],
+      parent: json['parent'] != null
+          ? MicroPostIdolDto.fromJson(json['parent'] as Map<String, dynamic>)
+          : null,
       change: json['change'],
       hasChildren: json['has_children'],
       inVisiblePool: json['in_visible_pool'],
@@ -72,7 +77,7 @@ class PostIdolDto {
       width: json['width'],
       height: json['height'],
       rating: json['rating'],
-      parentId: json['parent_id'],
+      parentId: SankakuId.maybeFrom(json['parent_id']),
       status: json['status'],
       hasComments: json['has_comments'],
       commentCount: json['comment_count'],
@@ -87,12 +92,12 @@ class PostIdolDto {
     );
   }
 
-  final int? id;
+  final SankakuId? id;
   final String? createdAt;
   final List<TagIdolDto>? tags;
   final String? author;
   final String? approver;
-  final String? parent;
+  final MicroPostIdolDto? parent;
   final int? change;
   final bool? hasChildren;
   final bool? inVisiblePool;
@@ -115,7 +120,7 @@ class PostIdolDto {
   final int? width;
   final int? height;
   final String? rating;
-  final String? parentId;
+  final SankakuId? parentId;
   final String? status;
   final bool? hasComments;
   final int? commentCount;
@@ -145,7 +150,7 @@ class TagIdolDto {
   });
 
   factory TagIdolDto.fromJson(Map<String, dynamic> json) => TagIdolDto(
-        id: json['id'],
+        id: SankakuId.maybeFrom(json['id']),
         name: json['name'],
         nameEn: json['name_en'],
         nameJa: json['name_ja'],
@@ -154,7 +159,7 @@ class TagIdolDto {
         rating: json['rating'],
       );
 
-  final int? id;
+  final SankakuId? id;
   final String? name;
   final String? nameEn;
   final String? nameJa;
@@ -239,4 +244,38 @@ class TagCountsDto {
   final int? character;
   final int? copyright;
   final int? substance;
+}
+
+class MicroPostIdolDto {
+  MicroPostIdolDto({
+    this.id,
+    this.tags,
+    this.author,
+    this.rating,
+    this.status,
+  });
+
+  factory MicroPostIdolDto.fromJson(Map<String, dynamic> json) {
+    final tags = json['tags'];
+
+    return MicroPostIdolDto(
+      id: SankakuId.maybeFrom(json['id']),
+      tags: tags is String
+          ? tags
+              .split(' ')
+              .where((t) => t.isNotEmpty)
+              .map((t) => t.trim())
+              .toList()
+          : null,
+      author: json['author'],
+      rating: json['rating'],
+      status: json['status'],
+    );
+  }
+
+  final SankakuId? id;
+  final List<String>? tags;
+  final String? author;
+  final String? rating;
+  final String? status;
 }
