@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../booru/booru.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
+import 'booru_repository.dart';
 
 class BooruComponents {
   const BooruComponents({

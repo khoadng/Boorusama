@@ -119,15 +119,6 @@ class E621Post extends Equatable
   String get videoThumbnailUrl => sampleImageUrl;
 
   @override
-  String getLink(String baseUrl) =>
-      baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
-
-  @override
-  Uri getUriLink(String baseUrl) {
-    return Uri.parse(getLink(baseUrl));
-  }
-
-  @override
   List<Object?> get props => [id];
 
   @override

@@ -25,6 +25,7 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/routes.dart';
@@ -218,6 +219,11 @@ class ZerochanRepository implements BooruRepository {
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return DefaultTagQueryComposer(config: config);
+  }
+
+  @override
+  PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
+    return DirectIdPathPostLinkGenerator(baseUrl: config.url);
   }
 }
 

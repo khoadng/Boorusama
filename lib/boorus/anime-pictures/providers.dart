@@ -231,9 +231,4 @@ class AnimePicturesPost extends SimplePost {
   });
 
   final int tagsCount;
-
-  @override
-  String getLink(String baseUrl) {
-    return baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
-  }
 }

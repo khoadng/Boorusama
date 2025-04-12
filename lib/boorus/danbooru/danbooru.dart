@@ -32,6 +32,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/routes.dart';
 import '../../core/posts/post/tags.dart';
 import '../../core/posts/rating/rating.dart';
@@ -530,6 +531,11 @@ class DanbooruRepository implements BooruRepository {
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return DanbooruTagQueryComposer(config: config);
+  }
+
+  @override
+  PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
+    return PluralPostLinkGenerator(baseUrl: config.url);
   }
 }
 

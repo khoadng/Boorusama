@@ -122,10 +122,6 @@ class BookmarkPost extends SimplePost {
 
   final PostSource realSourceUrl;
   final Bookmark bookmark;
-
-  @override
-  String getLink(String baseUrl) =>
-      source.url ?? realSourceUrl.url ?? originalImageUrl;
 }
 
 extension BookmarkToPost on Bookmark {

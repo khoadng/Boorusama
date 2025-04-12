@@ -97,14 +97,6 @@ class SankakuPost extends Equatable
   final double width;
 
   @override
-  String getLink(String baseUrl) => baseUrl.endsWith('/')
-      ? '${baseUrl}post/show/$id'
-      : '$baseUrl/post/show/$md5';
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
-
-  @override
   List<Object?> get props => [id];
 
   @override

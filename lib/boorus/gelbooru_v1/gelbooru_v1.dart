@@ -179,6 +179,11 @@ class GelbooruV1Repository implements BooruRepository {
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return DefaultTagQueryComposer(config: config);
   }
+
+  @override
+  PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
+    return IndexPhpPostLinkGenerator(baseUrl: config.url);
+  }
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {

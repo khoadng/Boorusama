@@ -66,14 +66,6 @@ class GelbooruPost extends Equatable
   final String format;
 
   @override
-  String getLink(String baseUrl) => baseUrl.endsWith('/')
-      ? '${baseUrl}index.php?page=post&s=view&id=$id'
-      : '$baseUrl/index.php?page=post&s=view&id=$id';
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
-
-  @override
   final double height;
 
   @override

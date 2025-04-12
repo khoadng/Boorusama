@@ -29,6 +29,7 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
+import '../../core/posts/post/providers.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/tags/tag/tag.dart';
@@ -259,6 +260,11 @@ class MoebooruRepository implements BooruRepository {
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return LegacyTagQueryComposer(config: config);
+  }
+
+  @override
+  PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
+    return ShowPostLinkGenerator(baseUrl: config.url);
   }
 }
 

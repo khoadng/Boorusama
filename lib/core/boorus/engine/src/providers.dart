@@ -4,13 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
+import '../../../posts/post/post.dart';
+import '../../../posts/post/providers.dart';
 import '../../booru/booru.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
 
-final booruEngineRegistryProvider = Provider<BooruEngineRegistry>((ref) {
-  throw UnimplementedError();
-});
+final booruEngineRegistryProvider = Provider<BooruEngineRegistry>(
+  (ref) {
+    throw UnimplementedError();
+  },
+  name: 'booruEngineRegistryProvider',
+);
 
 final currentBooruProvider = Provider.family<Booru?, BooruConfigAuth>(
   (ref, config) {
@@ -18,7 +23,7 @@ final currentBooruProvider = Provider.family<Booru?, BooruConfigAuth>(
 
     return registry.getEngine(config.booruType)?.booru;
   },
-  dependencies: [booruEngineRegistryProvider],
+  name: 'currentBooruProvider',
 );
 
 extension BooruRef on Ref {
@@ -60,5 +65,32 @@ final currentBooruBuilderProvider = Provider<BooruBuilder?>(
 
     return booruBuilder;
   },
-  dependencies: [booruEngineRegistryProvider],
+  name: 'currentBooruBuilderProvider',
+);
+
+final postLinkGeneratorProvider = Provider.family<PostLinkGenerator, int?>(
+  (ref, booruId) {
+    if (booruId == null) return const NoLinkPostLinkGenerator();
+
+    final booruType = intToBooruType(booruId);
+
+    final repository =
+        ref.watch(booruEngineRegistryProvider).getRepository(booruType);
+
+    if (repository == null) return const NoLinkPostLinkGenerator();
+
+    final config = ref.watchConfigAuth;
+
+    return repository.postLinkGenerator(config);
+  },
+  name: 'postLinkGeneratorProvider',
+);
+
+final currentPostLinkGeneratorProvider = Provider<PostLinkGenerator?>(
+  (ref) {
+    final config = ref.watchConfigAuth;
+
+    return ref.watch(postLinkGeneratorProvider(config.booruIdHint));
+  },
+  name: 'currentPostLinkGeneratorProvider',
 );

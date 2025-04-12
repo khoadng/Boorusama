@@ -77,11 +77,6 @@ class HydrusPost extends SimplePost {
     required this.ownFavorite,
   });
 
-  @override
-  String getLink(String baseUrl) {
-    return '';
-  }
-
   final bool? ownFavorite;
 }
 
@@ -382,6 +377,11 @@ class HydrusRepository implements BooruRepository {
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return DefaultTagQueryComposer(config: config);
+  }
+
+  @override
+  PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
+    return const NoLinkPostLinkGenerator();
   }
 }
 

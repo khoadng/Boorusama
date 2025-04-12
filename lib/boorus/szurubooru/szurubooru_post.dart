@@ -100,13 +100,6 @@ class SzurubooruPost extends Equatable
   @override
   final String? uploaderName;
 
-  @override
-  String getLink(String baseUrl) =>
-      baseUrl.endsWith('/') ? '${baseUrl}post/$id' : '$baseUrl/post/$id';
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
-
   final bool ownFavorite;
   final int favoriteCount;
   final int commentCount;

@@ -3,18 +3,18 @@ import '../../../posts/post/post.dart';
 import 'bookmark.dart';
 import 'image_url_resolver.dart';
 
-abstract class BookmarkRepository {
+abstract class BookmarkRepository<T extends Post> {
   Future<Bookmark> addBookmark(
     int booruId,
-    String booruUrl,
-    Post post, {
+    T post, {
     required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+    required PostLinkGenerator<T> Function(int? booruId) postLinkGenerator,
   });
   Future<List<Bookmark>> addBookmarks(
     int booruId,
-    String booruUrl,
-    Iterable<Post> posts, {
+    Iterable<T> posts, {
     required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+    required PostLinkGenerator<T> Function(int? booruId) postLinkGenerator,
   });
 
   Future<void> addBookmarkWithBookmarks(

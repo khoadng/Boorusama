@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../boorus/engine/providers.dart';
 import '../configs/ref.dart';
 import '../downloads/downloader.dart';
 import '../foundation/url_launcher.dart';
@@ -32,6 +33,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booru = ref.watchConfigAuth;
+    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
 
     return SizedBox(
       width: 40,
@@ -49,8 +51,10 @@ class GeneralMoreActionButton extends ConsumerWidget {
                   ref.download(post);
                 }
               case 'view_in_browser':
-                launchExternalUrl(
-                  post.getUriLink(booru.url),
+                if (postLinkGenerator == null) return;
+
+                launchExternalUrlString(
+                  postLinkGenerator.getLink(post),
                 );
               case 'show_tag_list':
                 goToShowTaglistPage(
@@ -71,7 +75,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
           },
           itemBuilder: {
             'download': const Text('download.download').tr(),
-            if (!booru.hasStrictSFW)
+            if (!booru.hasStrictSFW && postLinkGenerator != null)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
             if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             if (post.hasFullView)

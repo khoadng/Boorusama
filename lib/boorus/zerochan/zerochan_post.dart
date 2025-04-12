@@ -28,9 +28,4 @@ class ZerochanPost extends SimplePost {
     required super.uploaderName,
     required super.metadata,
   });
-
-  @override
-  String getLink(String baseUrl) {
-    return baseUrl.endsWith('/') ? '$baseUrl$id' : '$baseUrl/$id';
-  }
 }

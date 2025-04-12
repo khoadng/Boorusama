@@ -103,12 +103,6 @@ abstract class SimplePost extends Equatable
   final String? uploaderName;
 
   @override
-  String getLink(String baseUrl);
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
-
-  @override
   final PostMetadata? metadata;
 
   @override
@@ -220,12 +214,6 @@ class DemoPost extends Equatable
 
   @override
   String? get uploaderName => null;
-
-  @override
-  String getLink(String baseUrl) => 'https://example.com';
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
 
   @override
   PostMetadata? get metadata => null;

@@ -236,6 +236,28 @@ class SankakuRepository implements BooruRepository {
   TagQueryComposer tagComposer(BooruConfigSearch config) {
     return DefaultTagQueryComposer(config: config);
   }
+
+  @override
+  PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
+    return SankakuPostLinkGenerator(baseUrl: config.url);
+  }
+}
+
+class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
+  SankakuPostLinkGenerator({
+    required this.baseUrl,
+  });
+
+  final String baseUrl;
+
+  @override
+  String getLink(SankakuPost post) {
+    final url = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+
+    return '$url/posts/${post.sankakuId}';
+  }
 }
 
 class SankakuArtistPostsSection extends ConsumerWidget {

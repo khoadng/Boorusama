@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/current.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../post/post.dart';
 import 'post_share_state.dart';
 
@@ -15,18 +15,18 @@ class PostShareNotifier
     extends AutoDisposeFamilyNotifier<PostShareState, Post> {
   @override
   PostShareState build(Post arg) {
-    final config = ref.read(currentBooruConfigProvider);
-    final booruLink = arg.getLink(config.url);
+    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
+
+    final booruLink = postLinkGenerator?.getLink(arg);
 
     return PostShareState(
-      booruLink: booruLink,
+      booruLink: booruLink ?? '',
       sourceLink: arg.source,
     );
   }
 
   void updateInformation(Post post) {
-    final config = ref.read(currentBooruConfigProvider);
-    final booruLink = arg.getLink(config.url);
+    final booruLink = ref.read(currentPostLinkGeneratorProvider)?.getLink(post);
 
     state = state.copyWith(
       booruLink: booruLink,

@@ -19,9 +19,9 @@ class BookmarkHiveRepository implements BookmarkRepository {
   @override
   Future<Bookmark> addBookmark(
     int booruId,
-    String booruUrl,
     Post post, {
     required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+    required PostLinkGenerator Function(int? booruId) postLinkGenerator,
   }) async {
     final now = DateTime.now();
 
@@ -32,7 +32,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
       thumbnailUrl: post.thumbnailImageUrl,
       sampleUrl: post.sampleImageUrl,
       originalUrl: post.originalImageUrl,
-      sourceUrl: post.getLink(booruUrl),
+      sourceUrl: postLinkGenerator(booruId).getLink(post),
       width: post.width,
       height: post.height,
       md5: post.md5,
@@ -78,16 +78,16 @@ class BookmarkHiveRepository implements BookmarkRepository {
   @override
   Future<List<Bookmark>> addBookmarks(
     int booruId,
-    String booruUrl,
     Iterable<Post> posts, {
     required ImageUrlResolver Function(int? booruId) imageUrlResolver,
+    required PostLinkGenerator Function(int? booruId) postLinkGenerator,
   }) async {
     final futures = posts.map(
       (post) => addBookmark(
         booruId,
-        booruUrl,
         post,
         imageUrlResolver: imageUrlResolver,
+        postLinkGenerator: postLinkGenerator,
       ),
     );
 

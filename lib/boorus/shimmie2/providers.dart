@@ -132,11 +132,4 @@ class Shimmie2Post extends SimplePost {
     required super.uploaderName,
     required super.metadata,
   });
-
-  @override
-  String getLink(String baseUrl) {
-    return baseUrl.endsWith('/')
-        ? '${baseUrl}post/view/$id'
-        : '$baseUrl/post/view/$id';
-  }
 }

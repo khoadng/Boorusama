@@ -114,11 +114,4 @@ class GelbooruV1Post extends SimplePost {
     required super.uploaderName,
     required super.metadata,
   });
-
-  @override
-  String getLink(String baseUrl) {
-    return baseUrl.endsWith('/')
-        ? '${baseUrl}index.php?page=post&s=view&id=$id'
-        : '$baseUrl/index.php?page=post&s=view&id=$id';
-  }
 }

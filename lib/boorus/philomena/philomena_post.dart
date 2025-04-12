@@ -91,13 +91,6 @@ class PhilomenaPost extends Equatable
   final double width;
 
   @override
-  String getLink(String baseUrl) =>
-      baseUrl.endsWith('/') ? '${baseUrl}images/$id' : '$baseUrl/images/$id';
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
-
-  @override
   List<Object?> get props => [id];
 
   @override

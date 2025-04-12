@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../core/bookmarks/bookmark.dart';
 import '../../../../../core/bookmarks/providers.dart';
+import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/downloads/downloader.dart';
 import '../../../../../core/foundation/url_launcher.dart';
@@ -37,6 +38,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
     final hasAccount = booruConfig.hasLoginDetails();
+    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -58,7 +60,6 @@ class DanbooruPostContextMenu extends ConsumerWidget {
               ..addBookmarkWithToast(
                 context,
                 booruConfig.booruIdHint,
-                booruConfig.url,
                 post,
               ),
           )
@@ -81,11 +82,11 @@ class DanbooruPostContextMenu extends ConsumerWidget {
               );
             },
           ),
-        if (!booruConfig.hasStrictSFW)
+        if (!booruConfig.hasStrictSFW && postLinkGenerator != null)
           ContextMenuButtonConfig(
             'post.detail.view_in_browser'.tr(),
             onPressed: () =>
-                launchExternalUrlString(post.getLink(booruConfig.url)),
+                launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),
         if (post.tags.isNotEmpty)
           ContextMenuButtonConfig(

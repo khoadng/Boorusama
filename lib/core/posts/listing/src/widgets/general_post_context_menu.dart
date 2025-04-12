@@ -38,6 +38,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
         bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
     final commentPageBuilder =
         ref.watch(currentBooruBuilderProvider)?.commentPageBuilder;
+    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -59,7 +60,6 @@ class GeneralPostContextMenu extends ConsumerWidget {
               ..addBookmarkWithToast(
                 context,
                 booruConfig.booruIdHint,
-                booruConfig.url,
                 post,
               ),
           )
@@ -79,11 +79,11 @@ class GeneralPostContextMenu extends ConsumerWidget {
               goToShowTaglistPage(context, post.extractTags());
             },
           ),
-        if (!booruConfig.hasStrictSFW)
+        if (!booruConfig.hasStrictSFW && postLinkGenerator != null)
           ContextMenuButtonConfig(
             'post.detail.view_in_browser'.tr(),
             onPressed: () =>
-                launchExternalUrlString(post.getLink(booruConfig.url)),
+                launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),
         if (onMultiSelect != null)
           ContextMenuButtonConfig(

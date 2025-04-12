@@ -118,10 +118,4 @@ class DummyPost implements Post {
   final String videoUrl;
   @override
   final double width;
-
-  @override
-  String getLink(String baseUrl) => originalImageUrl;
-
-  @override
-  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
 }

@@ -43,9 +43,6 @@ abstract class Post
   String? get uploaderName;
 
   PostMetadata? get metadata;
-
-  String getLink(String baseUrl);
-  Uri getUriLink(String baseUrl);
 }
 
 abstract interface class TagDetails {

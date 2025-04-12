@@ -14,6 +14,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../backups/types.dart';
 import '../../../boorus/booru/booru.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/animations.dart';
@@ -89,7 +90,6 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
   Future<void> addBookmarks(
     int booruId,
-    String booruUrl,
     Iterable<Post> posts, {
     void Function(int count)? onSuccess,
     void Function()? onError,
@@ -102,10 +102,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
       await (await bookmarkRepository).addBookmarks(
         booruId,
-        booruUrl,
         filtered,
         imageUrlResolver: (booruId) =>
             ref.read(bookmarkUrlResolverProvider(booruId)),
+        postLinkGenerator: (booruId) =>
+            ref.read(postLinkGeneratorProvider(booruId)),
       );
       onSuccess?.call(filtered.length);
 
@@ -120,7 +121,6 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
   Future<void> addBookmark(
     int booruId,
-    String booruUrl,
     Post post, {
     void Function()? onSuccess,
     void Function()? onError,
@@ -133,10 +133,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
       final bookmark = await (await bookmarkRepository).addBookmark(
         booruId,
-        booruUrl,
         post,
         imageUrlResolver: (booruId) =>
             ref.read(bookmarkUrlResolverProvider(booruId)),
+        postLinkGenerator: (booruId) =>
+            ref.read(postLinkGeneratorProvider(booruId)),
       );
       onSuccess?.call();
       state = state.copyWith(
@@ -340,12 +341,10 @@ extension BookmarkCubitToastX on BookmarkNotifier {
   Future<void> addBookmarkWithToast(
     BuildContext context,
     int booruId,
-    String booruUrl,
     Post post,
   ) async {
     await addBookmark(
       booruId,
-      booruUrl,
       post,
       onSuccess: () => showSuccessToast(context, 'bookmark.added'.tr()),
       onError: () => showErrorToast(context, 'bookmark.failed_to_add'.tr()),
@@ -360,7 +359,6 @@ extension BookmarkCubitToastX on BookmarkNotifier {
   ) async {
     await addBookmarks(
       booruId,
-      booruUrl,
       posts,
       onSuccess: (count) => showSuccessToast(
         context,

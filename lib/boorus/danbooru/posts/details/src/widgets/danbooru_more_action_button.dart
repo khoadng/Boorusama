@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/downloads/downloader.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
@@ -32,6 +33,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
+    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
 
     return SizedBox(
       width: 40,
@@ -52,8 +54,10 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   post.extractTags(),
                 );
               case 'view_in_browser':
-                launchExternalUrl(
-                  post.getUriLink(booruConfig.url),
+                if (postLinkGenerator == null) return;
+
+                launchExternalUrlString(
+                  postLinkGenerator.getLink(post),
                 );
               case 'view_original':
                 goToOriginalImagePage(context, post);
@@ -75,7 +79,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   const Text('post.action.add_to_favorite_group').tr(),
             if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             'tag_history': const Text('View tag history'),
-            if (!booruConfig.hasStrictSFW)
+            if (!booruConfig.hasStrictSFW && postLinkGenerator != null)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
             if (post.hasFullView)
               'view_original':

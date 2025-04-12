@@ -9,7 +9,6 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
-import '../../../notes/notes.dart';
 import '../../../posts/details/routes.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/post/post.dart';
@@ -76,11 +75,6 @@ typedef CommentPageBuilder = Widget Function(
   bool useAppBar,
   int postId,
 );
-
-typedef NoteFetcher = Future<List<Note>> Function(int postId);
-
-typedef FavoriteAdder = Future<bool> Function(int postId, WidgetRef ref);
-typedef FavoriteRemover = Future<bool> Function(int postId, WidgetRef ref);
 
 typedef GranularRatingFilterer = bool Function(
   Post post,
