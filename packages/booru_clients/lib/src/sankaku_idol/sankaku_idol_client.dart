@@ -189,4 +189,11 @@ class SankakuIdolClient implements SankakuClient {
       return const Token.empty();
     }
   }
+
+  @override
+  Future<List<TagDto>> getTags({
+    required String query,
+  }) async {
+    return getAutocomplete(query: query);
+  }
 }

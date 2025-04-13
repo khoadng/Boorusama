@@ -158,9 +158,11 @@ class SankakuClient {
 
     try {
       final response = await _dio.get(
-        '/tags',
+        '/tags/autosuggestCreating',
         queryParameters: {
-          'name': query,
+          'lang': 'english',
+          'tag': query,
+          'show_meta': 1,
         },
         options: Options(
           receiveTimeout: Duration(seconds: 15),
@@ -173,6 +175,30 @@ class SankakuClient {
       if (e.type == DioExceptionType.cancel) {
         return [];
       } else if (e.type == DioExceptionType.receiveTimeout) {
+        // Too slow, return empty list, don't throw
+        return [];
+      }
+      rethrow;
+    }
+  }
+
+  Future<List<TagDto>> getTags({
+    required String query,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/tags',
+        queryParameters: {
+          'name': query,
+        },
+        options: Options(
+          receiveTimeout: Duration(seconds: 15),
+        ),
+      );
+
+      return (response.data as List).map((e) => TagDto.fromJson(e)).toList();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.receiveTimeout) {
         // Too slow, return empty list, don't throw
         return [];
       }
