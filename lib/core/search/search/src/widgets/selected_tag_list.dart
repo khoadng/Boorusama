@@ -8,6 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../tags/favorites/providers.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../selected_tags/tag_search_item.dart';
@@ -171,6 +172,12 @@ class SelectedTagContextMenu extends ConsumerWidget
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           copyButton(context, tag),
+          ContextMenuButtonConfig(
+            'post.detail.add_to_favorites'.tr(),
+            onPressed: () {
+              ref.read(favoriteTagsProvider.notifier).add(tag);
+            },
+          ),
         ],
       ),
       child: child,

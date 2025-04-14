@@ -71,7 +71,9 @@ class FullHistoryView extends ConsumerWidget {
                           ? const EdgeInsets.symmetric(
                               horizontal: 12,
                             )
-                          : null,
+                          : const EdgeInsets.only(
+                              left: 16,
+                            ),
                       minTileHeight: kPreferredLayout.isDesktop ? 0 : null,
                       trailing: IconButton(
                         onPressed: () => notifier.removeHistory(history),
