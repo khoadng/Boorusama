@@ -167,20 +167,31 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
       return Matrix4.identity();
     }
 
-    final contentSize = widget.contentSize;
-    final containerSize = _containerSize;
+    final content = widget.contentSize;
+    final viewport = _containerSize;
 
     // Check if both sizes are available.
-    if (contentSize != null && containerSize != null) {
-      final imageExceedsContainer = contentSize.width >
-              (containerSize.width * _kImageExceedsContainerThreshold) ||
-          contentSize.height >
-              (containerSize.height * _kImageExceedsContainerThreshold);
+    if (content != null &&
+        viewport != null &&
+        _isValidSize(content) &&
+        _isValidSize(viewport)) {
+      // Calculate aspect ratios
+      final viewportAspectRatio = content.aspectRatio;
+      final containerAspectRatio = viewport.aspectRatio;
 
-      if (imageExceedsContainer) {
+      final heightRatio = containerAspectRatio / viewportAspectRatio;
+      final widthRatio = viewportAspectRatio / containerAspectRatio;
+      final isContentMuchWider = widthRatio > _kImageExceedsContainerThreshold;
+      final isContentMuchTaller =
+          heightRatio > _kImageExceedsContainerThreshold;
+
+      // Check if content has a drastically different aspect ratio
+      final needsSpecialZoom = isContentMuchWider || isContentMuchTaller;
+
+      if (needsSpecialZoom) {
         return _calcZoomMatrixFromSize(
-          containerSize: containerSize,
-          contentSize: contentSize,
+          viewport: viewport,
+          content: content,
           focalPoint: tapPosition,
         );
       }
@@ -211,29 +222,34 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
 
 // Calculates the target scale by fitting width for tall images and height for wide images.
 Matrix4 _calcZoomMatrixFromSize({
-  required Size containerSize,
-  required Size contentSize,
+  required Size viewport,
+  required Size content,
   required Offset focalPoint,
 }) {
-  if (!_isValidSize(contentSize) || !_isValidSize(containerSize)) {
+  if (!_isValidSize(content) || !_isValidSize(viewport)) {
     return Matrix4.identity();
   }
 
-  // Calculate the scale so that the content's width or height matches the container.
-  final scale = max(
-    contentSize.width / containerSize.width,
-    contentSize.height / containerSize.height,
-  );
+  // Calculate scale factors to fit width and height
+  final fitWidthScale = viewport.width / content.width;
+  final fitHeightScale = viewport.height / content.height;
 
-  final translation = _calculateCenteringTranslation(
-    containerSize: containerSize,
-    tapPosition: focalPoint,
-    scale: scale,
-  );
+  // Determine current scale (content is already fit by either width or height)
+  final currentScale =
+      fitWidthScale < fitHeightScale ? fitWidthScale : fitHeightScale;
 
-  return Matrix4.identity()
-    ..translate(translation.dx, translation.dy)
-    ..scale(scale);
+  // Calculate target scale (we want to fit the other dimension)
+  final targetScale =
+      fitWidthScale > fitHeightScale ? fitWidthScale : fitHeightScale;
+
+  // Calculate zoom factor relative to current scale
+  final zoomFactor = targetScale / currentScale;
+
+  // Create transformation matrix centered at focal point
+  return _calcZoomMatrixFromZoomValue(
+    focalPoint: focalPoint,
+    zoomValue: zoomFactor,
+  );
 }
 
 Matrix4 _calcZoomMatrixFromZoomValue({
@@ -260,17 +276,6 @@ double _calcMaxScale(Size? contentSize, Size containerSize) {
         contentSize.height / containerSize.height,
       ) *
       _kScaleMultiplier;
-}
-
-// Utility function to calculate the translation needed to center the scaled tap position.
-Offset _calculateCenteringTranslation({
-  required Size containerSize,
-  required Offset tapPosition,
-  required double scale,
-}) {
-  final containerCenter = containerSize.center(Offset.zero);
-  final scaledTap = tapPosition * scale;
-  return containerCenter - scaledTap;
 }
 
 bool _isValidSize(Size? size) =>
