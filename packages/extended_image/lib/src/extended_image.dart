@@ -17,7 +17,9 @@ import 'package:retriable/retriable.dart';
 import 'package:flutter_avif_platform_interface/flutter_avif_platform_interface.dart'
     as avif_platform;
 
+import 'cached_network_avif_image.dart';
 import 'dio_extended_image_provider.dart';
+import 'image_cache_manager.dart';
 import 'utils.dart';
 
 const kDefaultImageCacheDuration = Duration(hours: 1);
@@ -27,27 +29,27 @@ bool shouldUseAvif(
   TargetPlatform? platform,
   int? androidVersion,
 }) {
-  final endsWithAvif = _sanitizedUrl(url).endsWith('.avif');
+  final fileExt = _extractExtension(url);
+  final isAvif = fileExt == 'avif';
 
   return switch (platform) {
     TargetPlatform.android =>
-      androidVersion == null || androidVersion > 30 ? false : endsWithAvif,
+      androidVersion == null || androidVersion > 30 ? false : isAvif,
     TargetPlatform.iOS || TargetPlatform.macOS || null => false,
-    _ => endsWithAvif,
+    _ => isAvif,
   };
 }
 
-String _sanitizedUrl(String url) {
-  final ext = path.extension(url);
-  final indexOfQuestionMark = ext.indexOf('?');
+String _extractExtension(String url) {
+  // Extract just the path part, without query parameters
+  final uri = Uri.parse(url);
+  final pathOnly = uri.path;
 
-  if (indexOfQuestionMark != -1) {
-    final trimmedExt = ext.substring(0, indexOfQuestionMark);
+  // Get the extension from the path
+  final ext = path.extension(pathOnly).toLowerCase();
 
-    return url.replaceFirst(ext, trimmedExt);
-  } else {
-    return url;
-  }
+  // Return the extension without the dot
+  return ext.isNotEmpty ? ext.substring(1) : '';
 }
 
 /// extended image base on official
@@ -111,6 +113,7 @@ class ExtendedImage extends StatefulWidget {
     this.errorWidget,
     TargetPlatform? platform,
     int? androidVersion,
+    ImageCacheManager? cacheManager,
   })  : assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0),
         _avif = shouldUseAvif(
@@ -124,11 +127,17 @@ class ExtendedImage extends StatefulWidget {
             platform: platform,
             androidVersion: androidVersion,
           )
-              ? CachedNetworkAvifImageProvider(
+              ? CustomCachedNetworkAvifImage(
                   url,
                   scale: scale,
                   headers: headers,
-                )
+                  cacheManager: cacheManager,
+                  dio: dio,
+                  cancelToken: cancelToken,
+                  fetchStrategy: fetchStrategy,
+                  cacheKey: cacheKey,
+                  cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
+                ).image as CustomCachedNetworkAvifImageProvider
               : DioExtendedNetworkImageProvider(
                   url,
                   dio: dio,
@@ -142,6 +151,7 @@ class ExtendedImage extends StatefulWidget {
                   imageCacheName: imageCacheName,
                   cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
                   fetchStrategy: fetchStrategy,
+                  cacheManager: cacheManager,
                 ),
           compressionRatio: compressionRatio,
           maxBytes: maxBytes,

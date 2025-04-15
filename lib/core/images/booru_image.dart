@@ -34,6 +34,7 @@ class BooruImage extends ConsumerWidget {
     this.gaplessPlayback = false,
     this.placeholderWidget,
     this.controller,
+    this.imageCacheManager,
   });
 
   final String imageUrl;
@@ -49,6 +50,7 @@ class BooruImage extends ConsumerWidget {
   final bool gaplessPlayback;
   final Widget? placeholderWidget;
   final ExtendedImageController? controller;
+  final ImageCacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -86,6 +88,7 @@ class BooruImage extends ConsumerWidget {
       placeholderWidget: placeholderWidget,
       controller: controller,
       androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,
+      imageCacheManager: imageCacheManager,
     );
   }
 }
@@ -110,6 +113,7 @@ class BooruRawImage extends StatelessWidget {
     this.placeholderWidget,
     this.controller,
     this.androidVersion,
+    this.imageCacheManager,
   });
 
   final Dio dio;
@@ -129,6 +133,7 @@ class BooruRawImage extends StatelessWidget {
   final Widget? placeholderWidget;
   final ExtendedImageController? controller;
   final int? androidVersion;
+  final ImageCacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +176,7 @@ class BooruRawImage extends StatelessWidget {
                   controller: controller,
                   platform: Theme.of(context).platform,
                   androidVersion: androidVersion,
+                  cacheManager: imageCacheManager,
                   placeholderWidget: placeholderWidget ??
                       placeholderUrl.toOption().fold(
                             () => imagePlaceHolder,
@@ -197,6 +203,7 @@ class BooruRawImage extends StatelessWidget {
                                         placeholderWidget: imagePlaceHolder,
                                         platform: Theme.of(context).platform,
                                         androidVersion: androidVersion,
+                                        cacheManager: imageCacheManager,
                                       )
                                     : imagePlaceHolder;
                               },

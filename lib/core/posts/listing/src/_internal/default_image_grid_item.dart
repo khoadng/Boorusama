@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -36,6 +37,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     this.leadingIcons,
     this.gaplessPlayback,
     this.imageUrl,
+    this.imageCacheManager,
   });
 
   final int index;
@@ -48,6 +50,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final List<Widget>? leadingIcons;
   final bool? gaplessPlayback;
   final String? imageUrl;
+  final ImageCacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +129,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                               post: post,
                               imageUrl: imgUrl,
                               gaplessPlayback: gaplessPlayback,
+                              imageCacheManager: imageCacheManager,
                             ),
                             leadingIcons: leadingIcons,
                           );
@@ -158,11 +162,13 @@ class _Image<T extends Post> extends ConsumerWidget {
     required this.imageUrl,
     super.key,
     this.gaplessPlayback,
+    this.imageCacheManager,
   });
 
   final T post;
   final String imageUrl;
   final bool? gaplessPlayback;
+  final ImageCacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -183,6 +189,7 @@ class _Image<T extends Post> extends ConsumerWidget {
       fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
       placeholderUrl: post.thumbnailImageUrl,
       gaplessPlayback: gaplessPlayback ?? true,
+      imageCacheManager: imageCacheManager,
     );
   }
 }

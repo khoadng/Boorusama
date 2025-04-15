@@ -81,13 +81,15 @@ class _BookmarkDetailsPageState
     final data = PostDetails.of<BookmarkPost>(context);
     final posts = data.posts;
     final controller = data.controller;
+    final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
 
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
       // Needed to prevent type inference error
       // ignore: avoid_types_on_closure_parameters
-      imageUrlBuilder: (Post post) => post.sampleImageUrl,
+      imageUrlBuilder: (Post post) => post.originalImageUrl,
+      imageCacheManager: (_) => imageCacheManager,
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),

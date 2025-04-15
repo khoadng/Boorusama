@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui' as ui show Codec;
 
 // Flutter imports:
@@ -10,17 +9,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:retriable/retriable.dart';
+
+import 'image_cache_manager.dart';
 
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>
     with ExtendedImageProvider<ExtendedNetworkImageProvider>
     implements ExtendedNetworkImageProvider {
   /// Creates an object that fetches the image at the given URL.
-  ///
-  /// The arguments must not be null.
   DioExtendedNetworkImageProvider(
     this.url, {
     required this.dio,
@@ -34,6 +31,7 @@ class DioExtendedNetworkImageProvider
     this.imageCacheName,
     this.cacheMaxAge,
     this.fetchStrategy,
+    this.cacheManager,
   });
 
   /// The [Dio] client that'll be used to make image fetch requests.
@@ -84,6 +82,9 @@ class DioExtendedNetworkImageProvider
   final Duration? cacheMaxAge;
 
   final FetchStrategyBuilder? fetchStrategy;
+
+  /// Custom cache manager for caching images
+  final ImageCacheManager? cacheManager;
 
   @override
   int get retries => fetchStrategy?.maxAttempts ?? 3;
@@ -149,73 +150,56 @@ class DioExtendedNetworkImageProvider
     return instantiateImageCodec(bytes, decode);
   }
 
-  /// Reads image bytes following these steps:
-  ///  1. If caching is enabled, try to read from disk (using _loadCache).
-  ///  2. If not found, retrieve from network (using _loadNetwork).
-  ///  3. If caching is enabled and network returned data, write it to disk.
+  /// Get an effective cache manager, creating a default one if none is provided
+  ImageCacheManager _getEffectiveCacheManager() {
+    return cacheManager ??
+        DefaultImageCacheManager(
+          cacheDirName: cacheImageFolderName,
+          enableLogging: printError && kDebugMode,
+        );
+  }
+
+  /// Gets the image bytes, either from cache or network
   Future<Uint8List?> _fetchImageBytes(
     StreamController<ImageChunkEvent>? chunkEvents,
   ) async {
-    final uId = cacheKey ?? keyToMd5(url);
-    Uint8List? data;
-
-    if (cache) {
-      data = await _loadCache(this, chunkEvents, uId);
-      if (data != null) return data;
+    // Skip caching if disabled
+    if (!cache) {
+      return await _loadNetwork(chunkEvents);
     }
 
-    // Fallback: load from network.
-    data = await _loadNetwork(this, chunkEvents);
-    if (data != null && cache) {
-      final cacheDir = await _getCacheDirectory();
-      final cacheFile = File(join(cacheDir.path, uId));
-      try {
-        await cacheFile.writeAsBytes(data);
-      } catch (e) {
-        _print('Failed to write cache: $e');
+    final manager = _getEffectiveCacheManager();
+    final effectiveCacheKey =
+        manager.generateCacheKey(url, customKey: cacheKey);
 
-        return null;
+    final hasValidCache = await manager.hasValidCache(
+      effectiveCacheKey,
+      maxAge: cacheMaxAge,
+    );
+
+    // Try to load from cache
+    if (hasValidCache) {
+      final cachedData = await manager.getCachedFile(effectiveCacheKey);
+      if (cachedData != null && cachedData.isNotEmpty) {
+        return cachedData;
       }
     }
-    return data;
-  }
 
-  /// Get the image from cache folder.
-  Future<Uint8List?> _loadCache(
-    ExtendedNetworkImageProvider key,
-    StreamController<ImageChunkEvent>? chunkEvents,
-    String md5Key,
-  ) async {
-    try {
-      final cacheDir = await _getCacheDirectory();
-      final cacheFile = File(join(cacheDir.path, md5Key));
-
-      if (cacheFile.existsSync()) {
-        if (key.cacheMaxAge != null) {
-          final now = DateTime.now();
-          final fs = cacheFile.statSync();
-          if (now.subtract(key.cacheMaxAge!).isAfter(fs.changed)) {
-            await cacheFile.delete(recursive: true);
-          } else {
-            return await cacheFile.readAsBytes();
-          }
-        } else {
-          return await cacheFile.readAsBytes();
-        }
-      }
-    } catch (e) {
-      _print('Error reading cache: $e');
+    // Load from network if not in cache
+    final networkData = await _loadNetwork(chunkEvents);
+    if (networkData != null && networkData.isNotEmpty) {
+      await manager.saveFile(effectiveCacheKey, networkData);
     }
-    return null;
+
+    return networkData;
   }
 
-  /// Get the image from network.
+  /// Get the image from network
   Future<Uint8List?> _loadNetwork(
-    ExtendedNetworkImageProvider key,
     StreamController<ImageChunkEvent>? chunkEvents,
   ) async {
     try {
-      final resolved = Uri.base.resolve(key.url);
+      final resolved = Uri.base.resolve(url);
 
       final response = await tryGetResponse<List<int>>(
         resolved,
@@ -270,29 +254,9 @@ class DioExtendedNetworkImageProvider
     return _fetchImageBytes(chunkEvents);
   }
 
-  Directory? tempDir;
-
-  Future<Directory> _getTempDir() async {
-    tempDir ??= await getTemporaryDirectory();
-
-    return tempDir!;
-  }
-
-  Future<Directory> _getCacheDirectory() async {
-    final cacheDir = Directory(
-      join((await _getTempDir()).path, cacheImageFolderName),
-    );
-    if (!cacheDir.existsSync()) {
-      await cacheDir.create(recursive: true);
-    }
-    return cacheDir;
-  }
-
   void _print(Object error) {
-    if (printError) {
-      if (kDebugMode) {
-        print(error);
-      }
+    if (printError && kDebugMode) {
+      debugPrint('[DioExtendedImageProvider] $error');
     }
   }
 

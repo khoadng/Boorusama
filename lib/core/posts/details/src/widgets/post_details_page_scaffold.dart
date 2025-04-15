@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -58,11 +59,13 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.uiBuilder,
     this.preferredParts,
     this.preferredPreviewParts,
+    this.imageCacheManager,
   });
 
   final List<T> posts;
   final void Function()? onExpanded;
   final String Function(T post)? imageUrlBuilder;
+  final ImageCacheManager Function(Post post)? imageCacheManager;
   final List<Widget> Function(PostDetailsPageViewController controller)?
       topRightButtonsBuilder;
   final PostDetailsController<T> controller;
@@ -466,6 +469,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                         return PostMedia<T>(
                           post: post,
                           imageUrlBuilder: imageUrlBuilder,
+                          imageCacheManager: widget.imageCacheManager,
                           // This is used to make sure we have a thumbnail to show instead of a black placeholder
                           thumbnailUrlBuilder: isInitPage &&
                                   initialThumbnailUrl != null

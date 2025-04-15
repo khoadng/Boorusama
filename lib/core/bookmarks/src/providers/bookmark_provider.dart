@@ -31,6 +31,7 @@ import '../data/providers.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
 import '../types/image_url_resolver.dart';
+import 'bookmark_image_cache_manager.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -57,6 +58,10 @@ final bookmarkUrlResolverProvider =
     _ => const DefaultImageUrlResolver(),
   };
 });
+
+final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
+  (ref) => BookmarkImageCacheManager(),
+);
 
 class BookmarkNotifier extends Notifier<BookmarkState> {
   @override

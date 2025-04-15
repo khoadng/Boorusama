@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -30,6 +31,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.imageUrlBuilder,
     required this.thumbnailUrlBuilder,
     required this.controller,
+    required this.imageCacheManager,
     super.key,
   });
 
@@ -37,6 +39,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final PostDetailsPageViewController controller;
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
+  final ImageCacheManager Function(Post post)? imageCacheManager;
 
   void _openSettings(BuildContext context) {
     openImageViewerSettingsPage(context);
@@ -109,6 +112,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             heroTag: heroTag,
             imageUrlBuilder: imageUrlBuilder,
             thumbnailUrlBuilder: thumbnailUrlBuilder,
+            imageCacheManager: imageCacheManager,
             post: post,
           );
   }

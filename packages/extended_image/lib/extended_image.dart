@@ -4,3 +4,4 @@ export 'package:extended_image_library/extended_image_library.dart'
 export 'src/extended_image.dart';
 export 'src/utils.dart';
 export 'package:retriable/retriable.dart';
+export 'src/image_cache_manager.dart';

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../bookmarks/providers.dart';
 import '../../../cache/providers.dart';
 import '../../../tags/categories/providers.dart';
 import '../providers/settings_notifier.dart';
@@ -28,6 +29,12 @@ final tagHighlightingCacheProvider =
   if (!file.existsSync()) return 0;
 
   return file.lengthSync();
+});
+
+final bookmarkCacheInfoProvider =
+    FutureProvider.autoDispose<(int, int)>((ref) async {
+  final cacheManager = ref.read(bookmarkImageCacheManagerProvider);
+  return cacheManager.getCacheStats();
 });
 
 class DataAndStoragePage extends ConsumerStatefulWidget {
@@ -70,20 +77,6 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
             );
           },
         ),
-        ListTile(
-          title: const Text('Tag highlighting cache'),
-          subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
-                data: (data) => Text(Filesize.parse(data)),
-                orElse: () => const Text('Loading...'),
-              ),
-          trailing: FilledButton(
-            onPressed: () => ref
-                .read(booruTagTypeStoreProvider)
-                .clear()
-                .then((value) => ref.invalidate(tagHighlightingCacheProvider)),
-            child: const Text('settings.performance.clear_cache').tr(),
-          ),
-        ),
         Builder(
           builder: (context) {
             final sizeInfo = ref.watch(cacheSizeProvider);
@@ -106,6 +99,45 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
               .tr(),
           onChanged: (value) => notifier.updateSettings(
             settings.copyWith(clearImageCacheOnStartup: value),
+          ),
+        ),
+        const Divider(),
+        const SettingsHeader(label: 'Data'),
+        Builder(
+          builder: (context) {
+            final cacheInfo = ref.watch(bookmarkCacheInfoProvider);
+
+            return ListTile(
+              title: const Text('Bookmark images'),
+              subtitle: cacheInfo.when(
+                data: (data) => Text(
+                  Filesize.parse(data.$1),
+                ),
+                loading: () => const Text('Loading...'),
+                error: (_, __) => const Text('Error loading cache info'),
+              ),
+              trailing: FilledButton(
+                onPressed: () {
+                  ref.read(bookmarkImageCacheManagerProvider).clearAllCache();
+                  ref.invalidate(bookmarkCacheInfoProvider);
+                },
+                child: const Text('settings.performance.clear_cache').tr(),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          title: const Text('Tag colors'),
+          subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
+                data: (data) => Text(Filesize.parse(data)),
+                orElse: () => const Text('Loading...'),
+              ),
+          trailing: FilledButton(
+            onPressed: () => ref
+                .read(booruTagTypeStoreProvider)
+                .clear()
+                .then((value) => ref.invalidate(tagHighlightingCacheProvider)),
+            child: const Text('settings.performance.clear_cache').tr(),
           ),
         ),
       ],

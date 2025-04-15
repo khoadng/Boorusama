@@ -243,6 +243,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               controller: controller,
               imageUrl:
                   post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
+              imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
               useHero: false,
               gaplessPlayback: false,
               leadingIcons: [
@@ -282,7 +283,9 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 goToBookmarkDetailsPage(
                   context,
                   index,
-                  initialThumbnailUrl: post.bookmark.thumbnailUrl,
+                  initialThumbnailUrl: post.isVideo
+                      ? post.bookmark.thumbnailUrl
+                      : post.sampleImageUrl,
                   controller: controller,
                 );
               },

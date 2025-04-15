@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
@@ -20,11 +21,13 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
     required this.post,
     super.key,
     this.heroTag,
+    this.imageCacheManager,
   });
 
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
+  final ImageCacheManager Function(Post post)? imageCacheManager;
   final Post post;
 
   @override
@@ -113,6 +116,9 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       forceFill: true,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
+      imageCacheManager: widget.imageCacheManager != null
+          ? widget.imageCacheManager!(post)
+          : null,
     );
   }
 }
