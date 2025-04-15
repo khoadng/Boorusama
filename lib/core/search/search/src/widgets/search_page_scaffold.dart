@@ -454,18 +454,32 @@ class _SearchPageScaffoldState<T extends Post>
                     );
             },
           ),
-          innerSearchButton: ValueListenableBuilder(
-            valueListenable: _controller.didSearchOnce,
-            builder: (context, searchOnce, _) {
-              return !searchOnce
-                  ? const SizedBox.shrink()
-                  : Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: SearchButton2(
-                        onTap: () {
-                          _controller.search();
-                          _postController?.refresh();
-                        },
+          innerSearchButton: MultiValueListenableBuilder2(
+            first: _controller.allowSearch,
+            second: _controller.didSearchOnce,
+            builder: (context, allowSearch, searchOnce) {
+              final searchButton = Padding(
+                padding: const EdgeInsets.only(
+                  right: 8,
+                ),
+                child: SearchButton2(
+                  onTap: () {
+                    _controller.search();
+                    _postController?.refresh();
+                  },
+                ),
+              );
+              return searchOnce
+                  ? searchButton
+                  : AnimatedOpacity(
+                      opacity: allowSearch ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 200),
+                      child: AnimatedScale(
+                        scale: allowSearch ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeOutBack,
+                        alignment: Alignment.center,
+                        child: searchButton,
                       ),
                     );
             },
@@ -545,15 +559,6 @@ class _SearchPageScaffoldState<T extends Post>
   ) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable: _controller.allowSearch,
-        builder: (context, allow, child) => SearchButton(
-          onSearch: () {
-            _controller.search();
-          },
-          allowSearch: allow,
-        ),
-      ),
       body: SafeArea(
         child: Column(
           children: [
