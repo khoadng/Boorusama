@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../bulk_downloads/routes.dart';
+import '../configs/src/providers.dart';
 import '../configs/widgets.dart';
 import '../downloads/routes.dart';
 import '../premiums/premiums.dart';
@@ -50,6 +51,7 @@ class SideBarMenu extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final viewPadding = MediaQuery.viewPaddingOf(context);
+    final hasConfigs = ref.watch(hasBooruConfigsProvider);
 
     return Container(
       color: colorScheme.surfaceContainerLow,
@@ -85,11 +87,16 @@ class SideBarMenu extends ConsumerWidget {
                         height: viewPadding.top,
                       )
                     else
-                      const SizedBox(height: 24),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: CurrentBooruTile(),
-                    ),
+                      const SizedBox(height: 28),
+                    if (hasConfigs)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: CurrentBooruTile(),
+                      )
+                    else
+                      const SizedBox(
+                        height: 24,
+                      ),
                     if (initialContent != null)
                       ...initialContent!.map(
                         (e) => Padding(
