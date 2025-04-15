@@ -139,7 +139,7 @@ class _CustomDownloadFileNameSectionState
   @override
   Widget build(BuildContext context) {
     final downloadFilenameBuilder =
-        ref.watch(currentBooruBuilderProvider)?.downloadFilenameBuilder;
+        ref.watchBooruBuilder(widget.config.auth)?.downloadFilenameBuilder;
     final defaultFileNameFormat =
         downloadFilenameBuilder?.defaultFileNameFormat ?? '';
     final defaultBulkDownloadFileNameFormat =

@@ -11,6 +11,7 @@ import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../boorus/booru/providers.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../foundation/clipboard.dart';
 import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../edit_booru_config_id.dart';
@@ -269,9 +270,25 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                   (l) => null,
                   (r) => (_) => _onNext(r.toString()),
                 ),
+                onTapOutside: (event) {
+                  FocusScope.of(context).unfocus();
+                },
                 controller: urlController,
                 decoration: InputDecoration(
                   labelText: 'booru.site_url'.tr(),
+                  suffixIcon: IconButton(
+                    iconSize: 20,
+                    onPressed: () {
+                      AppClipboard.paste('text/plain').then((value) {
+                        if (value != null) {
+                          urlController.text = value;
+                          inputText.value = value;
+                          booruUrlError.value = mapBooruUrlToUri(value);
+                        }
+                      });
+                    },
+                    icon: const Icon(Icons.paste),
+                  ),
                 ),
               ),
             ),
