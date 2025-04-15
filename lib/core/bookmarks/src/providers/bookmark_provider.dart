@@ -64,6 +64,9 @@ final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
 );
 
 class BookmarkNotifier extends Notifier<BookmarkState> {
+  BookmarkImageCacheManager get _cacheManager =>
+      ref.read(bookmarkImageCacheManagerProvider);
+
   @override
   BookmarkState build() {
     getAllBookmarks();
@@ -186,6 +189,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       await (await bookmarkRepository).removeBookmark(bookmark);
+      // Clear all image variants
+      await Future.wait([
+        _cacheManager
+            .clearCache(_cacheManager.generateCacheKey(bookmark.originalUrl)),
+        _cacheManager
+            .clearCache(_cacheManager.generateCacheKey(bookmark.sampleUrl)),
+        _cacheManager
+            .clearCache(_cacheManager.generateCacheKey(bookmark.thumbnailUrl)),
+      ]);
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.remove(bookmark.uniqueId),
@@ -202,6 +214,19 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       await (await bookmarkRepository).removeBookmarks(bookmarks);
+      // Clear all image variants for each bookmark
+      await Future.wait(
+        bookmarks.expand(
+          (b) => [
+            _cacheManager
+                .clearCache(_cacheManager.generateCacheKey(b.originalUrl)),
+            _cacheManager
+                .clearCache(_cacheManager.generateCacheKey(b.sampleUrl)),
+            _cacheManager
+                .clearCache(_cacheManager.generateCacheKey(b.thumbnailUrl)),
+          ],
+        ),
+      );
       onSuccess?.call();
       state = state.copyWith(
         bookmarks: state.bookmarks.difference(
