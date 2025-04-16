@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
+import '../booru_config_ref.dart';
 import '../data/booru_config_data.dart';
 import '../gestures.dart';
 import 'providers.dart';
@@ -92,6 +95,18 @@ class BooruConfigListingView extends ConsumerWidget {
                     .toList(),
               ),
             ),
+            if (ref.watchConfigAuth.booruType == BooruType.moebooru)
+              SwitchListTile(
+                title: const Text('Show favorite status of every post').tr(),
+                subtitle: const Text('(Moebooru only) May introduce performance issues.'),
+                value: settings.showFavoriteStatus,
+                onChanged: (value) => ref.editNotifier.updateListing(
+                  listing.copyWith(
+                    settings:
+                        listing.settings.copyWith(showFavoriteStatus: value),
+                  ),
+                ),
+              ),
             const Divider(),
             SwitchListTile(
               title: const Text("Enable profile's specific settings"),
