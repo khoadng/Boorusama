@@ -27,6 +27,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
     this.scrollController,
     this.disableAnimation = false,
     this.reverseScheme = false,
+    this.reverse,
   });
 
   final ValueChanged<SearchHistory>? onHistoryTap;
@@ -39,6 +40,7 @@ class SearchLandingView extends ConsumerStatefulWidget {
   final ScrollController? scrollController;
   final bool disableAnimation;
   final bool reverseScheme;
+  final bool? reverse;
 
   @override
   ConsumerState<SearchLandingView> createState() => _SearchLandingViewState();
@@ -78,79 +80,83 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
     final selectedLabel =
         ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
 
+    final children = [
+      if (widget.notice != null) widget.notice!,
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: QueryActionsSection(
+          childrenBuilder: () => [],
+          onTagAdded: (value) {
+            widget.onRawTagTap?.call(value);
+          },
+        ),
+      ),
+      const Divider(thickness: 1),
+      if (widget.metatags != null) ...[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: widget.metatags,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        const Divider(thickness: 1),
+      ],
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: FavoriteTagsSection(
+          selectedLabel: selectedLabel,
+          onTagTap: (value) {
+            _onTagTap(value, ref);
+          },
+        ),
+      ),
+      const SizedBox(height: 8),
+      if (widget.trending != null) ...[
+        const Divider(thickness: 1),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: widget.trending,
+        ),
+        const SizedBox(height: 8),
+      ],
+      ref.watch(searchHistoryProvider).maybeWhen(
+            data: (histories) => Column(
+              children: [
+                const Divider(thickness: 1),
+                SearchHistorySection(
+                  reverseScheme: widget.reverseScheme,
+                  histories: histories.histories,
+                  onHistoryTap: (history) {
+                    _onHistoryTap(history, ref);
+                  },
+                  onFullHistoryRequested: () {
+                    goToSearchHistoryPage(
+                      context,
+                      onTap: (value) {
+                        Navigator.of(context).pop();
+                        _onHistoryTap(value, ref);
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            orElse: () => const SizedBox.shrink(),
+          ),
+      SizedBox(
+        height: MediaQuery.viewPaddingOf(context).bottom + 12,
+      ),
+    ];
+
     final view = SingleChildScrollView(
+      reverse: widget.reverse ?? false,
       physics: const AlwaysScrollableScrollPhysics(),
       controller: widget.scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.notice != null) widget.notice!,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: QueryActionsSection(
-              childrenBuilder: () => [],
-              onTagAdded: (value) {
-                widget.onRawTagTap?.call(value);
-              },
-            ),
-          ),
-          const Divider(thickness: 1),
-          if (widget.metatags != null) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: widget.metatags,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(thickness: 1),
-          ],
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: FavoriteTagsSection(
-              selectedLabel: selectedLabel,
-              onTagTap: (value) {
-                _onTagTap(value, ref);
-              },
-            ),
-          ),
-          const SizedBox(height: 8),
-          if (widget.trending != null) ...[
-            const Divider(thickness: 1),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: widget.trending,
-            ),
-            const SizedBox(height: 8),
-          ],
-          ref.watch(searchHistoryProvider).maybeWhen(
-                data: (histories) => Column(
-                  children: [
-                    const Divider(thickness: 1),
-                    SearchHistorySection(
-                      reverseScheme: widget.reverseScheme,
-                      histories: histories.histories,
-                      onHistoryTap: (history) {
-                        _onHistoryTap(history, ref);
-                      },
-                      onFullHistoryRequested: () {
-                        goToSearchHistoryPage(
-                          context,
-                          onTap: (value) {
-                            Navigator.of(context).pop();
-                            _onHistoryTap(value, ref);
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                orElse: () => const SizedBox.shrink(),
-              ),
-          SizedBox(
-            height: MediaQuery.viewPaddingOf(context).bottom + 12,
-          ),
-        ],
+        children:
+            (widget.reverse ?? false) ? children.reversed.toList() : children,
       ),
     );
 

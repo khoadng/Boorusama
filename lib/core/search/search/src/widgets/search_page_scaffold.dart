@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -45,8 +48,8 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
 );
 
 const _kSearchBarHeight = kToolbarHeight * 1.2;
-const _kSelectedTagHeight = 56;
-const _kViewTopPadding = 8;
+const _kSelectedTagHeight = 48.0;
+const _kViewTopPadding = 8.0;
 const _kMultiSelectTopHeight = kToolbarHeight;
 
 double _calcBaseSearchHeight(List<TagSearchItem> tags) {
@@ -283,6 +286,7 @@ class _SearchPageScaffoldState<T extends Post>
                     onSearch: () {
                       _controller.search();
                       _postController?.refresh();
+                      _controller.focus.unfocus();
                     },
                     initialQuery: widget.initialQuery,
                   ),
@@ -305,10 +309,12 @@ class _SearchPageScaffoldState<T extends Post>
         if (persistentSearchBar) return false;
         if (notification.depth != 0) return false;
 
-        final hasSelectedTag = _tagsController.value.isNotEmpty;
+        final viewPadding = _kSearchBarPosition == SearchBarPosition.bottom
+            ? MediaQuery.viewPaddingOf(context).bottom
+            : _kViewTopPadding;
 
         final searchRegionHeight =
-            _kSearchBarHeight + (hasSelectedTag ? _kSelectedTagHeight : 0);
+            _calcSearchRegionHeight(_tagsController.value) + viewPadding;
 
         final pixels = notification.metrics.pixels;
 
@@ -445,10 +451,7 @@ class _SearchRegionSafeArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = InheritedSearchPageController.of(context);
-
     final displacement = _Displacement(
-      tagsController: controller.tagsController,
       searchBarAnimController: searchBarAnimController,
     );
 
@@ -483,13 +486,20 @@ class _SearchRegion extends ConsumerWidget {
       settingsProvider.select((value) => value.autoFocusSearchBar),
     );
 
-    return ColoredBox(
-      color: theme.colorScheme.surface,
-      child: Column(
-        children: [
-          SizedBox(
-            height: _kSearchBarHeight,
-            child: SearchAppBar(
+    final children = [
+      SizedBox(
+        height: _kSearchBarHeight,
+        child: MultiValueListenableBuilder2(
+          first: controller.state,
+          second: controller.didSearchOnce,
+          builder: (_, state, searchOnce) {
+            return SearchAppBar(
+              onTapOutside: _kSearchBarPosition == SearchBarPosition.bottom &&
+                      searchOnce &&
+                      state == SearchState.initial
+                  ? null
+                  // When search bar is at the bottom, keyboard will be kept open for better UX unless the app switches to results
+                  : () {},
               onSubmitted: (value) => controller.submit(value),
               trailingSearchButton: _buildTrailingButton(context),
               innerSearchButton: _buildSearchButton(context),
@@ -499,12 +509,32 @@ class _SearchRegion extends ConsumerWidget {
               leading: (parentRoute?.impliesAppBarDismissal ?? false)
                   ? const SearchAppBarBackButton()
                   : null,
-            ),
-          ),
-          SelectedTagListWithData(controller: tagsController),
-        ],
+            );
+          },
+        ),
+      ),
+      SelectedTagListWithData(controller: tagsController),
+    ];
+
+    final region = ColoredBox(
+      color: theme.colorScheme.surface,
+      child: Column(
+        children: switch (_kSearchBarPosition) {
+          SearchBarPosition.top => children,
+          SearchBarPosition.bottom => children.reversed.toList(),
+        },
       ),
     );
+
+    return _kSearchBarPosition == SearchBarPosition.top
+        ? region
+        : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              region,
+              const _SearchRegionBottomDisplacement(),
+            ],
+          );
   }
 
   Widget _buildTrailingButton(BuildContext context) {
@@ -572,6 +602,20 @@ class _SearchRegion extends ConsumerWidget {
   }
 }
 
+class _SearchRegionBottomDisplacement extends StatelessWidget {
+  const _SearchRegionBottomDisplacement();
+
+  @override
+  Widget build(BuildContext context) {
+    final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
+    final viewPadding = MediaQuery.viewPaddingOf(context).bottom;
+
+    return SizedBox(
+      height: max(viewInsets, viewPadding),
+    );
+  }
+}
+
 enum SearchBarPosition {
   top,
   bottom,
@@ -611,71 +655,106 @@ class _SearchBarPositionedState extends State<_SearchBarPositioned> {
   Widget build(BuildContext context) {
     final controller = InheritedSearchPageController.of(context);
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) => true,
-      child: AnimatedBuilder(
-        animation: _searchBarCurve,
-        builder: (context, child) => MultiValueListenableBuilder4(
-          first: controller.didSearchOnce,
-          second: controller.state,
-          third: controller.tagsController,
-          fourth: widget.multiSelectController.multiSelectNotifier,
-          builder: (_, searchOnce, state, selectedTags, multiSelect) {
-            final searchRegionHeight = _calcSearchRegionHeight(selectedTags);
+    return MultiValueListenableBuilder4(
+      first: controller.didSearchOnce,
+      second: controller.state,
+      third: controller.tagsController,
+      fourth: widget.multiSelectController.multiSelectNotifier,
+      builder: (_, searchOnce, state, selectedTags, multiSelect) {
+        final searchRegionHeight = _calcSearchRegionHeight(selectedTags);
+        final viewPadding = _kSearchBarPosition == SearchBarPosition.bottom
+            ? MediaQuery.viewPaddingOf(context).bottom
+            : 0;
 
-            final padding = multiSelect
-                ? -searchRegionHeight
-                : searchOnce
-                    ? state == SearchState.suggestions
-                        ? 0.0
-                        : -(_searchBarCurve.value * searchRegionHeight)
-                    : 0.0;
+        return NotificationListener<ScrollNotification>(
+          onNotification: (notification) => true,
+          child: AnimatedBuilder(
+            animation: _searchBarCurve,
+            builder: (context, child) {
+              final padding = multiSelect
+                  ? -searchRegionHeight
+                  : searchOnce
+                      ? state == SearchState.suggestions
+                          ? 0.0
+                          : -(_searchBarCurve.value *
+                              (searchRegionHeight + viewPadding))
+                      : 0.0;
 
-            return Positioned(
-              bottom: _kSearchBarPosition == SearchBarPosition.bottom
-                  ? padding
-                  : null,
-              top:
-                  _kSearchBarPosition == SearchBarPosition.top ? padding : null,
-              left: 0,
-              right: 0,
-              child: child!,
-            );
-          },
-        ),
-        child: widget.child,
-      ),
+              return Positioned(
+                bottom: _kSearchBarPosition == SearchBarPosition.bottom
+                    ? padding
+                    : null,
+                top: _kSearchBarPosition == SearchBarPosition.top
+                    ? padding
+                    : null,
+                left: 0,
+                right: 0,
+                child: widget.child,
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
 
-class _Displacement extends StatelessWidget {
+class _Displacement extends StatefulWidget {
   const _Displacement({
-    required this.tagsController,
-    this.searchBarAnimController,
+    required this.searchBarAnimController,
   });
 
-  final SelectedTagController tagsController;
-  final AnimationController? searchBarAnimController;
+  final AnimationController searchBarAnimController;
+
+  @override
+  State<_Displacement> createState() => __DisplacementState();
+}
+
+class __DisplacementState extends State<_Displacement> {
+  late final _searchBarCurve = CurvedAnimation(
+    parent: widget.searchBarAnimController,
+    curve: Curves.easeInOut,
+  );
+
+  @override
+  void dispose() {
+    _searchBarCurve.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: tagsController,
-      builder: (_, value, __) {
-        final baseHeight = _kViewTopPadding + _calcBaseSearchHeight(value);
+    final controller = InheritedSearchPageController.of(context);
 
-        if (searchBarAnimController == null) {
-          return SizedBox(height: baseHeight);
-        }
+    return MultiValueListenableBuilder3(
+      first: controller.tagsController,
+      second: controller.state,
+      third: controller.didSearchOnce,
+      builder: (_, value, state, searchOnce) {
+        final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
+        final viewPadding = MediaQuery.viewPaddingOf(context).bottom;
+        final padding = max(viewInsets, viewPadding);
 
-        return AnimatedBuilder(
-          animation: searchBarAnimController!,
-          builder: (context, _) {
-            return SizedBox(
-              height: baseHeight * (1 - searchBarAnimController!.value),
-            );
-          },
+        final effectivePadding = searchOnce
+            ? state != SearchState.suggestions && state != SearchState.options
+                ? 0
+                : padding
+            : padding;
+
+        final baseHeight = _kSearchBarPosition == SearchBarPosition.bottom
+            ? effectivePadding + _calcBaseSearchHeight(value)
+            : _kViewTopPadding + _calcBaseSearchHeight(value);
+
+        return RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _searchBarCurve,
+            builder: (context, _) {
+              return SizedBox(
+                height: baseHeight * (1 - _searchBarCurve.value),
+              );
+            },
+          ),
         );
       },
     );
@@ -707,28 +786,20 @@ class _Landing extends StatelessWidget {
 
     return _SearchRegionSafeArea(
       searchBarAnimController: searchBarAnimController,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Column(
-          children: [
-            Expanded(
-              child: SearchLandingView(
-                onHistoryTap: (value) {
-                  controller.tapHistoryTag(value);
-                },
-                onFavTagTap: (value) {
-                  controller.tapFavTag(value);
-                },
-                onRawTagTap: (value) => controller.tagsController.addTag(
-                  value,
-                  isRaw: true,
-                ),
-                metatags: metatags?.call(context, controller),
-                trending: trending?.call(context, controller),
-              ),
-            ),
-          ],
+      child: SearchLandingView(
+        reverse: _kSearchBarPosition == SearchBarPosition.bottom,
+        onHistoryTap: (value) {
+          controller.tapHistoryTag(value);
+        },
+        onFavTagTap: (value) {
+          controller.tapFavTag(value);
+        },
+        onRawTagTap: (value) => controller.tagsController.addTag(
+          value,
+          isRaw: true,
         ),
+        metatags: metatags?.call(context, controller),
+        trending: trending?.call(context, controller),
       ),
     );
   }
@@ -774,6 +845,8 @@ class _SearchSuggestions extends ConsumerWidget {
                               ref.watch(suggestionProvider(query.text));
 
                           return TagSuggestionItems(
+                            reverse:
+                                _kSearchBarPosition == SearchBarPosition.bottom,
                             config: ref.watchConfigAuth,
                             tags: suggestionTags,
                             currentQuery: query.text,
@@ -820,51 +893,47 @@ class _SearchOptionsView extends ConsumerWidget {
         builder: (context, state, child) => state == SearchState.options
             ? ColoredBox(
                 color: colorScheme.surface,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    children: [
-                      ref.watch(analyticsProvider).maybeWhen(
-                            data: (analytics) => SearchViewAnalyticsAnchor(
-                              routeName: '/search_options',
-                              previousRoute: const RouteSettings(
-                                name: '/search_result',
-                              ),
-                              analytics: analytics,
+                child: Column(
+                  children: [
+                    ref.watch(analyticsProvider).maybeWhen(
+                          data: (analytics) => SearchViewAnalyticsAnchor(
+                            routeName: '/search_options',
+                            previousRoute: const RouteSettings(
+                              name: '/search_result',
                             ),
-                            orElse: () => const SizedBox.shrink(),
+                            analytics: analytics,
                           ),
-                      Expanded(
-                        child: child!,
-                      ),
-                    ],
-                  ),
+                          orElse: () => const SizedBox.shrink(),
+                        ),
+                    Expanded(
+                      child: child!,
+                    ),
+                  ],
                 ),
               )
             : const SizedBox.shrink(),
-        child: Scaffold(
-          body: SearchLandingView(
-            scrollController: ModalScrollController.of(
-              context,
-            ),
-            onHistoryTap: (value) {
-              controller.tapHistoryTag(
-                value,
-              );
-            },
-            onFavTagTap: (value) {
-              controller.tapFavTag(value);
-            },
-            onRawTagTap: (value) {
-              controller.tagsController.addTag(
-                value,
-                isRaw: true,
-              );
-            },
-            metatags: metatags?.call(
-              context,
-              controller,
-            ),
+        child: SearchLandingView(
+          reverse: _kSearchBarPosition == SearchBarPosition.bottom,
+          scrollController: ModalScrollController.of(
+            context,
+          ),
+          onHistoryTap: (value) {
+            controller.tapHistoryTag(
+              value,
+            );
+          },
+          onFavTagTap: (value) {
+            controller.tapFavTag(value);
+          },
+          onRawTagTap: (value) {
+            controller.tagsController.addTag(
+              value,
+              isRaw: true,
+            );
+          },
+          metatags: metatags?.call(
+            context,
+            controller,
           ),
         ),
       ),

@@ -39,32 +39,29 @@ class SelectedTagListWithData extends ConsumerWidget {
         valueListenable: controller,
         builder: (context, tags, child) {
           return tags.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: SelectedTagList(
-                    extraTagsCount: tagComposer.compose([]).length,
-                    onOtherTagsCountTap: () {
-                      goToUpdateBooruConfigPage(
-                        context,
-                        config: config,
-                        initialTab: 'search',
-                      );
-                    },
-                    tags: tags,
-                    onClear: () {
-                      controller.clear();
-                    },
-                    onDelete: (tag) {
-                      controller.removeTag(tag);
-                    },
-                    onUpdate: (oldTag, newTag) {
-                      controller.updateTag(oldTag, newTag);
-                    },
-                    onBulkDownload: (tags) => goToBulkDownloadPage(
+              ? SelectedTagList(
+                  extraTagsCount: tagComposer.compose([]).length,
+                  onOtherTagsCountTap: () {
+                    goToUpdateBooruConfigPage(
                       context,
-                      tags.map((e) => e.toString()).toList(),
-                      ref: ref,
-                    ),
+                      config: config,
+                      initialTab: 'search',
+                    );
+                  },
+                  tags: tags,
+                  onClear: () {
+                    controller.clear();
+                  },
+                  onDelete: (tag) {
+                    controller.removeTag(tag);
+                  },
+                  onUpdate: (oldTag, newTag) {
+                    controller.updateTag(oldTag, newTag);
+                  },
+                  onBulkDownload: (tags) => goToBulkDownloadPage(
+                    context,
+                    tags.map((e) => e.toString()).toList(),
+                    ref: ref,
                   ),
                 )
               : const SizedBox.shrink();

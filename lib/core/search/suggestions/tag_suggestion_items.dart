@@ -24,6 +24,7 @@ class TagSuggestionItems extends ConsumerWidget {
     this.elevation,
     this.emptyBuilder,
     this.padding,
+    this.reverse,
   }) : _tags = tags;
 
   // This is needed cause this one can be used outside of config scope
@@ -37,6 +38,7 @@ class TagSuggestionItems extends ConsumerWidget {
   final double? elevation;
   final Widget Function()? emptyBuilder;
   final EdgeInsetsGeometry? padding;
+  final bool? reverse;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,10 +52,11 @@ class TagSuggestionItems extends ConsumerWidget {
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
             child: ListView.builder(
+              reverse: reverse ?? false,
               padding: padding ??
                   const EdgeInsets.symmetric(
                     horizontal: 12,
-                  ).copyWith(bottom: 16, top: 8),
+                  ).copyWith(bottom: 16),
               itemCount: _tags.length,
               itemBuilder: (context, index) {
                 final tag = _tags[index];
