@@ -322,28 +322,32 @@ class _ExcludedTagsSection extends ConsumerWidget {
     final extraTags = queryAsList(options.blacklistedTags);
     final config = ref.watchConfigAuth;
 
-    return SettingsCard(
-      title: 'Excluded tags',
-      padding: const EdgeInsets.only(
-        top: 8,
-        left: 12,
-        right: 12,
-        bottom: 8,
-      ),
-      child: ref.watch(blacklistTagEntriesProvider(ref.watchConfigFilter)).when(
-            data: (tags) => Column(
+    return ref.watch(blacklistTagEntriesProvider(ref.watchConfigFilter)).when(
+          data: (tags) => SettingsCard(
+            title: 'Excluded tags',
+            trailing: Tooltip(
+              message: _buildTitle(tags),
+              triggerMode: TooltipTriggerMode.tap,
+              showDuration: const Duration(seconds: 5),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(
+                  Symbols.info,
+                  size: 16,
+                  color: colorScheme.hintColor,
+                ),
+              ),
+            ),
+            padding: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              bottom: 8,
+            ),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  _buildTitle(tags),
-                  style: TextStyle(
-                    color: colorScheme.onSurface,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 8,
@@ -352,9 +356,10 @@ class _ExcludedTagsSection extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Exclude additional tags from this batch',
-                        style: textTheme.titleMedium?.copyWith(
+                        'Select additional tags to exclude from this batch',
+                        style: textTheme.titleSmall?.copyWith(
                           color: colorScheme.hintColor,
+                          fontSize: 13,
                         ),
                       ),
                       Wrap(
@@ -402,15 +407,15 @@ class _ExcludedTagsSection extends ConsumerWidget {
                 ),
               ],
             ),
-            error: (error, _) => Text(
-              error.toString(),
-              style: TextStyle(
-                color: colorScheme.error,
-              ),
-            ),
-            loading: () => const CircularProgressIndicator(),
           ),
-    );
+          error: (error, _) => Text(
+            error.toString(),
+            style: TextStyle(
+              color: colorScheme.error,
+            ),
+          ),
+          loading: () => const CircularProgressIndicator(),
+        );
   }
 
   String _buildTitle(Set<BlacklistedTagEntry> tags) {
@@ -419,7 +424,10 @@ class _ExcludedTagsSection extends ConsumerWidget {
     }
 
     final grouped = tags.groupBy((e) => e.source);
-    final sb = StringBuffer();
+    final sb = StringBuffer()
+      ..write(
+        'Default blacklisted tags from the following sources:\n',
+      );
 
     for (final entry in grouped.entries) {
       sb.write(
@@ -439,6 +447,7 @@ class SettingsCard extends StatelessWidget {
     this.margin,
     this.padding,
     this.title,
+    this.trailing,
   });
 
   final Widget child;
@@ -446,6 +455,7 @@ class SettingsCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
   final String? title;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -478,6 +488,9 @@ class SettingsCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
+                  if (trailing != null) ...[
+                    trailing!,
+                  ],
                 ],
               ),
             ),
