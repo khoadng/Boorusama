@@ -92,99 +92,96 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
   Widget build(BuildContext context) {
     return _InheritedAutoScrollController(
       controller: _autoScrollController,
-      child: LayoutBuilder(
-        builder: (context, constraints) => RawPostGrid(
-          sliverHeaders: [
-            ...widget.sliverHeaders ?? [],
-            _DisableGridItemHeroOnPop(disableHero: _disableHero),
-          ],
-          scrollController: _autoScrollController,
-          footer: Consumer(
-            builder: (_, ref, __) {
-              final booruBuilder = ref.watch(currentBooruBuilderProvider);
+      child: RawPostGrid(
+        sliverHeaders: [
+          ...widget.sliverHeaders ?? [],
+          _DisableGridItemHeroOnPop(disableHero: _disableHero),
+        ],
+        scrollController: _autoScrollController,
+        footer: Consumer(
+          builder: (_, ref, __) {
+            final booruBuilder = ref.watch(currentBooruBuilderProvider);
 
-              final multiSelectActions = widget.multiSelectActions ??
-                  booruBuilder?.multiSelectionActionsBuilder?.call(
-                    context,
-                    _multiSelectController,
-                  );
+            final multiSelectActions = widget.multiSelectActions ??
+                booruBuilder?.multiSelectionActionsBuilder?.call(
+                  context,
+                  _multiSelectController,
+                );
 
-              return multiSelectActions ?? const SizedBox.shrink();
-            },
-          ),
-          blacklistedIdString: widget.blacklistedIdString,
-          multiSelectController: _multiSelectController,
-          controller: widget.controller,
-          safeArea: widget.safeArea,
-          enablePullToRefresh: widget.enablePullToRefresh ?? true,
-          gridHeader: widget.header ??
-              _GridHeader<T>(
-                multiSelectController: _multiSelectController,
-              ),
-          topPageIndicator: Consumer(
-            builder: (_, ref, __) {
-              final visibleAtTop = ref.watch(
-                imageListingSettingsProvider
-                    .select((v) => v.pageIndicatorPosition.isVisibleAtTop),
-              );
-
-              return visibleAtTop
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: _PageIndicator<T>(),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-          bottomPageIndicator: Consumer(
-            builder: (_, ref, __) {
-              final visibleAtBottom = ref.watch(
-                imageListingSettingsProvider
-                    .select((v) => v.pageIndicatorPosition.isVisibleAtBottom),
-              );
-
-              return visibleAtBottom
-                  ? SafeArea(
-                      top: false,
-                      left: false,
-                      right: false,
-                      child: _PageIndicator<T>(),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-          onNextPage: () => _goToNextPage(
-            widget.controller,
-            _autoScrollController,
-          ),
-          onPreviousPage: () => _goToPreviousPage(
-            widget.controller,
-            _autoScrollController,
-          ),
-          body: widget.body ??
-              _SliverGrid(
-                postController: widget.controller,
-                constraints: constraints,
-                itemBuilder: (context, index) => ValueListenableBuilder(
-                  valueListenable: _disableHero,
-                  builder: (_, disableHero, __) =>
-                      widget.itemBuilder?.call(
-                        context,
-                        index,
-                        _multiSelectController,
-                        _autoScrollController,
-                        !disableHero,
-                      ) ??
-                      DefaultImageGridItem(
-                        index: index,
-                        multiSelectController: _multiSelectController,
-                        autoScrollController: _autoScrollController,
-                        controller: widget.controller,
-                        useHero: !disableHero,
-                      ),
-                ),
-              ),
+            return multiSelectActions ?? const SizedBox.shrink();
+          },
         ),
+        blacklistedIdString: widget.blacklistedIdString,
+        multiSelectController: _multiSelectController,
+        controller: widget.controller,
+        safeArea: widget.safeArea,
+        enablePullToRefresh: widget.enablePullToRefresh ?? true,
+        gridHeader: widget.header ??
+            _GridHeader<T>(
+              multiSelectController: _multiSelectController,
+            ),
+        topPageIndicator: Consumer(
+          builder: (_, ref, __) {
+            final visibleAtTop = ref.watch(
+              imageListingSettingsProvider
+                  .select((v) => v.pageIndicatorPosition.isVisibleAtTop),
+            );
+
+            return visibleAtTop
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _PageIndicator<T>(),
+                  )
+                : const SizedBox.shrink();
+          },
+        ),
+        bottomPageIndicator: Consumer(
+          builder: (_, ref, __) {
+            final visibleAtBottom = ref.watch(
+              imageListingSettingsProvider
+                  .select((v) => v.pageIndicatorPosition.isVisibleAtBottom),
+            );
+
+            return visibleAtBottom
+                ? SafeArea(
+                    top: false,
+                    left: false,
+                    right: false,
+                    child: _PageIndicator<T>(),
+                  )
+                : const SizedBox.shrink();
+          },
+        ),
+        onNextPage: () => _goToNextPage(
+          widget.controller,
+          _autoScrollController,
+        ),
+        onPreviousPage: () => _goToPreviousPage(
+          widget.controller,
+          _autoScrollController,
+        ),
+        body: widget.body ??
+            _SliverGrid(
+              postController: widget.controller,
+              itemBuilder: (context, index) => ValueListenableBuilder(
+                valueListenable: _disableHero,
+                builder: (_, disableHero, __) =>
+                    widget.itemBuilder?.call(
+                      context,
+                      index,
+                      _multiSelectController,
+                      _autoScrollController,
+                      !disableHero,
+                    ) ??
+                    DefaultImageGridItem(
+                      index: index,
+                      multiSelectController: _multiSelectController,
+                      autoScrollController: _autoScrollController,
+                      controller: widget.controller,
+                      useHero: !disableHero,
+                    ),
+              ),
+            ),
       ),
     );
   }
@@ -415,13 +412,11 @@ class _BlacklistedTagsInterceptedNotice extends ConsumerWidget {
 
 class _SliverGrid<T extends Post> extends ConsumerWidget {
   const _SliverGrid({
-    required this.constraints,
     required this.itemBuilder,
     required this.postController,
     super.key,
   });
 
-  final BoxConstraints? constraints;
   final IndexedWidgetBuilder itemBuilder;
   final PostGridController<T> postController;
 
@@ -451,7 +446,6 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
     );
 
     return SliverPostGrid(
-      constraints: constraints,
       itemBuilder: itemBuilder,
       postController: postController,
       padding: EdgeInsets.symmetric(

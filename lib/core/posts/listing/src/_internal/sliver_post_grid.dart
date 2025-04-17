@@ -12,13 +12,13 @@ import '../../../../foundation/error.dart';
 import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
+import '../../widgets.dart';
 import '../utils/grid_utils.dart';
 import '../widgets/post_grid_controller.dart';
-import '../widgets/sliver_post_grid_place_holder.dart';
+import 'raw_post_grid.dart';
 
 class SliverPostGrid<T extends Post> extends StatelessWidget {
   const SliverPostGrid({
-    required this.constraints,
     required this.postController,
     required this.itemBuilder,
     super.key,
@@ -31,7 +31,6 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
     this.postsPerPage,
   });
 
-  final BoxConstraints? constraints;
   final PostGridController<T> postController;
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
@@ -132,7 +131,6 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
             builder: (_, refreshing, __) {
               return refreshing
                   ? SliverPostGridPlaceHolder(
-                      constraints: constraints,
                       padding: padding,
                       listType: listType,
                       size: size,
@@ -152,6 +150,8 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   void _onErrorRetry() => postController.refresh();
 
   Widget _buildGrid(BuildContext context) {
+    final constraints = PostGridConstraints.of(context);
+
     return SliverPadding(
       padding: const EdgeInsets.only(
         top: 8,

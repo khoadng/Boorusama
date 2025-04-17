@@ -438,7 +438,26 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   }
 }
 
-class _CustomScrollView extends StatelessWidget {
+class PostGridConstraints extends InheritedWidget {
+  const PostGridConstraints({
+    required this.maxWidth,
+    required super.child,
+    super.key,
+  });
+
+  static PostGridConstraints? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<PostGridConstraints>();
+  }
+
+  final double? maxWidth;
+
+  @override
+  bool updateShouldNotify(covariant PostGridConstraints oldWidget) {
+    return maxWidth != oldWidget.maxWidth;
+  }
+}
+
+class _CustomScrollView extends StatefulWidget {
   const _CustomScrollView({
     required this.slivers,
     required this.controller,
@@ -448,16 +467,48 @@ class _CustomScrollView extends StatelessWidget {
   final ScrollController? controller;
 
   @override
+  State<_CustomScrollView> createState() => _CustomScrollViewState();
+}
+
+class _CustomScrollViewState extends State<_CustomScrollView> {
+  final _gridWidth = ValueNotifier<double?>(null);
+
+  @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
       // Material scroll make it easier to pull to refresh
       behavior: const MaterialScrollBehavior(),
-      child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(
-          parent: ClampingScrollPhysics(),
-        ),
-        controller: controller,
-        slivers: slivers,
+      child: Column(
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth != _gridWidth.value) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _gridWidth.value = constraints.maxWidth;
+                });
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: _gridWidth,
+              builder: (_, width, __) {
+                return PostGridConstraints(
+                  maxWidth: width,
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: ClampingScrollPhysics(),
+                    ),
+                    controller: widget.controller,
+                    slivers: widget.slivers,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

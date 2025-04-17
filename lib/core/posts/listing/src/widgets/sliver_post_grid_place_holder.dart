@@ -9,12 +9,12 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../images/utils.dart';
 import '../../../../settings/settings.dart';
+import '../_internal/raw_post_grid.dart';
 import '../utils/grid_utils.dart';
 
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
     super.key,
-    this.constraints,
     this.padding,
     this.listType,
     this.size,
@@ -24,7 +24,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     this.postsPerPage,
   });
 
-  final BoxConstraints? constraints;
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
   final GridSize? size;
@@ -41,6 +40,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     final imageBorderRadius = borderRadius ?? BorderRadius.zero;
     final imageGridAspectRatio = aspectRatio ?? 1;
     final perPage = postsPerPage ?? 20;
+    final constraints = PostGridConstraints.of(context);
 
     return SliverPadding(
       padding: const EdgeInsets.only(
