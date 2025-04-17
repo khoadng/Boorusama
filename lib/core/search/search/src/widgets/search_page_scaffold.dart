@@ -144,7 +144,10 @@ class _SearchPageScaffoldState<T extends Post>
     if (widget.initialPage != null) {
       _controller.skipToResultWithTag('');
     } else if (widget.initialQuery != null) {
-      _controller.skipToResultWithTag(widget.initialQuery!);
+      _controller.skipToResultWithTag(
+        widget.initialQuery!,
+        queryType: widget.params.initialQueryType,
+      );
       ref
           .read(searchHistoryProvider.notifier)
           .addHistoryFromController(_tagsController);

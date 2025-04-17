@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../configs/config.dart';
 import '../../../../router.dart';
+import '../../../selected_tags/tag.dart';
 import '../views/simple_tag_search_view.dart';
 
 void goToSearchPage(
@@ -15,11 +16,13 @@ void goToSearchPage(
   String? tag,
   int? page,
   int? position,
+  QueryType? queryType,
 }) {
   final params = <String, String>{};
   if (tag != null) params[kInitialQueryKey] = tag;
   if (page != null) params['page'] = page.toString();
   if (position != null) params['position'] = position.toString();
+  if (queryType != null) params['query_type'] = queryType.name;
 
   context.push(
     Uri(

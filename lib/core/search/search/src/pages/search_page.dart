@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../router.dart';
+import '../../../selected_tags/tag.dart';
 
 class SearchPage extends ConsumerWidget {
   const SearchPage({super.key});
@@ -56,11 +57,13 @@ class SearchParams extends Equatable {
     this.initialQuery,
     this.initialPage,
     this.initialScrollPosition,
+    this.initialQueryType,
   });
 
   final String? initialQuery;
   final int? initialPage;
   final int? initialScrollPosition;
+  final QueryType? initialQueryType;
 
   @override
   List<Object?> get props => [initialQuery, initialPage, initialScrollPosition];

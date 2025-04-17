@@ -10,6 +10,7 @@ import '../../../histories/history.dart';
 import '../../../queries/query.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
+import '../../../selected_tags/tag.dart';
 
 class SearchPageController extends ChangeNotifier {
   SearchPageController({
@@ -59,12 +60,22 @@ class SearchPageController extends ChangeNotifier {
     state.value = newState;
   }
 
-  void skipToResultWithTag(String tag) {
+  void skipToResultWithTag(
+    String tag, {
+    QueryType? queryType,
+  }) {
     tagString.value = tag;
     didSearchOnce.value = true;
+
+    final isRaw = switch (queryType) {
+      QueryType.simple => true,
+      QueryType.list => false,
+      null => false,
+    };
+
     tagsController
       ..clear()
-      ..addTag(tag);
+      ..addTag(tag, isRaw: isRaw);
   }
 
   void search() {

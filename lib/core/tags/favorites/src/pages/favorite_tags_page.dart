@@ -160,6 +160,9 @@ class FavoriteTagsPage extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+      ),
       itemCount: tags.length,
       itemBuilder: (context, index) {
         final tag = tags[index];
@@ -171,6 +174,13 @@ class FavoriteTagsPage extends ConsumerWidget {
             left: 16,
             right: 4,
           ),
+          onTap: () {
+            goToSearchPage(
+              context,
+              tag: tag.name,
+              queryType: tag.queryType,
+            );
+          },
           subtitle: labels.isNotEmpty
               ? Container(
                   margin: const EdgeInsets.only(top: 4),
