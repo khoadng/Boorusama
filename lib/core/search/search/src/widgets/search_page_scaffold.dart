@@ -272,15 +272,18 @@ class _SearchPageScaffoldState<T extends Post>
                             metatags: widget.metatags,
                             trending: widget.trending,
                             searchBarAnimController: _searchBarAnimController,
+                            multiSelectController: _multiSelectController,
                           );
                   },
                 ),
                 _SearchOptionsView(
                   metatags: widget.metatags,
                   searchBarAnimController: _searchBarAnimController,
+                  multiSelectController: _multiSelectController,
                 ),
                 _SearchSuggestions(
                   searchBarAnimController: _searchBarAnimController,
+                  multiSelectController: _multiSelectController,
                 ),
                 _SearchBarPositioned(
                   multiSelectController: _multiSelectController,
@@ -383,6 +386,7 @@ class _SearchPageScaffoldState<T extends Post>
   ) {
     return _SearchRegionSafeArea(
       searchBarAnimController: _searchBarAnimController,
+      multiSelectController: _multiSelectController,
       child: ColoredBox(
         color: Theme.of(context).colorScheme.surface,
         child: SafeArea(
@@ -447,15 +451,18 @@ class _SearchRegionSafeArea extends StatelessWidget {
   const _SearchRegionSafeArea({
     required this.child,
     required this.searchBarAnimController,
+    required this.multiSelectController,
   });
 
   final Widget child;
   final AnimationController searchBarAnimController;
+  final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context) {
     final displacement = _Displacement(
       searchBarAnimController: searchBarAnimController,
+      multiSelectController: multiSelectController,
     );
 
     return Column(
@@ -664,23 +671,23 @@ class _SearchBarPositionedState extends State<_SearchBarPositioned> {
       third: controller.tagsController,
       fourth: widget.multiSelectController.multiSelectNotifier,
       builder: (_, searchOnce, state, selectedTags, multiSelect) {
-        final searchRegionHeight = _calcSearchRegionHeight(selectedTags);
+        final baseSearchRegionHeight = _calcSearchRegionHeight(selectedTags);
         final viewPadding = _kSearchBarPosition == SearchBarPosition.bottom
             ? MediaQuery.viewPaddingOf(context).bottom
             : 0;
+        final searchRegionHeight = baseSearchRegionHeight + viewPadding;
 
         return NotificationListener<ScrollNotification>(
           onNotification: (notification) => true,
           child: AnimatedBuilder(
             animation: _searchBarCurve,
-            builder: (context, child) {
+            builder: (context, _) {
               final padding = multiSelect
                   ? -searchRegionHeight
                   : searchOnce
                       ? state == SearchState.suggestions
                           ? 0.0
-                          : -(_searchBarCurve.value *
-                              (searchRegionHeight + viewPadding))
+                          : -(_searchBarCurve.value * searchRegionHeight)
                       : 0.0;
 
               return Positioned(
@@ -705,9 +712,11 @@ class _SearchBarPositionedState extends State<_SearchBarPositioned> {
 class _Displacement extends StatefulWidget {
   const _Displacement({
     required this.searchBarAnimController,
+    required this.multiSelectController,
   });
 
   final AnimationController searchBarAnimController;
+  final MultiSelectController multiSelectController;
 
   @override
   State<_Displacement> createState() => __DisplacementState();
@@ -730,11 +739,16 @@ class __DisplacementState extends State<_Displacement> {
   Widget build(BuildContext context) {
     final controller = InheritedSearchPageController.of(context);
 
-    return MultiValueListenableBuilder3(
+    return MultiValueListenableBuilder4(
       first: controller.tagsController,
       second: controller.state,
       third: controller.didSearchOnce,
-      builder: (_, value, state, searchOnce) {
+      fourth: widget.multiSelectController.multiSelectNotifier,
+      builder: (_, value, state, searchOnce, multiSelect) {
+        if (multiSelect) {
+          return const SizedBox.shrink();
+        }
+
         final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
         final viewPadding = MediaQuery.viewPaddingOf(context).bottom;
         final padding = max(viewInsets, viewPadding);
@@ -769,6 +783,7 @@ class _Landing extends StatelessWidget {
     required this.metatags,
     required this.trending,
     required this.searchBarAnimController,
+    required this.multiSelectController,
   });
 
   final Widget? Function(
@@ -782,6 +797,7 @@ class _Landing extends StatelessWidget {
   )? trending;
 
   final AnimationController searchBarAnimController;
+  final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context) {
@@ -789,6 +805,7 @@ class _Landing extends StatelessWidget {
 
     return _SearchRegionSafeArea(
       searchBarAnimController: searchBarAnimController,
+      multiSelectController: multiSelectController,
       child: SearchLandingView(
         reverse: _kSearchBarPosition == SearchBarPosition.bottom,
         onHistoryTap: (value) {
@@ -811,9 +828,11 @@ class _Landing extends StatelessWidget {
 class _SearchSuggestions extends ConsumerWidget {
   const _SearchSuggestions({
     required this.searchBarAnimController,
+    required this.multiSelectController,
   });
 
   final AnimationController searchBarAnimController;
+  final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -822,6 +841,7 @@ class _SearchSuggestions extends ConsumerWidget {
 
     return _SearchRegionSafeArea(
       searchBarAnimController: searchBarAnimController,
+      multiSelectController: multiSelectController,
       child: MultiValueListenableBuilder2(
         first: controller.state,
         second: controller.didSearchOnce,
@@ -878,11 +898,13 @@ class _SearchOptionsView extends ConsumerWidget {
   const _SearchOptionsView({
     required this.metatags,
     required this.searchBarAnimController,
+    required this.multiSelectController,
   });
 
   final Widget? Function(BuildContext context, SearchPageController controller)?
       metatags;
   final AnimationController searchBarAnimController;
+  final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -891,6 +913,7 @@ class _SearchOptionsView extends ConsumerWidget {
 
     return _SearchRegionSafeArea(
       searchBarAnimController: searchBarAnimController,
+      multiSelectController: multiSelectController,
       child: ValueListenableBuilder(
         valueListenable: controller.state,
         builder: (context, state, child) => state == SearchState.options
