@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -153,6 +156,30 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                 : const SizedBox.shrink();
           },
         ),
+        scrollToTopButton: _ScrollToTopPositioned(
+          child: ValueListenableBuilder(
+            valueListenable: _multiSelectController.multiSelectNotifier,
+            builder: (_, multiSelect, __) => Padding(
+              padding: multiSelect
+                  ? const EdgeInsets.only(bottom: 60)
+                  : EdgeInsets.zero,
+              child: ScrollToTop(
+                scrollController: _autoScrollController,
+                onBottomReached: () {
+                  if (widget.controller.pageMode == PageMode.infinite &&
+                      widget.controller.hasMore) {
+                    widget.controller.fetchMore();
+                  }
+                },
+                child: BooruScrollToTopButton(
+                  onPressed: () {
+                    _autoScrollController.jumpTo(0);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
         onNextPage: () => _goToNextPage(
           widget.controller,
           _autoScrollController,
@@ -202,6 +229,27 @@ Future<void> _goToPreviousPage(
 ) async {
   await controller.goToPreviousPage();
   scrollController.jumpTo(0);
+}
+
+class _ScrollToTopPositioned extends ConsumerWidget {
+  const _ScrollToTopPositioned({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewPadding = MediaQuery.viewPaddingOf(context);
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+    final padding = max(viewPadding.bottom, viewInsets.bottom);
+
+    final bottomPadding = padding + 8;
+
+    return Positioned(
+      right: 24,
+      bottom: bottomPadding,
+      child: child,
+    );
+  }
 }
 
 class _PageIndicator<T extends Post> extends ConsumerWidget {

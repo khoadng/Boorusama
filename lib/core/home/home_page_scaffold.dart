@@ -111,27 +111,32 @@ class HomeContent extends ConsumerWidget {
 
     return ValueListenableBuilder(
       valueListenable: controller,
-      builder: (context, value, child) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: !context.isLargeScreen && value > 0
-            ? AppBar(
-                leading: BackButton(
-                  onPressed: () {
-                    controller.goToTab(0);
-                  },
-                ),
-              )
-            : null,
-        body: LazyIndexedStack(
-          index: value,
-          children: [
-            ...views,
-            ...coreDesktopViewBuilder(
-              previousItemCount: views.length,
-              viewKey: homeViewKey,
+      builder: (context, value, child) => Column(
+        children: [
+          if (!context.isLargeScreen && value > 0)
+            SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  BackButton(
+                    onPressed: () => controller.goToTab(0),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          Expanded(
+            child: LazyIndexedStack(
+              index: value,
+              children: [
+                ...views,
+                ...coreDesktopViewBuilder(
+                  previousItemCount: views.length,
+                  viewKey: homeViewKey,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -67,29 +67,29 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: multiSelect && widget.header != null
-            ? widget.header!
-            : const SizedBox.shrink(),
-      ),
-      body: Stack(
-        children: [
-          widget.child,
-          if (widget.footer != null)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: _AnimatedFooter(
-                multiSelect: multiSelect,
-                footer: widget.footer!,
+    return Stack(
+      children: [
+        Column(
+          children: [
+            if (multiSelect && widget.header != null)
+              SizedBox(
+                height: kToolbarHeight,
+                child: widget.header!,
               ),
+            Expanded(child: widget.child),
+          ],
+        ),
+        if (widget.footer != null)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _AnimatedFooter(
+              multiSelect: multiSelect,
+              footer: widget.footer!,
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 }
