@@ -47,7 +47,7 @@ class BookmarkScrollView extends ConsumerStatefulWidget {
 }
 
 class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
-  final _multiSelectController = MultiSelectController<BookmarkPost>();
+  final _multiSelectController = MultiSelectController();
 
   @override
   void dispose() {
@@ -112,36 +112,32 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
             enablePullToRefresh: false,
             multiSelectActions: DefaultMultiSelectionActions(
               controller: _multiSelectController,
+              postController: controller,
               bookmark: false,
-              extraActions: [
-                ValueListenableBuilder(
-                  valueListenable: _multiSelectController.selectedItemsNotifier,
-                  builder: (_, selectedPosts, __) {
-                    return MultiSelectButton(
-                      onPressed: selectedPosts.isNotEmpty
-                          ? () {
-                              final bookmarks =
-                                  selectedPosts.map((e) => e.bookmark).toList();
+              extraActions: (selectedPosts) => [
+                MultiSelectButton(
+                  onPressed: selectedPosts.isNotEmpty
+                      ? () {
+                          final bookmarks =
+                              selectedPosts.map((e) => e.bookmark).toList();
 
-                              ref
-                                  .read(bookmarkProvider.notifier)
-                                  .removeBookmarks(bookmarks)
-                                  .then((_) {
-                                if (context.mounted) {
-                                  controller.remove(
-                                    selectedPosts.map((e) => e.id).toList(),
-                                    (e) => e.id,
-                                  );
-                                }
-                              });
-
-                              _multiSelectController.disableMultiSelect();
+                          ref
+                              .read(bookmarkProvider.notifier)
+                              .removeBookmarks(bookmarks)
+                              .then((_) {
+                            if (context.mounted) {
+                              controller.remove(
+                                selectedPosts.map((e) => e.id).toList(),
+                                (e) => e.id,
+                              );
                             }
-                          : null,
-                      icon: const Icon(Symbols.bookmark_remove),
-                      name: 'Remove',
-                    );
-                  },
+                          });
+
+                          _multiSelectController.disableMultiSelect();
+                        }
+                      : null,
+                  icon: const Icon(Symbols.bookmark_remove),
+                  name: 'Remove',
                 ),
               ],
             ),

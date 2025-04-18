@@ -29,7 +29,7 @@ import 'post_scope.dart';
 typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
   BuildContext context,
   int index,
-  MultiSelectController<T> multiSelectController,
+  MultiSelectController multiSelectController,
   AutoScrollController autoScrollController,
   bool useHero,
 );
@@ -54,7 +54,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
   final AutoScrollController? scrollController;
   final bool safeArea;
   final String? blacklistedIdString;
-  final MultiSelectController<T>? multiSelectController;
+  final MultiSelectController? multiSelectController;
   final PostGridController<T> controller;
   final IndexedSelectableWidgetBuilder<T>? itemBuilder;
   final Widget? body;
@@ -70,7 +70,7 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
   late final AutoScrollController _autoScrollController =
       widget.scrollController ?? AutoScrollController();
   late final _multiSelectController =
-      widget.multiSelectController ?? MultiSelectController<T>();
+      widget.multiSelectController ?? MultiSelectController();
 
   final ValueNotifier<bool> _disableHero = ValueNotifier(false);
 
@@ -106,6 +106,7 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                 booruBuilder?.multiSelectionActionsBuilder?.call(
                   context,
                   _multiSelectController,
+                  widget.controller,
                 );
 
             return multiSelectActions ?? const SizedBox.shrink();
@@ -255,7 +256,7 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
   });
 
   final Axis axis;
-  final MultiSelectController<T> multiSelectController;
+  final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

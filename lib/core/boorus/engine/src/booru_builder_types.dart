@@ -11,6 +11,7 @@ import '../../../autocompletes/autocompletes.dart';
 import '../../../configs/config.dart';
 import '../../../posts/details/routes.dart';
 import '../../../posts/details_manager/types.dart';
+import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../search/search/src/pages/search_page.dart';
@@ -57,7 +58,8 @@ typedef QuickFavoriteButtonBuilder = Widget Function(
 
 typedef MultiSelectionActionsBuilder = Widget Function(
   BuildContext context,
-  MultiSelectController<Post> controller,
+  MultiSelectController controller,
+  PostGridController<Post> postController,
 );
 
 typedef ArtistPageBuilder = Widget Function(

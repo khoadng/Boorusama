@@ -359,6 +359,24 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<T> getPostsFromIds(List<int> ids) {
+    final idSet = ids.toSet();
+
+    if (idSet.isEmpty) return [];
+
+    final result = <T>[];
+
+    for (final item in _items) {
+      if (idSet.contains(item.id)) {
+        result.add(item);
+      }
+
+      if (result.length >= idSet.length) break;
+    }
+
+    return result;
+  }
+
   Future<void> _addAll(List<T> newItems) async {
     for (final item in newItems) {
       if (!_duplicateTracker.isDuplicate(item)) {

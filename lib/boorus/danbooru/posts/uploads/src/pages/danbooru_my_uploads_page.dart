@@ -170,7 +170,7 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
-  final multiSelectController = MultiSelectController<DanbooruUploadPost>();
+  final multiSelectController = MultiSelectController();
 
   @override
   void dispose() {

@@ -6,7 +6,6 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
@@ -30,6 +29,7 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
@@ -347,13 +347,19 @@ class DanbooruBuilder
 
   @override
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
-      (context, controller) {
+      (context, controller, postController) {
         final isDanController =
-            controller is MultiSelectController<DanbooruPost>;
+            postController is PostGridController<DanbooruPost>;
 
         return isDanController
-            ? DanbooruMultiSelectionActions(controller: controller)
-            : DefaultMultiSelectionActions(controller: controller);
+            ? DanbooruMultiSelectionActions(
+                controller: controller,
+                postController: postController,
+              )
+            : DefaultMultiSelectionActions(
+                controller: controller,
+                postController: postController,
+              );
       };
 
   @override

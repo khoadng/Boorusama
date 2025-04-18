@@ -7,9 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'multi_select_controller.dart';
 
-typedef FooterBuilder<T> = Widget Function(
+typedef FooterBuilder = Widget Function(
   BuildContext context,
-  List<T> selectedItems,
+  List<int> selectedItems,
 );
 
 const _kAnimDuration = Duration(milliseconds: 100);
@@ -19,13 +19,14 @@ class MultiSelectWidget<T> extends StatefulWidget {
     super.key,
     this.footer,
     this.header,
-    this.multiSelectController,
+    this.controller,
     this.onMultiSelectChanged,
     required this.child,
   });
+
   final Widget? footer;
   final Widget? header;
-  final MultiSelectController<T>? multiSelectController;
+  final MultiSelectController? controller;
   final void Function(bool multiSelect)? onMultiSelectChanged;
   final Widget child;
 
@@ -34,20 +35,20 @@ class MultiSelectWidget<T> extends StatefulWidget {
 }
 
 class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
-  late MultiSelectController<T> _controller;
+  late MultiSelectController _controller;
   var multiSelect = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.multiSelectController ?? MultiSelectController();
+    _controller = widget.controller ?? MultiSelectController();
 
     _controller.addListener(_onMultiSelectChanged);
   }
 
   @override
   void dispose() {
-    if (widget.multiSelectController == null) {
+    if (widget.controller == null) {
       _controller.dispose();
     }
     _controller.removeListener(_onMultiSelectChanged);

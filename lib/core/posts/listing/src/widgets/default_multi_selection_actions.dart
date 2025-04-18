@@ -17,24 +17,30 @@ import '../../../../configs/ref.dart';
 import '../../../../downloads/downloader.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
+import 'post_grid_controller.dart';
 
 class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   const DefaultMultiSelectionActions({
     required this.controller,
+    required this.postController,
     super.key,
     this.extraActions,
     this.bookmark = true,
   });
 
-  final MultiSelectController<T> controller;
+  final MultiSelectController controller;
+  final PostGridController<T> postController;
   final bool bookmark;
-  final List<Widget>? extraActions;
+  final List<Widget> Function(List<T> selectedPosts)? extraActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ValueListenableBuilder(
       valueListenable: controller.selectedItemsNotifier,
-      builder: (context, selectedPosts, child) {
+      builder: (context, selectedKeys, child) {
+        final selectedPosts =
+            postController.getPostsFromIds(selectedKeys.toList());
+
         return MultiSelectionActionBar(
           children: [
             MultiSelectButton(
@@ -53,7 +59,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
                 posts: selectedPosts,
                 onPressed: controller.disableMultiSelect,
               ),
-            if (extraActions != null) ...extraActions!,
+            if (extraActions != null) ...extraActions!(selectedPosts),
           ],
         );
       },

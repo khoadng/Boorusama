@@ -28,8 +28,8 @@ class DefaultSelectableItem<T extends Post> extends StatelessWidget {
       valueListenable: multiSelectController.selectedItemsNotifier,
       builder: (_, selectedItems, __) => SelectableItem(
         index: index,
-        isSelected: selectedItems.contains(post),
-        onTap: () => multiSelectController.toggleSelection(post),
+        isSelected: selectedItems.contains(post.id),
+        onTap: () => multiSelectController.toggleSelection(post.id),
         onLongPress: () {
           goToImagePreviewPage(context, post);
         },

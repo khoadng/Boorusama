@@ -1,17 +1,17 @@
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
-class MultiSelectController<T> extends ChangeNotifier {
+class MultiSelectController extends ChangeNotifier {
   bool _multiSelectEnabled = false;
-  final Set<T> _selectedItems = <T>{};
+  final Set<int> _selectedItems = <int>{};
 
-  final ValueNotifier<List<T>> selectedItemsNotifier = ValueNotifier([]);
+  final ValueNotifier<Set<int>> selectedItemsNotifier = ValueNotifier({});
   final ValueNotifier<bool> multiSelectNotifier = ValueNotifier(false);
 
   bool get multiSelectEnabled => _multiSelectEnabled;
 
   void enableMultiSelect({
-    List<T>? initialSelected,
+    List<int>? initialSelected,
   }) {
     _setMultiSelect(true);
 
@@ -35,7 +35,7 @@ class MultiSelectController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleSelection(T item) {
+  void toggleSelection(int item) {
     if (_selectedItems.contains(item)) {
       _selectedItems.remove(item);
     } else {
@@ -51,14 +51,14 @@ class MultiSelectController<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectAll(List<T> items) {
+  void selectAll(List<int> items) {
     _selectedItems.addAll(items);
     notifySelectedItems();
     notifyListeners();
   }
 
   void notifySelectedItems() {
-    selectedItemsNotifier.value = _selectedItems.toList();
+    selectedItemsNotifier.value = _selectedItems.toSet();
   }
 
   void _setMultiSelect(bool value) {
@@ -68,5 +68,12 @@ class MultiSelectController<T> extends ChangeNotifier {
     multiSelectNotifier.value = value;
   }
 
-  List<T> get selectedItems => _selectedItems.toList();
+  List<int> get selectedItems => _selectedItems.toList();
+
+  @override
+  void dispose() {
+    selectedItemsNotifier.dispose();
+    multiSelectNotifier.dispose();
+    super.dispose();
+  }
 }

@@ -34,7 +34,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
   });
 
   final PostGridController<Post> postController;
-  final MultiSelectController<Post> multiSelectController;
+  final MultiSelectController multiSelectController;
   final bool showBlacklist;
 
   @override

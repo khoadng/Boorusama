@@ -68,7 +68,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 
   final String? blacklistedIdString;
 
-  final MultiSelectController<T>? multiSelectController;
+  final MultiSelectController? multiSelectController;
 
   final PostGridController<T> controller;
 
@@ -79,7 +79,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     with TickerProviderStateMixin, KeyboardListenerMixin {
   late final AutoScrollController _autoScrollController;
-  late final MultiSelectController<T> _multiSelectController;
+  late final MultiSelectController _multiSelectController;
 
   PostGridController<T> get controller => widget.controller;
 
@@ -94,7 +94,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     super.initState();
     _autoScrollController = widget.scrollController ?? AutoScrollController();
     _multiSelectController =
-        widget.multiSelectController ?? MultiSelectController<T>();
+        widget.multiSelectController ?? MultiSelectController();
 
     controller.addListener(_onControllerChange);
     if (widget.refreshAtStart) {
@@ -177,9 +177,9 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           left: false,
           child: child,
         ),
-        child: MultiSelectWidget<T>(
+        child: MultiSelectWidget(
           footer: widget.footer,
-          multiSelectController: _multiSelectController,
+          controller: _multiSelectController,
           header: widget.header != null
               ? widget.header!
               : AppBar(
@@ -190,7 +190,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                   ),
                   actions: [
                     IconButton(
-                      onPressed: () => _multiSelectController.selectAll(items),
+                      onPressed: () => _multiSelectController
+                          .selectAll(items.map((e) => e.id).toList()),
                       icon: const Icon(Symbols.select_all),
                     ),
                     IconButton(
@@ -520,7 +521,7 @@ class _SliverBottomGridPadding extends StatelessWidget {
     required this.pageMode,
   });
 
-  final MultiSelectController<Post> multiSelectController;
+  final MultiSelectController multiSelectController;
   final PageMode pageMode;
 
   @override

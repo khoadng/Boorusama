@@ -41,7 +41,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   });
 
   final int index;
-  final MultiSelectController<T> multiSelectController;
+  final MultiSelectController multiSelectController;
   final AutoScrollController autoScrollController;
   final PostGridController<T> controller;
   final bool useHero;
@@ -69,7 +69,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                     hasAccount: ref.watchConfigAuth.hasLoginDetails(),
                     onMultiSelect: () {
                       multiSelectController.enableMultiSelect(
-                        initialSelected: [post],
+                        initialSelected: [post.id],
                       );
                     },
                     post: post,

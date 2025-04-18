@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/info/package_info.dart';
+import '../../../../../core/posts/listing/providers.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -23,10 +24,12 @@ import '../../post/post.dart';
 class DanbooruMultiSelectionActions extends ConsumerWidget {
   const DanbooruMultiSelectionActions({
     required this.controller,
+    required this.postController,
     super.key,
   });
 
-  final MultiSelectController<DanbooruPost> controller;
+  final MultiSelectController controller;
+  final PostGridController<DanbooruPost> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,54 +37,44 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
 
     return DefaultMultiSelectionActions(
       controller: controller,
-      extraActions: [
+      postController: postController,
+      extraActions: (selectedPosts) => [
         if (config.hasLoginDetails())
-          ValueListenableBuilder(
-            valueListenable: controller.selectedItemsNotifier,
-            builder: (context, selectedPosts, child) {
-              return MultiSelectButton(
-                onPressed: selectedPosts.isNotEmpty
-                    ? () async {
-                        final shouldEnd =
-                            await goToAddToFavoriteGroupSelectionPage(
-                          context,
-                          selectedPosts,
-                        );
-                        if (shouldEnd != null && shouldEnd) {
-                          controller.disableMultiSelect();
-                        }
-                      }
-                    : null,
-                icon: const Icon(Symbols.add),
-                name: 'Add to Group',
-              );
-            },
+          MultiSelectButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () async {
+                    final shouldEnd = await goToAddToFavoriteGroupSelectionPage(
+                      context,
+                      selectedPosts,
+                    );
+                    if (shouldEnd != null && shouldEnd) {
+                      controller.disableMultiSelect();
+                    }
+                  }
+                : null,
+            icon: const Icon(Symbols.add),
+            name: 'Add to Group',
           ),
         if (ref.watch(isDevEnvironmentProvider))
           if (config.hasLoginDetails())
             ref.watch(danbooruCurrentUserProvider(config)).when(
                   data: (user) => DanbooruUserLevel.of(user?.level).isUnres
-                      ? ValueListenableBuilder(
-                          valueListenable: controller.selectedItemsNotifier,
-                          builder: (context, selectedPosts, child) {
-                            return MultiSelectButton(
-                              onPressed: selectedPosts.isNotEmpty
-                                  ? () async {
-                                      final shouldEnd =
-                                          await goToMassEditRatingSheet(
-                                        context,
-                                        ref,
-                                        selectedPosts,
-                                      );
-                                      if (shouldEnd != null && shouldEnd) {
-                                        controller.disableMultiSelect();
-                                      }
-                                    }
-                                  : null,
-                              icon: const Icon(Symbols.edit_square),
-                              name: 'Edit Rating',
-                            );
-                          },
+                      ? MultiSelectButton(
+                          onPressed: selectedPosts.isNotEmpty
+                              ? () async {
+                                  final shouldEnd =
+                                      await goToMassEditRatingSheet(
+                                    context,
+                                    ref,
+                                    selectedPosts,
+                                  );
+                                  if (shouldEnd != null && shouldEnd) {
+                                    controller.disableMultiSelect();
+                                  }
+                                }
+                              : null,
+                          icon: const Icon(Symbols.edit_square),
+                          name: 'Edit Rating',
                         )
                       : const SizedBox.shrink(),
                   error: (error, _) => const SizedBox.shrink(),

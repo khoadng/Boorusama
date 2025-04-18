@@ -37,7 +37,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
   });
 
   final int index;
-  final MultiSelectController<DanbooruPost> multiSelectController;
+  final MultiSelectController multiSelectController;
   final AutoScrollController autoScrollController;
   final PostGridController<DanbooruPost> controller;
   final BlockOverlayItem? blockOverlay;
@@ -62,7 +62,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                 DanbooruPostContextMenu(
                   onMultiSelect: () {
                     multiSelectController.enableMultiSelect(
-                      initialSelected: [post],
+                      initialSelected: [post.id],
                     );
                   },
                   post: post,

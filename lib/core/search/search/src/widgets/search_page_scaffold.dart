@@ -41,7 +41,7 @@ import 'selected_tag_list_with_data.dart';
 typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
   BuildContext context,
   int index,
-  MultiSelectController<T> multiSelectController,
+  MultiSelectController multiSelectController,
   AutoScrollController autoScrollController,
   PostGridController<T> controller,
   bool useHero,
@@ -119,7 +119,7 @@ class _SearchPageScaffoldState<T extends Post>
     duration: const Duration(milliseconds: 300),
   );
 
-  final _multiSelectController = MultiSelectController<T>();
+  final _multiSelectController = MultiSelectController();
 
   var _hasScrolledToInitialPosition = false;
 
