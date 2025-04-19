@@ -245,7 +245,7 @@ class _ScrollToTopPositioned extends ConsumerWidget {
     final bottomPadding = padding + 8;
 
     return Positioned(
-      right: 24,
+      right: 12,
       bottom: bottomPadding,
       child: child,
     );
