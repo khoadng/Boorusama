@@ -14,6 +14,8 @@ import '../../../../core/home/home_search_bar.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/selected_tags/providers.dart';
+import '../../../../core/settings/providers.dart';
+import '../../../../core/settings/settings.dart';
 import '../../../../core/tags/configs/providers.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';
@@ -56,6 +58,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
+    final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return PostScope(
       fetcher: (page) {
@@ -69,55 +72,98 @@ class _LatestViewState extends ConsumerState<LatestView> {
                 page,
               );
       },
-      builder: (context, controller) => PostGrid(
-        controller: controller,
-        scrollController: _autoScrollController,
-        itemBuilder:
-            (context, index, multiSelectController, scrollController, hero) =>
-                DefaultDanbooruImageGridItem(
-          index: index,
-          multiSelectController: multiSelectController,
-          autoScrollController: scrollController,
-          controller: controller,
-        ),
-        sliverHeaders: [
-          SliverHomeSearchBar(
-            selectedTagController: selectedTagController,
-            selectedTagString: selectedTagString,
-            onSearch: () {
-              controller.refresh();
-            },
-          ),
-          const SliverAppAnnouncementBanner(),
-          const SliverUnreadMailsBanner(),
-          if (context.isLargeScreen)
-            SliverResultHeader(
-              selectedTagString: selectedTagString,
+      builder: (context, controller) => Column(
+        children: [
+          Expanded(
+            child: PostGrid(
               controller: controller,
-            ),
-          if (!context.isLargeScreen)
-            SliverToBoxAdapter(
-              child: ValueListenableBuilder<String>(
-                valueListenable: _selectedMostSearchedTag,
-                builder: (context, value, child) => MostSearchTagList(
-                  selected: value,
-                  onSelected: (search, sel) {
-                    _selectedMostSearchedTag.value =
-                        search.keyword == value ? '' : search.keyword;
-
-                    selectedTagString.value = search.keyword;
-                    if (sel) {
-                      selectedTagController
-                        ..clear()
-                        ..addTag(search.keyword);
-                    } else {
-                      selectedTagController.clear();
-                    }
-                    controller.refresh();
-                    _autoScrollController.jumpTo(0);
-                  },
-                ),
+              scrollController: _autoScrollController,
+              itemBuilder: (
+                context,
+                index,
+                multiSelectController,
+                scrollController,
+                hero,
+              ) =>
+                  DefaultDanbooruImageGridItem(
+                index: index,
+                multiSelectController: multiSelectController,
+                autoScrollController: scrollController,
+                controller: controller,
               ),
+              sliverHeaders: [
+                if (context.isLargeScreen ||
+                    searchBarPosition == SearchBarPosition.top)
+                  SliverHomeSearchBar(
+                    selectedTagController: selectedTagController,
+                    selectedTagString: selectedTagString,
+                    onSearch: () {
+                      controller.refresh();
+                    },
+                  ),
+                const SliverAppAnnouncementBanner(),
+                const SliverUnreadMailsBanner(),
+                if (context.isLargeScreen)
+                  SliverResultHeader(
+                    selectedTagString: selectedTagString,
+                    controller: controller,
+                  ),
+                if (!context.isLargeScreen)
+                  SliverToBoxAdapter(
+                    child: ValueListenableBuilder<String>(
+                      valueListenable: _selectedMostSearchedTag,
+                      builder: (context, value, child) => MostSearchTagList(
+                        selected: value,
+                        onSelected: (search, sel) {
+                          _selectedMostSearchedTag.value =
+                              search.keyword == value ? '' : search.keyword;
+
+                          selectedTagString.value = search.keyword;
+                          if (sel) {
+                            selectedTagController
+                              ..clear()
+                              ..addTag(search.keyword);
+                          } else {
+                            selectedTagController.clear();
+                          }
+                          controller.refresh();
+                          _autoScrollController.jumpTo(0);
+                        },
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (searchBarPosition == SearchBarPosition.bottom &&
+              !context.isLargeScreen)
+            Consumer(
+              builder: (_, ref, __) {
+                final position = ref.watch(
+                  settingsProvider
+                      .select((value) => value.booruConfigSelectorPosition),
+                );
+
+                return SafeArea(
+                  top: false,
+                  bottom: position != BooruConfigSelectorPosition.bottom,
+                  child: SizedBox(
+                    height: kToolbarHeight * 1.2,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverHomeSearchBar(
+                          primary: false,
+                          selectedTagController: selectedTagController,
+                          selectedTagString: selectedTagString,
+                          onSearch: () {
+                            controller.refresh();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
         ],
       ),

@@ -91,3 +91,10 @@ extension VideoPlayerEngineTranslated on VideoPlayerEngine {
         VideoPlayerEngine.mdk => 'mdk',
       };
 }
+
+extension SearchBarPositionTranslated on SearchBarPosition {
+  String localize() => switch (this) {
+        SearchBarPosition.top => 'Top',
+        SearchBarPosition.bottom => 'Bottom',
+      };
+}

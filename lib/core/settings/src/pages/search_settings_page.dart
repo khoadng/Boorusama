@@ -10,7 +10,9 @@ import '../../../configs/redirect.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
+import '../types/types_l10n.dart';
 import '../widgets/settings_page_scaffold.dart';
+import '../widgets/settings_tile.dart';
 
 class SearchSettingsPage extends ConsumerStatefulWidget {
   const SearchSettingsPage({
@@ -59,6 +61,18 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
               );
             },
           ),
+        ),
+        SettingsTile(
+          title: const Text('Search bar position').tr(),
+          subtitle: const Text('Only applies in portrait mode').tr(),
+          selectedOption: settings.searchBarPosition,
+          items: SearchBarPosition.values,
+          onChanged: (value) {
+            notifer.updateSettings(
+              settings.copyWith(searchBarPosition: value),
+            );
+          },
+          optionBuilder: (value) => Text(value.localize()).tr(),
         ),
         ListTile(
           title: const Text(

@@ -13,6 +13,8 @@ import '../posts/count/widgets.dart';
 import '../posts/listing/widgets.dart';
 import '../posts/post/providers.dart';
 import '../search/selected_tags/providers.dart';
+import '../settings/providers.dart';
+import '../settings/settings.dart';
 import '../tags/configs/providers.dart';
 import '../widgets/widgets.dart';
 
@@ -51,6 +53,7 @@ class _MobileHomePageScaffoldState
   @override
   Widget build(BuildContext context) {
     final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
+    final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return PostScope(
       fetcher: (page) {
@@ -59,21 +62,60 @@ class _MobileHomePageScaffoldState
           page,
         );
       },
-      builder: (context, postController) => PostGrid(
-        controller: postController,
-        sliverHeaders: [
-          SliverHomeSearchBar(
-            selectedTagController: selectedTagController,
-            selectedTagString: selectedTagString,
-            onSearch: () {
-              postController.refresh();
-            },
-          ),
-          const SliverAppAnnouncementBanner(),
-          if (context.isLargeScreen)
-            SliverResultHeader(
-              selectedTagString: selectedTagString,
+      builder: (context, postController) => Column(
+        children: [
+          Expanded(
+            child: PostGrid(
               controller: postController,
+              sliverHeaders: [
+                if (context.isLargeScreen ||
+                    searchBarPosition == SearchBarPosition.top)
+                  SliverHomeSearchBar(
+                    selectedTagController: selectedTagController,
+                    selectedTagString: selectedTagString,
+                    onSearch: () {
+                      postController.refresh();
+                    },
+                  ),
+                const SliverAppAnnouncementBanner(),
+                if (context.isLargeScreen)
+                  SliverResultHeader(
+                    selectedTagString: selectedTagString,
+                    controller: postController,
+                  ),
+              ],
+            ),
+          ),
+          if (searchBarPosition == SearchBarPosition.bottom &&
+              !context.isLargeScreen)
+            Consumer(
+              builder: (_, ref, __) {
+                final position = ref.watch(
+                  settingsProvider.select(
+                    (value) => value.booruConfigSelectorPosition,
+                  ),
+                );
+
+                return SafeArea(
+                  top: false,
+                  bottom: position != BooruConfigSelectorPosition.bottom,
+                  child: SizedBox(
+                    height: kToolbarHeight * 1.2,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverHomeSearchBar(
+                          primary: false,
+                          selectedTagController: selectedTagController,
+                          selectedTagString: selectedTagString,
+                          onSearch: () {
+                            postController.refresh();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
         ],
       ),

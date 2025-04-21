@@ -45,6 +45,7 @@ class Settings extends Equatable {
     required this.videoPlayerEngine,
     required this.volumeKeyViewerNavigation,
     required this.searchBarScrollBehavior,
+    required this.searchBarPosition,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -123,6 +124,9 @@ class Settings extends Equatable {
         searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
             ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
             : SearchBarScrollBehavior.autoHide,
+        searchBarPosition = json['searchBarPosition'] != null
+            ? SearchBarPosition.values[json['searchBarPosition']]
+            : SearchBarPosition.top,
         volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
         reduceAnimations = json['reduceAnimations'] ?? false,
         swipeAreaToOpenSidebarPercentage =
@@ -175,6 +179,7 @@ class Settings extends Equatable {
     videoPlayerEngine: VideoPlayerEngine.auto,
     volumeKeyViewerNavigation: false,
     searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
+    searchBarPosition: SearchBarPosition.top,
   );
 
   final ImageListingSettings listing;
@@ -236,6 +241,8 @@ class Settings extends Equatable {
 
   final SearchBarScrollBehavior searchBarScrollBehavior;
 
+  final SearchBarPosition searchBarPosition;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -270,6 +277,7 @@ class Settings extends Equatable {
     VideoPlayerEngine? videoPlayerEngine,
     bool? volumeKeyViewerNavigation,
     SearchBarScrollBehavior? searchBarScrollBehavior,
+    SearchBarPosition? searchBarPosition,
   }) =>
       Settings(
         listing: listing ?? this.listing,
@@ -319,6 +327,7 @@ class Settings extends Equatable {
             volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
         searchBarScrollBehavior:
             searchBarScrollBehavior ?? this.searchBarScrollBehavior,
+        searchBarPosition: searchBarPosition ?? this.searchBarPosition,
       );
 
   Map<String, dynamic> toJson() {
@@ -358,6 +367,7 @@ class Settings extends Equatable {
       'videoPlayerEngine': videoPlayerEngine.index,
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
       'searchBarScrollBehavior': searchBarScrollBehavior.index,
+      'searchBarPosition': searchBarPosition.index,
     };
   }
 
@@ -395,6 +405,7 @@ class Settings extends Equatable {
         videoPlayerEngine,
         volumeKeyViewerNavigation,
         searchBarScrollBehavior,
+        searchBarPosition,
       ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

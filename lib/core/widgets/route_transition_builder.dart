@@ -53,7 +53,8 @@ RouteTransitionsBuilder fadeTransitionBuilder() =>
           ).animate(
             CurvedAnimation(
               parent: animation,
-              curve: Curves.easeInOut,
+              curve: Curves.easeInSine,
+              reverseCurve: Curves.easeOutSine,
             ),
           ),
           child: child,

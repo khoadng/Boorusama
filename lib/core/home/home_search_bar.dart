@@ -206,11 +206,13 @@ class SliverHomeSearchBar extends ConsumerWidget {
     super.key,
     this.selectedTagString,
     this.selectedTagController,
+    this.primary,
   });
 
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
+  final bool? primary;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -221,6 +223,7 @@ class SliverHomeSearchBar extends ConsumerWidget {
       onSearch: onSearch,
       selectedTagController: selectedTagController,
       booruBuilder: booruBuilder,
+      primary: primary,
     );
   }
 }
@@ -232,12 +235,14 @@ class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
     super.key,
     this.selectedTagString,
     this.selectedTagController,
+    this.primary,
   });
 
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
   final BooruBuilder? booruBuilder;
+  final bool? primary;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -291,6 +296,7 @@ class _SliverHomeSearchBarState
             );
     } else {
       return SliverAppBar(
+        primary: widget.primary ?? true,
         backgroundColor: colorScheme.surface,
         toolbarHeight: kToolbarHeight * 1.2,
         title: LayoutBuilder(

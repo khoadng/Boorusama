@@ -125,3 +125,8 @@ enum SearchBarScrollBehavior {
   autoHide,
   persistent,
 }
+
+enum SearchBarPosition {
+  top,
+  bottom,
+}
