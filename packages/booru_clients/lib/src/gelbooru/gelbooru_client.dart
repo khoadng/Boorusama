@@ -4,6 +4,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:xml/xml.dart';
 
@@ -171,6 +172,82 @@ class GelbooruClient
     );
 
     return _parseCommentDtos(response);
+  }
+
+  Future<List<CommentDto>> getCommentsFromPostId({
+    required int postId,
+    int? page,
+  }) async {
+    // Calculate pid (0-based pagination where page 1 = pid 0, page 2 = pid 10)
+    final pid = page == null ? null : (page - 1) * 10;
+
+    final crawlerDio = Dio(
+      BaseOptions(
+        baseUrl: _dio.options.baseUrl,
+        headers: _dio.options.headers,
+      ),
+    );
+
+    final response = await crawlerDio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'post',
+        's': 'view',
+        'id': postId,
+        if (pid != null) 'pid': pid,
+      },
+    );
+
+    final document = parse(response.data);
+    final comments = <CommentDto>[];
+
+    final commentBodies = document.getElementsByClassName('commentBody');
+
+    for (final div in commentBodies) {
+      try {
+        // Extract username
+        final usernameElement = div.querySelector('b');
+        final username = usernameElement?.text ?? 'Unknown';
+
+        // Find the comment ID from text
+        final fullText = div.text;
+        final idMatch = RegExp(r'#(\d+)').firstMatch(fullText);
+        final commentId = idMatch?.group(1) ?? '';
+
+        // Extract timestamp
+        final timestampMatch =
+            RegExp(r'commented at ([\d-]+ [\d:]+)').firstMatch(fullText);
+        final timestamp = timestampMatch?.group(1) ?? '';
+
+        // Get user ID from href
+        final userLink = div.querySelector('a')?.attributes['href'] ?? '';
+        final userIdMatch = RegExp(r'id=(\d+)').firstMatch(userLink);
+        final userId = userIdMatch?.group(1) ?? '';
+
+        final quoteElement = div.querySelector('div.quote');
+        final quote = quoteElement?.text ?? '';
+
+        final texts = div.nodes.whereType<Text>().toList();
+        final body = texts.length >= 3 ? texts[2].text : '';
+        final effectiveBody =
+            quote.isNotEmpty ? '[quote]\n$quote[/quote]\n\n$body' : body;
+
+        if (commentId.isNotEmpty) {
+          comments.add(CommentDto(
+            id: commentId,
+            body: effectiveBody,
+            creator: username,
+            creatorId: userId,
+            createdAt: timestamp,
+            postId: postId.toString(),
+          ));
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+
+    return comments;
   }
 
   Future<List<NoteDto>> getNotesFromPostId({

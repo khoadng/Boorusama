@@ -25,8 +25,12 @@ class GelbooruCommentPage extends ConsumerWidget {
     return CommentPageScaffold(
       postId: postId,
       useAppBar: useAppBar,
-      fetcher: (postId) =>
-          ref.watch(gelbooruCommentRepoProvider(config)).getComments(postId),
+      singlePage: false,
+      fetcher: (request) =>
+          ref.watch(gelbooruCommentRepoProvider(config)).getComments(
+                postId,
+                page: request.page,
+              ),
     );
   }
 }

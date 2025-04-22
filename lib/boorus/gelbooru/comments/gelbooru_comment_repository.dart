@@ -10,7 +10,10 @@ import '../../../core/comments/comment.dart';
 import '../../../core/configs/config.dart';
 
 abstract interface class GelbooruCommentRepository {
-  Future<List<Comment>> getComments(int postId);
+  Future<List<Comment>> getComments(
+    int postId, {
+    int? page,
+  });
 }
 
 class GelbooruCommentRepositoryApi implements GelbooruCommentRepository {
@@ -23,10 +26,16 @@ class GelbooruCommentRepositoryApi implements GelbooruCommentRepository {
   final BooruConfigAuth booruConfig;
 
   @override
-  Future<List<Comment>> getComments(int postId) => client
-      .getComments(postId: postId)
-      .then((value) => value.map(gelboorucommentDtoToGelbooruComment).toList())
-      .catchError((e) => <Comment>[]);
+  Future<List<Comment>> getComments(
+    int postId, {
+    int? page,
+  }) =>
+      client
+          .getCommentsFromPostId(postId: postId, page: page)
+          .then(
+            (value) => value.map(gelboorucommentDtoToGelbooruComment).toList(),
+          )
+          .catchError((e) => <Comment>[]);
 }
 
 Comment gelboorucommentDtoToGelbooruComment(CommentDto dto) {

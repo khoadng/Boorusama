@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../comments/comment.dart';
@@ -14,7 +15,19 @@ import '../dtext/dtext.dart';
 import '../foundation/html.dart';
 import '../widgets/widgets.dart';
 
-typedef CommentFetcher = Future<List<Comment>> Function(int postId);
+typedef CommentFetcher = Future<List<Comment>> Function(
+  CommentFetchRequest request,
+);
+
+class CommentFetchRequest {
+  const CommentFetchRequest({
+    required this.postId,
+    this.page = 1,
+  });
+
+  final int postId;
+  final int page;
+}
 
 class CommentPageScaffold extends ConsumerStatefulWidget {
   const CommentPageScaffold({
@@ -23,6 +36,8 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
     required this.useAppBar,
     super.key,
     this.commentItemBuilder,
+    this.initialPageKey = 1,
+    this.singlePage = true,
   });
 
   final int postId;
@@ -30,6 +45,8 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, Comment comment)?
       commentItemBuilder;
   final bool useAppBar;
+  final int initialPageKey;
+  final bool singlePage;
 
   @override
   ConsumerState<CommentPageScaffold> createState() =>
@@ -37,16 +54,39 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 }
 
 class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
-  List<Comment>? comments;
+  late final PagingController<int, Comment> _pagingController =
+      PagingController(firstPageKey: 1);
 
   @override
   void initState() {
     super.initState();
-    widget.fetcher(widget.postId).then((value) {
-      if (mounted) {
-        setState(() => comments = value);
+    _pagingController.addPageRequestListener(_fetchPage);
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      final comments = await widget.fetcher(
+        CommentFetchRequest(
+          postId: widget.postId,
+          page: pageKey,
+        ),
+      );
+
+      final isLastPage = widget.singlePage || comments.isEmpty;
+      if (isLastPage) {
+        _pagingController.appendLastPage(comments);
+      } else {
+        _pagingController.appendPage(comments, pageKey + 1);
       }
-    });
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -59,29 +99,42 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
               title: const Text('comment.comments').tr(),
             )
           : null,
-      body: comments != null
-          ? comments!.isNotEmpty
-              ? Padding(
-                  padding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 12),
-                  child: ListView.builder(
-                    itemCount: comments!.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: widget.commentItemBuilder != null
-                          ? widget.commentItemBuilder!(
-                              context,
-                              comments![index],
-                            )
-                          : _CommentItem(
-                              comment: comments![index],
-                              config: config,
-                            ),
+      body: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _pagingController.refresh();
+          },
+          child: PagedListView<int, Comment>(
+            pagingController: _pagingController,
+            builderDelegate: PagedChildBuilderDelegate<Comment>(
+              itemBuilder: (context, comment, index) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: widget.commentItemBuilder != null
+                    ? widget.commentItemBuilder!(context, comment)
+                    : _CommentItem(comment: comment, config: config),
+              ),
+              firstPageProgressIndicatorBuilder: (context) => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+              noItemsFoundIndicatorBuilder: (context) => const NoDataBox(),
+              firstPageErrorIndicatorBuilder: (context) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Error loading comments'),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () => _pagingController.refresh(),
+                      child: const Text('Retry'),
                     ),
-                  ),
-                )
-              : const NoDataBox()
-          : const Center(child: CircularProgressIndicator()),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
