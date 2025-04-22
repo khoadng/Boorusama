@@ -148,7 +148,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
                   top: false,
                   bottom: position != BooruConfigSelectorPosition.bottom,
                   child: SizedBox(
-                    height: kToolbarHeight * 1.2,
+                    height: kToolbarHeight,
                     child: CustomScrollView(
                       slivers: [
                         SliverHomeSearchBar(

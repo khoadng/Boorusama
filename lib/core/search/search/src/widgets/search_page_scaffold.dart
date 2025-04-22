@@ -47,9 +47,8 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
   bool useHero,
 );
 
-const _kSearchBarHeight = kToolbarHeight * 1.2;
+const _kSearchBarHeight = kToolbarHeight;
 const _kSelectedTagHeight = 48.0;
-const _kViewTopPadding = 8.0;
 const _kMultiSelectTopHeight = kToolbarHeight;
 
 double _calcBaseSearchHeight(List<TagSearchItem> tags) {
@@ -318,7 +317,7 @@ class _SearchPageScaffoldState<T extends Post>
 
         final viewPadding = searchBarPosition == SearchBarPosition.bottom
             ? MediaQuery.viewPaddingOf(context).bottom
-            : _kViewTopPadding;
+            : 0;
 
         final searchRegionHeight =
             _calcSearchRegionHeight(_tagsController.value) + viewPadding;
@@ -507,12 +506,12 @@ class _SearchRegion extends ConsumerWidget {
           second: controller.didSearchOnce,
           builder: (_, state, searchOnce) {
             return SearchAppBar(
-              onTapOutside: searchBarPosition == SearchBarPosition.bottom &&
-                      searchOnce &&
-                      state == SearchState.initial
-                  ? null
-                  // When search bar is at the bottom, keyboard will be kept open for better UX unless the app switches to results
-                  : () {},
+              onTapOutside: switch (searchBarPosition) {
+                SearchBarPosition.top => null,
+                // When search bar is at the bottom, keyboard will be kept open for better UX unless the app switches to results
+                SearchBarPosition.bottom =>
+                  searchOnce && state == SearchState.initial ? null : () {},
+              },
               onSubmitted: (value) => controller.submit(value),
               trailingSearchButton: _buildTrailingButton(context),
               innerSearchButton: _buildSearchButton(context),
@@ -759,7 +758,7 @@ class __DisplacementState extends ConsumerState<_Displacement> {
 
         final baseHeight = searchBarPosition == SearchBarPosition.bottom
             ? effectivePadding + _calcBaseSearchHeight(value)
-            : _kViewTopPadding + _calcBaseSearchHeight(value);
+            : _calcBaseSearchHeight(value);
 
         return RepaintBoundary(
           child: AnimatedBuilder(
@@ -868,6 +867,12 @@ class _SearchSuggestions extends ConsumerWidget {
                               ref.watch(suggestionProvider(query.text));
 
                           return TagSuggestionItems(
+                            padding: const EdgeInsets.only(
+                              left: 12,
+                              right: 12,
+                              top: 8,
+                              bottom: 16,
+                            ),
                             reverse:
                                 searchBarPosition == SearchBarPosition.bottom,
                             config: ref.watchConfigAuth,

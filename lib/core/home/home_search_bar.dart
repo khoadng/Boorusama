@@ -298,7 +298,7 @@ class _SliverHomeSearchBarState
       return SliverAppBar(
         primary: widget.primary ?? true,
         backgroundColor: colorScheme.surface,
-        toolbarHeight: kToolbarHeight * 1.2,
+        toolbarHeight: kToolbarHeight,
         title: LayoutBuilder(
           builder: (context, constraints) => Row(
             mainAxisAlignment: MainAxisAlignment.center,

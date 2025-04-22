@@ -75,7 +75,7 @@ class SearchAppBar extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) => AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: height ?? kToolbarHeight * 1.2,
+        toolbarHeight: height ?? kToolbarHeight,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

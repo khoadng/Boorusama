@@ -100,7 +100,7 @@ class _MobileHomePageScaffoldState
                   top: false,
                   bottom: position != BooruConfigSelectorPosition.bottom,
                   child: SizedBox(
-                    height: kToolbarHeight * 1.2,
+                    height: kToolbarHeight,
                     child: CustomScrollView(
                       slivers: [
                         SliverHomeSearchBar(

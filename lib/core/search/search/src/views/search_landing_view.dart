@@ -81,6 +81,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
         ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
 
     final children = [
+      const SizedBox(height: 8),
       if (widget.notice != null) widget.notice!,
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),

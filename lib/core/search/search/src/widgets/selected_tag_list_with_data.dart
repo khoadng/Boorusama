@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../bulk_downloads/routes.dart';
 import '../../../../configs/ref.dart';
 import '../../../../configs/routes.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../queries/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import 'selected_tag_list.dart';
@@ -16,24 +18,38 @@ class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
     required this.controller,
     super.key,
+    this.flexibleBorderPosition = true,
   });
 
   final SelectedTagController controller;
+  final bool flexibleBorderPosition;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
     final tagComposer = ref.watch(currentTagQueryComposerProvider);
     final colorScheme = Theme.of(context).colorScheme;
+    final searchBarPosition = ref.watch(searchBarPositionProvider);
+
+    final borderSide = BorderSide(
+      color: colorScheme.outlineVariant,
+      width: 1,
+    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 1,
-          ),
-        ),
+        border: flexibleBorderPosition
+            ? Border(
+                bottom: searchBarPosition == SearchBarPosition.top
+                    ? borderSide
+                    : BorderSide.none,
+                top: searchBarPosition == SearchBarPosition.bottom
+                    ? borderSide
+                    : BorderSide.none,
+              )
+            : Border(
+                bottom: borderSide,
+              ),
       ),
       child: ValueListenableBuilder(
         valueListenable: controller,

@@ -76,6 +76,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
             ),
             SelectedTagListWithData(
               controller: selectedTagController,
+              flexibleBorderPosition: false,
             ),
           ],
         );
