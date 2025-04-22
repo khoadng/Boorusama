@@ -270,18 +270,15 @@ class _SearchPageScaffoldState<T extends Post>
                         : _Landing(
                             metatags: widget.metatags,
                             trending: widget.trending,
-                            searchBarAnimController: _searchBarAnimController,
                             multiSelectController: _multiSelectController,
                           );
                   },
                 ),
                 _SearchOptionsView(
                   metatags: widget.metatags,
-                  searchBarAnimController: _searchBarAnimController,
                   multiSelectController: _multiSelectController,
                 ),
                 _SearchSuggestions(
-                  searchBarAnimController: _searchBarAnimController,
                   multiSelectController: _multiSelectController,
                 ),
                 _SearchBarPositioned(
@@ -384,63 +381,82 @@ class _SearchPageScaffoldState<T extends Post>
     BuildContext context,
     PostGridController<T> controller,
   ) {
-    return _SearchRegionSafeArea(
-      searchBarAnimController: _searchBarAnimController,
-      multiSelectController: _multiSelectController,
-      child: ColoredBox(
-        color: Theme.of(context).colorScheme.surface,
-        child: SafeArea(
-          bottom: false,
-          child: PostGrid<T>(
-            multiSelectController: _multiSelectController,
-            scrollController: _scrollController,
-            controller: controller,
-            itemBuilder: widget.itemBuilder != null
-                ? (
+    final searchBarPosition = ref.watch(searchBarPositionProvider);
+
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: SafeArea(
+        bottom: false,
+        child: PostGrid<T>(
+          multiSelectController: _multiSelectController,
+          scrollController: _scrollController,
+          controller: controller,
+          itemBuilder: widget.itemBuilder != null
+              ? (
+                  context,
+                  index,
+                  multiSelectController,
+                  scrollController,
+                  useHero,
+                ) {
+                  return widget.itemBuilder!(
                     context,
                     index,
                     multiSelectController,
-                    scrollController,
+                    _scrollController,
+                    controller,
                     useHero,
-                  ) {
-                    return widget.itemBuilder!(
-                      context,
-                      index,
-                      multiSelectController,
-                      _scrollController,
-                      controller,
-                      useHero,
-                    );
-                  }
-                : null,
-            sliverHeaders: [
-              const SearchResultAnalyticsAnchor(),
-              if (widget.extraHeaders != null)
-                ...widget.extraHeaders!(
-                  context,
-                  controller,
-                ),
+                  );
+                }
+              : null,
+          scrollToTopButton: ValueListenableBuilder(
+            valueListenable: _tagsController,
+            builder: (_, tags, __) {
+              return _ScrollToTopButtonPadding(
+                multiSelectController: _multiSelectController,
+                searchBarAnimController: _searchBarAnimController,
+                builder: (context, value) {
+                  return PostGridScrollToTopButton(
+                    controller: controller,
+                    multiSelectController: _multiSelectController,
+                    autoScrollController: _scrollController,
+                    bottomPadding: (1 - value) * _calcSearchRegionHeight(tags),
+                  );
+                },
+              );
+            },
+          ),
+          sliverHeaders: [
+            if (searchBarPosition == SearchBarPosition.top)
               SliverToBoxAdapter(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: _controller.tagString,
-                      builder: (context, value, _) =>
-                          ResultHeaderFromController(
-                        controller: controller,
-                        onRefresh: null,
-                        hasCount:
-                            ref.watchConfigAuth.booruType.postCountMethod ==
-                                PostCountMethod.search,
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
+                child: _Displacement(
+                  multiSelectController: _multiSelectController,
                 ),
               ),
-            ],
-          ),
+            const SearchResultAnalyticsAnchor(),
+            if (widget.extraHeaders != null)
+              ...widget.extraHeaders!(
+                context,
+                controller,
+              ),
+            SliverToBoxAdapter(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: _controller.tagString,
+                    builder: (context, value, _) => ResultHeaderFromController(
+                      controller: controller,
+                      onRefresh: null,
+                      hasCount: ref.watchConfigAuth.booruType.postCountMethod ==
+                          PostCountMethod.search,
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -450,18 +466,15 @@ class _SearchPageScaffoldState<T extends Post>
 class _SearchRegionSafeArea extends ConsumerWidget {
   const _SearchRegionSafeArea({
     required this.child,
-    required this.searchBarAnimController,
     required this.multiSelectController,
   });
 
   final Widget child;
-  final AnimationController searchBarAnimController;
   final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final displacement = _Displacement(
-      searchBarAnimController: searchBarAnimController,
       multiSelectController: multiSelectController,
     );
     final searchBarPosition = ref.watch(searchBarPositionProvider);
@@ -474,6 +487,65 @@ class _SearchRegionSafeArea extends ConsumerWidget {
         ),
         if (searchBarPosition == SearchBarPosition.bottom) displacement,
       ],
+    );
+  }
+}
+
+class _ScrollToTopButtonPadding extends ConsumerStatefulWidget {
+  const _ScrollToTopButtonPadding({
+    required this.builder,
+    required this.searchBarAnimController,
+    required this.multiSelectController,
+  });
+
+  final Widget Function(
+    BuildContext context,
+    double value,
+  ) builder;
+
+  final AnimationController searchBarAnimController;
+  final MultiSelectController multiSelectController;
+
+  @override
+  ConsumerState<_ScrollToTopButtonPadding> createState() =>
+      __ScrollToTopButtonPaddingState();
+}
+
+class __ScrollToTopButtonPaddingState
+    extends ConsumerState<_ScrollToTopButtonPadding> {
+  late final CurvedAnimation _animation = CurvedAnimation(
+    parent: widget.searchBarAnimController,
+    curve: Curves.easeInOut,
+  );
+
+  @override
+  void dispose() {
+    _animation.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final searchBarPosition = ref.watch(searchBarPositionProvider);
+
+    return ValueListenableBuilder(
+      valueListenable: widget.multiSelectController.multiSelectNotifier,
+      builder: (_, multiSelect, __) {
+        if (multiSelect || searchBarPosition == SearchBarPosition.top) {
+          return widget.builder(context, 1);
+        }
+
+        return AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return widget.builder(
+              context,
+              _animation.value,
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -621,8 +693,10 @@ class _SearchRegionBottomDisplacement extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
     final viewPadding = MediaQuery.viewPaddingOf(context).bottom;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return SizedBox(
+    return Container(
+      color: colorScheme.surface,
       height: max(viewInsets, viewPadding),
     );
   }
@@ -705,34 +779,15 @@ class __SearchBarPositionedState extends ConsumerState<_SearchBarPositioned> {
   }
 }
 
-class _Displacement extends ConsumerStatefulWidget {
+class _Displacement extends ConsumerWidget {
   const _Displacement({
-    required this.searchBarAnimController,
     required this.multiSelectController,
   });
 
-  final AnimationController searchBarAnimController;
   final MultiSelectController multiSelectController;
 
   @override
-  ConsumerState<_Displacement> createState() => __DisplacementState();
-}
-
-class __DisplacementState extends ConsumerState<_Displacement> {
-  late final _searchBarCurve = CurvedAnimation(
-    parent: widget.searchBarAnimController,
-    curve: Curves.easeInOut,
-  );
-
-  @override
-  void dispose() {
-    _searchBarCurve.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = InheritedSearchPageController.of(context);
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
@@ -740,7 +795,7 @@ class __DisplacementState extends ConsumerState<_Displacement> {
       first: controller.tagsController,
       second: controller.state,
       third: controller.didSearchOnce,
-      fourth: widget.multiSelectController.multiSelectNotifier,
+      fourth: multiSelectController.multiSelectNotifier,
       builder: (_, value, state, searchOnce, multiSelect) {
         if (multiSelect) {
           return const SizedBox.shrink();
@@ -760,15 +815,8 @@ class __DisplacementState extends ConsumerState<_Displacement> {
             ? effectivePadding + _calcBaseSearchHeight(value)
             : _calcBaseSearchHeight(value);
 
-        return RepaintBoundary(
-          child: AnimatedBuilder(
-            animation: _searchBarCurve,
-            builder: (context, _) {
-              return SizedBox(
-                height: baseHeight * (1 - _searchBarCurve.value),
-              );
-            },
-          ),
+        return SizedBox(
+          height: baseHeight,
         );
       },
     );
@@ -779,7 +827,6 @@ class _Landing extends ConsumerWidget {
   const _Landing({
     required this.metatags,
     required this.trending,
-    required this.searchBarAnimController,
     required this.multiSelectController,
   });
 
@@ -793,7 +840,6 @@ class _Landing extends ConsumerWidget {
     SearchPageController controller,
   )? trending;
 
-  final AnimationController searchBarAnimController;
   final MultiSelectController multiSelectController;
 
   @override
@@ -802,7 +848,6 @@ class _Landing extends ConsumerWidget {
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return _SearchRegionSafeArea(
-      searchBarAnimController: searchBarAnimController,
       multiSelectController: multiSelectController,
       child: SearchLandingView(
         reverse: searchBarPosition == SearchBarPosition.bottom,
@@ -825,11 +870,9 @@ class _Landing extends ConsumerWidget {
 
 class _SearchSuggestions extends ConsumerWidget {
   const _SearchSuggestions({
-    required this.searchBarAnimController,
     required this.multiSelectController,
   });
 
-  final AnimationController searchBarAnimController;
   final MultiSelectController multiSelectController;
 
   @override
@@ -839,7 +882,6 @@ class _SearchSuggestions extends ConsumerWidget {
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return _SearchRegionSafeArea(
-      searchBarAnimController: searchBarAnimController,
       multiSelectController: multiSelectController,
       child: MultiValueListenableBuilder2(
         first: controller.state,
@@ -902,13 +944,11 @@ class _SearchSuggestions extends ConsumerWidget {
 class _SearchOptionsView extends ConsumerWidget {
   const _SearchOptionsView({
     required this.metatags,
-    required this.searchBarAnimController,
     required this.multiSelectController,
   });
 
   final Widget? Function(BuildContext context, SearchPageController controller)?
       metatags;
-  final AnimationController searchBarAnimController;
   final MultiSelectController multiSelectController;
 
   @override
@@ -918,7 +958,6 @@ class _SearchOptionsView extends ConsumerWidget {
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return _SearchRegionSafeArea(
-      searchBarAnimController: searchBarAnimController,
       multiSelectController: multiSelectController,
       child: ValueListenableBuilder(
         valueListenable: controller.state,

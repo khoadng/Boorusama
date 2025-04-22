@@ -50,6 +50,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
     this.body,
     this.header,
     this.multiSelectActions,
+    this.scrollToTopButton,
     this.enablePullToRefresh,
   });
 
@@ -63,6 +64,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
   final Widget? body;
   final Widget? header;
   final Widget? multiSelectActions;
+  final Widget? scrollToTopButton;
   final bool? enablePullToRefresh;
 
   @override
@@ -156,30 +158,12 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                 : const SizedBox.shrink();
           },
         ),
-        scrollToTopButton: _ScrollToTopPositioned(
-          child: ValueListenableBuilder(
-            valueListenable: _multiSelectController.multiSelectNotifier,
-            builder: (_, multiSelect, __) => Padding(
-              padding: multiSelect
-                  ? const EdgeInsets.only(bottom: 60)
-                  : EdgeInsets.zero,
-              child: ScrollToTop(
-                scrollController: _autoScrollController,
-                onBottomReached: () {
-                  if (widget.controller.pageMode == PageMode.infinite &&
-                      widget.controller.hasMore) {
-                    widget.controller.fetchMore();
-                  }
-                },
-                child: BooruScrollToTopButton(
-                  onPressed: () {
-                    _autoScrollController.jumpTo(0);
-                  },
-                ),
-              ),
+        scrollToTopButton: widget.scrollToTopButton ??
+            PostGridScrollToTopButton(
+              controller: widget.controller,
+              multiSelectController: _multiSelectController,
+              autoScrollController: _autoScrollController,
             ),
-          ),
-        ),
         onNextPage: () => _goToNextPage(
           widget.controller,
           _autoScrollController,
@@ -210,6 +194,51 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                     ),
               ),
             ),
+      ),
+    );
+  }
+}
+
+class PostGridScrollToTopButton extends StatelessWidget {
+  const PostGridScrollToTopButton({
+    required this.controller,
+    required this.multiSelectController,
+    required this.autoScrollController,
+    super.key,
+    this.bottomPadding,
+  });
+
+  final PostGridController controller;
+  final MultiSelectController multiSelectController;
+  final AutoScrollController autoScrollController;
+  final double? bottomPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveBottomPadding = bottomPadding ?? 0;
+
+    return _ScrollToTopPositioned(
+      child: ValueListenableBuilder(
+        valueListenable: multiSelectController.multiSelectNotifier,
+        builder: (_, multiSelect, __) => Padding(
+          padding: multiSelect
+              ? EdgeInsets.only(bottom: 60 + effectiveBottomPadding)
+              : EdgeInsets.only(bottom: effectiveBottomPadding),
+          child: ScrollToTop(
+            scrollController: autoScrollController,
+            onBottomReached: () {
+              if (controller.pageMode == PageMode.infinite &&
+                  controller.hasMore) {
+                controller.fetchMore();
+              }
+            },
+            child: BooruScrollToTopButton(
+              onPressed: () {
+                autoScrollController.jumpTo(0);
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
