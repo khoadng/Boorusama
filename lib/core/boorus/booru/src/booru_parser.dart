@@ -28,7 +28,7 @@ class BooruDefinition {
   NetworkProtocol getProtocol() =>
       parseProtocol(rawConfig['protocol'] ?? 'https_2');
   List<String> getSites() => List<String>.from(rawConfig['sites'] ?? []);
-  Map<String, dynamic> getHeaders() {
+  Map<String, dynamic>? getHeaders() {
     final headers = <String, dynamic>{};
 
     for (final entry in rawConfig['headers'] ?? <String, dynamic>{}) {
@@ -37,7 +37,7 @@ class BooruDefinition {
       }
     }
 
-    return headers;
+    return headers.isNotEmpty ? headers : null;
   }
 
   String? getLoginUrl() => rawConfig['login-url'];

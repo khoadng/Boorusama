@@ -376,7 +376,7 @@ class Sankaku extends Booru {
 
   @override
   final List<String> sites;
-  final Map<String, dynamic> headers;
+  final Map<String, dynamic>? headers;
 
   @override
   BooruType get type => BooruType.sankaku;
