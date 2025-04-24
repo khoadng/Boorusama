@@ -65,4 +65,21 @@ mixin DanbooruClientUsers {
       cancelToken: cancelToken,
     );
   }
+
+  Future<List<UserFeedbackDto>> getUserFeedbacks({
+    required int userId,
+    CancelToken? cancelToken,
+  }) async {
+    final response = await dio.get(
+      '/user_feedbacks.json',
+      queryParameters: {
+        'search[user_id]': userId,
+      },
+      cancelToken: cancelToken,
+    );
+
+    return (response.data as List)
+        .map((item) => UserFeedbackDto.fromJson(item))
+        .toList();
+  }
 }

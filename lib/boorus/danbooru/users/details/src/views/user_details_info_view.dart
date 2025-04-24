@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/theme.dart';
+import '../../../feedbacks/routes.dart';
 import '../../../user/user.dart';
 import '../widgets/user_details_section_card.dart';
 
@@ -28,13 +30,31 @@ class UserDetailsInfoView extends ConsumerWidget {
       child: Column(
         children: [
           const SizedBox(height: 12),
-          UserDetailsSectionCard(
+          UserDetailsSectionCard.text(
             title: 'Activity',
             child: UserStatsGroup(user: user),
           ),
           const SizedBox(height: 24),
           UserDetailsSectionCard(
-            title: 'Feedbacks',
+            title: InkWell(
+              onTap: () => goToUserFeedbackPage(context, user.id),
+              child: const Row(
+                children: [
+                  Text(
+                    'Feedbacks',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Icon(
+                    Symbols.arrow_forward_ios,
+                    size: 14,
+                  ),
+                ],
+              ),
+            ),
             child: UserFeedbacksGroup(user: user),
           ),
         ],

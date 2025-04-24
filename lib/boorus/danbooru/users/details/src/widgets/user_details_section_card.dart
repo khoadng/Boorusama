@@ -8,8 +8,25 @@ class UserDetailsSectionCard extends StatelessWidget {
     super.key,
   });
 
+  factory UserDetailsSectionCard.text({
+    required Widget child,
+    required String title,
+    Key? key,
+  }) =>
+      UserDetailsSectionCard(
+        key: key,
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        child: child,
+      );
+
   final Widget child;
-  final String title;
+  final Widget title;
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +43,7 @@ class UserDetailsSectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
+          title,
           const SizedBox(height: 12),
           child,
         ],

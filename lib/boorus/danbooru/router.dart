@@ -12,6 +12,7 @@ import 'saved_searches/feed/routes.dart';
 import 'saved_searches/listing/routes.dart';
 import 'tags/edit/routes.dart';
 import 'users/details/routes.dart';
+import 'users/feedbacks/routes.dart';
 import 'users/user/routes.dart';
 import 'versions/routes.dart';
 
@@ -44,4 +45,5 @@ final danbooruDirectRoutes = [
   danbooruPostVersionRoutes,
   danbooruPoolRoutes,
   danbooruUploadRoutes,
+  danbooruUserFeedbackRoutes,
 ];
