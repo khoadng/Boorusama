@@ -342,6 +342,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           tags,
           page,
           limit: task.perPage,
+          options: PostFetchOptions.raw,
         )
         .run();
 
