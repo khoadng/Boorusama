@@ -19,6 +19,8 @@ class BookmarkHiveObject extends HiveObject {
     required this.tags,
     required this.realSourceUrl,
     required this.format,
+    required this.postId,
+    required this.metadata,
   });
   @HiveField(0)
   int? booruId;
@@ -58,4 +60,10 @@ class BookmarkHiveObject extends HiveObject {
 
   @HiveField(12)
   String? format;
+
+  @HiveField(13)
+  int? postId;
+
+  @HiveField(14)
+  Map<String, String>? metadata;
 }

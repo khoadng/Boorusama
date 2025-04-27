@@ -24,6 +24,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required this.realSourceUrl,
     required this.format,
     required ImageUrlResolver imageUrlResolver,
+    required this.postId,
+    required this.metadata,
   })  : _originalUrl = originalUrl,
         _sampleUrl = sampleUrl,
         _thumbnailUrl = thumbnailUrl,
@@ -49,6 +51,11 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       realSourceUrl: json['realSourceUrl'] as String?,
       format: json['format'] as String?,
       imageUrlResolver: imageUrlResolver,
+      postId: json['postId'] as int?,
+      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+            (k, v) => MapEntry(k, v.toString()),
+          ) ??
+          {},
     );
   }
 
@@ -71,6 +78,34 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   final Set<String> tags;
   final String? realSourceUrl;
   final String? format;
+  final int? postId;
+  final Map<String, String> metadata;
+
+  static Map<String, String> toMetadata(PostMetadata? metadata) {
+    if (metadata == null) {
+      return <String, String>{};
+    }
+
+    final map = <String, String>{};
+
+    if (metadata.page != null) {
+      map['page'] = metadata.page.toString();
+    }
+    if (metadata.limit != null) {
+      map['limit'] = metadata.limit.toString();
+    }
+    if (metadata.search != null) {
+      map['search'] = metadata.search.toString();
+    }
+
+    return map;
+  }
+
+  int? get metadataPage =>
+      metadata['page'] != null ? int.tryParse(metadata['page']!) : null;
+  int? get metadataLimit =>
+      metadata['limit'] != null ? int.tryParse(metadata['limit']!) : null;
+  String? get metadataSearch => metadata['search'];
 
   String get originalUrl => _resolver.resolveImageUrl(_originalUrl);
   String get sampleUrl => _resolver.resolvePreviewUrl(_sampleUrl);
@@ -106,6 +141,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     realSourceUrl: null,
     format: null,
     imageUrlResolver: const DefaultImageUrlResolver(),
+    postId: null,
+    metadata: const {},
   );
 
   @override
@@ -124,6 +161,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
         tags,
         realSourceUrl,
         format,
+        postId,
+        metadata,
       ];
 
   Bookmark copyWith({
@@ -141,6 +180,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     Set<String>? tags,
     String? Function()? realSourceUrl,
     String? Function()? format,
+    int? Function()? postId,
+    Map<String, String>? metadata,
   }) {
     return Bookmark(
       id: id ?? this.id,
@@ -159,6 +200,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
           realSourceUrl != null ? realSourceUrl() : this.realSourceUrl,
       format: format != null ? format() : this.format,
       imageUrlResolver: _resolver,
+      postId: postId != null ? postId() : this.postId,
+      metadata: metadata ?? this.metadata,
     );
   }
 
@@ -178,6 +221,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       'tags': tags.toList(),
       'realSourceUrl': realSourceUrl,
       'format': format,
+      'postId': postId,
+      'metadata': Map<String, String>.from(metadata),
     };
   }
 }

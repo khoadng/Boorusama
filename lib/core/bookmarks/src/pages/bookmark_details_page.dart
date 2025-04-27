@@ -93,23 +93,27 @@ class _BookmarkDetailsPageState
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
-      topRightButtonsBuilder: (controller) => [
-        GeneralMoreActionButton(
-          post: InheritedPost.of<BookmarkPost>(context),
-          onStartSlideshow: () => controller.startSlideshow(),
-          onDownload: (post) {
-            ref.bookmarks.downloadBookmarks(
-              ref.readConfig,
-              [
-                post.toBookmark(
-                  imageUrlResolver: (booruId) =>
-                      ref.read(bookmarkUrlResolverProvider(booruId)),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
+      topRightButtonsBuilder: (controller) {
+        final post = InheritedPost.of<BookmarkPost>(context);
+
+        return [
+          GeneralMoreActionButton(
+            post: post,
+            onStartSlideshow: () => controller.startSlideshow(),
+            onDownload: (_) {
+              ref.bookmarks.downloadBookmarks(
+                ref.readConfig,
+                [
+                  post.toBookmark(
+                    imageUrlResolver: (booruId) =>
+                        ref.read(bookmarkUrlResolverProvider(booruId)),
+                  ),
+                ],
+              );
+            },
+          ),
+        ];
+      },
     );
   }
 }
