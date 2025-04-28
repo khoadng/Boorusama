@@ -241,6 +241,11 @@ class SankakuRepository implements BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return SankakuPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {

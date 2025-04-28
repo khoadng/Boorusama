@@ -266,6 +266,11 @@ class MoebooruRepository implements BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return ShowPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 final kMoebooruAltHomeView = {

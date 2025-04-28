@@ -218,6 +218,11 @@ class AnimePicturesRepository implements BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return PluralPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class AnimePicturesCurrentUserIdScope extends ConsumerWidget {

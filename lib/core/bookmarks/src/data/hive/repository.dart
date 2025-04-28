@@ -7,7 +7,6 @@ import '../../../../posts/post/post.dart';
 import '../../../../posts/sources/source.dart';
 import '../../types/bookmark.dart';
 import '../../types/bookmark_repository.dart';
-import '../../types/image_url_resolver.dart';
 import '../bookmark_convert.dart';
 import 'object.dart';
 

@@ -30,7 +30,6 @@ import '../../../settings/providers.dart';
 import '../data/providers.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
-import '../types/image_url_resolver.dart';
 import 'bookmark_image_cache_manager.dart';
 
 final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
@@ -48,15 +47,15 @@ final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   return bookmarks.isNotEmpty;
 });
 
-//FIXME: should be handled in booru repository
 final bookmarkUrlResolverProvider =
     Provider.autoDispose.family<ImageUrlResolver, int?>((ref, booruId) {
   final booruType = intToBooruType(booruId);
 
-  return switch (booruType) {
-    BooruType.gelbooru => const GelbooruImageUrlResolver(),
-    _ => const DefaultImageUrlResolver(),
-  };
+  final registry = ref.watch(booruEngineRegistryProvider);
+
+  final repo = registry.getRepository(booruType);
+
+  return repo?.imageUrlResolver() ?? const DefaultImageUrlResolver();
 });
 
 final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
@@ -467,36 +466,4 @@ extension BookmarkStateX on BookmarkState {
 
 extension BookmarkNotifierX on WidgetRef {
   BookmarkNotifier get bookmarks => read(bookmarkProvider.notifier);
-}
-
-class GelbooruImageUrlResolver implements ImageUrlResolver {
-  const GelbooruImageUrlResolver();
-
-  @override
-  String resolveImageUrl(String url) {
-    // Handle the img3 to img4 migration
-    final uri = Uri.tryParse(url);
-
-    if (uri == null) {
-      return url; // Return original if URL is invalid
-    }
-
-    // Check if this is a gelbooru URL
-    if (uri.host.contains('gelbooru.com')) {
-      // Handle specific subdomain changes
-      if (uri.host == 'img3.gelbooru.com') {
-        // Create new URL with updated subdomain
-        final newUri = uri.replace(host: 'img4.gelbooru.com');
-        return newUri.toString();
-      }
-    }
-
-    return url; // Return original if no patterns match
-  }
-
-  @override
-  String resolvePreviewUrl(String url) => resolveImageUrl(url);
-
-  @override
-  String resolveThumbnailUrl(String url) => resolveImageUrl(url);
 }

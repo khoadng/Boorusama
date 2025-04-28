@@ -384,6 +384,11 @@ class GelbooruRepository implements BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return IndexPhpPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const GelbooruImageUrlResolver();
+  }
 }
 
 final kGelbooruAltHomeView = {
@@ -454,4 +459,36 @@ class GelbooruParser extends BooruParser {
       loginUrl: data['login-url'],
     );
   }
+}
+
+class GelbooruImageUrlResolver implements ImageUrlResolver {
+  const GelbooruImageUrlResolver();
+
+  @override
+  String resolveImageUrl(String url) {
+    // Handle the img3 to img4 migration
+    final uri = Uri.tryParse(url);
+
+    if (uri == null) {
+      return url; // Return original if URL is invalid
+    }
+
+    // Check if this is a gelbooru URL
+    if (uri.host.contains('gelbooru.com')) {
+      // Handle specific subdomain changes
+      if (uri.host == 'img3.gelbooru.com') {
+        // Create new URL with updated subdomain
+        final newUri = uri.replace(host: 'img4.gelbooru.com');
+        return newUri.toString();
+      }
+    }
+
+    return url; // Return original if no patterns match
+  }
+
+  @override
+  String resolvePreviewUrl(String url) => resolveImageUrl(url);
+
+  @override
+  String resolveThumbnailUrl(String url) => resolveImageUrl(url);
 }

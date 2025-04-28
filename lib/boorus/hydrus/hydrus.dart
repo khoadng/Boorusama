@@ -383,6 +383,11 @@ class HydrusRepository implements BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return const NoLinkPostLinkGenerator();
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class HydrusHomePage extends StatelessWidget {

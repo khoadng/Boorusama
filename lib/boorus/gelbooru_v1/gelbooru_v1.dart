@@ -184,6 +184,11 @@ class GelbooruV1Repository implements BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return IndexPhpPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {

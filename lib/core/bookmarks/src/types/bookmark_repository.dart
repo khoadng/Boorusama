@@ -1,7 +1,6 @@
 // Project imports:
 import '../../../posts/post/post.dart';
 import 'bookmark.dart';
-import 'image_url_resolver.dart';
 
 abstract class BookmarkRepository<T extends Post> {
   Future<Bookmark> addBookmark(

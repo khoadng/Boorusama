@@ -225,6 +225,11 @@ class ZerochanRepository implements BooruRepository {
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
     return DirectIdPathPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class ZerochanTagsTile extends ConsumerStatefulWidget {

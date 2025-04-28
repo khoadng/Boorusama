@@ -228,6 +228,11 @@ class SzurubooruRepository implements BooruRepository {
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
     return SingularPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class SzurubooruSearchPage extends ConsumerWidget {

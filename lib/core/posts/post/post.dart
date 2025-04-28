@@ -9,3 +9,4 @@ export 'src/mixins/translatable_mixin.dart';
 export 'src/mixins/post_mixin.dart';
 export 'src/types/post_id_generator.dart';
 export 'src/types/post_link_generator.dart';
+export 'src/types/image_url_resolver.dart';

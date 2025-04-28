@@ -28,4 +28,5 @@ abstract class BooruRepository {
   BooruSiteValidator? siteValidator(BooruConfigAuth config);
   TagQueryComposer tagComposer(BooruConfigSearch config);
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config);
+  ImageUrlResolver imageUrlResolver();
 }

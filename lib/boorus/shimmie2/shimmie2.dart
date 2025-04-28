@@ -198,6 +198,11 @@ class Shimmie2Repository implements BooruRepository {
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
     return ViewPostLinkGenerator(baseUrl: config.url);
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return const DefaultImageUrlResolver();
+  }
 }
 
 class Shimmie2FileDetailsSection extends ConsumerWidget {

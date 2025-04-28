@@ -7,7 +7,6 @@ import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../posts/sources/source.dart';
 import '../types/bookmark.dart';
-import '../types/image_url_resolver.dart';
 import 'hive/object.dart';
 
 // map BoxError to BookmarkGetError
