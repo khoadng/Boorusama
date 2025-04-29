@@ -12,12 +12,17 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../core/widgets/widgets.dart';
+import '../../configs/config.dart';
+import '../../configs/ref.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/toast.dart';
 import '../../foundation/url_launcher.dart';
 import '../../http/http.dart';
+import '../../http/providers.dart';
+import '../../images/providers.dart';
 import '../../settings/routes.dart';
 import '../../theme.dart';
+import '../downloader/background_downloader.dart';
 import '../downloader/metadata.dart';
 import '../internal_widgets/download_tile.dart';
 import '../l10n.dart';
@@ -182,6 +187,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
     final tasks = ref.watch(downloadFilteredProvider(widget.filter));
     final group = ref.watch(downloadGroupProvider);
     final isDefaultGroup = group == FileDownloader.defaultGroup;
+    final config = ref.watchConfig;
 
     return Scaffold(
       appBar: AppBar(
@@ -275,7 +281,32 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                               FileDownloader().resume(dt);
                             },
                             onRestart: () {
-                              FileDownloader().enqueue(task.task);
+                              //FIXME: need to centralize the headers injection
+                              ref.invalidate(cachedBypassDdosHeadersProvider);
+                              WidgetsBinding.instance.addPostFrameCallback(
+                                (_) {
+                                  final headers = {
+                                    AppHttpHeaders.userAgentHeader: ref.read(
+                                      userAgentProvider(
+                                        config.auth.booruType,
+                                      ),
+                                    ),
+                                    ...ref.read(
+                                      extraHttpHeaderProvider(config.auth),
+                                    ),
+                                    ...ref.read(
+                                      cachedBypassDdosHeadersProvider(
+                                        config.url,
+                                      ),
+                                    ),
+                                  };
+
+                                  FileDownloader().retryTask(
+                                    task.task,
+                                    headers: headers,
+                                  );
+                                },
+                              );
                             },
                             onCancel: () {
                               FileDownloader()
@@ -320,6 +351,7 @@ class RetryAllFailedButton extends ConsumerWidget {
     final failed = ref.watch(downloadTaskUpdatesProvider).failed(
           ref.watch(downloadGroupProvider),
         );
+    final config = ref.watchConfig;
 
     return ref.watch(downloadFilterProvider(filter)) == DownloadFilter.failed &&
             failed.isNotEmpty
@@ -331,8 +363,32 @@ class RetryAllFailedButton extends ConsumerWidget {
                   final dt = castOrNull<DownloadTask>(task.task);
 
                   if (dt == null) continue;
+                  //FIXME: need to centralize the headers injection
+                  ref.invalidate(cachedBypassDdosHeadersProvider);
+                  WidgetsBinding.instance.addPostFrameCallback(
+                    (_) {
+                      final headers = {
+                        AppHttpHeaders.userAgentHeader: ref.read(
+                          userAgentProvider(
+                            config.auth.booruType,
+                          ),
+                        ),
+                        ...ref.read(
+                          extraHttpHeaderProvider(config.auth),
+                        ),
+                        ...ref.read(
+                          cachedBypassDdosHeadersProvider(
+                            config.url,
+                          ),
+                        ),
+                      };
 
-                  FileDownloader().enqueue(dt);
+                      FileDownloader().retryTask(
+                        dt,
+                        headers: headers,
+                      );
+                    },
+                  );
                 }
               },
               child: const Text(DownloadTranslations.retryAllFailed).tr(),

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
@@ -14,8 +14,10 @@ import 'package:gal/gal.dart';
 // Project imports:
 import '../../configs/ref.dart';
 import '../../foundation/media_scanner.dart';
-import '../../foundation/path.dart';
+import '../../foundation/path.dart' as path;
 import '../../foundation/platform.dart';
+import '../../http/providers.dart';
+import '../../http/src/cloudflare_challenge_interceptor.dart';
 import '../../router.dart';
 import '../l10n.dart';
 import '../manager/download_task_updates_notifier.dart';
@@ -177,6 +179,7 @@ class BackgroundDownloaderScope extends ConsumerStatefulWidget {
 class _BackgroundDownloaderScopeState
     extends ConsumerState<BackgroundDownloaderScope> {
   late StreamSubscription<TaskUpdate> downloadUpdates;
+  bool _block = false;
 
   void _update(TaskUpdate update) {
     if (update case TaskStatusUpdate()) {
@@ -203,7 +206,7 @@ class _BackgroundDownloaderScopeState
                 Future.delayed(
                   const Duration(seconds: 1),
                   () {
-                    final ext = extension(update.task.url);
+                    final ext = path.extension(update.task.url);
                     final newExt = switch (ext.toLowerCase()) {
                       '.jpg' => '.png',
                       '.png' => '.webp',
@@ -229,6 +232,65 @@ class _BackgroundDownloaderScopeState
             }
           },
         );
+      } else if (update.status case TaskStatus.failed) {
+        // COPY FROM CLOUDFLARE_CHALLENGE_INTERCEPTOR START
+        final statusCode = switch (update.exception) {
+          final TaskHttpException e => e.httpResponseCode,
+          _ => null,
+        };
+        if (kDefaultCloudflareChallengeTriggerStatus.contains(statusCode)) {
+          final body = switch (update.exception) {
+            final TaskHttpException e => e.description,
+            _ => null,
+          };
+
+          if (body != null) {
+            final bodyString = body.toLowerCase();
+
+            // return early if we can't find any of the checklist
+            if (!kChecklist.any(bodyString.contains)) {
+              return;
+            }
+
+            if (_block) {
+              // if we already open the webview, we should not open it again
+              return;
+            }
+            _block = true;
+
+            // open webview to solve cloudflare challenge
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                settings: const RouteSettings(name: 'challenge_solver'),
+                builder: (context) {
+                  return CloudflareChallengeSolverPage(
+                    url: update.task.url,
+                    onCfClearance: (cookies) {
+                      final cookieJar = ref.read(cookieJarProvider);
+                      final uri = Uri.tryParse(update.task.url);
+
+                      if (uri == null) {
+                        return;
+                      }
+
+                      // set cookies
+                      cookieJar.saveFromResponse(
+                        uri,
+                        cookies,
+                      );
+                      _block = false;
+
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  );
+                },
+              ),
+            );
+          }
+        }
+        // COPY FROM CLOUDFLARE_CHALLENGE_INTERCEPTOR END
       }
     }
 
@@ -291,5 +353,18 @@ class _BackgroundDownloaderScopeState
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+}
+
+extension FileDownloaderX on FileDownloader {
+  Future<void> retryTask(
+    Task task, {
+    Map<String, String>? headers,
+  }) async {
+    final taskToRetry = headers != null && headers.isNotEmpty
+        ? task.copyWith(headers: headers)
+        : task;
+
+    await enqueue(taskToRetry);
   }
 }
