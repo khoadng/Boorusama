@@ -1,11 +1,11 @@
-// Package imports:
-import 'package:dio/dio.dart';
+// Project imports:
+import 'types.dart';
 
 enum DetectionPhase { error, response }
 
 abstract class ProtectionDetector {
   /// Returns a confidence value between 0.0 and 1.0
-  double getProtectionConfidence(Response? response, DioException? error);
+  double getProtectionConfidence(HttpResponse? response, HttpError? error);
 
   /// The confidence threshold required to consider protection active
   double get confidenceThreshold;
@@ -28,7 +28,7 @@ class CloudflareDetector implements ProtectionDetector {
   static const Set<int> _typicalStatusCodes = {403, 503};
 
   @override
-  double getProtectionConfidence(Response? response, DioException? error) {
+  double getProtectionConfidence(HttpResponse? response, HttpError? error) {
     final statusCode = error?.response?.statusCode ?? response?.statusCode;
     final body = error?.response?.data ?? response?.data;
 
@@ -68,7 +68,7 @@ class McChallengeDetector implements ProtectionDetector {
   ];
 
   @override
-  double getProtectionConfidence(Response? response, DioException? error) {
+  double getProtectionConfidence(HttpResponse? response, HttpError? error) {
     final statusCode = error?.response?.statusCode ?? response?.statusCode;
     final body = error?.response?.data ?? response?.data;
 
@@ -103,7 +103,7 @@ class AftDetector implements ProtectionDetector {
   ];
 
   @override
-  double getProtectionConfidence(Response? response, DioException? error) {
+  double getProtectionConfidence(HttpResponse? response, HttpError? error) {
     final statusCode = error?.response?.statusCode ?? response?.statusCode;
     final body = error?.response?.data ?? response?.data;
 

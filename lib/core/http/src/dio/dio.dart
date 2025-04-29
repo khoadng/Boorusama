@@ -12,13 +12,13 @@ import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
 import '../../../proxy/proxy.dart';
 import '../../../router.dart';
-import '../../ddos_solver/protection_setup.dart';
 import '../http_utils.dart';
 import '../network_protocol.dart';
 import 'dio_ext.dart';
 import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
+import 'dio_protection_setup.dart';
 
 Dio newGenericDio({
   required String baseUrl,

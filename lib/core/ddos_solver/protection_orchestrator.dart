@@ -4,13 +4,11 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/widgets.dart';
 
-// Package imports:
-import 'package:dio/dio.dart';
-
 // Project imports:
 import 'protection_detector.dart';
-import 'protection_setup.dart';
 import 'protection_solver.dart';
+import 'types.dart';
+import 'user_agent_provider.dart';
 
 class ProtectionOrchestrator {
   ProtectionOrchestrator({
@@ -76,14 +74,14 @@ class ProtectionOrchestrator {
 
   Future<bool> handleError(
     BuildContext context,
-    DioException error,
+    HttpError error,
   ) async {
     final errorDetectors = _detectors
         .where((d) => d.detectionPhase == DetectionPhase.error)
         .toList();
 
     return _handleProtection(
-      error.requestOptions.uri,
+      error.requestUri,
       () {
         for (final d in errorDetectors) {
           final confidence = d.getProtectionConfidence(null, error);
@@ -95,14 +93,14 @@ class ProtectionOrchestrator {
   }
 
   Future<bool> handleResponse(
-    Response response,
+    HttpResponse response,
   ) async {
     final responseDetectors = _detectors
         .where((d) => d.detectionPhase == DetectionPhase.response)
         .toList();
 
     return _handleProtection(
-      response.requestOptions.uri,
+      response.requestUri,
       () {
         for (final d in responseDetectors) {
           final confidence = d.getProtectionConfidence(response, null);
