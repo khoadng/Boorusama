@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import 'cloudflare_challenge_interceptor.dart';
 import 'providers.dart';
 
 final cookieJarProvider = Provider<CookieJar>((ref) {
@@ -43,3 +42,7 @@ final cachedBypassDdosHeadersProvider =
     orElse: () => const {},
   );
 });
+
+extension CookieJarX on List<Cookie> {
+  String get cookieString => map((e) => e.toString()).join('; ');
+}

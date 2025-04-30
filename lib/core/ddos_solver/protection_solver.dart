@@ -29,6 +29,8 @@ abstract class ProtectionSolver {
   Future<void> cancel();
 }
 
+typedef ContextProvider = BuildContext? Function();
+
 class RawSolver implements ProtectionSolver {
   RawSolver({
     required this.protectionType,
@@ -42,7 +44,7 @@ class RawSolver implements ProtectionSolver {
   final String protectionType;
   final String protectionTitle;
   final bool Function(Cookie) autoCookieValidator;
-  final BuildContext Function() contextProvider;
+  final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
   final WebviewCookieManager _cookieManager = WebviewCookieManager();
@@ -66,6 +68,12 @@ class RawSolver implements ProtectionSolver {
 
     final completer = Completer<bool>();
     final context = contextProvider();
+
+    if (context == null) {
+      _solving = false;
+      completer.complete(false);
+      return completer.future;
+    }
 
     if (!context.mounted) {
       _solving = false;
@@ -157,7 +165,7 @@ class CloudflareSolver implements ProtectionSolver {
     required this.cookieJar,
   });
 
-  final BuildContext Function() contextProvider;
+  final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
   late final RawSolver _solver = RawSolver(
@@ -197,7 +205,7 @@ class McChallengeSolver implements ProtectionSolver {
     required this.cookieJar,
   });
 
-  final BuildContext Function() contextProvider;
+  final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
   late final RawSolver _solver = RawSolver(
@@ -234,7 +242,7 @@ class AftSolver implements ProtectionSolver {
     required this.cookieJar,
   });
 
-  final BuildContext Function() contextProvider;
+  final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
   late final RawSolver _solver = RawSolver(

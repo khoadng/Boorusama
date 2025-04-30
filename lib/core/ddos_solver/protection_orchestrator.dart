@@ -110,4 +110,8 @@ class ProtectionOrchestrator {
       },
     );
   }
+
+  Future<String?> getUserAgent() async {
+    return _userAgentProvider.getUserAgent();
+  }
 }

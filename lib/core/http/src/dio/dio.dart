@@ -18,7 +18,7 @@ import 'dio_ext.dart';
 import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
-import 'dio_protection_setup.dart';
+import 'dio_protection_interceptor.dart';
 
 Dio newGenericDio({
   required String baseUrl,
@@ -81,9 +81,8 @@ Dio newDio({required DioOptions options}) {
   final context = navigatorKey.currentContext;
   if (context != null) {
     dio.interceptors.add(
-      createInterceptor(
-        cookieJar: options.cookieJar,
-        contextProvider: () => context,
+      DioProtectionInterceptor(
+        protectionHandler: options.ddosProtectionHandler,
         dio: dio,
       ),
     );

@@ -1,15 +1,13 @@
-// Package imports:
-import 'package:cookie_jar/cookie_jar.dart';
-
 // Project imports:
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/config.dart';
+import '../../../ddos_solver/protection_handler.dart';
 import '../../../foundation/loggers.dart';
 import '../../../proxy/proxy.dart';
 
 class DioOptions {
   DioOptions({
-    required this.cookieJar,
+    required this.ddosProtectionHandler,
     required this.baseUrl,
     required this.userAgent,
     required this.authConfig,
@@ -19,7 +17,7 @@ class DioOptions {
     required this.cronetAvailable,
   });
 
-  final CookieJar cookieJar;
+  final HttpProtectionHandler ddosProtectionHandler;
   final String baseUrl;
   final String userAgent;
   final BooruConfigAuth authConfig;

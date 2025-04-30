@@ -1,30 +1,24 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
-
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
 
 // Project imports:
 import 'protection_orchestrator.dart';
+import 'protection_solver.dart';
 import 'types.dart';
-import 'user_agent_provider.dart';
 
 class HttpProtectionHandler {
   HttpProtectionHandler({
     required ProtectionOrchestrator orchestrator,
-    required BuildContext Function() contextProvider,
+    required ContextProvider contextProvider,
     required CookieJar cookieJar,
-    required UserAgentProvider userAgentProvider,
     this.maxRetries = 3,
   })  : _orchestrator = orchestrator,
         _cookieJar = cookieJar,
-        _userAgentProvider = userAgentProvider,
         _contextProvider = contextProvider;
 
   final ProtectionOrchestrator _orchestrator;
-  final UserAgentProvider _userAgentProvider;
   final CookieJar _cookieJar;
-  final BuildContext Function() _contextProvider;
+  final ContextProvider _contextProvider;
 
   // Track retry attempts
   final Map<String, int> _retryAttempts = {};
@@ -47,7 +41,7 @@ class HttpProtectionHandler {
       final headers = Map<String, String>.from(existingHeaders);
 
       if (cookies.isNotEmpty) {
-        final userAgent = await _userAgentProvider.getUserAgent();
+        final userAgent = await _orchestrator.getUserAgent();
 
         if (userAgent == null) {
           _disabled = true;
@@ -91,6 +85,11 @@ class HttpProtectionHandler {
 
     try {
       final context = _contextProvider();
+
+      if (context == null) {
+        return false;
+      }
+
       final solved = await _orchestrator.handleError(context, error);
 
       if (solved) {

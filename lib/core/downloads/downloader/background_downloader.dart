@@ -1,6 +1,6 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' hide HttpResponse;
 
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
@@ -13,11 +13,11 @@ import 'package:gal/gal.dart';
 
 // Project imports:
 import '../../configs/ref.dart';
+import '../../ddos_solver/types.dart';
 import '../../foundation/media_scanner.dart';
 import '../../foundation/path.dart' as path;
 import '../../foundation/platform.dart';
 import '../../http/providers.dart';
-import '../../http/src/cloudflare_challenge_interceptor.dart';
 import '../../router.dart';
 import '../l10n.dart';
 import '../manager/download_task_updates_notifier.dart';
@@ -179,7 +179,6 @@ class BackgroundDownloaderScope extends ConsumerStatefulWidget {
 class _BackgroundDownloaderScopeState
     extends ConsumerState<BackgroundDownloaderScope> {
   late StreamSubscription<TaskUpdate> downloadUpdates;
-  bool _block = false;
 
   void _update(TaskUpdate update) {
     if (update case TaskStatusUpdate()) {
@@ -233,64 +232,14 @@ class _BackgroundDownloaderScopeState
           },
         );
       } else if (update.status case TaskStatus.failed) {
-        // COPY FROM CLOUDFLARE_CHALLENGE_INTERCEPTOR START
-        final statusCode = switch (update.exception) {
-          final TaskHttpException e => e.httpResponseCode,
-          _ => null,
-        };
-        if (kDefaultCloudflareChallengeTriggerStatus.contains(statusCode)) {
-          final body = switch (update.exception) {
-            final TaskHttpException e => e.description,
-            _ => null,
-          };
-
-          if (body != null) {
-            final bodyString = body.toLowerCase();
-
-            // return early if we can't find any of the checklist
-            if (!kChecklist.any(bodyString.contains)) {
-              return;
-            }
-
-            if (_block) {
-              // if we already open the webview, we should not open it again
-              return;
-            }
-            _block = true;
-
-            // open webview to solve cloudflare challenge
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                settings: const RouteSettings(name: 'challenge_solver'),
-                builder: (context) {
-                  return CloudflareChallengeSolverPage(
-                    url: update.task.url,
-                    onCfClearance: (cookies) {
-                      final cookieJar = ref.read(cookieJarProvider);
-                      final uri = Uri.tryParse(update.task.url);
-
-                      if (uri == null) {
-                        return;
-                      }
-
-                      // set cookies
-                      cookieJar.saveFromResponse(
-                        uri,
-                        cookies,
-                      );
-                      _block = false;
-
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                  );
-                },
-              ),
-            );
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          final handled = await ref
+              .read(httpDdosProtectionBypassHandler)
+              .handleError(TaskErrorAdapter(update));
+          if (handled) {
+            ref.invalidate(bypassDdosHeadersProvider);
           }
-        }
-        // COPY FROM CLOUDFLARE_CHALLENGE_INTERCEPTOR END
+        });
       }
     }
 
@@ -367,4 +316,54 @@ extension FileDownloaderX on FileDownloader {
 
     await enqueue(taskToRetry);
   }
+}
+
+class TaskResponseAdapter implements HttpResponse {
+  const TaskResponseAdapter(
+    this._update,
+    this.statusCode,
+    this.data,
+  );
+
+  final TaskStatusUpdate _update;
+
+  @override
+  final int? statusCode;
+  @override
+  final dynamic data;
+  @override
+  Uri get requestUri => Uri.tryParse(_update.task.url) ?? Uri();
+  @override
+  Map<String, dynamic> get headers => Map<String, dynamic>.from(
+        _update.responseHeaders ?? <String, String>{},
+      );
+}
+
+class TaskErrorAdapter implements HttpError {
+  const TaskErrorAdapter(this._update);
+  final TaskStatusUpdate _update;
+
+  @override
+  HttpResponse get response {
+    final statusCode = switch (_update.exception) {
+      final TaskHttpException e => e.httpResponseCode,
+      _ => null,
+    };
+
+    final body = switch (_update.exception) {
+      final TaskHttpException e => e.description,
+      _ => null,
+    };
+
+    return TaskResponseAdapter(
+      _update,
+      statusCode,
+      body,
+    );
+  }
+
+  @override
+  Uri get requestUri => Uri.tryParse(_update.task.url) ?? Uri();
+  @override
+  String? get message => _update.exception?.description;
 }

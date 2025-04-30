@@ -1,6 +1,9 @@
 // Dart imports:
 import 'dart:io';
 
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,16 +13,22 @@ import 'package:foundation/foundation.dart';
 import '../../boorus/booru/booru.dart';
 import '../../boorus/booru/providers.dart';
 import '../../configs/config.dart';
+import '../../ddos_solver/protection_detector.dart';
+import '../../ddos_solver/protection_handler.dart';
+import '../../ddos_solver/protection_orchestrator.dart';
+import '../../ddos_solver/protection_solver.dart';
+import '../../ddos_solver/user_agent_provider.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/platform.dart';
 import '../../info/app_info.dart';
 import '../../info/package_info.dart';
+import '../../router.dart';
 import 'cookie_jar_providers.dart';
 import 'dio/dio.dart';
 import 'dio/dio_options.dart';
 
 final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
-  final cookieJar = ref.watch(cookieJarProvider);
+  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
   final userAgent = ref.watch(userAgentProvider(config.booruType));
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
@@ -27,7 +36,7 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
 
   return newDio(
     options: DioOptions(
-      cookieJar: cookieJar,
+      ddosProtectionHandler: ddosProtectionHandler,
       baseUrl: config.url,
       userAgent: userAgent,
       authConfig: config,
@@ -48,6 +57,44 @@ final userAgentProvider = Provider.family<String, BooruType>(
       BooruType.zerochan => '${appName.sentenceCase}/$appVersion - boorusama',
       _ => '${appName.sentenceCase}/$appVersion',
     };
+  },
+);
+
+final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
+  (ref) {
+    final cookieJar = ref.watch(cookieJarProvider);
+    BuildContext? contextProvider() {
+      final context = navigatorKey.currentContext;
+
+      return context;
+    }
+
+    return HttpProtectionHandler(
+      orchestrator: ProtectionOrchestrator(
+        userAgentProvider: WebViewUserAgentProvider(),
+        detectors: [
+          CloudflareDetector(),
+          McChallengeDetector(),
+          AftDetector(),
+        ],
+        solvers: [
+          CloudflareSolver(
+            contextProvider: contextProvider,
+            cookieJar: cookieJar,
+          ),
+          McChallengeSolver(
+            contextProvider: contextProvider,
+            cookieJar: cookieJar,
+          ),
+          AftSolver(
+            contextProvider: contextProvider,
+            cookieJar: cookieJar,
+          ),
+        ],
+      ),
+      contextProvider: contextProvider,
+      cookieJar: cookieJar,
+    );
   },
 );
 
