@@ -297,6 +297,13 @@ class _BackgroundDownloaderScopeState
                         uri,
                         cookies,
                       );
+
+                      WidgetsBinding.instance.addPostFrameCallback(
+                        (_) {
+                          ref.invalidate(bypassDdosHeadersProvider);
+                        },
+                      );
+
                       _block = false;
 
                       if (context.mounted) {
