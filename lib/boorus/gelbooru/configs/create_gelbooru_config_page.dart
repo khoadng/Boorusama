@@ -34,6 +34,16 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       backgroundColor: backgroundColor,
       initialTab: initialTab,
       authTab: const GelbooruAuthView(),
+      gestureTab: BooruConfigGesturesView(
+        postDetailsGestureActions: const {
+          ...kDefaultGestureActions,
+          kToggleFavoriteAction,
+        },
+        describePostDetailsAction: (action) => switch (action) {
+          kToggleFavoriteAction => 'Toggle favorite',
+          _ => describeDefaultGestureAction(action),
+        },
+      ),
       searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
       ),

@@ -172,25 +172,74 @@ mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
 }
 
 mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
+  final PostGestureHandler _postGestureHandler = const PostGestureHandler();
+
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
-      (ref, action, post) => handleDefaultGestureAction(
-            action,
-            onDownload: () => ref.download(post),
-            onShare: () => ref.sharePost(
-              post,
-              context: ref.context,
-              state: ref.read(postShareProvider(post)),
-            ),
-            onToggleBookmark: () => ref.toggleBookmark(post),
-            onViewTags: () =>
-                goToShowTaglistPage(ref.context, post.extractTags()),
-            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
-            onOpenSource: () => post.source.whenWeb(
-              (source) => launchExternalUrlString(source.url),
-              () => false,
-            ),
-          );
+      (ref, action, post) => _postGestureHandler.handle(ref, action, post);
+}
+
+class PostGestureHandler {
+  const PostGestureHandler({
+    this.customActions = const {},
+  });
+  final Map<String, bool Function(WidgetRef, String?, Post)> customActions;
+
+  bool handle(WidgetRef ref, String? action, Post post) {
+    final handled = handleDefaultGestureAction(
+      action,
+      onDownload: () => handleDownload(ref, post),
+      onShare: () => handleShare(ref, post),
+      onToggleBookmark: () => handleBookmark(ref, post),
+      onViewTags: () => handleViewTags(ref, post),
+      onViewOriginal: () => handleViewOriginal(ref, post),
+      onOpenSource: () => handleOpenSource(ref, post),
+    );
+
+    if (handled) return true;
+
+    for (final entry in customActions.entries) {
+      if (entry.key == action) {
+        final customAction = entry.value;
+        if (customAction(ref, action, post)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  void handleDownload(WidgetRef ref, Post post) {
+    ref.download(post);
+  }
+
+  void handleShare(WidgetRef ref, Post post) {
+    ref.sharePost(
+      post,
+      context: ref.context,
+      state: ref.read(postShareProvider(post)),
+    );
+  }
+
+  void handleBookmark(WidgetRef ref, Post post) {
+    ref.toggleBookmark(post);
+  }
+
+  void handleViewTags(WidgetRef ref, Post post) {
+    goToShowTaglistPage(ref.context, post.extractTags());
+  }
+
+  void handleViewOriginal(WidgetRef ref, Post post) {
+    goToOriginalImagePage(ref.context, post);
+  }
+
+  void handleOpenSource(WidgetRef ref, Post post) {
+    post.source.whenWeb(
+      (source) => launchExternalUrlString(source.url),
+      () => false,
+    );
+  }
 }
 
 mixin DefaultMultiSelectionActionsBuilderMixin on BooruBuilder {
