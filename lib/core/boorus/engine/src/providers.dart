@@ -9,6 +9,7 @@ import '../../../posts/post/providers.dart';
 import '../../booru/booru.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
+import 'booru_repository.dart';
 
 final booruEngineRegistryProvider = Provider<BooruEngineRegistry>(
   (ref) {
@@ -66,6 +67,17 @@ final currentBooruBuilderProvider = Provider<BooruBuilder?>(
     return booruBuilder;
   },
   name: 'currentBooruBuilderProvider',
+);
+
+final currentBooruRepoProvider = Provider<BooruRepository?>(
+  (ref) {
+    final config = ref.watchConfigAuth;
+
+    final booruType = intToBooruType(config.booruIdHint);
+
+    return ref.watch(booruEngineRegistryProvider).getRepository(booruType);
+  },
+  name: 'currentBooruRepositoryProvider',
 );
 
 final postLinkGeneratorProvider = Provider.family<PostLinkGenerator, int?>(

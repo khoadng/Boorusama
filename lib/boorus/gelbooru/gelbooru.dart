@@ -27,12 +27,14 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
+import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
@@ -180,8 +182,6 @@ class GelbooruBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultThumbnailUrlMixin,
-        DefaultThumbnailUrlMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostGesturesHandlerMixin,
@@ -388,6 +388,17 @@ class GelbooruRepository implements BooruRepository {
   @override
   ImageUrlResolver imageUrlResolver() {
     return const GelbooruImageUrlResolver();
+  }
+
+  @override
+  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageQuality),
+    );
+
+    return DefaultGridThumbnailUrlGenerator(
+      imageQuality: imageQuality,
+    );
   }
 }
 

@@ -89,11 +89,6 @@ typedef GranularRatingQueryBuilder = List<String> Function(
 
 typedef GranularRatingOptionsBuilder = Set<Rating> Function();
 
-typedef GridThumbnailUrlBuilder = String Function(
-  ImageQuality imageQuality,
-  Post post,
-);
-
 typedef TagColorBuilder = Color? Function(
   TagColorOptions options,
 );

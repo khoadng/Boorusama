@@ -6,7 +6,6 @@ import 'package:equatable/equatable.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/posts/sources/source.dart';
-import '../../../../../core/settings/settings.dart';
 import '../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../core/tags/tag/tag.dart';
 import 'post_variant.dart';
@@ -331,21 +330,6 @@ extension PostQualityVariantX on DanbooruPost {
 
   String get urlOriginal =>
       variants.firstWhereOrNull((e) => e.isOriginal)?.url ?? originalImageUrl;
-}
-
-extension DanbooruPostImageX on DanbooruPost {
-  String _thumbnailFromImageQuality(ImageQuality quality) => switch (quality) {
-        ImageQuality.low => url360x360,
-        ImageQuality.high => url720x720,
-        ImageQuality.highest => isVideo ? url720x720 : urlSample,
-        ImageQuality.original => urlOriginal,
-        ImageQuality.automatic => url720x720
-      };
-
-  String thumbnailFromImageQuality(ImageQuality quality) {
-    if (isGif) return urlSample;
-    return _thumbnailFromImageQuality(quality);
-  }
 }
 
 abstract interface class DanbooruTagDetails implements TagDetails {

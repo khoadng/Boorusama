@@ -10,7 +10,6 @@ import 'package:foundation/foundation.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../notes/notes.dart';
-import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 
@@ -96,14 +95,13 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
   Widget _buildImage(String imageUrl) {
     final post = widget.post;
 
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
-    final imageGridQuality = ref.watch(imageListingQualityProvider);
+    final booruRepo = ref.watch(currentBooruRepoProvider);
 
-    final gridThumbnailUrlBuilder = booruBuilder?.gridThumbnailUrlBuilder;
+    final gridThumbnailUrlBuilder = booruRepo?.gridThumbnailUrlGenerator();
     final placeholderImageUrl = widget.thumbnailUrlBuilder != null
         ? widget.thumbnailUrlBuilder!(post)
         : gridThumbnailUrlBuilder != null
-            ? gridThumbnailUrlBuilder(imageGridQuality, post)
+            ? gridThumbnailUrlBuilder.generateThumbnailUrl(post)
             : post.thumbnailImageUrl;
 
     return BooruImage(

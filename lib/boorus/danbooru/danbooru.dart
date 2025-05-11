@@ -29,6 +29,7 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/listing/list.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/post.dart';
@@ -42,6 +43,7 @@ import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
 import '../../core/search/queries/query.dart';
+import '../../core/settings/providers.dart';
 import '../../core/settings/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
@@ -195,13 +197,6 @@ class DanbooruBuilder
   @override
   CharacterPageBuilder? get characterPageBuilder => (context, characterName) =>
       DanbooruCharacterPage(characterName: characterName);
-
-  @override
-  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
-      (imageQuality, post) => castOrNull<DanbooruPost>(post).toOption().fold(
-            () => post.thumbnailImageUrl,
-            (post) => post.thumbnailFromImageQuality(imageQuality),
-          );
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
@@ -548,6 +543,17 @@ class DanbooruRepository implements BooruRepository {
   ImageUrlResolver imageUrlResolver() {
     return const DefaultImageUrlResolver();
   }
+
+  @override
+  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageQuality),
+    );
+
+    return DanbooruGridThumbnailUrlGenerator(
+      imageQuality: imageQuality,
+    );
+  }
 }
 
 BooruComponents createDanbooru() => BooruComponents(
@@ -617,5 +623,32 @@ class DanbooruParser extends BooruParser {
       protocol: parseProtocol(data['protocol']),
       sites: sites,
     );
+  }
+}
+
+class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
+  const DanbooruGridThumbnailUrlGenerator({
+    required this.imageQuality,
+  });
+
+  final ImageQuality imageQuality;
+
+  @override
+  String generateThumbnailUrl(Post post) {
+    return castOrNull<DanbooruPost>(post).toOption().fold(
+          () => post.thumbnailImageUrl,
+          (post) => _thumbnailFromImageQuality(post),
+        );
+  }
+
+  String _thumbnailFromImageQuality(DanbooruPost post) {
+    if (post.isGif) return post.urlSample;
+    return switch (imageQuality) {
+      ImageQuality.low => post.url360x360,
+      ImageQuality.high => post.url720x720,
+      ImageQuality.highest => post.isVideo ? post.url720x720 : post.urlSample,
+      ImageQuality.original => post.urlOriginal,
+      ImageQuality.automatic => post.url720x720
+    };
   }
 }

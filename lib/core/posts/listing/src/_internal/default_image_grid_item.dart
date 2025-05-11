@@ -85,21 +85,14 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                     builder: (context) {
                       final item = Consumer(
                         builder: (_, ref, __) {
-                          final booruBuilder =
-                              ref.watch(currentBooruBuilderProvider);
+                          final booruRepo = ref.watch(currentBooruRepoProvider);
                           final gridThumbnailUrlBuilder =
-                              booruBuilder?.gridThumbnailUrlBuilder;
-                          final imageQuality = ref.watch(
-                            imageListingSettingsProvider
-                                .select((v) => v.imageQuality),
-                          );
+                              booruRepo?.gridThumbnailUrlGenerator();
 
                           final imgUrl = imageUrl ??
                               (gridThumbnailUrlBuilder != null
-                                  ? gridThumbnailUrlBuilder(
-                                      imageQuality,
-                                      post,
-                                    )
+                                  ? gridThumbnailUrlBuilder
+                                      .generateThumbnailUrl(post)
                                   : post.thumbnailImageUrl);
 
                           return SliverPostGridImageGridItem(

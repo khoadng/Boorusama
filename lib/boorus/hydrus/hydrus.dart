@@ -32,6 +32,7 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/favorites/routes.dart';
+import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
@@ -202,7 +203,6 @@ class HydrusBuilder
     with
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
         UnknownMetatagsMixin,
@@ -387,6 +387,17 @@ class HydrusRepository implements BooruRepository {
   @override
   ImageUrlResolver imageUrlResolver() {
     return const DefaultImageUrlResolver();
+  }
+
+  @override
+  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageQuality),
+    );
+
+    return DefaultGridThumbnailUrlGenerator(
+      imageQuality: imageQuality,
+    );
   }
 }
 

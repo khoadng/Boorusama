@@ -30,6 +30,7 @@ import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
@@ -51,7 +52,6 @@ part 'sankaku_provider.dart';
 
 class SankakuBuilder
     with
-        DefaultThumbnailUrlMixin,
         CommentNotSupportedMixin,
         CharacterNotSupportedMixin,
         LegacyGranularRatingOptionsBuilderMixin,
@@ -245,6 +245,17 @@ class SankakuRepository implements BooruRepository {
   @override
   ImageUrlResolver imageUrlResolver() {
     return const DefaultImageUrlResolver();
+  }
+
+  @override
+  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageQuality),
+    );
+
+    return DefaultGridThumbnailUrlGenerator(
+      imageQuality: imageQuality,
+    );
   }
 }
 

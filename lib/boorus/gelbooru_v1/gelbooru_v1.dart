@@ -23,6 +23,7 @@ import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
 import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/tags.dart';
@@ -52,7 +53,6 @@ class GelbooruV1Builder
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultThumbnailUrlMixin,
         DefaultTagColorMixin,
         DefaultTagColorsMixin,
         DefaultPostImageDetailsUrlMixin,
@@ -188,6 +188,17 @@ class GelbooruV1Repository implements BooruRepository {
   @override
   ImageUrlResolver imageUrlResolver() {
     return const DefaultImageUrlResolver();
+  }
+
+  @override
+  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
+    final imageQuality = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageQuality),
+    );
+
+    return DefaultGridThumbnailUrlGenerator(
+      imageQuality: imageQuality,
+    );
   }
 }
 

@@ -77,21 +77,6 @@ mixin CommentNotSupportedMixin implements BooruBuilder {
   CommentPageBuilder? get commentPageBuilder => null;
 }
 
-mixin DefaultThumbnailUrlMixin implements BooruBuilder {
-  @override
-  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder =>
-      (imageQuality, post) => switch (imageQuality) {
-            ImageQuality.automatic => post.thumbnailImageUrl,
-            ImageQuality.low => post.thumbnailImageUrl,
-            ImageQuality.high =>
-              post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
-            ImageQuality.highest =>
-              post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
-            ImageQuality.original =>
-              post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl
-          };
-}
-
 mixin DefaultTagColorMixin implements BooruBuilder {
   @override
   TagColorBuilder get tagColorBuilder => (options) {

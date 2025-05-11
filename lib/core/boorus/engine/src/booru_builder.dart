@@ -19,8 +19,6 @@ abstract class BooruBuilder {
 
   HomeViewBuilder get homeViewBuilder;
 
-  GridThumbnailUrlBuilder get gridThumbnailUrlBuilder;
-
   TagColorBuilder get tagColorBuilder;
 
   TagColorsBuilder get tagColorsBuilder;
