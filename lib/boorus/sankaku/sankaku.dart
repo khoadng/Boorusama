@@ -9,7 +9,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/blacklist.dart';
 import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
@@ -22,26 +21,20 @@ import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/caching.dart';
 import '../../core/http/providers.dart';
-import '../../core/notes/notes.dart';
-import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/routes.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/posts/favorites/providers.dart';
-import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/artist_page_scaffold.dart';
 import '../../core/search/queries/providers.dart';
-import '../../core/search/queries/query.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
-import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'create_sankaku_config_page.dart';
@@ -174,16 +167,11 @@ class SankakuBuilder
   );
 }
 
-class SankakuRepository implements BooruRepository {
+class SankakuRepository extends BooruRepositoryDefault {
   const SankakuRepository({required this.ref});
 
   @override
   final Ref ref;
-
-  @override
-  PostCountRepository? postCount(BooruConfigSearch config) {
-    return null;
-  }
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
@@ -193,31 +181,6 @@ class SankakuRepository implements BooruRepository {
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) {
     return ref.read(sankakuAutocompleteRepoProvider(config));
-  }
-
-  @override
-  NoteRepository note(BooruConfigAuth config) {
-    return ref.read(emptyNoteRepoProvider);
-  }
-
-  @override
-  TagRepository tag(BooruConfigAuth config) {
-    return ref.read(emptyTagRepoProvider);
-  }
-
-  @override
-  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
-    return const UrlInsidePostExtractor();
-  }
-
-  @override
-  FavoriteRepository favorite(BooruConfigAuth config) {
-    return EmptyFavoriteRepository();
-  }
-
-  @override
-  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
-    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
   }
 
   @override
@@ -233,29 +196,8 @@ class SankakuRepository implements BooruRepository {
   }
 
   @override
-  TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return DefaultTagQueryComposer(config: config);
-  }
-
-  @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return SankakuPostLinkGenerator(baseUrl: config.url);
-  }
-
-  @override
-  ImageUrlResolver imageUrlResolver() {
-    return const DefaultImageUrlResolver();
-  }
-
-  @override
-  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((v) => v.imageQuality),
-    );
-
-    return DefaultGridThumbnailUrlGenerator(
-      imageQuality: imageQuality,
-    );
   }
 }
 

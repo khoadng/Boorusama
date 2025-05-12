@@ -8,8 +8,6 @@ import 'package:path/path.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/blacklist.dart';
-import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
@@ -20,22 +18,15 @@ import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
 import '../../core/foundation/html.dart';
 import '../../core/http/providers.dart';
-import '../../core/notes/notes.dart';
-import '../../core/posts/count/count.dart';
-import '../../core/posts/favorites/providers.dart';
-import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/tags.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
-import '../../core/search/queries/tag_query_composer.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/settings/providers.dart';
-import '../../core/tags/tag/providers.dart';
-import '../../core/tags/tag/tag.dart';
 import '../../core/widgets/info_container.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru/gelbooru.dart';
@@ -120,16 +111,11 @@ class GelbooruV1Builder
       kFallbackPostDetailsUIBuilder;
 }
 
-class GelbooruV1Repository implements BooruRepository {
+class GelbooruV1Repository extends BooruRepositoryDefault {
   const GelbooruV1Repository({required this.ref});
 
   @override
   final Ref ref;
-
-  @override
-  PostCountRepository? postCount(BooruConfigSearch config) {
-    return null;
-  }
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
@@ -142,31 +128,6 @@ class GelbooruV1Repository implements BooruRepository {
   }
 
   @override
-  NoteRepository note(BooruConfigAuth config) {
-    return ref.read(emptyNoteRepoProvider);
-  }
-
-  @override
-  TagRepository tag(BooruConfigAuth config) {
-    return ref.read(emptyTagRepoProvider);
-  }
-
-  @override
-  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
-    return const UrlInsidePostExtractor();
-  }
-
-  @override
-  FavoriteRepository favorite(BooruConfigAuth config) {
-    return EmptyFavoriteRepository();
-  }
-
-  @override
-  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
-    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
-  }
-
-  @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(dioProvider(config));
 
@@ -176,29 +137,8 @@ class GelbooruV1Repository implements BooruRepository {
   }
 
   @override
-  TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return DefaultTagQueryComposer(config: config);
-  }
-
-  @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return IndexPhpPostLinkGenerator(baseUrl: config.url);
-  }
-
-  @override
-  ImageUrlResolver imageUrlResolver() {
-    return const DefaultImageUrlResolver();
-  }
-
-  @override
-  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((v) => v.imageQuality),
-    );
-
-    return DefaultGridThumbnailUrlGenerator(
-      imageQuality: imageQuality,
-    );
   }
 }
 

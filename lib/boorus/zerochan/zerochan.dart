@@ -7,31 +7,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/blacklist.dart';
-import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/filename.dart';
-import '../../core/downloads/urls.dart';
 import '../../core/http/providers.dart';
-import '../../core/notes/notes.dart';
-import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/posts/favorites/providers.dart';
-import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/sources/source.dart';
-import '../../core/search/queries/query.dart';
 import '../../core/search/search/routes.dart';
-import '../../core/settings/providers.dart';
-import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'providers.dart';
@@ -162,16 +152,11 @@ class ZerochanBuilder
   );
 }
 
-class ZerochanRepository implements BooruRepository {
+class ZerochanRepository extends BooruRepositoryDefault {
   const ZerochanRepository({required this.ref});
 
   @override
   final Ref ref;
-
-  @override
-  PostCountRepository? postCount(BooruConfigSearch config) {
-    return null;
-  }
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
@@ -184,31 +169,6 @@ class ZerochanRepository implements BooruRepository {
   }
 
   @override
-  NoteRepository note(BooruConfigAuth config) {
-    return ref.read(emptyNoteRepoProvider);
-  }
-
-  @override
-  TagRepository tag(BooruConfigAuth config) {
-    return ref.read(emptyTagRepoProvider);
-  }
-
-  @override
-  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
-    return const UrlInsidePostExtractor();
-  }
-
-  @override
-  FavoriteRepository favorite(BooruConfigAuth config) {
-    return EmptyFavoriteRepository();
-  }
-
-  @override
-  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
-    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
-  }
-
-  @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(dioProvider(config));
 
@@ -218,29 +178,8 @@ class ZerochanRepository implements BooruRepository {
   }
 
   @override
-  TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return DefaultTagQueryComposer(config: config);
-  }
-
-  @override
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
     return DirectIdPathPostLinkGenerator(baseUrl: config.url);
-  }
-
-  @override
-  ImageUrlResolver imageUrlResolver() {
-    return const DefaultImageUrlResolver();
-  }
-
-  @override
-  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((v) => v.imageQuality),
-    );
-
-    return DefaultGridThumbnailUrlGenerator(
-      imageQuality: imageQuality,
-    );
   }
 }
 

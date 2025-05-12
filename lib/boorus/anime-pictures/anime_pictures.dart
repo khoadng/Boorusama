@@ -9,8 +9,6 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/blacklist.dart';
-import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
@@ -22,21 +20,14 @@ import '../../core/downloads/urls.dart';
 import '../../core/foundation/caching.dart';
 import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
-import '../../core/notes/notes.dart';
-import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details/routes.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/posts/favorites/providers.dart';
-import '../../core/posts/listing/list.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/scaffolds/scaffolds.dart';
-import '../../core/search/queries/query.dart';
-import '../../core/settings/providers.dart';
-import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
@@ -154,16 +145,11 @@ class AnimePicturesBuilder
   );
 }
 
-class AnimePicturesRepository implements BooruRepository {
+class AnimePicturesRepository extends BooruRepositoryDefault {
   const AnimePicturesRepository({required this.ref});
 
   @override
   final Ref ref;
-
-  @override
-  PostCountRepository? postCount(BooruConfigSearch config) {
-    return null;
-  }
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
@@ -176,28 +162,8 @@ class AnimePicturesRepository implements BooruRepository {
   }
 
   @override
-  NoteRepository note(BooruConfigAuth config) {
-    return ref.read(emptyNoteRepoProvider);
-  }
-
-  @override
-  TagRepository tag(BooruConfigAuth config) {
-    return ref.read(emptyTagRepoProvider);
-  }
-
-  @override
   DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
     return ref.read(animePicturesDownloadFileUrlExtractorProvider(config));
-  }
-
-  @override
-  FavoriteRepository favorite(BooruConfigAuth config) {
-    return EmptyFavoriteRepository();
-  }
-
-  @override
-  BlacklistTagRefRepository blacklistTagRef(BooruConfigAuth config) {
-    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
   }
 
   @override
@@ -211,29 +177,8 @@ class AnimePicturesRepository implements BooruRepository {
   }
 
   @override
-  TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return DefaultTagQueryComposer(config: config);
-  }
-
-  @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return PluralPostLinkGenerator(baseUrl: config.url);
-  }
-
-  @override
-  ImageUrlResolver imageUrlResolver() {
-    return const DefaultImageUrlResolver();
-  }
-
-  @override
-  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((v) => v.imageQuality),
-    );
-
-    return DefaultGridThumbnailUrlGenerator(
-      imageQuality: imageQuality,
-    );
   }
 }
 

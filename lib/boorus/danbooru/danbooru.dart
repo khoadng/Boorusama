@@ -17,7 +17,6 @@ import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
 import '../../core/downloads/downloader.dart';
 import '../../core/downloads/filename.dart';
-import '../../core/downloads/urls.dart';
 import '../../core/foundation/url_launcher.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/home/user_custom_home_builder.dart';
@@ -466,7 +465,7 @@ bool handleDanbooruGestureAction(
   return true;
 }
 
-class DanbooruRepository implements BooruRepository {
+class DanbooruRepository extends BooruRepositoryDefault {
   const DanbooruRepository({
     required this.ref,
   });
@@ -497,11 +496,6 @@ class DanbooruRepository implements BooruRepository {
   @override
   TagRepository tag(BooruConfigAuth config) {
     return ref.read(danbooruTagRepoProvider(config));
-  }
-
-  @override
-  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
-    return const UrlInsidePostExtractor();
   }
 
   @override
@@ -537,11 +531,6 @@ class DanbooruRepository implements BooruRepository {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return PluralPostLinkGenerator(baseUrl: config.url);
-  }
-
-  @override
-  ImageUrlResolver imageUrlResolver() {
-    return const DefaultImageUrlResolver();
   }
 
   @override
