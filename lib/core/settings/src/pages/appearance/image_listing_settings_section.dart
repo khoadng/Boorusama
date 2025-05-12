@@ -195,8 +195,6 @@ class _ImageListingSettingsSectionState
         const SizedBox(height: 10),
         _buildAspectRatioSlider(settings),
         const SizedBox(height: 10),
-        const Divider(thickness: 1),
-        const LayoutSection(),
         ...widget.extraChildren,
       ],
     );

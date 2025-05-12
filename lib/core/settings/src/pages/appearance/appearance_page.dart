@@ -72,15 +72,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             listing: settings.listing,
             onUpdate: (value) =>
                 notifier.updateSettings(settings.copyWith(listing: value)),
-            extraChildren: [
-              if (kPremiumEnabled)
-                const BooruConfigMoreSettingsRedirectCard.appearance(),
-            ],
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const Divider(thickness: 1),
+        const LayoutSection(),
+        if (kPremiumEnabled)
+          const BooruConfigMoreSettingsRedirectCard.appearance(),
       ],
     );
   }
