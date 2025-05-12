@@ -6,26 +6,12 @@ abstract class GridThumbnailUrlGenerator {
   String generateThumbnailUrl(Post post);
 }
 
-class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
-  const DefaultGridThumbnailUrlGenerator({
-    required this.imageQuality,
-  });
+typedef ImageQualityMapper = String Function(
+  Post post,
+  ImageQuality imageQuality,
+);
 
-  final ImageQuality imageQuality;
-
-  @override
-  String generateThumbnailUrl(
-    Post post,
-  ) {
-    return switch (imageQuality) {
-      ImageQuality.automatic => post.thumbnailImageUrl,
-      ImageQuality.low => post.thumbnailImageUrl,
-      ImageQuality.high =>
-        post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
-      ImageQuality.highest =>
-        post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
-      ImageQuality.original =>
-        post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl
-    };
-  }
-}
+typedef GifImageQualityMapper = String Function(
+  Post post,
+  ImageQuality imageQuality,
+);

@@ -147,6 +147,7 @@ class Settings extends Equatable {
       imageGridPadding: 16,
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
+      animatedPostsDefaultState: AnimatedPostsDefaultState.autoplay,
     ),
     colors: null,
     safeMode: true,
@@ -515,6 +516,7 @@ class ImageListingSettings extends Equatable {
     required this.imageGridPadding,
     required this.imageGridAspectRatio,
     required this.postsPerPage,
+    required this.animatedPostsDefaultState,
   });
 
   ImageListingSettings.fromJson(Map<String, dynamic> json)
@@ -542,7 +544,12 @@ class ImageListingSettings extends Equatable {
         postsPerPage = json['postsPerPage'] ?? 60,
         imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
         imageGridPadding = json['imageGridPadding'] ?? 16,
-        imageGridSpacing = json['imageGridSpacing'] ?? 4;
+        imageGridSpacing = json['imageGridSpacing'] ?? 4,
+        animatedPostsDefaultState = json['animatedPostsDefaultState'] != null
+            ? AnimatedPostsDefaultState
+                .values[json['animatedPostsDefaultState']]
+            : AnimatedPostsDefaultState.autoplay;
+
   final GridSize gridSize;
   final ImageListType imageListType;
   final ImageQuality imageQuality;
@@ -556,6 +563,7 @@ class ImageListingSettings extends Equatable {
   final double imageGridPadding;
   final double imageGridAspectRatio;
   final int postsPerPage;
+  final AnimatedPostsDefaultState animatedPostsDefaultState;
 
   bool get blurExplicitMedia =>
       mediaBlurCondition == MediaBlurCondition.explicitOnly;
@@ -576,6 +584,7 @@ class ImageListingSettings extends Equatable {
     double? imageGridPadding,
     double? imageGridAspectRatio,
     int? postsPerPage,
+    AnimatedPostsDefaultState? animatedPostsDefaultState,
   }) {
     return ImageListingSettings(
       gridSize: gridSize ?? this.gridSize,
@@ -593,6 +602,8 @@ class ImageListingSettings extends Equatable {
       imageGridPadding: imageGridPadding ?? this.imageGridPadding,
       imageGridAspectRatio: imageGridAspectRatio ?? this.imageGridAspectRatio,
       postsPerPage: postsPerPage ?? this.postsPerPage,
+      animatedPostsDefaultState:
+          animatedPostsDefaultState ?? this.animatedPostsDefaultState,
     );
   }
 
@@ -610,6 +621,7 @@ class ImageListingSettings extends Equatable {
         'imageGridPadding': imageGridPadding,
         'imageGridAspectRatio': imageGridAspectRatio,
         'postsPerPage': postsPerPage,
+        'animatedPostsDefaultState': animatedPostsDefaultState.index,
       };
 
   @override
@@ -627,5 +639,6 @@ class ImageListingSettings extends Equatable {
         imageGridPadding,
         imageGridAspectRatio,
         postsPerPage,
+        animatedPostsDefaultState,
       ];
 }

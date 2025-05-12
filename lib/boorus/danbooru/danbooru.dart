@@ -538,9 +538,13 @@ class DanbooruRepository extends BooruRepositoryDefault {
     final imageQuality = ref.watch(
       imageListingSettingsProvider.select((v) => v.imageQuality),
     );
+    final animatedPostsDefaultState = ref.watch(
+      imageListingSettingsProvider.select((v) => v.animatedPostsDefaultState),
+    );
 
     return DanbooruGridThumbnailUrlGenerator(
       imageQuality: imageQuality,
+      animatedPostsDefaultState: animatedPostsDefaultState,
     );
   }
 }
@@ -616,28 +620,34 @@ class DanbooruParser extends BooruParser {
 }
 
 class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
-  const DanbooruGridThumbnailUrlGenerator({
+  DanbooruGridThumbnailUrlGenerator({
     required this.imageQuality,
+    required this.animatedPostsDefaultState,
   });
 
   final ImageQuality imageQuality;
+  final AnimatedPostsDefaultState animatedPostsDefaultState;
 
   @override
   String generateThumbnailUrl(Post post) {
     return castOrNull<DanbooruPost>(post).toOption().fold(
-          () => post.thumbnailImageUrl,
-          (post) => _thumbnailFromImageQuality(post),
+          () => DefaultGridThumbnailUrlGenerator(
+            imageQuality: imageQuality,
+            animatedPostsDefaultState: animatedPostsDefaultState,
+          ).generateThumbnailUrl(post),
+          (post) => DefaultGridThumbnailUrlGenerator(
+            imageQuality: imageQuality,
+            animatedPostsDefaultState: animatedPostsDefaultState,
+            gifImageQualityMapper: (_, __) => post.sampleImageUrl,
+            imageQualityMapper: (_, imageQuality) => switch (imageQuality) {
+              ImageQuality.automatic => post.url720x720,
+              ImageQuality.low => post.url360x360,
+              ImageQuality.high => post.url720x720,
+              ImageQuality.highest =>
+                post.isVideo ? post.url720x720 : post.urlSample,
+              ImageQuality.original => post.urlOriginal,
+            },
+          ).generateThumbnailUrl(post),
         );
-  }
-
-  String _thumbnailFromImageQuality(DanbooruPost post) {
-    if (post.isGif) return post.urlSample;
-    return switch (imageQuality) {
-      ImageQuality.low => post.url360x360,
-      ImageQuality.high => post.url720x720,
-      ImageQuality.highest => post.isVideo ? post.url720x720 : post.urlSample,
-      ImageQuality.original => post.urlOriginal,
-      ImageQuality.automatic => post.url720x720
-    };
   }
 }
