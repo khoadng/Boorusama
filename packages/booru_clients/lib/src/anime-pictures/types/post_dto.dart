@@ -254,10 +254,7 @@ String? createUrl(
 
   final ext = switch (type) {
     ImageUrlType.original => extRaw,
-    _ => switch (extRaw) {
-        '.gif' => '.gif',
-        _ => haveAlpha ? '.png' : '.jpg',
-      }
+    _ => '.avif',
   };
 
   return '$url$first3/$md5$qualityQualifier$ext';
