@@ -178,7 +178,6 @@ class GelbooruBuilder
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
-        DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultTagColorsMixin,
         DefaultTagColorMixin
@@ -286,6 +285,20 @@ class GelbooruBuilder
       'source': (post, config) => config.downloadUrl,
     },
   );
+
+  final PostGestureHandler _postGestureHandler = PostGestureHandler(
+    customActions: {
+      kToggleFavoriteAction: (ref, action, post) {
+        ref.toggleFavorite(post.id);
+
+        return true;
+      },
+    },
+  );
+
+  @override
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
+      (ref, action, post) => _postGestureHandler.handle(ref, action, post);
 
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>

@@ -5,7 +5,7 @@
     "translationStatusUrl": "https://hosted.weblate.org/widget/boorusama/multi-auto.svg",
     "translationBadgeUrl": "https://hosted.weblate.org/widget/boorusama/287x66-grey.png",
     "supportEmail": "degenk.studio@gmail.com",
-    "termsOfServiceUrl": "https://raw.githubusercontent.com/khoadng/Boorusama/refs/heads/dev/terms_of_service.txt",
-    "privacyPolicyUrl": "https://raw.githubusercontent.com/khoadng/Boorusama/refs/heads/dev/privacy_policy.md",
+    "termsOfServiceUrl": "https://raw.githubusercontent.com/khoadng/Boorusama/refs/heads/master/terms_of_service.txt",
+    "privacyPolicyUrl": "https://raw.githubusercontent.com/khoadng/Boorusama/refs/heads/master/privacy_policy.md",
     "booruDefUrl": "https://raw.githubusercontent.com/khoadng/boorusama/master/boorus.yaml"
 }
