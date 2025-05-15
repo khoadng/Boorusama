@@ -15,7 +15,6 @@ import '../../../posts/listing/list.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/queries/tag_query_composer.dart';
-import '../../../settings/providers.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/src/tag_repository.dart';
@@ -44,17 +43,7 @@ abstract class BooruRepositoryDefault implements BooruRepository {
 
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((v) => v.imageQuality),
-    );
-    final animatedPostsDefaultState = ref.watch(
-      imageListingSettingsProvider.select((v) => v.animatedPostsDefaultState),
-    );
-
-    return DefaultGridThumbnailUrlGenerator(
-      imageQuality: imageQuality,
-      animatedPostsDefaultState: animatedPostsDefaultState,
-    );
+    return const DefaultGridThumbnailUrlGenerator();
   }
 
   @override

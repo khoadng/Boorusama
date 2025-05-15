@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../notes/notes.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../listing/providers.dart';
 import '../../../post/post.dart';
 
 class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
@@ -95,14 +95,14 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
   Widget _buildImage(String imageUrl) {
     final post = widget.post;
 
-    final booruRepo = ref.watch(currentBooruRepoProvider);
-
-    final gridThumbnailUrlBuilder = booruRepo?.gridThumbnailUrlGenerator();
+    final gridThumbnailUrlBuilder =
+        ref.watch(gridThumbnailUrlGeneratorProvider);
     final placeholderImageUrl = widget.thumbnailUrlBuilder != null
         ? widget.thumbnailUrlBuilder!(post)
-        : gridThumbnailUrlBuilder != null
-            ? gridThumbnailUrlBuilder.generateThumbnailUrl(post)
-            : post.thumbnailImageUrl;
+        : gridThumbnailUrlBuilder.generateUrl(
+            post,
+            settings: ref.watch(gridThumbnailSettingsProvider),
+          );
 
     return BooruImage(
       imageUrl: imageUrl,

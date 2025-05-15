@@ -34,28 +34,28 @@ String defaultGifImageQualityMapper(
 
 class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
   const DefaultGridThumbnailUrlGenerator({
-    required this.imageQuality,
-    required this.animatedPostsDefaultState,
     this.imageQualityMapper,
     this.gifImageQualityMapper,
   });
 
-  final ImageQuality imageQuality;
-  final AnimatedPostsDefaultState animatedPostsDefaultState;
   final ImageQualityMapper? imageQualityMapper;
   final GifImageQualityMapper? gifImageQualityMapper;
 
   @override
-  String generateThumbnailUrl(Post post) {
+  String generateUrl(
+    Post post, {
+    required GridThumbnailSettings settings,
+  }) {
     if (post.isGif) {
-      if (animatedPostsDefaultState == AnimatedPostsDefaultState.static) {
+      if (settings.animatedPostsDefaultState ==
+          AnimatedPostsDefaultState.static) {
         return post.thumbnailImageUrl;
       }
 
       final gifMapper = gifImageQualityMapper ?? defaultGifImageQualityMapper;
       return gifMapper(
         post,
-        imageQuality,
+        settings.imageQuality,
       );
     }
 
@@ -63,7 +63,7 @@ class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
 
     return mapper(
       post,
-      imageQuality,
+      settings.imageQuality,
     );
   }
 }

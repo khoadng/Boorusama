@@ -8,7 +8,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../core/boorus/engine/engine.dart';
-import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/foundation/clipboard.dart';
 import '../../../../../core/foundation/url_launcher.dart';
@@ -78,14 +77,16 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                     builder: (context) {
                       final item = Consumer(
                         builder: (_, ref, __) {
-                          final booruRepo = ref.watch(currentBooruRepoProvider);
                           final gridThumbnailUrlBuilder =
-                              booruRepo?.gridThumbnailUrlGenerator();
+                              ref.watch(gridThumbnailUrlGeneratorProvider);
 
-                          final imgUrl = gridThumbnailUrlBuilder != null
-                              ? gridThumbnailUrlBuilder
-                                  .generateThumbnailUrl(post)
-                              : post.thumbnailImageUrl;
+                          final gridThumbnailSettings =
+                              ref.watch(gridThumbnailSettingsProvider);
+
+                          final imgUrl = gridThumbnailUrlBuilder.generateUrl(
+                            post,
+                            settings: gridThumbnailSettings,
+                          );
                           return SliverPostGridImageGridItem(
                             post: post,
                             multiSelectEnabled: multiSelect,

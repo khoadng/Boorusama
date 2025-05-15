@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
-import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../settings/providers.dart';
@@ -18,6 +17,7 @@ import '../../../../widgets/widgets.dart';
 import '../../../details/routes.dart';
 import '../../../post/post.dart';
 import '../../../post/widgets.dart';
+import '../providers/providers.dart';
 import '../widgets/default_post_list_context_menu_region.dart';
 import '../widgets/default_selectable_item.dart';
 import '../widgets/general_post_context_menu.dart';
@@ -83,15 +83,16 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                     builder: (context) {
                       final item = Consumer(
                         builder: (_, ref, __) {
-                          final booruRepo = ref.watch(currentBooruRepoProvider);
                           final gridThumbnailUrlBuilder =
-                              booruRepo?.gridThumbnailUrlGenerator();
+                              ref.watch(gridThumbnailUrlGeneratorProvider);
 
                           final imgUrl = imageUrl ??
-                              (gridThumbnailUrlBuilder != null
-                                  ? gridThumbnailUrlBuilder
-                                      .generateThumbnailUrl(post)
-                                  : post.thumbnailImageUrl);
+                              gridThumbnailUrlBuilder.generateUrl(
+                                post,
+                                settings: ref.watch(
+                                  gridThumbnailSettingsProvider,
+                                ),
+                              );
 
                           return SliverPostGridImageGridItem(
                             post: post,

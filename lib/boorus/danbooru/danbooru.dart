@@ -42,7 +42,6 @@ import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
 import '../../core/search/queries/query.dart';
-import '../../core/settings/providers.dart';
 import '../../core/settings/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/tag/routes.dart';
@@ -538,17 +537,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
 
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
-    final imageQuality = ref.watch(
-      imageListingSettingsProvider.select((v) => v.imageQuality),
-    );
-    final animatedPostsDefaultState = ref.watch(
-      imageListingSettingsProvider.select((v) => v.animatedPostsDefaultState),
-    );
-
-    return DanbooruGridThumbnailUrlGenerator(
-      imageQuality: imageQuality,
-      animatedPostsDefaultState: animatedPostsDefaultState,
-    );
+    return const DanbooruGridThumbnailUrlGenerator();
   }
 }
 
@@ -623,24 +612,19 @@ class DanbooruParser extends BooruParser {
 }
 
 class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
-  DanbooruGridThumbnailUrlGenerator({
-    required this.imageQuality,
-    required this.animatedPostsDefaultState,
-  });
-
-  final ImageQuality imageQuality;
-  final AnimatedPostsDefaultState animatedPostsDefaultState;
+  const DanbooruGridThumbnailUrlGenerator();
 
   @override
-  String generateThumbnailUrl(Post post) {
+  String generateUrl(
+    Post post, {
+    required GridThumbnailSettings settings,
+  }) {
     return castOrNull<DanbooruPost>(post).toOption().fold(
-          () => DefaultGridThumbnailUrlGenerator(
-            imageQuality: imageQuality,
-            animatedPostsDefaultState: animatedPostsDefaultState,
-          ).generateThumbnailUrl(post),
+          () => const DefaultGridThumbnailUrlGenerator().generateUrl(
+            post,
+            settings: settings,
+          ),
           (post) => DefaultGridThumbnailUrlGenerator(
-            imageQuality: imageQuality,
-            animatedPostsDefaultState: animatedPostsDefaultState,
             gifImageQualityMapper: (_, __) => post.sampleImageUrl,
             imageQualityMapper: (_, imageQuality) => switch (imageQuality) {
               ImageQuality.automatic => post.url720x720,
@@ -650,7 +634,10 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
                 post.isVideo ? post.url720x720 : post.urlSample,
               ImageQuality.original => post.urlOriginal,
             },
-          ).generateThumbnailUrl(post),
+          ).generateUrl(
+            post,
+            settings: settings,
+          ),
         );
   }
 }
