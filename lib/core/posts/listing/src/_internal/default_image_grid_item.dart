@@ -35,7 +35,6 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     super.key,
     this.contextMenu,
     this.leadingIcons,
-    this.gaplessPlayback,
     this.imageUrl,
     this.imageCacheManager,
   });
@@ -48,7 +47,6 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final VoidCallback? onTap;
   final Widget? contextMenu;
   final List<Widget>? leadingIcons;
-  final bool? gaplessPlayback;
   final String? imageUrl;
   final ImageCacheManager? imageCacheManager;
 
@@ -121,7 +119,6 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                             image: _Image(
                               post: post,
                               imageUrl: imgUrl,
-                              gaplessPlayback: gaplessPlayback,
                               imageCacheManager: imageCacheManager,
                             ),
                             leadingIcons: leadingIcons,
@@ -154,13 +151,11 @@ class _Image<T extends Post> extends ConsumerWidget {
     required this.post,
     required this.imageUrl,
     super.key,
-    this.gaplessPlayback,
     this.imageCacheManager,
   });
 
   final T post;
   final String imageUrl;
-  final bool? gaplessPlayback;
   final ImageCacheManager? imageCacheManager;
 
   @override
@@ -181,7 +176,6 @@ class _Image<T extends Post> extends ConsumerWidget {
       forceCover: imageListType == ImageListType.standard,
       fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
       placeholderUrl: post.thumbnailImageUrl,
-      gaplessPlayback: gaplessPlayback ?? true,
       imageCacheManager: imageCacheManager,
     );
   }

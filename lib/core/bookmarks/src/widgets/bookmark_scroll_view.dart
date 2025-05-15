@@ -241,7 +241,6 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                   post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
               imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
               useHero: false,
-              gaplessPlayback: false,
               leadingIcons: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),

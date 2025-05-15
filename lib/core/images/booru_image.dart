@@ -31,7 +31,6 @@ class BooruImage extends ConsumerWidget {
     this.forceCover = false,
     this.forceFill = false,
     this.forceLoadPlaceholder = false,
-    this.gaplessPlayback = false,
     this.placeholderWidget,
     this.controller,
     this.imageCacheManager,
@@ -47,7 +46,6 @@ class BooruImage extends ConsumerWidget {
   final bool forceCover;
   final bool forceFill;
   final bool forceLoadPlaceholder;
-  final bool gaplessPlayback;
   final Widget? placeholderWidget;
   final ExtendedImageController? controller;
   final ImageCacheManager? imageCacheManager;
@@ -84,7 +82,6 @@ class BooruImage extends ConsumerWidget {
         ...ref.watch(extraHttpHeaderProvider(config)),
         ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
-      gaplessPlayback: gaplessPlayback,
       placeholderWidget: placeholderWidget,
       controller: controller,
       androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,
