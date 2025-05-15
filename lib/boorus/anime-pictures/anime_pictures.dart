@@ -46,8 +46,6 @@ class AnimePicturesBuilder
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultTagColorMixin,
-        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,

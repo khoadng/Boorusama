@@ -71,12 +71,13 @@ final bookmarkTagColorProvider =
     final tagType = await tagTypeStore.get(config.booruType, tag);
     final colorScheme = ref.watch(colorSchemeProvider);
 
-    final color = ref.watch(currentBooruBuilderProvider)?.tagColorBuilder(
-          TagColorOptions(
-            tagType: tagType,
-            colors: TagColors.fromBrightness(colorScheme.brightness),
-          ),
-        );
+    final color =
+        ref.watch(currentBooruRepoProvider)?.tagColorGenerator().generateColor(
+              TagColorOptions(
+                tagType: tagType,
+                colors: TagColors.fromBrightness(colorScheme.brightness),
+              ),
+            );
 
     return color;
   },

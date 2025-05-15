@@ -44,8 +44,6 @@ class GelbooruV1Builder
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultTagColorMixin,
-        DefaultTagColorsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,

@@ -200,8 +200,6 @@ class HydrusBuilder
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultTagColorMixin,
-        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,

@@ -178,9 +178,7 @@ class GelbooruBuilder
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultTagColorsMixin,
-        DefaultTagColorMixin
+        DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
   GelbooruBuilder();
 

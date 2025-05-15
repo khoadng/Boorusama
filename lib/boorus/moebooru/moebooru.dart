@@ -75,8 +75,6 @@ class MoebooruBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultBooruUIMixin,
-        DefaultTagColorMixin,
-        DefaultTagColorsMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultGranularRatingFiltererMixin,

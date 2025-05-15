@@ -121,12 +121,7 @@ const kDanbooruPostSamples = [
   }
 ];
 
-class DanbooruBuilder
-    with
-        DefaultTagColorMixin,
-        DefaultTagColorsMixin,
-        NewGranularRatingOptionsBuilderMixin
-    implements BooruBuilder {
+class DanbooruBuilder implements BooruBuilder {
   DanbooruBuilder();
 
   @override
@@ -316,6 +311,14 @@ class DanbooruBuilder
                     (ratings) => ratings.contains(post.rating),
                   ),
           };
+
+  @override
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+        Rating.explicit,
+        Rating.questionable,
+        Rating.sensitive,
+        Rating.general,
+      };
 
   @override
   HomeViewBuilder get homeViewBuilder => (context) {

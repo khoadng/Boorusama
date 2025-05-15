@@ -22,6 +22,7 @@ import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/search/search/routes.dart';
+import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'providers.dart';
@@ -40,7 +41,6 @@ class ZerochanBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         UnknownMetatagsMixin,
-        DefaultTagColorsMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
@@ -97,29 +97,6 @@ class ZerochanBuilder
       };
 
   @override
-  TagColorBuilder get tagColorBuilder => (options) {
-        final colors = options.colors;
-
-        return switch (options.tagType) {
-          'mangaka' ||
-          'studio' ||
-          // This is from a fallback in case the tag is already searched in other boorus
-          'artist' =>
-            colors.artist,
-          'source' ||
-          'game' ||
-          'visual_novel' ||
-          'series' ||
-          // This is from a fallback in case the tag is already searched in other boorus
-          'copyright' =>
-            colors.copyright,
-          'character' => colors.character,
-          'meta' => colors.meta,
-          _ => colors.general,
-        };
-      };
-
-  @override
   final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
       DownloadFileNameBuilder<Post>(
     defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
@@ -152,6 +129,38 @@ class ZerochanBuilder
   );
 }
 
+class ZerochanTagColorGenerator implements TagColorGenerator {
+  const ZerochanTagColorGenerator();
+
+  @override
+  Color? generateColor(TagColorOptions options) {
+    final colors = options.colors;
+
+    return switch (options.tagType) {
+      'mangaka' ||
+      'studio' ||
+      // This is from a fallback in case the tag is already searched in other boorus
+      'artist' =>
+        colors.artist,
+      'source' ||
+      'game' ||
+      'visual_novel' ||
+      'series' ||
+      // This is from a fallback in case the tag is already searched in other boorus
+      'copyright' =>
+        colors.copyright,
+      'character' => colors.character,
+      'meta' => colors.meta,
+      _ => colors.general,
+    };
+  }
+
+  @override
+  TagColors generateColors(TagColorsOptions options) {
+    return TagColors.fromBrightness(options.brightness);
+  }
+}
+
 class ZerochanRepository extends BooruRepositoryDefault {
   const ZerochanRepository({required this.ref});
 
@@ -180,6 +189,11 @@ class ZerochanRepository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
     return DirectIdPathPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  TagColorGenerator tagColorGenerator() {
+    return const ZerochanTagColorGenerator();
   }
 }
 

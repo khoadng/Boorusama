@@ -13,6 +13,7 @@ import '../../../posts/favorites/providers.dart';
 import '../../../posts/listing/list.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/queries/query.dart';
+import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/tag.dart';
 
 abstract class BooruRepository {
@@ -31,4 +32,5 @@ abstract class BooruRepository {
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config);
   ImageUrlResolver imageUrlResolver();
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator();
+  TagColorGenerator tagColorGenerator();
 }

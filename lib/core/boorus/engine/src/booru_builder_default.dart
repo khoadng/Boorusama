@@ -38,7 +38,6 @@ import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../tags/categories/tag_category.dart';
-import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/routes.dart';
 import '../../../tags/tag/tag.dart';
 import '../../../tags/tag/widgets.dart';
@@ -75,29 +74,6 @@ mixin CharacterNotSupportedMixin implements BooruBuilder {
 mixin CommentNotSupportedMixin implements BooruBuilder {
   @override
   CommentPageBuilder? get commentPageBuilder => null;
-}
-
-mixin DefaultTagColorMixin implements BooruBuilder {
-  @override
-  TagColorBuilder get tagColorBuilder => (options) {
-        final colors = options.colors;
-
-        return switch (options.tagType) {
-          '0' || 'general' || 'tag' => colors.general,
-          '1' || 'artist' || 'creator' || 'studio' => colors.artist,
-          '3' || 'copyright' || 'series' => colors.copyright,
-          '4' || 'character' => colors.character,
-          '5' || 'meta' || 'metadata' => colors.meta,
-          _ => colors.general,
-        };
-      };
-}
-
-mixin DefaultTagColorsMixin implements BooruBuilder {
-  @override
-  TagColorsBuilder get tagColorsBuilder => (options) {
-        return TagColors.fromBrightness(options.brightness);
-      };
 }
 
 mixin DefaultTagSuggestionsItemBuilderMixin implements BooruBuilder {
@@ -243,16 +219,6 @@ mixin LegacyGranularRatingOptionsBuilderMixin on BooruBuilder {
         Rating.explicit,
         Rating.questionable,
         Rating.sensitive,
-      };
-}
-
-mixin NewGranularRatingOptionsBuilderMixin on BooruBuilder {
-  @override
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
-        Rating.explicit,
-        Rating.questionable,
-        Rating.sensitive,
-        Rating.general,
       };
 }
 

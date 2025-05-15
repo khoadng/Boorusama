@@ -19,10 +19,6 @@ abstract class BooruBuilder {
 
   HomeViewBuilder get homeViewBuilder;
 
-  TagColorBuilder get tagColorBuilder;
-
-  TagColorsBuilder get tagColorsBuilder;
-
   DownloadFilenameGenerator get downloadFilenameBuilder;
 
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;

@@ -204,33 +204,6 @@ class E621Builder
           );
 
   @override
-  TagColorBuilder get tagColorBuilder => (options) => switch (options.tagType) {
-        'general' => options.colors.general,
-        'artist' => options.colors.artist,
-        'copyright' => options.colors.copyright,
-        'character' => options.colors.character,
-        'species' => options.colors.get('species'),
-        'invalid' => options.colors.get('invalid'),
-        'meta' => options.colors.meta,
-        'lore' => options.colors.get('lore'),
-        _ => options.colors.general,
-      };
-
-  @override
-  TagColorsBuilder get tagColorsBuilder => (options) => const TagColors(
-        general: Color(0xffb4c7d8),
-        artist: Color(0xfff2ad04),
-        copyright: Color(0xffd60ad8),
-        character: Color(0xff05a903),
-        meta: Color(0xfffefffe),
-        customColors: {
-          'species': Color(0xffed5d1f),
-          'invalid': Color(0xfffe3c3d),
-          'lore': Color(0xff218923),
-        },
-      );
-
-  @override
   final DownloadFilenameGenerator downloadFilenameBuilder =
       DownloadFileNameBuilder<E621Post>(
     defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
@@ -282,6 +255,41 @@ class E621Builder
   );
 }
 
+class E621TagColorGenerator implements TagColorGenerator {
+  const E621TagColorGenerator();
+
+  @override
+  Color? generateColor(TagColorOptions options) {
+    return switch (options.tagType) {
+      'general' => options.colors.general,
+      'artist' => options.colors.artist,
+      'copyright' => options.colors.copyright,
+      'character' => options.colors.character,
+      'species' => options.colors.get('species'),
+      'invalid' => options.colors.get('invalid'),
+      'meta' => options.colors.meta,
+      'lore' => options.colors.get('lore'),
+      _ => options.colors.general,
+    };
+  }
+
+  @override
+  TagColors generateColors(TagColorsOptions options) {
+    return const TagColors(
+      general: Color(0xffb4c7d8),
+      artist: Color(0xfff2ad04),
+      copyright: Color(0xffd60ad8),
+      character: Color(0xff05a903),
+      meta: Color(0xfffefffe),
+      customColors: {
+        'species': Color(0xffed5d1f),
+        'invalid': Color(0xfffe3c3d),
+        'lore': Color(0xff218923),
+      },
+    );
+  }
+}
+
 class E621Repository extends BooruRepositoryDefault {
   const E621Repository({required this.ref});
 
@@ -328,6 +336,11 @@ class E621Repository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return PluralPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  TagColorGenerator tagColorGenerator() {
+    return const E621TagColorGenerator();
   }
 }
 

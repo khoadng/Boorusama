@@ -48,8 +48,6 @@ class SzurubooruBuilder
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultHomeMixin,
-        DefaultTagColorMixin,
-        DefaultTagColorsMixin,
         DefaultPostImageDetailsUrlMixin,
         DefaultPostGesturesHandlerMixin,
         DefaultGranularRatingFiltererMixin,
