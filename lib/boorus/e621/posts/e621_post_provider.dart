@@ -110,21 +110,30 @@ E621Post postDtoToPost(PostDto dto, PostMetadata? metadata) {
 }
 
 String extractSampleVideoUrl(PostDto dto) {
-  final p720 = dto.sample?.alternates?['720p']?.urls
-          ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
-      '';
+  // Check for 720p sample
+  final p720Url = dto.sample?.alternates?.samples?['720p']?.url ?? '';
+  if (p720Url.isNotEmpty && p720Url.endsWith('.mp4')) {
+    return p720Url;
+  }
 
-  final p480 = dto.sample?.alternates?['480p']?.urls
-          ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
-      '';
+  // Check for 480p sample
+  final p480Url = dto.sample?.alternates?.samples?['480p']?.url ?? '';
+  if (p480Url.isNotEmpty && p480Url.endsWith('.mp4')) {
+    return p480Url;
+  }
 
-  final pOriginal = dto.sample?.alternates?['original']?.urls
-          ?.firstWhereOrNull((e) => e.endsWith('.mp4')) ??
-      '';
+  // Check for variants
+  final mp4Variant = dto.sample?.alternates?.variants?['mp4']?.url ?? '';
+  if (mp4Variant.isNotEmpty && mp4Variant.endsWith('.mp4')) {
+    return mp4Variant;
+  }
 
-  return p720.isNotEmpty
-      ? p720
-      : p480.isNotEmpty
-          ? p480
-          : pOriginal;
+  // Check for original
+  final originalUrl = dto.sample?.alternates?.original?.url ?? '';
+  if (originalUrl.isNotEmpty &&
+      (originalUrl.endsWith('.mp4') || originalUrl.endsWith('.webm'))) {
+    return originalUrl;
+  }
+
+  return '';
 }
