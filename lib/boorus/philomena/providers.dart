@@ -35,6 +35,15 @@ final philomenaPostRepoProvider =
   return PostRepositoryBuilder(
     getComposer: () => ref.read(currentTagQueryComposerProvider),
     getSettings: () async => ref.read(imageListingSettingsProvider),
+    fetchSingle: (id, {options}) async {
+      final numericId = id as NumericPostId?;
+
+      if (numericId == null) return Future.value(null);
+
+      final post = await client.getImage(numericId.value);
+
+      return post != null ? _postDtoToPost(post, null) : null;
+    },
     fetch: (tags, page, {limit, options}) async {
       final isEmpty = tags.join(' ').isEmpty;
 
@@ -45,61 +54,68 @@ final philomenaPostRepoProvider =
       );
 
       return posts.images
-          .map((e) {
-            final isVideo = e.mimeType?.contains('video') ?? false;
-
-            return PhilomenaPost(
-              id: e.id ?? 0,
-              thumbnailImageUrl: isVideo
-                  ? _parseVideoThumbnail(e) ?? ''
-                  : e.representations?.thumb ?? '',
-              sampleImageUrl: e.representations?.medium ?? '',
-              originalImageUrl: e.representations?.full ?? '',
-              tags: e.tags?.map((e) => e.replaceAll('+', '_')).toSet() ?? {},
-              rating: Rating.general,
-              commentCount: e.commentCount ?? 0,
-              isTranslated: false,
-              hasParentOrChildren: false,
-              source: PostSource.from(e.sourceUrl),
-              score: e.score ?? 0,
-              duration: e.duration ?? 0,
-              fileSize: e.size ?? 0,
-              format: e.format ?? '',
-              hasSound: e.tags?.contains('sound'),
-              height: e.height?.toDouble() ?? 0,
-              md5: e.sha512Hash ?? '',
-              videoThumbnailUrl: isVideo ? _parseVideoThumbnail(e) ?? '' : '',
-              videoUrl: e.representations?.full ?? '',
-              width: e.width?.toDouble() ?? 0,
-              description: e.description ?? '',
-              createdAt: e.createdAt,
-              favCount: e.faves ?? 0,
-              upvotes: e.upvotes ?? 0,
-              downvotes: e.downvotes ?? 0,
-              representation: PhilomenaRepresentation(
-                full: e.representations?.full ?? '',
-                large: e.representations?.large ?? '',
-                medium: e.representations?.medium ?? '',
-                small: e.representations?.small ?? '',
-                tall: e.representations?.tall ?? '',
-                thumb: e.representations?.thumb ?? '',
-                thumbSmall: e.representations?.thumbSmall ?? '',
-                thumbTiny: e.representations?.thumbTiny ?? '',
-              ),
-              uploaderId: e.uploaderId,
-              uploaderName: e.uploader,
-              metadata: PostMetadata(
+          .map(
+            (e) => _postDtoToPost(
+              e,
+              PostMetadata(
                 page: page,
                 search: tags.join(' '),
                 limit: limit,
               ),
-            );
-          })
+            ),
+          )
           .toList()
           .toResult(total: posts.count);
     },
   );
 });
+
+PhilomenaPost _postDtoToPost(ImageDto e, PostMetadata? metadata) {
+  final isVideo = e.mimeType?.contains('video') ?? false;
+
+  return PhilomenaPost(
+    id: e.id ?? 0,
+    thumbnailImageUrl: isVideo
+        ? _parseVideoThumbnail(e) ?? ''
+        : e.representations?.thumb ?? '',
+    sampleImageUrl: e.representations?.medium ?? '',
+    originalImageUrl: e.representations?.full ?? '',
+    tags: e.tags?.map((e) => e.replaceAll('+', '_')).toSet() ?? {},
+    rating: Rating.general,
+    commentCount: e.commentCount ?? 0,
+    isTranslated: false,
+    hasParentOrChildren: false,
+    source: PostSource.from(e.sourceUrl),
+    score: e.score ?? 0,
+    duration: e.duration ?? 0,
+    fileSize: e.size ?? 0,
+    format: e.format ?? '',
+    hasSound: e.tags?.contains('sound'),
+    height: e.height?.toDouble() ?? 0,
+    md5: e.sha512Hash ?? '',
+    videoThumbnailUrl: isVideo ? _parseVideoThumbnail(e) ?? '' : '',
+    videoUrl: e.representations?.full ?? '',
+    width: e.width?.toDouble() ?? 0,
+    description: e.description ?? '',
+    createdAt: e.createdAt,
+    favCount: e.faves ?? 0,
+    upvotes: e.upvotes ?? 0,
+    downvotes: e.downvotes ?? 0,
+    representation: PhilomenaRepresentation(
+      full: e.representations?.full ?? '',
+      large: e.representations?.large ?? '',
+      medium: e.representations?.medium ?? '',
+      small: e.representations?.small ?? '',
+      tall: e.representations?.tall ?? '',
+      thumb: e.representations?.thumb ?? '',
+      thumbSmall: e.representations?.thumbSmall ?? '',
+      thumbTiny: e.representations?.thumbTiny ?? '',
+    ),
+    uploaderId: e.uploaderId,
+    uploaderName: e.uploader,
+    metadata: metadata,
+  );
+}
 
 String? _parseVideoThumbnail(ImageDto e) =>
     e.representations?.thumb.toOption().fold(

@@ -36,6 +36,11 @@ abstract class PostRepository<T extends Post> {
     PostFetchOptions? options,
   });
 
+  PostOrError<T> getPost(
+    PostId id, {
+    PostFetchOptions? options,
+  });
+
   TagQueryComposer get tagComposer;
 }
 
@@ -82,6 +87,11 @@ typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
   PostFetchOptions? options,
 });
 
+typedef PostSingleFutureFetcher<T extends Post> = Future<T?> Function(
+  PostId id, {
+  PostFetchOptions? options,
+});
+
 typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
     Function(
   SearchTagSet controller,
@@ -94,3 +104,7 @@ typedef PostsOrErrorCore<T extends Post>
     = TaskEither<BooruError, PostResult<T>>;
 
 typedef PostsOrError<T extends Post> = PostsOrErrorCore<T>;
+
+typedef PostOrErrorCore<T extends Post> = TaskEither<BooruError, T?>;
+
+typedef PostOrError<T extends Post> = PostOrErrorCore<T>;

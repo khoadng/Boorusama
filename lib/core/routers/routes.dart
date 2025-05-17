@@ -70,6 +70,7 @@ class Routes {
           updateBooruConfigRoutes(ref),
           searchRoutes(ref),
           postDetailsRoutes(ref),
+          singlePostDetailsRoutes(ref),
           postFavoritesRoutes(ref),
           artists(ref),
           characters(ref),

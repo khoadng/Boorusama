@@ -6,9 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../configs/config.dart';
+import '../../../../configs/ref.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../post/post.dart';
+import '../providers/providers.dart';
 import '../widgets/post_details_page.dart';
 import 'details_route_context.dart';
 
@@ -30,35 +35,135 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
           child: const PostDetailsPage(),
         );
 
-        final hero = kEnableHeroTransition && context.hero;
-
-        // must use the value from the payload for orientation
-        // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
-        return !context.isDesktop
-            ? hero && !settings.reduceAnimations
-                ? PostDetailsHeroPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: widget,
-                  )
-                : MaterialPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: widget,
-                  )
-            : hero && !settings.reduceAnimations
-                ? PostDetailsHeroPage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: widget,
-                  )
-                : FastFadePage(
-                    key: state.pageKey,
-                    name: state.name,
-                    child: widget,
-                  );
+        return _detailsPageBuilder(
+          context.isDesktop,
+          context.hero,
+          settings,
+          state,
+          widget,
+        );
       },
     );
+
+GoRoute singlePostDetailsRoutes(Ref ref) => GoRoute(
+      path: 'posts/:id',
+      name: '/posts',
+      pageBuilder: (_, state) {
+        final postIdString = state.pathParameters['id'];
+        final settings = ref.read(settingsProvider);
+        final postId = postIdString != null ? PostId.from(postIdString) : null;
+
+        if (postId == null) {
+          return MaterialPage(
+            child: InvalidPage(message: 'Invalid post Id: $postId'),
+          );
+        }
+
+        final widget = PostDetailsDataLoadingTransitionPage(
+          postId: postId,
+          configSearch: ref.readConfigSearch,
+          pageBuilder: (context, detailsContext) {
+            final widget = InheritedDetailsContext(
+              context: detailsContext,
+              child: const PostDetailsPage(),
+            );
+
+            return widget;
+          },
+        );
+
+        // FIXME: dont hardcode this
+        return _detailsPageBuilder(
+          false,
+          false,
+          settings,
+          state,
+          widget,
+        );
+      },
+    );
+
+Page<dynamic> _detailsPageBuilder(
+  bool isDesktop,
+  bool useHero,
+  Settings settings,
+  GoRouterState state,
+  Widget widget,
+) {
+  final hero = kEnableHeroTransition && useHero;
+
+  // must use the value from the payload for orientation
+  // Using MediaQuery.orientationOf(context) will cause the page to be rebuilt
+  return !isDesktop
+      ? hero && !settings.reduceAnimations
+          ? PostDetailsHeroPage(
+              key: state.pageKey,
+              name: state.name,
+              child: widget,
+            )
+          : MaterialPage(
+              key: state.pageKey,
+              name: state.name,
+              child: widget,
+            )
+      : hero && !settings.reduceAnimations
+          ? PostDetailsHeroPage(
+              key: state.pageKey,
+              name: state.name,
+              child: widget,
+            )
+          : FastFadePage(
+              key: state.pageKey,
+              name: state.name,
+              child: widget,
+            );
+}
+
+class PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
+  const PostDetailsDataLoadingTransitionPage({
+    required this.pageBuilder,
+    required this.postId,
+    required this.configSearch,
+    super.key,
+  });
+
+  final PostId postId;
+  final BooruConfigSearch configSearch;
+
+  final Widget Function(
+    BuildContext context,
+    DetailsRouteContext<Post> detailsContext,
+  ) pageBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final params = (postId, configSearch);
+    return ref.watch(singlePostDetailsProvider(params)).when(
+          data: (post) {
+            if (post == null) {
+              return InvalidPage(message: 'Invalid post: $post');
+            }
+
+            final detailsContext = DetailsRouteContext(
+              initialIndex: 0,
+              posts: [post],
+              scrollController: null,
+              isDesktop: false,
+              hero: false,
+              initialThumbnailUrl: null,
+              dislclaimer: 'Single post mode, swiping is disabled',
+            );
+            return pageBuilder(context, detailsContext);
+          },
+          error: (error, stackTrace) => InvalidPage(message: error.toString()),
+          loading: () => const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
+  }
+}
 
 class PostDetailsHeroPage<T> extends CustomTransitionPage<T> {
   PostDetailsHeroPage({

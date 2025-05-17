@@ -32,6 +32,9 @@ final shimmie2PostRepoProvider =
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
+      fetchSingle: (id, {options}) {
+        return Future.value(null);
+      },
       fetch: (tags, page, {limit, options}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -41,31 +44,9 @@ final shimmie2PostRepoProvider =
 
         return posts
             .map(
-              (e) => Shimmie2Post(
-                id: e.id ?? 0,
-                thumbnailImageUrl: e.previewUrl ?? '',
-                sampleImageUrl: e.fileUrl ?? '',
-                originalImageUrl: e.fileUrl ?? '',
-                tags: e.tags?.toSet() ?? {},
-                rating: mapStringToRating(e.rating),
-                hasComment: false,
-                isTranslated: false,
-                hasParentOrChildren: false,
-                source: PostSource.from(e.source),
-                score: e.score ?? 0,
-                duration: 0,
-                fileSize: 0,
-                format: extension(e.fileName ?? ''),
-                hasSound: null,
-                height: e.height?.toDouble() ?? 0,
-                md5: e.md5 ?? '',
-                videoThumbnailUrl: e.previewUrl ?? '',
-                videoUrl: e.fileUrl ?? '',
-                width: e.width?.toDouble() ?? 0,
-                createdAt: e.date,
-                uploaderId: null,
-                uploaderName: e.author,
-                metadata: PostMetadata(
+              (e) => _postDtoToPost(
+                e,
+                PostMetadata(
                   page: page,
                   search: tags.join(' '),
                   limit: limit,
@@ -79,6 +60,38 @@ final shimmie2PostRepoProvider =
     );
   },
 );
+
+Shimmie2Post _postDtoToPost(
+  PostDto e,
+  PostMetadata? metadata,
+) {
+  return Shimmie2Post(
+    id: e.id ?? 0,
+    thumbnailImageUrl: e.previewUrl ?? '',
+    sampleImageUrl: e.fileUrl ?? '',
+    originalImageUrl: e.fileUrl ?? '',
+    tags: e.tags?.toSet() ?? {},
+    rating: mapStringToRating(e.rating),
+    hasComment: false,
+    isTranslated: false,
+    hasParentOrChildren: false,
+    source: PostSource.from(e.source),
+    score: e.score ?? 0,
+    duration: 0,
+    fileSize: 0,
+    format: extension(e.fileName ?? ''),
+    hasSound: null,
+    height: e.height?.toDouble() ?? 0,
+    md5: e.md5 ?? '',
+    videoThumbnailUrl: e.previewUrl ?? '',
+    videoUrl: e.fileUrl ?? '',
+    width: e.width?.toDouble() ?? 0,
+    createdAt: e.date,
+    uploaderId: null,
+    uploaderName: e.author,
+    metadata: metadata,
+  );
+}
 
 final shimmie2AutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>(

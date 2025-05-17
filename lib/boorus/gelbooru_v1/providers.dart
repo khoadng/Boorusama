@@ -8,6 +8,15 @@ final gelbooruV1PostRepoProvider =
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
+      fetchSingle: (id, {options}) async {
+        final numericId = id as NumericPostId?;
+
+        if (numericId == null) return Future.value(null);
+
+        final post = await client.getPost(numericId.value);
+
+        return post != null ? _postDtoToPost(post, null) : null;
+      },
       fetch: (tags, page, {limit, options}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -16,31 +25,9 @@ final gelbooruV1PostRepoProvider =
 
         return posts
             .map(
-              (e) => GelbooruV1Post(
-                id: e.id ?? 0,
-                thumbnailImageUrl: sanitizedUrl(e.previewUrl ?? ''),
-                sampleImageUrl: sanitizedUrl(e.sampleUrl ?? ''),
-                originalImageUrl: sanitizedUrl(e.fileUrl ?? ''),
-                tags: e.tags.splitTagString(),
-                rating: mapStringToRating(e.rating),
-                hasComment: false,
-                isTranslated: false,
-                hasParentOrChildren: false,
-                source: PostSource.none(),
-                score: e.score ?? 0,
-                duration: 0,
-                fileSize: 0,
-                format: extension(e.fileUrl ?? ''),
-                hasSound: null,
-                height: 0,
-                md5: e.md5 ?? '',
-                videoThumbnailUrl: e.previewUrl ?? '',
-                videoUrl: e.fileUrl ?? '',
-                width: 0,
-                uploaderId: null,
-                createdAt: null,
-                uploaderName: null,
-                metadata: PostMetadata(
+              (e) => _postDtoToPost(
+                e,
+                PostMetadata(
                   page: page,
                   search: tags.join(' '),
                   limit: limit,
@@ -114,4 +101,36 @@ class GelbooruV1Post extends SimplePost {
     required super.uploaderName,
     required super.metadata,
   });
+}
+
+GelbooruV1Post _postDtoToPost(
+  PostV1Dto post,
+  PostMetadata? metadata,
+) {
+  return GelbooruV1Post(
+    id: post.id ?? 0,
+    thumbnailImageUrl: sanitizedUrl(post.previewUrl ?? ''),
+    sampleImageUrl: sanitizedUrl(post.sampleUrl ?? ''),
+    originalImageUrl: sanitizedUrl(post.fileUrl ?? ''),
+    tags: post.tags.splitTagString(),
+    rating: mapStringToRating(post.rating),
+    hasComment: false,
+    isTranslated: false,
+    hasParentOrChildren: false,
+    source: PostSource.none(),
+    score: post.score ?? 0,
+    duration: 0,
+    fileSize: 0,
+    format: extension(post.fileUrl ?? ''),
+    hasSound: null,
+    height: 0,
+    md5: post.md5 ?? '',
+    videoThumbnailUrl: post.previewUrl ?? '',
+    videoUrl: post.fileUrl ?? '',
+    width: 0,
+    uploaderId: null,
+    createdAt: null,
+    uploaderName: null,
+    metadata: metadata,
+  );
 }

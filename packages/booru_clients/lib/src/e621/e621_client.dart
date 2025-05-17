@@ -54,8 +54,11 @@ class E621Client {
     return (data as List).map((item) => PostDto.fromJson(item)).toList();
   }
 
-  Future<PostDto> getPost(int id) async {
+  Future<PostDto?> getPost(int id) async {
     final response = await _dio.get('/posts/$id.json');
+
+    if (response.data == null) return null;
+
     return PostDto.fromJson(response.data['post']);
   }
 

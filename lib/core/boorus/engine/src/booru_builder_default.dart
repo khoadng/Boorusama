@@ -239,6 +239,7 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
           initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: payload.posts,
           scrollController: payload.scrollController,
+          dislclaimer: payload.dislclaimer,
           child: const DefaultPostDetailsPage(),
         );
       };

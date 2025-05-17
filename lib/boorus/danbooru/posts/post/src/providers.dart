@@ -25,6 +25,15 @@ final danbooruPostRepoProvider =
 
   return PostRepositoryBuilder(
     getComposer: () => ref.read(currentTagQueryComposerProvider),
+    fetchSingle: (id, {options}) async {
+      final numericId = id as NumericPostId?;
+
+      if (numericId == null) return Future.value(null);
+
+      final post = await client.getPost(numericId.value);
+
+      return post != null ? postDtoToPost(post, null) : null;
+    },
     fetch: (tags, page, {limit, options}) async {
       final posts = await client
           .getPosts(

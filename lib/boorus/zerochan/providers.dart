@@ -38,6 +38,15 @@ final zerochanPostRepoProvider =
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
+      fetchSingle: (id, {options}) async {
+        final numericId = id as NumericPostId?;
+
+        if (numericId == null) return Future.value(null);
+
+        final post = await client.getPost(id: numericId.value);
+
+        return post != null ? _postDtoToPost(post, null) : null;
+      },
       fetch: (tags, page, {limit, options}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -48,31 +57,9 @@ final zerochanPostRepoProvider =
 
         return posts
             .map(
-              (e) => ZerochanPost(
-                id: e.id ?? 0,
-                thumbnailImageUrl: e.thumbnail ?? '',
-                sampleImageUrl: e.sampleUrl() ?? '',
-                originalImageUrl: e.fileUrl() ?? '',
-                tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
-                rating: Rating.general,
-                hasComment: false,
-                isTranslated: false,
-                hasParentOrChildren: false,
-                source: PostSource.from(e.source),
-                score: 0,
-                duration: 0,
-                fileSize: 0,
-                format: path.extension(e.thumbnail ?? ''),
-                hasSound: null,
-                height: e.height?.toDouble() ?? 0,
-                md5: '',
-                videoThumbnailUrl: '',
-                videoUrl: '',
-                width: e.width?.toDouble() ?? 0,
-                uploaderId: null,
-                uploaderName: null,
-                createdAt: null,
-                metadata: PostMetadata(
+              (e) => _postDtoToPost(
+                e,
+                PostMetadata(
                   page: page,
                   search: tags.join(' '),
                   limit: limit,
@@ -85,6 +72,38 @@ final zerochanPostRepoProvider =
     );
   },
 );
+
+ZerochanPost _postDtoToPost(
+  PostDto e,
+  PostMetadata? metadata,
+) {
+  return ZerochanPost(
+    id: e.id ?? 0,
+    thumbnailImageUrl: e.thumbnail ?? '',
+    sampleImageUrl: e.sampleUrl() ?? '',
+    originalImageUrl: e.fileUrl() ?? '',
+    tags: e.tags?.map((e) => e.toLowerCase()).toSet() ?? {},
+    rating: Rating.general,
+    hasComment: false,
+    isTranslated: false,
+    hasParentOrChildren: false,
+    source: PostSource.from(e.source),
+    score: 0,
+    duration: 0,
+    fileSize: 0,
+    format: path.extension(e.thumbnail ?? ''),
+    hasSound: null,
+    height: e.height?.toDouble() ?? 0,
+    md5: '',
+    videoThumbnailUrl: '',
+    videoUrl: '',
+    width: e.width?.toDouble() ?? 0,
+    uploaderId: null,
+    uploaderName: null,
+    createdAt: null,
+    metadata: metadata,
+  );
+}
 
 final zerochanAutoCompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {

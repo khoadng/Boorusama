@@ -111,6 +111,7 @@ class AnimePicturesBuilder
           initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
+          dislclaimer: payload.dislclaimer,
           child: const DefaultPostDetailsPage<AnimePicturesPost>(),
         );
       };

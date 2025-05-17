@@ -12,6 +12,7 @@ import '../types/post_repository.dart';
 class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   PostRepositoryBuilder({
     required this.fetch,
+    required this.fetchSingle,
     required this.getSettings,
     required this.getComposer,
     this.fetchFromController,
@@ -20,6 +21,7 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   final TagQueryComposer Function() getComposer;
 
   final PostFutureFetcher<T> fetch;
+  final PostSingleFutureFetcher<T> fetchSingle;
   final PostFutureControllerFetcher<T>? fetchFromController;
   final Future<ImageListingSettings> Function() getSettings;
   @override
@@ -83,4 +85,20 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
               limit: limit,
               options: options,
             );
+
+  @override
+  PostOrError<T> getPost(
+    PostId id, {
+    PostFetchOptions? options,
+  }) =>
+      TaskEither.Do(($) async {
+        return $(
+          tryFetchRemoteData(
+            fetcher: () => fetchSingle(
+              id,
+              options: options,
+            ),
+          ),
+        );
+      });
 }

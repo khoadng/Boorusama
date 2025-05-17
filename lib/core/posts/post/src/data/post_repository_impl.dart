@@ -30,6 +30,10 @@ class EmptyPostRepository extends PostRepository {
       TaskEither.right(PostResult.empty());
 
   @override
+  PostOrError<Post> getPost(PostId id, {PostFetchOptions? options}) =>
+      TaskEither.right(null);
+
+  @override
   final TagQueryComposer tagComposer = EmptyTagQueryComposer();
 }
 
@@ -81,4 +85,8 @@ class PostRepositoryCacher<T extends Post> implements PostRepository<T> {
     PostFetchOptions? options,
   }) =>
       repository.getPostsFromController(controller, page, limit: limit);
+
+  @override
+  PostOrError<T> getPost(PostId id, {PostFetchOptions? options}) =>
+      repository.getPost(id, options: options);
 }

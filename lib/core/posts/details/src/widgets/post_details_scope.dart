@@ -17,6 +17,7 @@ class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
     required this.initialIndex,
     required this.initialThumbnailUrl,
     required this.posts,
+    required this.dislclaimer,
     required this.child,
     required this.scrollController,
     super.key,
@@ -25,6 +26,7 @@ class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   final int initialIndex;
   final String? initialThumbnailUrl;
   final List<T> posts;
+  final String? dislclaimer;
   final AutoScrollController? scrollController;
   final Widget child;
 
@@ -47,6 +49,7 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
       initialThumbnailUrl: widget.initialThumbnailUrl,
       posts: widget.posts,
       reduceAnimations: ref.read(settingsProvider).reduceAnimations,
+      dislclaimer: widget.dislclaimer,
     );
   }
 

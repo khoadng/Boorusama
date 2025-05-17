@@ -375,6 +375,20 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
             onPressed: () => goToHomePage(context),
           ),
+          const SizedBox(width: 8),
+          if (widget.controller.dislclaimer != null)
+            CircularIconButton(
+              icon: const Icon(
+                Symbols.warning,
+                fill: 1,
+              ),
+              onPressed: () => showAppModalBarBottomSheet(
+                context: context,
+                builder: (_) => DisclaimerDialog(
+                  disclaimer: widget.controller.dislclaimer!,
+                ),
+              ),
+            ),
         ],
         onSwipeDownThresholdReached:
             gestures.canSwipeDown && postGesturesHandler != null
@@ -678,6 +692,37 @@ class _PostDetailPageScaffoldState<T extends Post>
               controller: widget.controller,
             )
           : const SizedBox.shrink(),
+    );
+  }
+}
+
+class DisclaimerDialog extends StatelessWidget {
+  const DisclaimerDialog({
+    required this.disclaimer,
+    super.key,
+  });
+
+  final String disclaimer;
+
+  @override
+  Widget build(BuildContext context) {
+    final viewPadding = MediaQuery.paddingOf(context);
+
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 8),
+          Text(
+            disclaimer,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          SizedBox(
+            height: viewPadding.bottom + 8,
+          ),
+        ],
+      ),
     );
   }
 }

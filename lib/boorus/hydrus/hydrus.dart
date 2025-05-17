@@ -102,36 +102,13 @@ final hydrusPostRepoProvider =
 
       final data = files.files
           .map(
-            (e) => HydrusPost(
-              id: e.fileId ?? 0,
-              thumbnailImageUrl: e.thumbnailUrl,
-              sampleImageUrl: e.imageUrl,
-              originalImageUrl: e.imageUrl,
-              tags: e.allTags,
-              rating: Rating.general,
-              hasComment: false,
-              isTranslated: false,
-              hasParentOrChildren: false,
-              source: PostSource.from(e.firstSource),
-              score: 0,
-              duration: e.duration?.toDouble() ?? 0,
-              fileSize: e.size ?? 0,
-              format: e.ext ?? '',
-              hasSound: e.hasAudio,
-              height: e.height?.toDouble() ?? 0,
-              md5: e.hash ?? '',
-              videoThumbnailUrl: e.thumbnailUrl,
-              videoUrl: e.imageUrl,
-              width: e.width?.toDouble() ?? 0,
-              uploaderId: null,
-              uploaderName: null,
-              createdAt: null,
-              metadata: PostMetadata(
+            (e) => _postDtoToPost(
+              e,
+              PostMetadata(
                 page: page,
                 search: tags.join(' '),
                 limit: limit,
               ),
-              ownFavorite: e.faved,
             ),
           )
           .toList()
@@ -149,6 +126,15 @@ final hydrusPostRepoProvider =
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
       getSettings: () async => ref.read(imageListingSettingsProvider),
+      fetchSingle: (id, {options}) async {
+        final numericId = id as NumericPostId?;
+
+        if (numericId == null) return Future.value(null);
+
+        final file = await client.getFile(numericId.value);
+
+        return file != null ? _postDtoToPost(file, null) : null;
+      },
       fetchFromController: (controller, page, {limit, options}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
         final composer = ref.read(currentTagQueryComposerProvider);
@@ -163,6 +149,36 @@ final hydrusPostRepoProvider =
     );
   },
 );
+
+HydrusPost _postDtoToPost(FileDto file, PostMetadata? metadata) {
+  return HydrusPost(
+    id: file.fileId ?? 0,
+    thumbnailImageUrl: file.thumbnailUrl,
+    sampleImageUrl: file.imageUrl,
+    originalImageUrl: file.imageUrl,
+    tags: file.allTags,
+    rating: Rating.general,
+    hasComment: false,
+    isTranslated: false,
+    hasParentOrChildren: false,
+    source: PostSource.from(file.firstSource),
+    score: 0,
+    duration: file.duration?.toDouble() ?? 0,
+    fileSize: file.size ?? 0,
+    format: file.ext ?? '',
+    hasSound: file.hasAudio,
+    height: file.height?.toDouble() ?? 0,
+    md5: file.hash ?? '',
+    videoThumbnailUrl: file.thumbnailUrl,
+    videoUrl: file.imageUrl,
+    width: file.width?.toDouble() ?? 0,
+    uploaderId: null,
+    uploaderName: null,
+    createdAt: null,
+    metadata: metadata,
+    ownFavorite: file.faved,
+  );
+}
 
 final hydrusAutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
@@ -265,6 +281,7 @@ class HydrusBuilder
           initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
+          dislclaimer: payload.dislclaimer,
           child: const DefaultPostDetailsPage<HydrusPost>(),
         );
       };

@@ -43,6 +43,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
           initialThumbnailUrl: initialThumbnailUrl,
           posts: posts,
           scrollController: null,
+          dislclaimer: null,
           child: const BookmarkDetailsPageInternal(),
         );
       },

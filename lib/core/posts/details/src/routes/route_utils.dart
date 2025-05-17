@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../configs/config.dart';
 import '../../../../foundation/display.dart';
 import '../../../../router.dart';
 import '../../../listing/providers.dart';
@@ -63,5 +64,17 @@ void goToPostDetailsPageCore<T extends Post>({
       hero: hero,
       initialThumbnailUrl: initialThumbnailUrl,
     ),
+  );
+}
+
+void goToSinglePostDetailsPage<T extends Post>({
+  required BuildContext context,
+  required PostId postId,
+  required BooruConfigSearch configSearch,
+}) {
+  context.push(
+    Uri(
+      path: '/posts/$postId',
+    ).toString(),
   );
 }

@@ -184,6 +184,7 @@ class E621Builder
           initialThumbnailUrl: payload.initialThumbnailUrl,
           posts: posts,
           scrollController: payload.scrollController,
+          dislclaimer: payload.dislclaimer,
           child: const DefaultPostDetailsPage<E621Post>(),
         );
       };

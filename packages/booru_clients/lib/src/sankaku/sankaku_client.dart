@@ -150,11 +150,23 @@ class SankakuClient {
   Future<PostDto?> getPost({
     required String id,
   }) async {
+    final token = await _authStore.getToken();
+
+    if (token == null && username != null && password != null) {
+      await login(
+        username: username!,
+        password: password!,
+      );
+    }
+
     final response = await _dio.get(
       '/posts/$id',
       options: Options(
         headers: {
-          'Accept': 'application/json',
+          if (token != null &&
+              token.accessToken != null &&
+              token.tokenType != null)
+            'Authorization': '${token.tokenType} ${token.accessToken}',
         },
       ),
     );

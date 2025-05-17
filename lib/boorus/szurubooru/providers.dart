@@ -45,6 +45,20 @@ final szurubooruPostRepoProvider =
 
     return PostRepositoryBuilder(
       getComposer: () => ref.read(currentTagQueryComposerProvider),
+      fetchSingle: (id, {options}) async {
+        final numericId = id as NumericPostId?;
+
+        if (numericId == null) return Future.value(null);
+
+        final post = await client.getPost(numericId.value);
+
+        if (post == null) return null;
+
+        final categories =
+            await ref.read(szurubooruTagCategoriesProvider(config.auth).future);
+
+        return _postDtoToPost(post, null, categories);
+      },
       fetch: (tags, page, {limit, options}) async {
         final posts = await client.getPosts(
           tags: tags,
@@ -57,60 +71,14 @@ final szurubooruPostRepoProvider =
 
         final data = posts.posts
             .map(
-              (e) => SzurubooruPost(
-                id: e.id ?? 0,
-                thumbnailImageUrl: e.thumbnailUrl ?? '',
-                sampleImageUrl: e.contentUrl ?? '',
-                originalImageUrl: e.contentUrl ?? '',
-                tags:
-                    e.tags?.map((e) => e.names?.firstOrNull).nonNulls.toSet() ??
-                        {},
-                tagDetails: e.tags
-                        ?.map(
-                          (e) => Tag(
-                            name: e.names?.firstOrNull ?? '???',
-                            category: categories.firstWhereOrNull(
-                                  (element) => element.name == e.category,
-                                ) ??
-                                TagCategory.general(),
-                            postCount: e.usages ?? 0,
-                          ),
-                        )
-                        .toList() ??
-                    [],
-                rating: switch (e.safety?.toLowerCase()) {
-                  'safe' => Rating.general,
-                  'questionable' => Rating.questionable,
-                  'sketchy' => Rating.questionable,
-                  'unsafe' => Rating.explicit,
-                  _ => Rating.general,
-                },
-                hasComment: (e.commentCount ?? 0) > 0,
-                isTranslated: (e.noteCount ?? 0) > 0,
-                hasParentOrChildren: (e.relationCount ?? 0) > 0,
-                source: PostSource.from(e.source),
-                score: e.score ?? 0,
-                duration: 0,
-                fileSize: e.fileSize ?? 0,
-                format: extension(e.contentUrl ?? ''),
-                hasSound: e.flags?.contains('sound'),
-                height: e.canvasHeight?.toDouble() ?? 0,
-                md5: e.checksumMD5 ?? '',
-                videoThumbnailUrl: e.thumbnailUrl ?? '',
-                videoUrl: e.contentUrl ?? '',
-                width: e.canvasWidth?.toDouble() ?? 0,
-                createdAt: e.creationTime != null
-                    ? DateTime.tryParse(e.creationTime!)
-                    : null,
-                uploaderName: e.user?.name,
-                ownFavorite: e.ownFavorite ?? false,
-                favoriteCount: e.favoriteCount ?? 0,
-                commentCount: e.commentCount ?? 0,
-                metadata: PostMetadata(
+              (e) => _postDtoToPost(
+                e,
+                PostMetadata(
                   page: page,
                   search: tags.join(' '),
                   limit: limit,
                 ),
+                categories,
               ),
             )
             .toList();
@@ -132,6 +100,61 @@ final szurubooruPostRepoProvider =
     );
   },
 );
+
+SzurubooruPost _postDtoToPost(
+  PostDto e,
+  PostMetadata? metadata,
+  List<TagCategory>? categories,
+) {
+  return SzurubooruPost(
+    id: e.id ?? 0,
+    thumbnailImageUrl: e.thumbnailUrl ?? '',
+    sampleImageUrl: e.contentUrl ?? '',
+    originalImageUrl: e.contentUrl ?? '',
+    tags: e.tags?.map((e) => e.names?.firstOrNull).nonNulls.toSet() ?? {},
+    tagDetails: e.tags
+            ?.map(
+              (e) => Tag(
+                name: e.names?.firstOrNull ?? '???',
+                category: categories?.firstWhereOrNull(
+                      (element) => element.name == e.category,
+                    ) ??
+                    TagCategory.general(),
+                postCount: e.usages ?? 0,
+              ),
+            )
+            .toList() ??
+        [],
+    rating: switch (e.safety?.toLowerCase()) {
+      'safe' => Rating.general,
+      'questionable' => Rating.questionable,
+      'sketchy' => Rating.questionable,
+      'unsafe' => Rating.explicit,
+      _ => Rating.general,
+    },
+    hasComment: (e.commentCount ?? 0) > 0,
+    isTranslated: (e.noteCount ?? 0) > 0,
+    hasParentOrChildren: (e.relationCount ?? 0) > 0,
+    source: PostSource.from(e.source),
+    score: e.score ?? 0,
+    duration: 0,
+    fileSize: e.fileSize ?? 0,
+    format: extension(e.contentUrl ?? ''),
+    hasSound: e.flags?.contains('sound'),
+    height: e.canvasHeight?.toDouble() ?? 0,
+    md5: e.checksumMD5 ?? '',
+    videoThumbnailUrl: e.thumbnailUrl ?? '',
+    videoUrl: e.contentUrl ?? '',
+    width: e.canvasWidth?.toDouble() ?? 0,
+    createdAt:
+        e.creationTime != null ? DateTime.tryParse(e.creationTime!) : null,
+    uploaderName: e.user?.name,
+    ownFavorite: e.ownFavorite ?? false,
+    favoriteCount: e.favoriteCount ?? 0,
+    commentCount: e.commentCount ?? 0,
+    metadata: metadata,
+  );
+}
 
 final szurubooruAutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>(
