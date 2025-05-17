@@ -63,7 +63,7 @@ void goToPostDetailsPageCore<T extends Post>({
       isDesktop: context.isLargeScreen,
       hero: hero,
       initialThumbnailUrl: initialThumbnailUrl,
-      configSearch: null,
+      config: null,
     ),
   );
 }
@@ -71,7 +71,7 @@ void goToPostDetailsPageCore<T extends Post>({
 void goToSinglePostDetailsPage<T extends Post>({
   required BuildContext context,
   required PostId postId,
-  required BooruConfigSearch configSearch,
+  required BooruConfig config,
 }) {
   context.push(
     Uri(
@@ -85,7 +85,7 @@ void goToSinglePostDetailsPage<T extends Post>({
       isDesktop: context.isLargeScreen,
       hero: false,
       initialThumbnailUrl: null,
-      configSearch: configSearch,
+      config: config,
     ),
   );
 }

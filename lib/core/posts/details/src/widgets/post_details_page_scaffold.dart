@@ -19,8 +19,6 @@ import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
-import '../../../../configs/current.dart';
-import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
@@ -41,6 +39,7 @@ import '../../../post/routes.dart';
 import '../../../shares/providers.dart';
 import 'post_details_controller.dart';
 import 'post_details_full_info_sheet.dart';
+import 'post_details_page.dart';
 import 'post_details_preload_image.dart';
 import 'post_media.dart';
 import 'video_controls.dart';
@@ -124,8 +123,10 @@ class _PostDetailPageScaffoldState<T extends Post>
         useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
       );
 
-      if (ref.readConfig.autoFetchNotes) {
-        ref.read(notesProvider(ref.readConfigAuth).notifier).load(
+      final detailSettings = InheritedDetailsSettings.of(context);
+
+      if (detailSettings.autoFetchNotes) {
+        ref.read(notesProvider(detailSettings.auth).notifier).load(
               posts[widget.controller.initialPage],
             );
       }
@@ -275,12 +276,15 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _build() {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
-    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = ref.watchPostGestures?.fullview;
+    final detailSettings = InheritedDetailsSettings.of(context);
+    final auth = detailSettings.auth;
 
-    final imageUrlBuilder =
-        widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
+    final booruBuilder = ref.watchBooruBuilder(auth);
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final gestures = detailSettings.postGestures?.fullview;
+
+    final imageUrlBuilder = widget.imageUrlBuilder ??
+        defaultPostImageUrlBuilder(ref, detailSettings.config);
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
@@ -288,8 +292,6 @@ class _PostDetailPageScaffoldState<T extends Post>
         ref.watch(settingsProvider.select((value) => value.videoPlayerEngine));
     final reduceAnimations =
         ref.watch(settingsProvider.select((value) => value.reduceAnimations));
-
-    final auth = ref.watchConfigAuth;
 
     void onItemTap() {
       final controller = widget.controller;
@@ -346,7 +348,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
           ref.read(postShareProvider(post).notifier).updateInformation(post);
 
-          final config = ref.readConfig;
+          final config = InheritedDetailsSettings.of(context);
 
           if (config.autoFetchNotes) {
             ref.read(notesProvider(config.auth).notifier).load(post);
@@ -402,31 +404,25 @@ class _PostDetailPageScaffoldState<T extends Post>
                     );
                   }
                 : null,
-        sheetBuilder: (context, scrollController) {
-          return Consumer(
-            builder: (_, ref, __) {
-              final layoutDetails = ref.watch(
-                currentReadOnlyBooruConfigLayoutProvider
-                    .select((value) => value?.details),
-              );
-              final preferredParts = widget.preferredParts ??
-                  getLayoutParsedParts(
-                    details: layoutDetails,
-                    hasPremium: ref.watch(hasPremiumProvider),
-                  ) ??
-                  uiBuilder?.full.keys.toSet();
+        sheetBuilder: (_, scrollController) {
+          final layoutDetails =
+              InheritedDetailsLayoutSettings.of(context).layoutDetails;
+          final preferredParts = widget.preferredParts ??
+              getLayoutParsedParts(
+                details: layoutDetails,
+                hasPremium: ref.watch(hasPremiumProvider),
+              ) ??
+              uiBuilder?.full.keys.toSet();
 
-              return ValueListenableBuilder(
-                valueListenable: _controller.sheetState,
-                builder: (context, state, _) => PostDetailsFullInfoSheet(
-                  scrollController: scrollController,
-                  sheetState: state,
-                  uiBuilder: uiBuilder,
-                  preferredParts: preferredParts,
-                  canCustomize: kPremiumEnabled && widget.uiBuilder == null,
-                ),
-              );
-            },
+          return ValueListenableBuilder(
+            valueListenable: _controller.sheetState,
+            builder: (context, state, _) => PostDetailsFullInfoSheet(
+              scrollController: scrollController,
+              sheetState: state,
+              uiBuilder: uiBuilder,
+              preferredParts: preferredParts,
+              canCustomize: kPremiumEnabled && widget.uiBuilder == null,
+            ),
           );
         },
         itemBuilder: (context, index) {
@@ -552,12 +548,10 @@ class _PostDetailPageScaffoldState<T extends Post>
             ),
           );
         },
-        bottomSheet: Consumer(
-          builder: (_, ref, __) {
-            final layoutPreviewDetails = ref.watch(
-              currentReadOnlyBooruConfigLayoutProvider
-                  .select((value) => value?.previewDetails),
-            );
+        bottomSheet: Builder(
+          builder: (context) {
+            final layoutPreviewDetails =
+                InheritedDetailsLayoutSettings.of(context).layoutPreviewDetails;
 
             return widget.uiBuilder != null
                 ? _buildCustomPreview(widget.uiBuilder!, layoutPreviewDetails)
