@@ -147,6 +147,23 @@ class SankakuClient {
     return (data as List).map((e) => PostDto.fromJson(e)).toList();
   }
 
+  Future<PostDto?> getPost({
+    required String id,
+  }) async {
+    final response = await _dio.get(
+      '/posts/$id',
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    final data = response.data;
+
+    return PostDto.fromJson(data);
+  }
+
   // Only a single global autocomplete request per client is allowed for now
   CancelToken? _autocompleteCancelToken;
 

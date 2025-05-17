@@ -126,6 +126,34 @@ class GelbooruClient
     );
   }
 
+  Future<PostDto?> getPost(int id) async {
+    final response = await _dio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'dapi',
+        's': 'post',
+        'q': 'index',
+        'json': '1',
+        'id': id,
+        if (userId != null) 'user_id': userId,
+        if (apiKey != null) 'api_key': apiKey,
+      },
+    );
+
+    final data = response.data;
+    if (data == null) return null;
+
+    final baseUrl = _dio.options.baseUrl;
+    return switch (data) {
+      final Map m => m.containsKey('post')
+          ? (m['post'] as List)
+              .map((item) => PostDto.fromJson(item, baseUrl))
+              .firstOrNull
+          : null,
+      _ => null,
+    };
+  }
+
   Future<List<AutocompleteDto>> autocomplete({
     required String term,
     int? limit,

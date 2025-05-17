@@ -107,6 +107,11 @@ class HydrusClient {
     return (files: files, count: session.fileIds.length);
   }
 
+  Future<FileDto?> getFile(int id) async {
+    final files = await _getFiles(fileIds: [id]);
+    return files.firstOrNull;
+  }
+
   Future<List<FileDto>> _getFiles({
     required List<int> fileIds,
   }) async {

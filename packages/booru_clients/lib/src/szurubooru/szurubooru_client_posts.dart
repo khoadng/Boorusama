@@ -46,6 +46,15 @@ mixin SzurubooruClientPosts {
     );
   }
 
+  Future<PostDto?> getPost(int id) async {
+    final response = await dio.get('/api/post/$id');
+
+    return PostDto.fromJson(
+      response.data,
+      baseUrl: dio.options.baseUrl,
+    );
+  }
+
   Future<PostDto> upvotePost({
     required int postId,
   }) async {

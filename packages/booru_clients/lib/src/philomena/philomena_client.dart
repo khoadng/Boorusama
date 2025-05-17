@@ -54,6 +54,21 @@ class PhilomenaClient {
         .toPhilomenaImages(count: count);
   }
 
+  Future<ImageDto?> getImage(int id) async {
+    final response = await _dio.get(
+      '/api/v1/json/images/$id',
+      queryParameters: {
+        if (apiKey != null) 'key': apiKey,
+      },
+    );
+
+    final image = response.data['image'];
+
+    if (image == null) return null;
+
+    return ImageDto.fromJson(image);
+  }
+
   Future<List<TagDto>> getTags({
     required String query,
     int? page,

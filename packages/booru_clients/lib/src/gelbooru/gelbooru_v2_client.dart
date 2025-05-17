@@ -117,6 +117,33 @@ class GelbooruV2Client with GelbooruClientFavorites {
     );
   }
 
+  Future<PostV2Dto?> getPost(int id) async {
+    final response = await _dio.get(
+      '/index.php',
+      queryParameters: {
+        'page': 'dapi',
+        's': 'post',
+        'q': 'index',
+        'json': '1',
+        'id': id,
+        if (userId != null) 'user_id': userId,
+        if (apiKey != null) 'api_key': apiKey,
+      },
+    );
+
+    final data = response.data;
+    if (data == null) return null;
+
+    final baseUrl = _dio.options.baseUrl;
+    return switch (data) {
+      final List l =>
+        l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList().firstOrNull,
+      final Map m =>
+        m is Map<String, dynamic> ? PostV2Dto.fromJson(m, baseUrl) : null,
+      _ => null,
+    };
+  }
+
   Future<List<AutocompleteDto>> autocomplete({
     required String term,
     int? limit,

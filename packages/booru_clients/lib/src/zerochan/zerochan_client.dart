@@ -82,6 +82,31 @@ class ZerochanClient {
     }
   }
 
+  Future<PostDto?> getPost({
+    required int id,
+  }) async {
+    final response = await _dio.get(
+      '/$id?json',
+      options: Options(
+        responseType: ResponseType.plain,
+      ),
+    );
+
+    final data = response.data;
+
+    if (data is String) {
+      final json = _parsePostResponse(data);
+
+      if (json case final Map m) {
+        if (m.isEmpty) return null;
+      }
+
+      return PostDto.fromJson(json);
+    }
+
+    return null;
+  }
+
   Future<List<TagDto>> getTagsFromPostId({
     required int postId,
   }) async {

@@ -109,6 +109,19 @@ class SankakuIdolClient implements SankakuClient {
     return (data as List).map((e) => PostIdolDto.fromJson(e)).toList();
   }
 
+  @override
+  Future<PostDto?> getPost({
+    required String id,
+  }) async {
+    final idolPost = await getIdolPost(id);
+    return idolPost?.toSankakuPost();
+  }
+
+  Future<PostIdolDto?> getIdolPost(String id) async {
+    // Not sure how to handle this yet, maybe just parse the HTML response?
+    return null;
+  }
+
   CancelToken? _autocompleteCancelToken;
 
   @override
