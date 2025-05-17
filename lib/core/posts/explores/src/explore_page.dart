@@ -173,7 +173,6 @@ class ExploreList extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final post = filteredPosts[index];
-          final config = ref.watchConfig;
 
           return ExplicitContentBlockOverlay(
             rating: post.rating,
@@ -184,15 +183,14 @@ class ExploreList extends ConsumerWidget {
                   context: context,
                   posts: filteredPosts,
                   initialIndex: index,
-                  initialThumbnailUrl:
-                      defaultPostImageUrlBuilder(ref, config)(post),
+                  initialThumbnailUrl: defaultPostImageUrlBuilder(ref)(post),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     BooruImage(
                       aspectRatio: post.aspectRatio,
-                      imageUrl: defaultPostImageUrlBuilder(ref, config)(post),
+                      imageUrl: defaultPostImageUrlBuilder(ref)(post),
                       placeholderUrl: post.thumbnailImageUrl,
                     ),
                     if (post.isAnimated)

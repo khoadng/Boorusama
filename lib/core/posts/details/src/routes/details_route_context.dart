@@ -14,7 +14,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
     required this.isDesktop,
     required this.hero,
     required this.initialThumbnailUrl,
-    required this.config,
+    required this.configSearch,
     this.dislclaimer,
   });
 
@@ -31,7 +31,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
       hero: hero,
       initialThumbnailUrl: initialThumbnailUrl,
       dislclaimer: dislclaimer,
-      config: config,
+      configSearch: configSearch,
     );
   }
 
@@ -42,7 +42,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
   final bool hero;
   final String? initialThumbnailUrl;
   final String? dislclaimer;
-  final BooruConfig? config;
+  final BooruConfigSearch? configSearch;
 
   @override
   List<Object?> get props => [
@@ -53,6 +53,5 @@ class DetailsRouteContext<T extends Post> extends Equatable {
         hero,
         initialThumbnailUrl,
         dislclaimer,
-        config,
       ];
 }

@@ -49,27 +49,21 @@ GoRoute singlePostDetailsRoutes(Ref ref) => GoRoute(
       name: '/posts',
       pageBuilder: (_, state) {
         final context = castOrNull<DetailsRouteContext>(state.extra);
-        final config = context?.config;
+        final configSearch = context?.configSearch;
 
         final postIdString = state.pathParameters['id'];
         final settings = ref.read(settingsProvider);
         final postId = postIdString != null ? PostId.from(postIdString) : null;
 
-        if (postId == null) {
+        if (postId == null || configSearch == null) {
           return MaterialPage(
             child: InvalidPage(message: 'Invalid post Id: $postId'),
           );
         }
 
-        if (config == null) {
-          return const MaterialPage(
-            child: InvalidPage(message: 'Missing config'),
-          );
-        }
-
         final widget = PostDetailsDataLoadingTransitionPage(
           postId: postId,
-          config: config,
+          configSearch: configSearch,
           pageBuilder: (context, detailsContext) {
             final widget = InheritedDetailsContext(
               context: detailsContext,
@@ -130,12 +124,12 @@ class PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
   const PostDetailsDataLoadingTransitionPage({
     required this.pageBuilder,
     required this.postId,
-    required this.config,
+    required this.configSearch,
     super.key,
   });
 
   final PostId postId;
-  final BooruConfig config;
+  final BooruConfigSearch configSearch;
 
   final Widget Function(
     BuildContext context,
@@ -144,7 +138,7 @@ class PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final params = (postId, config.search);
+    final params = (postId, configSearch);
     return ref.watch(singlePostDetailsProvider(params)).when(
           data: (post) {
             if (post == null) {
@@ -159,7 +153,7 @@ class PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
               hero: false,
               initialThumbnailUrl: null,
               dislclaimer: 'Single post mode, swiping is disabled',
-              config: config,
+              configSearch: configSearch,
             );
             return pageBuilder(context, detailsContext);
           },

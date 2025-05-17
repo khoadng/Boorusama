@@ -387,19 +387,17 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final posts = PostDetails.of<AnimePicturesPost>(context).posts;
     final post = InheritedPost.of<AnimePicturesPost>(context);
-    final config = ref.watchConfig;
 
     return ref.watch(postDetailsProvider(post.id)).when(
           data: (details) => details.tied != null && details.tied!.isNotEmpty
               ? SliverRelatedPostsSection(
                   posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                  imageUrl: defaultPostImageUrlBuilder(ref, config),
+                  imageUrl: defaultPostImageUrlBuilder(ref),
                   onTap: (index) => goToPostDetailsPageFromPosts(
                     context: context,
                     posts: posts,
                     initialIndex: index,
-                    initialThumbnailUrl:
-                        defaultPostImageUrlBuilder(ref, config)(
+                    initialThumbnailUrl: defaultPostImageUrlBuilder(ref)(
                       posts[index],
                     ),
                   ),

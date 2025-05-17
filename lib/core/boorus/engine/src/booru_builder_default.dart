@@ -301,14 +301,13 @@ String Function(
   Post post,
 ) defaultPostImageUrlBuilder(
   WidgetRef ref,
-  BooruConfig config,
 ) =>
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
-        : ref.watchBooruBuilder(config.auth)?.postImageDetailsUrlBuilder(
+        : ref.watch(currentBooruBuilderProvider)?.postImageDetailsUrlBuilder(
                   ref.watch(imageListingQualityProvider),
                   post,
-                  config,
+                  ref.watchConfig,
                 ) ??
             post.sampleImageUrl;
 

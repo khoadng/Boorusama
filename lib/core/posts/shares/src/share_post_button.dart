@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
-import '../../../configs/ref.dart';
 import '../../../foundation/display.dart';
 import '../../post/post.dart';
 import 'post_modal_share.dart';
@@ -48,7 +47,7 @@ extension PostShareX on WidgetRef {
       booruLink: state.booruLink,
       sourceLink: state.sourceLink,
       imageData: () => (
-        imageUrl: defaultPostImageUrlBuilder(this, watchConfig)(post),
+        imageUrl: defaultPostImageUrlBuilder(this)(post),
         imageExt: post.format,
       ),
     );
