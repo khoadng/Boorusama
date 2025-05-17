@@ -10,13 +10,28 @@ import '../../../../router.dart';
 import '../../../post/post.dart';
 import '../../routes.dart';
 
-class PostDetailsPage<T extends Post> extends ConsumerWidget {
-  const PostDetailsPage({super.key});
+class CurrentPostDetailsPage<T extends Post> extends ConsumerWidget {
+  const CurrentPostDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final payload = InheritedDetailsContext.of<T>(context);
     final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final builder = booruBuilder?.postDetailsPageBuilder;
+
+    return builder != null
+        ? builder(context, payload)
+        : const UnimplementedPage();
+  }
+}
+
+class PayloadPostDetailsPage<T extends Post> extends ConsumerWidget {
+  const PayloadPostDetailsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final payload = InheritedDetailsContext.of<T>(context);
+    final booruBuilder = ref.watchBooruBuilder(payload.configSearch?.auth);
     final builder = booruBuilder?.postDetailsPageBuilder;
 
     return builder != null

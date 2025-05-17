@@ -7,7 +7,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../configs/config.dart';
-import '../../../../configs/ref.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
@@ -32,7 +31,7 @@ GoRoute postDetailsRoutes(Ref ref) => GoRoute(
 
         final widget = InheritedDetailsContext(
           context: context,
-          child: const PostDetailsPage(),
+          child: const CurrentPostDetailsPage(),
         );
 
         return _detailsPageBuilder(
@@ -49,11 +48,14 @@ GoRoute singlePostDetailsRoutes(Ref ref) => GoRoute(
       path: 'posts/:id',
       name: '/posts',
       pageBuilder: (_, state) {
+        final context = castOrNull<DetailsRouteContext>(state.extra);
+        final configSearch = context?.configSearch;
+
         final postIdString = state.pathParameters['id'];
         final settings = ref.read(settingsProvider);
         final postId = postIdString != null ? PostId.from(postIdString) : null;
 
-        if (postId == null) {
+        if (postId == null || configSearch == null) {
           return MaterialPage(
             child: InvalidPage(message: 'Invalid post Id: $postId'),
           );
@@ -61,21 +63,20 @@ GoRoute singlePostDetailsRoutes(Ref ref) => GoRoute(
 
         final widget = PostDetailsDataLoadingTransitionPage(
           postId: postId,
-          configSearch: ref.readConfigSearch,
+          configSearch: configSearch,
           pageBuilder: (context, detailsContext) {
             final widget = InheritedDetailsContext(
               context: detailsContext,
-              child: const PostDetailsPage(),
+              child: const PayloadPostDetailsPage(),
             );
 
             return widget;
           },
         );
 
-        // FIXME: dont hardcode this
         return _detailsPageBuilder(
-          false,
-          false,
+          context?.isDesktop ?? false,
+          context?.hero ?? false,
           settings,
           state,
           widget,
@@ -152,6 +153,7 @@ class PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
               hero: false,
               initialThumbnailUrl: null,
               dislclaimer: 'Single post mode, swiping is disabled',
+              configSearch: configSearch,
             );
             return pageBuilder(context, detailsContext);
           },

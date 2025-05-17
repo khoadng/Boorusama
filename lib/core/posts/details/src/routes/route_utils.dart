@@ -63,6 +63,7 @@ void goToPostDetailsPageCore<T extends Post>({
       isDesktop: context.isLargeScreen,
       hero: hero,
       initialThumbnailUrl: initialThumbnailUrl,
+      configSearch: null,
     ),
   );
 }
@@ -76,5 +77,15 @@ void goToSinglePostDetailsPage<T extends Post>({
     Uri(
       path: '/posts/$postId',
     ).toString(),
+    extra: DetailsRouteContext(
+      initialIndex: 0,
+      // ignore: prefer_const_literals_to_create_immutables
+      posts: <T>[],
+      scrollController: null,
+      isDesktop: context.isLargeScreen,
+      hero: false,
+      initialThumbnailUrl: null,
+      configSearch: configSearch,
+    ),
   );
 }
