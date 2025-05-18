@@ -26,6 +26,8 @@ class UserDetailsInfoView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hasFeedback = user.hasFeedback;
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -37,21 +39,25 @@ class UserDetailsInfoView extends ConsumerWidget {
           const SizedBox(height: 24),
           UserDetailsSectionCard(
             title: InkWell(
-              onTap: () => goToUserFeedbackPage(context, user.id),
-              child: const Row(
+              onTap: hasFeedback
+                  ? () => goToUserFeedbackPage(context, user.id)
+                  : null,
+              child: Row(
                 children: [
-                  Text(
+                  const Text(
                     'Feedbacks',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Symbols.arrow_forward_ios,
-                    size: 14,
-                  ),
+                  if (hasFeedback) ...[
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Symbols.arrow_forward_ios,
+                      size: 14,
+                    ),
+                  ],
                 ],
               ),
             ),
