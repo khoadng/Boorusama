@@ -26,7 +26,7 @@ class UserDetailsInfoView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasFeedback = user.hasFeedback;
+    final hasFeedback = user.hasFeedbacks;
 
     return SingleChildScrollView(
       child: Column(

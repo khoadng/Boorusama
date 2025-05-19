@@ -10,17 +10,20 @@ class UserDetailsTabView extends StatelessWidget {
     this.infoDetails,
     super.key,
     this.uploads,
+    this.tagChanges,
   });
 
   final Widget sliverInfoOverview;
   final Widget? infoDetails;
   final Widget? uploads;
+  final Widget? tagChanges;
 
   @override
   Widget build(BuildContext context) {
     final tabMap = {
       if (infoDetails != null) 'Info': infoDetails!,
       if (uploads != null) 'Uploads': uploads!,
+      if (tagChanges != null) 'Changes': tagChanges!,
     };
 
     return DecoratedBox(

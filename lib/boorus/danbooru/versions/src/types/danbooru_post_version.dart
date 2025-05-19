@@ -24,6 +24,7 @@ class DanbooruPostVersion extends Equatable {
     required this.obsoleteRemovedTags,
     required this.unchangedTags,
     required this.updater,
+    required this.thumbnailUrl,
   });
   final int id;
   final int postId;
@@ -45,6 +46,8 @@ class DanbooruPostVersion extends Equatable {
 
   final Creator updater;
 
+  final String? thumbnailUrl;
+
   @override
   List<Object?> get props => [
         id,
@@ -65,5 +68,6 @@ class DanbooruPostVersion extends Equatable {
         obsoleteRemovedTags,
         unchangedTags,
         updater,
+        thumbnailUrl,
       ];
 }

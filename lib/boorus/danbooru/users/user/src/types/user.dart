@@ -56,7 +56,7 @@ class DanbooruUser extends Equatable {
   final int neutralFeedbackCount;
   final int negativeFeedbackCount;
 
-  bool get hasFeedback =>
+  bool get hasFeedbacks =>
       sumInt(
         [
           positiveFeedbackCount,
@@ -65,6 +65,9 @@ class DanbooruUser extends Equatable {
         ],
       ) >
       0;
+
+  bool get hasEdits => tagEditCount > 0;
+  bool get hasUploads => uploadCount > 0;
 
   @override
   List<Object?> get props => [

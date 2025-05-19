@@ -14,6 +14,7 @@ import '../../../../dmails/routes.dart';
 import '../../../../posts/uploads/routes.dart';
 import '../../../user/providers.dart';
 import '../views/user_details_info_view.dart';
+import '../views/user_details_tag_changes.dart';
 import '../views/user_details_upload_view.dart';
 import '../widgets/danbooru_user_info_box.dart';
 
@@ -58,12 +59,17 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
                   isSelf: isSelf,
                   user: user,
                 ),
-                uploads: user.uploadCount > 0
+                uploads: user.hasUploads
                     ? UserDetailsUploadView(
                         uid: uid,
                         username: user.name,
                         isSelf: isSelf,
                         user: user,
+                      )
+                    : null,
+                tagChanges: user.hasEdits
+                    ? UserDetailsTagChanges(
+                        uid: uid,
                       )
                     : null,
               ),

@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../core/configs/config.dart';
+import '../../../../../core/images/booru_image.dart';
+import '../../../../../core/posts/details/routes.dart';
+import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/theme.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -15,16 +19,20 @@ import 'tag_changed_text.dart';
 class TagEditHistoryCard extends StatelessWidget {
   const TagEditHistoryCard({
     required this.version,
-    required this.onUserTap,
+    this.onUserTap,
+    this.configSearch,
     super.key,
   });
 
   final DanbooruPostVersion version;
-  final void Function() onUserTap;
+  final void Function()? onUserTap;
+  final BooruConfigSearch? configSearch;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final thumbnail = version.thumbnailUrl;
+    final config = configSearch;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -42,7 +50,27 @@ class TagEditHistoryCard extends StatelessWidget {
         color: colorScheme.surfaceContainerLow,
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (thumbnail != null)
+            SizedBox(
+              width: 100,
+              child: Material(
+                child: InkWell(
+                  onTap: config != null
+                      ? () {
+                          goToSinglePostDetailsPage(
+                            context: context,
+                            postId: NumericPostId(version.postId),
+                            configSearch: config,
+                          );
+                        }
+                      : null,
+                  child: BooruImage(imageUrl: thumbnail),
+                ),
+              ),
+            ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -23,6 +23,7 @@ class PostVersionDto extends Equatable {
     this.obsoleteRemovedTags,
     this.unchangedTags,
     this.updater,
+    this.previewFileUrl,
   });
 
   factory PostVersionDto.fromJson(Map<String, dynamic>? json) {
@@ -52,6 +53,7 @@ class PostVersionDto extends Equatable {
       unchangedTags: json['unchanged_tags'],
       updater:
           json['updater'] != null ? UserDto.fromJson(json['updater']) : null,
+      previewFileUrl: json['post']?['preview_file_url'],
     );
   }
   final int? id;
@@ -74,6 +76,8 @@ class PostVersionDto extends Equatable {
 
   final UserDto? updater;
 
+  final String? previewFileUrl;
+
   @override
   List<Object?> get props => [
         id,
@@ -94,5 +98,6 @@ class PostVersionDto extends Equatable {
         obsoleteRemovedTags,
         unchangedTags,
         updater,
+        previewFileUrl,
       ];
 }
