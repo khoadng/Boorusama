@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../../../core/posts/rating/rating.dart';
 import '../../../../../../core/posts/sources/source.dart';
 import '../../../../users/user/user.dart';
-import '../../../post/providers.dart';
+import '../../../post/post.dart';
 import 'danbooru_upload_post.dart';
 
 class DanbooruUpload extends Equatable {
@@ -87,7 +87,10 @@ extension DanbooruUploadX on DanbooruUpload {
       parentId: null,
       hasLarge: false,
       duration: mediaAsset.duration ?? 0,
-      variants: mediaAsset.variants?.map(variantDtoToVariant).toList() ?? [],
+      variants: PostVariants.fromMap({
+        for (final variant in mediaAsset.variants ?? <VariantDto>[])
+          variant.type: variant.url,
+      }),
       tags: const {},
       generalTags: const {},
       characterTags: const {},

@@ -16,9 +16,13 @@ DanbooruPost postDtoToPost(
   PostMetadata? metadata,
 ) {
   try {
-    final variants =
-        dto.mediaAsset?.variants?.map(variantDtoToVariant).toList() ??
-            _fallbackVariants(dto);
+    final variants = PostVariants.fromMap(
+      {
+        for (final variant in dto.mediaAsset?.variants ?? <VariantDto>[])
+          variant.type: variant.url,
+      },
+      fallback: () => _fallbackVariants(dto),
+    );
 
     return DanbooruPost(
       id: dto.id!,
@@ -63,14 +67,6 @@ DanbooruPost postDtoToPost(
     return DanbooruPost.empty();
   }
 }
-
-PostVariant variantDtoToVariant(VariantDto dto) => PostVariant(
-      url: dto.url ?? '',
-      // width: dto.width ?? 0,
-      // height: dto.height ?? 0,
-      type: mapStringToPostQualityType(dto.type) ?? PostQualityType.sample,
-      // fileExt: dto.fileExt ?? 'jpg',
-    );
 
 List<PostVariant> _fallbackVariants(PostDto dto) {
   return [

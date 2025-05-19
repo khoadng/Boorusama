@@ -73,7 +73,7 @@ class DanbooruImageDetailsQualityProvider extends ConsumerWidget {
 
     return CreateBooruImageDetailsResolutionOptionTile(
       value: imageDetailsQuality,
-      items: PostQualityType.values.map((e) => e.stringify()).toList(),
+      items: PostQualityType.values.map((e) => e.value).toList(),
       onChanged: (value) => ref.editNotifier.updateImageDetailsQuality(value),
     );
   }

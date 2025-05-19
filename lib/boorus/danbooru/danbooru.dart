@@ -269,8 +269,7 @@ class DanbooruBuilder implements BooruBuilder {
                               post.sampleImageUrl,
                             _ => post.url720x720,
                           },
-                          (quality) =>
-                              switch (mapStringToPostQualityType(quality)) {
+                          (quality) => switch (PostQualityType.parse(quality)) {
                             PostQualityType.v180x180 => post.url180x180,
                             PostQualityType.v360x360 => post.url360x360,
                             PostQualityType.v720x720 => post.url720x720,
