@@ -44,7 +44,7 @@ final szurubooruPostRepoProvider =
     final client = ref.watch(szurubooruClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       fetchSingle: (id, {options}) async {
         final numericId = id as NumericPostId?;
 

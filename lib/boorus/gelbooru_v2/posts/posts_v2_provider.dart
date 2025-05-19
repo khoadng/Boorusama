@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
-import '../../../core/configs/ref.dart';
 import '../../../core/foundation/caching/lru_cacher.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
@@ -20,7 +19,7 @@ final gelbooruV2PostRepoProvider =
     final client = ref.watch(gelbooruV2ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       fetch: client.getPostResults,
       fetchSingle: (id, {options}) async {
         final numericId = id as NumericPostId?;
@@ -36,7 +35,8 @@ final gelbooruV2PostRepoProvider =
       fetchFromController: (controller, page, {limit, options}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
 
-        final newTags = ref.read(currentTagQueryComposerProvider).compose(tags);
+        final newTags =
+            ref.read(tagQueryComposerProvider(config)).compose(tags);
 
         return client.getPostResults(newTags, page, limit: limit);
       },
@@ -55,13 +55,20 @@ final gelbooruV2ArtistCharacterPostRepoProvider =
   },
 );
 
-final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruV2Post>, GelbooruV2Post>((ref, post) async {
+final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose.family<
+    List<GelbooruV2Post>,
+    (
+      BooruConfigFilter,
+      BooruConfigSearch,
+      GelbooruV2Post
+    )>((ref, params) async {
+  final (filter, search, post) = params;
+
   return ref
-      .watch(gelbooruV2PostRepoProvider(ref.watchConfigSearch))
+      .watch(gelbooruV2PostRepoProvider(search))
       .getPostsFromTagWithBlacklist(
         tag: post.relationshipQuery,
-        blacklist: ref.watch(currentBlacklistTagsProvider.future),
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
       );
 });
 

@@ -24,7 +24,7 @@ final moebooruPostRepoProvider =
     final client = ref.watch(moebooruClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       fetchSingle: (id, {options}) async {
         final numericId = id as NumericPostId?;
 
@@ -98,13 +98,14 @@ final moebooruPostDetailsChildrenProvider =
   },
 );
 
-final moebooruPostDetailsArtistProvider =
-    FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
-  final config = ref.watchConfigSearch;
-  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = await ref.watch(currentBlacklistTagsProvider.future);
+final moebooruPostDetailsArtistProvider = FutureProvider.family
+    .autoDispose<List<Post>, (BooruConfigFilter, BooruConfigSearch, String)>(
+        (ref, params) async {
+  final (filter, search, artistName) = params;
+  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(search));
+  final blacklistedTags = await ref.watch(blacklistTagsProvider(filter).future);
 
-  final r = await repo.getPostsFromTagsOrEmpty(tag);
+  final r = await repo.getPostsFromTagsOrEmpty(artistName);
 
   return filterTags(
     r.posts.take(30).where((e) => !e.isFlash).toList(),
@@ -112,13 +113,15 @@ final moebooruPostDetailsArtistProvider =
   );
 });
 
-final moebooruPostDetailsCharacterProvider =
-    FutureProvider.family.autoDispose<List<Post>, String>((ref, tag) async {
-  final config = ref.watchConfigSearch;
-  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(config));
-  final blacklistedTags = await ref.watch(currentBlacklistTagsProvider.future);
+final moebooruPostDetailsCharacterProvider = FutureProvider.family
+    .autoDispose<List<Post>, (BooruConfigFilter, BooruConfigSearch, String)>(
+        (ref, params) async {
+  final (filter, search, artistName) = params;
 
-  final r = await repo.getPostsFromTagsOrEmpty(tag);
+  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(search));
+  final blacklistedTags = await ref.watch(blacklistTagsProvider(filter).future);
+
+  final r = await repo.getPostsFromTagsOrEmpty(artistName);
 
   return filterTags(
     r.posts.take(30).where((e) => !e.isFlash).toList(),

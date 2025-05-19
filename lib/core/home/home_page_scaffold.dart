@@ -13,6 +13,7 @@ import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
 import '../bulk_downloads/widgets.dart';
 import '../cache/providers.dart';
+import '../configs/ref.dart';
 import '../configs/widgets.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
@@ -225,7 +226,8 @@ class CustomHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customHome = ref.watch(currentBooruBuilderProvider)?.homeViewBuilder;
+    final customHome =
+        ref.watch(booruBuilderProvider(ref.watchConfigAuth))?.homeViewBuilder;
 
     return customHome != null
         ? customHome(context)

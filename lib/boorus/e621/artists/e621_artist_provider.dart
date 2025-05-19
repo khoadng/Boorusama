@@ -27,11 +27,12 @@ final e621ArtistProvider =
 });
 
 final e621ArtistPostsProvider = FutureProvider.autoDispose
-    .family<List<E621Post>, String?>((ref, name) async {
-  return ref
-      .watch(e621PostRepoProvider(ref.watchConfigSearch))
-      .getPostsFromTagWithBlacklist(
+    .family<List<E621Post>, (BooruConfigFilter, BooruConfigSearch, String?)>(
+        (ref, params) async {
+  final (filter, search, name) = params;
+
+  return ref.watch(e621PostRepoProvider(search)).getPostsFromTagWithBlacklist(
         tag: name,
-        blacklist: ref.watch(currentBlacklistTagsProvider.future),
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
       );
 });

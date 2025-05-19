@@ -33,7 +33,7 @@ final philomenaPostRepoProvider =
   final client = ref.watch(philomenaClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    getComposer: () => ref.read(currentTagQueryComposerProvider),
+    getComposer: () => ref.read(tagQueryComposerProvider(config)),
     getSettings: () async => ref.read(imageListingSettingsProvider),
     fetchSingle: (id, {options}) async {
       final numericId = id as NumericPostId?;

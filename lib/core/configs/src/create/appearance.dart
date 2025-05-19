@@ -37,7 +37,8 @@ class BooruConfigLayoutView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
-    final uiBuilder = ref.watchBooruBuilder(config.auth)?.postDetailsUIBuilder;
+    final uiBuilder =
+        ref.watch(booruBuilderProvider(config.auth))?.postDetailsUIBuilder;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -138,7 +139,7 @@ class _HomeScreenSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
-    final booruBuilder = ref.watchBooruBuilder(config.auth);
+    final booruBuilder = ref.watch(booruBuilderProvider(config.auth));
     final layout = ref.watch(
           editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
               .select((value) => value.layoutTyped),

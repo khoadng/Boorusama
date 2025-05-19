@@ -36,7 +36,7 @@ final zerochanPostRepoProvider =
     final client = ref.watch(zerochanClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchSingle: (id, {options}) async {
         final numericId = id as NumericPostId?;

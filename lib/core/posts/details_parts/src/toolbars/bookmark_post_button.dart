@@ -48,7 +48,7 @@ class BookmarkPostButton extends ConsumerWidget {
             onPressed: () {
               ref.bookmarks.addBookmarkWithToast(
                 context,
-                booruConfig.booruIdHint,
+                booruConfig,
                 post,
               );
             },
@@ -85,7 +85,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
         } else {
           ref.bookmarks.addBookmarkWithToast(
             context,
-            booruConfig.booruIdHint,
+            booruConfig,
             post,
           );
         }
@@ -120,7 +120,7 @@ extension BookmarkPostX on WidgetRef {
     } else {
       bookmarks.addBookmarkWithToast(
         context,
-        booruConfig.booruIdHint,
+        booruConfig,
         post,
       );
     }

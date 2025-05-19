@@ -124,7 +124,7 @@ final hydrusPostRepoProvider =
     }
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchSingle: (id, {options}) async {
         final numericId = id as NumericPostId?;
@@ -137,7 +137,7 @@ final hydrusPostRepoProvider =
       },
       fetchFromController: (controller, page, {limit, options}) {
         final tags = controller.tags.map((e) => e.originalTag).toList();
-        final composer = ref.read(currentTagQueryComposerProvider);
+        final composer = ref.read(tagQueryComposerProvider(config));
 
         return getPosts(
           composer.compose(tags),

@@ -8,6 +8,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../../core/artists/artists.dart';
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/details/details.dart';
 import '../../../../../../core/posts/details/routes.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
@@ -128,7 +129,11 @@ class DanbooruArtistPostsSection extends ConsumerWidget {
                 (tag) => SliverArtistPostList(
                   tag: tag,
                   child: ref
-                      .watch(danbooruPostDetailsArtistProvider(tag))
+                      .watch(
+                        danbooruPostDetailsArtistProvider(
+                          (ref.watchConfigFilter, ref.watchConfigSearch, tag),
+                        ),
+                      )
                       .maybeWhen(
                         data: (data) => SliverPreviewPostGrid(
                           posts: data,
@@ -156,7 +161,13 @@ class DanbooruRelatedPostsSection2 extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return ref.watch(danbooruPostDetailsChildrenProvider(post)).maybeWhen(
+    return ref
+        .watch(
+          danbooruPostDetailsChildrenProvider(
+            (ref.watchConfigFilter, ref.watchConfigSearch, post),
+          ),
+        )
+        .maybeWhen(
           data: (posts) => DanbooruRelatedPostsSection(
             posts: posts,
             currentPost: post,

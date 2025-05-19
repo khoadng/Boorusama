@@ -7,6 +7,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../core/artists/artists.dart';
+import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
@@ -31,7 +32,13 @@ class E621ArtistPostsSection extends ConsumerWidget {
               .map(
                 (tag) => SliverArtistPostList(
                   tag: tag,
-                  child: ref.watch(e621ArtistPostsProvider(tag)).maybeWhen(
+                  child: ref
+                      .watch(
+                        e621ArtistPostsProvider(
+                          (ref.watchConfigFilter, ref.watchConfigSearch, tag),
+                        ),
+                      )
+                      .maybeWhen(
                         data: (data) => SliverPreviewPostGrid(
                           posts: data,
                           onTap: (postIdx) => goToPostDetailsPageFromPosts(

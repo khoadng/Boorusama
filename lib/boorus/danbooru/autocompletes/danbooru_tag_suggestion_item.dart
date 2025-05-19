@@ -33,7 +33,7 @@ class DanbooruTagSuggestionItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tagInfo = ref.watch(tagInfoProvider);
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(booruBuilderProvider(config));
     final metatagExtractorBuilder = booruBuilder?.metatagExtractorBuilder;
 
     return TagSuggestionItem(

@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../configs/ref.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../router.dart';
 import '../../../tags/categories/tag_category.dart';
@@ -250,7 +251,7 @@ class SimpleInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final supportArtist = booruBuilder?.isArtistSupported ?? false;
 
     return InformationSection(

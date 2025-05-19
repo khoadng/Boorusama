@@ -92,8 +92,9 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
       url: booruUrl,
       customDownloadFileNameFormat: null,
     );
-    final booruBuilder =
-        ref.watchBooruBuilder(defaultConfig.auth)?.createConfigPageBuilder;
+    final booruBuilder = ref
+        .watch(booruBuilderProvider(defaultConfig.auth))
+        ?.createConfigPageBuilder;
 
     return booruBuilder != null
         ? AddKnownBooru(

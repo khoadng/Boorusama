@@ -88,7 +88,7 @@ class AddBookmarksButton extends ConsumerWidget {
               unawaited(
                 ref.bookmarks.addBookmarksWithToast(
                   context,
-                  booruConfig.booruIdHint,
+                  booruConfig,
                   booruConfig.url,
                   posts,
                 ),

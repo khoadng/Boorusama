@@ -38,7 +38,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final isBookmarked =
         bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
     final hasAccount = booruConfig.hasLoginDetails();
-    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
+    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -59,7 +59,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             onPressed: () => ref.bookmarks
               ..addBookmarkWithToast(
                 context,
-                booruConfig.booruIdHint,
+                booruConfig,
                 post,
               ),
           )
@@ -82,7 +82,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
               );
             },
           ),
-        if (!booruConfig.hasStrictSFW && postLinkGenerator != null)
+        if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
             'post.detail.view_in_browser'.tr(),
             onPressed: () =>

@@ -22,7 +22,7 @@ final e621PostRepoProvider =
   final client = ref.watch(e621ClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    getComposer: () => ref.read(currentTagQueryComposerProvider),
+    getComposer: () => ref.read(tagQueryComposerProvider(config)),
     fetchSingle: (id, {options}) async {
       final numericId = id as NumericPostId?;
 

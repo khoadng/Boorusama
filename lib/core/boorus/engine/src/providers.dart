@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
-import '../../../configs/ref.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
-import '../../booru/booru.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
 import 'booru_repository.dart';
@@ -18,49 +16,8 @@ final booruEngineRegistryProvider = Provider<BooruEngineRegistry>(
   name: 'booruEngineRegistryProvider',
 );
 
-final currentBooruProvider = Provider.family<Booru?, BooruConfigAuth>(
+final booruBuilderProvider = Provider.family<BooruBuilder?, BooruConfigAuth>(
   (ref, config) {
-    final registry = ref.watch(booruEngineRegistryProvider);
-
-    return registry.getEngine(config.booruType)?.booru;
-  },
-  name: 'currentBooruProvider',
-);
-
-extension BooruRef on Ref {
-  BooruBuilder? readBooruBuilder(BooruConfigAuth? config) {
-    if (config == null) return null;
-
-    final booruBuilder =
-        read(booruEngineRegistryProvider).getBuilder(config.booruType);
-
-    return booruBuilder;
-  }
-}
-
-extension BooruWidgetRef on WidgetRef {
-  BooruBuilder? readBooruBuilder(BooruConfigAuth? config) {
-    if (config == null) return null;
-
-    final booruBuilder =
-        read(booruEngineRegistryProvider).getBuilder(config.booruType);
-
-    return booruBuilder;
-  }
-
-  BooruBuilder? watchBooruBuilder(BooruConfigAuth? config) {
-    if (config == null) return null;
-
-    final booruBuilder =
-        watch(booruEngineRegistryProvider).getBuilder(config.booruType);
-
-    return booruBuilder;
-  }
-}
-
-final currentBooruBuilderProvider = Provider<BooruBuilder?>(
-  (ref) {
-    final config = ref.watchConfigAuth;
     final booruBuilder =
         ref.watch(booruEngineRegistryProvider).getBuilder(config.booruType);
 
@@ -69,40 +26,25 @@ final currentBooruBuilderProvider = Provider<BooruBuilder?>(
   name: 'currentBooruBuilderProvider',
 );
 
-final currentBooruRepoProvider = Provider<BooruRepository?>(
-  (ref) {
-    final config = ref.watchConfigAuth;
+final booruRepoProvider = Provider.family<BooruRepository?, BooruConfigAuth>(
+  (ref, config) {
+    final booruRepo =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
 
-    final booruType = intToBooruType(config.booruIdHint);
-
-    return ref.watch(booruEngineRegistryProvider).getRepository(booruType);
+    return booruRepo;
   },
   name: 'currentBooruRepositoryProvider',
 );
 
-final postLinkGeneratorProvider = Provider.family<PostLinkGenerator, int?>(
-  (ref, booruId) {
-    if (booruId == null) return const NoLinkPostLinkGenerator();
-
-    final booruType = intToBooruType(booruId);
-
+final postLinkGeneratorProvider =
+    Provider.family<PostLinkGenerator, BooruConfigAuth>(
+  (ref, config) {
     final repository =
-        ref.watch(booruEngineRegistryProvider).getRepository(booruType);
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
 
     if (repository == null) return const NoLinkPostLinkGenerator();
-
-    final config = ref.watchConfigAuth;
 
     return repository.postLinkGenerator(config);
   },
   name: 'postLinkGeneratorProvider',
-);
-
-final currentPostLinkGeneratorProvider = Provider<PostLinkGenerator?>(
-  (ref) {
-    final config = ref.watchConfigAuth;
-
-    return ref.watch(postLinkGeneratorProvider(config.booruIdHint));
-  },
-  name: 'currentPostLinkGeneratorProvider',
 );

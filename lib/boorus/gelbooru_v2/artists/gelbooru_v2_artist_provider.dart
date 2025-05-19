@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
-import '../../../core/configs/ref.dart';
 import '../../../core/foundation/caching.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
@@ -21,12 +20,14 @@ final gelbooruV2ArtistPostRepo =
   );
 });
 
-final gelbooruV2ArtistPostsProvider = FutureProvider.autoDispose
-    .family<List<GelbooruV2Post>, String?>((ref, artistName) async {
+final gelbooruV2ArtistPostsProvider = FutureProvider.autoDispose.family<
+    List<GelbooruV2Post>,
+    (BooruConfigFilter, BooruConfigSearch, String?)>((ref, params) async {
+  final (filter, search, artistName) = params;
   return ref
-      .watch(gelbooruV2ArtistPostRepo(ref.watchConfigSearch))
+      .watch(gelbooruV2ArtistPostRepo(search))
       .getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(currentBlacklistTagsProvider.future),
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
       );
 });

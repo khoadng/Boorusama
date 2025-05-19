@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../boorus/engine/providers.dart';
 import '../comments/utils.dart';
+import '../configs/ref.dart';
 import '../foundation/display.dart';
 import '../router.dart';
 import '../tags/favorites/providers.dart';
@@ -65,7 +66,8 @@ Future<Object?> goToFavoriteTagImportPage(
 }
 
 void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
-  final builder = ref.read(currentBooruBuilderProvider)?.commentPageBuilder;
+  final builder =
+      ref.read(booruBuilderProvider(ref.watchConfigAuth))?.commentPageBuilder;
 
   if (builder == null) return;
 

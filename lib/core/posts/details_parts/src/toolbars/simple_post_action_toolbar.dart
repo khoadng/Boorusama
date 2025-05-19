@@ -37,9 +37,8 @@ class SimplePostActionToolbar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final commentPageBuilder =
-        ref.watch(currentBooruBuilderProvider)?.commentPageBuilder;
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
+    final commentPageBuilder = booruBuilder?.commentPageBuilder;
 
     return PostActionToolbar(
       children: [

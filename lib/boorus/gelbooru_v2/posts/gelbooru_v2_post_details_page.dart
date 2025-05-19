@@ -9,6 +9,7 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
@@ -49,7 +50,13 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
     final post = InheritedPost.of<GelbooruV2Post>(context);
 
     return post.hasParent
-        ? ref.watch(gelbooruV2ChildPostsProvider(post)).maybeWhen(
+        ? ref
+            .watch(
+              gelbooruV2ChildPostsProvider(
+                (ref.watchConfigFilter, ref.watchConfigSearch, post),
+              ),
+            )
+            .maybeWhen(
               data: (data) => SliverRelatedPostsSection(
                 title: 'Child posts',
                 posts: data,
@@ -109,7 +116,15 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
                       (tag) => SliverArtistPostList(
                         tag: tag,
                         child: ref
-                            .watch(gelbooruV2ArtistPostsProvider(tag))
+                            .watch(
+                              gelbooruV2ArtistPostsProvider(
+                                (
+                                  ref.watchConfigFilter,
+                                  ref.watchConfigSearch,
+                                  tag
+                                ),
+                              ),
+                            )
                             .maybeWhen(
                               data: (data) => SliverPreviewPostGrid(
                                 posts: data,

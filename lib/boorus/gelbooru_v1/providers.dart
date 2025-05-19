@@ -6,7 +6,7 @@ final gelbooruV1PostRepoProvider =
     final client = ref.watch(gelbooruV1ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchSingle: (id, {options}) async {
         final numericId = id as NumericPostId?;

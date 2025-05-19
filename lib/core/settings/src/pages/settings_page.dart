@@ -407,7 +407,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final options = SettingsPageScope.of(context).options;
 
     return Column(

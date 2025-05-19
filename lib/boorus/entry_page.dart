@@ -156,7 +156,7 @@ class _Boorus extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(config.auth));
 
     if (booruBuilder != null) {
       return Builder(

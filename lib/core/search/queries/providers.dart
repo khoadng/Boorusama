@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
-import '../../configs/ref.dart';
 import 'tag_query_composer.dart';
 
 final tagQueryComposerProvider =
@@ -20,12 +19,5 @@ final tagQueryComposerProvider =
     }
 
     return DefaultTagQueryComposer(config: config);
-  },
-);
-
-final currentTagQueryComposerProvider = Provider<TagQueryComposer>(
-  (ref) {
-    final config = ref.watchConfigSearch;
-    return ref.watch(tagQueryComposerProvider(config));
   },
 );

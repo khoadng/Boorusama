@@ -41,7 +41,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
     super.initState();
 
     selectedTagController = SelectedTagController.fromBooruBuilder(
-      builder: ref.read(currentBooruBuilderProvider),
+      builder: ref.read(booruBuilderProvider(ref.readConfigAuth)),
       tagInfo: ref.read(tagInfoProvider),
     );
   }

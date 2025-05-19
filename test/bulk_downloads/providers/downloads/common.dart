@@ -390,8 +390,8 @@ List<Override> getTestOverrides({
         .overrideWith((__, _) => const UrlInsidePostExtractor()),
     cachedBypassDdosHeadersProvider.overrideWith((_, __) => {}),
     analyticsProvider.overrideWith((_) => NoAnalyticsInterface()),
-    currentBooruBuilderProvider
-        .overrideWith((_) => booruBuilder ?? MockBooruBuilder()),
+    booruBuilderProvider
+        .overrideWith((_, __) => booruBuilder ?? MockBooruBuilder()),
     blacklistTagsProvider.overrideWith((_, __) => {}),
     hasPremiumProvider.overrideWithValue(hasPremium),
     downloadTaskStreamProvider

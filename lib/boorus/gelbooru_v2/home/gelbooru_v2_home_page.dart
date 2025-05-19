@@ -29,7 +29,7 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
     final favoritePageBuilder =
-        ref.watch(currentBooruBuilderProvider)?.favoritesPageBuilder;
+        ref.watch(booruBuilderProvider(config))?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [

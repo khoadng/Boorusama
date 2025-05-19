@@ -54,7 +54,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     final overlay = blockOverlay;
     final hideOverlay = multiSelectEnabled;
 
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.preview;
 

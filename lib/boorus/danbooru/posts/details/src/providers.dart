@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/providers.dart';
+import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
@@ -11,14 +12,16 @@ import '../../pools/pool/providers.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
 
-final danbooruPostDetailsArtistProvider = FutureProvider.family
-    .autoDispose<List<DanbooruPost>, String>((ref, tag) async {
-  final config = ref.watchConfigSearch;
+final danbooruPostDetailsArtistProvider = FutureProvider.family.autoDispose<
+    List<DanbooruPost>,
+    (BooruConfigFilter, BooruConfigSearch, String?)>((ref, params) async {
+  final (filter, search, artistName) = params;
+
   final posts = await ref
-      .watch(danbooruPostRepoProvider(config))
+      .watch(danbooruPostRepoProvider(search))
       .getPostsFromTagWithBlacklist(
-        tag: tag,
-        blacklist: ref.watch(currentBlacklistTagsProvider.future),
+        tag: artistName,
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
       );
 
   posts.removeWhere((e) => e.isBanned);
@@ -26,17 +29,18 @@ final danbooruPostDetailsArtistProvider = FutureProvider.family
   return posts;
 });
 
-final danbooruPostDetailsChildrenProvider = FutureProvider.family
-    .autoDispose<List<DanbooruPost>, DanbooruPost>((ref, post) async {
+final danbooruPostDetailsChildrenProvider = FutureProvider.family.autoDispose<
+    List<DanbooruPost>,
+    (BooruConfigFilter, BooruConfigSearch, DanbooruPost)>((ref, params) async {
+  final (filter, search, post) = params;
+
   if (!post.hasParentOrChildren) return [];
 
-  final config = ref.watchConfigSearch;
-
   return ref
-      .watch(danbooruPostRepoProvider(config))
+      .watch(danbooruPostRepoProvider(search))
       .getPostsFromTagWithBlacklist(
         tag: post.relationshipQuery,
-        blacklist: ref.watch(currentBlacklistTagsProvider.future),
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
         softLimit: null,
       );
 });

@@ -33,7 +33,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
     final favoritePageBuilder =
-        ref.watch(currentBooruBuilderProvider)?.favoritesPageBuilder;
+        ref.watch(booruBuilderProvider(config))?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [

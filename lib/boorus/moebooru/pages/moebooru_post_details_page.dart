@@ -184,7 +184,15 @@ class MoebooruCharacterListSection extends ConsumerWidget {
 
             return artistTags != null && artistTags.isNotEmpty
                 ? ref
-                    .watch(moebooruPostDetailsArtistProvider(artistTags.first))
+                    .watch(
+                      moebooruPostDetailsArtistProvider(
+                        (
+                          ref.watchConfigFilter,
+                          ref.watchConfigSearch,
+                          artistTags.first
+                        ),
+                      ),
+                    )
                     .maybeWhen(
                       data: (_) {
                         return characterTags != null && characterTags.isNotEmpty
@@ -244,7 +252,15 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
                         (tag) => SliverArtistPostList(
                           tag: tag,
                           child: ref
-                              .watch(moebooruPostDetailsArtistProvider(tag))
+                              .watch(
+                                moebooruPostDetailsArtistProvider(
+                                  (
+                                    ref.watchConfigFilter,
+                                    ref.watchConfigSearch,
+                                    tag
+                                  ),
+                                ),
+                              )
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
                                   posts: data,

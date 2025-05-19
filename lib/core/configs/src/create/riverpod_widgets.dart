@@ -333,7 +333,7 @@ class _CreateBooruConfigGranularRatingOptionsState
   Widget build(BuildContext context) {
     final options = widget.options ??
         ref
-            .watch(currentBooruBuilderProvider)
+            .watch(booruBuilderProvider(widget.config.auth))
             ?.granularRatingOptionsBuilder
             ?.call();
 

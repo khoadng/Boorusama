@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
 import '../../../../router.dart';
 
 class FavoritesPage extends ConsumerWidget {
@@ -13,7 +14,7 @@ class FavoritesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final builder = booruBuilder?.favoritesPageBuilder;
 
     return builder != null ? builder(context) : const UnimplementedPage();

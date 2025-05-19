@@ -42,7 +42,7 @@ class TagSuggestionItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(booruBuilderProvider(config));
     final tagSuggestionItemBuilder = booruBuilder?.tagSuggestionItemBuilder;
 
     return _tags.isNotEmpty

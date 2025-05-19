@@ -232,7 +232,11 @@ class SankakuArtistPostsSection extends ConsumerWidget {
                   child: ref
                       .watch(
                         sankakuArtistPostsProvider(
-                          post.artistTags.firstOrNull,
+                          (
+                            ref.watchConfigFilter,
+                            ref.watchConfigSearch,
+                            post.artistTags.firstOrNull
+                          ),
                         ),
                       )
                       .maybeWhen(

@@ -50,7 +50,7 @@ final animePicturesPostRepoProvider =
     final client = ref.watch(animePicturesClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       fetchSingle: (id, {options}) {
         final numericId = id as NumericPostId?;
 

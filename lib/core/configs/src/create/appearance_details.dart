@@ -20,8 +20,9 @@ class QuickEditDetailsConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layout = ref.watchLayoutConfigs ?? const LayoutConfigs.undefined();
-    final uiBuilder =
-        ref.watchBooruBuilder(ref.watchConfigAuth)?.postDetailsUIBuilder;
+    final uiBuilder = ref
+        .watch(booruBuilderProvider(ref.watchConfigAuth))
+        ?.postDetailsUIBuilder;
 
     if (uiBuilder == null) {
       return Scaffold(

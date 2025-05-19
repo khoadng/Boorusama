@@ -33,7 +33,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
-    final postLinkGenerator = ref.watch(currentPostLinkGeneratorProvider);
+    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
 
     return SizedBox(
       width: 40,
@@ -54,8 +54,6 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   post.extractTags(),
                 );
               case 'view_in_browser':
-                if (postLinkGenerator == null) return;
-
                 launchExternalUrlString(
                   postLinkGenerator.getLink(post),
                 );
@@ -79,7 +77,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   const Text('post.action.add_to_favorite_group').tr(),
             if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             'tag_history': const Text('View tag history'),
-            if (!booruConfig.hasStrictSFW && postLinkGenerator != null)
+            if (!booruConfig.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
             if (post.hasFullView)
               'view_original':

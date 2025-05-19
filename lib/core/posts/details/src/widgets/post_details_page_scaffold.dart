@@ -275,7 +275,9 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _build() {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final auth = ref.watchConfigAuth;
+
+    final booruBuilder = ref.watch(booruBuilderProvider(auth));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.fullview;
 
@@ -288,8 +290,6 @@ class _PostDetailPageScaffoldState<T extends Post>
         ref.watch(settingsProvider.select((value) => value.videoPlayerEngine));
     final reduceAnimations =
         ref.watch(settingsProvider.select((value) => value.reduceAnimations));
-
-    final auth = ref.watchConfigAuth;
 
     void onItemTap() {
       final controller = widget.controller;

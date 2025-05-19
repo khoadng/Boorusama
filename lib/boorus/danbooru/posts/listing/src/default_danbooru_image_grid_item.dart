@@ -77,11 +77,13 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                     builder: (context) {
                       final item = Consumer(
                         builder: (_, ref, __) {
-                          final gridThumbnailUrlBuilder =
-                              ref.watch(gridThumbnailUrlGeneratorProvider);
+                          final config = ref.watchConfigAuth;
+
+                          final gridThumbnailUrlBuilder = ref
+                              .watch(gridThumbnailUrlGeneratorProvider(config));
 
                           final gridThumbnailSettings =
-                              ref.watch(gridThumbnailSettingsProvider);
+                              ref.watch(gridThumbnailSettingsProvider(config));
 
                           final imgUrl = gridThumbnailUrlBuilder.generateUrl(
                             post,
@@ -90,19 +92,13 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           return SliverPostGridImageGridItem(
                             post: post,
                             multiSelectEnabled: multiSelect,
-                            quickActionButton: Consumer(
-                              builder: (_, ref, __) {
-                                final config = ref.watchConfigAuth;
-
-                                return !post.isBanned &&
-                                        !multiSelect &&
-                                        config.hasLoginDetails()
-                                    ? DefaultImagePreviewQuickActionButton(
-                                        post: post,
-                                      )
-                                    : const SizedBox.shrink();
-                              },
-                            ),
+                            quickActionButton: !post.isBanned &&
+                                    !multiSelect &&
+                                    config.hasLoginDetails()
+                                ? DefaultImagePreviewQuickActionButton(
+                                    post: post,
+                                  )
+                                : const SizedBox.shrink(),
                             autoScrollOptions: AutoScrollOptions(
                               controller: autoScrollController,
                               index: index,

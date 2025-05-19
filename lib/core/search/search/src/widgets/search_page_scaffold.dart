@@ -127,7 +127,7 @@ class _SearchPageScaffoldState<T extends Post>
     super.initState();
 
     _tagsController = SelectedTagController.fromBooruBuilder(
-      builder: ref.read(currentBooruBuilderProvider),
+      builder: ref.read(booruBuilderProvider(ref.readConfigAuth)),
       tagInfo: ref.read(tagInfoProvider),
     );
 

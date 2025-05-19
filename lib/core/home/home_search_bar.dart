@@ -14,6 +14,7 @@ import '../app_update/providers.dart';
 import '../app_update/types.dart';
 import '../boorus/engine/engine.dart';
 import '../boorus/engine/providers.dart';
+import '../configs/ref.dart';
 import '../foundation/display.dart';
 import '../foundation/url_launcher.dart';
 import '../search/histories/providers.dart';
@@ -216,7 +217,7 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
 
     return SliverHomeSearchBarInternal(
       selectedTagString: selectedTagString,

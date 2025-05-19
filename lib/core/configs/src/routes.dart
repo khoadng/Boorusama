@@ -64,7 +64,7 @@ GoRoute updateBooruConfigRoutes(Ref ref) => GoRoute(
             );
           }
 
-          final booruBuilder = ref.readBooruBuilder(config.auth);
+          final booruBuilder = ref.read(booruBuilderProvider(config.auth));
 
           final page = booruBuilder?.updateConfigPageBuilder(
                 context,

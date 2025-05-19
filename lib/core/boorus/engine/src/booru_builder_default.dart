@@ -304,7 +304,9 @@ String Function(
 ) =>
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
-        : ref.watch(currentBooruBuilderProvider)?.postImageDetailsUrlBuilder(
+        : ref
+                .watch(booruBuilderProvider(ref.watchConfigAuth))
+                ?.postImageDetailsUrlBuilder(
                   ref.watch(imageListingQualityProvider),
                   post,
                   ref.watchConfig,
@@ -322,7 +324,7 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfig;
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(config.auth));
 
     return switch (config.defaultPreviewImageButtonActionType) {
       ImageQuickActionType.bookmark => Container(

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
 import '../../../../router.dart';
 import '../../../post/post.dart';
 import '../../routes.dart';
@@ -16,7 +17,7 @@ class CurrentPostDetailsPage<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final payload = InheritedDetailsContext.of<T>(context);
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final builder = booruBuilder?.postDetailsPageBuilder;
 
     return builder != null
@@ -31,7 +32,13 @@ class PayloadPostDetailsPage<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final payload = InheritedDetailsContext.of<T>(context);
-    final booruBuilder = ref.watchBooruBuilder(payload.configSearch?.auth);
+    final configSearch = payload.configSearch;
+
+    if (configSearch == null) {
+      return const UnimplementedPage();
+    }
+
+    final booruBuilder = ref.watch(booruBuilderProvider(configSearch.auth));
     final builder = booruBuilder?.postDetailsPageBuilder;
 
     return builder != null

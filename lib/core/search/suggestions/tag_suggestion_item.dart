@@ -115,7 +115,7 @@ class DefaultTagSuggestionItem extends ConsumerWidget {
     final category = tag.category;
     final color =
         category != null ? ref.watch(tagColorProvider(category)) : null;
-    final booruBuilder = ref.watchBooruBuilder(config);
+    final booruBuilder = ref.watch(booruBuilderProvider(config));
     final metatagExtractor =
         booruBuilder?.metatagExtractorBuilder?.call(tagInfo);
 

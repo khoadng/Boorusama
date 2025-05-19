@@ -24,7 +24,7 @@ final danbooruPostRepoProvider =
   final client = ref.watch(danbooruClientProvider(config.auth));
 
   return PostRepositoryBuilder(
-    getComposer: () => ref.read(currentTagQueryComposerProvider),
+    getComposer: () => ref.read(tagQueryComposerProvider(config)),
     fetchSingle: (id, {options}) async {
       final numericId = id as NumericPostId?;
 

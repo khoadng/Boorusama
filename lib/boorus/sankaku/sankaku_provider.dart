@@ -39,7 +39,7 @@ final sankakuPostRepoProvider =
     final idGenerator = ref.watch(sankakuPseudoIdGeneratorProvider);
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       getSettings: () async => ref.read(imageListingSettingsProvider),
       fetchSingle: (id, {options}) async {
         final stringId = id as StringPostId?;
@@ -257,12 +257,13 @@ final sankakuArtistPostRepo =
 });
 
 final sankakuArtistPostsProvider = FutureProvider.autoDispose
-    .family<List<SankakuPost>, String?>((ref, artistName) async {
-  return ref
-      .watch(sankakuArtistPostRepo(ref.watchConfigSearch))
-      .getPostsFromTagWithBlacklist(
+    .family<List<SankakuPost>, (BooruConfigFilter, BooruConfigSearch, String?)>(
+        (ref, params) async {
+  final (filter, search, artistName) = params;
+
+  return ref.watch(sankakuArtistPostRepo(search)).getPostsFromTagWithBlacklist(
         tag: artistName,
-        blacklist: ref.watch(currentBlacklistTagsProvider.future),
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
       );
 });
 

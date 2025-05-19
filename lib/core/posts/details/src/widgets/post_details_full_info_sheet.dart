@@ -8,6 +8,7 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_manager/widgets.dart';
 import '../../../details_pageview/widgets.dart';
@@ -31,7 +32,7 @@ class PostDetailsFullInfoSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final parts = preferredParts;
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final builder = uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
     if (builder == null || parts == null) {

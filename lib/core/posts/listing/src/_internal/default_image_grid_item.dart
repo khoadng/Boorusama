@@ -83,14 +83,16 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                     builder: (context) {
                       final item = Consumer(
                         builder: (_, ref, __) {
-                          final gridThumbnailUrlBuilder =
-                              ref.watch(gridThumbnailUrlGeneratorProvider);
+                          final config = ref.watchConfigAuth;
+
+                          final gridThumbnailUrlBuilder = ref
+                              .watch(gridThumbnailUrlGeneratorProvider(config));
 
                           final imgUrl = imageUrl ??
                               gridThumbnailUrlBuilder.generateUrl(
                                 post,
                                 settings: ref.watch(
-                                  gridThumbnailSettingsProvider,
+                                  gridThumbnailSettingsProvider(config),
                                 ),
                               );
 

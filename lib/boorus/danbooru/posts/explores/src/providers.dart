@@ -32,8 +32,9 @@ final danbooruExploreRepoProvider =
             return post.rating != Rating.general;
           }
 
-          final filterer =
-              ref.read(currentBooruBuilderProvider)?.granularRatingFilterer;
+          final filterer = ref
+              .read(booruBuilderProvider(config.auth))
+              ?.granularRatingFilterer;
 
           if (filterer == null) return false;
 
@@ -47,7 +48,7 @@ final danbooruExploreRepoProvider =
   },
   dependencies: [
     settingsRepoProvider,
-    currentBooruBuilderProvider,
+    booruBuilderProvider,
   ],
 );
 

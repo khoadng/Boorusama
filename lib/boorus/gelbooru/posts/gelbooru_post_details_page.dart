@@ -7,6 +7,7 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
@@ -98,7 +99,15 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                       (tag) => SliverArtistPostList(
                         tag: tag,
                         child: ref
-                            .watch(gelbooruArtistPostsProvider(tag))
+                            .watch(
+                              gelbooruArtistPostsProvider(
+                                (
+                                  ref.watchConfigFilter,
+                                  ref.watchConfigSearch,
+                                  tag
+                                ),
+                              ),
+                            )
                             .maybeWhen(
                               data: (data) => SliverPreviewPostGrid(
                                 posts: data,

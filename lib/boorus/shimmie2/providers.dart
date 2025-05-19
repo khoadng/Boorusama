@@ -31,7 +31,7 @@ final shimmie2PostRepoProvider =
     final client = ref.watch(shimmie2ClientProvider(config.auth));
 
     return PostRepositoryBuilder(
-      getComposer: () => ref.read(currentTagQueryComposerProvider),
+      getComposer: () => ref.read(tagQueryComposerProvider(config)),
       fetchSingle: (id, {options}) {
         return Future.value(null);
       },

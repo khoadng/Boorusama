@@ -25,7 +25,7 @@ class UserCustomHomeBuilder extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewKey = ref.watch(customHomeViewKeyProvider);
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final data = booruBuilder?.customHomeViewBuilders;
 
     if (data == null) return defaultView;

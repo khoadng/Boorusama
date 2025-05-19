@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/ref.dart';
 import '../../../../router.dart';
 import '../../../selected_tags/tag.dart';
 
@@ -15,7 +16,7 @@ class SearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(currentBooruBuilderProvider);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final builder = booruBuilder?.searchPageBuilder;
 
     final params = InheritedInitialSearchQuery.maybeOf(context)?.params ??

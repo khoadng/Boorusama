@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
-import '../../../configs/ref.dart';
 import '../../../configs/src/create/search_blacklist.dart';
 import '../types/blacklisted_tag_repository.dart';
 import 'global_blacklisted_tag_notifier.dart';
@@ -125,12 +124,6 @@ final blacklistTagsProvider = FutureProvider.autoDispose
   return ref
       .watch(blacklistedTagsNotifierProvider(config).future)
       .then((value) => value.tags.map((e) => e.tag).toSet());
-});
-
-final currentBlacklistTagsProvider =
-    FutureProvider.autoDispose<Set<String>>((ref) {
-  final config = ref.watchConfigFilter;
-  return ref.watch(blacklistTagsProvider(config).future);
 });
 
 class EmptyBooruSpecificBlacklistTagRefRepository

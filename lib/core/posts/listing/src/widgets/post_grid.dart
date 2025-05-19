@@ -105,7 +105,8 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
         scrollController: _autoScrollController,
         footer: Consumer(
           builder: (_, ref, __) {
-            final booruBuilder = ref.watch(currentBooruBuilderProvider);
+            final booruBuilder =
+                ref.watch(booruBuilderProvider(ref.watchConfigAuth));
 
             final multiSelectActions = widget.multiSelectActions ??
                 booruBuilder?.multiSelectionActionsBuilder?.call(

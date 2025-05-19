@@ -176,7 +176,7 @@ Future<void> _download(
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider);
   final fileNameBuilder =
-      ref.read(currentBooruBuilderProvider)?.downloadFilenameBuilder;
+      ref.read(booruBuilderProvider(booruConfig.auth))?.downloadFilenameBuilder;
   final logger = ref.read(loggerProvider);
 
   final headers = {
