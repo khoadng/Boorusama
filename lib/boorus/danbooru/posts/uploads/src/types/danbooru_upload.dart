@@ -67,21 +67,6 @@ extension DanbooruUploadX on DanbooruUpload {
 
     return DanbooruUploadPost(
       id: uploadMediaAssets.id ?? 0,
-      thumbnailImageUrl: mediaAsset.variants
-              ?.firstWhereOrNull((e) => e.type == '360x360')
-              ?.url
-              .toString() ??
-          '',
-      sampleImageUrl: mediaAsset.variants
-              ?.firstWhereOrNull((e) => e.type == '720x720')
-              ?.url
-              .toString() ??
-          '',
-      originalImageUrl: mediaAsset.variants
-              ?.firstWhereOrNull((e) => e.type == 'original')
-              ?.url
-              .toString() ??
-          '',
       width: mediaAsset.imageWidth?.toDouble() ?? 1,
       height: mediaAsset.imageHeight?.toDouble() ?? 1,
       format: mediaAsset.fileExt ?? '',

@@ -32,19 +32,40 @@ class PostVariant extends Equatable {
   const PostVariant({
     required this.type,
     required this.url,
-    required this.width,
-    required this.height,
-    required this.fileExt,
+    // required this.width,
+    // required this.height,
+    // required this.fileExt,
   });
+
+  factory PostVariant.original(String? url) => PostVariant(
+        type: PostQualityType.original,
+        url: url ?? '',
+      );
+
+  factory PostVariant.sample(String? url) => PostVariant(
+        type: PostQualityType.sample,
+        url: url ?? '',
+      );
+
+  factory PostVariant.thumbnail(String? url) => PostVariant(
+        type: PostQualityType.v180x180,
+        url: url ?? '',
+      );
 
   final PostQualityType type;
   final String url;
-  final int width;
-  final int height;
-  final String fileExt;
+  // final int width;
+  // final int height;
+  // final String fileExt;
 
   @override
-  List<Object?> get props => [type, url, width, height, fileExt];
+  List<Object?> get props => [
+        type,
+        url,
+        // width,
+        // height,
+        // fileExt,
+      ];
 }
 
 extension PostVariantX on PostVariant {

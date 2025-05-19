@@ -17,9 +17,6 @@ class DanbooruPost extends Equatable
     implements Post, DanbooruTagDetails {
   DanbooruPost({
     required this.id,
-    required this.thumbnailImageUrl,
-    required this.sampleImageUrl,
-    required this.originalImageUrl,
     required this.tags,
     required this.copyrightTags,
     required this.characterTags,
@@ -53,9 +50,6 @@ class DanbooruPost extends Equatable
 
   factory DanbooruPost.empty() => DanbooruPost(
         id: 0,
-        thumbnailImageUrl: '',
-        sampleImageUrl: '',
-        originalImageUrl: '',
         tags: const {},
         copyrightTags: const {},
         characterTags: const {},
@@ -90,11 +84,11 @@ class DanbooruPost extends Equatable
   @override
   final int id;
   @override
-  final String thumbnailImageUrl;
+  String get thumbnailImageUrl => url180x180;
   @override
-  final String sampleImageUrl;
+  String get sampleImageUrl => urlSample;
   @override
-  final String originalImageUrl;
+  String get originalImageUrl => urlOriginal;
   @override
   final Set<String> copyrightTags;
   @override
@@ -264,8 +258,6 @@ extension PostX on DanbooruPost {
     String? format,
     String? md5,
     DateTime? lastCommentAt,
-    String? sampleImageUrl,
-    String? originalImageUrl,
     int? upScore,
     int? downScore,
     int? score,
@@ -280,9 +272,6 @@ extension PostX on DanbooruPost {
   }) =>
       DanbooruPost(
         id: id ?? this.id,
-        thumbnailImageUrl: thumbnailImageUrl,
-        sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
-        originalImageUrl: originalImageUrl ?? this.originalImageUrl,
         tags: tags ?? this.tags,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,
