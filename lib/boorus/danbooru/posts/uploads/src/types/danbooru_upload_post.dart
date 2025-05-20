@@ -5,6 +5,9 @@ import '../../../post/post.dart';
 class DanbooruUploadPost extends DanbooruPost {
   DanbooruUploadPost({
     required super.id,
+    required super.thumbnailImageUrl,
+    required super.sampleImageUrl,
+    required super.originalImageUrl,
     required super.tags,
     required super.copyrightTags,
     required super.characterTags,

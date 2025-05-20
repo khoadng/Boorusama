@@ -26,6 +26,9 @@ DanbooruPost postDtoToPost(
 
     return DanbooruPost(
       id: dto.id!,
+      thumbnailImageUrl: dto.previewFileUrl ?? '',
+      sampleImageUrl: dto.largeFileUrl ?? '',
+      originalImageUrl: dto.fileUrl ?? '',
       tags: dto.tagString.splitTagString(),
       copyrightTags: dto.tagStringCopyright.splitTagString(),
       characterTags: dto.tagStringCharacter.splitTagString(),
