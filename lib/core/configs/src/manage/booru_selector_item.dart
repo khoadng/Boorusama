@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../config_widgets/booru_logo.dart';
 import '../../../foundation/display.dart';
 import '../booru_config.dart';
 

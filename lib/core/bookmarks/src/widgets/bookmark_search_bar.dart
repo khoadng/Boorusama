@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../configs/ref.dart';
 import '../../../foundation/display.dart';
 import '../../../foundation/html.dart';
 import '../../../search/search/widgets.dart';
@@ -177,6 +178,8 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
   }
 
   Widget _buildItem(WidgetRef ref, String tag, BuildContext context) {
+    final config = ref.watchConfigAuth;
+
     return Material(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -214,7 +217,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                         'p': Style(
                           fontSize: FontSize.medium,
                           color: ref
-                              .watch(bookmarkTagColorProvider(tag))
+                              .watch(bookmarkTagColorProvider((config, tag)))
                               .maybeWhen(
                                 data: (color) => color,
                                 orElse: () => null,

@@ -91,7 +91,7 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
       valueListenable: textEditingController,
       builder: (context, query, child) {
         final q = _getQuery(query.text, isRaw);
-        final suggestionTags = ref.watch(suggestionProvider(q));
+        final suggestionTags = ref.watch(suggestionProvider((config, q)));
         final tags = widget.ensureValidTag
             ? suggestionTags.where((e) => e.category != null).toIList()
             : suggestionTags;

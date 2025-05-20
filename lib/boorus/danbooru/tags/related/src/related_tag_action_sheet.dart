@@ -37,7 +37,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final booru = ref.watchConfigAuth;
+    final auth = ref.watchConfigAuth;
 
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +57,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
           title: Text(
             tags[index].tag.replaceAll('_', ' '),
             style: TextStyle(
-              color: ref.watch(tagColorProvider(tags[index].category.name)),
+              color: ref
+                  .watch(tagColorProvider((auth, tags[index].category.name))),
             ),
           ),
           trailing: BooruPopupMenuButton(
@@ -71,7 +72,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
               } else if (value == 'open_wiki') {
                 Navigator.of(context).pop();
                 launchWikiPage(
-                  booru.url,
+                  auth.url,
                   tags[index].tag,
                 );
               }

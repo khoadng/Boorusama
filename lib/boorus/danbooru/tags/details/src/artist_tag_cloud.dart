@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/tags/related/widgets.dart';
@@ -33,6 +34,7 @@ final danbooruRelatedTagCloudProvider =
 
 typedef TagColorParams = ({
   String categories,
+  BooruConfigAuth auth,
 });
 
 final _tagCategoryColorsProvider =
@@ -43,7 +45,7 @@ final _tagCategoryColorsProvider =
     final categories = params.categories.split('|');
 
     for (final category in categories) {
-      colors[category] = ref.watch(tagColorProvider(category));
+      colors[category] = ref.watch(tagColorProvider((params.auth, category)));
     }
 
     return colors;
@@ -75,6 +77,7 @@ class ArtistTagCloud extends ConsumerWidget {
                   .toSet()
                   .sorted((a, b) => a.compareTo(b))
                   .join('|'),
+              auth: ref.watchConfigAuth,
             );
 
             return ref.watch(_tagCategoryColorsProvider(params)).when(

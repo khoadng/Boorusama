@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../bulk_downloads/routes.dart';
 import '../../../../configs/config.dart';
-import '../../../../configs/ref.dart';
 import '../../../../configs/routes.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
@@ -18,16 +17,17 @@ import 'selected_tag_list.dart';
 class SelectedTagListWithData extends ConsumerWidget {
   const SelectedTagListWithData({
     required this.controller,
+    required this.config,
     super.key,
     this.flexibleBorderPosition = true,
   });
 
   final SelectedTagController controller;
   final bool flexibleBorderPosition;
+  final BooruConfig config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfig;
     final tagComposer = ref.watch(tagQueryComposerProvider(config.search));
     final colorScheme = Theme.of(context).colorScheme;
     final searchBarPosition = ref.watch(searchBarPositionProvider);

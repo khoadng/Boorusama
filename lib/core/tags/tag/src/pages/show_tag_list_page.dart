@@ -8,11 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../blacklists/providers.dart';
+import '../../../../configs/config.dart';
 import '../../../../foundation/clipboard.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
-import '../../../favorites/providers.dart';
 import '../tag.dart';
 import '../tag_display.dart';
 import '../tag_providers.dart';
@@ -21,39 +20,10 @@ import '../widgets/filterable_scope.dart';
 final selectedViewTagQueryProvider =
     StateProvider.autoDispose<String>((ref) => '');
 
-class DefaultShowTagListPage extends ConsumerWidget {
-  const DefaultShowTagListPage({
-    required this.tags,
-    super.key,
-  });
-
-  final List<Tag> tags;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
-    final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
-
-    return ShowTagListPage(
-      tags: tags,
-      onAddToGlobalBlacklist: (tag) {
-        globalNotifier.addTagWithToast(
-          context,
-          tag.rawName,
-        );
-      },
-      onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(
-          tag.rawName,
-        );
-      },
-    );
-  }
-}
-
 class ShowTagListPage extends ConsumerWidget {
   const ShowTagListPage({
     required this.tags,
+    required this.auth,
     super.key,
     this.onAddToBlacklist,
     this.onAddToGlobalBlacklist,
@@ -66,6 +36,7 @@ class ShowTagListPage extends ConsumerWidget {
   final void Function(Tag tag)? onAddToGlobalBlacklist;
   final void Function(Tag tag)? onAddToFavoriteTags;
   final void Function(Tag tag)? onOpenWiki;
+  final BooruConfigAuth auth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -111,7 +82,11 @@ class ShowTagListPage extends ConsumerWidget {
                     title: Text(
                       tag.displayName,
                       style: TextStyle(
-                        color: ref.watch(tagColorProvider(tag.category.name)),
+                        color: ref.watch(
+                          tagColorProvider(
+                            (auth, tag.category.name),
+                          ),
+                        ),
                       ),
                     ),
                     onTap: () => goToSearchPage(

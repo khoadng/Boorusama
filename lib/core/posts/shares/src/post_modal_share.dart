@@ -9,7 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
+import '../../../config_widgets/booru_logo.dart';
+import '../../../config_widgets/website_logo.dart';
 import '../../../foundation/path.dart';
 import '../../sources/source.dart';
 
@@ -65,7 +66,7 @@ class PostModalShare extends ConsumerWidget {
               final WebSource s => ListTile(
                   title: const Text('post.detail.share.source').tr(),
                   subtitle: Text(s.uri.toString()),
-                  leading: WebsiteLogo(url: s.faviconUrl),
+                  leading: ConfigAwareWebsiteLogo(url: s.faviconUrl),
                   onTap: () {
                     Navigator.of(context).pop();
                     Share.share(s.uri.toString());

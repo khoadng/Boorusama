@@ -351,7 +351,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: ref.watch(
-                                            tagColorProvider('artist'),
+                                            tagColorProvider(
+                                              (ref.watchConfigAuth, 'artist'),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -624,8 +626,11 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                   horizontal: 8,
                                   vertical: 4,
                                 ),
-                                color: ref
-                                    .watch(tagColorProvider(tag.category.name)),
+                                color: ref.watch(
+                                  tagColorProvider(
+                                    (ref.watchConfigAuth, tag.category.name),
+                                  ),
+                                ),
                               ),
                           ],
                         ),
@@ -690,7 +695,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                     horizontal: 8,
                     vertical: 4,
                   ),
-                  color: ref.watch(tagColorProvider('general')),
+                  color: ref.watch(
+                    tagColorProvider((ref.watchConfigAuth, 'general')),
+                  ),
                 ),
             ],
           ),
@@ -976,9 +983,10 @@ class TagSuggestionsPortalFollower extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
     final lastQuery = ref.watch(_lastWord);
     final tags = lastQuery != null
-        ? ref.watch(suggestionProvider(lastQuery)).reversed.toIList()
+        ? ref.watch(suggestionProvider((config, lastQuery))).reversed.toIList()
         : <AutocompleteData>[].lock;
 
     return tags.isEmpty
@@ -995,7 +1003,7 @@ class TagSuggestionsPortalFollower extends ConsumerWidget {
             width: MediaQuery.sizeOf(context).width,
             color: Theme.of(context).colorScheme.secondaryContainer,
             child: TagSuggestionItems(
-              config: ref.watchConfigAuth,
+              config: config,
               dense: true,
               tags: tags,
               onItemTap: (tag) {

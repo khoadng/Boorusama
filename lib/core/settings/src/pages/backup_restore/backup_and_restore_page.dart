@@ -17,6 +17,7 @@ import '../../../../backups/sync_data_page.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../bulk_downloads/providers.dart';
+import '../../../../config_widgets/booru_logo.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/manage.dart';
 import '../../../../foundation/clipboard.dart';

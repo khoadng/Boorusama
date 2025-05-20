@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/related/widgets.dart';
 import '../../../../../core/tags/tag/providers.dart';
 import '../../../../../core/theme.dart';
@@ -51,7 +52,9 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
         itemCount: data.length,
         itemBuilder: (context, index) => switch (data[index]) {
           final DanbooruRelatedTagItem item => RelatedTagButton(
-              backgroundColor: ref.watch(tagColorProvider(item.category.name)),
+              backgroundColor: ref.watch(
+                tagColorProvider((ref.watchConfigAuth, item.category.name)),
+              ),
               onAdd: () => widget.onAdded(item),
               onRemove: () => widget.onNegated(item),
               label: Text(

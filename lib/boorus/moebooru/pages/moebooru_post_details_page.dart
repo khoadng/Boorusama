@@ -135,6 +135,8 @@ class _MoebooruPostDetailsPageState
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
+      viewerConfig: ref.watchConfigViewer,
+      authConfig: ref.watchConfigAuth,
       topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
           post: InheritedPost.of<MoebooruPost>(context),

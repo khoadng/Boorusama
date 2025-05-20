@@ -6,10 +6,10 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../config_widgets/booru_logo.dart';
 import '../../images/booru_image.dart';
 import '../../theme.dart';
 import '../../utils/flutter_utils.dart';
-import '../../widgets/widgets.dart';
 import '../urls/sanitizer.dart';
 
 class DownloadTileBuilder extends StatelessWidget {

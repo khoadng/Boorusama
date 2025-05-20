@@ -7,6 +7,7 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../configs/ref.dart';
 import '../../../router.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../widgets/widgets.dart';
@@ -76,7 +77,9 @@ class SliverCharacterPostList extends ConsumerWidget {
                 .map(
                   (tag) => BooruChip(
                     borderRadius: BorderRadius.circular(4),
-                    color: ref.watch(tagColorProvider('character')),
+                    color: ref.watch(
+                      tagColorProvider((ref.watchConfigAuth, 'character')),
+                    ),
                     onPressed: () => goToCharacterPage(context, tag),
                     label: Text(
                       tag.replaceAll('_', ' '),

@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config.dart';
 import '../../../../theme.dart';
 import '../../../../theme/providers.dart';
 import '../tag.dart';
@@ -86,6 +86,7 @@ class PostTagList extends StatelessWidget {
 class PostTagListChip extends ConsumerWidget {
   const PostTagListChip({
     required this.tag,
+    required this.auth,
     super.key,
     this.maxTagWidth,
     this.onTap,
@@ -96,12 +97,17 @@ class PostTagListChip extends ConsumerWidget {
   final Color? color;
   final double? maxTagWidth;
   final void Function()? onTap;
+  final BooruConfigAuth auth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = color != null
         ? ref.watch(booruChipColorsProvider).fromColor(color)
-        : ref.watch(chipColorsFromTagStringProvider(tag.category.name));
+        : ref.watch(
+            chipColorsFromTagStringProvider(
+              (auth, tag.category.name),
+            ),
+          );
     final screenWith = MediaQuery.sizeOf(context).width;
 
     return RawCompactChip(
@@ -133,7 +139,7 @@ class PostTagListChip extends ConsumerWidget {
               fontWeight: FontWeight.w600,
             ),
             children: [
-              if (!ref.watchConfigAuth.hasStrictSFW && tag.postCount > 0)
+              if (!auth.hasStrictSFW && tag.postCount > 0)
                 TextSpan(
                   text: '  ${NumberFormat.compact().format(tag.postCount)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

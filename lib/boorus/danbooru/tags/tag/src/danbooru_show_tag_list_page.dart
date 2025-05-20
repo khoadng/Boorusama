@@ -32,6 +32,7 @@ class DanbooruShowTagListPage extends ConsumerWidget {
 
     return ShowTagListPage(
       tags: tags,
+      auth: config,
       onOpenWiki: (tag) {
         launchWikiPage(
           config.url,

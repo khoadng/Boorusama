@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
-import '../../../configs/ref.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
@@ -20,9 +19,9 @@ import 'tag_repository_impl.dart';
 final emptyTagRepoProvider =
     Provider<TagRepository>((ref) => EmptyTagRepository());
 
-final tagColorProvider = Provider.family<Color?, String>(
-  (ref, tag) {
-    final config = ref.watchConfigAuth;
+final tagColorProvider = Provider.family<Color?, (BooruConfigAuth, String)>(
+  (ref, params) {
+    final (config, tag) = params;
 
     final colorBuilder = ref
         .watch(booruEngineRegistryProvider)
@@ -34,7 +33,7 @@ final tagColorProvider = Provider.family<Color?, String>(
 
     final colorScheme = ref.watch(colorSchemeProvider);
 
-    final colors = ref.watch(tagColorsProvider) ??
+    final colors = ref.watch(tagColorsProvider(config)) ??
         TagColors.fromBrightness(colorScheme.brightness);
 
     final color = colorBuilder.generateColor(
@@ -58,10 +57,8 @@ final tagColorProvider = Provider.family<Color?, String>(
   ],
 );
 
-final tagColorsProvider = Provider<TagColors?>(
-  (ref) {
-    final config = ref.watchConfigAuth;
-
+final tagColorsProvider = Provider.family<TagColors?, BooruConfigAuth>(
+  (ref, config) {
     final colorsBuilder = ref
         .watch(booruEngineRegistryProvider)
         .getRepository(config.booruType)

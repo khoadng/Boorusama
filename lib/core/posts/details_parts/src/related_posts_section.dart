@@ -8,9 +8,9 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../config_widgets/website_logo.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme.dart';
-import '../../../widgets/website_logo.dart';
 import '../../post/post.dart';
 import '../../sources/source.dart';
 import '_internal/preview_post_grid.dart';
@@ -107,7 +107,9 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(4)),
                               ),
-                              child: WebsiteLogo(url: source.faviconUrl),
+                              child: ConfigAwareWebsiteLogo(
+                                url: source.faviconUrl,
+                              ),
                             ),
                             () => const SizedBox.shrink(),
                           ),

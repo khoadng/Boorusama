@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../foundation/display.dart';
 import '../../../router.dart';
-import 'pages/show_tag_list_page.dart';
+import 'pages/default_show_tag_list_page.dart';
 import 'tag.dart';
 
 Future<bool?> goToShowTaglistPage(

@@ -10,6 +10,7 @@ import '../core/boorus/engine/providers.dart';
 import '../core/bulk_downloads/providers.dart';
 import '../core/cache/providers.dart';
 import '../core/changelogs/utils.dart';
+import '../core/config_widgets/booru_logo.dart';
 import '../core/configs/config.dart';
 import '../core/configs/current.dart';
 import '../core/configs/manage.dart';
@@ -23,7 +24,6 @@ import '../core/home/empty_booru_config_home_page.dart';
 import '../core/settings/providers.dart';
 import '../core/settings/settings.dart';
 import '../core/theme.dart';
-import '../core/widgets/widgets.dart';
 
 class EntryPage extends ConsumerStatefulWidget {
   const EntryPage({

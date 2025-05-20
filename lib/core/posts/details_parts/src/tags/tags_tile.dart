@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../configs/ref.dart';
 import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../post/post.dart';
 import '../_internal/details_widget_frame.dart';
 
-class TagsTile extends ConsumerWidget {
+class TagsTile extends StatelessWidget {
   const TagsTile({
     required this.post,
     required this.tags,
@@ -36,7 +37,7 @@ class TagsTile extends ConsumerWidget {
   final int? initialCount;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final count = initialCount ?? post.tags.length;
 
     return DetailsWidgetSeparator(
@@ -66,12 +67,15 @@ class TagsTile extends ConsumerWidget {
                     tags: tags,
                     itemBuilder: (context, tag) => GeneralTagContextMenu(
                       tag: tag.rawName,
-                      child: PostTagListChip(
-                        tag: tag,
-                        onTap: () => onTagTap?.call(tag),
-                        color: tagColorBuilder != null
-                            ? tagColorBuilder!(tag)
-                            : null,
+                      child: Consumer(
+                        builder: (_, ref, __) => PostTagListChip(
+                          tag: tag,
+                          auth: ref.watchConfigAuth,
+                          onTap: () => onTagTap?.call(tag),
+                          color: tagColorBuilder != null
+                              ? tagColorBuilder!(tag)
+                              : null,
+                        ),
                       ),
                     ),
                   ),

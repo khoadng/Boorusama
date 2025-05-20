@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../configs/config.dart';
 import '../configs/current.dart';
 import '../premiums/providers.dart';
 import '../settings/providers.dart';
@@ -60,9 +61,12 @@ final customColorsProvider = Provider<ColorSettings?>(
   name: 'colorsProvider',
 );
 
-final chipColorsFromTagStringProvider = Provider.family<ChipColors?, String?>(
-  (ref, tag) {
-    final color = tag != null ? ref.watch(tagColorProvider(tag)) : null;
+final chipColorsFromTagStringProvider =
+    Provider.family<ChipColors?, (BooruConfigAuth, String?)>(
+  (ref, params) {
+    final (config, tag) = params;
+    final color =
+        tag != null ? ref.watch(tagColorProvider((config, tag))) : null;
     final booruChipColors = ref.watch(booruChipColorsProvider);
 
     return booruChipColors.fromColor(color);

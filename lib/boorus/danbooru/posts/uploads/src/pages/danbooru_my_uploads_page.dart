@@ -10,6 +10,7 @@ import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../../../core/config_widgets/website_logo.dart';
 import '../../../../../../core/configs/failsafe.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/listing/providers.dart';
@@ -315,7 +316,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4)),
                           ),
-                          child: WebsiteLogo(url: source.faviconUrl),
+                          child: ConfigAwareWebsiteLogo(url: source.faviconUrl),
                         ),
                         () => const SizedBox.shrink(),
                       ),

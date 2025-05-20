@@ -11,6 +11,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
+import '../../../config_widgets/booru_logo.dart';
 import '../../../downloads/manager.dart';
 import '../../../foundation/clipboard.dart';
 import '../../../foundation/toast.dart';

@@ -597,7 +597,14 @@ class _SearchRegion extends ConsumerWidget {
           },
         ),
       ),
-      SelectedTagListWithData(controller: tagsController),
+      Consumer(
+        builder: (context, ref, child) {
+          return SelectedTagListWithData(
+            controller: tagsController,
+            config: ref.watchConfig,
+          );
+        },
+      ),
     ];
 
     final region = ColoredBox(
@@ -905,8 +912,9 @@ class _SearchSuggestions extends ConsumerWidget {
                       child: ValueListenableBuilder(
                         valueListenable: controller.textController,
                         builder: (context, query, child) {
-                          final suggestionTags =
-                              ref.watch(suggestionProvider(query.text));
+                          final config = ref.watchConfigAuth;
+                          final suggestionTags = ref
+                              .watch(suggestionProvider((config, query.text)));
 
                           return TagSuggestionItems(
                             padding: const EdgeInsets.only(
@@ -917,7 +925,7 @@ class _SearchSuggestions extends ConsumerWidget {
                             ),
                             reverse:
                                 searchBarPosition == SearchBarPosition.bottom,
-                            config: ref.watchConfigAuth,
+                            config: config,
                             tags: suggestionTags,
                             currentQuery: query.text,
                             onItemTap: (tag) {

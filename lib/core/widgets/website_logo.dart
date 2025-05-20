@@ -2,41 +2,37 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Project imports:
-import '../configs/ref.dart';
-import '../http/providers.dart';
-
 const _unknownSize = 26.0;
-const _faviconSize = 32.0;
+const kFaviconSize = 32.0;
 
 double? _calcFailedIconSize(
   double size, {
   double defaultSize = _unknownSize,
-  double referenceSize = _faviconSize,
+  double referenceSize = kFaviconSize,
 }) {
   final ratio = defaultSize / referenceSize;
 
   return size * ratio;
 }
 
-class WebsiteLogo extends ConsumerWidget {
+class WebsiteLogo extends StatelessWidget {
   const WebsiteLogo({
     required this.url,
+    required this.dio,
     super.key,
-    this.size = _faviconSize,
+    this.size = kFaviconSize,
   });
 
   final String? url;
   final double size;
+  final Dio dio;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
+  Widget build(BuildContext context) {
     final url = this.url;
 
     return ConstrainedBox(

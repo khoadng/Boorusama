@@ -52,7 +52,7 @@ class ThemeBuilder extends ConsumerWidget {
         final customColorScheme = hasPremium
             ? ref.watchThemeConfigs?.enable == true
                 ? getSchemeFromColorSettings(
-                    ref.watchConfig.theme?.colors,
+                    ref.watchThemeConfigs?.colors,
                     dynamicDarkScheme: dark,
                     dynamicLightScheme: light,
                     systemDarkMode: systemDarkMode,

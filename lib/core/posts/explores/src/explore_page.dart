@@ -167,6 +167,9 @@ class ExploreList extends ConsumerWidget {
     List<Post> filteredPosts,
     WidgetRef ref,
   ) {
+    final configAuth = ref.watchConfigAuth;
+    final configViewer = ref.watchConfigViewer;
+
     return SizedBox(
       height: height,
       child: ListView.builder(
@@ -183,14 +186,22 @@ class ExploreList extends ConsumerWidget {
                   context: context,
                   posts: filteredPosts,
                   initialIndex: index,
-                  initialThumbnailUrl: defaultPostImageUrlBuilder(ref)(post),
+                  initialThumbnailUrl: defaultPostImageUrlBuilder(
+                    ref,
+                    configAuth,
+                    configViewer,
+                  )(post),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     BooruImage(
                       aspectRatio: post.aspectRatio,
-                      imageUrl: defaultPostImageUrlBuilder(ref)(post),
+                      imageUrl: defaultPostImageUrlBuilder(
+                        ref,
+                        configAuth,
+                        configViewer,
+                      )(post),
                       placeholderUrl: post.thumbnailImageUrl,
                     ),
                     if (post.isAnimated)

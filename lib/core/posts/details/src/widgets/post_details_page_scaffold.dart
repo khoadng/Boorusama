@@ -52,6 +52,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     required this.posts,
     required this.controller,
+    required this.viewerConfig,
+    required this.authConfig,
     super.key,
     this.onExpanded,
     this.imageUrlBuilder,
@@ -72,6 +74,8 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final PostDetailsUIBuilder? uiBuilder;
   final Set<DetailsPart>? preferredParts;
   final Set<DetailsPart>? preferredPreviewParts;
+  final BooruConfigViewer viewerConfig;
+  final BooruConfigAuth authConfig;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -124,7 +128,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
       );
 
-      if (ref.readConfig.autoFetchNotes) {
+      if (widget.viewerConfig.autoFetchNotes) {
         ref.read(notesProvider(ref.readConfigAuth).notifier).load(
               posts[widget.controller.initialPage],
             );
@@ -275,14 +279,12 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _build() {
-    final auth = ref.watchConfigAuth;
-
-    final booruBuilder = ref.watch(booruBuilderProvider(auth));
+    final booruBuilder = ref.watch(booruBuilderProvider(widget.authConfig));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.fullview;
 
-    final imageUrlBuilder =
-        widget.imageUrlBuilder ?? defaultPostImageUrlBuilder(ref);
+    final imageUrlBuilder = widget.imageUrlBuilder ??
+        defaultPostImageUrlBuilder(ref, widget.authConfig, widget.viewerConfig);
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
@@ -346,10 +348,8 @@ class _PostDetailPageScaffoldState<T extends Post>
 
           ref.read(postShareProvider(post).notifier).updateInformation(post);
 
-          final config = ref.readConfig;
-
-          if (config.autoFetchNotes) {
-            ref.read(notesProvider(config.auth).notifier).load(post);
+          if (widget.viewerConfig.autoFetchNotes) {
+            ref.read(notesProvider(widget.authConfig).notifier).load(post);
           }
         },
         sheetStateStorage: SheetStateStorageBuilder(
@@ -362,7 +362,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         checkIfLargeScreen: () => context.isLargeScreen,
         controller: _controller,
         onExit: () {
-          ref.invalidate(notesProvider(auth));
+          ref.invalidate(notesProvider(widget.authConfig));
 
           widget.controller.onExit();
         },

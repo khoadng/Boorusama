@@ -100,7 +100,7 @@ typedef TagColorsBuilder = TagColors Function(
 typedef PostImageDetailsUrlBuilder = String Function(
   ImageQuality imageQuality,
   Post post,
-  BooruConfig config,
+  BooruConfigViewer config,
 );
 
 typedef PostStatisticsPageBuilder = Widget Function(

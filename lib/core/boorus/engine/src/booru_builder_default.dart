@@ -259,6 +259,8 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
+      viewerConfig: ref.watchConfigViewer,
+      authConfig: ref.watchConfigAuth,
     );
   }
 }
@@ -301,15 +303,17 @@ String Function(
   Post post,
 ) defaultPostImageUrlBuilder(
   WidgetRef ref,
+  BooruConfigAuth authConfig,
+  BooruConfigViewer viewerConfig,
 ) =>
     (post) => kPreferredLayout.isDesktop
         ? post.sampleImageUrl
         : ref
-                .watch(booruBuilderProvider(ref.watchConfigAuth))
+                .watch(booruBuilderProvider(authConfig))
                 ?.postImageDetailsUrlBuilder(
                   ref.watch(imageListingQualityProvider),
                   post,
-                  ref.watchConfig,
+                  viewerConfig,
                 ) ??
             post.sampleImageUrl;
 
@@ -365,6 +369,7 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
                 name: artist,
                 category: TagCategory.artist(),
               ),
+              auth: config.auth,
               onTap: () => goToArtistPage(
                 context,
                 artist,

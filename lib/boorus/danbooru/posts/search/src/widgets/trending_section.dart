@@ -31,7 +31,7 @@ class TrendingSection extends ConsumerWidget {
               TrendingTags(
                 onTagTap: onTagTap,
                 colorBuilder: (context, name) =>
-                    ref.watch(tagColorProvider(name)),
+                    ref.watch(tagColorProvider((config.auth, name))),
                 tags: tags,
               ),
             ],

@@ -63,6 +63,12 @@ final currentReadOnlyBooruConfigLayoutProvider = Provider<LayoutConfigs?>(
   name: 'currentReadOnlyBooruConfigLayoutProvider',
 );
 
+final currentReadOnlyBooruConfigViewerProvider = Provider<BooruConfigViewer>(
+  (ref) =>
+      ref.watch(currentBooruConfigProvider.select((value) => value.viewer)),
+  name: 'currentReadOnlyBooruConfigViewerProvider',
+);
+
 class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
   @override
   BooruConfig build() {

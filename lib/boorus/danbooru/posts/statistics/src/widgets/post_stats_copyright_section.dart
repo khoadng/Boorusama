@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/posts/statistics/widgets.dart';
 import '../../../../../../core/tags/tag/providers.dart';
@@ -23,7 +24,8 @@ class PostStatsCopyrightSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final copyrightColor = ref.watch(tagColorProvider('copyright'));
+    final copyrightColor =
+        ref.watch(tagColorProvider((ref.watchConfigAuth, 'copyright')));
 
     return Column(
       mainAxisSize: MainAxisSize.min,

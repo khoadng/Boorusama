@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../config_widgets/website_logo.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../router.dart';
@@ -153,7 +154,7 @@ class InformationSection extends ConsumerWidget {
             source!.whenWeb(
               (source) => GestureDetector(
                 onTap: () => launchExternalUrl(source.uri),
-                child: WebsiteLogo(
+                child: ConfigAwareWebsiteLogo(
                   url: source.faviconUrl,
                 ),
               ),
@@ -220,7 +221,9 @@ class ArtistNameInfoChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final artist = chooseArtistTag(artistTags);
     final colors = ref.watch(
-      chipColorsFromTagStringProvider(TagCategory.artist().name),
+      chipColorsFromTagStringProvider(
+        (ref.watchConfigAuth, TagCategory.artist().name),
+      ),
     );
 
     return Flexible(

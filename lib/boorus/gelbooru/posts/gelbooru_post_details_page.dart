@@ -32,10 +32,11 @@ class _GelbooruTagListSectionState
   @override
   Widget build(BuildContext context) {
     final post = InheritedPost.of<GelbooruPost>(context);
+    final params = (post: post, auth: ref.watchConfigAuth);
 
     return SliverToBoxAdapter(
       child: TagsTile(
-        tags: ref.watch(tagGroupProvider(post)).maybeWhen(
+        tags: ref.watch(tagGroupProvider(params)).maybeWhen(
               orElse: () => const [],
               data: (data) => data.tags,
             ),
@@ -52,7 +53,9 @@ class GelbooruCharacterListSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<GelbooruPost>(context);
 
-    return ref.watch(tagGroupProvider(post)).maybeWhen(
+    return ref
+        .watch(tagGroupProvider((post: post, auth: ref.watchConfigAuth)))
+        .maybeWhen(
           data: (data) => data.characterTags.isNotEmpty
               ? SliverCharacterPostList(
                   tags: data.characterTags,
@@ -90,9 +93,10 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<GelbooruPost>(context);
+    final auth = ref.watchConfigAuth;
 
     return MultiSliver(
-      children: ref.watch(tagGroupProvider(post)).maybeWhen(
+      children: ref.watch(tagGroupProvider((post: post, auth: auth))).maybeWhen(
             data: (data) => data.artistTags.isNotEmpty
                 ? data.artistTags
                     .map(

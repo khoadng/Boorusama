@@ -6,9 +6,9 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../config_widgets/website_logo.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../theme.dart';
-import '../../../widgets/widgets.dart';
 import '../../details/details.dart';
 import '../../post/post.dart';
 import '../../sources/source.dart';
@@ -79,7 +79,7 @@ class SourceSection extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   child: Row(
                     children: [
-                      WebsiteLogo(url: source.faviconUrl),
+                      ConfigAwareWebsiteLogo(url: source.faviconUrl),
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 10,

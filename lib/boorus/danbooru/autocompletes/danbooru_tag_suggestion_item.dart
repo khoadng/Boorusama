@@ -47,6 +47,7 @@ class DanbooruTagSuggestionItem extends ConsumerWidget {
         ref,
         ref.context,
         tag,
+        config,
       ),
       metatagExtractor: metatagExtractorBuilder?.call(tagInfo),
     );
@@ -57,9 +58,10 @@ Color? generateAutocompleteTagColor(
   WidgetRef ref,
   BuildContext context,
   AutocompleteData tag,
+  BooruConfigAuth config,
 ) {
   if (tag.hasCategory) {
-    return ref.watch(tagColorProvider(tag.category!));
+    return ref.watch(tagColorProvider((config, tag.category!)));
   } else if (tag.hasUserLevel) {
     return DanbooruUserColor.of(context).fromString(tag.level);
   }

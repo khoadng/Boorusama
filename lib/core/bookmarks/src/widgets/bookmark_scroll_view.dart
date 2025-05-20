@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../config_widgets/booru_logo.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../../posts/listing/providers.dart';

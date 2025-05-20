@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
+import '../../../config_widgets/booru_logo.dart';
 import '../../../configs/ref.dart';
 import '../../../foundation/clipboard.dart';
 import '../../../foundation/toast.dart';

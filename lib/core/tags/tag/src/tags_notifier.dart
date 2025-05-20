@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
+import '../../../configs/config.dart';
 import '../../../posts/post/post.dart';
 import '../../categories/providers.dart';
 import '../providers.dart';
@@ -18,9 +18,14 @@ final invalidTags = [
 ];
 
 final tagGroupProvider = AsyncNotifierProvider.autoDispose
-    .family<TagGroupItemNotifier, TagGroup, Post>(
+    .family<TagGroupItemNotifier, TagGroup, TagGroupParams>(
   TagGroupItemNotifier.new,
 );
+
+typedef TagGroupParams = ({
+  Post post,
+  BooruConfigAuth auth,
+});
 
 class TagGroup extends Equatable {
   const TagGroup({
@@ -43,13 +48,15 @@ class TagGroup extends Equatable {
 }
 
 class TagGroupItemNotifier
-    extends AutoDisposeFamilyAsyncNotifier<TagGroup, Post> {
+    extends AutoDisposeFamilyAsyncNotifier<TagGroup, TagGroupParams> {
   @override
-  FutureOr<TagGroup> build(Post arg) async {
-    final config = ref.watchConfigAuth;
+  FutureOr<TagGroup> build(TagGroupParams arg) async {
+    final post = arg.post;
+    final config = arg.auth;
+
     final booruTagTypeStore = ref.watch(booruTagTypeStoreProvider);
     final repo = ref.watch(tagRepoProvider(config));
-    final tagList = arg.tags;
+    final tagList = post.tags;
 
     // filter tagList to remove invalid tags
     final filtered = tagList.where((e) => !invalidTags.contains(e)).toSet();

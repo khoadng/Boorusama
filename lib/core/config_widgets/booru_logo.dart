@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../boorus/booru/booru.dart';
 import '../configs/config.dart';
 import '../posts/sources/source.dart';
-import 'widgets.dart';
+import 'website_logo.dart';
 
 class BooruLogo extends ConsumerWidget {
   const BooruLogo({
@@ -54,13 +54,13 @@ class BooruLogo extends ConsumerWidget {
     return PostSource.from(source).whenWeb(
       (s) => FittedBox(
         child: s.faviconType == FaviconType.network
-            ? WebsiteLogo(
+            ? ConfigAwareWebsiteLogo(
                 url: s.faviconUrl,
                 size: width ?? _kFallbackSize,
               )
             : _buildAssetImage(s.faviconUrl),
       ),
-      () => WebsiteLogo(
+      () => ConfigAwareWebsiteLogo(
         url: source,
         size: width ?? _kFallbackSize,
       ),

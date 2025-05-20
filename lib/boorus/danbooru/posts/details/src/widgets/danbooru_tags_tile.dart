@@ -102,6 +102,7 @@ class DanbooruTagsTile extends ConsumerWidget {
                       tag: tag.rawName,
                       child: PostTagListChip(
                         tag: tag,
+                        auth: config,
                         onTap: () => goToSearchPage(context, tag: tag.rawName),
                       ),
                     ),

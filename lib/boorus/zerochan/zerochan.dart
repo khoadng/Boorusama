@@ -12,6 +12,7 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create.dart';
 import '../../core/configs/manage.dart';
+import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/details/details.dart';
@@ -261,6 +262,7 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
           : BasicTagList(
               tags: post.tags.toList(),
               onTap: (tag) => goToSearchPage(context, tag: tag),
+              auth: ref.watchConfigAuth,
             ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/utils/flutter_utils.dart';
@@ -67,7 +68,11 @@ class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
                   child: Text(
                     artist.name.replaceAll('_', ' '),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: ref.watch(tagColorProvider('artist')),
+                          color: ref.watch(
+                            tagColorProvider(
+                              (ref.watchConfigAuth, 'artist'),
+                            ),
+                          ),
                         ),
                   ),
                 ),

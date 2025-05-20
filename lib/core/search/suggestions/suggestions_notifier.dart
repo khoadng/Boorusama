@@ -6,7 +6,6 @@ import 'package:foundation/foundation.dart';
 import '../../autocompletes/autocompletes.dart';
 import '../../autocompletes/providers.dart';
 import '../../configs/config.dart';
-import '../../configs/ref.dart';
 import '../../foundation/debounce_mixin.dart';
 import '../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';
@@ -22,11 +21,11 @@ final fallbackSuggestionsProvider =
   return <AutocompleteData>[].lock;
 });
 
-final suggestionProvider =
-    Provider.autoDispose.family<IList<AutocompleteData>, String>(
-  (ref, tag) {
-    final booruConfig = ref.watchConfigAuth;
-    final suggestions = ref.watch(suggestionsNotifierProvider(booruConfig));
+final suggestionProvider = Provider.autoDispose
+    .family<IList<AutocompleteData>, (BooruConfigAuth, String)>(
+  (ref, params) {
+    final (config, tag) = params;
+    final suggestions = ref.watch(suggestionsNotifierProvider(config));
     return suggestions[sanitizeQuery(tag)] ??
         ref.watch(fallbackSuggestionsProvider);
   },
@@ -74,7 +73,7 @@ class SuggestionsNotifier extends FamilyNotifier<
         final filter = filterNsfw(
           data,
           tagInfo.r18Tags,
-          shouldFilter: ref.readConfigAuth.hasSoftSFW,
+          shouldFilter: arg.hasSoftSFW,
         );
 
         state = state.add(sanitized, filter);

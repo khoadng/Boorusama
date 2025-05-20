@@ -14,6 +14,7 @@ import '../../../../blacklists/providers.dart';
 import '../../../../blacklists/routes.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
+import '../../../../config_widgets/booru_logo.dart';
 import '../../../../configs/ref.dart';
 import '../../../../configs/routes.dart';
 import '../../../../settings/providers.dart';

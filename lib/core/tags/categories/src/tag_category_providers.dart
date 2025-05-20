@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
+import '../../../configs/config.dart';
 import 'tag_type_store.dart';
 import 'tag_type_store_impl.dart';
 
@@ -20,9 +20,10 @@ final booruTagTypeStorePathProvider =
   return path;
 });
 
-final booruTagTypeProvider =
-    FutureProvider.autoDispose.family<String?, String>((ref, tag) async {
-  final config = ref.watchConfigAuth;
+final booruTagTypeProvider = FutureProvider.autoDispose
+    .family<String?, (BooruConfigAuth, String)>((ref, params) async {
+  final (config, tag) = params;
+
   final store = ref.watch(booruTagTypeStoreProvider);
   final sanitized = tag.toLowerCase().replaceAll(' ', '_');
   final data = await store.get(config.booruType, sanitized);

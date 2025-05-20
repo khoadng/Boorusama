@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../core/boorus/engine/engine.dart';
+import '../../../../../core/config_widgets/website_logo.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/foundation/clipboard.dart';
 import '../../../../../core/foundation/url_launcher.dart';
@@ -165,7 +166,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 switch (post.source) {
-                  final WebSource source => WebsiteLogo(
+                  final WebSource source => ConfigAwareWebsiteLogo(
                       size: 18,
                       url: source.faviconUrl,
                     ),

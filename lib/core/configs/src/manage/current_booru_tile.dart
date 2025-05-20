@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../app.dart';
+import '../../../config_widgets/booru_logo.dart';
 import '../../../posts/sources/source.dart';
-import '../../../widgets/widgets.dart';
 import '../booru_config_ref.dart';
 import '../providers.dart';
 import '../route_utils.dart';

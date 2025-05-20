@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/posts/details/routes.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
@@ -193,7 +194,11 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
           .map(
             (e) => BooruChip(
               visualDensity: VisualDensity.compact,
-              color: ref.watch(tagColorProvider(TagCategory.copyright().name)),
+              color: ref.watch(
+                tagColorProvider(
+                  (ref.watchConfigAuth, TagCategory.copyright().name),
+                ),
+              ),
               onPressed: () => goToSearchPage(
                 context,
                 tag: e.tag,
@@ -210,7 +215,12 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       fontWeight: FontWeight.w500,
                       color: Theme.of(context).brightness.isDark
                           ? ref.watch(
-                              tagColorProvider(TagCategory.copyright().name),
+                              tagColorProvider(
+                                (
+                                  ref.watchConfigAuth,
+                                  TagCategory.copyright().name,
+                                ),
+                              ),
                             )
                           : Colors.white,
                     ),

@@ -484,6 +484,32 @@ class BooruConfigFilter extends Equatable {
   List<Object?> get props => [auth, blacklistConfigs];
 }
 
+class BooruConfigViewer extends Equatable {
+  const BooruConfigViewer({
+    required this.imageDetaisQuality,
+    required this.viewerNotesFetchBehavior,
+  });
+
+  factory BooruConfigViewer.fromConfig(BooruConfig config) {
+    return BooruConfigViewer(
+      imageDetaisQuality: config.imageDetaisQuality,
+      viewerNotesFetchBehavior: config.viewerNotesFetchBehavior,
+    );
+  }
+
+  final String? imageDetaisQuality;
+  final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
+
+  bool get autoFetchNotes =>
+      viewerNotesFetchBehavior == BooruConfigViewerNotesFetchBehavior.auto;
+
+  @override
+  List<Object?> get props => [
+        imageDetaisQuality,
+        viewerNotesFetchBehavior,
+      ];
+}
+
 mixin BooruConfigAuthMixin {
   int? get booruIdHint;
   int get booruId;
@@ -538,9 +564,7 @@ extension BooruConfigX on BooruConfig {
   BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
   BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
   BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
-
-  bool get autoFetchNotes =>
-      viewerNotesFetchBehavior == BooruConfigViewerNotesFetchBehavior.auto;
+  BooruConfigViewer get viewer => BooruConfigViewer.fromConfig(this);
 }
 
 enum ImageQuickActionType {

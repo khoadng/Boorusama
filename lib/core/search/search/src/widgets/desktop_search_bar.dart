@@ -74,9 +74,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                 ),
               ),
             ),
-            SelectedTagListWithData(
-              controller: selectedTagController,
-              flexibleBorderPosition: false,
+            Consumer(
+              builder: (context, ref, child) => SelectedTagListWithData(
+                controller: selectedTagController,
+                flexibleBorderPosition: false,
+                config: ref.watchConfig,
+              ),
             ),
           ],
         );
@@ -140,7 +143,8 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
         builder: (context, query, child) {
-          final suggestionTags = ref.watch(suggestionProvider(query.text));
+          final suggestionTags =
+              ref.watch(suggestionProvider((ref.watchConfigAuth, query.text)));
 
           return Stack(
             children: [

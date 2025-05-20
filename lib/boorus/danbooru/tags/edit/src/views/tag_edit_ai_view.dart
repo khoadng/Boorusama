@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/providers.dart';
@@ -61,7 +62,9 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                 children: tags.map((d) {
                   final tag = d.tag;
                   final colors = ref.watch(
-                    chipColorsFromTagStringProvider(tag.category.name),
+                    chipColorsFromTagStringProvider(
+                      (ref.watchConfigAuth, tag.category.name),
+                    ),
                   );
                   final selected = widget.isSelected(tag.name);
 

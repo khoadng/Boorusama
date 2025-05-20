@@ -261,6 +261,7 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
           : BasicTagList(
               tags: post.tags.toList(),
               onTap: (tag) => goToSearchPage(context, tag: tag),
+              auth: ref.watchConfigAuth,
             ),
     );
   }

@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config.dart';
 import '../../../tags/categories/providers.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../theme.dart';
@@ -64,9 +64,9 @@ final tagCountProvider =
 });
 
 final bookmarkTagColorProvider =
-    FutureProvider.autoDispose.family<Color?, String>(
-  (ref, tag) async {
-    final config = ref.watchConfigAuth;
+    FutureProvider.autoDispose.family<Color?, (BooruConfigAuth, String)>(
+  (ref, params) async {
+    final (config, tag) = params;
     final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
     final tagType = await tagTypeStore.get(config.booruType, tag);
     final colorScheme = ref.watch(colorSchemeProvider);

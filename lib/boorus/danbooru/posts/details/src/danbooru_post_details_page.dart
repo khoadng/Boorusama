@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../core/configs/ref.dart';
 import '../../../../../core/notes/notes.dart';
 import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/details/widgets.dart';
@@ -29,22 +30,28 @@ class DanbooruPostDetailsPage extends StatelessWidget {
 
     return DanbooruCreatorPreloader(
       preloadable: PostCreatorsPreloadable.fromPosts(posts),
-      child: PostDetailsPageScaffold(
-        controller: detailsController,
-        posts: posts,
-        topRightButtonsBuilder: (controller) {
-          final post = InheritedPost.of<DanbooruPost>(context);
+      child: Consumer(
+        builder: (context, ref, child) {
+          return PostDetailsPageScaffold(
+            controller: detailsController,
+            posts: posts,
+            viewerConfig: ref.watchConfigViewer,
+            authConfig: ref.watchConfigAuth,
+            topRightButtonsBuilder: (controller) {
+              final post = InheritedPost.of<DanbooruPost>(context);
 
-          return [
-            NoteActionButtonWithProvider(
-              post: post,
-            ),
-            const SizedBox(width: 8),
-            DanbooruMoreActionButton(
-              post: post,
-              onStartSlideshow: () => controller.startSlideshow(),
-            ),
-          ];
+              return [
+                NoteActionButtonWithProvider(
+                  post: post,
+                ),
+                const SizedBox(width: 8),
+                DanbooruMoreActionButton(
+                  post: post,
+                  onStartSlideshow: () => controller.startSlideshow(),
+                ),
+              ];
+            },
+          );
         },
       ),
     );

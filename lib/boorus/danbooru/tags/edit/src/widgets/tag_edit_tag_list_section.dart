@@ -69,7 +69,7 @@ class DanbooruTagEditColorNotifier
       if (tagType == null) {
         colors[tag] = null;
       } else {
-        final color = ref.read(tagColorProvider(tagType));
+        final color = ref.read(tagColorProvider((arg, tagType)));
 
         final chipColors = color != null && color != Colors.white
             ? booruChipColors.fromColor(color)

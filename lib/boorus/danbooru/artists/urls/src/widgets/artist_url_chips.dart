@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../../../../../core/config_widgets/website_logo.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/posts/sources/source.dart';
-import '../../../../../../core/widgets/widgets.dart';
 
 class DanbooruArtistUrlChips extends StatelessWidget {
   const DanbooruArtistUrlChips({
@@ -29,7 +29,7 @@ class DanbooruArtistUrlChips extends StatelessWidget {
               message: source.url,
               child: InkWell(
                 onTap: () => launchExternalUrlString(source.url),
-                child: WebsiteLogo(
+                child: ConfigAwareWebsiteLogo(
                   url: source.faviconUrl,
                   size: 24,
                 ),

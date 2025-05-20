@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/theme.dart';
@@ -131,7 +132,9 @@ class _RelatedTagChips extends ConsumerWidget {
       children: tags.map((tag) {
         final selected = isSelected(tag.name);
         final colors = ref.watch(
-          chipColorsFromTagStringProvider(tag.category.name),
+          chipColorsFromTagStringProvider(
+            (ref.watchConfigAuth, tag.category.name),
+          ),
         );
 
         return RawChip(

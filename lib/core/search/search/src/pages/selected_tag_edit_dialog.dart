@@ -93,7 +93,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
             if (currentQuery == null) return const SizedBox.shrink();
 
-            final tags = ref.watch(suggestionProvider(currentQuery));
+            final tags = ref.watch(suggestionProvider((config, currentQuery)));
 
             if (tags.isEmpty) return const SizedBox.shrink();
 

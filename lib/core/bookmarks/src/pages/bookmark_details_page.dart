@@ -87,6 +87,8 @@ class _BookmarkDetailsPageState
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
+      viewerConfig: ref.watchConfigViewer,
+      authConfig: ref.watchConfigAuth,
       // Needed to prevent type inference error
       // ignore: avoid_types_on_closure_parameters
       imageUrlBuilder: (Post post) => post.originalImageUrl,

@@ -74,7 +74,11 @@ class _Chip extends ConsumerWidget {
     final colors =
         ref.watch(danbooruTagCategoryProvider(search.keyword)).maybeWhen(
               data: (data) => data != null
-                  ? ref.watch(chipColorsFromTagStringProvider(data.name))
+                  ? ref.watch(
+                      chipColorsFromTagStringProvider(
+                        (ref.watchConfigAuth, data.name),
+                      ),
+                    )
                   : null,
               orElse: () => null,
             );

@@ -9,11 +9,11 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../analytics.dart';
 import '../../../boorus/booru/booru.dart';
+import '../../../config_widgets/booru_logo.dart';
 import '../../../foundation/display.dart';
 import '../../../posts/sources/source.dart';
 import '../../../premiums/providers.dart';
 import '../../../theme.dart';
-import '../../../widgets/widgets.dart';
 import '../booru_config.dart';
 import '../booru_config_converter.dart';
 import '../data/booru_config_data.dart';
