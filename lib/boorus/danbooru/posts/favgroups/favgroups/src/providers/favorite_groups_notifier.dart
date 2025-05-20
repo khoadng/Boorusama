@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
-import '../../../../../../../core/configs/current.dart';
 import '../../../../../users/user/providers.dart';
 import '../../../../../users/user/user.dart';
 import '../../../listing/providers.dart';
@@ -19,7 +18,6 @@ final danbooruFavoriteGroupsProvider = NotifierProvider.family<
   FavoriteGroupsNotifier.new,
   dependencies: [
     danbooruFavoriteGroupRepoProvider,
-    currentBooruConfigProvider,
     danbooruCurrentUserProvider,
   ],
 );

@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/current.dart';
 import '../../../configs/ref.dart';
 import '../../../posts/post/post.dart';
 import '../../categories/providers.dart';
@@ -21,9 +20,6 @@ final invalidTags = [
 final tagGroupProvider = AsyncNotifierProvider.autoDispose
     .family<TagGroupItemNotifier, TagGroup, Post>(
   TagGroupItemNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 class TagGroup extends Equatable {

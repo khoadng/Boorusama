@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../core/configs/config.dart';
-import '../../../../core/configs/current.dart';
 import '../../../../core/configs/ref.dart';
 import 'data/providers.dart';
 import 'types/wiki.dart';
@@ -11,10 +10,6 @@ import 'types/wiki.dart';
 final danbooruWikisProvider =
     NotifierProvider.family<WikisNotifier, Map<String, Wiki?>, BooruConfigAuth>(
   WikisNotifier.new,
-  dependencies: [
-    danbooruWikiRepoProvider,
-    currentBooruConfigProvider,
-  ],
 );
 
 final danbooruWikiProvider = Provider.family<WikiState, String>((ref, tag) {

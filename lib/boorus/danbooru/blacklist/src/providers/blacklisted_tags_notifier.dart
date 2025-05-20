@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/blacklists/blacklist.dart';
 import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/current.dart';
 import '../../../danbooru_provider.dart';
 import '../../../posts/post/post.dart';
 import '../../../users/user/providers.dart';
@@ -13,9 +12,6 @@ import '../../../users/user/user.dart';
 final danbooruBlacklistedTagsProvider = AsyncNotifierProvider.family<
     BlacklistedTagsNotifier, List<String>?, BooruConfigAuth>(
   BlacklistedTagsNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 class BlacklistedTagsNotifier

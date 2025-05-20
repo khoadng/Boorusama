@@ -7,8 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../configs/config.dart';
-import '../../../../configs/current.dart';
 import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/path.dart';
@@ -48,14 +46,11 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
-    final booruType = ref.watch(
-      currentBooruConfigProvider.select((value) => value.auth.booruType),
-    );
+    final config = ref.watchConfigAuth;
     final useDefault = ref.watch(
       settingsProvider
           .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk),
     );
-    final config = ref.watchConfigAuth;
     final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
     final heroTag = '${post.id}_hero';
 
@@ -76,7 +71,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                             .onWebmVideoPlayerCreated(wvpc, post.id),
                         sound: ref.isGlobalVideoSoundOn,
                         playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                        userAgent: ref.watch(userAgentProvider(booruType)),
+                        userAgent:
+                            ref.watch(userAgentProvider(config.booruType)),
                       )
                     : BooruVideo(
                         heroTag: heroTag,

@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/comments/comment.dart';
 import '../../../../../../core/comments/comment_parser.dart';
 import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/configs/current.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../users/user/providers.dart';
 import '../../../../users/user/user.dart';
@@ -21,9 +20,6 @@ import '../types/danbooru_comment.dart';
 final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
     Map<int, List<CommentData>?>, BooruConfigAuth>(
   CommentsNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final danbooruCommentProvider =

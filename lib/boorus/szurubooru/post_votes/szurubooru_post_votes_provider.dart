@@ -5,7 +5,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
-import '../../../core/configs/current.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/votes/providers.dart';
@@ -75,9 +74,6 @@ final szurubooruPostVotesProvider = NotifierProvider.family<
     IMap<int, SzurubooruPostVote?>,
     BooruConfigAuth>(
   SzurubooruPostVotesNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final szurubooruPostVoteProvider =

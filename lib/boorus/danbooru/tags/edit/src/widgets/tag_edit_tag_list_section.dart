@@ -8,7 +8,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/configs/current.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
@@ -112,7 +111,6 @@ final _tagColorProvider = Provider.autoDispose.family<ChipColors?, String>(
     return colors[tag];
   },
   dependencies: [
-    currentBooruConfigProvider,
     danbooruTagEditColorsProvider,
   ],
   name: 'tagColorProvider',

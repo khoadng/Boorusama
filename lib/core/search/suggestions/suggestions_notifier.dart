@@ -6,7 +6,6 @@ import 'package:foundation/foundation.dart';
 import '../../autocompletes/autocompletes.dart';
 import '../../autocompletes/providers.dart';
 import '../../configs/config.dart';
-import '../../configs/current.dart';
 import '../../configs/ref.dart';
 import '../../foundation/debounce_mixin.dart';
 import '../../tags/configs/providers.dart';
@@ -16,9 +15,6 @@ import '../queries/query_utils.dart';
 final suggestionsNotifierProvider = NotifierProvider.family<SuggestionsNotifier,
     IMap<String, IList<AutocompleteData>>, BooruConfigAuth>(
   SuggestionsNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final fallbackSuggestionsProvider =
@@ -37,7 +33,6 @@ final suggestionProvider =
   dependencies: [
     suggestionsNotifierProvider,
     fallbackSuggestionsProvider,
-    currentBooruConfigProvider,
   ],
 );
 

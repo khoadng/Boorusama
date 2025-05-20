@@ -7,7 +7,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/current.dart';
 import '../../../../../core/configs/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/votes/providers.dart';
@@ -22,7 +21,6 @@ final danbooruPostVotesProvider = NotifierProvider.family<PostVotesNotifier,
   PostVotesNotifier.new,
   dependencies: [
     danbooruPostVoteRepoProvider,
-    currentBooruConfigProvider,
   ],
 );
 

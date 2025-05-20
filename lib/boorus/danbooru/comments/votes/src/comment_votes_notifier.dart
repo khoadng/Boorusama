@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/comments/comment_vote.dart';
 import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/current.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../comment/comment.dart';
 import 'data/providers.dart';
@@ -13,9 +12,6 @@ import 'types/danbooru_comment_vote.dart';
 final danbooruCommentVotesProvider = NotifierProvider.family<
     CommentVotesNotifier, Map<CommentId, DanbooruCommentVote>, BooruConfigAuth>(
   CommentVotesNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final danbooruCommentVoteProvider = Provider.autoDispose

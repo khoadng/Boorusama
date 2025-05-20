@@ -5,7 +5,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
-import '../../../../configs/current.dart';
 import '../../../../configs/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../post/post.dart';
@@ -14,9 +13,6 @@ import 'favorite.dart';
 final favoritesProvider = NotifierProvider.family<FavoritesNotifier,
     IMap<int, bool>, BooruConfigAuth>(
   FavoritesNotifier.new,
-  dependencies: [
-    currentBooruConfigProvider,
-  ],
 );
 
 final favoriteProvider = Provider.autoDispose.family<bool, int>(
