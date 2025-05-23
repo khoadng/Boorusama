@@ -1,4 +1,6 @@
 // Package imports:
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/configs/ref.dart';
 import '../../moebooru.dart';
 
-CancelToken _cancelToken = CancelToken();
+var throttler = 0;
 
 class MoebooruFavoritesNotifier extends FamilyNotifier<Set<String>?, int> {
   @override
@@ -19,28 +21,34 @@ class MoebooruFavoritesNotifier extends FamilyNotifier<Set<String>?, int> {
     loadFavoriteUsers();
   }
 
-  Future<void> loadFavoriteUsers() async {
-    if (state != null) {
-      return;
-    }
+  void refresh() {
+    _loadFavoriteUsers();
+  }
 
-    // Cancel the previous request before making a new one
-    _cancelToken.cancel();
-
-    // Create a new CancelToken for the new request
-    _cancelToken = CancelToken();
+  Future<void> _loadFavoriteUsers() async {
+    throttler++;
+    await Future.delayed(
+        Duration(milliseconds: min(100 * (throttler - 1), 3000)));
+    throttler--;
 
     try {
       final client = ref.watch(moebooruClientProvider(ref.readConfigAuth));
 
       final users = await client.getFavoriteUsers(
         postId: arg,
-        cancelToken: _cancelToken,
+        cancelToken: CancelToken(),
       );
-
       state = users;
     } catch (e) {
       state = null;
     }
+  }
+
+  Future<void> loadFavoriteUsers() async {
+    if (state != null) {
+      return;
+    }
+
+    await _loadFavoriteUsers();
   }
 }

@@ -20,7 +20,7 @@ class QuickFavoriteButton extends ConsumerWidget {
   });
 
   final void Function(bool value)? onFavToggle;
-  final bool isFaved;
+  final bool? isFaved;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,13 +36,20 @@ class QuickFavoriteButton extends ConsumerWidget {
         color: context.extendedColorScheme.surfaceContainerOverlay,
       ),
       child: LikeButton(
-        isLiked: isFaved,
+        isLiked: isFaved ?? false,
         onTap: (isLiked) {
-          onFavToggle?.call(!isLiked);
-
-          return Future.value(!isLiked);
+          final val = isFaved == null ? true : !isLiked;
+          onFavToggle?.call(val);
+          return Future.value(val);
         },
         likeBuilder: (isLiked) {
+          if (!isLiked && isFaved == null) {
+            return Icon(
+              Symbols.heart_plus,
+              color: context.extendedColorScheme.onSurfaceContainerOverlay,
+              fill: 1,
+            );
+          }
           return Icon(
             isLiked ? Symbols.favorite : Symbols.favorite,
             color: isLiked
