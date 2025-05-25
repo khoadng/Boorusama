@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -24,7 +23,6 @@ import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../selected_tags/tag.dart';
 import '../pages/search_page.dart';
-import '../views/search_landing_view.dart';
 import 'search_controller.dart';
 
 typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
@@ -60,11 +58,10 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.searchSuggestions,
     required this.resultHeader,
     required this.onPostControllerCreated,
+    required this.landingView,
     super.key,
     this.noticeBuilder,
     this.queryPattern,
-    this.metatags,
-    this.trending,
     this.extraHeaders,
     this.itemBuilder,
   });
@@ -91,10 +88,7 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 
-  final Widget? Function(BuildContext context, SearchPageController controller)?
-      metatags;
-  final Widget? Function(BuildContext context, SearchPageController controller)?
-      trending;
+  final Widget landingView;
 
   final SelectedTagController tagsController;
   final SearchPageController controller;
@@ -210,11 +204,8 @@ class _SearchPageScaffoldState<T extends Post>
         .removeListener(_onMultiSelectChanged);
 
     _subscriptions.dispose();
-    _controller.dispose();
-    _tagsController.dispose();
     _scrollController.dispose();
     _searchBarAnimController.dispose();
-    _multiSelectController.dispose();
 
     super.dispose();
   }
@@ -260,14 +251,13 @@ class _SearchPageScaffoldState<T extends Post>
                     return searchOnce
                         ? _buildResult()
                         : _Landing(
-                            metatags: widget.metatags,
-                            trending: widget.trending,
+                            landingView: widget.landingView,
                             multiSelectController: _multiSelectController,
                           );
                   },
                 ),
                 _SearchOptionsView(
-                  metatags: widget.metatags,
+                  landingView: widget.landingView,
                   multiSelectController: _multiSelectController,
                 ),
                 widget.searchSuggestions,
@@ -649,64 +639,35 @@ class _Displacement extends ConsumerWidget {
 
 class _Landing extends ConsumerWidget {
   const _Landing({
-    required this.metatags,
-    required this.trending,
+    required this.landingView,
     required this.multiSelectController,
   });
 
-  final Widget? Function(
-    BuildContext context,
-    SearchPageController controller,
-  )? metatags;
-
-  final Widget? Function(
-    BuildContext context,
-    SearchPageController controller,
-  )? trending;
-
+  final Widget landingView;
   final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = InheritedSearchPageController.of(context);
-    final searchBarPosition = ref.watch(searchBarPositionProvider);
-
     return SearchRegionSafeArea(
       multiSelectController: multiSelectController,
-      child: SearchLandingView(
-        reverse: searchBarPosition == SearchBarPosition.bottom,
-        onHistoryTap: (value) {
-          controller.tapHistoryTag(value);
-        },
-        onFavTagTap: (value) {
-          controller.tapFavTag(value);
-        },
-        onRawTagTap: (value) => controller.tagsController.addTag(
-          value,
-          isRaw: true,
-        ),
-        metatags: metatags?.call(context, controller),
-        trending: trending?.call(context, controller),
-      ),
+      child: landingView,
     );
   }
 }
 
 class _SearchOptionsView extends ConsumerWidget {
   const _SearchOptionsView({
-    required this.metatags,
+    required this.landingView,
     required this.multiSelectController,
   });
 
-  final Widget? Function(BuildContext context, SearchPageController controller)?
-      metatags;
+  final Widget landingView;
   final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = InheritedSearchPageController.of(context);
     final colorScheme = Theme.of(context).colorScheme;
-    final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return SearchRegionSafeArea(
       multiSelectController: multiSelectController,
@@ -734,30 +695,7 @@ class _SearchOptionsView extends ConsumerWidget {
                 ),
               )
             : const SizedBox.shrink(),
-        child: SearchLandingView(
-          reverse: searchBarPosition == SearchBarPosition.bottom,
-          scrollController: ModalScrollController.of(
-            context,
-          ),
-          onHistoryTap: (value) {
-            controller.tapHistoryTag(
-              value,
-            );
-          },
-          onFavTagTap: (value) {
-            controller.tapFavTag(value);
-          },
-          onRawTagTap: (value) {
-            controller.tagsController.addTag(
-              value,
-              isRaw: true,
-            );
-          },
-          metatags: metatags?.call(
-            context,
-            controller,
-          ),
-        ),
+        child: landingView,
       ),
     );
   }

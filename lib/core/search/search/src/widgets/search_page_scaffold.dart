@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../analytics.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
 import '../../../../posts/count/widgets.dart';
 import '../../../../posts/listing/providers.dart';
@@ -21,6 +22,7 @@ import '../../../selected_tags/providers.dart';
 import '../../../suggestions/providers.dart';
 import '../../../suggestions/widgets.dart';
 import '../pages/search_page.dart';
+import '../views/search_landing_view.dart';
 import 'raw_search_page_scaffold.dart';
 import 'search_app_bar.dart';
 import 'search_button.dart';
@@ -123,11 +125,31 @@ class _SearchPageScaffoldState<T extends Post>
       noticeBuilder: widget.noticeBuilder,
       extraHeaders: widget.extraHeaders,
       queryPattern: widget.queryPattern,
-      metatags: widget.metatags,
-      trending: widget.trending,
+      landingView: Consumer(
+        builder: (context, ref, __) {
+          final searchBarPosition = ref.watch(searchBarPositionProvider);
+
+          return SearchLandingView(
+            reverse: searchBarPosition == SearchBarPosition.bottom,
+            onHistoryTap: (value) {
+              _controller.tapHistoryTag(value);
+            },
+            onFavTagTap: (value) {
+              _controller.tapFavTag(value);
+            },
+            onRawTagTap: (value) => _controller.tagsController.addTag(
+              value,
+              isRaw: true,
+            ),
+            metatags: widget.metatags?.call(context, _controller),
+            trending: widget.trending?.call(context, _controller),
+          );
+        },
+      ),
       itemBuilder: widget.itemBuilder,
       searchSuggestions: DefaultSearchSuggestions(
         multiSelectController: _multiSelectController,
+        config: ref.watchConfigAuth,
       ),
       resultHeader: ValueListenableBuilder(
         valueListenable: _controller.tagString,
@@ -142,6 +164,14 @@ class _SearchPageScaffoldState<T extends Post>
       ),
       searchRegion: DefaultSearchRegion(
         controller: _controller,
+        tagList: Consumer(
+          builder: (context, ref, child) {
+            return SelectedTagListWithData(
+              controller: _tagsController,
+              config: ref.watchConfig,
+            );
+          },
+        ),
         onSearch: () {
           _controller.search();
           _postController?.refresh();
@@ -160,17 +190,20 @@ class DefaultSearchRegion extends ConsumerWidget {
   const DefaultSearchRegion({
     required this.onSearch,
     required this.controller,
+    required this.tagList,
     super.key,
     this.initialQuery,
+    this.trailingSearchButton,
   });
 
   final VoidCallback onSearch;
   final String? initialQuery;
   final SearchPageController controller;
+  final Widget tagList;
+  final Widget? trailingSearchButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagsController = controller.tagsController;
     final theme = Theme.of(context);
     final parentRoute = ModalRoute.of(context);
     final autoFocusSearchBar = ref.watch(
@@ -193,7 +226,8 @@ class DefaultSearchRegion extends ConsumerWidget {
                   searchOnce && state == SearchState.initial ? null : () {},
               },
               onSubmitted: (value) => controller.submit(value),
-              trailingSearchButton: _buildTrailingButton(context),
+              trailingSearchButton: trailingSearchButton ??
+                  DefaultTrailingSearchButton(controller: controller),
               innerSearchButton: _buildSearchButton(context),
               focusNode: controller.focus,
               autofocus: initialQuery == null ? autoFocusSearchBar : false,
@@ -205,14 +239,7 @@ class DefaultSearchRegion extends ConsumerWidget {
           },
         ),
       ),
-      Consumer(
-        builder: (context, ref, child) {
-          return SelectedTagListWithData(
-            controller: tagsController,
-            config: ref.watchConfig,
-          );
-        },
-      ),
+      tagList,
     ];
 
     final region = ColoredBox(
@@ -234,38 +261,6 @@ class DefaultSearchRegion extends ConsumerWidget {
               const _SearchRegionBottomDisplacement(),
             ],
           );
-  }
-
-  Widget _buildTrailingButton(BuildContext context) {
-    final controller = InheritedSearchPageController.of(context);
-
-    return ValueListenableBuilder(
-      valueListenable: controller.didSearchOnce,
-      builder: (_, searchOnce, __) {
-        return !searchOnce
-            ? const SizedBox.shrink()
-            : ValueListenableBuilder(
-                valueListenable: controller.state,
-                builder: (_, state, __) => state != SearchState.suggestions
-                    ? AnimatedRotation(
-                        duration: const Duration(milliseconds: 150),
-                        turns: state == SearchState.options ? 0.13 : 0,
-                        child: IconButton(
-                          iconSize: 28,
-                          onPressed: () {
-                            if (state != SearchState.options) {
-                              controller.changeState(SearchState.options);
-                            } else {
-                              controller.changeState(SearchState.initial);
-                            }
-                          },
-                          icon: const Icon(Symbols.add),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              );
-      },
-    );
   }
 
   Widget _buildSearchButton(BuildContext context) {
@@ -301,6 +296,46 @@ class DefaultSearchRegion extends ConsumerWidget {
   }
 }
 
+class DefaultTrailingSearchButton extends StatelessWidget {
+  const DefaultTrailingSearchButton({
+    required this.controller,
+    super.key,
+  });
+
+  final SearchPageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: controller.didSearchOnce,
+      builder: (_, searchOnce, __) {
+        return !searchOnce
+            ? const SizedBox.shrink()
+            : ValueListenableBuilder(
+                valueListenable: controller.state,
+                builder: (_, state, __) => state != SearchState.suggestions
+                    ? AnimatedRotation(
+                        duration: const Duration(milliseconds: 150),
+                        turns: state == SearchState.options ? 0.13 : 0,
+                        child: IconButton(
+                          iconSize: 28,
+                          onPressed: () {
+                            if (state != SearchState.options) {
+                              controller.changeState(SearchState.options);
+                            } else {
+                              controller.changeState(SearchState.initial);
+                            }
+                          },
+                          icon: const Icon(Symbols.add),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              );
+      },
+    );
+  }
+}
+
 class _SearchRegionBottomDisplacement extends StatelessWidget {
   const _SearchRegionBottomDisplacement();
 
@@ -320,10 +355,12 @@ class _SearchRegionBottomDisplacement extends StatelessWidget {
 class DefaultSearchSuggestions extends ConsumerWidget {
   const DefaultSearchSuggestions({
     required this.multiSelectController,
+    required this.config,
     super.key,
   });
 
   final MultiSelectController multiSelectController;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -355,7 +392,6 @@ class DefaultSearchSuggestions extends ConsumerWidget {
                       child: ValueListenableBuilder(
                         valueListenable: controller.textController,
                         builder: (context, query, child) {
-                          final config = ref.watchConfigAuth;
                           final suggestionTags = ref
                               .watch(suggestionProvider((config, query.text)));
 
