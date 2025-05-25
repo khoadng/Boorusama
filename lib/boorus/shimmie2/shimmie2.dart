@@ -149,7 +149,7 @@ class Shimmie2Repository implements BooruRepository {
 
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) {
-    return ref.read(emptyAutocompleteRepoProvider);
+    return ref.read(shimmie2AutocompleteRepoProvider(config));
   }
 
   @override
