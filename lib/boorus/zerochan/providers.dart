@@ -94,7 +94,7 @@ ZerochanPost _postDtoToPost(
     format: path.extension(e.thumbnail ?? ''),
     hasSound: null,
     height: e.height?.toDouble() ?? 0,
-    md5: '',
+    md5: e.md5 ?? '',
     videoThumbnailUrl: '',
     videoUrl: '',
     width: e.width?.toDouble() ?? 0,
