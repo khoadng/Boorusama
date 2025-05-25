@@ -3,6 +3,7 @@ class PostDto {
     this.id,
     this.width,
     this.height,
+    this.md5,
     this.thumbnail,
     this.source,
     this.tag,
@@ -14,6 +15,7 @@ class PostDto {
       id: json['id'],
       width: json['width'],
       height: json['height'],
+      md5: json['md5'],
       thumbnail: json['thumbnail'],
       source: json['source'],
       tag: json['tag'],
@@ -23,6 +25,7 @@ class PostDto {
   final int? id;
   final int? width;
   final int? height;
+  final String? md5;
   final String? thumbnail;
   final String? source;
   final String? tag;

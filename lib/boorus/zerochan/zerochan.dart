@@ -176,7 +176,7 @@ class ZerochanRepository extends BooruRepositoryDefault {
 
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) {
-    return ref.read(emptyAutocompleteRepoProvider);
+    return ref.read(zerochanAutoCompleteRepoProvider(config));
   }
 
   @override
