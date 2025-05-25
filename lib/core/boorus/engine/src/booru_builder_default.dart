@@ -261,6 +261,7 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
       posts: posts,
       viewerConfig: ref.watchConfigViewer,
       authConfig: ref.watchConfigAuth,
+      gestureConfig: ref.watchPostGestures,
     );
   }
 }

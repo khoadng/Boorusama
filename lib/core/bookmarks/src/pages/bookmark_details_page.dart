@@ -83,12 +83,15 @@ class _BookmarkDetailsPageState
     final posts = data.posts;
     final controller = data.controller;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
+    final auth = ref.watchConfigAuth;
 
     return PostDetailsPageScaffold(
       controller: controller,
       posts: posts,
       viewerConfig: ref.watchConfigViewer,
-      authConfig: ref.watchConfigAuth,
+      authConfig: auth,
+      gestureConfig: ref.watchPostGestures,
+
       // Needed to prevent type inference error
       // ignore: avoid_types_on_closure_parameters
       imageUrlBuilder: (Post post) => post.originalImageUrl,
@@ -102,6 +105,7 @@ class _BookmarkDetailsPageState
         return [
           GeneralMoreActionButton(
             post: post,
+            config: auth,
             onStartSlideshow: () => controller.startSlideshow(),
             onDownload: (_) {
               ref.bookmarks.downloadBookmarks(

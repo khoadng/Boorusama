@@ -32,21 +32,26 @@ class DanbooruPostDetailsPage extends StatelessWidget {
       preloadable: PostCreatorsPreloadable.fromPosts(posts),
       child: Consumer(
         builder: (context, ref, child) {
+          final config = ref.watchConfigAuth;
+
           return PostDetailsPageScaffold(
             controller: detailsController,
             posts: posts,
             viewerConfig: ref.watchConfigViewer,
-            authConfig: ref.watchConfigAuth,
+            authConfig: config,
+            gestureConfig: ref.watchPostGestures,
             topRightButtonsBuilder: (controller) {
               final post = InheritedPost.of<DanbooruPost>(context);
 
               return [
                 NoteActionButtonWithProvider(
                   post: post,
+                  config: config,
                 ),
                 const SizedBox(width: 8),
                 DanbooruMoreActionButton(
                   post: post,
+                  config: config,
                   onStartSlideshow: () => controller.startSlideshow(),
                 ),
               ];

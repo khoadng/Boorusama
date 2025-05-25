@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../boorus/engine/providers.dart';
-import '../configs/ref.dart';
+import '../configs/config.dart';
 import '../downloads/downloader.dart';
 import '../foundation/url_launcher.dart';
 import '../posts/post/post.dart';
@@ -21,18 +21,19 @@ import 'booru_popup_menu_button.dart';
 class GeneralMoreActionButton extends ConsumerWidget {
   const GeneralMoreActionButton({
     required this.post,
+    required this.config,
     super.key,
     this.onDownload,
     this.onStartSlideshow,
   });
 
   final Post post;
+  final BooruConfigAuth config;
   final void Function(Post post)? onDownload;
   final void Function()? onStartSlideshow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
 
     return SizedBox(

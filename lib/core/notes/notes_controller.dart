@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../configs/ref.dart';
+import '../configs/config.dart';
 import '../posts/post/post.dart';
 import 'notes.dart';
 
@@ -50,14 +50,15 @@ class NotesControllerNotifier
 class NoteActionButtonWithProvider extends ConsumerWidget {
   const NoteActionButtonWithProvider({
     required this.post,
+    required this.config,
     super.key,
   });
 
   final Post post;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
     final noteState = ref.watch(notesControllerProvider(post));
     final allNotes = ref.watch(notesProvider(config));
     final notes = allNotes[post.id] ?? const <Note>[].lock;

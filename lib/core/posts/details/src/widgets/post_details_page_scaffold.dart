@@ -20,7 +20,6 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/current.dart';
-import '../../../../configs/ref.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
@@ -54,6 +53,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.controller,
     required this.viewerConfig,
     required this.authConfig,
+    required this.gestureConfig,
     super.key,
     this.onExpanded,
     this.imageUrlBuilder,
@@ -76,6 +76,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Set<DetailsPart>? preferredPreviewParts;
   final BooruConfigViewer viewerConfig;
   final BooruConfigAuth authConfig;
+  final PostGestureConfig? gestureConfig;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -129,7 +130,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       );
 
       if (widget.viewerConfig.autoFetchNotes) {
-        ref.read(notesProvider(ref.readConfigAuth).notifier).load(
+        ref.read(notesProvider(widget.authConfig).notifier).load(
               posts[widget.controller.initialPage],
             );
       }
@@ -281,7 +282,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   Widget _build() {
     final booruBuilder = ref.watch(booruBuilderProvider(widget.authConfig));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = ref.watchPostGestures?.fullview;
+    final gestures = widget.gestureConfig?.fullview;
 
     final imageUrlBuilder = widget.imageUrlBuilder ??
         defaultPostImageUrlBuilder(ref, widget.authConfig, widget.viewerConfig);
@@ -576,6 +577,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               valueListenable: widget.controller.currentPost,
               builder: (context, post, _) => NoteActionButtonWithProvider(
                 post: post,
+                config: widget.authConfig,
               ),
             ),
             const SizedBox(width: 8),
@@ -583,6 +585,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               valueListenable: widget.controller.currentPost,
               builder: (context, post, _) => GeneralMoreActionButton(
                 post: post,
+                config: widget.authConfig,
                 onStartSlideshow: () => _controller.startSlideshow(),
               ),
             ),

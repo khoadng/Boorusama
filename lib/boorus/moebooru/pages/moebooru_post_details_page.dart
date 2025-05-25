@@ -137,8 +137,10 @@ class _MoebooruPostDetailsPageState
       posts: posts,
       viewerConfig: ref.watchConfigViewer,
       authConfig: ref.watchConfigAuth,
+      gestureConfig: ref.watchPostGestures,
       topRightButtonsBuilder: (controller) => [
         GeneralMoreActionButton(
+          config: config,
           post: InheritedPost.of<MoebooruPost>(context),
           onStartSlideshow: config.hasLoginDetails()
               ? null

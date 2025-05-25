@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/boorus/engine/providers.dart';
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/downloads/downloader.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/posts/post/post.dart';
@@ -23,17 +23,18 @@ import '../../../post/post.dart';
 class DanbooruMoreActionButton extends ConsumerWidget {
   const DanbooruMoreActionButton({
     required this.post,
+    required this.config,
     super.key,
     this.onStartSlideshow,
   });
 
   final DanbooruPost post;
+  final BooruConfigAuth config;
   final void Function()? onStartSlideshow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfigAuth;
-    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
+    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
 
     return SizedBox(
       width: 40,
@@ -72,12 +73,12 @@ class DanbooruMoreActionButton extends ConsumerWidget {
           },
           itemBuilder: {
             'download': const Text('download.download').tr(),
-            if (booruConfig.hasLoginDetails())
+            if (config.hasLoginDetails())
               'add_to_favgroup':
                   const Text('post.action.add_to_favorite_group').tr(),
             if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             'tag_history': const Text('View tag history'),
-            if (!booruConfig.hasStrictSFW)
+            if (!config.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
             if (post.hasFullView)
               'view_original':
