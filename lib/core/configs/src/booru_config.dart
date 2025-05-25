@@ -431,6 +431,33 @@ class BooruConfigSearchFilter extends Equatable
           }()
       };
 
+  bool canView(String rating) {
+    final parsedRating = mapStringToRating(rating);
+
+    if (ratingFilter == BooruConfigRatingFilter.none) return true;
+
+    if (ratingFilter == BooruConfigRatingFilter.custom) {
+      final granularRatingFilters = granularRatingFiltersWithoutUnknown;
+
+      if (granularRatingFilters == null) return false;
+
+      return granularRatingFilters.contains(parsedRating);
+    }
+
+    if (ratingFilter == BooruConfigRatingFilter.hideExplicit &&
+        parsedRating == Rating.explicit) {
+      return false;
+    }
+
+    if (ratingFilter == BooruConfigRatingFilter.hideNSFW &&
+        (parsedRating == Rating.explicit ||
+            parsedRating == Rating.questionable)) {
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   List<Object?> get props => [
         ratingFilter,

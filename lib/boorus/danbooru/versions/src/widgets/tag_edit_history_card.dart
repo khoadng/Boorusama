@@ -31,7 +31,9 @@ class TagEditHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final thumbnail = version.thumbnailUrl;
+    final thumbnail = (configSearch?.filter.canView(version.rating) ?? true)
+        ? version.thumbnailUrl
+        : null;
     final config = configSearch;
 
     return Container(
