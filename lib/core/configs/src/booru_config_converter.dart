@@ -63,7 +63,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
           ? BooruConfigViewerNotesFetchBehavior
               .values[booruConfigData.viewerNotesFetchBehavior!]
           : null,
-      forceShowFavoriteStatus: booruConfigData.forceShowFavoriteStatus ?? false,
+      forceShowFavoriteStatus: booruConfigData.forceShowFavoriteStatus,
     );
   }
 }

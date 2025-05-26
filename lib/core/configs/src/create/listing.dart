@@ -95,8 +95,8 @@ class BooruConfigListingView extends ConsumerWidget {
               ),
             ),
             if (extras != null) ...[
-              ...extras!,
               const Divider(),
+              ...extras!,
             ],
             const Divider(),
             SwitchListTile(
