@@ -36,10 +36,12 @@ class BooruConfigListingView extends ConsumerWidget {
     required this.postPreviewQuickActionButtonActions,
     required this.describePostPreviewQuickAction,
     super.key,
+    this.extras = const [],
   });
 
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
+  final List<Widget>? extras;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -92,6 +94,10 @@ class BooruConfigListingView extends ConsumerWidget {
                     .toList(),
               ),
             ),
+            if (extras != null) ...[
+              const Divider(),
+              ...extras!,
+            ],
             const Divider(),
             SwitchListTile(
               title: const Text("Enable profile's specific settings"),

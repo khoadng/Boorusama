@@ -50,6 +50,7 @@ class BooruConfig extends Equatable {
     required this.layout,
     required this.proxySettings,
     required this.viewerNotesFetchBehavior,
+    required this.forceShowFavoriteStatus,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -116,6 +117,7 @@ class BooruConfig extends Equatable {
           ? null
           : BooruConfigViewerNotesFetchBehavior
               .values[json['viewerNotesFetchBehavior'] as int],
+      forceShowFavoriteStatus: json['forceShowFavoriteStatus'] as bool?,
     );
   }
 
@@ -145,6 +147,7 @@ class BooruConfig extends Equatable {
     layout: null,
     proxySettings: null,
     viewerNotesFetchBehavior: null,
+    forceShowFavoriteStatus: null,
   );
 
   // ignore: prefer_constructors_over_static_methods
@@ -179,6 +182,7 @@ class BooruConfig extends Equatable {
         layout: null,
         proxySettings: null,
         viewerNotesFetchBehavior: null,
+        forceShowFavoriteStatus: null,
       );
 
   final int id;
@@ -206,6 +210,7 @@ class BooruConfig extends Equatable {
   final LayoutConfigs? layout;
   final ProxySettings? proxySettings;
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
+  final bool? forceShowFavoriteStatus;
 
   BooruConfig copyWith({
     String? url,
@@ -240,6 +245,7 @@ class BooruConfig extends Equatable {
       layout: layout != null ? layout() : this.layout,
       proxySettings: proxySettings,
       viewerNotesFetchBehavior: viewerNotesFetchBehavior,
+      forceShowFavoriteStatus: forceShowFavoriteStatus,
     );
   }
 
@@ -270,6 +276,7 @@ class BooruConfig extends Equatable {
         layout,
         proxySettings,
         viewerNotesFetchBehavior,
+        forceShowFavoriteStatus,
       ];
 
   @override
@@ -306,6 +313,7 @@ class BooruConfig extends Equatable {
       'layout': layout?.toJson(),
       'proxySettings': proxySettings?.toJson(),
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior?.index,
+      'forceShowFavoriteStatus': forceShowFavoriteStatus,
     };
   }
 }
