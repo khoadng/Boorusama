@@ -208,11 +208,4 @@ class EditBooruConfigNotifier
     BlacklistConfigs? blacklistConfigs,
   ) =>
       state = state.copyWith(blacklistConfigs: () => blacklistConfigs);
-  
-  void updateForceShowFavoriteStatus(
-    bool forceShowFavoriteStatus,
-  ) =>
-      state = state.copyWith(
-        forceShowFavoriteStatus: forceShowFavoriteStatus,
-      );
 }

@@ -40,7 +40,6 @@ class BooruConfigData extends Equatable {
     required this.layout,
     required this.proxySettings,
     required this.viewerNotesFetchBehavior,
-    required this.forceShowFavoriteStatus,
   });
 
   factory BooruConfigData.anonymous({
@@ -78,7 +77,6 @@ class BooruConfigData extends Equatable {
         layout: null,
         proxySettings: null,
         viewerNotesFetchBehavior: null,
-        forceShowFavoriteStatus: null,
       );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -112,7 +110,6 @@ class BooruConfigData extends Equatable {
         layout: json['layout'] as String?,
         proxySettings: json['proxySettings'] as String?,
         viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] as int?,
-        forceShowFavoriteStatus: json['forceShowFavoriteStatus'] as bool?,
       );
     } catch (e) {
       return null;
@@ -172,7 +169,6 @@ class BooruConfigData extends Equatable {
   final String? layout;
   final String? proxySettings;
   final int? viewerNotesFetchBehavior;
-  final bool? forceShowFavoriteStatus;
 
   @override
   List<Object?> get props => [
@@ -200,7 +196,6 @@ class BooruConfigData extends Equatable {
         layout,
         proxySettings,
         viewerNotesFetchBehavior,
-        forceShowFavoriteStatus,
       ];
 }
 
@@ -299,7 +294,6 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     LayoutConfigs? Function()? layout,
     ProxySettings? Function()? proxySettings,
     BooruConfigViewerNotesFetchBehavior? Function()? viewerNotesFetchBehavior,
-    bool? forceShowFavoriteStatus,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -354,7 +348,6 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       viewerNotesFetchBehavior: viewerNotesFetchBehavior != null
           ? viewerNotesFetchBehavior()?.index
           : this.viewerNotesFetchBehavior,
-      forceShowFavoriteStatus: forceShowFavoriteStatus ?? this.forceShowFavoriteStatus,
     );
   }
 }

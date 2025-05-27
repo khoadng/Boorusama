@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../core/configs/create.dart';
@@ -21,10 +20,6 @@ class CreateMoebooruConfigPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final forceShowFavoriteStatus = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.forceShowFavoriteStatus),
-    );
     return CreateBooruConfigScaffold(
       initialTab: initialTab,
       backgroundColor: backgroundColor,
@@ -32,19 +27,6 @@ class CreateMoebooruConfigPage extends ConsumerWidget {
       searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
       ),
-      listingTab: BooruConfigListingView(
-          postPreviewQuickActionButtonActions: kDefaultPreviewImageButtonAction,
-          describePostPreviewQuickAction: null,
-          extras: [
-            SwitchListTile(
-              title: const Text(
-                  '(Moebooru only) Forcely show favorite status of every post').tr(),
-              subtitle: const Text('May introduce performance issues.'),
-              value: forceShowFavoriteStatus ?? false,
-              onChanged: (value) =>
-                  ref.editNotifier.updateForceShowFavoriteStatus(value),
-            ),
-          ]),
     );
   }
 }

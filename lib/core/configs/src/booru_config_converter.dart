@@ -63,7 +63,6 @@ extension BooruConfigDataConverter on BooruConfigData? {
           ? BooruConfigViewerNotesFetchBehavior
               .values[booruConfigData.viewerNotesFetchBehavior!]
           : null,
-      forceShowFavoriteStatus: booruConfigData.forceShowFavoriteStatus,
     );
   }
 }
@@ -97,7 +96,6 @@ extension BooruConfigConverter on BooruConfig {
       layout: layout?.toJsonString(),
       proxySettings: proxySettings?.toJsonString(),
       viewerNotesFetchBehavior: viewerNotesFetchBehavior?.index,
-      forceShowFavoriteStatus: forceShowFavoriteStatus,
     );
   }
 }

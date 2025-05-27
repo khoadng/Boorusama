@@ -31,7 +31,6 @@ import '../danbooru/danbooru.dart';
 import '../gelbooru/gelbooru.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/autocomplete/autocomplete.dart';
-import 'feats/favorites/moebooru_favorites_provider.dart';
 import 'feats/posts/posts.dart';
 import 'feats/tags/tags.dart';
 import 'pages/moebooru_favorites_page.dart';
@@ -135,12 +134,6 @@ class MoebooruBuilder
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context) => const MoebooruFavoritesPage();
-
-  @override
-  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
-      (context, post) => MoebooruQuickFavoriteButton(
-            post: post,
-          );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
