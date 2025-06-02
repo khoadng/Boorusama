@@ -236,6 +236,46 @@ class McChallengeSolver implements ProtectionSolver {
   Future<void> cancel() => _solver.cancel();
 }
 
+class AftV2Solver implements ProtectionSolver {
+  AftV2Solver({
+    required this.contextProvider,
+    required this.cookieJar,
+  });
+
+  final ContextProvider contextProvider;
+  final CookieJar cookieJar;
+
+  late final RawSolver _solver = RawSolver(
+    contextProvider: contextProvider,
+    cookieJar: cookieJar,
+    protectionType: 'aft_v2',
+    protectionTitle: 'Solving verification challenge',
+    autoCookieValidator: (cookie) =>
+        cookie.name.contains('challenge') ||
+        cookie.name.contains('verification') ||
+        cookie.name.contains('aft'),
+  );
+
+  @override
+  String get protectionType => _solver.protectionType;
+
+  @override
+  bool get isSolving => _solver.isSolving;
+
+  @override
+  Future<bool> solve({
+    required Uri uri,
+    String? userAgent,
+  }) =>
+      _solver.solve(
+        uri: uri,
+        userAgent: userAgent,
+      );
+
+  @override
+  Future<void> cancel() => _solver.cancel();
+}
+
 class AftSolver implements ProtectionSolver {
   AftSolver({
     required this.contextProvider,

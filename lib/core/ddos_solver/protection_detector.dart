@@ -92,6 +92,52 @@ class McChallengeDetector implements ProtectionDetector {
   DetectionPhase get detectionPhase => DetectionPhase.response;
 }
 
+class AftV2Detector implements ProtectionDetector {
+  static const List<String> _signatures = [
+    'click the checkbox',
+    'to continue',
+    'i am not a robot',
+    'challenge_id',
+    'challenge_generated',
+    'verification',
+    'challenge-checkbox',
+    'challenge-container',
+    'sendanswer',
+  ];
+
+  @override
+  double getProtectionConfidence(HttpResponse? response, HttpError? error) {
+    final statusCode = error?.response?.statusCode ?? response?.statusCode;
+    final body = error?.response?.data ?? response?.data;
+
+    if (statusCode == null || body is! String) {
+      return 0;
+    }
+
+    final bodyLower = body.toLowerCase();
+
+    // High confidence indicators
+    if (bodyLower.contains('click the checkbox') &&
+        bodyLower.contains('challenge_id') &&
+        bodyLower.contains('challenge_generated')) {
+      return 1;
+    }
+
+    // Count signature matches
+    final matchCount = _signatures.where(bodyLower.contains).length;
+    return matchCount / _signatures.length;
+  }
+
+  @override
+  double get confidenceThreshold => 0.4;
+
+  @override
+  String get protectionType => 'aft_v2';
+
+  @override
+  DetectionPhase get detectionPhase => DetectionPhase.response;
+}
+
 class AftDetector implements ProtectionDetector {
   static const List<String> _signatures = [
     'anti-ddos flood protection and firewall',

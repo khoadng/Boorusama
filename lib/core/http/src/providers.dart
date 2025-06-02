@@ -75,7 +75,7 @@ final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
         detectors: [
           CloudflareDetector(),
           McChallengeDetector(),
-          AftDetector(),
+          AftV2Detector(),
         ],
         solvers: [
           CloudflareSolver(
@@ -86,7 +86,7 @@ final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
-          AftSolver(
+          AftV2Solver(
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
