@@ -17,7 +17,7 @@ class FullHistoryPage extends ConsumerStatefulWidget {
     this.scrollController,
   });
 
-  final Function(SearchHistory history) onTap;
+  final Function(BuildContext context, SearchHistory history) onTap;
   final ScrollController? scrollController;
 
   @override
@@ -76,7 +76,7 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
       ),
       body: FullHistoryView(
         scrollController: widget.scrollController,
-        onHistoryTap: (value) => widget.onTap(value),
+        onHistoryTap: (value) => widget.onTap(context, value),
       ),
     );
   }

@@ -134,7 +134,7 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
                   onFullHistoryRequested: () {
                     goToSearchHistoryPage(
                       context,
-                      onTap: (value) {
+                      onTap: (context, value) {
                         Navigator.of(context).pop();
                         _onHistoryTap(value, ref);
                       },

@@ -7,7 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/display.dart';
 import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../foundation/platform.dart';
 import '../../../selected_tags/tag.dart';
@@ -48,12 +47,11 @@ class SearchHistorySection extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                             ),
                       ),
-                      if (!Screen.of(context).size.isLarge)
-                        if (onFullHistoryRequested != null)
-                          IconButton(
-                            onPressed: onFullHistoryRequested,
-                            icon: const Icon(Symbols.manage_history),
-                          ),
+                      if (onFullHistoryRequested != null)
+                        IconButton(
+                          onPressed: onFullHistoryRequested,
+                          icon: const Icon(Symbols.manage_history),
+                        ),
                     ],
                   ),
                 ),

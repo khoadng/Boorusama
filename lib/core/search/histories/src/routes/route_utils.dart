@@ -8,7 +8,7 @@ import '../search_history.dart';
 
 void goToSearchHistoryPage(
   BuildContext context, {
-  required Function(SearchHistory history) onTap,
+  required Function(BuildContext context, SearchHistory history) onTap,
 }) {
   showModalBottomSheet(
     context: context,
