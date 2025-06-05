@@ -1,316 +1,316 @@
 {
     "generic": {
-        "done": "",
+        "done": "Finito",
         "errors": {
-            "no_data": "",
-            "unknown": ""
+            "no_data": "Nessun dato disponibile",
+            "unknown": "Qualcosa è andato storto"
         },
         "action": {
-            "add": "",
-            "delete": "",
-            "edit": "",
-            "ok": "",
-            "cancel": "",
-            "duplicate": ""
+            "add": "Aggiungi",
+            "delete": "Elimina",
+            "edit": "Modifica",
+            "ok": "Ok",
+            "cancel": "Elimina",
+            "duplicate": "Duplica"
         },
-        "view": ""
+        "view": "Visualizza"
     },
     "profile": {
-        "favorites": "",
-        "profile": "",
-        "copy_user_id": "",
-        "messages": ""
+        "favorites": "Preferiti",
+        "profile": "Profilo",
+        "copy_user_id": "Copia ID Utente",
+        "messages": "Messaggi"
     },
     "network": {
-        "unavailable": ""
+        "unavailable": "Rete non disponibile"
     },
     "tag": {
         "related": {
-            "more": "",
-            "related": "",
-            "add_to_current_search": "",
-            "open_wiki": ""
+            "more": "Altro",
+            "related": "Correlato",
+            "add_to_current_search": "Aggiungi alla ricerca corrente",
+            "open_wiki": "Apri la Wiki"
         },
         "explore": {
-            "new": "",
-            "popular": ""
+            "new": "Nuovo",
+            "popular": "Popolari"
         }
     },
     "post": {
         "detail": {
-            "view": "",
-            "view_in_browser": "",
-            "file_details": "",
-            "size": "",
-            "resolution": "",
-            "rating": "",
-            "file_format": "",
+            "view": "Visualizza",
+            "view_in_browser": "Visualizza nel browser",
+            "file_details": "Dettagli dei files",
+            "size": "Dimensione",
+            "resolution": "Risoluzione",
+            "rating": "Valutazione",
+            "file_format": "Formato file",
             "share": {
-                "source": "",
-                "booru": "",
-                "image": ""
+                "source": "Condividi il link",
+                "booru": "Condividi il link Booru",
+                "image": "Condividi immagine"
             },
-            "copied": "",
-            "show_original": "",
-            "show_translated": "",
-            "login_required_notice": "",
-            "open_wiki": "",
-            "add_to_blacklist": "",
-            "add_to_favorites": "",
-            "copy_and_open_saved_search": "",
+            "copied": "Copiato",
+            "show_original": "Mostra l'originale",
+            "show_translated": "Mostra tradotto",
+            "login_required_notice": "Devi fare l'accesso per questa azione",
+            "open_wiki": "Apri la Wiki",
+            "add_to_blacklist": "Aggiungi alla Blacklist",
+            "add_to_favorites": "Aggiungi ai preferiti",
+            "copy_and_open_saved_search": "Copia e apri la ricerca salvata",
             "score": {
-                "one": "",
-                "other": ""
+                "one": "Punto",
+                "other": "Punti"
             },
-            "source_label": "",
-            "related_posts": "",
-            "add_to_bookmark": "",
-            "remove_from_bookmark": ""
+            "source_label": "Fonte",
+            "related_posts": "Post correlati",
+            "add_to_bookmark": "Aggiungi ai Bookmak",
+            "remove_from_bookmark": "Rimuovi dai Bookmark"
         },
         "action": {
-            "preview": "",
-            "view_comments": "",
-            "add_to_favorite_group": "",
-            "select": ""
+            "preview": "Anteprima",
+            "view_comments": "Visualizza commenti",
+            "add_to_favorite_group": "Aggiungi al gruppo dei preferiti",
+            "select": "Seleziona"
         },
         "image_fullview": {
-            "view_original": "",
-            "view_resized": ""
+            "view_original": "Visualizza l'originale",
+            "view_resized": "Visualizza ridimensionato"
         }
     },
     "comment": {
-        "comments": "",
+        "comments": "Commenti",
         "create": {
-            "hint": "",
-            "loading": "",
-            "error": ""
+            "hint": "Commento",
+            "loading": "Si prega di attendere",
+            "error": "Errore"
         },
         "list": {
-            "edit": "",
-            "reply": "",
-            "reply_to": "",
-            "delete": "",
-            "noComments": "",
-            "last_updated": "",
-            "send": ""
+            "edit": "Modifica",
+            "reply": "Rispondi",
+            "reply_to": "Rispondendo a",
+            "delete": "Elimina",
+            "noComments": "Non ci sono commenti",
+            "last_updated": "Ultimo aggiornamento",
+            "send": "Invia"
         },
         "counter": {
-            "one": "",
-            "other": ""
+            "one": "Commenta",
+            "other": "Commenti"
         }
     },
     "explore": {
-        "latest": "",
-        "popular": "",
-        "hot": "",
-        "most_viewed": "",
-        "see_more": "",
-        "explore": ""
+        "latest": "Novità",
+        "popular": "Popolari",
+        "hot": "Hot",
+        "most_viewed": "Più visti",
+        "see_more": "Di più",
+        "explore": "Esplora"
     },
     "search": {
         "errors": {
-            "generic": "",
-            "tag_limit": "",
-            "database_timeout": "",
-            "rate_limited": "",
-            "pagination_limit": "",
-            "max_capacity": "",
-            "down": "",
-            "access_denied": "",
-            "forbidden": "",
-            "unknown": ""
+            "generic": "Qualcosa è andato storto",
+            "tag_limit": "Numero massimo di tag raggiunto. Fai l'upgrade del tuo account per cercare più tag insieme",
+            "database_timeout": "La tua ricerca ha richiesto troppo tempo ed è stata eliminata.",
+            "rate_limited": "Il tuo traffico sta venendo limitato. Prova più tardi!",
+            "pagination_limit": "Hai raggiunto il limite della paginazione. Quindi non puoi più continuare (Calmati)",
+            "max_capacity": "Il server è sotto carico elevato e non può gestire la richiesta, riprova più tardi.",
+            "down": "Il server è inattivo. Riprova più tardi.",
+            "access_denied": "Accesso non consentito",
+            "forbidden": "Autenticazione fallita (come te)",
+            "unknown": "Errore server sconosciuto, si prega di segnalare l'errore al developer"
         },
-        "hint": "",
-        "no_result": "",
-        "search_options": "",
-        "metatags_notice": "",
+        "hint": "Su chi mi sego oggi?",
+        "no_result": "Abbiamo cercato in lungo e in largo, ma non abbiamo trovato nulla.",
+        "search_options": "Opzioni di ricerca",
+        "metatags_notice": "I metatag gratuiti non verranno conteggiati nei limiti di ricerca dei tag",
         "history": {
-            "history": "",
-            "clear": "",
-            "recent": ""
+            "history": "Storia",
+            "clear": "Elimina tutto",
+            "recent": "Recenti"
         },
-        "trending": "",
-        "remove_all_selected": "",
+        "trending": "Di tendenza",
+        "remove_all_selected": "Rimuovi tutti i tag selezionati",
         "result_counter": {
-            "one": "",
-            "other": ""
+            "one": "{} Risultato",
+            "other": "{} Risultati"
         },
-        "no_result_notice": "",
-        "search_in_progress_notice": ""
+        "no_result_notice": "Nessun risultato",
+        "search_in_progress_notice": "Sto cercando..."
     },
     "pool": {
-        "pool": "",
-        "pool_gallery": "",
+        "pool": "Pool",
+        "pool_gallery": "Galleria dei Pool",
         "order": {
-            "recent": "",
-            "new": "",
-            "post_count": "",
-            "name": ""
+            "recent": "Recente",
+            "new": "Nuovi",
+            "post_count": "Conteggio dei post",
+            "name": "Nome"
         },
         "category": {
-            "series": "",
-            "collection": ""
+            "series": "Serie",
+            "collection": "Archivio"
         },
         "search": {
-            "hint": ""
+            "hint": "Ricerca una Pool"
         },
         "detail": {
-            "last_updated": ""
+            "last_updated": "Ultimo aggiornamento"
         }
     },
     "settings": {
-        "settings": "",
-        "app_settings": "",
+        "settings": "Impostazioni",
+        "app_settings": "Impostazioni App",
         "appearance": {
-            "appearance": "",
-            "show_scores": "",
-            "show_post_list_config_header": "",
-            "booru_config": "",
-            "booru_config_placement": ""
+            "appearance": "Aspetto",
+            "show_scores": "Mostra punteggi",
+            "show_post_list_config_header": "Mostra l'intestazione della configurazione dei post",
+            "booru_config": "Profilo Booru",
+            "booru_config_placement": "Posizionamento del profilo Booru"
         },
-        "general": "",
+        "general": "Generale",
         "search": {
-            "search": "",
-            "auto_focus_search_bar": "",
-            "hide_bookmarked_posts_from_search_results": ""
+            "search": "Cerca",
+            "auto_focus_search_bar": "Messa a fuoco automatica sulla barra di ricerca alla prima apertura del menù di ricerca",
+            "hide_bookmarked_posts_from_search_results": "Nascondi i post nei bookmark dai risultati di ricerca"
         },
-        "information": "",
-        "changelog": "",
-        "infinite_scroll_warning": "",
+        "information": "Informazione",
+        "changelog": "Modifiche della versione",
+        "infinite_scroll_warning": "L'app potrebbe crashare se scrolli a lungo",
         "result_layout": {
-            "result_layout": "",
-            "infinite_scroll": "",
-            "pagination": ""
+            "result_layout": "Modalità pagina",
+            "infinite_scroll": "Scorrimento infinito",
+            "pagination": "Paginazione"
         },
         "image_list": {
-            "image_list": "",
-            "standard": "",
-            "masonry": ""
+            "image_list": "Lista di immagini",
+            "standard": "Standard",
+            "masonry": "Masonry"
         },
         "image_grid": {
-            "image_grid": "",
+            "image_grid": "Griglia immagini",
             "grid_size": {
-                "grid_size": "",
-                "small": "",
-                "medium": "",
-                "large": ""
+                "grid_size": "Dimensione griglia",
+                "small": "Piccolo",
+                "medium": "Medio",
+                "large": "Grande"
             },
             "image_quality": {
-                "image_quality": "",
-                "high_quality_notice": "",
-                "high": "",
-                "low": "",
-                "original": "",
-                "automatic": "",
-                "highest": ""
+                "image_quality": "Qualità immagine",
+                "high_quality_notice": "Un'immagine ad alta qualità richiederà più tempo a caricare",
+                "high": "Alta",
+                "low": "Bassa",
+                "original": "Originale",
+                "automatic": "Automatica",
+                "highest": "Più alta possibile"
             },
-            "spacing": "",
-            "corner_radius": "",
-            "padding": "",
-            "aspect_ratio": ""
+            "spacing": "Spaziatura",
+            "corner_radius": "Raggio angolo",
+            "padding": "Imbottitura",
+            "aspect_ratio": "Proporzioni"
         },
         "image_viewer": {
-            "image_viewer": "",
-            "full_res_as_default": "",
-            "full_res_notice": "",
-            "slideshow": "",
-            "slideshow_interval": "",
-            "slideshow_mode": "",
+            "image_viewer": "Visualizzatore immagine",
+            "full_res_as_default": "Mostra risoluzione intera di default",
+            "full_res_notice": "Ci vorrà più o meno tempo a caricare in base alla dimensione dell'immagine",
+            "slideshow": "Diapositive",
+            "slideshow_interval": "Intervallo diapositive",
+            "slideshow_mode": "Modalità diapositive",
             "slideshow_modes": {
-                "random": "",
-                "forward": "",
-                "backward": ""
+                "random": "Casuale",
+                "forward": "Avanti",
+                "backward": "Indietro"
             },
-            "slideshow_skip": "",
-            "slideshow_interval_explanation": "",
-            "mute_video": "",
-            "video_section_title": ""
+            "slideshow_skip": "Salta la transizione delle diapositive",
+            "slideshow_interval_explanation": "Valori minori di 1 secondo faranno saltare in automatico la transizione",
+            "mute_video": "Muta il video di default",
+            "video_section_title": "Video"
         },
         "image_detail": {
-            "image_detail": ""
+            "image_detail": "Dettaglio dell'immagine"
         },
         "language": {
-            "language": "",
-            "language_name": ""
+            "language": "Lingua",
+            "language_name": "English"
         },
         "theme": {
-            "theme": "",
-            "dark": "",
-            "light": "",
-            "amoled_dark": "",
-            "dynamic_color": "",
-            "dynamic_color_mobile_description": "",
-            "dynamic_color_desktop_description": "",
-            "dynamic_color_unsupported_description": ""
+            "theme": "Tema",
+            "dark": "Scuro",
+            "light": "Chiaro",
+            "amoled_dark": "Nero",
+            "dynamic_color": "Colore tema dinamico",
+            "dynamic_color_mobile_description": "Sincronizza il tema con lo sfondo del telefono",
+            "dynamic_color_desktop_description": "Sincronizza il colore del tema con il colore del sistema operativo",
+            "dynamic_color_unsupported_description": "Questo dispositivo non supporta il tema dinamico"
         },
         "privacy": {
-            "privacy": "",
-            "send_error_data_notice": "",
-            "enable_incognito_keyboard": "",
-            "enable_incognito_keyboard_notice": "",
-            "enable_biometric_lock": "",
-            "enable_biometric_lock_notice": ""
+            "privacy": "Privacy",
+            "send_error_data_notice": "Invia dati anonimi per la registrazione degli errori",
+            "enable_incognito_keyboard": "Abilita la tastiera in incognito",
+            "enable_incognito_keyboard_notice": "Funziona solo su Android",
+            "enable_biometric_lock": "Abilita il lucchetto biometrico",
+            "enable_biometric_lock_notice": "Funziona solo su dispositivi con supporto per i dati biometrici che sono stati configurati"
         },
         "performance": {
-            "performance": "",
-            "posts_per_page": "",
-            "posts_per_page_explain": "",
-            "cache_size": "",
-            "clear_cache": "",
-            "cache_size_info": ""
+            "performance": "Prestazioni",
+            "posts_per_page": "Numero post per pagina",
+            "posts_per_page_explain": "Numero di miniature per pagina",
+            "cache_size": "Dimensione della Cache",
+            "clear_cache": "Svuota",
+            "cache_size_info": "{0} in {1} files"
         },
         "debug_logs": {
-            "debug_logs": "",
-            "logs_copied": ""
+            "debug_logs": "Logs di debug",
+            "logs_copied": "I log sono stati copiati"
         },
         "download": {
-            "path": "",
-            "select_a_folder": "",
-            "quality": "",
+            "path": "Percorso di download",
+            "select_a_folder": "Seleziona una cartella",
+            "quality": "Qualità di download delle immagini",
             "qualities": {
-                "original": "",
-                "sample": "",
-                "preview": ""
+                "original": "Originale",
+                "sample": "Sample",
+                "preview": "Miniatura"
             },
-            "title": ""
+            "title": "Scarica"
         },
-        "help_us_translate": "",
-        "other_settings": "",
+        "help_us_translate": "Aiutaci a tradurre!",
+        "other_settings": "Altre impostazioni",
         "data_and_storage": {
-            "data_and_storage": "",
-            "clear_cache_on_start_up": ""
+            "data_and_storage": "Dati e archiviazione",
+            "clear_cache_on_start_up": "Elimina la cache delle immagini all'avvio"
         },
         "backup_and_restore": {
-            "backup_and_restore": ""
+            "backup_and_restore": "Backup e recupero dati"
         },
         "image_details": {
-            "image_details": "",
+            "image_details": "Dettagli immagine",
             "ui_overlay": {
-                "show": "",
-                "hide": "",
-                "ui_overlay": ""
+                "show": "Mostra",
+                "hide": "Nascondi",
+                "ui_overlay": "Sovrapposizione dell'interfaccia utente"
             }
         },
         "page_indicator": {
-            "page_indicator": "",
-            "top": "",
-            "bottom": "",
-            "both": ""
+            "page_indicator": "Indicatore di posizione della pagina",
+            "top": "Sopra",
+            "bottom": "Sotto",
+            "both": "Entrambi"
         },
         "accessibility": {
-            "accessibility": "",
-            "reverseBooruConfigSelectorScrollDirection": "",
-            "swipeAreaToOpenSidebar": "",
-            "swipeAreaToOpenSidebarDescription": ""
+            "accessibility": "Accessibilità",
+            "reverseBooruConfigSelectorScrollDirection": "Inverti la direzione di scorrimento dei profili Booru",
+            "swipeAreaToOpenSidebar": "Area di scorrimento della barra laterale",
+            "swipeAreaToOpenSidebarDescription": "L'area sul lato sinistro dello schermo che può essere utilizzata per attivare uno scorrimento. Valori elevati bloccheranno tutti i gesti orizzontali, come lo scorrimento per l'impaginazione."
         },
         "booru_settings": {
-            "edit_current_profile": "",
-            "booru_settings": ""
+            "edit_current_profile": "Modifica il profilo corrente",
+            "booru_settings": "Impostazioni Booru"
         },
-        "contribute": "",
-        "source_code": "",
-        "support": "",
-        "contact_developer": "",
+        "contribute": "Contribuisci",
+        "source_code": "Codice sorgente",
+        "support": "Sopporta",
+        "contact_developer": "Contatta lo sviluppatore",
         "contact_developer_description": "",
         "feature_request_and_bug_report": "",
         "feature_request_and_bug_report_description": ""
@@ -399,67 +399,67 @@
     },
     "favorite_tags": {
         "favorites": "",
-        "import": "",
-        "import_hint": "",
-        "cancel": "",
-        "export": "",
-        "export_notification": "",
-        "favorite_tags": ""
+        "import": "Importa",
+        "import_hint": "Inserisci qui la tua stringa di tag. Delimitata da spazi.",
+        "cancel": "Elimina",
+        "export": "Esporta",
+        "export_notification": "Stringa di tag copiata",
+        "favorite_tags": "Tag preferiti"
     },
     "rating": {
-        "rate_request": "",
-        "rate": "",
-        "cancel": "",
-        "later": "",
-        "rationale": ""
+        "rate_request": "Valuta questa App",
+        "rate": "Valuta",
+        "cancel": "No grazie",
+        "later": "Forse più tardi",
+        "rationale": "Se l'app ti piace, ti preghiamo di dedicare un po' del tuo tempo a recensirla.\nNon richiederà più di pochi secondi e sarà di grande aiuto per questo progetto."
     },
     "sideMenu": {
-        "settings": "",
-        "your_bookmarks": "",
-        "your_blacklist": "",
-        "bulk_download": "",
-        "get_support": ""
+        "settings": "Impostazioni",
+        "your_bookmarks": "I tuoi segnalibri",
+        "your_blacklist": "La tua lista nera",
+        "bulk_download": "Download in massa",
+        "get_support": "Richiedi supporto"
     },
     "dateRange": {
-        "day": "",
-        "week": "",
-        "month": ""
+        "day": "Giorno",
+        "week": "Settimana",
+        "month": "Mese"
     },
     "booru": {
-        "booru_engine_input_label": "",
-        "config_name_label": "",
-        "site_url_label": "",
-        "login_name_label": "",
-        "password_api_key_label": "",
-        "password_hashed_label": "",
-        "password_label": "",
-        "content_filtering_label": "",
-        "hide_deleted_label": "",
-        "config_booru_confirm": "",
-        "add_a_booru_site": "",
-        "next_step": "",
-        "site_url": "",
-        "unsupported_warning": "",
-        "validation_empty_url": "",
-        "validation_invalid_url": "",
-        "validation_invalid_http_url": "",
-        "validation_missing_trailing_slash": "",
-        "validation_redundant_www": "",
-        "validation_contains_spaces": "",
-        "validation_missing_scheme": "",
-        "authentication": "",
-        "download": "",
-        "gestures": "",
-        "misc": ""
+        "booru_engine_input_label": "Motore Booru (*)",
+        "config_name_label": "Nome profilo (*)",
+        "site_url_label": "URL del sito",
+        "login_name_label": "Accedi",
+        "password_api_key_label": "Chiave API",
+        "password_hashed_label": "Password con hash (sola lettura)",
+        "password_label": "Password",
+        "content_filtering_label": "Filtraggio contenuti",
+        "hide_deleted_label": "Nascondi i post eliminati",
+        "config_booru_confirm": "Ok",
+        "add_a_booru_site": "Crea un nuovo profilo",
+        "next_step": "Prossimo",
+        "site_url": "URL sito",
+        "unsupported_warning": "Questo Booru non è ancora supportato",
+        "validation_empty_url": "Il campo URL è vuoto",
+        "validation_invalid_url": "\"{0}\" non è un URL valido",
+        "validation_invalid_http_url": "\"{0}\" non è un URL HTTP o HTTPS",
+        "validation_missing_trailing_slash": "\"{0}\" manca uno slash /",
+        "validation_redundant_www": "\"{0}\" contiene \"www\" ridondanti",
+        "validation_contains_spaces": "\"{0}\" contiene spazi in mezzo",
+        "validation_missing_scheme": "\"{0}\" manca uno schema (ad esempio https://)",
+        "authentication": "Autenticazione",
+        "download": "Scarica",
+        "gestures": "Gesti",
+        "misc": "Varie"
     },
     "blacklist": {
         "manage": {
-            "title": "",
-            "empty_blacklist": ""
+            "title": "Lista nera",
+            "empty_blacklist": "Nessun tag nella lista nera"
         }
     },
     "bookmark": {
-        "added": "",
+        "added": "Bookmark aggiunto",
         "failed_to_add": "",
         "many_added": "",
         "failed_to_add_many": "",
