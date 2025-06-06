@@ -164,12 +164,12 @@
             "full_res_notice": "Завантаження може зайняти деякий час, залежно від розміру зображення",
             "slideshow": "Слайд-шоу",
             "slideshow_modes": {
-                "random": "випадковий",
-                "forward": "вперед",
+                "random": "Випадковий",
+                "forward": "Вперед",
                 "backward": "Назад"
             },
             "mute_video": "Вимкнути відео за замовчуванням",
-            "video_section_title": "відео",
+            "video_section_title": "Відео",
             "slideshow_interval": "Інтервал показу слайдів",
             "slideshow_interval_explanation": "Якщо значення менше 1 секунди, перехід буде автоматично пропущено",
             "slideshow_skip": "Пропустити перехід слайд-шоу",
@@ -490,7 +490,7 @@
         "counters": {
             "second": {
                 "one": "Секунд",
-                "other": "секунди"
+                "other": "Секунди"
             }
         }
     }
