@@ -22,9 +22,9 @@ final danbooruTagGroupsProvider = FutureProvider.autoDispose
 
   final tags = await repo.getTagsByName(tagString, 1);
 
-  await ref
-      .watch(booruTagTypeStoreProvider)
-      .saveTagIfNotExist(config.booruType, tags);
+  final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+
+  await tagTypeStore.saveTagIfNotExist(config.url, tags);
 
   return createTagGroupItems(tags);
 });

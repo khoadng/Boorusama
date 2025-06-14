@@ -67,8 +67,8 @@ final bookmarkTagColorProvider =
     FutureProvider.autoDispose.family<Color?, (BooruConfigAuth, String)>(
   (ref, params) async {
     final (config, tag) = params;
-    final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
-    final tagType = await tagTypeStore.get(config.booruType, tag);
+    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+    final tagType = await tagTypeStore.getTagCategory(config.url, tag);
     final colorScheme = ref.watch(colorSchemeProvider);
 
     final color =

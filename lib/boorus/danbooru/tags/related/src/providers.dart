@@ -3,7 +3,6 @@ import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/boorus/booru/booru.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/categories/providers.dart';
@@ -37,9 +36,20 @@ final danbooruRelatedTagRepProvider =
           .then(relatedTagDtoToRelatedTag)
           .catchError((obj) => const DanbooruRelatedTag.empty());
 
-      await ref
-          .read(booruTagTypeStoreProvider)
-          .saveRelatedTagIfNotExist(config.booruType, related);
+      final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+
+      await tagTypeStore.saveTagIfNotExist(
+        config.url,
+        related.tags
+            .map(
+              (e) => Tag(
+                name: e.tag,
+                category: e.category,
+                postCount: e.postCount,
+              ),
+            )
+            .toList(),
+      );
 
       return related;
     },
@@ -67,9 +77,12 @@ final danbooruWikiTagsProvider = FutureProvider.family<List<Tag>, String>(
         .watch(danbooruRelatedTagRepProvider(config))
         .getRelatedTag(tag, limit: 20);
 
-    await ref
-        .read(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(config.booruType, related.wikiPageTags);
+    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+
+    await tagTypeStore.saveTagIfNotExist(
+      config.url,
+      related.wikiPageTags,
+    );
 
     return related.wikiPageTags;
   },
@@ -142,16 +155,3 @@ DanbooruRelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) =>
               .toList()
           : [],
     );
-
-extension BooruTagTypeStoreX on TagTypeStore {
-  Future<void> saveRelatedTagIfNotExist(
-    BooruType booruType,
-    DanbooruRelatedTag related,
-  ) =>
-      saveIfNotExist(
-        booruType,
-        related.tags,
-        (tag) => tag.tag,
-        (tag) => tag.category.name,
-      );
-}

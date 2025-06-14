@@ -51,7 +51,6 @@ import 'core/info/device_info.dart';
 import 'core/info/package_info.dart';
 import 'core/settings/providers.dart';
 import 'core/settings/settings.dart';
-import 'core/tags/categories/providers.dart';
 import 'core/tags/configs/providers.dart';
 import 'core/utils/file_utils.dart';
 import 'core/widgets/widgets.dart';
@@ -302,7 +301,6 @@ Future<void> boot(BootLogger bootLogger) async {
             appInfoProvider.overrideWithValue(appInfo),
             appLoggerProvider.overrideWithValue(appLogger),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
-            booruTagTypePathProvider.overrideWithValue(dbDirectory.path),
             isGooglePlayServiceAvailableProvider.overrideWithValue(
               googleApiAvailable,
             ),

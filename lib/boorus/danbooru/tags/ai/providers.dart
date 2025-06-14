@@ -36,10 +36,12 @@ final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
               .toList(),
         );
 
-    await ref.read(booruTagTypeStoreProvider).saveTagIfNotExist(
-          config.booruType,
-          tags.map((e) => e.tag).toList(),
-        );
+    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+
+    await tagTypeStore.saveTagIfNotExist(
+      config.url,
+      tags.map((e) => e.tag).toList(),
+    );
 
     return tags;
   },
