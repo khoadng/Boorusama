@@ -51,9 +51,9 @@ class TrendingTagNotifier
         .read(tagRepoProvider(arg.auth))
         .getTagsByName(filtered.map((e) => e.keyword).toSet(), 1);
 
-    await ref
-        .read(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(arg.auth.booruType, tags);
+    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+
+    await tagTypeStore.saveTagIfNotExist(arg.auth.url, tags);
 
     return filtered;
   }

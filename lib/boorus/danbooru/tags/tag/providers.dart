@@ -41,8 +41,8 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
 final danbooruTagCategoryProvider =
     FutureProvider.family<TagCategory?, String>((ref, tag) async {
   final config = ref.watchConfigAuth;
-  final store = ref.watch(booruTagTypeStoreProvider);
-  final type = await store.get(config.booruType, tag);
+  final store = await ref.watch(booruTagTypeStoreProvider.future);
+  final type = await store.getTagCategory(config.url, tag);
 
   return TagCategory.fromLegacyIdString(type);
 });

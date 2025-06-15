@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -11,25 +8,10 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../bookmarks/providers.dart';
 import '../../../cache/providers.dart';
-import '../../../tags/categories/providers.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';
-
-final tagHighlightingCacheProvider =
-    FutureProvider.autoDispose<int>((ref) async {
-  final dirPath = ref.watch(booruTagTypePathProvider);
-
-  if (dirPath == null) return 0;
-
-  final path = await ref.watch(booruTagTypeStorePathProvider(dirPath).future);
-  final file = File(path);
-
-  if (!file.existsSync()) return 0;
-
-  return file.lengthSync();
-});
 
 final bookmarkCacheInfoProvider =
     FutureProvider.autoDispose<(int, int)>((ref) async {
@@ -125,20 +107,6 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
               ),
             );
           },
-        ),
-        ListTile(
-          title: const Text('Tag colors'),
-          subtitle: ref.watch(tagHighlightingCacheProvider).maybeWhen(
-                data: (data) => Text(Filesize.parse(data)),
-                orElse: () => const Text('Loading...'),
-              ),
-          trailing: FilledButton(
-            onPressed: () => ref
-                .read(booruTagTypeStoreProvider)
-                .clear()
-                .then((value) => ref.invalidate(tagHighlightingCacheProvider)),
-            child: const Text('settings.performance.clear_cache').tr(),
-          ),
         ),
       ],
     );

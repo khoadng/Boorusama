@@ -54,7 +54,7 @@ class TagGroupItemNotifier
     final post = arg.post;
     final config = arg.auth;
 
-    final booruTagTypeStore = ref.watch(booruTagTypeStoreProvider);
+    final booruTagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
     final repo = ref.watch(tagRepoProvider(config));
     final tagList = post.tags;
 
@@ -65,7 +65,7 @@ class TagGroupItemNotifier
 
     final tags = await repo.getTagsByName(filtered, 1);
 
-    await booruTagTypeStore.saveTagIfNotExist(config.booruType, tags);
+    await booruTagTypeStore.saveTagIfNotExist(config.url, tags);
 
     final group = createTagGroupItems(tags);
 

@@ -1,17 +1,22 @@
 // Project imports:
-import '../../../boorus/booru/booru.dart';
+import '../../local/tag_info.dart';
 import '../../tag/tag.dart';
 import 'tag_type_store.dart';
 
 extension TagTypeStoreX on TagTypeStore {
   Future<void> saveTagIfNotExist(
-    BooruType booruType,
+    String siteUrl,
     List<Tag> tags,
-  ) =>
-      saveIfNotExist(
-        booruType,
-        tags,
-        (tag) => tag.rawName,
-        (tag) => tag.category.name,
-      );
+  ) async {
+    final tagInfos = tags
+        .map(
+          (tag) => TagInfo.fromTag(
+            siteHost: siteUrl,
+            tag: tag,
+          ),
+        )
+        .toList();
+
+    await saveOrUpdateTagsBatch(tagInfos);
+  }
 }

@@ -51,20 +51,20 @@ class DanbooruTagEditColorNotifier
 
     final t = await repo.getTagsByName(tags, 1);
 
-    await ref
-        .watch(booruTagTypeStoreProvider)
-        .saveTagIfNotExist(ref.watchConfigAuth.booruType, t);
+    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+
+    await tagTypeStore.saveTagIfNotExist(ref.watchConfigAuth.url, t);
 
     return _load(tags.toList());
   }
 
   Future<void> _load(List<String> tags) async {
     final colors = <String, ChipColors?>{};
-    final tagTypeStore = ref.read(booruTagTypeStoreProvider);
+    final tagTypeStore = await ref.read(booruTagTypeStoreProvider.future);
     final booruChipColors = ref.read(booruChipColorsProvider);
 
     for (final tag in tags) {
-      final tagType = await tagTypeStore.get(arg.booruType, tag);
+      final tagType = await tagTypeStore.getTagCategory(arg.url, tag);
 
       if (tagType == null) {
         colors[tag] = null;

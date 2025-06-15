@@ -1,3 +1,15 @@
+# 4.1.0
+- Add profile-specific blacklist
+- Support adding custom blacklist tags for each individual bulk download task and template
+- Support adding raw query directly to favorited tags
+- Add a new option to put the search bar at the bottom of the screen
+- Add support for Idol Sankaku
+- Add Android's monochrome icon variant
+- Add a new grid's popup menu for easier access to various actions
+- Bookmark listing screen is now using the same layout as other screens
+- Bookmark's images are now using a separate storage so clear cache won't affect them
+- Add Italian translation
+
 # 4.0.0
 - Introduce Boorusama Plus that unlocks additional features like theme, home screen, layout customization, and more.
 - Major image viewer and video player overhaul.
