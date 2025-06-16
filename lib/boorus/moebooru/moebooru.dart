@@ -225,13 +225,12 @@ class MoebooruRepository extends BooruRepositoryDefault {
       defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
-      tokenHandlers: {
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-        'mpixels': (post, config) => post.mpixels.toString(),
-        'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-        'source': (post, config) => config.downloadUrl,
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+        MPixelsTokenHandler(),
+      ],
     );
   }
 }

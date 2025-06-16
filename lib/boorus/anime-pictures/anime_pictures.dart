@@ -160,10 +160,11 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
       hasRating: false,
       extensionHandler: (post, config) =>
           post.format.startsWith('.') ? post.format.substring(1) : post.format,
-      tokenHandlers: {
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
     );
   }
 

@@ -357,10 +357,11 @@ class HydrusRepository extends BooruRepositoryDefault {
       defaultBulkDownloadFileNameFormat:
           kGelbooruV2CustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
-      tokenHandlers: {
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
     );
   }
 }

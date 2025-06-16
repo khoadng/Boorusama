@@ -20,7 +20,6 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/posts/sources/source.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'providers.dart';
@@ -149,11 +148,11 @@ class Shimmie2Repository extends BooruRepositoryDefault {
       hasRating: false,
       extensionHandler: (post, config) =>
           post.format.startsWith('.') ? post.format.substring(1) : post.format,
-      tokenHandlers: {
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-        'source': (post, config) => post.source.url,
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
     );
   }
 }

@@ -120,9 +120,7 @@ class GelbooruV1Repository extends BooruRepositoryDefault {
       defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
-      tokenHandlers: {
-        'source': (post, config) => config.downloadUrl,
-      },
+      tokenHandlers: const [],
     );
   }
 

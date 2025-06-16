@@ -275,8 +275,8 @@ class DummyDownloadService implements DownloadService {
 }
 
 final dummyDownloadFileNameBuilder = DownloadFileNameBuilder<DummyPost>(
-  tokenHandlers: {},
-  sampleData: [],
+  tokenHandlers: const [],
+  sampleData: const [],
   defaultFileNameFormat: 'test-default-format',
   defaultBulkDownloadFileNameFormat: 'test-default-bulk-format',
 );

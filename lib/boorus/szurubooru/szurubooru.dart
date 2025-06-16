@@ -23,7 +23,6 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
@@ -191,11 +190,11 @@ class SzurubooruRepository extends BooruRepositoryDefault {
       defaultBulkDownloadFileNameFormat:
           kGelbooruV2CustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
-      tokenHandlers: {
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-        'source': (post, config) => post.source.url,
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
     );
   }
 }

@@ -187,16 +187,27 @@ class SankakuRepository extends BooruRepositoryDefault {
       defaultBulkDownloadFileNameFormat:
           kBoorusamaBulkDownloadCustomFileNameFormat,
       sampleData: kDanbooruPostSamples,
-      tokenHandlers: {
-        'artist': (post, config) => post.artistTags.join(' '),
-        'character': (post, config) => post.characterTags.join(' '),
-        'copyright': (post, config) => post.copyrightTags.join(' '),
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-        'mpixels': (post, config) => post.mpixels.toString(),
-        'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-        'source': (post, config) => sanitizedUrl(config.downloadUrl),
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+        TokenHandler('artist', (post, config) => post.artistTags.join(' ')),
+        TokenHandler(
+          'character',
+          (post, config) => post.characterTags.join(' '),
+        ),
+        TokenHandler(
+          'copyright',
+          (post, config) => post.copyrightTags.join(' '),
+        ),
+        TokenHandler('general', (post, config) => post.generalTags.join(' ')),
+        TokenHandler('meta', (post, config) => post.metaTags.join(' ')),
+        MPixelsTokenHandler(),
+        TokenHandler(
+          'source',
+          (post, config) => sanitizedUrl(config.downloadUrl),
+        ),
+      ],
     );
   }
 }

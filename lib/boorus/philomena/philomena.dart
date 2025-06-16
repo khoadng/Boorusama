@@ -22,7 +22,6 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/posts/sources/source.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/theme.dart';
 import '../danbooru/danbooru.dart';
@@ -251,11 +250,11 @@ class PhilomenaRepository extends BooruRepositoryDefault {
           kGelbooruV2CustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
       hasRating: false,
-      tokenHandlers: {
-        'width': (post, config) => post.width.toString(),
-        'height': (post, config) => post.height.toString(),
-        'source': (post, config) => post.source.url,
-      },
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
     );
   }
 }

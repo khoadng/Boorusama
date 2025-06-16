@@ -12,12 +12,13 @@ import '../../posts/post/post.dart';
 import '../../settings/settings.dart';
 import '../urls/sanitizer.dart';
 import 'generator.dart';
+import 'token_handler.dart';
 import 'token_options.dart';
 
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
   DownloadFileNameBuilder({
-    required Map<String, DownloadFilenameTokenHandler<T>> tokenHandlers,
+    required List<TokenHandler<T>> tokenHandlers,
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
@@ -25,6 +26,8 @@ class DownloadFileNameBuilder<T extends Post>
     bool hasMd5 = true,
     DownloadFilenameTokenHandler<T>? extensionHandler,
   }) {
+    final customHandlers = tokenHandlers.toMap();
+
     this.tokenHandlers = {
       'id': (post, config) => post.id.toString(),
       'tags': (post, config) => post.tags.join(' '),
@@ -34,7 +37,8 @@ class DownloadFileNameBuilder<T extends Post>
       if (hasRating) 'rating': (post, config) => post.rating.name,
       'index': (post, config) => config.index?.toString(),
       'search': (post, config) => post.metadata?.search,
-      ...tokenHandlers,
+      'source': (post, config) => config.downloadUrl,
+      ...customHandlers,
     };
   }
 
@@ -222,8 +226,8 @@ final fallbackFileNameBuilder = DownloadFileNameBuilder<Post>(
   hasRating: false,
   extensionHandler: (post, config) =>
       post.format.startsWith('.') ? post.format.substring(1) : post.format,
-  tokenHandlers: {
-    'width': (post, config) => post.width.toString(),
-    'height': (post, config) => post.height.toString(),
-  },
+  tokenHandlers: [
+    TokenHandler('width', (post, config) => post.width.toString()),
+    TokenHandler('height', (post, config) => post.height.toString()),
+  ],
 );
