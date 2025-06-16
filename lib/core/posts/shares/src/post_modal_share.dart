@@ -24,7 +24,10 @@ final _cachedImageFileProvider =
 
     final ext = extension(imageUrl);
     final effectiveExt = ext.isNotEmpty ? ext : imageExt;
-    final file = await getCachedImageFile(imageUrl);
+
+    final cacheManager = DefaultImageCacheManager();
+    final cacheKey = cacheManager.generateCacheKey(imageUrl);
+    final file = await cacheManager.getCachedFile(cacheKey);
 
     if (file == null || effectiveExt == null) return null;
 
