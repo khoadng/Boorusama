@@ -117,7 +117,7 @@ class CustomCachedNetworkAvifImageProvider extends NetworkAvifImage {
 
     // Try to load from cache first
     if (hasValidCache) {
-      final cachedBytes = await cacheManager.getCachedFile(cacheKey);
+      final cachedBytes = await cacheManager.getCachedFileBytes(cacheKey);
       if (cachedBytes != null) {
         return _processAvifBytes(cachedBytes, chunkEvents);
       }
