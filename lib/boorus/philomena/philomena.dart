@@ -97,20 +97,6 @@ class PhilomenaBuilder
       };
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    hasRating: false,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'source': (post, config) => post.source.url,
-    },
-  );
-
-  @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (
         imageQuality,
         rawPost,
@@ -253,6 +239,24 @@ class PhilomenaRepository extends BooruRepositoryDefault {
   @override
   TagColorGenerator tagColorGenerator() {
     return const PhilomenaTagColorGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator<Post> downloadFilenameBuilder(
+    BooruConfigAuth config,
+  ) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      hasRating: false,
+      tokenHandlers: {
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+        'source': (post, config) => post.source.url,
+      },
+    );
   }
 }
 

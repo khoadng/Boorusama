@@ -235,27 +235,6 @@ class DanbooruBuilder implements BooruBuilder {
           );
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
-      DownloadFileNameBuilder<DanbooruPost>(
-    defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat:
-        kBoorusamaBulkDownloadCustomFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    tokenHandlers: {
-      'artist': (post, config) => post.artistTags.join(' '),
-      'character': (post, config) => post.characterTags.join(' '),
-      'copyright': (post, config) => post.copyrightTags.join(' '),
-      'general': (post, config) => post.generalTags.join(' '),
-      'meta': (post, config) => post.metaTags.join(' '),
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'mpixels': (post, config) => post.mpixels.toString(),
-      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-      'source': (post, config) => config.downloadUrl,
-    },
-  );
-
-  @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
       (imageQuality, rawPost, config) =>
           castOrNull<DanbooruPost>(rawPost).toOption().fold(
@@ -538,6 +517,28 @@ class DanbooruRepository extends BooruRepositoryDefault {
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
     return const DanbooruGridThumbnailUrlGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    return DownloadFileNameBuilder<DanbooruPost>(
+      defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kBoorusamaBulkDownloadCustomFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      tokenHandlers: {
+        'artist': (post, config) => post.artistTags.join(' '),
+        'character': (post, config) => post.characterTags.join(' '),
+        'copyright': (post, config) => post.copyrightTags.join(' '),
+        'general': (post, config) => post.generalTags.join(' '),
+        'meta': (post, config) => post.metaTags.join(' '),
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+        'mpixels': (post, config) => post.mpixels.toString(),
+        'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+        'source': (post, config) => config.downloadUrl,
+      },
+    );
   }
 }
 

@@ -123,25 +123,6 @@ class SankakuBuilder
       (context) => const SankakuFavoritesPage();
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
-      DownloadFileNameBuilder<SankakuPost>(
-    defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat:
-        kBoorusamaBulkDownloadCustomFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    tokenHandlers: {
-      'artist': (post, config) => post.artistTags.join(' '),
-      'character': (post, config) => post.characterTags.join(' '),
-      'copyright': (post, config) => post.copyrightTags.join(' '),
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'mpixels': (post, config) => post.mpixels.toString(),
-      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-      'source': (post, config) => sanitizedUrl(config.downloadUrl),
-    },
-  );
-
-  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) =>
@@ -197,6 +178,26 @@ class SankakuRepository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return SankakuPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    return DownloadFileNameBuilder<SankakuPost>(
+      defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kBoorusamaBulkDownloadCustomFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      tokenHandlers: {
+        'artist': (post, config) => post.artistTags.join(' '),
+        'character': (post, config) => post.characterTags.join(' '),
+        'copyright': (post, config) => post.copyrightTags.join(' '),
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+        'mpixels': (post, config) => post.mpixels.toString(),
+        'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+        'source': (post, config) => sanitizedUrl(config.downloadUrl),
+      },
+    );
   }
 }
 

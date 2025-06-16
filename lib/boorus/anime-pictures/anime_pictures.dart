@@ -88,21 +88,6 @@ class AnimePicturesBuilder
           );
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    hasRating: false,
-    extensionHandler: (post, config) =>
-        post.format.startsWith('.') ? post.format.substring(1) : post.format,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-    },
-  );
-
-  @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
         final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
 
@@ -163,6 +148,23 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
   @override
   DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
     return ref.read(animePicturesDownloadFileUrlExtractorProvider(config));
+  }
+
+  @override
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      hasRating: false,
+      extensionHandler: (post, config) =>
+          post.format.startsWith('.') ? post.format.substring(1) : post.format,
+      tokenHandlers: {
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+      },
+    );
   }
 
   @override

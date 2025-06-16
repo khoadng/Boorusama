@@ -1,5 +1,4 @@
 // Project imports:
-import '../../../downloads/filename.dart';
 import '../../../home/custom_home.dart';
 import 'booru_builder_types.dart';
 
@@ -18,8 +17,6 @@ abstract class BooruBuilder {
   QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder;
 
   HomeViewBuilder get homeViewBuilder;
-
-  DownloadFilenameGenerator get downloadFilenameBuilder;
 
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;
 

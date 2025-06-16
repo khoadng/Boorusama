@@ -257,18 +257,6 @@ class HydrusBuilder
           );
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-    },
-  );
-
-  @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
       (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
 
@@ -358,6 +346,22 @@ class HydrusRepository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return const NoLinkPostLinkGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator<Post> downloadFilenameBuilder(
+    BooruConfigAuth config,
+  ) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      tokenHandlers: {
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+      },
+    );
   }
 }
 

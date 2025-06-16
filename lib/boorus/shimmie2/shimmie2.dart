@@ -92,22 +92,6 @@ class Shimmie2Builder
       };
 
   @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    hasRating: false,
-    extensionHandler: (post, config) =>
-        post.format.startsWith('.') ? post.format.substring(1) : post.format,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'source': (post, config) => post.source.url,
-    },
-  );
-
-  @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
@@ -151,6 +135,26 @@ class Shimmie2Repository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
     return ViewPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  DownloadFilenameGenerator<Post> downloadFilenameBuilder(
+    BooruConfigAuth config,
+  ) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      hasRating: false,
+      extensionHandler: (post, config) =>
+          post.format.startsWith('.') ? post.format.substring(1) : post.format,
+      tokenHandlers: {
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+        'source': (post, config) => post.source.url,
+      },
+    );
   }
 }
 

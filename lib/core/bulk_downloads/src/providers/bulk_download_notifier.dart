@@ -476,7 +476,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final headers = downloadConfigs?.headers ?? fallbackHeaders;
 
     final fileNameBuilder = downloadConfigs?.fileNameBuilder ??
-        ref.read(booruBuilderProvider(config.auth))?.downloadFilenameBuilder ??
+        ref.read(downloadFilenameBuilderProvider(config.auth)) ??
         fallbackFileNameBuilder;
 
     final fallbackBlacklistedTags =

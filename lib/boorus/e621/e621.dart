@@ -205,28 +205,6 @@ class E621Builder
           );
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
-      DownloadFileNameBuilder<E621Post>(
-    defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat:
-        kBoorusamaBulkDownloadCustomFileNameFormat,
-    sampleData: kE621PostSamples,
-    tokenHandlers: {
-      'artist': (post, config) => post.artistTags.join(' '),
-      'character': (post, config) => post.characterTags.join(' '),
-      'copyright': (post, config) => post.copyrightTags.join(' '),
-      'general': (post, config) => post.generalTags.join(' '),
-      'meta': (post, config) => post.metaTags.join(' '),
-      'species': (post, config) => post.speciesTags.join(' '),
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'mpixels': (post, config) => post.mpixels.toString(),
-      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-      'source': (post, config) => config.downloadUrl,
-    },
-  );
-
-  @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
       ke621AltHomeView;
 
@@ -342,6 +320,29 @@ class E621Repository extends BooruRepositoryDefault {
   @override
   TagColorGenerator tagColorGenerator() {
     return const E621TagColorGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    return DownloadFileNameBuilder<E621Post>(
+      defaultFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kBoorusamaBulkDownloadCustomFileNameFormat,
+      sampleData: kE621PostSamples,
+      tokenHandlers: {
+        'artist': (post, config) => post.artistTags.join(' '),
+        'character': (post, config) => post.characterTags.join(' '),
+        'copyright': (post, config) => post.copyrightTags.join(' '),
+        'general': (post, config) => post.generalTags.join(' '),
+        'meta': (post, config) => post.metaTags.join(' '),
+        'species': (post, config) => post.speciesTags.join(' '),
+        'width': (post, config) => post.width.toString(),
+        'height': (post, config) => post.height.toString(),
+        'mpixels': (post, config) => post.mpixels.toString(),
+        'aspect_ratio': (post, config) => post.aspectRatio.toString(),
+        'source': (post, config) => config.downloadUrl,
+      },
+    );
   }
 }
 

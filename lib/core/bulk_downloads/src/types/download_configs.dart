@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../downloads/downloader.dart';
-import '../../../downloads/filename/generator_impl.dart';
+import '../../../downloads/filename.dart';
 import '../../../downloads/urls.dart';
 import '../../../foundation/permissions/permission_utils.dart';
 import '../../../settings/settings.dart';
@@ -32,7 +32,7 @@ class DownloadConfigs {
     DownloadService? downloader,
     NotificationPermissionManager? notificationPermissionManager,
     Settings? settings,
-    DownloadFileNameBuilder? fileNameBuilder,
+    DownloadFilenameGenerator? fileNameBuilder,
     DownloadFileUrlExtractor? urlExtractor,
     DownloadExistChecker? existChecker,
     DirectoryExistChecker? directoryExistChecker,
@@ -73,7 +73,7 @@ class DownloadConfigs {
   final DownloadService? downloader;
   final NotificationPermissionManager? notificationPermissionManager;
   final Settings? settings;
-  final DownloadFileNameBuilder? fileNameBuilder;
+  final DownloadFilenameGenerator? fileNameBuilder;
   final DownloadFileUrlExtractor? urlExtractor;
   final DownloadExistChecker? existChecker;
   final DirectoryExistChecker? directoryExistChecker;
