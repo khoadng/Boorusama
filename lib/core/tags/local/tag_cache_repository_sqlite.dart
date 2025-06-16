@@ -1,5 +1,3 @@
-// tag_cache_repository_sqlite.dart
-
 // Dart imports:
 import 'dart:convert';
 
@@ -9,6 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
 import '../../database/utils.dart';
+import 'cached_tag.dart';
 import 'tag_alias.dart';
 import 'tag_cache_repository.dart';
 import 'tag_info.dart';
@@ -271,5 +270,75 @@ class TagCacheRepositorySqlite
         stmt.dispose();
       }
     });
+  }
+
+  @override
+  Future<TagResolutionResult> resolveTags(
+    String siteHost,
+    List<String> tagNames,
+  ) async {
+    if (tagNames.isEmpty) {
+      return const TagResolutionResult(found: [], missing: []);
+    }
+
+    // Normalize tag names (lowercase, replace spaces with underscores)
+    final normalizedTagNames =
+        tagNames.map((tag) => tag.toLowerCase().replaceAll(' ', '_')).toList();
+    final tagNameSet = normalizedTagNames.toSet();
+
+    // Create placeholders for IN clause
+    final placeholders = List.filled(tagNameSet.length, '?').join(', ');
+
+    // Query cached tags
+    final result = db.select(
+      '''
+    SELECT $_kTagsSiteHostColumn, $_kTagsTagNameColumn, $_kTagsCategoryColumn, $_kTagsPostCountColumn, $_kTagsMetadataColumn 
+    FROM $kTagsTable 
+    WHERE $_kTagsSiteHostColumn = ? AND $_kTagsTagNameColumn IN ($placeholders) COLLATE NOCASE
+    ''',
+      [siteHost, ...tagNameSet],
+    );
+
+    // Convert results to CachedTag objects
+    final foundTags = <CachedTag>[];
+    final foundTagNames = <String>{};
+
+    for (final row in result) {
+      final tagName = row[_kTagsTagNameColumn] as String;
+      final category = row[_kTagsCategoryColumn] as String;
+      final postCount = row[_kTagsPostCountColumn] as int?;
+      final metadataJson = row[_kTagsMetadataColumn] as String?;
+
+      Map<String, dynamic>? metadata;
+      if (metadataJson != null) {
+        try {
+          metadata = jsonDecode(metadataJson) as Map<String, dynamic>;
+        } catch (e) {
+          // If JSON parsing fails, leave metadata as null
+          metadata = null;
+        }
+      }
+
+      foundTags.add(
+        CachedTag(
+          siteHost: siteHost,
+          tagName: tagName,
+          category: category,
+          postCount: postCount,
+          metadata: metadata,
+        ),
+      );
+
+      foundTagNames.add(tagName);
+    }
+
+    // Find missing tags
+    final missingTags =
+        tagNameSet.where((tag) => !foundTagNames.contains(tag)).toList();
+
+    return TagResolutionResult(
+      found: foundTags,
+      missing: missingTags,
+    );
   }
 }

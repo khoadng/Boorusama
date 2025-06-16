@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../favorites/providers.dart';
+import '../providers/view_tags_providers.dart';
 import '../tag.dart';
 import '../tag_display.dart';
 import 'show_tag_list_page.dart';
@@ -25,21 +26,41 @@ class DefaultShowTagListPage extends ConsumerWidget {
     final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
     final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
     final auth = ref.watchConfigAuth;
-
-    return ShowTagListPage(
-      tags: tags,
+    final params = (
       auth: auth,
-      onAddToGlobalBlacklist: (tag) {
-        globalNotifier.addTagWithToast(
-          context,
-          tag.rawName,
-        );
-      },
-      onAddToFavoriteTags: (tag) {
-        favoriteNotifier.add(
-          tag.rawName,
-        );
-      },
+      tagString: tags.map((tag) => tag.rawName).join(' '),
     );
+
+    return ref.watch(defaultTagsFromCacheProvider(params)).when(
+          data: (tags) => ShowTagListPage(
+            tags: tags,
+            auth: auth,
+            onAddToGlobalBlacklist: (tag) {
+              globalNotifier.addTagWithToast(
+                context,
+                tag.rawName,
+              );
+            },
+            onAddToFavoriteTags: (tag) {
+              favoriteNotifier.add(
+                tag.rawName,
+              );
+            },
+          ),
+          error: (error, stack) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Error'),
+            ),
+            body: Center(
+              child: Text('Error loading tags: $error'),
+            ),
+          ),
+          loading: () => Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
   }
 }

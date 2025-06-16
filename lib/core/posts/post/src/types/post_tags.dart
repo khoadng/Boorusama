@@ -8,7 +8,7 @@ extension PostTagX on Post {
       .map(
         (e) => Tag.noCount(
           name: e,
-          category: TagCategory.general(),
+          category: TagCategory.unknown(),
         ),
       )
       .toList();
