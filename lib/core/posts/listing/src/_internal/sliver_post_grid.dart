@@ -29,6 +29,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
     this.aspectRatio,
     this.borderRadius,
     this.postsPerPage,
+    this.httpErrorActionBuilder,
   });
 
   final PostGridController<T> postController;
@@ -41,6 +42,9 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   final int? postsPerPage;
 
   final IndexedWidgetBuilder itemBuilder;
+
+  final Widget Function(BuildContext context, int httpStatusCode)?
+      httpErrorActionBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +85,9 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                               : const SizedBox.shrink();
                         },
                       ),
+                      if (httpErrorActionBuilder != null &&
+                          e.httpStatusCode != null)
+                        httpErrorActionBuilder!(context, e.httpStatusCode!),
                       Container(
                         padding: EdgeInsets.symmetric(
                           vertical: e.isServerError ? 4 : 24,
