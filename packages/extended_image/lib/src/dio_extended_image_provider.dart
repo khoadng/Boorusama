@@ -179,7 +179,7 @@ class DioExtendedNetworkImageProvider
 
     // Try to load from cache
     if (hasValidCache) {
-      final cachedData = await manager.getCachedFile(effectiveCacheKey);
+      final cachedData = await manager.getCachedFileBytes(effectiveCacheKey);
       if (cachedData != null && cachedData.isNotEmpty) {
         return cachedData;
       }

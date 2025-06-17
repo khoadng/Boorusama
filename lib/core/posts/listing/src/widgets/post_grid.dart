@@ -536,6 +536,51 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
       aspectRatio: imageGridAspectRatio,
       postsPerPage: postsPerPage,
       borderRadius: BorderRadius.circular(imageGridBorderRadius),
+      httpErrorActionBuilder: (context, httpStatusCode) => httpStatusCode == 401
+          ? const _Error401ActionButton()
+          : const SizedBox.shrink(),
+    );
+  }
+}
+
+class _Error401ActionButton extends ConsumerWidget {
+  const _Error401ActionButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final config = ref.watchConfig;
+    final apiKey = config.apiKey;
+    final isEmptyApiKey = apiKey == null || apiKey.isEmpty;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            bottom: 12,
+            left: 24,
+            right: 24,
+          ),
+          child: Text(
+            isEmptyApiKey
+                ? 'This site may require you to enter your API key or credentials to access its content.'
+                : 'Check your API key or credentials, as they may be invalid or expired.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ),
+        FilledButton(
+          onPressed: () => goToUpdateBooruConfigPage(
+            context,
+            config: config,
+            initialTab: 'auth',
+          ),
+          child: const Text('Edit credentials'),
+        ),
+      ],
     );
   }
 }

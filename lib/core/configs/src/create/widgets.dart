@@ -17,6 +17,8 @@ class CreateBooruApiKeyField extends StatefulWidget {
     this.labelText,
     this.text,
     this.controller,
+    this.validator,
+    this.autovalidateMode,
   });
 
   final void Function(String value)? onChanged;
@@ -24,6 +26,8 @@ class CreateBooruApiKeyField extends StatefulWidget {
   final String? labelText;
   final String? hintText;
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   State<CreateBooruApiKeyField> createState() => _CreateBooruApiKeyFieldState();
@@ -47,7 +51,8 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
     return AutofillGroup(
       child: BooruTextFormField(
         controller: controller,
-        validator: (p0) => null,
+        validator: widget.validator,
+        autovalidateMode: widget.autovalidateMode,
         autofillHints: const [
           AutofillHints.password,
         ],
@@ -56,6 +61,7 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
         decoration: InputDecoration(
           labelText: widget.labelText ?? 'booru.password_api_key_label'.tr(),
           hintText: widget.hintText,
+          errorMaxLines: 2,
           suffixIcon: IconButton(
             splashColor: Colors.transparent,
             icon: revealKey
@@ -148,6 +154,8 @@ class CreateBooruLoginField extends StatefulWidget {
     this.hintText,
     this.text,
     this.controller,
+    this.validator,
+    this.autovalidateMode,
   });
 
   final void Function(String value)? onChanged;
@@ -155,6 +163,9 @@ class CreateBooruLoginField extends StatefulWidget {
   final String? hintText;
   final String? text;
   final TextEditingController? controller;
+
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   @override
   State<CreateBooruLoginField> createState() => _CreateBooruLoginFieldState();
@@ -182,7 +193,8 @@ class _CreateBooruLoginFieldState extends State<CreateBooruLoginField> {
           AutofillHints.username,
           AutofillHints.email,
         ],
-        validator: (p0) => null,
+        validator: widget.validator,
+        autovalidateMode: widget.autovalidateMode,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
           hintText: widget.hintText,

@@ -12,8 +12,11 @@ import 'package:path_provider/path_provider.dart';
 
 /// Abstract interface for image caching operations
 abstract class ImageCacheManager {
+  /// Retrieves the cached file for the given key
+  Future<File?> getCachedFile(String key);
+
   /// Retrieves cached file data for the given key
-  Future<Uint8List?> getCachedFile(String key);
+  Future<Uint8List?> getCachedFileBytes(String key);
 
   /// Saves file data to cache with the specified key
   Future<void> saveFile(String key, Uint8List bytes);
@@ -60,15 +63,29 @@ class DefaultImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  Future<Uint8List?> getCachedFile(String key) async {
+  Future<File?> getCachedFile(String key) async {
     try {
       final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
 
       if (cacheFile.existsSync()) {
-        return await cacheFile.readAsBytes();
+        return cacheFile;
       }
 
+      return null;
+    } catch (e) {
+      _log('Error getting cached file: $e');
+    }
+    return null;
+  }
+
+  @override
+  Future<Uint8List?> getCachedFileBytes(String key) async {
+    try {
+      final cacheFile = await getCachedFile(key);
+      if (cacheFile != null) {
+        return await cacheFile.readAsBytes();
+      }
       return null;
     } catch (e) {
       _log('Error reading cache: $e');
