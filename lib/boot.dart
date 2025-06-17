@@ -22,6 +22,7 @@ import 'boorus/e621/e621.dart';
 import 'boorus/gelbooru/gelbooru.dart';
 import 'boorus/gelbooru_v1/gelbooru_v1.dart';
 import 'boorus/gelbooru_v2/gelbooru_v2.dart';
+import 'boorus/hybooru/hybooru.dart';
 import 'boorus/hydrus/hydrus.dart';
 import 'boorus/moebooru/moebooru.dart';
 import 'boorus/philomena/philomena.dart';
@@ -101,6 +102,10 @@ Future<void> boot(BootLogger bootLogger) async {
   final appInfo = await getAppInfo();
 
   final booruRegistry = BooruRegistry()
+    ..register(
+      BooruType.hybooru,
+      createHybooru(),
+    )
     ..register(
       BooruType.animePictures,
       createAnimePictures(),
