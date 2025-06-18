@@ -56,7 +56,7 @@ final e621AutocompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
     persistentStaleDuration: const Duration(days: 1),
     autocomplete: (query) async {
-      final dtos = await client.getAutocomplete(query: query);
+      final dtos = await client.getAutocomplete(query: query.text);
 
       return dtos
           .map(

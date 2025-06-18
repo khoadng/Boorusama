@@ -68,7 +68,8 @@ class SuggestionsNotifier extends FamilyNotifier<
     debounce(
       'suggestions',
       () async {
-        final data = await autocompleteRepo.getAutocomplete(sanitized);
+        final data = await autocompleteRepo
+            .getAutocomplete(AutocompleteQuery.text(sanitized));
 
         final filter = filterNsfw(
           data,

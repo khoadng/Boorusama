@@ -98,7 +98,7 @@ final animePicturesAutocompleteRepoProvider =
       persistentStorageKey:
           '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
       autocomplete: (query) async {
-        final tags = await client.getAutocomplete(query: query);
+        final tags = await client.getAutocomplete(query: query.text);
 
         return tags
             .map(

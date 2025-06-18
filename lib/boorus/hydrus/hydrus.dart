@@ -189,7 +189,7 @@ final hydrusAutocompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
     persistentStaleDuration: const Duration(minutes: 5),
     autocomplete: (query) async {
-      final dtos = await client.getAutocomplete(query: query);
+      final dtos = await client.getAutocomplete(query: query.text);
 
       return dtos.map((e) {
         // looking for xxx:tag format using regex

@@ -9,7 +9,7 @@ import '../foundation/debugs/print.dart';
 import 'autocompletes.dart';
 
 abstract class AutocompleteRepository {
-  Future<List<AutocompleteData>> getAutocomplete(String query);
+  Future<List<AutocompleteData>> getAutocomplete(AutocompleteQuery query);
 }
 
 class AutocompleteRepositoryBuilder
@@ -21,12 +21,15 @@ class AutocompleteRepositoryBuilder
     this.persistentStaleDuration = const Duration(days: 1),
   });
 
-  final Future<List<AutocompleteData>> Function(String query) autocomplete;
+  final Future<List<AutocompleteData>> Function(AutocompleteQuery query)
+      autocomplete;
 
   @override
-  Future<List<AutocompleteData>> getAutocomplete(String query) async {
-    if (query.isEmpty) {
-      printDebug('Query is empty, returning empty list');
+  Future<List<AutocompleteData>> getAutocomplete(
+    AutocompleteQuery query,
+  ) async {
+    if (query.text.isEmpty) {
+      printDebug('Query text is empty, returning empty list');
       return Future.value([]);
     }
 
@@ -48,7 +51,7 @@ class AutocompleteRepositoryBuilder
 
 class EmptyAutocompleteRepository implements AutocompleteRepository {
   @override
-  Future<List<AutocompleteData>> getAutocomplete(String query) {
+  Future<List<AutocompleteData>> getAutocomplete(AutocompleteQuery query) {
     return Future.value([]);
   }
 }

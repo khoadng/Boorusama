@@ -108,7 +108,7 @@ final gelbooruAutocompleteRepoProvider =
 
   return AutocompleteRepositoryBuilder(
     autocomplete: (query) async {
-      final dtos = await client.autocomplete(term: query, limit: 20);
+      final dtos = await client.autocomplete(term: query.text, limit: 20);
 
       return dtos
           .map((e) {
