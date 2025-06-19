@@ -40,15 +40,29 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  Future<Uint8List?> getCachedFile(String key) async {
+  Future<File?> getCachedFile(String key) async {
     try {
       final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
 
       if (cacheFile.existsSync()) {
-        return await cacheFile.readAsBytes();
+        return cacheFile;
       }
 
+      return null;
+    } catch (e) {
+      _log('Error getting cached file: $e');
+    }
+    return null;
+  }
+
+  @override
+  Future<Uint8List?> getCachedFileBytes(String key) async {
+    try {
+      final cacheFile = await getCachedFile(key);
+      if (cacheFile != null) {
+        return await cacheFile.readAsBytes();
+      }
       return null;
     } catch (e) {
       _log('Error reading cache: $e');

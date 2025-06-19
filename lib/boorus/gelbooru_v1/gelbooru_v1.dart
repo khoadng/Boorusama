@@ -94,17 +94,6 @@ class GelbooruV1Builder
           );
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
-      DownloadFileNameBuilder(
-    defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    tokenHandlers: {
-      'source': (post, config) => config.downloadUrl,
-    },
-  );
-
-  @override
   final PostDetailsUIBuilder postDetailsUIBuilder =
       kFallbackPostDetailsUIBuilder;
 }
@@ -123,6 +112,16 @@ class GelbooruV1Repository extends BooruRepositoryDefault {
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) {
     return ref.read(gelbooruV1AutocompleteRepoProvider(config));
+  }
+
+  @override
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    return DownloadFileNameBuilder(
+      defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      tokenHandlers: const [],
+    );
   }
 
   @override

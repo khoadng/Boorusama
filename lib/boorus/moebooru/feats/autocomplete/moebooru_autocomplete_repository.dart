@@ -18,13 +18,16 @@ class MoebooruAutocompleteRepository implements AutocompleteRepository {
   }
 
   @override
-  Future<List<AutocompleteData>> getAutocomplete(String query) async {
+  Future<List<AutocompleteData>> getAutocomplete(
+    AutocompleteQuery query,
+  ) async {
     if (_autocompleteDataList.isEmpty) {
       await initialize();
     }
     final matchingAutocompleteData = _autocompleteDataList.where(
-      (autocompleteData) =>
-          autocompleteData.value.toLowerCase().startsWith(query.toLowerCase()),
+      (autocompleteData) => autocompleteData.value
+          .toLowerCase()
+          .startsWith(query.text.toLowerCase()),
     );
     return matchingAutocompleteData.take(20).toList();
   }

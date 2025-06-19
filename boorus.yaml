@@ -94,6 +94,11 @@
     sites:
       - https://anime-pictures.net/
 
+- hybooru:
+    protocol: https_2
+    sites:
+      - https://booru.funmaker.moe/
+
 - hydrus:
     protocol: https_1
 

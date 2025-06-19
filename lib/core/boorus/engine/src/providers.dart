@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
+import '../../../downloads/filename.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
 import 'booru_builder.dart';
@@ -47,4 +48,19 @@ final postLinkGeneratorProvider =
     return repository.postLinkGenerator(config);
   },
   name: 'postLinkGeneratorProvider',
+);
+
+final downloadFilenameBuilderProvider =
+    Provider.family<DownloadFilenameGenerator?, BooruConfigAuth>(
+  (ref, config) {
+    final repository =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    if (repository == null) {
+      return null;
+    }
+
+    return repository.downloadFilenameBuilder(config);
+  },
+  name: 'downloadFilenameBuilderProvider',
 );

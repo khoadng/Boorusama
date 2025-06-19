@@ -1,4 +1,5 @@
 // Project imports:
+import 'cached_tag.dart';
 import 'tag_alias.dart';
 import 'tag_cache_repository.dart';
 import 'tag_info.dart';
@@ -52,5 +53,17 @@ class EmptyTagCacheRepository implements TagCacheRepository {
   @override
   Future<void> saveTagsBatch(List<TagInfo> tagInfos) async {
     // No-op
+  }
+
+  @override
+  Future<TagResolutionResult> resolveTags(
+    String siteHost,
+    List<String> tagNames,
+  ) async {
+    // Empty repository returns all tags as missing
+    return TagResolutionResult(
+      found: const [],
+      missing: tagNames,
+    );
   }
 }

@@ -110,9 +110,8 @@ class _CustomDownloadFileNameSectionState
   @override
   void initState() {
     patternMatchMap = ref
-        .read(booruBuilderProvider(widget.config.auth))
-        ?.downloadFilenameBuilder
-        .patternMatchMap;
+        .read(downloadFilenameBuilderProvider(widget.config.auth))
+        ?.patternMatchMap;
 
     individualTextController = RichTextController(
       text: widget.config.customDownloadFileNameFormat,
@@ -138,9 +137,8 @@ class _CustomDownloadFileNameSectionState
 
   @override
   Widget build(BuildContext context) {
-    final downloadFilenameBuilder = ref
-        .watch(booruBuilderProvider(widget.config.auth))
-        ?.downloadFilenameBuilder;
+    final downloadFilenameBuilder =
+        ref.watch(downloadFilenameBuilderProvider(widget.config.auth));
     final defaultFileNameFormat =
         downloadFilenameBuilder?.defaultFileNameFormat ?? '';
     final defaultBulkDownloadFileNameFormat =
@@ -233,9 +231,8 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
   late final textController = RichTextController(
     text: widget.format,
     patternMatchMap: ref
-        .read(booruBuilderProvider(widget.config.auth))
-        ?.downloadFilenameBuilder
-        .patternMatchMap,
+        .read(downloadFilenameBuilderProvider(widget.config.auth))
+        ?.patternMatchMap,
     onMatch: (match) {},
   );
 

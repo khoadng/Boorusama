@@ -21,7 +21,6 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/posts/sources/source.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
@@ -97,21 +96,6 @@ class ZerochanBuilder
           child: const DefaultPostDetailsPage<ZerochanPost>(),
         );
       };
-
-  @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    hasMd5: false,
-    hasRating: false,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'source': (post, config) => post.source.url,
-    },
-  );
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
@@ -196,6 +180,24 @@ class ZerochanRepository extends BooruRepositoryDefault {
   @override
   TagColorGenerator tagColorGenerator() {
     return const ZerochanTagColorGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator<Post> downloadFilenameBuilder(
+    BooruConfigAuth config,
+  ) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      hasMd5: false,
+      hasRating: false,
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
+    );
   }
 }
 

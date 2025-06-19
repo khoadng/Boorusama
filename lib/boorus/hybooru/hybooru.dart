@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:booru_clients/shimmie2.dart';
+import 'package:booru_clients/hybooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -24,7 +24,7 @@ import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
 import 'providers.dart';
 
-class Shimmie2Builder
+class HybooruBuilder
     with
         FavoriteNotSupportedMixin,
         CommentNotSupportedMixin,
@@ -41,7 +41,7 @@ class Shimmie2Builder
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
-  Shimmie2Builder();
+  HybooruBuilder();
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder => (
@@ -78,7 +78,7 @@ class Shimmie2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as Shimmie2Post).toList();
+        final posts = payload.posts.map((e) => e as HybooruPost).toList();
 
         return PostDetailsScope(
           initialIndex: payload.initialIndex,
@@ -86,7 +86,7 @@ class Shimmie2Builder
           posts: posts,
           scrollController: payload.scrollController,
           dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<Shimmie2Post>(),
+          child: const DefaultPostDetailsPage<HybooruPost>(),
         );
       };
 
@@ -94,46 +94,46 @@ class Shimmie2Builder
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+          const DefaultInheritedPostActionToolbar<HybooruPost>(),
     },
     full: {
       DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+          const DefaultInheritedPostActionToolbar<HybooruPost>(),
       DetailsPart.tags: (context) =>
-          const DefaultInheritedTagList<Shimmie2Post>(),
-      DetailsPart.fileDetails: (context) => const Shimmie2FileDetailsSection(),
+          const DefaultInheritedTagList<HybooruPost>(),
+      DetailsPart.fileDetails: (context) => const HybooruFileDetailsSection(),
     },
   );
 }
 
-class Shimmie2Repository extends BooruRepositoryDefault {
-  const Shimmie2Repository({required this.ref});
+class HybooruRepository extends BooruRepositoryDefault {
+  const HybooruRepository({required this.ref});
 
   @override
   final Ref ref;
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
-    return ref.read(shimmie2PostRepoProvider(config));
+    return ref.read(hybooruPostRepoProvider(config));
   }
 
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) {
-    return ref.read(shimmie2AutocompleteRepoProvider(config));
+    return ref.read(hybooruAutocompleteRepoProvider(config));
   }
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(dioProvider(config));
 
-    return () => Shimmie2Client(baseUrl: config.url, dio: dio)
+    return () => HybooruClient(baseUrl: config.url, dio: dio)
         .getPosts()
         .then((value) => true);
   }
 
   @override
   PostLinkGenerator<Post> postLinkGenerator(BooruConfigAuth config) {
-    return ViewPostLinkGenerator(baseUrl: config.url);
+    return PluralPostLinkGenerator(baseUrl: config.url);
   }
 
   @override
@@ -157,11 +157,12 @@ class Shimmie2Repository extends BooruRepositoryDefault {
   }
 }
 
-class Shimmie2FileDetailsSection extends ConsumerWidget {
-  const Shimmie2FileDetailsSection({super.key});
+class HybooruFileDetailsSection extends ConsumerWidget {
+  const HybooruFileDetailsSection({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<Shimmie2Post>(context);
+    final post = InheritedPost.of<HybooruPost>(context);
 
     return SliverToBoxAdapter(
       child: DefaultFileDetailsSection(
@@ -172,21 +173,21 @@ class Shimmie2FileDetailsSection extends ConsumerWidget {
   }
 }
 
-BooruComponents createShimmie2() => BooruComponents(
+BooruComponents createHybooru() => BooruComponents(
       parser: YamlBooruParser.standard(
-        type: BooruType.shimmie2,
-        constructor: (siteDef) => Shimmie2(
+        type: BooruType.hybooru,
+        constructor: (siteDef) => Hybooru(
           name: siteDef.name,
           protocol: siteDef.protocol,
           sites: siteDef.sites,
         ),
       ),
-      createBuilder: Shimmie2Builder.new,
-      createRepository: (ref) => Shimmie2Repository(ref: ref),
+      createBuilder: HybooruBuilder.new,
+      createRepository: (ref) => HybooruRepository(ref: ref),
     );
 
-class Shimmie2 extends Booru {
-  const Shimmie2({
+class Hybooru extends Booru {
+  const Hybooru({
     required super.name,
     required super.protocol,
     required this.sites,
@@ -196,5 +197,5 @@ class Shimmie2 extends Booru {
   final List<String> sites;
 
   @override
-  BooruType get type => BooruType.shimmie2;
+  BooruType get type => BooruType.hybooru;
 }

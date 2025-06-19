@@ -22,7 +22,6 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/posts/sources/source.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/theme.dart';
 import '../danbooru/danbooru.dart';
@@ -95,20 +94,6 @@ class PhilomenaBuilder
           child: const DefaultPostDetailsPage<PhilomenaPost>(),
         );
       };
-
-  @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    hasRating: false,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'source': (post, config) => post.source.url,
-    },
-  );
 
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (
@@ -253,6 +238,24 @@ class PhilomenaRepository extends BooruRepositoryDefault {
   @override
   TagColorGenerator tagColorGenerator() {
     return const PhilomenaTagColorGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator<Post> downloadFilenameBuilder(
+    BooruConfigAuth config,
+  ) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      hasRating: false,
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
+    );
   }
 }
 

@@ -61,7 +61,7 @@ final gelbooruV2AutocompleteRepoProvider =
 
   return AutocompleteRepositoryBuilder(
     autocomplete: (query) async {
-      final dtos = await client.autocomplete(term: query, limit: 20);
+      final dtos = await client.autocomplete(term: query.text, limit: 20);
 
       return dtos
           .map((e) {
@@ -233,21 +233,6 @@ class GelbooruV2Builder
       };
 
   @override
-  final DownloadFilenameGenerator downloadFilenameBuilder =
-      DownloadFileNameBuilder(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-      'mpixels': (post, config) => post.mpixels.toString(),
-      'aspect_ratio': (post, config) => post.aspectRatio.toString(),
-      'source': (post, config) => config.downloadUrl,
-    },
-  );
-
-  @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
       kGelbooruV2AltHomeView;
 
@@ -316,6 +301,22 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return IndexPhpPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    return DownloadFileNameBuilder(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+        MPixelsTokenHandler(),
+      ],
+    );
   }
 }
 

@@ -114,7 +114,8 @@ final zerochanAutoCompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v3',
     persistentStaleDuration: const Duration(days: 1),
     autocomplete: (query) async {
-      final tags = await client.getAutocomplete(query: query.toLowerCase());
+      final tags =
+          await client.getAutocomplete(query: query.text.toLowerCase());
 
       return tags
           .where(

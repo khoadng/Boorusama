@@ -50,7 +50,7 @@ final gelbooruV1AutocompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
     persistentStaleDuration: const Duration(days: 1),
     autocomplete: (query) async {
-      final dtos = await client.autocomplete(term: query);
+      final dtos = await client.autocomplete(term: query.text);
 
       return dtos
           .map(

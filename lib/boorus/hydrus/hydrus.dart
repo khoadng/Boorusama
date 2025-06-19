@@ -189,7 +189,7 @@ final hydrusAutocompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
     persistentStaleDuration: const Duration(minutes: 5),
     autocomplete: (query) async {
-      final dtos = await client.getAutocomplete(query: query);
+      final dtos = await client.getAutocomplete(query: query.text);
 
       return dtos.map((e) {
         // looking for xxx:tag format using regex
@@ -255,18 +255,6 @@ class HydrusBuilder
               initialTab: initialTab,
             ),
           );
-
-  @override
-  final DownloadFilenameGenerator<Post> downloadFilenameBuilder =
-      DownloadFileNameBuilder<Post>(
-    defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    defaultBulkDownloadFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
-    sampleData: kDanbooruPostSamples,
-    tokenHandlers: {
-      'width': (post, config) => post.width.toString(),
-      'height': (post, config) => post.height.toString(),
-    },
-  );
 
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
@@ -358,6 +346,23 @@ class HydrusRepository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return const NoLinkPostLinkGenerator();
+  }
+
+  @override
+  DownloadFilenameGenerator<Post> downloadFilenameBuilder(
+    BooruConfigAuth config,
+  ) {
+    return DownloadFileNameBuilder<Post>(
+      defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
+      defaultBulkDownloadFileNameFormat:
+          kGelbooruV2CustomDownloadFileNameFormat,
+      sampleData: kDanbooruPostSamples,
+      tokenHandlers: [
+        WidthTokenHandler(),
+        HeightTokenHandler(),
+        AspectRatioTokenHandler(),
+      ],
+    );
   }
 }
 

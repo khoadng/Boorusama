@@ -7,6 +7,7 @@ import '../tags/metatag/metatag.dart';
 import '../tags/tag/tag.dart';
 
 export 'autocomplete_repository.dart';
+export 'autocomplete_query.dart';
 
 typedef AutocompleteValue = String;
 typedef AutocompleteLabel = String;

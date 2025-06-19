@@ -128,6 +128,14 @@ class BooruType extends Equatable {
     isSingleSite: true,
   );
 
+  static const hybooru = BooruType._(
+    name: 'hybooru',
+    yamlName: 'hybooru',
+    id: 33,
+    displayName: 'Hybooru',
+    postCountMethod: PostCountMethod.endpoint,
+  );
+
   /// Maps legacy IDs to the corresponding BooruType
   static BooruType fromLegacyId(int? value) => switch (value) {
         1 || 2 || 3 || 5 || 20 => danbooru,
@@ -143,6 +151,7 @@ class BooruType extends Equatable {
         30 => szurubooru,
         31 => hydrus,
         32 => animePictures,
+        33 => hybooru,
         _ => unknown
       };
 

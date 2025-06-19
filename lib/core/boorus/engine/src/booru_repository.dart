@@ -6,6 +6,7 @@ import '../../../autocompletes/autocompletes.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create.dart';
+import '../../../downloads/filename.dart';
 import '../../../downloads/urls.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
@@ -33,4 +34,5 @@ abstract class BooruRepository {
   ImageUrlResolver imageUrlResolver();
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator();
   TagColorGenerator tagColorGenerator();
+  DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
 }

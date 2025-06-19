@@ -275,8 +275,8 @@ class DummyDownloadService implements DownloadService {
 }
 
 final dummyDownloadFileNameBuilder = DownloadFileNameBuilder<DummyPost>(
-  tokenHandlers: {},
-  sampleData: [],
+  tokenHandlers: const [],
+  sampleData: const [],
   defaultFileNameFormat: 'test-default-format',
   defaultBulkDownloadFileNameFormat: 'test-default-bulk-format',
 );
@@ -334,10 +334,6 @@ ProviderContainer createBulkDownloadContainer({
   Stream<TaskUpdate>? taskUpdateStream,
   BooruConfigAuth? overrideConfig,
 }) {
-  when(() => booruBuilder.downloadFilenameBuilder).thenReturn(
-    dummyDownloadFileNameBuilder,
-  );
-
   final container = ProviderContainer(
     overrides: getTestOverrides(
       downloadRepository: downloadRepository,
@@ -378,6 +374,9 @@ List<Override> getTestOverrides({
     currentReadOnlyBooruConfigProvider.overrideWithValue(booruConfig),
     postRepoProvider.overrideWith((__, _) => DummyPostRepository()),
     downloadServiceProvider.overrideWith((_) => DummyDownloadService()),
+    downloadFilenameBuilderProvider.overrideWith(
+      (__, _) => dummyDownloadFileNameBuilder,
+    ),
     loggerProvider.overrideWithValue(DummyLogger()),
     mediaPermissionManagerProvider.overrideWithValue(
       mediaPermissionManager ?? MockMediaPermissionManager(),
