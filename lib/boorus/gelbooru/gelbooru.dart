@@ -368,7 +368,9 @@ class GelbooruRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    return DownloadFileNameBuilder(
+    final client = ref.watch(gelbooruClientProvider(config));
+
+    return DownloadFileNameBuilder<GelbooruPost>(
       defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
@@ -377,6 +379,18 @@ class GelbooruRepository extends BooruRepositoryDefault {
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
         MPixelsTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final tags = await client.getTags(tags: post.tags);
+              return tags
+                  .map((tag) => (name: tag.name, type: tag.type.toString()))
+                  .toList();
+            },
+          ),
+        ),
       ],
     );
   }

@@ -152,6 +152,8 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
+    final client = ref.watch(animePicturesClientProvider(config));
+
     return DownloadFileNameBuilder<Post>(
       defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat:
@@ -164,6 +166,28 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
         WidthTokenHandler(),
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final details = await client.getPostDetails(id: post.id);
+
+              return details.tags
+                      ?.where((e) => e.tag != null)
+                      .map((e) => e.tag!)
+                      .map(
+                        (tag) => (
+                          name: tag.tag ?? '???',
+                          type:
+                              animePicturesTagTypeToTagCategory(tag.type).name,
+                        ),
+                      )
+                      .toList() ??
+                  [];
+            },
+          ),
+        ),
       ],
     );
   }

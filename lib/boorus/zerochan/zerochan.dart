@@ -186,6 +186,8 @@ class ZerochanRepository extends BooruRepositoryDefault {
   DownloadFilenameGenerator<Post> downloadFilenameBuilder(
     BooruConfigAuth config,
   ) {
+    final client = ref.watch(zerochanClientProvider(config));
+
     return DownloadFileNameBuilder<Post>(
       defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
@@ -196,6 +198,24 @@ class ZerochanRepository extends BooruRepositoryDefault {
         WidthTokenHandler(),
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final tags = await client.getTagsFromPostId(postId: post.id);
+
+              return tags
+                  .map(
+                    (tag) => (
+                      name: normalizeZerochanTag(tag.value) ?? '???',
+                      type: zerochanStringToTagCategory(tag.type).name,
+                    ),
+                  )
+                  .toList();
+            },
+          ),
+        ),
       ],
     );
   }

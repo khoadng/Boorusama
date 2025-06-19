@@ -221,7 +221,9 @@ class MoebooruRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    return DownloadFileNameBuilder(
+    final tagRepo = ref.watch(moebooruTagRepoProvider(config));
+
+    return DownloadFileNameBuilder<MoebooruPost>(
       defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
@@ -230,6 +232,18 @@ class MoebooruRepository extends BooruRepositoryDefault {
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
         MPixelsTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final tags = await tagRepo.getTagsByName(post.tags.toSet(), 1);
+              return tags
+                  .map((tag) => (name: tag.name, type: tag.category.name))
+                  .toList();
+            },
+          ),
+        ),
       ],
     );
   }
