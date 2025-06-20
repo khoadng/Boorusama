@@ -6,7 +6,7 @@ import '../../../autocompletes/autocomplete_repository.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../blacklists/providers.dart';
 import '../../../configs/config.dart';
-import '../../../configs/create.dart';
+import '../../../configs/create/create.dart';
 import '../../../downloads/urls/download_url.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';

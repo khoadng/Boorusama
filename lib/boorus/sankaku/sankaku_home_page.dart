@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../core/configs/failsafe.dart';
+import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/home/home_navigation_tile.dart';
 import '../../core/home/home_page_scaffold.dart';

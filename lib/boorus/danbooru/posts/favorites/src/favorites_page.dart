@@ -8,7 +8,7 @@ import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../core/configs/failsafe.dart';
+import '../../../../../core/configs/auth/widgets.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/search/search/routes.dart';

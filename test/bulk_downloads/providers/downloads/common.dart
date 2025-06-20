@@ -21,7 +21,7 @@ import 'package:boorusama/core/bulk_downloads/src/types/download_configs.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_repository.dart';
 import 'package:boorusama/core/configs/config.dart';
-import 'package:boorusama/core/configs/current.dart';
+import 'package:boorusama/core/configs/manage/providers.dart';
 import 'package:boorusama/core/downloads/downloader.dart';
 import 'package:boorusama/core/downloads/filename.dart';
 import 'package:boorusama/core/downloads/manager.dart';

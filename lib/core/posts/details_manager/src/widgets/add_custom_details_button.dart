@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/src/create/appearance_details.dart';
+import '../../../../configs/appearance/routes.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/dotted_border.dart';
 

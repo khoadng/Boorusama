@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/configs/failsafe.dart';
+import '../../../../../core/configs/auth/widgets.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../saved_search/providers.dart';

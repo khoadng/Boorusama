@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
-import '../../../configs/redirect.dart';
+import '../../../configs/config/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';

@@ -13,8 +13,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../bulk_downloads/routes.dart';
-import '../configs/src/providers.dart';
-import '../configs/widgets.dart';
+import '../configs/config/providers.dart';
+import '../configs/manage/widgets.dart';
 import '../downloads/routes.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
@@ -24,6 +24,7 @@ import '../settings/providers.dart';
 import '../settings/routes.dart';
 import '../settings/settings.dart';
 import '../tags/favorites/routes.dart';
+import 'constants.dart';
 import 'custom_home.dart';
 import 'side_menu_tile.dart';
 
@@ -91,7 +92,9 @@ class SideBarMenu extends ConsumerWidget {
                     if (hasConfigs)
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: CurrentBooruTile(),
+                        child: CurrentBooruTile(
+                          minWidth: kMinSideBarWidth,
+                        ),
                       )
                     else
                       const SizedBox(

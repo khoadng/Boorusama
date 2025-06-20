@@ -1,0 +1,4 @@
+enum ThemeUpdateMethod {
+  applyDirectly,
+  saveAndUpdateLater,
+}

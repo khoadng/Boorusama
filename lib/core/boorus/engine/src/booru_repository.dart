@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../autocompletes/autocompletes.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../configs/config.dart';
-import '../../../configs/create.dart';
+import '../../../configs/create/create.dart';
 import '../../../downloads/filename.dart';
 import '../../../downloads/urls.dart';
 import '../../../notes/notes.dart';

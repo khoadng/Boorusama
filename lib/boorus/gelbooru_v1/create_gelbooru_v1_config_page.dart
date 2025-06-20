@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../core/configs/create.dart';
+import '../../core/configs/create/widgets.dart';
 
 class CreateGelbooruV1ConfigPage extends StatelessWidget {
   const CreateGelbooruV1ConfigPage({

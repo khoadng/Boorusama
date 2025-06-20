@@ -5,7 +5,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../backups/data_converter.dart';
 import '../../../../backups/data_io_handler.dart';
 import '../../../../backups/types.dart';
-import '../../../../configs/src/export_import/booru_config_io_handler.dart';
+import '../../../../configs/export_import/types.dart';
 import '../types/favorite_tag.dart';
 
 class FavoriteTagsIOHandler {

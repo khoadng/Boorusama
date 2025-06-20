@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/failsafe.dart';
+import '../../../../../../../core/configs/auth/widgets.dart';
 import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/images/booru_image.dart';
 import '../../../details/routes.dart';

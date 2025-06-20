@@ -3,8 +3,8 @@ import 'package:foundation/foundation.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/configs/src/validator/booru_url_error.dart';
-import 'package:boorusama/core/configs/src/validator/booru_url_validator.dart';
+import 'package:boorusama/core/configs/create/src/types/validator/booru_url_error.dart';
+import 'package:boorusama/core/configs/create/src/types/validator/booru_url_validator.dart';
 
 void main() {
   group('mapBooruUrlToUri', () {

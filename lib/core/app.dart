@@ -28,9 +28,6 @@ import 'settings/providers.dart';
 import 'theme/theme.dart';
 import 'widgets/widgets.dart';
 
-const kMinSideBarWidth = 62.0;
-const kMaxSideBarWidth = 250.0;
-
 class App extends StatelessWidget {
   const App({super.key});
 

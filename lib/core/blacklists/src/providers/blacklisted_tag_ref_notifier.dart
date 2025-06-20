@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
-import '../../../configs/src/create/search_blacklist.dart';
+import '../../../configs/search/search.dart';
 import '../types/blacklisted_tag_repository.dart';
 import 'global_blacklisted_tag_notifier.dart';
 
@@ -83,7 +83,7 @@ Set<BlacklistedTagEntry> _combineTags(
   if (!configs.enable) return currentTags;
 
   final mode = BlacklistCombinationMode.fromString(configs.combinationMode);
-  final blacklistTags = configs.blacklistedTagsList;
+  final blacklistTags = queryAsList(configs.blacklistedTags).toList();
 
   if (mode == BlacklistCombinationMode.replace) {
     return blacklistTags

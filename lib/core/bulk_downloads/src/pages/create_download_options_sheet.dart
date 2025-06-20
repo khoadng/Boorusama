@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../blacklists/providers.dart';
-import '../../../configs/create.dart';
 import '../../../configs/ref.dart';
+import '../../../configs/search/search.dart';
 import '../../../downloads/l10n.dart' as d;
 import '../../../downloads/widgets/download_folder_selector_section.dart';
 import '../../../foundation/toast.dart';

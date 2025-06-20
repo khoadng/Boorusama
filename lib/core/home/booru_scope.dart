@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import '../app.dart';
 import '../cache/providers.dart';
-import '../configs/widgets.dart';
+import '../configs/manage/widgets.dart';
 import '../foundation/display.dart';
 import '../foundation/platform.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
+import 'constants.dart';
 import 'home_page_controller.dart';
 import 'side_bar_menu.dart';
 

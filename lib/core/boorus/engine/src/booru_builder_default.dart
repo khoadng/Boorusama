@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
+import '../../../configs/gesture/gesture.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader.dart';
 import '../../../foundation/display.dart';

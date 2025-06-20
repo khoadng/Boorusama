@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../core/configs/config.dart';
-import '../../../../core/configs/create.dart';
-import '../../../../core/configs/manage.dart';
+import '../../../../core/configs/config/types.dart';
+import '../../../../core/configs/create/providers.dart';
+import '../../../../core/configs/search/widgets.dart';
+import '../../../../core/configs/viewer/widgets.dart';
 import '../../posts/post/post.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {

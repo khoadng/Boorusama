@@ -13,8 +13,8 @@ import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
 import '../bulk_downloads/widgets.dart';
 import '../cache/providers.dart';
+import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
-import '../configs/widgets.dart';
 import '../downloads/manager.dart';
 import '../foundation/display.dart';
 import '../premiums/premiums.dart';
@@ -26,6 +26,7 @@ import '../tags/favorites/widgets.dart';
 import '../theme.dart';
 import '../widgets/widgets.dart';
 import 'booru_scope.dart';
+import 'constants.dart';
 import 'custom_home.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
@@ -177,7 +178,7 @@ class HomeSideMenu extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  const CurrentBooruTile(),
+                  const CurrentBooruTile(minWidth: kMinSideBarWidth),
                   Expanded(
                     child: LayoutBuilder(
                       builder: (_, constraints) => SingleChildScrollView(

@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../configs/current.dart';
-import '../../../configs/redirect.dart';
+import '../../../configs/config/widgets.dart';
+import '../../../configs/create/routes.dart';
+import '../../../configs/manage/providers.dart';
 import '../../../configs/ref.dart';
-import '../../../configs/routes.dart';
 import '../../../downloads/downloader.dart';
 import '../../../downloads/l10n.dart';
 import '../../../downloads/widgets.dart';

@@ -2,7 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../core/configs/create.dart';
+import '../../../core/configs/auth/widgets.dart';
+import '../../../core/configs/create/widgets.dart';
+import '../../../core/configs/search/widgets.dart';
+import '../../../core/configs/viewer/widgets.dart';
 
 class CreateE621ConfigPage extends StatelessWidget {
   const CreateE621ConfigPage({

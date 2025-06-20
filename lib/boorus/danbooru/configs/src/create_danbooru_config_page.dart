@@ -6,8 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../core/configs/auth/widgets.dart';
 import '../../../../core/configs/config.dart';
-import '../../../../core/configs/create.dart';
+import '../../../../core/configs/create/create.dart';
+import '../../../../core/configs/create/providers.dart';
+import '../../../../core/configs/create/widgets.dart';
+import '../../../../core/configs/gesture/gesture.dart';
+import '../../../../core/configs/gesture/widgets.dart';
+import '../../../../core/configs/search/widgets.dart';
+import '../../../../core/configs/viewer/widgets.dart';
 import '../../../../core/foundation/url_launcher.dart';
 import '../../../../core/theme.dart';
 import '../../users/user/user.dart';

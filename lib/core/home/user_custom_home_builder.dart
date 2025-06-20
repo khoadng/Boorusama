@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../boorus/engine/providers.dart';
+import '../configs/create/routes.dart';
 import '../configs/ref.dart';
-import '../configs/routes.dart';
 import '../foundation/networking.dart';
 import '../info/app_info.dart';
 import 'custom_home.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../configs/current.dart';
+import '../configs/manage/providers.dart';
 import 'analytics_providers.dart';
 import 'analytics_view_info.dart';
 
