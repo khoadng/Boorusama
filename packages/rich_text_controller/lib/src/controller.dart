@@ -11,30 +11,29 @@ class RichTextController extends TextEditingController {
     this.options = const RichTextOptions(),
   });
 
-  RichTextController.fromSpanBuilders({
-    Function(List<String> match)? onMatch,
-    String? text,
-    Map<RegExp, InlineSpan Function(String)>? spanBuilders,
-    RichTextOptions options = const RichTextOptions(),
-  }) : this(
-         onMatch: onMatch,
-         text: text,
-         matchers: spanBuilders?.entries
-             .map(
-               (entry) =>
-                   TextMatcher(pattern: entry.key, spanBuilder: entry.value),
-             )
-             .toList(),
-         options: options,
-       );
-
   final List<TextMatcher>? matchers;
   final Function(List<String> match)? onMatch;
   final RichTextOptions options;
-  String _lastValue = '';
 
-  bool isBack(String current, String last) {
-    return current.length < last.length;
+  RegExp? _cachedCombinedRegex;
+
+  // Previous editing value for change detection
+  TextEditingValue? _lastEditingValue;
+
+  bool _isBackspace(TextEditingValue current, TextEditingValue? last) {
+    if (last == null) return false;
+    return current.text.length < last.text.length &&
+        current.selection.baseOffset <= last.selection.baseOffset;
+  }
+
+  RegExp _getCombinedRegex() {
+    return _cachedCombinedRegex ??= RegExp(
+      matchers!.map((matcher) => '(${matcher.pattern.pattern})').join('|'),
+      caseSensitive: options.caseSensitive,
+      dotAll: options.dotAll,
+      multiLine: options.multiLine,
+      unicode: options.unicode,
+    );
   }
 
   /// Setting this will notify all the listeners of this [TextEditingController]
@@ -58,6 +57,7 @@ class RichTextController extends TextEditingController {
   }) {
     // Return plain text if no matches configured or IME is composing
     if (matchers == null || matchers!.isEmpty || value.composing.isValid) {
+      _lastEditingValue = value;
       return super.buildTextSpan(
         context: context,
         withComposing: withComposing,
@@ -67,21 +67,10 @@ class RichTextController extends TextEditingController {
 
     final children = <InlineSpan>[];
     final matches = <String>{};
-
-    // Create combined regex from all patterns
-    final combinedPattern = matchers!
-        .map((matcher) => '(${matcher.pattern.pattern})')
-        .join('|');
-    final combinedRegex = RegExp(
-      combinedPattern,
-      caseSensitive: options.caseSensitive,
-      dotAll: options.dotAll,
-      multiLine: options.multiLine,
-      unicode: options.unicode,
-    );
+    final isBackspacing = _isBackspace(value, _lastEditingValue);
 
     text.splitMapJoin(
-      combinedRegex,
+      _getCombinedRegex(),
       onNonMatch: (span) {
         children.add(TextSpan(text: span, style: style));
         return span;
@@ -96,7 +85,7 @@ class RichTextController extends TextEditingController {
         );
 
         if (options.deleteOnBack) {
-          if (isBack(text, _lastValue) && match.end == selection.baseOffset) {
+          if (isBackspacing && match.end == selection.baseOffset) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               text = text.replaceRange(match.start, match.end, '');
               selection = selection.copyWith(
@@ -104,6 +93,7 @@ class RichTextController extends TextEditingController {
                 extentOffset: match.start,
               );
             });
+            _lastEditingValue = value;
             return '';
           }
         }
@@ -114,7 +104,14 @@ class RichTextController extends TextEditingController {
       },
     );
 
-    _lastValue = text;
+    _lastEditingValue = value;
     return TextSpan(style: style, children: children);
+  }
+
+  @override
+  void dispose() {
+    _cachedCombinedRegex = null;
+    _lastEditingValue = null;
+    super.dispose();
   }
 }
