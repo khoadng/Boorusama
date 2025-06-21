@@ -7,18 +7,12 @@ import 'text_matcher.dart';
 
 class RegexMatcher extends TextMatcher {
   RegexMatcher({
-    required String pattern,
+    required RegExp pattern,
     required this.spanBuilder,
     this.validator,
     super.priority,
     super.options,
-  }) : _pattern = RegExp(
-         pattern,
-         caseSensitive: options.caseSensitive,
-         dotAll: options.dotAll,
-         multiLine: options.multiLine,
-         unicode: options.unicode,
-       );
+  }) : _pattern = pattern;
 
   final RegExp _pattern;
   final InlineSpan Function(MatchCandidate candidate) spanBuilder;

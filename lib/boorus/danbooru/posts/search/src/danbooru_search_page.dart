@@ -43,9 +43,11 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
       params: widget.params,
       textMatchers: [
         RegexMatcher(
-          pattern: '($metatags)+:',
-          options: const TextMatcherOptions(
+          pattern: RegExp(
+            '($metatags)+:',
             caseSensitive: false,
+          ),
+          options: const TextMatcherOptions(
             deleteOnBack: true,
           ),
           spanBuilder: (match) => WidgetSpan(
