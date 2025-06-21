@@ -42,14 +42,14 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           postRepo.getPostsFromController(controller.tagSet, page),
       params: widget.params,
       textMatchers: [
-        TextMatcher(
+        RegexMatcher(
           pattern: RegExp(
             '($metatags)+:',
           ),
-          spanBuilder: (text) => WidgetSpan(
+          spanBuilder: (match) => WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: _MetatagContainer(
-              tag: text,
+              tag: match.text,
             ),
           ),
         ),

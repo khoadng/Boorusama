@@ -227,10 +227,10 @@ class DownloadFileNameBuilder<T extends Post>
   @override
   List<TextMatcher> get textMatchers => [
         for (final token in availableTokens)
-          TextMatcher(
+          RegexMatcher(
             pattern: RegExp('{($token[^{}]*?)}'),
-            spanBuilder: (text) => TextSpan(
-              text: text,
+            spanBuilder: (match) => TextSpan(
+              text: match.text,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: switch (token) {

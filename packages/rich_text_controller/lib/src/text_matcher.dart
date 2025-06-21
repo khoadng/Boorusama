@@ -1,19 +1,13 @@
 import 'package:flutter/widgets.dart';
 
-class TextMatcher {
-  const TextMatcher({
-    required this.pattern,
-    required this.spanBuilder,
-  });
+import 'match_result.dart';
+import 'matching_context.dart';
 
-  TextMatcher.style({
-    required this.pattern,
-    required TextStyle style,
-  }) : spanBuilder = ((text) => TextSpan(
-         text: text,
-         style: style,
-       ));
+abstract class TextMatcher {
+  const TextMatcher({this.priority = 0});
 
-  final RegExp pattern;
-  final InlineSpan Function(String text) spanBuilder;
+  final int priority;
+
+  List<MatchResult> findMatches(MatchingContext context);
+  InlineSpan buildSpan(MatchResult match, MatchingContext context);
 }
