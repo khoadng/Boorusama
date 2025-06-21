@@ -44,16 +44,14 @@ class _CustomDownloadFileNameSectionState
         .read(downloadFilenameBuilderProvider(widget.config.auth))
         ?.patternMatchMap;
 
-    individualTextController = RichTextController(
+    individualTextController = RichTextController.fromMap(
       text: widget.config.customDownloadFileNameFormat,
-      patternMatchMap: patternMatchMap,
-      onMatch: (match) {},
+      matchMap: patternMatchMap,
     );
 
-    bulkTextController = RichTextController(
+    bulkTextController = RichTextController.fromMap(
       text: widget.config.customBulkDownloadFileNameFormat,
-      patternMatchMap: patternMatchMap,
-      onMatch: (match) {},
+      matchMap: patternMatchMap,
     );
 
     super.initState();

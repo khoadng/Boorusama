@@ -1,40 +1,67 @@
 import 'package:flutter/widgets.dart';
 
+import 'rich_text_options.dart';
+
+class TextMatcher {
+  const TextMatcher({required this.pattern, required this.style});
+
+  final RegExp pattern;
+  final TextStyle style;
+}
+
 class RichTextController extends TextEditingController {
   RichTextController({
-    required this.onMatch,
+    this.onMatch,
     super.text,
-    this.patternMatchMap,
-    this.stringMatchMap,
-    this.onMatchIndex,
-    this.deleteOnBack = false,
-    this.regExpCaseSensitive = true,
-    this.regExpDotAll = false,
-    this.regExpMultiLine = false,
-    this.regExpUnicode = false,
-    // ignore: prefer_asserts_with_message
-  }) : assert(
-          (patternMatchMap != null && stringMatchMap == null) ||
-              (patternMatchMap == null && stringMatchMap != null),
-        );
-  final Map<RegExp, TextStyle>? patternMatchMap;
-  final Map<String, TextStyle>? stringMatchMap;
+    this.matchers,
+    this.options = const RichTextOptions(),
+  });
+
+  RichTextController.fromStrings({
+    Function(List<String> match)? onMatch,
+    String? text,
+    Map<String, TextStyle>? stringMap,
+    RichTextOptions options = const RichTextOptions(),
+  }) : this(
+         onMatch: onMatch,
+         text: text,
+         matchers: stringMap?.entries
+             .map(
+               (entry) => TextMatcher(
+                 pattern: RegExp(
+                   r'\b' + RegExp.escape(entry.key) + r'\b',
+                   caseSensitive: options.caseSensitive,
+                   dotAll: options.dotAll,
+                   multiLine: options.multiLine,
+                   unicode: options.unicode,
+                 ),
+                 style: entry.value,
+               ),
+             )
+             .toList(),
+         options: options,
+       );
+
+  RichTextController.fromMap({
+    Function(List<String> match)? onMatch,
+    String? text,
+    Map<RegExp, TextStyle>? matchMap,
+    RichTextOptions options = const RichTextOptions(),
+  }) : this(
+         onMatch: onMatch,
+         text: text,
+         matchers: matchMap?.entries
+             .map(
+               (entry) => TextMatcher(pattern: entry.key, style: entry.value),
+             )
+             .toList(),
+         options: options,
+       );
+
+  final List<TextMatcher>? matchers;
   final Function(List<String> match)? onMatch;
-  final Function(List<Map<String, List<int>>>)? onMatchIndex;
-  final bool? deleteOnBack;
+  final RichTextOptions options;
   String _lastValue = '';
-
-  /// controls the caseSensitive property of the full [RegExp] used to pattern match
-  final bool regExpCaseSensitive;
-
-  /// controls the dotAll property of the full [RegExp] used to pattern match
-  final bool regExpDotAll;
-
-  /// controls the multiLine property of the full [RegExp] used to pattern match
-  final bool regExpMultiLine;
-
-  /// controls the unicode property of the full [RegExp] used to pattern match
-  final bool regExpUnicode;
 
   bool isBack(String current, String last) {
     return current.length < last.length;
@@ -58,100 +85,55 @@ class RichTextController extends TextEditingController {
     required bool withComposing,
     TextStyle? style,
   }) {
+    // Return plain text if no matches configured
+    if (matchers == null || matchers!.isEmpty) {
+      return TextSpan(text: text, style: style);
+    }
+
     final children = <TextSpan>[];
     final matches = <String>{};
-    final matchIndex = <Map<String, List<int>>>[];
 
-    // Validating with REGEX
-    RegExp? allRegex;
-    allRegex = patternMatchMap != null
-        ? RegExp(
-            patternMatchMap?.keys.map((e) => e.pattern).join('|') ?? '',
-            caseSensitive: regExpCaseSensitive,
-            dotAll: regExpDotAll,
-            multiLine: regExpMultiLine,
-            unicode: regExpUnicode,
-          )
-        : null;
-    // Validating with Strings
-    RegExp? stringRegex;
-    stringRegex = stringMatchMap != null
-        ? RegExp(
-            r'\b' + stringMatchMap!.keys.join('|') + r'+\$',
-            caseSensitive: regExpCaseSensitive,
-            dotAll: regExpDotAll,
-            multiLine: regExpMultiLine,
-            unicode: regExpUnicode,
-          )
-        : null;
-    ////
+    // Create combined regex from all patterns
+    final combinedPattern = matchers!
+        .map((matcher) => '(${matcher.pattern.pattern})')
+        .join('|');
+    final combinedRegex = RegExp(
+      combinedPattern,
+      caseSensitive: options.caseSensitive,
+      dotAll: options.dotAll,
+      multiLine: options.multiLine,
+      unicode: options.unicode,
+    );
+
     text.splitMapJoin(
-      stringMatchMap == null ? allRegex! : stringRegex!,
+      combinedRegex,
       onNonMatch: (span) {
-        if (stringMatchMap != null &&
-            children.isNotEmpty &&
-            stringMatchMap!.keys.contains('${children.last.text}$span')) {
-          final ks = stringMatchMap!['${children.last.text}$span'] != null
-              ? stringMatchMap?.entries.lastWhere((element) {
-                  return element.key
-                      .allMatches('${children.last.text}$span')
-                      .isNotEmpty;
-                }).key
-              : '';
-
-          children.add(TextSpan(text: span, style: stringMatchMap![ks!]));
-          return span;
-        } else {
-          children.add(TextSpan(text: span, style: style));
-          return span;
-        }
+        children.add(TextSpan(text: span, style: style));
+        return span;
       },
-      onMatch: (m) {
-        matches.add(m[0]!);
-        final k = patternMatchMap?.entries.firstWhere((element) {
-          return element.key.allMatches(m[0]!).isNotEmpty;
-        }).key;
+      onMatch: (match) {
+        final matchText = match[0]!;
+        matches.add(matchText);
 
-        final ks = stringMatchMap?[m[0]] != null
-            ? stringMatchMap?.entries.firstWhere((element) {
-                return element.key.allMatches(m[0]!).isNotEmpty;
-              }).key
-            : '';
-        if (deleteOnBack!) {
-          if (isBack(text, _lastValue) && m.end == selection.baseOffset) {
+        // Find which matcher matched
+        final matchingMatcher = matchers!.firstWhere(
+          (matcher) => matcher.pattern.hasMatch(matchText),
+        );
+
+        if (options.deleteOnBack) {
+          if (isBack(text, _lastValue) && match.end == selection.baseOffset) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              children.removeWhere((element) => element.text! == text);
-              text = text.replaceRange(m.start, m.end, '');
+              text = text.replaceRange(match.start, match.end, '');
               selection = selection.copyWith(
-                baseOffset: m.end - (m.end - m.start),
-                extentOffset: m.end - (m.end - m.start),
+                baseOffset: match.start,
+                extentOffset: match.start,
               );
             });
-          } else {
-            children.add(
-              TextSpan(
-                text: m[0],
-                style: stringMatchMap == null
-                    ? patternMatchMap![k]
-                    : stringMatchMap![ks],
-              ),
-            );
+            return '';
           }
-        } else {
-          children.add(
-            TextSpan(
-              text: m[0],
-              style: stringMatchMap == null
-                  ? patternMatchMap![k]
-                  : stringMatchMap![ks],
-            ),
-          );
         }
-        final resultMatchIndex = matchValueIndex(m);
-        if (resultMatchIndex != null && onMatchIndex != null) {
-          matchIndex.add(resultMatchIndex);
-          onMatchIndex!(matchIndex);
-        }
+
+        children.add(TextSpan(text: matchText, style: matchingMatcher.style));
 
         return onMatch?.call(List<String>.unmodifiable(matches)) ?? '';
       },
@@ -159,18 +141,5 @@ class RichTextController extends TextEditingController {
 
     _lastValue = text;
     return TextSpan(style: style, children: children);
-  }
-
-  Map<String, List<int>>? matchValueIndex(Match match) {
-    final matchValue = match[0]?.replaceFirstMapped('#', (match) => '');
-    if (matchValue != null) {
-      final firstMatchChar = match.start + 1;
-      final lastMatchChar = match.end - 1;
-      final compactMatch = {
-        matchValue: [firstMatchChar, lastMatchChar],
-      };
-      return compactMatch;
-    }
-    return null;
   }
 }

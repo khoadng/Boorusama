@@ -23,12 +23,11 @@ class SearchPageController extends ChangeNotifier {
   final allowSearch = ValueNotifier(false);
   final tagString = ValueNotifier('');
   final focus = FocusNode();
-  late final RichTextController textController = RichTextController(
-    patternMatchMap: queryPattern ??
+  late final RichTextController textController = RichTextController.fromMap(
+    matchMap: queryPattern ??
         {
           RegExp(''): const TextStyle(color: Colors.white),
         },
-    onMatch: (match) {},
   );
 
   final SelectedTagController tagsController;
