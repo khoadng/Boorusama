@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 
 // Project imports:
 import '../analytics.dart';
@@ -28,8 +27,6 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
   bool isPlatformSupported() =>
       isAndroid() || isIOS() || isMacOS() || isWeb() || isWindows();
 
-  bool isFirebasePerformanceSupported() => isAndroid() || isIOS() || isWeb();
-
   BooruConfig? _currentConfig;
   AnalyticsViewInfo? _deviceInfo;
 
@@ -38,11 +35,6 @@ class FirebaseAnalyticsImpl implements AnalyticsInterface {
     try {
       if (isPlatformSupported()) {
         await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(enabled);
-
-        if (isFirebasePerformanceSupported()) {
-          await FirebasePerformance.instance
-              .setPerformanceCollectionEnabled(enabled);
-        }
       } else {
         logger?.logE('FirebaseAnalytics', 'Platform is not supported');
       }
