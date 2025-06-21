@@ -1,13 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'rich_text_options.dart';
-
-class TextMatcher {
-  const TextMatcher({required this.pattern, required this.style});
-
-  final RegExp pattern;
-  final TextStyle style;
-}
+import 'text_matcher.dart';
 
 class RichTextController extends TextEditingController {
   RichTextController({
@@ -17,42 +11,18 @@ class RichTextController extends TextEditingController {
     this.options = const RichTextOptions(),
   });
 
-  RichTextController.fromStrings({
+  RichTextController.fromSpanBuilders({
     Function(List<String> match)? onMatch,
     String? text,
-    Map<String, TextStyle>? stringMap,
+    Map<RegExp, InlineSpan Function(String)>? spanBuilders,
     RichTextOptions options = const RichTextOptions(),
   }) : this(
          onMatch: onMatch,
          text: text,
-         matchers: stringMap?.entries
+         matchers: spanBuilders?.entries
              .map(
-               (entry) => TextMatcher(
-                 pattern: RegExp(
-                   r'\b' + RegExp.escape(entry.key) + r'\b',
-                   caseSensitive: options.caseSensitive,
-                   dotAll: options.dotAll,
-                   multiLine: options.multiLine,
-                   unicode: options.unicode,
-                 ),
-                 style: entry.value,
-               ),
-             )
-             .toList(),
-         options: options,
-       );
-
-  RichTextController.fromMap({
-    Function(List<String> match)? onMatch,
-    String? text,
-    Map<RegExp, TextStyle>? matchMap,
-    RichTextOptions options = const RichTextOptions(),
-  }) : this(
-         onMatch: onMatch,
-         text: text,
-         matchers: matchMap?.entries
-             .map(
-               (entry) => TextMatcher(pattern: entry.key, style: entry.value),
+               (entry) =>
+                   TextMatcher(pattern: entry.key, spanBuilder: entry.value),
              )
              .toList(),
          options: options,
@@ -95,7 +65,7 @@ class RichTextController extends TextEditingController {
       );
     }
 
-    final children = <TextSpan>[];
+    final children = <InlineSpan>[];
     final matches = <String>{};
 
     // Create combined regex from all patterns
@@ -138,7 +108,7 @@ class RichTextController extends TextEditingController {
           }
         }
 
-        children.add(TextSpan(text: matchText, style: matchingMatcher.style));
+        children.add(matchingMatcher.spanBuilder(matchText));
 
         return onMatch?.call(List<String>.unmodifiable(matches)) ?? '';
       },

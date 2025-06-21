@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:filename_generator/filename_generator.dart';
 import 'package:foundation/foundation.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../configs/config.dart';
@@ -224,30 +225,36 @@ class DownloadFileNameBuilder<T extends Post>
   }
 
   @override
-  Map<RegExp, TextStyle> get patternMatchMap => {
+  List<TextMatcher> get textMatchers => [
         for (final token in availableTokens)
-          RegExp('{($token[^{}]*?)}'): TextStyle(
-            fontWeight: FontWeight.w700,
-            color: switch (token) {
-              'artist' => const Color.fromARGB(255, 255, 138, 139),
-              'character' => const Color.fromARGB(255, 53, 198, 74),
-              'copyright' => const Color.fromARGB(255, 199, 151, 255),
-              'general' => const Color.fromARGB(255, 0, 155, 230),
-              'meta' => const Color.fromARGB(255, 217, 187, 98),
-              'species' => const Color(0xffed5d1f),
-              'extension' => const Color.fromARGB(255, 204, 143, 180),
-              'md5' => const Color.fromARGB(255, 204, 143, 180),
-              'date' => const Color.fromARGB(255, 73, 170, 190),
-              'index' => const Color.fromARGB(255, 176, 86, 182),
-              'width' => const Color.fromARGB(255, 176, 86, 182),
-              'height' => const Color.fromARGB(255, 176, 86, 182),
-              'mpixels' => const Color.fromARGB(255, 176, 86, 182),
-              'aspect_ratio' => const Color.fromARGB(255, 176, 86, 182),
-              'id' => const Color.fromARGB(255, 176, 86, 182),
-              _ => const Color.fromARGB(255, 0, 155, 230),
-            },
+          TextMatcher(
+            pattern: RegExp('{($token[^{}]*?)}'),
+            spanBuilder: (text) => TextSpan(
+              text: text,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: switch (token) {
+                  'artist' => const Color.fromARGB(255, 255, 138, 139),
+                  'character' => const Color.fromARGB(255, 53, 198, 74),
+                  'copyright' => const Color.fromARGB(255, 199, 151, 255),
+                  'general' => const Color.fromARGB(255, 0, 155, 230),
+                  'meta' => const Color.fromARGB(255, 217, 187, 98),
+                  'species' => const Color(0xffed5d1f),
+                  'extension' => const Color.fromARGB(255, 204, 143, 180),
+                  'md5' => const Color.fromARGB(255, 204, 143, 180),
+                  'date' => const Color.fromARGB(255, 73, 170, 190),
+                  'index' => const Color.fromARGB(255, 176, 86, 182),
+                  'width' => const Color.fromARGB(255, 176, 86, 182),
+                  'height' => const Color.fromARGB(255, 176, 86, 182),
+                  'mpixels' => const Color.fromARGB(255, 176, 86, 182),
+                  'aspect_ratio' => const Color.fromARGB(255, 176, 86, 182),
+                  'id' => const Color.fromARGB(255, 176, 86, 182),
+                  _ => const Color.fromARGB(255, 0, 155, 230),
+                },
+              ),
+            ),
           ),
-      };
+      ];
 
   @override
   String generateSample(String format) => sampleData.firstOption.fold(

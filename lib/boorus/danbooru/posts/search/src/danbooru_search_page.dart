@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
@@ -34,18 +35,25 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
+    final metatags = ref.watch(metatagsProvider).map((e) => e.name).join('|');
 
     return SearchPageScaffold(
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
       params: widget.params,
-      queryPattern: {
-        RegExp('(${ref.watch(metatagsProvider).map((e) => e.name).join('|')})+:'):
-            TextStyle(
-          fontWeight: FontWeight.w800,
-          color: Theme.of(context).colorScheme.primary,
+      textMatchers: [
+        TextMatcher(
+          pattern: RegExp(
+            '($metatags)+:',
+          ),
+          spanBuilder: (text) => WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: _MetatagContainer(
+              tag: text,
+            ),
+          ),
         ),
-      },
+      ],
       trending: (context, controller) => _Trending(controller),
       metatags: (context, controller) => _Metatags(controller),
       itemBuilder: (
@@ -107,6 +115,30 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           ),
         ];
       },
+    );
+  }
+}
+
+class _MetatagContainer extends StatelessWidget {
+  const _MetatagContainer({
+    required this.tag,
+  });
+
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return TextContainer(
+      text: tag,
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(4),
+          bottomLeft: Radius.circular(4),
+        ),
+      ),
     );
   }
 }

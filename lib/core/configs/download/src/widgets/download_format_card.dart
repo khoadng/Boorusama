@@ -42,12 +42,19 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
 }
 
 class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
-  late final textController = RichTextController.fromMap(
-    text: widget.format,
-    matchMap: ref
-        .read(downloadFilenameBuilderProvider(widget.config.auth))
-        ?.patternMatchMap,
-  );
+  late final RichTextController textController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    textController = RichTextController(
+      text: widget.format,
+      matchers: ref
+          .read(downloadFilenameBuilderProvider(widget.config.auth))
+          ?.textMatchers,
+    );
+  }
 
   @override
   void dispose() {

@@ -68,19 +68,14 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Material(
-      color: colorScheme.brightness.isDark
-          ? colorScheme.surfaceContainerHigh
-          : colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.brightness.isDark
+            ? colorScheme.surfaceContainerHigh
+            : colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: InkWell(
-        customBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        focusColor: Colors.transparent,
-        hoverColor: theme.hoverColor,
+      child: GestureDetector(
         onTap: () => widget.onTap?.call(),
         child: Row(
           children: [

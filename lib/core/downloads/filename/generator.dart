@@ -1,8 +1,6 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:filename_generator/filename_generator.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../configs/config.dart';
@@ -13,7 +11,7 @@ import 'token_options.dart';
 abstract class DownloadFilenameGenerator<T extends Post> {
   Set<String> get availableTokens;
 
-  Map<RegExp, TextStyle> get patternMatchMap;
+  List<TextMatcher> get textMatchers;
 
   List<String> getTokenOptions(String token);
   TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption);

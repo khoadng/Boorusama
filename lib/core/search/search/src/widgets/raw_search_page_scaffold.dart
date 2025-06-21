@@ -61,7 +61,6 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.landingView,
     super.key,
     this.noticeBuilder,
-    this.queryPattern,
     this.extraHeaders,
     this.itemBuilder,
   });
@@ -83,8 +82,6 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     int page,
     SelectedTagController selectedTagController,
   ) fetcher;
-
-  final Map<RegExp, TextStyle>? queryPattern;
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 

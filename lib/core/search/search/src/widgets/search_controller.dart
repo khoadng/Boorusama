@@ -15,7 +15,7 @@ import '../../../selected_tags/tag.dart';
 class SearchPageController extends ChangeNotifier {
   SearchPageController({
     required this.tagsController,
-    required this.queryPattern,
+    required this.textMatchers,
     this.onSearch,
   });
 
@@ -23,15 +23,12 @@ class SearchPageController extends ChangeNotifier {
   final allowSearch = ValueNotifier(false);
   final tagString = ValueNotifier('');
   final focus = FocusNode();
-  late final RichTextController textController = RichTextController.fromMap(
-    matchMap: queryPattern ??
-        {
-          RegExp(''): const TextStyle(color: Colors.white),
-        },
+  late final RichTextController textController = RichTextController(
+    matchers: textMatchers,
   );
 
   final SelectedTagController tagsController;
-  final Map<RegExp, TextStyle>? queryPattern;
+  final List<TextMatcher>? textMatchers;
 
   final void Function()? onSearch;
 

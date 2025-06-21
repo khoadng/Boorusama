@@ -34,24 +34,24 @@ class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
 
 class _CustomDownloadFileNameSectionState
     extends ConsumerState<CustomDownloadFileNameSection> {
-  late final Map<RegExp, TextStyle>? patternMatchMap;
+  late final List<TextMatcher>? textMatchers;
   late final RichTextController individualTextController;
   late final RichTextController bulkTextController;
 
   @override
   void initState() {
-    patternMatchMap = ref
+    textMatchers = ref
         .read(downloadFilenameBuilderProvider(widget.config.auth))
-        ?.patternMatchMap;
+        ?.textMatchers;
 
-    individualTextController = RichTextController.fromMap(
+    individualTextController = RichTextController(
       text: widget.config.customDownloadFileNameFormat,
-      matchMap: patternMatchMap,
+      matchers: textMatchers,
     );
 
-    bulkTextController = RichTextController.fromMap(
+    bulkTextController = RichTextController(
       text: widget.config.customBulkDownloadFileNameFormat,
-      matchMap: patternMatchMap,
+      matchers: textMatchers,
     );
 
     super.initState();
