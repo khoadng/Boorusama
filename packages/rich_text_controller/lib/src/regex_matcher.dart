@@ -62,6 +62,20 @@ class RegexMatcher extends TextMatcher {
       text: match.text,
       data: match.data,
     );
-    return spanBuilder(candidate);
+
+    final userSpan = spanBuilder(candidate);
+
+    // Auto-add padding for WidgetSpan
+    if (userSpan is! TextSpan) {
+      return TextSpan(
+        children: [
+          userSpan,
+          // Add zero-width spaces to fix cursor positioning
+          TextSpan(text: '\u200b' * (match.text.length - 1)),
+        ],
+      );
+    }
+
+    return userSpan;
   }
 }
