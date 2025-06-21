@@ -32,61 +32,41 @@ class RichTextController extends TextEditingController {
   }
 
   @override
-  set value(TextEditingValue newValue) {
-    if (_lastEditingValue != null && _shouldHandleDeleteOnBack(newValue)) {
-      return; // Deletion handled
-    }
-    super.value = newValue;
+  set selection(TextSelection newSelection) {
+    super.selection = _adjustSelection(newSelection);
   }
 
-  bool _shouldHandleDeleteOnBack(TextEditingValue newValue) {
-    if (_lastEditingValue == null) return false;
-    if (!_isBackspace(newValue, _lastEditingValue)) return false;
+  TextSelection _adjustSelection(TextSelection selection) {
+    if (selection.baseOffset != selection.extentOffset) {
+      return selection; // Don't mess with text selections
+    }
 
-    // Find matches in previous state
-    final previousContext = MatchingContext(
-      fullText: _lastEditingValue!.text,
-      selection: _lastEditingValue!.selection,
+    final matchingContext = MatchingContext(
+      fullText: text,
+      selection: selection,
       isBackspacing: false,
       state: _state,
     );
 
-    final allMatches = <MatchResult>[];
+    // Let each matcher adjust the selection
+    TextSelection adjustedSelection = selection;
     for (final matcher in matchers) {
-      if (!matcher.options.deleteOnBack) continue;
-      final matches = matcher.findMatches(previousContext);
-      allMatches.addAll(matches);
+      adjustedSelection = matcher.adjustSelection(
+        adjustedSelection,
+        matchingContext,
+      );
     }
 
-    final resolvedMatches = _resolveConflicts(allMatches);
-
-    // Check if cursor was at end of any match
-    for (final match in resolvedMatches) {
-      if (match.end == _lastEditingValue!.selection.baseOffset) {
-        final newText = _lastEditingValue!.text.replaceRange(
-          match.start,
-          match.end,
-          '',
-        );
-        super.value = _lastEditingValue!.copyWith(
-          text: newText,
-          selection: TextSelection.collapsed(offset: match.start),
-        );
-        return true;
-      }
-    }
-
-    return false;
+    return adjustedSelection;
   }
 
   List<MatchResult> _resolveConflicts(List<MatchResult> matches) {
     if (matches.length <= 1) return matches;
 
-    // Sort by position first, then by priority
     matches.sort((a, b) {
       final posCompare = a.start.compareTo(b.start);
       if (posCompare != 0) return posCompare;
-      return b.priority.compareTo(a.priority); // Higher priority first
+      return b.priority.compareTo(a.priority);
     });
 
     final resolved = <MatchResult>[];
@@ -124,7 +104,6 @@ class RichTextController extends TextEditingController {
       state: _state,
     );
 
-    // Collect all matches from all matchers
     final allMatches = <MatchResult>[];
     final matchedTexts = <String>{};
 
@@ -133,15 +112,12 @@ class RichTextController extends TextEditingController {
       allMatches.addAll(matches);
     }
 
-    // Resolve conflicts
     final resolvedMatches = _resolveConflicts(allMatches);
 
-    // Build text spans
     final children = <InlineSpan>[];
     int lastEnd = 0;
 
     for (final match in resolvedMatches) {
-      // Add text before match
       if (match.start > lastEnd) {
         children.add(
           TextSpan(
@@ -151,7 +127,6 @@ class RichTextController extends TextEditingController {
         );
       }
 
-      // Find the matcher that produced this match and build span
       final matcher = matchers.firstWhere(
         (m) => m
             .findMatches(matchingContext)
@@ -163,7 +138,6 @@ class RichTextController extends TextEditingController {
       lastEnd = match.end;
     }
 
-    // Add remaining text
     if (lastEnd < text.length) {
       children.add(
         TextSpan(
@@ -173,7 +147,6 @@ class RichTextController extends TextEditingController {
       );
     }
 
-    // Trigger onMatch callback
     if (matchedTexts.isNotEmpty) {
       onMatch?.call(List<String>.unmodifiable(matchedTexts));
     }

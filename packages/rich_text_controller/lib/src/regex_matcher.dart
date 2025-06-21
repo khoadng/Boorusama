@@ -78,4 +78,41 @@ class RegexMatcher extends TextMatcher {
 
     return userSpan;
   }
+
+  @override
+  TextSelection adjustSelection(
+    TextSelection selection,
+    MatchingContext context,
+  ) {
+    if (!options.jumpOver) return selection;
+
+    if (selection.baseOffset != selection.extentOffset) return selection;
+
+    final cursor = selection.baseOffset;
+
+    if (cursor <= 0 || cursor >= context.fullText.length) {
+      return selection;
+    }
+
+    final matches = _pattern.allMatches(context.fullText);
+
+    // pick the closest match to the cursor and adjust selection based on that
+    final match = matches.reduce(
+      (a, b) => (a.start - cursor).abs() < (b.start - cursor).abs() ? a : b,
+    );
+
+    if (match.start <= cursor && match.end >= cursor) {
+      final distanceToStart = (cursor - match.start).abs();
+      final distanceToEnd = (cursor - match.end).abs();
+
+      // if one side is 1, prefer the other side
+      if (distanceToEnd == 1) {
+        return TextSelection.collapsed(offset: match.start);
+      } else if (distanceToStart == 1) {
+        return TextSelection.collapsed(offset: match.end);
+      }
+    }
+
+    return selection;
+  }
 }

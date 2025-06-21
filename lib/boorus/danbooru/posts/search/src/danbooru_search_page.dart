@@ -47,9 +47,6 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
             '($metatags)+:',
             caseSensitive: false,
           ),
-          options: const TextMatcherOptions(
-            deleteOnBack: true,
-          ),
           spanBuilder: (match) => WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: _MetatagContainer(

@@ -15,4 +15,11 @@ abstract class TextMatcher {
 
   List<MatchResult> findMatches(MatchingContext context);
   InlineSpan buildSpan(MatchResult match, MatchingContext context);
+
+  TextSelection adjustSelection(
+    TextSelection selection,
+    MatchingContext context,
+  ) {
+    return selection;
+  }
 }
