@@ -74,7 +74,8 @@ class RichTextController extends TextEditingController {
     value = value.copyWith(
       text: newText,
       selection: const TextSelection.collapsed(offset: -1),
-      composing: TextRange.empty,
+      // Only clear composing if IME is not active
+      composing: value.composing.isValid ? value.composing : TextRange.empty,
     );
   }
 
@@ -85,9 +86,13 @@ class RichTextController extends TextEditingController {
     required bool withComposing,
     TextStyle? style,
   }) {
-    // Return plain text if no matches configured
-    if (matchers == null || matchers!.isEmpty) {
-      return TextSpan(text: text, style: style);
+    // Return plain text if no matches configured or IME is composing
+    if (matchers == null || matchers!.isEmpty || value.composing.isValid) {
+      return super.buildTextSpan(
+        context: context,
+        withComposing: withComposing,
+        style: style,
+      );
     }
 
     final children = <TextSpan>[];
