@@ -289,7 +289,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
   }
 }
 
-FutureOr<List<CommentDto>> _parseCommentDtos(value) {
+FutureOr<List<CommentDto>> _parseCommentDtos(Response value) {
   final dtos = <CommentDto>[];
   final xmlDocument = XmlDocument.parse(value.data);
   final comments = xmlDocument.findAllElements('comment');

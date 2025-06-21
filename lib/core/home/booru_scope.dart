@@ -77,7 +77,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     );
   }
 
-  void _onSidebarStateChanged(open) {
+  void _onSidebarStateChanged(bool open) {
     if (!isDesktop) return;
 
     if (open) {
