@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'match_result.dart';
 import 'matching_context.dart';
-import 'rich_text_options.dart';
 import 'text_matcher.dart';
 
 class RichTextController extends TextEditingController {
@@ -9,12 +8,10 @@ class RichTextController extends TextEditingController {
     this.onMatch,
     super.text,
     List<TextMatcher>? matchers = const [],
-    this.options = const RichTextOptions(),
   }) : matchers = matchers ?? const [];
 
   final List<TextMatcher> matchers;
   final Function(List<String> match)? onMatch;
-  final RichTextOptions options;
 
   TextEditingValue? _lastEditingValue;
   final Map<String, dynamic> _state = {};
@@ -32,6 +29,54 @@ class RichTextController extends TextEditingController {
       selection: const TextSelection.collapsed(offset: -1),
       composing: value.composing.isValid ? value.composing : TextRange.empty,
     );
+  }
+
+  @override
+  set value(TextEditingValue newValue) {
+    if (_lastEditingValue != null && _shouldHandleDeleteOnBack(newValue)) {
+      return; // Deletion handled
+    }
+    super.value = newValue;
+  }
+
+  bool _shouldHandleDeleteOnBack(TextEditingValue newValue) {
+    if (_lastEditingValue == null) return false;
+    if (!_isBackspace(newValue, _lastEditingValue)) return false;
+
+    // Find matches in previous state
+    final previousContext = MatchingContext(
+      fullText: _lastEditingValue!.text,
+      selection: _lastEditingValue!.selection,
+      isBackspacing: false,
+      state: _state,
+    );
+
+    final allMatches = <MatchResult>[];
+    for (final matcher in matchers) {
+      if (!matcher.options.deleteOnBack) continue;
+      final matches = matcher.findMatches(previousContext);
+      allMatches.addAll(matches);
+    }
+
+    final resolvedMatches = _resolveConflicts(allMatches);
+
+    // Check if cursor was at end of any match
+    for (final match in resolvedMatches) {
+      if (match.end == _lastEditingValue!.selection.baseOffset) {
+        final newText = _lastEditingValue!.text.replaceRange(
+          match.start,
+          match.end,
+          '',
+        );
+        super.value = _lastEditingValue!.copyWith(
+          text: newText,
+          selection: TextSelection.collapsed(offset: match.start),
+        );
+        return true;
+      }
+    }
+
+    return false;
   }
 
   List<MatchResult> _resolveConflicts(List<MatchResult> matches) {
@@ -76,7 +121,6 @@ class RichTextController extends TextEditingController {
       fullText: text,
       selection: selection,
       isBackspacing: _isBackspace(value, _lastEditingValue),
-      options: options,
       state: _state,
     );
 
@@ -105,21 +149,6 @@ class RichTextController extends TextEditingController {
             style: style,
           ),
         );
-      }
-
-      // Handle deleteOnBack logic
-      if (options.deleteOnBack &&
-          matchingContext.isBackspacing &&
-          match.end == selection.baseOffset) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          text = text.replaceRange(match.start, match.end, '');
-          selection = selection.copyWith(
-            baseOffset: match.start,
-            extentOffset: match.start,
-          );
-        });
-        _lastEditingValue = value;
-        continue;
       }
 
       // Find the matcher that produced this match and build span

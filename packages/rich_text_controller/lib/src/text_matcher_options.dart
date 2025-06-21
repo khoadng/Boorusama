@@ -1,5 +1,5 @@
-class RichTextOptions {
-  const RichTextOptions({
+class TextMatcherOptions {
+  const TextMatcherOptions({
     this.deleteOnBack = false,
     this.caseSensitive = true,
     this.dotAll = false,

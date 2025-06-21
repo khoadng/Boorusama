@@ -6,21 +6,28 @@ import 'matching_context.dart';
 import 'text_matcher.dart';
 
 class RegexMatcher extends TextMatcher {
-  const RegexMatcher({
-    required this.pattern,
+  RegexMatcher({
+    required String pattern,
     required this.spanBuilder,
     this.validator,
     super.priority,
-  });
+    super.options,
+  }) : _pattern = RegExp(
+         pattern,
+         caseSensitive: options.caseSensitive,
+         dotAll: options.dotAll,
+         multiLine: options.multiLine,
+         unicode: options.unicode,
+       );
 
-  final RegExp pattern;
+  final RegExp _pattern;
   final InlineSpan Function(MatchCandidate candidate) spanBuilder;
   final Map<String, dynamic>? Function(MatchCandidate candidate)? validator;
 
   @override
   List<MatchResult> findMatches(MatchingContext context) {
     final matches = <MatchResult>[];
-    final allMatches = pattern.allMatches(context.fullText);
+    final allMatches = _pattern.allMatches(context.fullText);
 
     for (final match in allMatches) {
       final candidate = MatchCandidate(
