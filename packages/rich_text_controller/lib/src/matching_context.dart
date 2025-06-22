@@ -22,4 +22,20 @@ class MatchingContext {
 
   String textAfter(int position) =>
       position < fullText.length ? fullText.substring(position) : '';
+
+  MatchingContext copyWith({
+    String? fullText,
+    TextSelection? selection,
+    bool? isBackspacing,
+    Map<String, dynamic>? state,
+    List<MatchResult>? previousMatches,
+  }) {
+    return MatchingContext(
+      fullText: fullText ?? this.fullText,
+      selection: selection ?? this.selection,
+      isBackspacing: isBackspacing ?? this.isBackspacing,
+      state: state ?? this.state,
+      previousMatches: previousMatches ?? this.previousMatches,
+    );
+  }
 }
