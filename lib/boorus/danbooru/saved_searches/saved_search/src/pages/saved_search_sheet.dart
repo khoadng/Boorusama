@@ -8,13 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import '../../../../../../core/search/search/routes.dart';
+import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/utils/stream/text_editing_controller_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../services/tag_syntax_highlighter.dart';
 import '../types/saved_search.dart';
 
 class SavedSearchSheet extends ConsumerStatefulWidget {
@@ -34,7 +37,13 @@ class SavedSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
-  final queryTextController = TextEditingController();
+  final queryTextController = RichTextController(
+    matchers: [
+      SavedSearchQueryMatcher(
+        orColor: TagCategory.copyright().darkColor,
+      ),
+    ],
+  );
   final labelTextController = TextEditingController();
 
   final queryHasText = ValueNotifier(false);
