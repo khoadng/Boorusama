@@ -13,11 +13,10 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import '../../../../../../core/search/search/routes.dart';
-import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/utils/stream/text_editing_controller_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../services/tag_syntax_highlighter.dart';
+import '../../../../syntax/providers.dart';
 import '../types/saved_search.dart';
 
 class SavedSearchSheet extends ConsumerStatefulWidget {
@@ -37,13 +36,7 @@ class SavedSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
-  final queryTextController = RichTextController(
-    matchers: [
-      SavedSearchQueryMatcher(
-        orColor: TagCategory.copyright().darkColor,
-      ),
-    ],
-  );
+  late final RichTextController queryTextController;
   final labelTextController = TextEditingController();
 
   final queryHasText = ValueNotifier(false);
@@ -54,6 +47,14 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
   @override
   void initState() {
     super.initState();
+
+    queryTextController = RichTextController(
+      text: widget.initialValue?.query,
+      matchers: [
+        ref.read(danbooruQueryMatcherProvider),
+      ],
+    );
+
     queryTextController
         .textAsStream()
         .distinct()
