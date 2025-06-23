@@ -23,15 +23,6 @@ class RichTextController extends TextEditingController {
   }
 
   @override
-  set text(String newText) {
-    value = value.copyWith(
-      text: newText,
-      selection: const TextSelection.collapsed(offset: -1),
-      composing: value.composing.isValid ? value.composing : TextRange.empty,
-    );
-  }
-
-  @override
   set selection(TextSelection newSelection) {
     super.selection = _adjustSelection(newSelection);
   }
@@ -88,7 +79,7 @@ class RichTextController extends TextEditingController {
     required bool withComposing,
     TextStyle? style,
   }) {
-    if (matchers.isEmpty || value.composing.isValid) {
+    if (matchers.isEmpty) {
       _lastEditingValue = value;
       return super.buildTextSpan(
         context: context,
@@ -112,21 +103,34 @@ class RichTextController extends TextEditingController {
       allMatches.addAll(matches);
     }
 
-    final resolvedMatches = _resolveConflicts(allMatches);
+    // Filter out matches that overlap with composing range
+    final composing = withComposing ? value.composing : TextRange.empty;
+    final filteredMatches = allMatches.where((match) {
+      if (!composing.isValid) return true;
+      // Skip matches that overlap with composing text
+      return match.end <= composing.start || match.start >= composing.end;
+    }).toList();
+
+    final resolvedMatches = _resolveConflicts(filteredMatches);
 
     final children = <InlineSpan>[];
     int lastEnd = 0;
 
     for (final match in resolvedMatches) {
+      // Add text before match
       if (match.start > lastEnd) {
+        final beforeText = text.substring(lastEnd, match.start);
         children.add(
-          TextSpan(
-            text: text.substring(lastEnd, match.start),
-            style: style,
+          _buildTextWithComposing(
+            beforeText,
+            lastEnd,
+            composing,
+            style,
           ),
         );
       }
 
+      // Add matched span
       final matcher = matchers.firstWhere(
         (m) => m
             .findMatches(matchingContext)
@@ -138,11 +142,15 @@ class RichTextController extends TextEditingController {
       lastEnd = match.end;
     }
 
+    // Add remaining text
     if (lastEnd < text.length) {
+      final remainingText = text.substring(lastEnd);
       children.add(
-        TextSpan(
-          text: text.substring(lastEnd),
-          style: style,
+        _buildTextWithComposing(
+          remainingText,
+          lastEnd,
+          composing,
+          style,
         ),
       );
     }
@@ -153,6 +161,55 @@ class RichTextController extends TextEditingController {
 
     _lastEditingValue = value;
     return TextSpan(style: style, children: children);
+  }
+
+  TextSpan _buildTextWithComposing(
+    String text,
+    int startOffset,
+    TextRange composing,
+    TextStyle? style,
+  ) {
+    if (!composing.isValid || text.isEmpty) {
+      return TextSpan(text: text, style: style);
+    }
+
+    final children = <InlineSpan>[];
+    int lastEnd = 0;
+
+    final relativeComposingStart = composing.start - startOffset;
+    final relativeComposingEnd = composing.end - startOffset;
+
+    if (relativeComposingStart > 0 && relativeComposingStart < text.length) {
+      // Text before composing
+      children.add(
+        TextSpan(text: text.substring(0, relativeComposingStart), style: style),
+      );
+      lastEnd = relativeComposingStart;
+    }
+
+    if (relativeComposingEnd > lastEnd && relativeComposingEnd <= text.length) {
+      // Composing text with underline
+      children.add(
+        TextSpan(
+          text: text.substring(lastEnd, relativeComposingEnd),
+          style:
+              style?.copyWith(decoration: TextDecoration.underline) ??
+              const TextStyle(decoration: TextDecoration.underline),
+        ),
+      );
+      lastEnd = relativeComposingEnd;
+    }
+
+    if (lastEnd < text.length) {
+      // Text after composing
+      children.add(TextSpan(text: text.substring(lastEnd), style: style));
+    }
+
+    return TextSpan(
+      children: children.isEmpty
+          ? [TextSpan(text: text, style: style)]
+          : children,
+    );
   }
 
   @override
