@@ -5,13 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../theme/colors.dart';
 import '../types/query_highlight_style.dart';
 
 final defaultQueryHighlightStyleProvider = Provider<QueryHighlightStyle>(
   (ref) {
-    final colorScheme = ref.watch(colorSchemeProvider);
-
     return QueryHighlightStyle(
       operator: Colors.purple,
       groupingColors: const [
@@ -29,14 +26,11 @@ final defaultQueryHighlightStyleProvider = Provider<QueryHighlightStyle>(
         Colors.amber,
         Colors.deepOrange,
       ],
-      defaultColor: colorScheme.onSurface,
+      defaultColor: Colors.purple,
       focus: FocusStyle(
         backgroundColor: Colors.purple.withValues(alpha: 0.1),
         shadowColor: Colors.purple,
       ),
     );
   },
-  dependencies: [
-    colorSchemeProvider,
-  ],
 );

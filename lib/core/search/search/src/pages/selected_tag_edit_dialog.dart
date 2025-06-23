@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../queries/query_utils.dart';
@@ -29,11 +31,21 @@ class SelectedTagEditDialog extends ConsumerStatefulWidget {
 }
 
 class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
-  late final controller = TextEditingController(
-    text: widget.tag.toString(),
-  );
+  late final RichTextController controller;
   final showSuggestions = ValueNotifier(false);
   final focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    final matcher = ref.read(queryMatcherProvider(ref.readConfigAuth));
+
+    controller = RichTextController(
+      text: widget.tag.toString(),
+      matchers: matcher != null ? [matcher] : [],
+    );
+  }
 
   @override
   void dispose() {

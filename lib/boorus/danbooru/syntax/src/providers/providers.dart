@@ -24,7 +24,4 @@ final danbooruQueryMatcherProvider = Provider<TextMatcher>(
       style: ref.watch(defaultQueryHighlightStyleProvider),
     );
   },
-  dependencies: [
-    defaultQueryHighlightStyleProvider,
-  ],
 );

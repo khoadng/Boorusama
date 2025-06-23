@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../autocompletes/autocomplete_repository.dart';
@@ -86,5 +87,10 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TagColorGenerator tagColorGenerator() {
     return const DefaultTagColorGenerator();
+  }
+
+  @override
+  TextMatcher? queryMatcher(BooruConfigAuth config) {
+    return null;
   }
 }
