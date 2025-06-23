@@ -14,8 +14,15 @@ class QueryHighlightStyle {
   final Color defaultColor;
   final FocusStyle? focus;
 
-  Color groupingColor(int level) =>
-      groupingColors[level % groupingColors.length];
+  Color groupingColor(int? level) {
+    final effectiveLevel = level ?? 0;
+
+    if (groupingColors.isEmpty) {
+      return defaultColor;
+    }
+
+    return groupingColors[effectiveLevel % groupingColors.length];
+  }
 }
 
 class FocusStyle {

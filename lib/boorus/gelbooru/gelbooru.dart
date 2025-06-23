@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
@@ -42,6 +43,7 @@ import 'favorites/favorites.dart';
 import 'home/home.dart';
 import 'posts/gelbooru_post_details_page.dart';
 import 'posts/posts.dart';
+import 'syntax/src/providers/providers.dart';
 
 export 'posts/posts.dart';
 
@@ -366,6 +368,11 @@ class GelbooruRepository extends BooruRepositoryDefault {
   @override
   ImageUrlResolver imageUrlResolver() {
     return const GelbooruImageUrlResolver();
+  }
+
+  @override
+  TextMatcher? queryMatcher(BooruConfigAuth config) {
+    return ref.watch(gelbooruQueryMatcherProvider);
   }
 
   @override

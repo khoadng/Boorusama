@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:booru_clients/gelbooru.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
@@ -40,6 +41,7 @@ import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
 import 'posts/posts_v2.dart';
+import 'syntax/src/providers/providers.dart';
 
 const kGelbooruV2CustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
@@ -302,6 +304,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return IndexPhpPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  TextMatcher? queryMatcher(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2QueryMatcherProvider);
   }
 
   @override

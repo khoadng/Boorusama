@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../core/search/syntax/syntax.dart';
-import 'danbooru_tokens.dart';
+import 'gelbooru_v2_tokens.dart';
 
-class DanbooruStyler extends TokenStyler<DanbooruTokenData> {
+class GelbooruV2Styler extends TokenStyler<GelbooruV2TokenData> {
   @override
   InlineSpan styleToken(
-    QueryToken<DanbooruTokenData> token,
+    QueryToken<GelbooruV2TokenData> token,
     QueryHighlightStyle style,
   ) {
     return switch (token.data) {
-      DanbooruCommonToken(:final data) => switch (data.type) {
+      GelbooruV2CommonToken(:final data) => switch (data.type) {
           CommonTokenType.or => StylingUtils.buildOperatorSpan(
               token.text,
               style.operator,
@@ -25,13 +25,17 @@ class DanbooruStyler extends TokenStyler<DanbooruTokenData> {
               data.isFocused,
             ),
         },
-      DanbooruSpecificToken(:final data) => switch (data.type) {
-          DanbooruSpecificTokenType.tag => TextSpan(
-              text: token.text,
-              style: TextStyle(
-                color: style.defaultColor,
-                fontWeight: FontWeight.w500,
-              ),
+      GelbooruV2SpecificToken(:final data) => switch (data.type) {
+          GelbooruV2SpecificTokenType.tilde => StylingUtils.buildOperatorSpan(
+              token.text,
+              style.operator,
+            ),
+          GelbooruV2SpecificTokenType.tildeOpenParen ||
+          GelbooruV2SpecificTokenType.tildeCloseParen =>
+            StylingUtils.buildFocusableSpan(
+              token.text,
+              style.operator,
+              data.isFocused,
             ),
         },
     };

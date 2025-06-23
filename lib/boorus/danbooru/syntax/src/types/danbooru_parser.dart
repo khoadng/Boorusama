@@ -2,12 +2,10 @@
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../../core/search/syntax/src/types/common_tokens.dart';
-import '../../../../../core/search/syntax/src/types/grammar_interface.dart';
+import '../../../../../core/search/syntax/syntax.dart';
 import 'danbooru_tokens.dart';
 
 class DanbooruParser extends QueryParser<DanbooruTokenData> {
-  static final _orRegex = RegExp(r'\bor\b');
   static final _tagRegex = RegExp(r'[a-zA-Z0-9_]+_\([^)]*\)');
 
   @override
@@ -18,22 +16,16 @@ class DanbooruParser extends QueryParser<DanbooruTokenData> {
     final tokens = <QueryToken<DanbooruTokenData>>[];
 
     try {
-      // Parse OR keywords
-      for (final match in _orRegex.allMatches(query)) {
-        tokens.add(
-          QueryToken(
-            start: match.start,
-            end: match.end,
-            text: match.group(0)!,
-            data: const DanbooruCommonToken(
+      tokens
+        ..addAll(
+          ParsingUtils.parseOrKeywords(
+            query,
+            const DanbooruCommonToken(
               CommonTokenData(type: CommonTokenType.or),
             ),
           ),
-        );
-      }
-
-      // Parse parentheses with focus detection
-      tokens.addAll(_parseParentheses(query, context.selection.baseOffset));
+        )
+        ..addAll(_parseParentheses(query, context.selection.baseOffset));
     } catch (e) {
       // Ignore failed tokens, continue with what we have
     }
@@ -57,70 +49,16 @@ class DanbooruParser extends QueryParser<DanbooruTokenData> {
       }
     }
 
-    // Find grouping parentheses pairs
-    final stack = <({int position, int level})>[];
-    final parenPairs = <({int openPos, int closePos, int level})>[];
-    var currentLevel = 0;
+    final parenPairs =
+        ParsingUtils.findParenthesesPairs(query, tagParenPositions);
 
-    for (var i = 0; i < query.length; i++) {
-      if (query[i] == '(' && !tagParenPositions.contains(i)) {
-        stack.add((position: i, level: currentLevel));
-        currentLevel++;
-      } else if (query[i] == ')' &&
-          !tagParenPositions.contains(i) &&
-          stack.isNotEmpty) {
-        final opening = stack.removeLast();
-        currentLevel--;
-        parenPairs.add(
-          (
-            openPos: opening.position,
-            closePos: i,
-            level: opening.level,
-          ),
-        );
-      }
-    }
+    final focusedPairIndex =
+        ParsingUtils.findFocusedPair(parenPairs, cursorPos);
 
-    // Find focused pair (innermost containing cursor)
-    int? focusedPairIndex;
-    for (var i = 0; i < parenPairs.length; i++) {
-      final pair = parenPairs[i];
-      if (cursorPos > pair.openPos && cursorPos <= pair.closePos) {
-        if (focusedPairIndex == null ||
-            parenPairs[i].level > parenPairs[focusedPairIndex].level) {
-          focusedPairIndex = i;
-        }
-      }
-    }
-
-    // Create tokens
-    final tokens = <QueryToken<DanbooruTokenData>>[];
-    for (var i = 0; i < parenPairs.length; i++) {
-      final pair = parenPairs[i];
-      final isFocused = i == focusedPairIndex;
-      final openData = CommonTokenData(
-        type: CommonTokenType.openParen,
-        level: pair.level,
-        isFocused: isFocused,
-      );
-      final closeData = openData.copyWith(type: CommonTokenType.closeParen);
-
-      tokens.addAll([
-        QueryToken(
-          start: pair.openPos,
-          end: pair.openPos + 1,
-          text: '(',
-          data: DanbooruCommonToken(openData),
-        ),
-        QueryToken(
-          start: pair.closePos,
-          end: pair.closePos + 1,
-          text: ')',
-          data: DanbooruCommonToken(closeData),
-        ),
-      ]);
-    }
-
-    return tokens;
+    return ParsingUtils.createParenthesesTokens(
+      parenPairs,
+      focusedPairIndex,
+      (data) => DanbooruCommonToken(data),
+    );
   }
 }

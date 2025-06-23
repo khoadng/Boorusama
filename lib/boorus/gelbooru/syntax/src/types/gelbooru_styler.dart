@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../core/search/syntax/syntax.dart';
-import 'danbooru_tokens.dart';
+import 'gelbooru_tokens.dart';
 
-class DanbooruStyler extends TokenStyler<DanbooruTokenData> {
+class GelbooruStyler extends TokenStyler<GelbooruTokenData> {
   @override
   InlineSpan styleToken(
-    QueryToken<DanbooruTokenData> token,
+    QueryToken<GelbooruTokenData> token,
     QueryHighlightStyle style,
   ) {
     return switch (token.data) {
-      DanbooruCommonToken(:final data) => switch (data.type) {
+      GelbooruCommonToken(:final data) => switch (data.type) {
           CommonTokenType.or => StylingUtils.buildOperatorSpan(
               token.text,
               style.operator,
@@ -25,13 +25,17 @@ class DanbooruStyler extends TokenStyler<DanbooruTokenData> {
               data.isFocused,
             ),
         },
-      DanbooruSpecificToken(:final data) => switch (data.type) {
-          DanbooruSpecificTokenType.tag => TextSpan(
-              text: token.text,
-              style: TextStyle(
-                color: style.defaultColor,
-                fontWeight: FontWeight.w500,
-              ),
+      GelbooruSpecificToken(:final data) => switch (data.type) {
+          GelbooruSpecificTokenType.tilde => StylingUtils.buildOperatorSpan(
+              token.text,
+              style.operator,
+            ),
+          GelbooruSpecificTokenType.openBrace ||
+          GelbooruSpecificTokenType.closeBrace =>
+            StylingUtils.buildFocusableSpan(
+              token.text,
+              style.operator,
+              data.isFocused,
             ),
         },
     };

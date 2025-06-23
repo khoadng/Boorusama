@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../core/search/syntax/src/types/common_tokens.dart';
+import '../../../../../core/search/syntax/syntax.dart';
 
 enum DanbooruSpecificTokenType {
   tag,
