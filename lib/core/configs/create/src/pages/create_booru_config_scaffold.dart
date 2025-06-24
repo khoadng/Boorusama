@@ -330,7 +330,7 @@ class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
 
       if (item != null) {
         ref.read(analyticsProvider).whenData(
-              (a) => a.logScreenView(item.name),
+              (a) => a?.logScreenView(item.name),
             );
       }
     }

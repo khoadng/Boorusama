@@ -370,7 +370,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                   onTap: () => setState(() {
                     _selectedEntry = entries.indexOf(entry);
                     ref.read(analyticsProvider).whenData(
-                          (a) => a.logScreenView(entry.name),
+                          (a) => a?.logScreenView(entry.name),
                         );
 
                     widget.onTabChanged?.call(entry.title);

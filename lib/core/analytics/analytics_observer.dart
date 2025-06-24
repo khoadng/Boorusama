@@ -12,57 +12,57 @@ class AnalyticsObserver implements NavigatorObserver {
 
   final Ref Function() ref;
 
-  Future<NavigatorObserver> withObserver() async {
+  Future<NavigatorObserver?> withObserver() async {
     final analytics = await ref().read(analyticsProvider.future);
-    return analytics.getAnalyticsObserver();
+    return analytics?.getAnalyticsObserver();
   }
 
   @override
   void didChangeTop(Route topRoute, Route? previousTopRoute) {
     withObserver().then((observer) {
-      observer.didChangeTop(topRoute, previousTopRoute);
+      observer?.didChangeTop(topRoute, previousTopRoute);
     });
   }
 
   @override
   void didPop(Route route, Route? previousRoute) {
     withObserver().then((observer) {
-      observer.didPop(route, previousRoute);
+      observer?.didPop(route, previousRoute);
     });
   }
 
   @override
   void didPush(Route route, Route? previousRoute) {
     withObserver().then((observer) {
-      observer.didPush(route, previousRoute);
+      observer?.didPush(route, previousRoute);
     });
   }
 
   @override
   void didRemove(Route route, Route? previousRoute) {
     withObserver().then((observer) {
-      observer.didRemove(route, previousRoute);
+      observer?.didRemove(route, previousRoute);
     });
   }
 
   @override
   void didReplace({Route? newRoute, Route? oldRoute}) {
     withObserver().then((observer) {
-      observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+      observer?.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     });
   }
 
   @override
   void didStartUserGesture(Route route, Route? previousRoute) {
     withObserver().then((observer) {
-      observer.didStartUserGesture(route, previousRoute);
+      observer?.didStartUserGesture(route, previousRoute);
     });
   }
 
   @override
   void didStopUserGesture() {
     withObserver().then((observer) {
-      observer.didStopUserGesture();
+      observer?.didStopUserGesture();
     });
   }
 

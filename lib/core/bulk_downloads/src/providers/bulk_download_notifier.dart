@@ -546,7 +546,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
 
     ref.read(analyticsProvider).whenData((analytics) {
-      analytics.logEvent(
+      analytics?.logEvent(
         'bulk_download_start',
         parameters: {
           'quality': task.quality,

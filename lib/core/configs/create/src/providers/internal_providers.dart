@@ -33,7 +33,7 @@ final validateConfigProvider = FutureProvider.autoDispose<bool?>((ref) async {
   if (config == null) return null;
 
   ref.watch(analyticsProvider).whenData(
-        (analytics) => analytics.logEvent(
+        (analytics) => analytics?.logEvent(
           'config_verify',
           parameters: {
             'url': Uri.tryParse(config.url)?.host,

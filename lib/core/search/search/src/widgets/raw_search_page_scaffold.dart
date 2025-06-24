@@ -712,7 +712,7 @@ class _SearchResultAnalyticsAnchorState
   void initState() {
     super.initState();
     ref.read(analyticsProvider).whenData(
-          (analytics) => analytics.logScreenView('/search_result'),
+          (analytics) => analytics?.logScreenView('/search_result'),
         );
   }
 
@@ -733,7 +733,7 @@ class SearchViewAnalyticsAnchor extends ConsumerStatefulWidget {
   final String routeName;
 
   final RouteSettings? previousRoute;
-  final AnalyticsInterface analytics;
+  final AnalyticsInterface? analytics;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -745,7 +745,7 @@ class _SuggestionViewAnalyticsAnchoreState
   @override
   void initState() {
     super.initState();
-    widget.analytics.logScreenView(widget.routeName);
+    widget.analytics?.logScreenView(widget.routeName);
   }
 
   @override
@@ -753,7 +753,7 @@ class _SuggestionViewAnalyticsAnchoreState
     final name = widget.previousRoute?.name;
 
     if (name != null) {
-      widget.analytics.logScreenView(name);
+      widget.analytics?.logScreenView(name);
     }
 
     super.dispose();

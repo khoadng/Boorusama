@@ -99,7 +99,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         onSuccess?.call(config);
 
         analyticsAsync.whenData(
-          (a) => a.logEvent(
+          (a) => a?.logEvent(
             eventName,
             parameters: {
               ...baseParams,
@@ -141,7 +141,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       onSuccess?.call(config);
 
       analyticsAsync.whenData(
-        (a) => a.logEvent(
+        (a) => a?.logEvent(
           eventName,
           parameters: {
             ...baseParams,
@@ -202,7 +202,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       onSuccess?.call(updatedConfig);
 
       ref.read(analyticsProvider).whenData(
-            (a) => a.logEvent(
+            (a) => a?.logEvent(
               'config_update',
               parameters: {
                 'url': updatedConfig.url,
@@ -214,7 +214,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       if (oldConfig != null) {
         ref.read(analyticsProvider).whenData(
-              (a) => a.logConfigChangedEvent(
+              (a) => a?.logConfigChangedEvent(
                 oldValue: oldConfig,
                 newValue: updatedConfig,
               ),
@@ -252,7 +252,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       await _add(config);
 
       ref.read(analyticsProvider).whenData(
-            (a) => a.logEvent(
+            (a) => a?.logEvent(
               'site_add',
               parameters: {
                 'url': config.url,
@@ -269,7 +269,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       if (initialConfig != null) {
         ref.read(analyticsProvider).whenData(
-              (a) => a.logConfigChangedEvent(
+              (a) => a?.logConfigChangedEvent(
                 oldValue: initialConfig,
                 newValue: config,
               ),

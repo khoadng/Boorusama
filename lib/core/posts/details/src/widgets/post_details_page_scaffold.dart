@@ -597,14 +597,14 @@ class _PostDetailPageScaffoldState<T extends Post>
           // Reset zoom when expanded
           _transformController.value = Matrix4.identity();
           ref.read(analyticsProvider).whenData(
-                (analytics) => analytics.logScreenView('/details/info'),
+                (analytics) => analytics?.logScreenView('/details/info'),
               );
         },
         onShrink: () {
           final routeName = ModalRoute.of(context)?.settings.name;
           if (routeName != null) {
             ref.read(analyticsProvider).whenData(
-                  (analytics) => analytics.logScreenView(routeName),
+                  (analytics) => analytics?.logScreenView(routeName),
                 );
           }
         },
