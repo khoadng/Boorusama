@@ -41,8 +41,6 @@ Boorusama offers a wide range of functionalities including:
 ### Prerequisites:
 - [Flutter SDK](https://docs.flutter.dev/get-started/install)
 - [Git](https://git-scm.com/downloads)
-- [Firebase](https://firebase.google.com/) project (Optional if you use the `boorusama-foss` branch)
-- [FlutterFire](https://firebase.flutter.dev/docs/overview/) (Optional if you use the `boorusama-foss` branch)
 
 ### Steps:
 1. Clone the repository:
@@ -55,12 +53,7 @@ cd Boorusama
 flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
-3. Configure Firebase (Skip if you use the `boorusama-foss` branch):
-```bash
-dart pub global activate flutterfire_cli
-flutterfire configure
-```
-4. Connect to an Android device/emulator and run the app:
+3. Connect to an Android device/emulator and run the app:
 ```bash
 flutter run --release
 ```
