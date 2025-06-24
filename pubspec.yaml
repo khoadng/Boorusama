@@ -58,9 +58,6 @@ dependencies:
   expandable: ^5.0.1
   fast_immutable_collections: ^11.0.0
   file_picker: ^10.2.0
-  firebase_analytics: ^11.3.5
-  firebase_core: ^3.8.0
-  firebase_crashlytics: ^4.1.5
   fl_chart: ^0.69.0
   flutter:
     sdk: flutter

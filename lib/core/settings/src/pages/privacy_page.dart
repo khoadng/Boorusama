@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../tracking.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -20,40 +21,30 @@ class PrivacyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifer = ref.watch(settingsNotifierProvider.notifier);
+    final tracker = ref.watch(trackerProvider);
 
     return SettingsPageScaffold(
       title: const Text('settings.privacy.privacy').tr(),
       children: [
-        ListTile(
-          title: const Text('settings.privacy.send_error_data_notice').tr(),
-          trailing: Switch(
-            value: settings.dataCollectingStatus == DataCollectingStatus.allow,
-            onChanged: (value) {
-              notifer.updateSettings(
-                settings.copyWith(
-                  dataCollectingStatus: value
-                      ? DataCollectingStatus.allow
-                      : DataCollectingStatus.prohibit,
-                ),
-              );
-            },
+        tracker.maybeWhen(
+          data: (t) => ListTile(
+            title:
+                const Text('settings.privacy.enable_incognito_keyboard').tr(),
+            subtitle: const Text(
+              'settings.privacy.enable_incognito_keyboard_notice',
+            ).tr(),
+            trailing: Switch(
+              value: settings.enableIncognitoModeForKeyboard,
+              onChanged: (value) {
+                notifer.updateSettings(
+                  settings.copyWith(
+                    enableIncognitoModeForKeyboard: value,
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        ListTile(
-          title: const Text('settings.privacy.enable_incognito_keyboard').tr(),
-          subtitle: const Text(
-            'settings.privacy.enable_incognito_keyboard_notice',
-          ).tr(),
-          trailing: Switch(
-            value: settings.enableIncognitoModeForKeyboard,
-            onChanged: (value) {
-              notifer.updateSettings(
-                settings.copyWith(
-                  enableIncognitoModeForKeyboard: value,
-                ),
-              );
-            },
-          ),
+          orElse: () => const SizedBox.shrink(),
         ),
         ListTile(
           title: const Text('settings.privacy.enable_biometric_lock').tr(),

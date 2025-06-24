@@ -38,8 +38,6 @@
 	</array>
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
-	<key>FirebaseAutomaticScreenReportingEnabled</key>
-	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
