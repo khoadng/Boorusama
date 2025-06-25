@@ -1,19 +1,39 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Project imports:
 import 'boot.dart';
+import 'core/app_rating/providers.dart';
+import 'core/foundation/boot.dart';
+import 'core/foundation/iap/iap.dart';
 import 'core/foundation/loggers.dart';
+import 'core/foundation/platform.dart';
+import 'core/foundation/revenuecat/revenuecat.dart';
+import 'core/google/google_play_services_impl.dart';
 
 void main() async {
-  final bootLogger = BootLogger()..l("Initialize Flutter's widgets binding");
+  await initializeApp(
+    bootFunc: (data) async {
+      data.bootLogger.l('Check Google Play Services availability');
+      final gServices = GooglePlayServicesImpl();
+      final googleApiAvailable = await gServices.isAvailable();
 
-  WidgetsFlutterBinding.ensureInitialized();
-  try {
-    bootLogger.l('Booting...');
-    await boot(bootLogger);
-  } catch (e, st) {
-    bootLogger.l('An error occurred during booting');
-    await failsafe(e, st, bootLogger);
+      return boot(
+        data.copyWith(
+          googleApiAvailable: googleApiAvailable,
+          appRatingService: const RateMyAppService(),
+          iapFunc: () => initIap(data.logger),
+        ),
+      );
+    },
+  );
+}
+
+Future<IAP> initIap(Logger logger) async {
+  final IAP iap;
+
+  if (isMobilePlatform()) {
+    iap = (await initRevenuecatIap(logger)) ?? await initDummyIap();
+  } else {
+    iap = await initDummyIap();
   }
+
+  return iap;
 }

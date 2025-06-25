@@ -19,7 +19,7 @@ import '../../ddos_solver/protection_orchestrator.dart';
 import '../../ddos_solver/protection_solver.dart';
 import '../../ddos_solver/user_agent_provider.dart';
 import '../../foundation/loggers.dart';
-import '../../foundation/platform.dart';
+import '../../google/providers.dart';
 import '../../info/app_info.dart';
 import '../../info/package_info.dart';
 import '../../router.dart';

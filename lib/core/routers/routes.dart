@@ -54,7 +54,7 @@ class Routes {
         builder: (context, state) => BooruConfigDeepLinkResolver(
           path: state.uri.toString(),
           child: const AppLockWithSettings(
-            child: RateMyAppScope(
+            child: AppRatingScope(
               child: BackgroundDownloaderBuilder(
                 child: CustomContextMenuOverlay(
                   child: Focus(
