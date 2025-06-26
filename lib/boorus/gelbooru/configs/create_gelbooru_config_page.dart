@@ -96,7 +96,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         children: [
           const SizedBox(height: 16),
           Text(
-            'Basic Auth',
+            'Basic Auth (required)',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 14,
@@ -105,7 +105,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Provide this information to view your favorites. This only provides read access to your account.',
+            'Providing this information gives the app read access to your account. This is required by Gelbooru as of 06/2025.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 12,
@@ -130,7 +130,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   ),
               children: [
                 const TextSpan(
-                  text: '*Log in to your account on the browser, visit ',
+                  text: '*Log in to your account in the browser, visit ',
                 ),
                 TextSpan(
                   text: 'My Account > Options > API Access Credentials',
@@ -146,7 +146,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   ),
                 ),
                 const TextSpan(
-                  text: ' and fill the values manually.',
+                  text: ' and fill in the values manually.',
                 ),
               ],
             ),
@@ -178,7 +178,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const Divider(),
           const SizedBox(height: 8),
           Text(
-            'Advanced Auth',
+            'Advanced Auth (optional)',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 14,
@@ -187,7 +187,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Provide this information allows you to edit your favorites. This provides write access to your account. Note that if you change your password, you need to log in again.',
+            'Providing this information allows you to edit your favorites and provides write access to your account. Note that if you change your password, you will need to log in again.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 12,
@@ -204,9 +204,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 const SizedBox(height: 8),
                 WarningContainer(
                   margin: EdgeInsets.zero,
-                  title: "About the heart button's state",
+                  title: 'About the heart button state',
                   contentBuilder: (context) => const Text(
-                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
+                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website.",
                   ),
                 ),
               ],
