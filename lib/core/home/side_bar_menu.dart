@@ -15,7 +15,9 @@ import '../bookmarks/routes.dart';
 import '../bulk_downloads/routes.dart';
 import '../configs/config/providers.dart';
 import '../configs/manage/widgets.dart';
+import '../donate/routes.dart';
 import '../downloads/routes.dart';
+import '../foundation/boot/providers.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';
@@ -53,6 +55,7 @@ class SideBarMenu extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final viewPadding = MediaQuery.viewPaddingOf(context);
     final hasConfigs = ref.watch(hasBooruConfigsProvider);
+    final isFossBuild = ref.watch(isFossBuildProvider);
 
     return Container(
       color: colorScheme.surfaceContainerLow,
@@ -171,7 +174,21 @@ class SideBarMenu extends ConsumerWidget {
                           key: ValueKey('divider'),
                           thickness: 0.75,
                         ),
-                        if (kPremiumEnabled && !kForcePremium && !hasPremium)
+                        if (isFossBuild)
+                          SideMenuTile(
+                            icon: const Icon(
+                              Symbols.favorite,
+                              fill: 1,
+                              color: Colors.red,
+                            ),
+                            title: const Text('Donate'),
+                            onTap: () {
+                              goToDonationPage(context);
+                            },
+                          )
+                        else if (kPremiumEnabled &&
+                            !kForcePremium &&
+                            !hasPremium)
                           SideMenuTile(
                             icon: const Icon(
                               Symbols.favorite,

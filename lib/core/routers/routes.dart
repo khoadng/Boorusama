@@ -15,6 +15,7 @@ import '../bulk_downloads/routes.dart';
 import '../configs/config/routes.dart';
 import '../configs/create/routes.dart';
 import '../configs/ref.dart';
+import '../donate/routes.dart';
 import '../downloads/downloader.dart';
 import '../downloads/routes/routes.dart';
 import '../posts/details/routes.dart';
@@ -83,7 +84,8 @@ class Routes {
           bulkDownloadsRoutes,
           favoriteTags(),
           originalImageRoutes,
-          premiumRoutes,
+          premiumRoutes(ref),
+          donationRoutes(ref),
           detailsManagerRoutes,
         ],
       );

@@ -5,21 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/boot/providers.dart';
-import '../../../foundation/display.dart';
-import '../../../router.dart';
-import '../../../widgets/widgets.dart';
-import '../pages/premium_page.dart';
+import '../../foundation/boot/providers.dart';
+import '../../foundation/display.dart';
+import '../../router.dart';
+import '../../widgets/booru_dialog.dart';
+import 'donation_page.dart';
 
-export 'route_utils.dart';
-
-GoRoute premiumRoutes(Ref ref) => GoRoute(
-      path: 'premium',
-      name: '/premium',
+GoRoute donationRoutes(Ref ref) => GoRoute(
+      path: 'donate',
+      name: '/donate',
       redirect: (context, state) {
-        // Redirect to donation page if foss build
-        if (ref.read(isFossBuildProvider)) {
-          return '/donate';
+        // Redirect to premium page if not foss build
+        if (!ref.read(isFossBuildProvider)) {
+          return '/premium';
         }
         return null;
       },
@@ -28,7 +26,7 @@ GoRoute premiumRoutes(Ref ref) => GoRoute(
         builder: (context, state) {
           final landscape = context.orientation.isLandscape;
 
-          const page = PremiumPage();
+          const page = DonationPage();
 
           return landscape
               ? const BooruDialog(

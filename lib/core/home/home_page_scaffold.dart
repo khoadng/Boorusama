@@ -15,7 +15,9 @@ import '../bulk_downloads/widgets.dart';
 import '../cache/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
+import '../donate/routes.dart';
 import '../downloads/manager.dart';
+import '../foundation/boot/providers.dart';
 import '../foundation/display.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
@@ -207,6 +209,7 @@ class HomeSideMenu extends ConsumerWidget {
                                 constraints,
                                 viewKey,
                                 ref.watch(hasPremiumProvider),
+                                ref.watch(isFossBuildProvider),
                               ),
                             ],
                           ),
@@ -269,6 +272,7 @@ List<Widget> coreDesktopTabBuilder(
   BoxConstraints constraints,
   CustomHomeViewKey? viewKey,
   bool hasPremium,
+  bool isFossBuild,
 ) {
   return [
     const Divider(),
@@ -316,7 +320,18 @@ List<Widget> coreDesktopTabBuilder(
       title: 'Download manager',
     ),
     const Divider(),
-    if (kPremiumEnabled && !kForcePremium && !hasPremium)
+    if (isFossBuild)
+      HomeNavigationTile(
+        value: 99998,
+        constraints: constraints,
+        selectedIcon: Symbols.favorite,
+        icon: Symbols.favorite,
+        title: 'Donate',
+        onTap: () => goToDonationPage(context),
+        forceFillIcon: true,
+        forceIconColor: Colors.red,
+      )
+    else if (kPremiumEnabled && !kForcePremium && !hasPremium)
       HomeNavigationTile(
         value: 99998,
         constraints: constraints,
