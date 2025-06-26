@@ -1,6 +1,8 @@
 // Project imports:
 import 'boot.dart';
 import 'core/app_rating/providers.dart';
+import 'core/app_update/src/play_store_update_checker.dart';
+import 'core/app_update/types.dart';
 import 'core/foundation/boot.dart';
 import 'core/foundation/iap/iap.dart';
 import 'core/foundation/loggers.dart';
@@ -20,6 +22,13 @@ void main() async {
           googleApiAvailable: googleApiAvailable,
           appRatingService: const RateMyAppService(),
           iapFunc: () => initIap(data.logger),
+          appUpdateChecker: (packageInfo) => isAndroid()
+              ? PlayStoreUpdateChecker(
+                  packageInfo: packageInfo,
+                  countryCode: 'US',
+                  languageCode: 'en',
+                )
+              : UnsupportedPlatformChecker(),
         ),
       );
     },

@@ -425,7 +425,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                   sheetState: state,
                   uiBuilder: uiBuilder,
                   preferredParts: preferredParts,
-                  canCustomize: kPremiumEnabled && widget.uiBuilder == null,
+                  canCustomize: ref.watch(showPremiumFeatsProvider) &&
+                      widget.uiBuilder == null,
                 ),
               );
             },

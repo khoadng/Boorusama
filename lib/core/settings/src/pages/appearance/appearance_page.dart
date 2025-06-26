@@ -77,7 +77,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
         ),
         const Divider(thickness: 1),
         const LayoutSection(),
-        if (kPremiumEnabled)
+        if (ref.watch(showPremiumFeatsProvider))
           const BooruConfigMoreSettingsRedirectCard.appearance(),
       ],
     );
@@ -123,7 +123,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             );
           },
         ),
-        if (kPremiumEnabled)
+        if (ref.watch(showPremiumFeatsProvider))
           Container(
             margin: const EdgeInsets.symmetric(
               vertical: 4,

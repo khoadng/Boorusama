@@ -463,7 +463,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
                   },
                 ),
               )
-        else if (kPremiumEnabled && !kForcePremium)
+        else if (ref.watch(showPremiumFeatsProvider) && !kForcePremium)
           SettingTile(
             title: kPremiumBrandNameFull,
             leading: const FaIcon(

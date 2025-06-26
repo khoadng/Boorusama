@@ -209,6 +209,7 @@ class HomeSideMenu extends ConsumerWidget {
                                 constraints,
                                 viewKey,
                                 ref.watch(hasPremiumProvider),
+                                ref.watch(showPremiumFeatsProvider),
                                 ref.watch(isFossBuildProvider),
                               ),
                             ],
@@ -272,6 +273,7 @@ List<Widget> coreDesktopTabBuilder(
   BoxConstraints constraints,
   CustomHomeViewKey? viewKey,
   bool hasPremium,
+  bool showPremium,
   bool isFossBuild,
 ) {
   return [
@@ -331,7 +333,7 @@ List<Widget> coreDesktopTabBuilder(
         forceFillIcon: true,
         forceIconColor: Colors.red,
       )
-    else if (kPremiumEnabled && !kForcePremium && !hasPremium)
+    else if (showPremium && !kForcePremium && !hasPremium)
       HomeNavigationTile(
         value: 99998,
         constraints: constraints,

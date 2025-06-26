@@ -1,5 +1,9 @@
+// Package imports:
+import 'package:package_info_plus/package_info_plus.dart';
+
 // Project imports:
 import '../../app_rating/app_rating.dart';
+import '../../app_update/types.dart';
 import '../iap/iap.dart';
 import '../loggers.dart';
 
@@ -12,6 +16,7 @@ class BootData {
     this.isFossBuild = false,
     this.googleApiAvailable = false,
     this.appRatingService,
+    this.appUpdateChecker,
   });
 
   BootData copyWith({
@@ -22,6 +27,7 @@ class BootData {
     bool? isFossBuild,
     bool? googleApiAvailable,
     AppRatingService? appRatingService,
+    AppUpdateBuilder? appUpdateChecker,
   }) {
     return BootData(
       bootLogger: bootLogger ?? this.bootLogger,
@@ -31,6 +37,7 @@ class BootData {
       isFossBuild: isFossBuild ?? this.isFossBuild,
       googleApiAvailable: googleApiAvailable ?? this.googleApiAvailable,
       appRatingService: appRatingService ?? this.appRatingService,
+      appUpdateChecker: appUpdateChecker ?? this.appUpdateChecker,
     );
   }
 
@@ -41,4 +48,9 @@ class BootData {
   final bool isFossBuild;
   final bool googleApiAvailable;
   final AppRatingService? appRatingService;
+  final AppUpdateBuilder? appUpdateChecker;
 }
+
+typedef AppUpdateBuilder = AppUpdateChecker Function(
+  PackageInfo packageInfo,
+);

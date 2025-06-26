@@ -186,7 +186,7 @@ class SideBarMenu extends ConsumerWidget {
                               goToDonationPage(context);
                             },
                           )
-                        else if (kPremiumEnabled &&
+                        else if (ref.watch(showPremiumFeatsProvider) &&
                             !kForcePremium &&
                             !hasPremium)
                           SideMenuTile(

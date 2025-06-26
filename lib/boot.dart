@@ -33,6 +33,7 @@ import 'boorus/szurubooru/szurubooru.dart';
 import 'boorus/zerochan/zerochan.dart';
 import 'core/app.dart';
 import 'core/app_rating/src/providers.dart';
+import 'core/app_update/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
 import 'core/boorus/engine/engine.dart';
@@ -269,6 +270,10 @@ Future<void> boot(BootData bootData) async {
             appRatingProvider.overrideWithValue(bootData.appRatingService),
             iapFuncProvider.overrideWithValue(bootData.iapFunc),
             isFossBuildProvider.overrideWithValue(bootData.isFossBuild),
+            if (bootData.appUpdateChecker case final AppUpdateBuilder builder)
+              appUpdateCheckerProvider.overrideWith(
+                (_) => builder(packageInfo),
+              ),
             booruDbProvider.overrideWithValue(boorus),
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),

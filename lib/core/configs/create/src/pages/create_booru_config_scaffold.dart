@@ -70,7 +70,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
       if (authTab != null) const CreateBooruConfigCategory.auth(): authTab!,
       const CreateBooruConfigCategory.listing():
           listingTab ?? const DefaultBooruConfigListingView(),
-      if (kPremiumEnabled)
+      if (ref.watch(showPremiumFeatsProvider))
         const CreateBooruConfigCategory.appearance():
             layoutTab ?? const DefaultBooruConfigLayoutView(),
       const CreateBooruConfigCategory.download():
