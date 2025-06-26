@@ -351,7 +351,7 @@ class GelbooruClient
   }
 }
 
-List<TagDto> _parseTags(value) {
+List<TagDto> _parseTags(Response value) {
   final dtos = <TagDto>[];
   final contentType = (value.headers['content-type'] as List?)?.firstOrNull;
 
@@ -376,7 +376,7 @@ List<TagDto> _parseTags(value) {
   return dtos;
 }
 
-FutureOr<List<CommentDto>> _parseCommentDtos(value) {
+FutureOr<List<CommentDto>> _parseCommentDtos(Response value) {
   final dtos = <CommentDto>[];
   final xmlDocument = XmlDocument.parse(value.data);
   final comments = xmlDocument.findAllElements('comment');

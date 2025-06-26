@@ -1,0 +1,18 @@
+name: rich_text_controller
+description: A controller for rich text editing in Flutter, allowing for complex text formatting and manipulation.
+
+resolution: workspace
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../analytics.dart';
@@ -37,7 +38,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.params,
     super.key,
     this.noticeBuilder,
-    this.queryPattern,
+    this.textMatchers,
     this.metatags,
     this.trending,
     this.extraHeaders,
@@ -63,7 +64,7 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     SelectedTagController selectedTagController,
   ) fetcher;
 
-  final Map<RegExp, TextStyle>? queryPattern;
+  final List<TextMatcher>? textMatchers;
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 
@@ -102,7 +103,7 @@ class _SearchPageScaffoldState<T extends Post>
             .read(searchHistoryProvider.notifier)
             .addHistoryFromController(_tagsController);
       },
-      queryPattern: widget.queryPattern,
+      textMatchers: widget.textMatchers,
       tagsController: _tagsController,
     );
   }
@@ -130,7 +131,6 @@ class _SearchPageScaffoldState<T extends Post>
       },
       noticeBuilder: widget.noticeBuilder,
       extraHeaders: widget.extraHeaders,
-      queryPattern: widget.queryPattern,
       landingView: Consumer(
         builder: (context, ref, __) {
           final searchBarPosition = ref.watch(searchBarPositionProvider);

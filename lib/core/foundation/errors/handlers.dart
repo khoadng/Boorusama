@@ -14,12 +14,12 @@ import 'reporter.dart';
 void initializeErrorHandlers(ErrorReporter? reporter) {
   if (reporter == null) return;
 
-  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  // Pass all uncaught "fatal" errors from the framework to the reporter
   FlutterError.onError = onUncaughtError(
     reporter,
   );
 
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to the reporter
   PlatformDispatcher.instance.onError = onAsyncFlutterUncaughtError(
     reporter,
   );

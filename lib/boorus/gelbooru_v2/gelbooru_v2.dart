@@ -5,15 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:booru_clients/gelbooru.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
-import '../../core/configs/create.dart';
-import '../../core/configs/failsafe.dart';
-import '../../core/configs/manage.dart';
+import '../../core/configs/create/create.dart';
+import '../../core/configs/create/widgets.dart';
+import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/home/custom_home.dart';
@@ -39,6 +41,7 @@ import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
 import 'posts/posts_v2.dart';
+import 'syntax/src/providers/providers.dart';
 
 const kGelbooruV2CustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
@@ -304,8 +307,15 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
   }
 
   @override
+  TextMatcher? queryMatcher(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2QueryMatcherProvider);
+  }
+
+  @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    return DownloadFileNameBuilder(
+    final client = ref.watch(gelbooruV2ClientProvider(config));
+
+    return DownloadFileNameBuilder<GelbooruV2Post>(
       defaultFileNameFormat: kGelbooruV2CustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat:
           kGelbooruV2CustomDownloadFileNameFormat,
@@ -315,6 +325,18 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
         MPixelsTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final tags = await client.getTagsFromPostId(postId: post.id);
+              return tags
+                  .map((tag) => (name: tag.name, type: tag.type.toString()))
+                  .toList();
+            },
+          ),
+        ),
       ],
     );
   }

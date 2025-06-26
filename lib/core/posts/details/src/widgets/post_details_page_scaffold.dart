@@ -19,7 +19,8 @@ import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
-import '../../../../configs/current.dart';
+import '../../../../configs/gesture/gesture.dart';
+import '../../../../configs/manage/providers.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
@@ -424,7 +425,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                   sheetState: state,
                   uiBuilder: uiBuilder,
                   preferredParts: preferredParts,
-                  canCustomize: kPremiumEnabled && widget.uiBuilder == null,
+                  canCustomize: ref.watch(showPremiumFeatsProvider) &&
+                      widget.uiBuilder == null,
                 ),
               );
             },
@@ -596,14 +598,14 @@ class _PostDetailPageScaffoldState<T extends Post>
           // Reset zoom when expanded
           _transformController.value = Matrix4.identity();
           ref.read(analyticsProvider).whenData(
-                (analytics) => analytics.logScreenView('/details/info'),
+                (analytics) => analytics?.logScreenView('/details/info'),
               );
         },
         onShrink: () {
           final routeName = ModalRoute.of(context)?.settings.name;
           if (routeName != null) {
             ref.read(analyticsProvider).whenData(
-                  (analytics) => analytics.logScreenView(routeName),
+                  (analytics) => analytics?.logScreenView(routeName),
                 );
           }
         },

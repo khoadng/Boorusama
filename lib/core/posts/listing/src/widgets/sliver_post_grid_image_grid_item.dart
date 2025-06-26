@@ -8,7 +8,7 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/config.dart';
+import '../../../../configs/gesture/gesture.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
 import '../../../post/post.dart';

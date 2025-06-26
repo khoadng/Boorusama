@@ -28,11 +28,11 @@ class NetworkListener extends ConsumerWidget {
             ref.watch(analyticsProvider).whenData(
               (analytics) {
                 if (data.isEmpty || data.contains(ConnectivityResult.none)) {
-                  analytics.updateNetworkInfo(
+                  analytics?.updateNetworkInfo(
                     const AnalyticsNetworkInfo.disconnected(),
                   );
                 } else {
-                  analytics.updateNetworkInfo(
+                  analytics?.updateNetworkInfo(
                     AnalyticsNetworkInfo.connected(data.prettyString),
                   );
                 }
@@ -42,7 +42,7 @@ class NetworkListener extends ConsumerWidget {
           error: (error, stackTrace) {
             ref.watch(analyticsProvider).whenData(
               (analytics) {
-                analytics.updateNetworkInfo(
+                analytics?.updateNetworkInfo(
                   AnalyticsNetworkInfo.error(error.toString()),
                 );
               },

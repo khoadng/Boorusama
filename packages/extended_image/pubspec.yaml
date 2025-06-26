@@ -14,7 +14,11 @@ dependencies:
   extended_image_library: ^4.0.1
   flutter:
     sdk: flutter
-  flutter_avif: ^3.0.0
+  flutter_avif:
+    git:
+      url: https://github.com/khoadng/flutter_avif.git
+      ref: 785323f3dbf720a4d184595c393cf416aa39c645
+      path: flutter_avif
   path: ^1.8.3
   path_provider: ^2.1.2
   retriable:
@@ -23,4 +27,4 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0

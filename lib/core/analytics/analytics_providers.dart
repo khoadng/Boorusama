@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../tracking.dart';
 import 'analytics_interface.dart';
 
-final analyticsProvider = FutureProvider<AnalyticsInterface>(
+final analyticsProvider = FutureProvider<AnalyticsInterface?>(
   (ref) async {
     final tracker = await ref.watch(trackerProvider.future);
 
-    return tracker.analytics;
+    return tracker?.analytics;
   },
 );

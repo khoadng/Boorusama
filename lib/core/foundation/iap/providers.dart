@@ -2,22 +2,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../loggers.dart';
-import '../platform.dart';
-import '../revenuecat/revenuecat.dart';
 import 'iap_impl.dart';
 import 'purchaser.dart';
 import 'subscription.dart';
 
-final iapProvider = FutureProvider<IAP>((ref) async {
-  final IAP iap;
-  final logger = ref.watch(loggerProvider);
+final iapFuncProvider = Provider<Future<IAP> Function()?>((ref) => null);
 
-  if (isMobilePlatform()) {
-    iap = (await initRevenuecatIap(logger)) ?? await _initDummyIap();
-  } else {
-    iap = await _initDummyIap();
-  }
+final iapProvider = FutureProvider<IAP>((ref) async {
+  final iapFunc = ref.watch(iapFuncProvider);
+  final iap = iapFunc != null ? await iapFunc() : await initDummyIap();
 
   return iap;
 });
@@ -37,7 +30,7 @@ Future<List<Package>?> getActiveSubscriptionPackages(
   return packages;
 }
 
-Future<IAP> _initDummyIap() async {
+Future<IAP> initDummyIap() async {
   final iap = DummyIAP.create();
   await iap.init();
 

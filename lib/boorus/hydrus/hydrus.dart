@@ -9,12 +9,14 @@ import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../core/configs/create/widgets.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
-import '../../core/configs/create.dart';
-import '../../core/configs/manage.dart';
+import '../../core/configs/create/create.dart';
+import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/home/home_navigation_tile.dart';

@@ -10,8 +10,9 @@ import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
-import '../../core/configs/create.dart';
-import '../../core/configs/manage.dart';
+import '../../core/configs/create/create.dart';
+import '../../core/configs/create/widgets.dart';
+import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/http/providers.dart';
@@ -186,6 +187,8 @@ class ZerochanRepository extends BooruRepositoryDefault {
   DownloadFilenameGenerator<Post> downloadFilenameBuilder(
     BooruConfigAuth config,
   ) {
+    final client = ref.watch(zerochanClientProvider(config));
+
     return DownloadFileNameBuilder<Post>(
       defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
@@ -196,6 +199,24 @@ class ZerochanRepository extends BooruRepositoryDefault {
         WidthTokenHandler(),
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final tags = await client.getTagsFromPostId(postId: post.id);
+
+              return tags
+                  .map(
+                    (tag) => (
+                      name: normalizeZerochanTag(tag.value) ?? '???',
+                      type: zerochanStringToTagCategory(tag.type).name,
+                    ),
+                  )
+                  .toList();
+            },
+          ),
+        ),
       ],
     );
   }

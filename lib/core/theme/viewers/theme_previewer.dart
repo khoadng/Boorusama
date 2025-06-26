@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../configs/src/create/appearance_theme.dart';
+import '../../configs/appearance/types.dart';
 import '../app_theme.dart';
 import '../dynamic_color.dart';
 import '../theme_configs.dart';

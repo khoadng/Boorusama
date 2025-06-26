@@ -75,7 +75,7 @@ class Shimmie2Client {
 }
 
 FutureOr<List<PostDto>> _parsePosts(
-  value, {
+  Response value, {
   String? baseUrl,
 }) {
   final dtos = <PostDto>[];

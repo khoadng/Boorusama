@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/configs/create.dart';
+import '../../../core/configs/create/widgets.dart';
+import '../../core/configs/auth/widgets.dart';
+import '../../core/configs/create/providers.dart';
+import '../../core/configs/search/widgets.dart';
+import '../../core/configs/viewer/widgets.dart';
 import '../gelbooru/configs/widgets.dart';
 
 class CreateGelbooruV2ConfigPage extends StatelessWidget {

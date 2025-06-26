@@ -1,12 +1,13 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../autocompletes/autocomplete_repository.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../blacklists/providers.dart';
 import '../../../configs/config.dart';
-import '../../../configs/create.dart';
+import '../../../configs/create/create.dart';
 import '../../../downloads/urls/download_url.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
@@ -86,5 +87,10 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TagColorGenerator tagColorGenerator() {
     return const DefaultTagColorGenerator();
+  }
+
+  @override
+  TextMatcher? queryMatcher(BooruConfigAuth config) {
+    return null;
   }
 }

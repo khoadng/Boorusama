@@ -6,6 +6,7 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
@@ -13,8 +14,10 @@ import '../../core/blacklists/blacklist.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
-import '../../core/configs/create.dart';
-import '../../core/configs/manage.dart';
+import '../../core/configs/create/create.dart';
+import '../../core/configs/create/widgets.dart';
+import '../../core/configs/gesture/gesture.dart';
+import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/downloader.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/foundation/url_launcher.dart';
@@ -71,6 +74,7 @@ import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
 import 'posts/votes/providers.dart';
 import 'saved_searches/feed/widgets.dart';
+import 'syntax/src/providers/providers.dart';
 import 'tags/details/widgets.dart';
 import 'tags/tag/providers.dart';
 import 'tags/tag/routes.dart';
@@ -517,6 +521,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
     return const DanbooruGridThumbnailUrlGenerator();
+  }
+
+  @override
+  TextMatcher queryMatcher(BooruConfigAuth config) {
+    return ref.watch(danbooruQueryMatcherProvider);
   }
 
   @override

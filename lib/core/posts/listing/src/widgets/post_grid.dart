@@ -12,9 +12,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/create/routes.dart';
 import '../../../../configs/ref.dart';
-import '../../../../configs/routes.dart';
-import '../../../../configs/src/create/search_blacklist.dart';
+import '../../../../configs/search/search.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/theme.dart';

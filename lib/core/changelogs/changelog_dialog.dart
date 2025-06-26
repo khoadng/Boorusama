@@ -30,7 +30,8 @@ class ChangelogDialog extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final significantUpdate =
         isSignificantUpdate(data.previousVersion, data.version);
-    final hasPrem = kPremiumEnabled && ref.watch(hasPremiumProvider);
+    final hasPrem =
+        ref.watch(showPremiumFeatsProvider) && ref.watch(hasPremiumProvider);
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(

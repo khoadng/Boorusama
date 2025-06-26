@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/configs/create.dart';
+import '../../../core/configs/auth/widgets.dart';
+import '../../../core/configs/create/widgets.dart';
+import '../../../core/configs/search/widgets.dart';
 import 'widgets.dart';
 
 class CreateMoebooruConfigPage extends ConsumerWidget {

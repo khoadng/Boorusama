@@ -25,6 +25,10 @@ class AppInfo {
   AppInfo({
     required this.discordUrl,
     required this.githubUrl,
+    required this.patreonUrl,
+    required this.koFiUrl,
+    required this.buyMeCoffeeUrl,
+    required this.playStoreUrl,
     required this.appName,
     required this.translationProjectUrl,
     required this.translationStatusUrl,
@@ -42,6 +46,10 @@ class AppInfo {
   factory AppInfo.fromJson(Map<String, dynamic> json) => AppInfo(
         discordUrl: json['discordUrl'],
         githubUrl: json['githubUrl'],
+        patreonUrl: json['patreonUrl'],
+        koFiUrl: json['koFiUrl'],
+        buyMeCoffeeUrl: json['buyMeACoffeeUrl'],
+        playStoreUrl: json['playStoreUrl'],
         appName: const String.fromEnvironment('APP_NAME'),
         translationProjectUrl: json['translationProjectUrl'],
         translationStatusUrl: json['translationStatusUrl'],
@@ -55,6 +63,10 @@ class AppInfo {
   static final empty = AppInfo(
     discordUrl: '',
     githubUrl: '',
+    patreonUrl: '',
+    koFiUrl: '',
+    buyMeCoffeeUrl: '',
+    playStoreUrl: '',
     appName: '',
     translationProjectUrl: '',
     translationStatusUrl: '',
@@ -67,6 +79,10 @@ class AppInfo {
 
   final String discordUrl;
   final String githubUrl;
+  final String patreonUrl;
+  final String koFiUrl;
+  final String buyMeCoffeeUrl;
+  final String playStoreUrl;
   final String appName;
   final String translationProjectUrl;
   final String translationStatusUrl;
@@ -78,6 +94,12 @@ class AppInfo {
 
   final YearRange copyrightYearRange;
   final String author;
+
+  List<String> get donationUrls => [
+        patreonUrl,
+        koFiUrl,
+        buyMeCoffeeUrl,
+      ];
 }
 
 Future<AppInfo> getAppInfo() async {

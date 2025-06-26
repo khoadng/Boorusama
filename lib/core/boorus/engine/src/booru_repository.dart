@@ -1,11 +1,12 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../autocompletes/autocompletes.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../configs/config.dart';
-import '../../../configs/create.dart';
+import '../../../configs/create/create.dart';
 import '../../../downloads/filename.dart';
 import '../../../downloads/urls.dart';
 import '../../../notes/notes.dart';
@@ -35,4 +36,5 @@ abstract class BooruRepository {
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator();
   TagColorGenerator tagColorGenerator();
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
+  TextMatcher? queryMatcher(BooruConfigAuth config);
 }

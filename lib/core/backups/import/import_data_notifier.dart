@@ -13,7 +13,7 @@ import '../../bookmarks/bookmark.dart';
 import '../../bookmarks/providers.dart';
 import '../../bulk_downloads/providers.dart';
 import '../../configs/config.dart';
-import '../../configs/manage.dart';
+import '../../configs/manage/providers.dart';
 import '../../search/histories/providers.dart';
 import '../../settings/providers.dart';
 import '../../settings/settings.dart';

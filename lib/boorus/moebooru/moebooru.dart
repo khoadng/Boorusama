@@ -13,8 +13,9 @@ import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
-import '../../core/configs/create.dart';
-import '../../core/configs/manage.dart';
+import '../../core/configs/create/create.dart';
+import '../../core/configs/create/widgets.dart';
+import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/home/custom_home.dart';
@@ -221,7 +222,9 @@ class MoebooruRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    return DownloadFileNameBuilder(
+    final tagRepo = ref.watch(moebooruTagRepoProvider(config));
+
+    return DownloadFileNameBuilder<MoebooruPost>(
       defaultFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kGelbooruCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
@@ -230,6 +233,18 @@ class MoebooruRepository extends BooruRepositoryDefault {
         HeightTokenHandler(),
         AspectRatioTokenHandler(),
         MPixelsTokenHandler(),
+      ],
+      asyncTokenHandlers: [
+        AsyncTokenHandler(
+          ClassicTagsTokenResolver(
+            tagFetcher: (post) async {
+              final tags = await tagRepo.getTagsByName(post.tags.toSet(), 1);
+              return tags
+                  .map((tag) => (name: tag.name, type: tag.category.name))
+                  .toList();
+            },
+          ),
+        ),
       ],
     );
   }

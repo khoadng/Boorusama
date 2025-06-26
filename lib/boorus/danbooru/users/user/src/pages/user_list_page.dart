@@ -35,7 +35,7 @@ class _DanbooruUserListPageState
     pagingController.addPageRequestListener(_onPageChanged);
   }
 
-  void _onPageChanged(pageKey) {
+  void _onPageChanged(int pageKey) {
     _fetchPage(pageKey);
   }
 

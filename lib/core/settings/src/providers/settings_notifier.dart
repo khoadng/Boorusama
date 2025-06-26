@@ -66,7 +66,7 @@ class SettingsNotifier extends Notifier<Settings> {
       state = settings;
 
       ref.read(analyticsProvider).whenData(
-            (a) => a.logSettingsChangedEvent(
+            (a) => a?.logSettingsChangedEvent(
               oldValue: currentSettings,
               newValue: settings,
             ),

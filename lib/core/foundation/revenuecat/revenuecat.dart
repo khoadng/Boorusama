@@ -9,7 +9,7 @@ import '../iap/iap.dart';
 import '../iap/iap_impl.dart';
 import '../loggers.dart';
 import 'constants.dart';
-import 'revenuecat.dart';
+import 'iap_impl.dart';
 
 export 'iap_impl.dart';
 

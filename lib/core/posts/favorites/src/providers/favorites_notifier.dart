@@ -4,8 +4,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/auth/auth.dart';
 import '../../../../configs/config.dart';
-import '../../../../configs/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../post/post.dart';
 import 'favorite.dart';

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/engine.dart';
 import '../bulk_downloads/widgets.dart';
-import '../configs/current.dart';
+import '../configs/manage/providers.dart';
 import '../premiums/providers.dart';
 import '../search/search/src/pages/search_page.dart';
 

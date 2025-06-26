@@ -13,9 +13,11 @@ import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
 import '../bulk_downloads/widgets.dart';
 import '../cache/providers.dart';
+import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
-import '../configs/widgets.dart';
+import '../donate/routes.dart';
 import '../downloads/manager.dart';
+import '../foundation/boot/providers.dart';
 import '../foundation/display.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
@@ -26,6 +28,7 @@ import '../tags/favorites/widgets.dart';
 import '../theme.dart';
 import '../widgets/widgets.dart';
 import 'booru_scope.dart';
+import 'constants.dart';
 import 'custom_home.dart';
 import 'home_navigation_tile.dart';
 import 'home_page_controller.dart';
@@ -177,7 +180,7 @@ class HomeSideMenu extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  const CurrentBooruTile(),
+                  const CurrentBooruTile(minWidth: kMinSideBarWidth),
                   Expanded(
                     child: LayoutBuilder(
                       builder: (_, constraints) => SingleChildScrollView(
@@ -206,6 +209,8 @@ class HomeSideMenu extends ConsumerWidget {
                                 constraints,
                                 viewKey,
                                 ref.watch(hasPremiumProvider),
+                                ref.watch(showPremiumFeatsProvider),
+                                ref.watch(isFossBuildProvider),
                               ),
                             ],
                           ),
@@ -268,6 +273,8 @@ List<Widget> coreDesktopTabBuilder(
   BoxConstraints constraints,
   CustomHomeViewKey? viewKey,
   bool hasPremium,
+  bool showPremium,
+  bool isFossBuild,
 ) {
   return [
     const Divider(),
@@ -315,7 +322,18 @@ List<Widget> coreDesktopTabBuilder(
       title: 'Download manager',
     ),
     const Divider(),
-    if (kPremiumEnabled && !kForcePremium && !hasPremium)
+    if (isFossBuild)
+      HomeNavigationTile(
+        value: 99998,
+        constraints: constraints,
+        selectedIcon: Symbols.favorite,
+        icon: Symbols.favorite,
+        title: 'Donate',
+        onTap: () => goToDonationPage(context),
+        forceFillIcon: true,
+        forceIconColor: Colors.red,
+      )
+    else if (showPremium && !kForcePremium && !hasPremium)
       HomeNavigationTile(
         value: 99998,
         constraints: constraints,

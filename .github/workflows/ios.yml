@@ -1,8 +1,6 @@
 name: "build ipa dev"
 
 on:
-  schedule:
-    - cron: '0 0 * * 2' # every Tuesday
   workflow_dispatch:
 
 concurrency:
@@ -32,10 +30,6 @@ jobs:
           sudo gem install concurrent-ruby -v 1.3.4
           sudo gem install cocoapods
 
-      - name: Install Firebase_CLI
-        run: |
-          curl -sL https://firebase.tools | bash
-
       - name: Install XCode
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -49,17 +43,6 @@ jobs:
         run: |
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: Config Firebase
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT: ${{ vars.FIREBASE_PROJECT}}
-          CI_PLATFORMS: ios
-        run: |
-          export PATH="$PATH":"$HOME/.pub-cache/bin"
-          dart pub global activate flutterfire_cli
-          bash lib/core/firebase/flutterfire-config.sh dev
-          bash lib/core/firebase/flutterfire-config.sh prod
 
       - name: Build
         run: |

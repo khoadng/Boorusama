@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../core/configs/create.dart';
+import '../../core/configs/auth/widgets.dart';
+import '../../core/configs/create/providers.dart';
+import '../../core/configs/create/widgets.dart';
 import 'providers.dart';
 
 class CreateAnimePicturesConfigPage extends ConsumerWidget {

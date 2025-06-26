@@ -47,8 +47,8 @@ class BooruLogo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (_isFixedIcon) {
-      return _buildAssetImage(source);
+    if (_isFixedIcon && source != null) {
+      return _buildAssetImage(source!);
     }
 
     return PostSource.from(source).whenWeb(
@@ -67,7 +67,7 @@ class BooruLogo extends ConsumerWidget {
     );
   }
 
-  Widget _buildAssetImage(url) {
+  Widget _buildAssetImage(String url) {
     return Image.asset(
       url,
       width: width ?? _kFallbackSize,

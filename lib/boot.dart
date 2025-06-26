@@ -32,19 +32,25 @@ import 'boorus/shimmie2/shimmie2.dart';
 import 'boorus/szurubooru/szurubooru.dart';
 import 'boorus/zerochan/zerochan.dart';
 import 'core/app.dart';
+import 'core/app_rating/src/providers.dart';
+import 'core/app_update/providers.dart';
 import 'core/boorus/booru/booru.dart';
 import 'core/boorus/booru/providers.dart';
 import 'core/boorus/engine/engine.dart';
 import 'core/boorus/engine/providers.dart';
 import 'core/cache/providers.dart';
 import 'core/configs/config.dart';
-import 'core/configs/current.dart';
-import 'core/configs/manage.dart';
+import 'core/configs/config/data.dart';
+import 'core/configs/manage/providers.dart';
+import 'core/foundation/boot.dart';
+import 'core/foundation/boot/providers.dart';
+import 'core/foundation/iap/iap.dart';
 import 'core/foundation/loggers.dart';
 import 'core/foundation/mobile.dart';
 import 'core/foundation/path.dart';
 import 'core/foundation/platform.dart';
 import 'core/foundation/windows.dart' as window;
+import 'core/google/providers.dart';
 import 'core/http/http.dart';
 import 'core/http/providers.dart';
 import 'core/info/app_info.dart';
@@ -56,33 +62,11 @@ import 'core/tags/configs/providers.dart';
 import 'core/utils/file_utils.dart';
 import 'core/widgets/widgets.dart';
 
-Future<void> failsafe(Object e, StackTrace st, BootLogger logger) async {
-  final deviceInfo =
-      await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
-  final logs = logger.dump();
+Future<void> boot(BootData bootData) async {
+  final bootLogger = bootData.bootLogger;
+  final logger = bootData.logger;
+  final appLogger = bootData.appLogger;
 
-  runApp(
-    ProviderScope(
-      overrides: [
-        deviceInfoProvider.overrideWithValue(deviceInfo),
-      ],
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        debugShowCheckedModeBanner: false,
-        home: AppFailedToInitialize(
-          error: e,
-          stackTrace: st,
-          logs: logs,
-        ),
-      ),
-    ),
-  );
-}
-
-Future<void> boot(BootLogger bootLogger) async {
-  final appLogger = AppLogger();
-  bootLogger.l('Initialize app logger');
-  final logger = await loggerWith(appLogger);
   final stopwatch = Stopwatch()..start();
   logger.logI('Start up', 'App Start up');
 
@@ -258,9 +242,6 @@ Future<void> boot(BootLogger bootLogger) async {
   // Prepare for Android 15
   unawaited(showSystemStatus());
 
-  bootLogger.l('Check Google Play Services availability');
-  final googleApiAvailable = await isGooglePlayServiceAvailable();
-
   logger.logI(
     'Start up',
     'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
@@ -286,6 +267,13 @@ Future<void> boot(BootLogger bootLogger) async {
                 ),
               ),
             ),
+            appRatingProvider.overrideWithValue(bootData.appRatingService),
+            iapFuncProvider.overrideWithValue(bootData.iapFunc),
+            isFossBuildProvider.overrideWithValue(bootData.isFossBuild),
+            if (bootData.appUpdateChecker case final AppUpdateBuilder builder)
+              appUpdateCheckerProvider.overrideWith(
+                (_) => builder(packageInfo),
+              ),
             booruDbProvider.overrideWithValue(boorus),
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),
@@ -307,7 +295,7 @@ Future<void> boot(BootLogger bootLogger) async {
             appLoggerProvider.overrideWithValue(appLogger),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
             isGooglePlayServiceAvailableProvider.overrideWithValue(
-              googleApiAvailable,
+              bootData.googleApiAvailable,
             ),
           ],
           child: const App(),

@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/current.dart';
+import '../../../configs/manage/providers.dart';
 import '../types/settings.dart';
 import '../types/types.dart';
 import 'settings_provider.dart';

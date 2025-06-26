@@ -1,0 +1,9 @@
+export 'src/controller.dart';
+export 'src/text_matcher_options.dart';
+export 'src/text_container.dart';
+export 'src/match_candidate.dart';
+export 'src/matching_context.dart';
+export 'src/match_result.dart';
+export 'src/text_matcher.dart';
+export 'src/matchers/regex_matcher.dart';
+export 'src/matchers/function_matcher.dart';

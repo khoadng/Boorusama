@@ -93,7 +93,7 @@ class DownloadNotifier extends Notifier<void> {
 
         analyticsAsync.whenData(
           (analytics) {
-            analytics.logEvent(
+            analytics?.logEvent(
               'single_download_start',
               parameters: {
                 'hint_site': ref.readConfigAuth.booruType.name,
@@ -132,7 +132,7 @@ class DownloadNotifier extends Notifier<void> {
 
     analyticsAsync.whenData(
       (analytics) {
-        analytics.logEvent(
+        analytics?.logEvent(
           'multiple_download_start',
           parameters: {
             'total': posts.length,

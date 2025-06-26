@@ -239,13 +239,13 @@ class AppTheme {
           shape: StadiumBorder(),
           side: BorderSide.none,
         ),
-        cardTheme: const CardTheme(
+        cardTheme: const CardThemeData(
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
-        dialogTheme: DialogTheme(
+        dialogTheme: DialogThemeData(
           surfaceTintColor: Colors.transparent,
           backgroundColor: colorScheme.surfaceContainer,
           shape: const RoundedRectangleBorder(
@@ -351,7 +351,7 @@ class AppTheme {
             },
           ),
         ),
-        tabBarTheme: TabBarTheme(
+        tabBarTheme: TabBarThemeData(
           tabAlignment: TabAlignment.start,
           indicatorColor: colorScheme.onSurface,
           labelStyle: TextStyle(

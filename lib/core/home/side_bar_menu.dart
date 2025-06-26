@@ -13,9 +13,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../bulk_downloads/routes.dart';
-import '../configs/src/providers.dart';
-import '../configs/widgets.dart';
+import '../configs/config/providers.dart';
+import '../configs/manage/widgets.dart';
+import '../donate/routes.dart';
 import '../downloads/routes.dart';
+import '../foundation/boot/providers.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';
@@ -24,6 +26,7 @@ import '../settings/providers.dart';
 import '../settings/routes.dart';
 import '../settings/settings.dart';
 import '../tags/favorites/routes.dart';
+import 'constants.dart';
 import 'custom_home.dart';
 import 'side_menu_tile.dart';
 
@@ -52,6 +55,7 @@ class SideBarMenu extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final viewPadding = MediaQuery.viewPaddingOf(context);
     final hasConfigs = ref.watch(hasBooruConfigsProvider);
+    final isFossBuild = ref.watch(isFossBuildProvider);
 
     return Container(
       color: colorScheme.surfaceContainerLow,
@@ -91,7 +95,9 @@ class SideBarMenu extends ConsumerWidget {
                     if (hasConfigs)
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: CurrentBooruTile(),
+                        child: CurrentBooruTile(
+                          minWidth: kMinSideBarWidth,
+                        ),
                       )
                     else
                       const SizedBox(
@@ -168,7 +174,21 @@ class SideBarMenu extends ConsumerWidget {
                           key: ValueKey('divider'),
                           thickness: 0.75,
                         ),
-                        if (kPremiumEnabled && !kForcePremium && !hasPremium)
+                        if (isFossBuild)
+                          SideMenuTile(
+                            icon: const Icon(
+                              Symbols.favorite,
+                              fill: 1,
+                              color: Colors.red,
+                            ),
+                            title: const Text('Donate'),
+                            onTap: () {
+                              goToDonationPage(context);
+                            },
+                          )
+                        else if (ref.watch(showPremiumFeatsProvider) &&
+                            !kForcePremium &&
+                            !hasPremium)
                           SideMenuTile(
                             icon: const Icon(
                               Symbols.favorite,

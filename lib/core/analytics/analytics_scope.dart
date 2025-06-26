@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../configs/current.dart';
+import '../configs/manage/providers.dart';
 import 'analytics_providers.dart';
 import 'analytics_view_info.dart';
 
@@ -32,8 +32,8 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(analyticsProvider).whenData((a) {
-        if (a.enabled) {
-          a.changeCurrentAnalyticConfig(ref.read(currentBooruConfigProvider));
+        if (a?.enabled ?? false) {
+          a?.changeCurrentAnalyticConfig(ref.read(currentBooruConfigProvider));
         }
       });
     });
@@ -63,7 +63,7 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
     if (_lastAspectRatio == aspectRatio) return;
 
     ref.read(analyticsProvider).whenData(
-          (a) => a.updateViewInfo(
+          (a) => a?.updateViewInfo(
             AnalyticsViewInfo(aspectRatio: aspectRatio),
           ),
         );
@@ -78,8 +78,8 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
       (p, c) {
         if (p != c) {
           ref.watch(analyticsProvider).whenData((a) {
-            if (a.enabled) {
-              a.changeCurrentAnalyticConfig(c);
+            if (a?.enabled ?? false) {
+              a?.changeCurrentAnalyticConfig(c);
             }
           });
         }

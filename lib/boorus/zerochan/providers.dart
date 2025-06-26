@@ -73,6 +73,10 @@ final zerochanPostRepoProvider =
   },
 );
 
+String? normalizeZerochanTag(String? tag) {
+  return tag?.toLowerCase().replaceAll(' ', '_');
+}
+
 ZerochanPost _postDtoToPost(
   PostDto e,
   PostMetadata? metadata,
@@ -126,8 +130,8 @@ final zerochanAutoCompleteRepoProvider =
               label: e.value?.toLowerCase() ?? '',
               value: e.value?.toLowerCase() ?? '',
               postCount: e.total,
-              antecedent: e.alias?.toLowerCase().replaceAll(' ', '_'),
-              category: e.type?.toLowerCase().replaceAll(' ', '_') ?? '',
+              antecedent: normalizeZerochanTag(e.alias),
+              category: normalizeZerochanTag(e.type) ?? '',
             ),
           )
           .toList();
@@ -147,7 +151,7 @@ final zerochanTagsFromIdProvider =
         .where((e) => e.value != null)
         .map(
           (e) => Tag.noCount(
-            name: e.value!.toLowerCase().replaceAll(' ', '_'),
+            name: normalizeZerochanTag(e.value)!,
             category: zerochanStringToTagCategory(e.type),
           ),
         )

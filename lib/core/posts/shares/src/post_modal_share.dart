@@ -72,23 +72,26 @@ class PostModalShare extends ConsumerWidget {
                   leading: ConfigAwareWebsiteLogo(url: s.faviconUrl),
                   onTap: () {
                     Navigator.of(context).pop();
-                    Share.share(s.uri.toString());
+                    SharePlus.instance.share(ShareParams(uri: s.uri));
                   },
                 ),
               _ => const SizedBox.shrink(),
             },
-            ListTile(
-              title: const Text('post.detail.share.booru').tr(),
-              subtitle: Text(booruLink),
-              leading: BooruLogo(source: booruLink),
-              onTap: () {
-                Navigator.of(context).pop();
-                Share.share(
-                  booruLink,
-                  subject: booruLink,
-                );
-              },
-            ),
+            if (Uri.tryParse(booruLink) case final Uri uri)
+              ListTile(
+                title: const Text('post.detail.share.booru').tr(),
+                subtitle: Text(booruLink),
+                leading: BooruLogo(source: booruLink),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  SharePlus.instance.share(
+                    ShareParams(
+                      uri: uri,
+                      subject: booruLink,
+                    ),
+                  );
+                },
+              ),
             ref.watch(_cachedImageFileProvider(imageData())).when(
                   data: (file) {
                     return file != null
@@ -103,9 +106,12 @@ class PostModalShare extends ConsumerWidget {
                             ),
                             onTap: () {
                               Navigator.of(context).pop();
-                              Share.shareXFiles(
-                                [file],
-                                subject: file.name,
+
+                              SharePlus.instance.share(
+                                ShareParams(
+                                  files: [file],
+                                  subject: file.name,
+                                ),
                               );
                             },
                           )

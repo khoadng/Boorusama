@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../core/configs/auth/auth.dart';
 import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/votes/providers.dart';
 import '../../../users/user/providers.dart';
