@@ -14,5 +14,4 @@ git push --tags
 
 # Build the appbundle for the prod flavor
 echo "Building the appbundle for the prod flavor"
-./appbundle.sh prod
-
+./build.sh appbundle --release --flavor prod --dart-define-from-file env/prod.json
