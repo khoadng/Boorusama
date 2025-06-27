@@ -36,18 +36,6 @@ readonly FOSS_EXCLUDED_DEPS=(
     "google_api_availability:"
 )
 
-get_platform_config() {
-    case "$1" in
-        apk) echo "apk" ;;
-        aab) echo "appbundle" ;;
-        ipa) echo "ios" ;;
-        dmg) echo "macos" ;;
-        windows) echo "windows" ;;
-        linux) echo "linux" ;;
-        *) echo "" ;;
-    esac
-}
-
 get_app_name() {
     case "$1" in
         apk) echo "$appname" ;;
@@ -217,7 +205,6 @@ EOF
 init_variables() {
     FOSS_BUILD=false
     VERBOSE=${IS_CI:-false}
-    DRY_RUN=false
     OUTPUT_DIR="$DEFAULT_OUTPUT_DIR"
     FLUTTER_ARGS=()
     FLAVOR=""
@@ -337,6 +324,11 @@ set_target_file_and_env() {
 
     # Inject IS_FOSS_BUILD
     inject_dart_define "IS_FOSS_BUILD" "$FOSS_BUILD"
+    
+    # Inject cronetHttpNoPlay for FOSS Android builds
+    if [ "$FOSS_BUILD" = true ] && { [ "$FORMAT" = "apk" ] || [ "$FORMAT" = "aab" ]; }; then
+        inject_dart_define "cronetHttpNoPlay" "true"
+    fi
 
     # Inject RevenueCat keys from secret env if needed
     if [ "$FLAVOR" = "prod" ]; then
@@ -355,7 +347,7 @@ set_target_file_and_env() {
     fi
 }
 
-# Remove jq-based env file validation, check only .env (env var) for prod keys
+# Check .env (env var) for prod keys
 validate_env_api_key() {
     local key_name="$1"
     local key_label="$2"
@@ -415,10 +407,6 @@ parse_arguments() {
                 ;;
             -v|--verbose)
                 VERBOSE=true
-                shift
-                ;;
-            -d|--dry-run)
-                DRY_RUN=true
                 shift
                 ;;
             -o|--output-dir)
@@ -815,13 +803,6 @@ main() {
     print_debug "Flavor: ${FLAVOR:-none}"
     print_debug "FOSS build: $FOSS_BUILD"
     print_debug "CI mode: $IS_CI"
-
-    if [ "$DRY_RUN" = true ]; then
-        local flutter_platform=$(get_platform_config "$FORMAT")
-        echo "DRY RUN - Would execute:"
-        echo "flutter build $flutter_platform ${FLUTTER_ARGS[*]}"
-        exit 0
-    fi
 
     mkdir -p "$OUTPUT_DIR"
     create_pubspec_backup
