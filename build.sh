@@ -256,6 +256,24 @@ inject_dart_define() {
     print_debug "Injected ${key}=${value}"
 }
 
+#==============================================================================
+# SECRET ENV LOADING
+#==============================================================================
+
+SECRET_ENV_FILE=".env"
+
+load_secret_env() {
+    if [ -f "$SECRET_ENV_FILE" ]; then
+        set -o allexport
+        # shellcheck source=/dev/null
+        source "$SECRET_ENV_FILE"
+        set +o allexport
+        print_status "Loaded secrets from $SECRET_ENV_FILE"
+    else
+        print_warning "$SECRET_ENV_FILE not found. RevenueCat keys may be missing."
+    fi
+}
+
 set_target_file_and_env() {
     ENV_FILE="env/${FLAVOR}.json"
     FLUTTER_ARGS+=("--dart-define-from-file" "$ENV_FILE")
@@ -302,6 +320,22 @@ set_target_file_and_env() {
 
     # Inject IS_FOSS_BUILD
     inject_dart_define "IS_FOSS_BUILD" "$FOSS_BUILD"
+
+    # Inject RevenueCat keys from secret env if needed
+    if [ "$FLAVOR" = "prod" ]; then
+        if [ "$FORMAT" = "aab" ] || [ "$FORMAT" = "apk" ]; then
+            if [ -z "$REVENUECAT_GOOGLE_API_KEY" ]; then
+                exit_with_error "REVENUECAT_GOOGLE_API_KEY is required for prod Android builds. Set it in $SECRET_ENV_FILE"
+            fi
+            inject_dart_define "REVENUECAT_GOOGLE_API_KEY" "$REVENUECAT_GOOGLE_API_KEY"
+        fi
+        if [ "$FORMAT" = "ipa" ]; then
+            if [ -z "$REVENUECAT_APPLE_API_KEY" ]; then
+                exit_with_error "REVENUECAT_APPLE_API_KEY is required for prod iOS builds. Set it in $SECRET_ENV_FILE"
+            fi
+            inject_dart_define "REVENUECAT_APPLE_API_KEY" "$REVENUECAT_APPLE_API_KEY"
+        fi
+    fi
 }
 
 validate_env_api_key() {
@@ -676,6 +710,9 @@ main() {
     validate_format "$FORMAT"
     validate_build_modes
     validate_flavor_value
+
+    load_secret_env
+
     set_target_file_and_env
     validate_output_dir
     validate_prod_environment
