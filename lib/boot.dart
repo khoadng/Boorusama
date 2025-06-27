@@ -162,17 +162,21 @@ Future<void> boot(BootData bootData) async {
 
   final booruUserRepo = await createBooruConfigsRepo(
     logger: bootLogger,
-    onCreateNew: (id) async {
-      final settings = await settingRepository.load().run().then(
-            (value) => value.fold(
-              (l) => Settings.defaultSettings,
-              (r) => r,
-            ),
-          );
+    onCreateNew: !bootData.isFossBuild
+        ? (id) async {
+            final settings = await settingRepository.load().run().then(
+                  (value) => value.fold(
+                    (l) => Settings.defaultSettings,
+                    (r) => r,
+                  ),
+                );
 
-      bootLogger.l('Save default booru config');
-      await settingRepository.save(settings.copyWith(currentBooruConfigId: id));
-    },
+            bootLogger.l('Save default booru config');
+            await settingRepository
+                .save(settings.copyWith(currentBooruConfigId: id));
+          }
+        // Skip creating default config in FOSS build
+        : null,
   );
 
   bootLogger.l('Load settings');
