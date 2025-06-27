@@ -43,6 +43,7 @@ get_platform_config() {
         ipa) echo "ios" ;;
         dmg) echo "macos" ;;
         windows) echo "windows" ;;
+        linux) echo "linux" ;;
         *) echo "" ;;
     esac
 }
@@ -54,6 +55,7 @@ get_app_name() {
         ios_prod) echo "Boorusama" ;;
         dmg) echo "boorusama" ;;
         windows) echo "$appname" ;;
+        linux) echo "$appname" ;;
         *) echo "" ;;
     esac
 }
@@ -74,6 +76,9 @@ get_build_path() {
             echo "$BUILD_BASE_DIR/macos/Build/Products/Release/boorusama.app" ;;
         windows) 
             echo "$BUILD_BASE_DIR/windows/x64/runner/Release/${appname}.exe" ;;
+        linux)
+            echo "$BUILD_BASE_DIR/linux/x64/release/bundle"
+            ;;
         *) 
             echo "" ;;
     esac
@@ -735,6 +740,11 @@ build_windows() {
     end_group "Building Windows Executable"
 }
 
+build_linux() {
+    # Placeholder for Linux build implementation
+    print_status "Linux build is not yet implemented."
+}
+
 #==============================================================================
 # BUILD EXECUTION
 #==============================================================================
@@ -755,6 +765,9 @@ execute_build() {
             ;;
         windows)
             build_windows
+            ;;
+        linux)
+            build_linux
             ;;
     esac
 }
