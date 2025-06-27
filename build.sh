@@ -42,6 +42,7 @@ get_platform_config() {
         aab) echo "appbundle" ;;
         ipa) echo "ios" ;;
         dmg) echo "macos" ;;
+        windows) echo "windows" ;;
         *) echo "" ;;
     esac
 }
@@ -52,6 +53,7 @@ get_app_name() {
         ios_dev) echo "Boorusama-DEV" ;;
         ios_prod) echo "Boorusama" ;;
         dmg) echo "boorusama" ;;
+        windows) echo "$appname" ;;
         *) echo "" ;;
     esac
 }
@@ -70,12 +72,25 @@ get_build_path() {
             echo "$BUILD_BASE_DIR/ios/Release-prod-iphoneos/Boorusama.app" ;;
         macos) 
             echo "$BUILD_BASE_DIR/macos/Build/Products/Release/boorusama.app" ;;
+        windows) 
+            echo "$BUILD_BASE_DIR/windows/x64/runner/Release/${appname}.exe" ;;
         *) 
             echo "" ;;
     esac
 }
 
-readonly VALID_FORMATS=("apk" "aab" "ipa" "dmg")
+readonly VALID_FORMATS=("apk" "aab" "ipa" "dmg" "windows" "linux")
+readonly FLAVOR_REQUIRED_FORMATS=("apk" "aab" "ipa" "dmg")
+
+# Detect platform
+detect_platform() {
+    case "$(uname -s)" in
+        Linux*)     PLATFORM="linux";;
+        Darwin*)    PLATFORM="macos";;
+        CYGWIN*|MINGW*|MSYS*) PLATFORM="windows";;
+        *)          PLATFORM="unknown";;
+    esac
+}
 
 #==============================================================================
 # UTILITY FUNCTIONS
@@ -165,6 +180,7 @@ Output Formats:
   aab         Build Android App Bundle
   ipa         Build iOS IPA
   dmg         Build macOS DMG
+  windows     Build Windows executable
 
 Flutter Build Options (passed through):
   --release, --debug, --profile
@@ -234,18 +250,29 @@ validate_build_modes() {
 }
 
 validate_flavor_value() {
-    if [ -z "$FLAVOR" ]; then
-        exit_with_error "Flavor is required. Use --flavor <flavor>."
-    fi
+    # Only require/validate flavor for formats that need it
+    local format="$1"
     local valid=false
-    for f in "${ALLOWED_FLAVORS[@]}"; do
-        if [ "$f" = "$FLAVOR" ]; then
+    for f in "${FLAVOR_REQUIRED_FORMATS[@]}"; do
+        if [ "$f" = "$format" ]; then
             valid=true
             break
         fi
     done
-    if [ "$valid" = false ]; then
-        exit_with_error "Invalid flavor: $FLAVOR. Allowed flavors: ${ALLOWED_FLAVORS[*]}"
+    if [ "$valid" = true ]; then
+        if [ -z "$FLAVOR" ]; then
+            exit_with_error "Flavor is required for $format. Use --flavor <flavor>."
+        fi
+        local allowed=false
+        for f in "${ALLOWED_FLAVORS[@]}"; do
+            if [ "$f" = "$FLAVOR" ]; then
+                allowed=true
+                break
+            fi
+        done
+        if [ "$allowed" = false ]; then
+            exit_with_error "Invalid flavor: $FLAVOR. Allowed flavors: ${ALLOWED_FLAVORS[*]}"
+        fi
     fi
 }
 
@@ -275,8 +302,11 @@ load_secret_env() {
 }
 
 set_target_file_and_env() {
-    ENV_FILE="env/${FLAVOR}.json"
-    FLUTTER_ARGS+=("--dart-define-from-file" "$ENV_FILE")
+    # Only set ENV_FILE and --dart-define-from-file if FLAVOR is set
+    if [ -n "$FLAVOR" ]; then
+        ENV_FILE="env/${FLAVOR}.json"
+        FLUTTER_ARGS+=("--dart-define-from-file" "$ENV_FILE")
+    fi
     if [ "$FOSS_BUILD" = true ]; then
         TARGET_FILE="$FOSS_TARGET_FILE"
     else
@@ -392,7 +422,13 @@ parse_arguments() {
                 ;;
             -f|--flavor)
                 FLAVOR="$2"
-                FLUTTER_ARGS+=("--flavor" "$2")
+                # Only add --flavor to FLUTTER_ARGS if the format supports it
+                for f in "${FLAVOR_REQUIRED_FORMATS[@]}"; do
+                    if [ "$FORMAT" = "$f" ]; then
+                        FLUTTER_ARGS+=("--flavor" "$2")
+                        break
+                    fi
+                done
                 shift 2
                 ;;
             --release|--debug|--profile)
@@ -525,6 +561,13 @@ execute_flutter_build() {
     fi
 }
 
+require_platform() {
+    local required="$1"
+    if [ "$PLATFORM" != "$required" ]; then
+        exit_with_error "$2"
+    fi
+}
+
 #==============================================================================
 # FORMAT-SPECIFIC BUILD FUNCTIONS
 #==============================================================================
@@ -581,6 +624,8 @@ build_aab() {
 }
 
 build_ipa() {
+    require_platform "macos" "iOS builds are only supported on macOS."
+
     print_status "Building iOS IPA..."
     execute_flutter_build ios
     
@@ -617,6 +662,8 @@ build_ipa() {
 }
 
 build_dmg() {
+    require_platform "macos" "DMG builds are only supported on macOS."
+
     print_status "Building macOS DMG..."
     
     if ! command_exists create-dmg; then
@@ -650,6 +697,44 @@ build_dmg() {
     copy_and_track_artifact "$dmg_source" "$dmg_target" "DMG"
 }
 
+build_windows() {
+    require_platform "windows" "Windows builds are only supported on Windows."
+
+    if ! command_exists zip; then
+        exit_with_error "zip command not found. Please install zip (e.g., 'choco install zip' or add it to your PATH)."
+    fi
+
+    start_group "Building Windows Executable"
+    execute_flutter_build windows
+
+    local exe_name zip_name
+    if [ "$FOSS_BUILD" = true ]; then
+        exe_name="${appname}-${version}-foss.exe"
+        zip_name="${appname}-${version}-foss.zip"
+    else
+        exe_name="${appname}-${version}.exe"
+        zip_name="${appname}-${version}.zip"
+    fi
+    # Use get_build_path to determine the release directory dynamically
+    local exe_path
+    exe_path=$(get_build_path "windows")
+    local release_dir
+    release_dir=$(dirname "$exe_path")
+    local zip_source="$release_dir"
+    local zip_target="$OUTPUT_DIR/$zip_name"
+
+    # Zip the entire Release folder for distribution
+    if [ -d "$release_dir" ]; then
+        (cd "$release_dir" && zip -r "../../../../../$zip_target" .)
+        add_build_artifact "$zip_target" "Windows ZIP"
+        print_status "Windows build folder zipped to: $zip_target"
+    else
+        exit_with_error "Release directory not found: $release_dir"
+    fi
+
+    end_group "Building Windows Executable"
+}
+
 #==============================================================================
 # BUILD EXECUTION
 #==============================================================================
@@ -667,6 +752,9 @@ execute_build() {
             ;;
         dmg)
             build_dmg
+            ;;
+        windows)
+            build_windows
             ;;
     esac
 }
@@ -690,6 +778,8 @@ main() {
     # Set trap early to ensure cleanup on any exit
     trap cleanup_on_exit INT TERM EXIT
 
+    detect_platform
+
     init_variables
     get_app_info
 
@@ -699,7 +789,7 @@ main() {
 
     validate_format "$FORMAT"
     validate_build_modes
-    validate_flavor_value
+    validate_flavor_value "$FORMAT" 
 
     load_secret_env
 
