@@ -72,6 +72,21 @@ class GelbooruClient
   @override
   Dio get dio => _dio;
 
+  Uri? getTestPostUri({
+    required String userId,
+    required String apiKey,
+  }) =>
+      Uri.tryParse(_dio.options.baseUrl)?.replace(
+        queryParameters: {
+          'page': 'dapi',
+          's': 'post',
+          'q': 'index',
+          'json': '1',
+          if (userId.isNotEmpty) 'user_id': userId,
+          if (apiKey.isNotEmpty) 'api_key': apiKey,
+        },
+      );
+
   Future<GelbooruPosts> getPosts({
     int? page,
     int? limit,

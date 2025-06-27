@@ -20,6 +20,7 @@ import '../../../core/foundation/url_launcher.dart';
 import '../../../core/theme.dart';
 import '../../../core/widgets/widgets.dart';
 import '../gelbooru.dart';
+import 'api_key_verify_dialog.dart';
 import 'widgets.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
@@ -101,17 +102,26 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 16),
-          Text(
-            'Basic Auth',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Basic Auth (required)',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.hintColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              _VerifyApiKeyButton(
+                loginController: loginController,
+                apiKeyController: apiKeyController,
+                config: config,
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
           Text(
-            'Provide this information to view your favorites. This only provides read access to your account.',
+            'Providing this information gives the app read access to your account. This is required by Gelbooru as of 06/2025.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 12,
@@ -136,7 +146,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   ),
               children: [
                 const TextSpan(
-                  text: '*Log in to your account on the browser, visit ',
+                  text: '*Log in to your account in the browser, visit ',
                 ),
                 TextSpan(
                   text: 'My Account > Options > API Access Credentials',
@@ -152,7 +162,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   ),
                 ),
                 const TextSpan(
-                  text: ' and fill the values manually.',
+                  text: ' and fill in the values manually.',
                 ),
               ],
             ),
@@ -184,7 +194,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const Divider(),
           const SizedBox(height: 8),
           Text(
-            'Advanced Auth',
+            'Advanced Auth (optional)',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 14,
@@ -193,7 +203,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Provide this information allows you to edit your favorites. This provides write access to your account. Note that if you change your password, you need to log in again.',
+            'Providing this information allows you to edit your favorites and provides write access to your account. Note that if you change your password, you will need to log in again.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 12,
@@ -210,9 +220,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 const SizedBox(height: 8),
                 WarningContainer(
                   margin: EdgeInsets.zero,
-                  title: "About the heart button's state",
+                  title: 'About the heart button state',
                   contentBuilder: (context) => const Text(
-                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after you've favorited an image, it will lose its state if you restart the app. Don't worry, your favorites are still there on the website.",
+                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website.",
                   ),
                 ),
               ],
@@ -337,6 +347,71 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _VerifyApiKeyButton extends StatelessWidget {
+  const _VerifyApiKeyButton({
+    required this.loginController,
+    required this.apiKeyController,
+    required this.config,
+  });
+
+  final TextEditingController loginController;
+  final TextEditingController apiKeyController;
+  final BooruConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiValueListenableBuilder2(
+      first: loginController,
+      second: apiKeyController,
+      builder: (context, login, apiKey) {
+        final isEnabled = login.text.isNotEmpty && apiKey.text.isNotEmpty;
+        final colorScheme = Theme.of(context).colorScheme;
+
+        return GestureDetector(
+          onTap: isEnabled
+              ? () {
+                  showAdaptiveDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => ApiKeyVerifyDialog(
+                      login: login.text,
+                      apiKey: apiKey.text,
+                      config: config,
+                    ),
+                  );
+                }
+              : null,
+          child: Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 2,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 6,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: isEnabled
+                  ? colorScheme.primaryContainer
+                  : colorScheme.surfaceContainerLow,
+            ),
+            child: Text(
+              'Verify',
+              style: TextStyle(
+                fontWeight: isEnabled ? FontWeight.w600 : FontWeight.w500,
+                color: isEnabled
+                    ? colorScheme.onPrimaryContainer
+                    : colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

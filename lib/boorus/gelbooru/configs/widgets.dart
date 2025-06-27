@@ -35,7 +35,7 @@ class GelbooruApiKeyField extends ConsumerWidget {
     if (value?.isEmpty ?? true) return null;
 
     // Find the 64-character hex API key
-    final apiKeyMatch = RegExp('[a-fA-F0-9]{64}').firstMatch(value!);
+    final apiKeyMatch = RegExp('[a-fA-F0-9]{16,}').firstMatch(value!);
     if (apiKeyMatch == null) return null;
 
     final apiKey = apiKeyMatch.group(0)!;
