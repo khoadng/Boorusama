@@ -117,6 +117,7 @@ app.*.symbols
 *.freezed.dart
 # *.g.dart
 *.mocks.dart
+artifacts/
 
 .env
 

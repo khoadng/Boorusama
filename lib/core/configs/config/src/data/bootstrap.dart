@@ -8,16 +8,15 @@ import 'booru_config_repository_hive.dart';
 
 Future<BooruConfigRepository> createBooruConfigsRepo({
   required BootLogger logger,
-  required Future<void> Function(int configId) onCreateNew,
+  required Future<void> Function(int configId)? onCreateNew,
 }) async {
-  Box<String> booruConfigBox;
   logger.l('Initialize booru config box');
-  if (await Hive.boxExists('booru_configs')) {
-    logger.l('Open booru config box');
-    booruConfigBox = await Hive.openBox<String>('booru_configs');
-  } else {
-    logger.l('Create booru config box');
-    booruConfigBox = await Hive.openBox<String>('booru_configs');
+
+  final isNewBox = !await Hive.boxExists('booru_configs');
+
+  final booruConfigBox = await Hive.openBox<String>('booru_configs');
+
+  if (isNewBox && onCreateNew != null) {
     logger.l('Add default booru config');
 
     final id =
