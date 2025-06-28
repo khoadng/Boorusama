@@ -47,7 +47,6 @@ final downloadFilteredProvider = Provider.family<List<TaskUpdate>, String?>(
     final state = ref.watch(downloadTaskUpdatesProvider);
 
     return switch (filter) {
-      DownloadFilter.all => state.all(group),
       DownloadFilter.pending => state.pending(group),
       DownloadFilter.paused => state.paused(group),
       DownloadFilter.inProgress => state.inProgress(group),
@@ -130,13 +129,12 @@ class DisabledDownloadManagerPage extends StatelessWidget {
 }
 
 const _filterOptions = [
-  DownloadFilter.all,
+  DownloadFilter.completed,
   DownloadFilter.inProgress,
   DownloadFilter.pending,
   DownloadFilter.paused,
   DownloadFilter.failed,
   DownloadFilter.canceled,
-  DownloadFilter.completed,
 ];
 
 class DownloadManagerPage extends ConsumerStatefulWidget {
@@ -200,22 +198,29 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                     openDownloadSettingsPage(context);
                   },
                 ),
-                IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    // clear default group only
-                    ref.read(downloadTaskUpdatesProvider.notifier).clear(
-                      FileDownloader.defaultGroup,
-                      onFailed: () {
-                        showSimpleSnackBar(
-                          context: context,
-                          content: const Text(
-                            DownloadTranslations.downloadNothingToClear,
-                          ).tr(),
-                          duration: const Duration(seconds: 1),
+                BooruPopupMenuButton(
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'clear':
+                        // clear default group only
+                        ref.read(downloadTaskUpdatesProvider.notifier).clear(
+                          FileDownloader.defaultGroup,
+                          onFailed: () {
+                            showSimpleSnackBar(
+                              context: context,
+                              content: const Text(
+                                DownloadTranslations.downloadNothingToClear,
+                              ).tr(),
+                              duration: const Duration(seconds: 1),
+                            );
+                          },
                         );
-                      },
-                    );
+
+                      default:
+                    }
+                  },
+                  itemBuilder: const {
+                    'clear': Text('Clear'),
                   },
                 ),
               ]
