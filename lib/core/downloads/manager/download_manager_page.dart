@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import '../../../core/widgets/widgets.dart';
@@ -647,7 +648,7 @@ class _TaskSubtitle extends ConsumerWidget {
   }
 }
 
-class _ModalOptions extends StatelessWidget {
+class _ModalOptions extends ConsumerWidget {
   const _ModalOptions({
     required this.task,
   });
@@ -655,24 +656,50 @@ class _ModalOptions extends StatelessWidget {
   final TaskUpdate task;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final navigator = Navigator.of(context);
+    final path = ref.watch(_filePathProvider(task.task)).valueOrNull;
 
     return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 8),
-          const DragLine(),
-          const SizedBox(height: 8),
-          ListTile(
-            title: const Text('post.detail.view_in_browser').tr(),
-            onTap: () {
-              launchExternalUrlString(task.task.url);
-              navigator.pop();
-            },
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            const DragLine(),
+            const SizedBox(height: 8),
+            ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              title: const Text('post.detail.view_in_browser').tr(),
+              onTap: () {
+                launchExternalUrlString(task.task.url);
+                navigator.pop();
+              },
+            ),
+            if (path != null)
+              ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                title: const Text('post.detail.share.image').tr(),
+                onTap: () {
+                  navigator.pop();
+
+                  SharePlus.instance.share(
+                    ShareParams(
+                      files: [XFile(path)],
+                      subject: task.task.filename,
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
