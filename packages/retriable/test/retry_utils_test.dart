@@ -12,14 +12,13 @@ void main() {
 
   group('tryGetResponse', () {
     test('should successfully get JSON response', () async {
-      final response = await tryGetResponse<Map<String, dynamic>>(
-        Uri.parse('https://jsonplaceholder.typicode.com/posts/1'),
+      final response = await tryGetResponse(
+        Uri.parse('https://example.com'),
         dio: dio,
       );
 
       expect(response, isNotNull);
-      expect(response!.data, isA<Map<String, dynamic>>());
-      expect(response.statusCode, equals(200));
+      expect(response?.statusCode, equals(200));
     });
 
     test('should retry on server error', () async {

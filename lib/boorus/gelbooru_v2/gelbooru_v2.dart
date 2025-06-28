@@ -50,9 +50,9 @@ final gelbooruV2ClientProvider =
     Provider.family<GelbooruV2Client, BooruConfigAuth>((ref, config) {
   final dio = ref.watch(dioProvider(config));
 
-  return GelbooruV2Client.custom(
+  return GelbooruV2Client(
     baseUrl: config.url,
-    login: config.login,
+    userId: config.login,
     apiKey: config.apiKey,
     dio: dio,
   );
