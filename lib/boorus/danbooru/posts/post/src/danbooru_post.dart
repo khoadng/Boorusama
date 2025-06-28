@@ -315,15 +315,39 @@ extension PostX on DanbooruPost {
 }
 
 extension PostQualityVariantX on DanbooruPost {
-  String get url180x180 => variants.getUrl(PostQualityType.v180x180);
+  String get url180x180 => _getOrFallback(
+        PostQualityType.v180x180,
+        thumbnailImageUrl,
+      );
 
-  String get url360x360 => variants.getUrl(PostQualityType.v360x360);
+  String get url360x360 => _getOrFallback(
+        PostQualityType.v360x360,
+        thumbnailImageUrl,
+      );
 
-  String get url720x720 => variants.getUrl(PostQualityType.v720x720);
+  String get url720x720 => _getOrFallback(
+        PostQualityType.v720x720,
+        thumbnailImageUrl,
+      );
 
-  String get urlSample => variants.getUrl(PostQualityType.sample);
+  String get urlSample => _getOrFallback(
+        PostQualityType.sample,
+        sampleImageUrl,
+      );
 
-  String get urlOriginal => variants.getUrl(PostQualityType.original);
+  String get urlOriginal => _getOrFallback(
+        PostQualityType.original,
+        originalImageUrl,
+      );
+
+  String _getOrFallback(
+    PostQualityType type,
+    String fallbackUrl,
+  ) {
+    final url = variants.getUrl(type);
+
+    return url.isNotEmpty ? url : fallbackUrl;
+  }
 }
 
 abstract interface class DanbooruTagDetails implements TagDetails {
