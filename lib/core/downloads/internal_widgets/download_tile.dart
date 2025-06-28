@@ -24,6 +24,7 @@ class DownloadTileBuilder extends StatelessWidget {
     this.onCancel,
     this.siteUrl,
     this.onLongPress,
+    this.onTap,
   });
 
   final String? thumbnailUrl;
@@ -35,6 +36,7 @@ class DownloadTileBuilder extends StatelessWidget {
   final void Function()? onCancel;
   final String? siteUrl;
   final void Function()? onLongPress;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,7 @@ class DownloadTileBuilder extends StatelessWidget {
 
     return InkWell(
       onLongPress: onLongPress,
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(
           vertical: 12,
