@@ -12,7 +12,9 @@ import 'package:share_plus/share_plus.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../foundation/path.dart';
+import '../../post/post.dart';
 import '../../sources/source.dart';
+import 'download_and_share.dart';
 
 final _cachedImageFileProvider =
     FutureProvider.autoDispose.family<XFile?, ModalShareImageData>(
@@ -50,12 +52,14 @@ class PostModalShare extends ConsumerWidget {
     required this.booruLink,
     required this.sourceLink,
     required this.imageData,
+    required this.post,
     super.key,
   });
 
   final String booruLink;
   final PostSource sourceLink;
   final ModalShareImageData Function() imageData;
+  final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -124,6 +128,24 @@ class PostModalShare extends ConsumerWidget {
                     title: Text('Failed to load image'),
                   ),
                 ),
+            ListTile(
+              title: const Text('Download and share image'),
+              leading: const Icon(
+                Symbols.download,
+                fill: 1,
+              ),
+              subtitle: const Text(
+                'Download the original image and share it directly.',
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+
+                showDialog(
+                  context: context,
+                  builder: (context) => DownloadAndShareDialog(post: post),
+                );
+              },
+            ),
           ],
         ),
       ),

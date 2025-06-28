@@ -33,7 +33,7 @@ import 'metadata.dart';
 import 'providers.dart';
 
 extension PostDownloadX on WidgetRef {
-  Future<void> download(Post post) async {
+  Future<DownloadTaskInfo?> download(Post post) async {
     return read(downloadNotifierProvider.notifier).download(post);
   }
 
@@ -72,14 +72,14 @@ class DownloadNotifier extends Notifier<void> {
     }
   }
 
-  Future<void> download(Post post) async {
+  Future<DownloadTaskInfo?> download(Post post) async {
     final settings = ref.read(settingsProvider);
     final urlExtractor =
         ref.read(downloadFileUrlExtractorProvider(ref.readConfigAuth));
     final perm = await _getPermissionStatus();
     final analyticsAsync = ref.read(analyticsProvider);
 
-    await _download(
+    final info = await _download(
       ref,
       post,
       permission: perm,
@@ -104,6 +104,8 @@ class DownloadNotifier extends Notifier<void> {
         );
       },
     );
+
+    return info;
   }
 
   Future<void> bulkDownload(
@@ -162,7 +164,7 @@ class DownloadNotifier extends Notifier<void> {
   }
 }
 
-Future<void> _download(
+Future<DownloadTaskInfo?> _download(
   Ref ref,
   Post downloadable, {
   required Settings settings,
@@ -202,7 +204,7 @@ Future<void> _download(
     // if (ref.context.mounted) {
     //   showErrorToast(ref.context, 'Download aborted, cannot create file name');
     // }
-    return;
+    return null;
   }
 
   if (urlData == null || urlData.url.isEmpty) {
@@ -210,10 +212,10 @@ Future<void> _download(
     // if (ref.context.mounted) {
     //   showErrorToast(ref.context, 'Download aborted, no download url found');
     // }
-    return;
+    return null;
   }
 
-  Future<void> download() async {
+  Future<DownloadTaskInfo?> download() async {
     onStarted?.call();
 
     final fileNameFuture = bulkMetadata != null
@@ -233,7 +235,7 @@ Future<void> _download(
 
     final fileName = await fileNameFuture;
 
-    await service
+    final result = await service
         .downloadWithSettings(
           settings,
           config: booruConfig,
@@ -253,34 +255,40 @@ Future<void> _download(
           path: downloadPath,
         )
         .run();
+
+    return result.fold(
+      (e) => null,
+      (info) => info,
+    );
   }
 
   await notificationPermManager.requestIfNotGranted();
 
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
-    await download();
-    return;
+    return download();
   }
 
   if (permission == PermissionStatus.granted) {
-    await download();
+    return download();
   } else {
     logger.logI('Single Download', 'Permission not granted, requesting...');
-    unawaited(
-      deviceStoragePermissionNotifier.requestPermission(
-        onDone: (isGranted) {
-          if (isGranted) {
-            download();
-          } else {
-            logger.logI(
-              'Single Download',
-              'Storage permission request denied, aborting...',
-            );
-          }
-        },
-      ),
+    DownloadTaskInfo? info;
+
+    await deviceStoragePermissionNotifier.requestPermission(
+      onDone: (isGranted) async {
+        if (isGranted) {
+          info = await download();
+        } else {
+          logger.logI(
+            'Single Download',
+            'Storage permission request denied, aborting...',
+          );
+        }
+      },
     );
+
+    return info;
   }
 }
 

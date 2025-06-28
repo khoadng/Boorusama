@@ -47,6 +47,7 @@ extension PostShareX on WidgetRef {
     final modal = PostModalShare(
       booruLink: state.booruLink,
       sourceLink: state.sourceLink,
+      post: post,
       imageData: () => (
         imageUrl: defaultPostImageUrlBuilder(
           this,
