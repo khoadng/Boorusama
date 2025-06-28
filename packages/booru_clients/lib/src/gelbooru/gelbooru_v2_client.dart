@@ -26,25 +26,10 @@ class GelbooruV2Client with GelbooruClientFavorites {
     Dio? dio,
   })  : _dio = dio ??
             Dio(BaseOptions(
-              baseUrl: baseUrl ?? '',
+              baseUrl: '',
               headers: headers ?? {},
             )),
         _baseUrl = baseUrl;
-
-  factory GelbooruV2Client.custom({
-    Dio? dio,
-    String? login,
-    String? apiKey,
-    String? passHash,
-    required String baseUrl,
-  }) =>
-      GelbooruV2Client(
-        baseUrl: baseUrl,
-        dio: dio,
-        userId: login,
-        apiKey: apiKey,
-        passHash: passHash,
-      );
 
   final Dio _dio;
   final String? _baseUrl;
@@ -56,6 +41,37 @@ class GelbooruV2Client with GelbooruClientFavorites {
   @override
   Dio get dio => _dio;
 
+  String _path(String path) {
+    if (_baseUrl == null || _baseUrl.isEmpty) return path;
+    return '$_baseUrl$path';
+  }
+
+  String _pathAutocomplete(String path) {
+    if (_baseUrl == null || _baseUrl.isEmpty) return path;
+
+    //FIXME: Hotfix for this specific site since they are using subdomain for autocomplete, need to find a better way to handle this
+    return _baseUrl.contains('rule34.xxx')
+        ? () {
+            final uri = Uri.tryParse(_baseUrl);
+
+            if (uri == null) return path;
+            final authority = uri.authority;
+            // if the authority is using any subdomain, we need to remove it
+            final removedSubdomain = authority.split('.').length > 2
+                ? authority.split('.').sublist(1).join('.')
+                : authority;
+            final withSubdomain = 'api.$removedSubdomain';
+
+            return uri
+                .replace(
+                  host: withSubdomain,
+                  path: path,
+                )
+                .toString();
+          }()
+        : _path(path);
+  }
+
   Future<GelbooruV2Posts> getPosts({
     int? page,
     int? limit,
@@ -64,7 +80,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     final baseUrl = _dio.options.baseUrl;
 
     final response = await _dio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'dapi',
         's': 'post',
@@ -119,7 +135,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
 
   Future<PostV2Dto?> getPost(int id) async {
     final response = await _dio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'dapi',
         's': 'post',
@@ -150,7 +166,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
   }) async {
     try {
       final response = await _dio.get(
-        '/autocomplete.php',
+        _pathAutocomplete('/autocomplete.php'),
         queryParameters: {
           'q': term,
           if (userId != null) 'user_id': userId,
@@ -175,7 +191,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     required int postId,
   }) async {
     final response = await _dio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'dapi',
         's': 'comment',
@@ -200,7 +216,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     );
 
     final response = await crawlerDio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'post',
         's': 'view',
@@ -257,7 +273,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     );
 
     final response = await crawlerDio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'post',
         's': 'view',
