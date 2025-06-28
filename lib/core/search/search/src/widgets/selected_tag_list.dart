@@ -175,7 +175,7 @@ class SelectedTagContextMenu extends ConsumerWidget
           ContextMenuButtonConfig(
             'post.detail.add_to_favorites'.tr(),
             onPressed: () {
-              ref.read(favoriteTagsProvider.notifier).add(tag);
+              ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
             },
           ),
         ],
