@@ -6,11 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../configs/ref.dart';
-import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../post/post.dart';
-import '../_internal/details_widget_frame.dart';
+import 'raw_tags_tile.dart';
 
 class TagsTile extends StatelessWidget {
   const TagsTile({
@@ -40,52 +39,31 @@ class TagsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final count = initialCount ?? post.tags.length;
 
-    return DetailsWidgetSeparator(
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          listTileTheme: Theme.of(context).listTileTheme.copyWith(
-                visualDensity: VisualDensity.compact,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
+    return RawTagsTile(
+      title: Text('$count tags'),
+      initiallyExpanded: initialExpanded,
+      onExpansionChanged: (value) =>
+          value ? onExpand?.call() : onCollapse?.call(),
+      children: [
+        Padding(
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
+          child: PostTagList(
+            tags: tags,
+            itemBuilder: (context, tag) => GeneralTagContextMenu(
+              tag: tag.rawName,
+              child: Consumer(
+                builder: (_, ref, __) => PostTagListChip(
+                  tag: tag,
+                  auth: ref.watchConfigAuth,
+                  onTap: () => onTagTap?.call(tag),
+                  color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
                 ),
               ),
-          dividerColor: Colors.transparent,
-        ),
-        child: RemoveLeftPaddingOnLargeScreen(
-          child: DetailsWidgetSeparator(
-            child: ExpansionTile(
-              initiallyExpanded: initialExpanded,
-              title: Text('$count tags'),
-              controlAffinity: ListTileControlAffinity.trailing,
-              onExpansionChanged: (value) =>
-                  value ? onExpand?.call() : onCollapse?.call(),
-              children: [
-                Padding(
-                  padding:
-                      padding ?? const EdgeInsets.symmetric(horizontal: 12),
-                  child: PostTagList(
-                    tags: tags,
-                    itemBuilder: (context, tag) => GeneralTagContextMenu(
-                      tag: tag.rawName,
-                      child: Consumer(
-                        builder: (_, ref, __) => PostTagListChip(
-                          tag: tag,
-                          auth: ref.watchConfigAuth,
-                          onTap: () => onTagTap?.call(tag),
-                          color: tagColorBuilder != null
-                              ? tagColorBuilder!(tag)
-                              : null,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
             ),
           ),
         ),
-      ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 }
