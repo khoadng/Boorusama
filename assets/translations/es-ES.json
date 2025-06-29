@@ -3,7 +3,7 @@
         "done": "Hecho",
         "errors": {
             "no_data": "Datos no encontrados",
-            "unknown": "Algo fue mal"
+            "unknown": "Error desconocido"
         },
         "action": {
             "add": "Añadir",
@@ -22,14 +22,14 @@
         "messages": "Mensajes"
     },
     "network": {
-        "unavailable": "Servidor No disponible"
+        "unavailable": "Servidor no disponible"
     },
     "tag": {
         "related": {
             "more": "Más",
             "related": "Relacionado",
             "add_to_current_search": "Añadir a la busqueda",
-            "open_wiki": "Abrir Wiki"
+            "open_wiki": "Abrir wiki"
         },
         "explore": {
             "new": "Nuevo",
@@ -39,21 +39,21 @@
     "post": {
         "detail": {
             "view": "Ver",
-            "view_in_browser": "Ver en el Navegador",
-            "file_details": "Detalles del Archivo",
+            "view_in_browser": "Ver en el navegador",
+            "file_details": "Detalles del archivo",
             "size": "Tamaño",
-            "resolution": "Resolucíon",
+            "resolution": "Resolución",
             "rating": "Clasificación",
-            "file_format": "Formato del Archivo",
+            "file_format": "Formato del archivo",
             "share": {
-                "source": "Compartir Link de el orígen",
-                "booru": "Compartir Link de Booru",
-                "image": "Compartir Imagen"
+                "source": "Compartir link de el orígen",
+                "booru": "Compartir link de Booru",
+                "image": "Compartir imagen"
             },
             "copied": "Copiado",
             "show_original": "Mostrar original",
             "show_translated": "Mostrar Traduccido",
-            "login_required_notice": "Necesitas haber iniciado sesión para realizar esta acción",
+            "login_required_notice": "Tienes que iniciar sesión para realizar esta acción",
             "open_wiki": "Abrir Wiki",
             "add_to_blacklist": "Añadir a la Lista de Bloqueados",
             "add_to_favorites": "Añadir a La Lista de Favoritos",
@@ -184,7 +184,7 @@
         },
         "image_list": {
             "image_list": "Lista de Imágenes",
-            "standard": "Estandard",
+            "standard": "Estándar",
             "masonry": "Masonry"
         },
         "image_grid": {
@@ -197,7 +197,7 @@
             },
             "image_quality": {
                 "image_quality": "Calidad De la imagen",
-                "high_quality_notice": "Alta calidad de la imagen, Tardara mas en cargar",
+                "high_quality_notice": "Imágenes en calidad alta tardarán más en cargar.",
                 "high": "Alto",
                 "low": "Bajo",
                 "original": "Original",
@@ -265,7 +265,8 @@
                 "original": "Original",
                 "sample": "Calidad",
                 "preview": "Vista Previa"
-            }
+            },
+            "title": "Descargar"
         },
         "help_us_translate": "Ayúdenos a traducir",
         "other_settings": "Otros Ajustes",
@@ -273,7 +274,7 @@
             "accessibility": "Accesibilidad",
             "reverseBooruConfigSelectorScrollDirection": "Dirección de desplazamiento inverso de los perfiles booru",
             "swipeAreaToOpenSidebar": "Área de deslizamiento de la barra lateral",
-            "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento.  Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación."
+            "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento. Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación."
         },
         "booru_settings": {
             "booru_settings": "Configuraciónes de el Booru",
@@ -299,11 +300,13 @@
         "feature_request_and_bug_report": "Solicitud de funciones e informe de errores",
         "image_details": {
             "ui_overlay": {
-                "ui_overlay": "superposición de interfaz de usuario"
+                "ui_overlay": "superposición de interfaz de usuario",
+                "hide": "Esconder",
+                "show": "Mostrar"
             },
             "image_details": "Detalles de la imagen"
         },
-        "contact_developer": "Contacto con el desarrollador",
+        "contact_developer": "Contactar con el desarrollador",
         "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub"
     },
     "blacklisted_tags": {
@@ -359,7 +362,7 @@
             "one": "Favorito",
             "other": "Favoritos"
         },
-        "favorited": "Favoritos",
+        "favorited": "Marcado como favorito",
         "favorite": "Favorito"
     },
     "favorite_groups": {
@@ -472,6 +475,15 @@
     "gestures": {
         "long_press": "Pulsación larga",
         "swipe_down": "Deslizar hacia abajo",
-        "double_tap": "Doble toque"
+        "double_tap": "Doble toque",
+        "tap": "Apretar"
+    },
+    "time": {
+        "counters": {
+            "second": {
+                "other": "Segundos",
+                "one": "Segundo"
+            }
+        }
     }
 }
