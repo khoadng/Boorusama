@@ -13,6 +13,7 @@ import '../../../../../core/tags/tag/tag.dart';
 import '../../../../../core/tags/tag/widgets.dart';
 import '../../../../../core/wikis/launcher.dart';
 import '../../../blacklist/providers.dart';
+import 'danbooru_tag_context_menu.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {
   const DanbooruShowTagListPage({
@@ -36,6 +37,10 @@ class DanbooruShowTagListPage extends ConsumerWidget {
       tags: tags,
       auth: config,
       initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+      contextMenuBuilder: (child, tag) => DanbooruTagContextMenu(
+        tag: tag,
+        child: child,
+      ),
       onOpenWiki: (tag) {
         launchWikiPage(
           config.url,
