@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/search/search/routes.dart';
 import '../../core/tags/tag/tag.dart';
 import 'szurubooru_post.dart';
 
@@ -23,7 +22,6 @@ class SzurubooruTagListSection extends ConsumerWidget {
         tags: createTagGroupItems(post.tagDetails),
         initialExpanded: true,
         tagColorBuilder: (tag) => tag.category.darkColor,
-        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),
     );
   }

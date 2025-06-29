@@ -256,11 +256,9 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
                 // Don't set expanded to false to prevent rebuilding the tags list
                 setState(() => error = null);
               },
-              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             )
-          : BasicTagList(
+          : BasicTagsTile(
               tags: post.tags.toList(),
-              onTap: (tag) => goToSearchPage(context, tag: tag),
               auth: ref.watchConfigAuth,
             ),
     );

@@ -304,7 +304,7 @@ class HydrusBuilder
     full: {
       DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
       DetailsPart.tags: (context) =>
-          const DefaultInheritedTagList<HydrusPost>(),
+          const DefaultInheritedTagsTile<HydrusPost>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<HydrusPost>(
             initialExpanded: true,

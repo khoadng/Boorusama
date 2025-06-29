@@ -147,7 +147,7 @@ class PhilomenaBuilder
       DetailsPart.source: (context) =>
           const DefaultInheritedSourceSection<PhilomenaPost>(),
       DetailsPart.tags: (context) =>
-          const DefaultInheritedTagList<PhilomenaPost>(),
+          const DefaultInheritedTagsTile<PhilomenaPost>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
     },
