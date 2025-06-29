@@ -109,7 +109,7 @@
     },
     "search": {
         "errors": {
-            "generic": "Algo debe estar Fallando",
+            "generic": "Algo debe estar fallando",
             "tag_limit": "Has llegado al límite máximo de etiquetas. Actualiza tu cuenta para buscar más etiquetas simultáneamente.",
             "database_timeout": "Tu búsqueda tardó demasiado en procesarse y fue cancelada.",
             "rate_limited": "Estás realizando demasiadas búsquedas. Inténtalo más tarde",
@@ -123,7 +123,7 @@
         "hint": "Buscar...",
         "no_result": "Hemos buscado, pero no se encontraron resultados.",
         "search_options": "Buscar opciones",
-        "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de etiquetas.",
+        "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de etiquetas",
         "history": {
             "history": "Historial",
             "clear": "Limpiar",
