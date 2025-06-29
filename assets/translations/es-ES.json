@@ -33,7 +33,7 @@
         },
         "explore": {
             "new": "Nuevo",
-            "popular": "Popular"
+            "popular": "Tendencias"
         }
     },
     "post": {
@@ -81,7 +81,7 @@
     "comment": {
         "comments": "Comentarios",
         "create": {
-            "hint": "Comentar",
+            "hint": "Escribe un comentario...",
             "loading": "Porfavor Espera...",
             "error": "Error"
         },
@@ -96,12 +96,12 @@
         },
         "counter": {
             "one": "Comentario",
-            "other": "Comentar"
+            "other": "Comentarios"
         }
     },
     "explore": {
         "latest": "Ultimo",
-        "popular": "Popular",
+        "popular": "Populares",
         "hot": "Caliente",
         "most_viewed": "Los más vistos",
         "see_more": "Mostrar mas",
@@ -110,11 +110,11 @@
     "search": {
         "errors": {
             "generic": "Algo debe estar Fallando",
-            "tag_limit": "Limite de Etiquetas Alcanzado. Actualiza tu cuenta para buscar con mas Etiquetas",
+            "tag_limit": "Limite de etiquetas alcanzado. Actualiza tu cuenta para buscar más Etiquetas",
             "database_timeout": "Tu búsqueda tardó demasiado en procesarse y fue cancelada.",
-            "rate_limited": "Estás siendo limitado/a. Por favor, inténtalo más tarde.",
+            "rate_limited": "Estás realizando demasiadas búsquedas. Inténtalo más tarde.",
             "pagination_limit": "Has llegado al límite de paginación. No puedes desplazarte más",
-            "max_capacity": "El servidor está sobrecargado. Por favor, inténtalo más tarde.",
+            "max_capacity": "El servidor ha alcanzado su capacidad máxima. Por favor, inténtalo más tarde.",
             "down": "El servidor está caído. Por favor, inténtalo más tarde",
             "access_denied": "Acceso denegado",
             "forbidden": "Autenticación fallida",
@@ -185,7 +185,7 @@
         "image_list": {
             "image_list": "Lista de Imágenes",
             "standard": "Estándar",
-            "masonry": "Masonry"
+            "masonry": "Mosaico"
         },
         "image_grid": {
             "image_grid": "Grid de Imágenes",
@@ -216,9 +216,15 @@
             "slideshow": "Presentación",
             "slideshow_mode": "Modo presentación",
             "slideshow_modes": {
-                "random": "Aleatorio"
+                "random": "Aleatorio",
+                "forward": "Adelante",
+                "backward": "Atras"
             },
-            "slideshow_interval": "Intervalo de presentación"
+            "slideshow_interval": "Intervalo de presentación",
+            "slideshow_skip": "Omitir imágenes",
+            "slideshow_interval_explanation": "Valor menor a 1 segundo omitirá automáticamente la transición",
+            "mute_video": "Silenciar video por predeterminado",
+            "video_section_title": "Video"
         },
         "image_detail": {
             "image_detail": "Calidad de la Imagen"
@@ -243,7 +249,7 @@
             "enable_biometric_lock": "Habilitar bloqueo biométrico",
             "enable_biometric_lock_notice": "Solo funciona en dispositivos con soporte biométrico y que hayan sido configurados.",
             "enable_incognito_keyboard": "Habilitar teclado en modo incognito",
-            "enable_incognito_keyboard_notice": "Solo efectos de Android"
+            "enable_incognito_keyboard_notice": "Solo afecta Android."
         },
         "performance": {
             "performance": "Gestion",
@@ -326,7 +332,7 @@
         "download": "Descargar",
         "bulk_download_save_to_folder": "Guardar a carpeta",
         "bulk_download_invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
-        "bulk_download_folder_select_warning": "La aplicación solo puede almacenar archivos en directorios públicos <b>({0})</b> en Android 11+. <div>Las tarjetas SD tampoco son compatibles.</div> <div>Por favor, elija otra ubicación.</div> <div>La versión de este dispositivo es {1}.</div>",
+        "bulk_download_folder_select_warning": "La app solo puede descargar archivos dentro de directorios públicos <b>({0})</b> para Android 11+. <br><br>Ejemplos de ubicaciones válidas:<br><b>[Interno]</b> /storage/emulated/0/Download <br><b>[Tarjeta SD]</b> /storage/A1B2-C3D4/Download<br><br>Por favor, elige otro directorio o crea uno nuevo si no existe. <br>La versión de este dispositivo es <b>{1}</b>.",
         "open_app_settings": "Abrir Ajustes",
         "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
         "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
@@ -349,7 +355,7 @@
         "empty_saved_search": "Todavia no has añadido ninguna busqueda",
         "update_saved_search": "Actualizar busqueda guardada",
         "saved_search_updated": "Busqueda actualizada",
-        "saved_search_feed": "Feed",
+        "saved_search_feed": "Feed de búsquedas guardadas",
         "saved_search_help": "Que es eso?",
         "saved_search_examples": "Ejemplos",
         "saved_search_try": "Intentalo",
