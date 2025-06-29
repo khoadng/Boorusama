@@ -40,7 +40,9 @@ class TagsTile extends StatelessWidget {
     final count = initialCount ?? post.tags.length;
 
     return RawTagsTile(
-      title: Text('$count tags'),
+      title: RawTagsTileTitle(
+        count: count,
+      ),
       initiallyExpanded: initialExpanded,
       onExpansionChanged: (value) =>
           value ? onExpand?.call() : onCollapse?.call(),

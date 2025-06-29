@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../foundation/display/media_query_utils.dart';
+import '../../../../widgets/booru_popup_menu_button.dart';
 import '../_internal/details_widget_frame.dart';
 
 class RawTagsTile extends StatelessWidget {
@@ -51,6 +52,33 @@ class RawTagsTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class RawTagsTileTitle<T> extends StatelessWidget {
+  const RawTagsTileTitle({
+    required this.count,
+    this.itemBuilder,
+    this.onSelected,
+    super.key,
+  });
+
+  final int count;
+  final Map<T, Widget>? itemBuilder;
+  final void Function(T value)? onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text('$count tags'),
+        if (itemBuilder?.isNotEmpty ?? false)
+          BooruPopupMenuButton(
+            onSelected: onSelected,
+            itemBuilder: itemBuilder ?? <T, Widget>{},
+          ),
+      ],
     );
   }
 }

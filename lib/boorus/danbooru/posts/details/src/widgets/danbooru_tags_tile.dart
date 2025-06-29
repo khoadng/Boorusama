@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
@@ -36,7 +35,6 @@ class DanbooruTagsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
     final config = ref.watchConfigAuth;
     final tagDetails =
         allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
@@ -45,26 +43,16 @@ class DanbooruTagsTile extends ConsumerWidget {
         ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
 
     return RawTagsTile(
-      title: Row(
-        children: [
-          Text('$count tags'),
-          if (config.hasLoginDetails())
-            FilledButton(
-              style: FilledButton.styleFrom(
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
-                shape: const CircleBorder(),
-                backgroundColor: colorScheme.surfaceContainerHighest,
-              ),
-              onPressed: () => ref.danbooruEdit(post),
-              child: Icon(
-                Symbols.edit,
-                size: 16,
-                color: colorScheme.onSurfaceVariant,
-                fill: 1,
-              ),
-            ),
-        ],
+      title: RawTagsTileTitle(
+        count: count,
+        itemBuilder: {
+          if (config.hasLoginDetails()) 'edit': const Text('Edit'),
+        },
+        onSelected: (value) {
+          if (value == 'edit') {
+            ref.danbooruEdit(post);
+          }
+        },
       ),
       initiallyExpanded: initialExpanded,
       onExpansionChanged: (value) {
