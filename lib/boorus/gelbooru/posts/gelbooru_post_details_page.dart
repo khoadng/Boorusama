@@ -11,8 +11,8 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
-import '../../../core/tags/tag/providers.dart';
 import '../artists/artists.dart';
+import '../tags/gelbooru_tags_provider.dart';
 import 'posts.dart';
 
 class GelbooruTagListSection extends ConsumerStatefulWidget {

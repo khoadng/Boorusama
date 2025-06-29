@@ -35,6 +35,7 @@ import '../../core/scaffolds/artist_page_scaffold.dart';
 import '../../core/search/queries/providers.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'create_sankaku_config_page.dart';
@@ -272,26 +273,20 @@ class SankakuArtistPostsSection extends ConsumerWidget {
   }
 }
 
-class SankakuTagsTile extends StatelessWidget {
+class SankakuTagsTile extends ConsumerWidget {
   const SankakuTagsTile({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SankakuPost>(context);
+    final params = (ref.watchConfigAuth, post);
 
     return SliverToBoxAdapter(
       child: TagsTile(
         post: post,
-        initialExpanded: true,
-        tags: createTagGroupItems([
-          ...post.artistDetailsTags,
-          ...post.characterDetailsTags,
-          ...post.copyrightDetailsTags,
-          ...post.generalDetailsTags,
-          ...post.metaDetailsTags,
-        ]),
+        tags: ref.watch(sankakuGroupsProvider(params)).valueOrNull,
       ),
     );
   }

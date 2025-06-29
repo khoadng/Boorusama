@@ -32,8 +32,6 @@ import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
-import '../../core/tags/categories/tag_category.dart';
-import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
@@ -87,26 +85,6 @@ final gelbooruV2AutocompleteRepoProvider =
         '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
   );
 });
-
-final gelbooruV2TagsFromIdProvider =
-    FutureProvider.autoDispose.family<List<Tag>, int>(
-  (ref, id) async {
-    final config = ref.watchConfigAuth;
-    final client = ref.watch(gelbooruV2ClientProvider(config));
-
-    final data = await client.getTagsFromPostId(postId: id);
-
-    return data
-        .map(
-          (e) => Tag(
-            name: e.name ?? '',
-            category: TagCategory.fromLegacyId(e.type),
-            postCount: e.count ?? 0,
-          ),
-        )
-        .toList();
-  },
-);
 
 final gelbooruV2NoteRepoProvider =
     Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {

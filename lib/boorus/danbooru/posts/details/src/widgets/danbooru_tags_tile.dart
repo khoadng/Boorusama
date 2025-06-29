@@ -75,10 +75,11 @@ class DanbooruTagsTile extends ConsumerWidget {
         if (isExpanded)
           PostTagList(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            tags: ref.watch(danbooruTagGroupsProvider(post)).maybeWhen(
-                  data: (data) => data,
-                  orElse: () => null,
-                ),
+            tags:
+                ref.watch(danbooruTagGroupsProvider((config, post))).maybeWhen(
+                      data: (data) => data,
+                      orElse: () => null,
+                    ),
             itemBuilder: (context, tag) => DanbooruTagContextMenu(
               tag: tag.rawName,
               child: PostTagListChip(

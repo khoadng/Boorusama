@@ -17,6 +17,7 @@ import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../../../core/widgets/widgets.dart';
 import '../feats/favorites/favorites.dart';
@@ -24,13 +25,30 @@ import '../feats/posts/posts.dart';
 import '../feats/tags/tags.dart';
 import '../moebooru.dart';
 
+final moebooruTagGroupRepoProvider =
+    Provider.family<TagGroupRepository<MoebooruPost>, BooruConfigAuth>(
+  (ref, config) {
+    return TagGroupRepositoryBuilder(
+      ref: ref,
+      loadGroups: (post) async {
+        final allTagMap =
+            await ref.watch(moebooruAllTagsProvider(config).future);
+
+        return createMoebooruTagGroupItems(post.tags, allTagMap);
+      },
+    );
+  },
+);
+
 final moebooruPostDetailTagGroupProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, Post>((ref, post) async {
-  final config = ref.watchConfigAuth;
+    .family<List<TagGroupItem>, (BooruConfigAuth, MoebooruPost)>(
+        (ref, params) async {
+  final config = params.$1;
+  final post = params.$2;
 
-  final allTagMap = await ref.watch(moebooruAllTagsProvider(config).future);
+  final tagGroupRepo = ref.watch(moebooruTagGroupRepoProvider(config));
 
-  return createMoebooruTagGroupItems(post.tags, allTagMap);
+  return tagGroupRepo.getTagGroups(post);
 });
 
 List<TagGroupItem> createMoebooruTagGroupItems(
@@ -155,15 +173,12 @@ class MoebooruTagListSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<MoebooruPost>(context);
+    final params = (ref.watchConfigAuth, post);
 
     return SliverToBoxAdapter(
       child: TagsTile(
-        initialExpanded: true,
         post: post,
-        tags: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
-              data: (tags) => tags,
-              orElse: () => null,
-            ),
+        tags: ref.watch(moebooruPostDetailTagGroupProvider(params)).valueOrNull,
       ),
     );
   }
@@ -175,8 +190,9 @@ class MoebooruCharacterListSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final post = InheritedPost.of<MoebooruPost>(context);
+    final params = (config, post);
 
-    return ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
+    return ref.watch(moebooruPostDetailTagGroupProvider(params)).maybeWhen(
           data: (tags) {
             final artistTags = _extractArtist(config, tags);
             final characterTags = _extractCharacter(config, tags);
@@ -239,9 +255,10 @@ class MoebooruArtistPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final post = InheritedPost.of<MoebooruPost>(context);
+    final params = (config, post);
 
     return MultiSliver(
-      children: ref.watch(moebooruPostDetailTagGroupProvider(post)).maybeWhen(
+      children: ref.watch(moebooruPostDetailTagGroupProvider(params)).maybeWhen(
             data: (tags) {
               final artistTags = _extractArtist(config, tags);
 

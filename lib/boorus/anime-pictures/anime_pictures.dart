@@ -29,6 +29,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/scaffolds/scaffolds.dart';
+import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
@@ -324,35 +325,53 @@ final postDetailsProvider =
   return post;
 });
 
-final postTagsProvider =
-    FutureProvider.autoDispose.family<List<TagGroupItem>, int>((ref, id) async {
-  final postDetails = await ref.watch(postDetailsProvider(id).future);
+final animePictureTagGroupRepoProvider =
+    Provider.family<TagGroupRepository<AnimePicturesPost>, BooruConfigAuth>(
+  (ref, id) {
+    return TagGroupRepositoryBuilder(
+      ref: ref,
+      loadGroups: (post) async {
+        final postDetails = await ref.read(postDetailsProvider(post.id).future);
 
-  final tagGroups = <TagGroupItem>[
-    for (final c in AnimePicturesTagType.values)
-      TagGroupItem(
-        category: animePicturesTagTypeToTagCategory(c).id,
-        groupName: _mapToGroupName(c),
-        order: _mapToOrder(c),
-        tags: postDetails.tags
-                ?.where((e) => e.tag?.type == c)
-                .nonNulls
-                .map((e) => e.tag!)
-                .map(
-                  (e) => Tag(
-                    name: e.tag ?? '???',
-                    category: animePicturesTagTypeToTagCategory(e.type),
-                    postCount: e.num ?? 0,
-                  ),
-                )
-                .toList() ??
-            [],
-      ),
-  ]..sort((a, b) => a.order.compareTo(b.order));
+        final tagGroups = <TagGroupItem>[
+          for (final c in AnimePicturesTagType.values)
+            TagGroupItem(
+              category: animePicturesTagTypeToTagCategory(c).id,
+              groupName: _mapToGroupName(c),
+              order: _mapToOrder(c),
+              tags: postDetails.tags
+                      ?.where((e) => e.tag?.type == c)
+                      .nonNulls
+                      .map((e) => e.tag!)
+                      .map(
+                        (e) => Tag(
+                          name: e.tag ?? '???',
+                          category: animePicturesTagTypeToTagCategory(e.type),
+                          postCount: e.num ?? 0,
+                        ),
+                      )
+                      .toList() ??
+                  [],
+            ),
+        ]..sort((a, b) => a.order.compareTo(b.order));
 
-  final filtered = tagGroups.where((e) => e.tags.isNotEmpty).toList();
+        final filtered = tagGroups.where((e) => e.tags.isNotEmpty).toList();
 
-  return filtered;
+        return filtered;
+      },
+    );
+  },
+);
+
+final postTagsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>, (BooruConfigAuth, AnimePicturesPost)>(
+        (ref, params) async {
+  final config = params.$1;
+  final post = params.$2;
+
+  final repo = ref.watch(animePictureTagGroupRepoProvider(config));
+
+  return repo.getTagGroups(post);
 });
 
 int _mapToOrder(AnimePicturesTagType type) => switch (type) {
@@ -385,17 +404,16 @@ class AnimePicturesTagListSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<AnimePicturesPost>(context);
+    final params = (ref.watchConfigAuth, post);
 
     return SliverToBoxAdapter(
-      child: ref.watch(postTagsProvider(post.id)).when(
+      child: ref.watch(postTagsProvider(params)).when(
             data: (tags) => TagsTile(
-              initialExpanded: true,
               initialCount: post.tagsCount,
               post: post,
               tags: tags,
             ),
             loading: () => TagsTile(
-              initialExpanded: true,
               initialCount: post.tagsCount,
               post: post,
               tags: null,

@@ -17,7 +17,7 @@ import '../../../core/posts/post/post.dart';
 import '../../../core/search/search/routes.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../artists/artists.dart';
-import '../gelbooru_v2.dart';
+import '../tags/gelbooru_v2_tag_provider.dart';
 import 'posts_v2.dart';
 
 final gelbooruV2PostDetailsArtistMapProvider = StateProvider.autoDispose(
@@ -203,17 +203,17 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
   @override
   Widget build(BuildContext context) {
     final post = InheritedPost.of<GelbooruV2Post>(context);
+    final params = (ref.watchConfigAuth, post);
 
     if (expanded) {
-      ref.listen(gelbooruV2TagsFromIdProvider(post.id), (previous, next) {
+      ref.listen(gelbooruV2TagGroupsProvider(params), (previous, next) {
         next.when(
-          data: (data) {
+          data: (groups) {
             if (!mounted) return;
 
-            if (data.isNotEmpty) {
+            if (groups.isNotEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 if (!mounted) return;
-                final groups = createTagGroupItems(data);
 
                 ref
                   ..setGelbooruPostDetailsArtistMap(
@@ -227,7 +227,7 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
               });
             }
 
-            if (data.isEmpty && post.tags.isNotEmpty) {
+            if (groups.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
               setState(() => error = 'No tags found');
             }
@@ -245,8 +245,8 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
       child: error == null
           ? TagsTile(
               tags: expanded
-                  ? ref.watch(gelbooruV2TagsFromIdProvider(post.id)).maybeWhen(
-                        data: (data) => createTagGroupItems(data),
+                  ? ref.watch(gelbooruV2TagGroupsProvider(params)).maybeWhen(
+                        data: (data) => data,
                         orElse: () => null,
                       )
                   : null,

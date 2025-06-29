@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/configs/config/providers.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/tags/tag/tag.dart';
+import 'providers.dart';
 import 'szurubooru_post.dart';
 
 class SzurubooruTagListSection extends ConsumerWidget {
@@ -15,12 +16,12 @@ class SzurubooruTagListSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
+    final params = (ref.watchConfigAuth, post);
 
     return SliverToBoxAdapter(
       child: TagsTile(
         post: post,
-        tags: createTagGroupItems(post.tagDetails),
-        initialExpanded: true,
+        tags: ref.watch(szurubooruGroupsProvider(params)).valueOrNull,
         tagColorBuilder: (tag) => tag.category.darkColor,
       ),
     );

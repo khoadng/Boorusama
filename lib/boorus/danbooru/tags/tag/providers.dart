@@ -9,6 +9,7 @@ import '../../../../core/tags/categories/tag_category.dart';
 import '../../../../core/tags/tag/providers.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../danbooru_provider.dart';
+import '../../posts/post/post.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -46,3 +47,21 @@ final danbooruTagCategoryProvider =
 
   return TagCategory.fromLegacyIdString(type);
 });
+
+final danbooruTagGroupRepoProvider =
+    Provider.family<TagGroupRepository<DanbooruPost>, BooruConfigAuth>(
+  (ref, config) {
+    final tagRepo = ref.watch(danbooruTagRepoProvider(config));
+
+    return TagGroupRepositoryBuilder(
+      ref: ref,
+      loadGroups: (post) async {
+        final tagList = post.tags;
+
+        final tags = await tagRepo.getTagsByName(tagList, 1);
+
+        return createTagGroupItems(tags);
+      },
+    );
+  },
+);

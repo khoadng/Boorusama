@@ -32,8 +32,6 @@ import '../../core/posts/rating/rating.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
-import '../../core/tags/categories/tag_category.dart';
-import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'artists/gelbooru_artist_page.dart';
@@ -44,6 +42,7 @@ import 'home/home.dart';
 import 'posts/gelbooru_post_details_page.dart';
 import 'posts/posts.dart';
 import 'syntax/src/providers/providers.dart';
+import 'tags/gelbooru_tags_provider.dart';
 
 export 'posts/posts.dart';
 
@@ -77,32 +76,6 @@ final gelbooruProvider = Provider<Gelbooru>(
     }
 
     return booru;
-  },
-);
-
-final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
-  (ref, config) {
-    final client = ref.watch(gelbooruClientProvider(config));
-
-    return TagRepositoryBuilder(
-      persistentStorageKey: '${Uri.encodeComponent(config.url)}_tags_cache_v1',
-      getTags: (tags, page, {cancelToken}) async {
-        final data = await client.getTags(
-          page: page,
-          tags: tags,
-        );
-
-        return data
-            .map(
-              (e) => Tag(
-                name: e.name != null ? decodeHtmlEntities(e.name!) : '',
-                category: TagCategory.fromLegacyId(e.type),
-                postCount: e.count ?? 0,
-              ),
-            )
-            .toList();
-      },
-    );
   },
 );
 

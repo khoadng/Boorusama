@@ -23,7 +23,6 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/tag/colors.dart';
-import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';
@@ -237,18 +236,13 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
   @override
   Widget build(BuildContext context) {
     final post = InheritedPost.of<ZerochanPost>(context);
+    final params = (ref.watchConfigAuth, post);
 
     if (expanded) {
-      ref.listen(zerochanTagsFromIdProvider(post.id), (previous, next) {
+      ref.listen(zerochanTagGroupsProvider(params), (previous, next) {
         next.when(
           data: (data) {
             if (!mounted) return;
-
-            // if (data.isNotEmpty) {
-            //   if (widget.onTagsLoaded != null) {
-            //     widget.onTagsLoaded!(createTagGroupItems(data));
-            //   }
-            // }
 
             if (data.isEmpty && post.tags.isNotEmpty) {
               // Just a dummy data so the check below will branch into the else block
@@ -263,15 +257,11 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
         );
       });
     }
-
     return SliverToBoxAdapter(
       child: error == null
           ? TagsTile(
               tags: expanded
-                  ? ref.watch(zerochanTagsFromIdProvider(post.id)).maybeWhen(
-                        data: (data) => createTagGroupItems(data),
-                        orElse: () => null,
-                      )
+                  ? ref.watch(zerochanTagGroupsProvider(params)).valueOrNull
                   : null,
               post: post,
               onExpand: () => setState(() => expanded = true),

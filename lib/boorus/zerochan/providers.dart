@@ -16,6 +16,7 @@ import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import 'zerochan_post.dart';
 
@@ -158,6 +159,31 @@ final zerochanTagsFromIdProvider =
         .toList();
   },
 );
+
+final zerochanTagGroupRepoProvider =
+    Provider.family<TagGroupRepository<ZerochanPost>, BooruConfigAuth>(
+  (ref, config) {
+    return TagGroupRepositoryBuilder(
+      ref: ref,
+      loadGroups: (post) async {
+        final tags = await ref.read(zerochanTagsFromIdProvider(post.id).future);
+
+        return createTagGroupItems(tags);
+      },
+    );
+  },
+);
+
+final zerochanTagGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>, (BooruConfigAuth, ZerochanPost)>(
+        (ref, params) async {
+  final config = params.$1;
+  final post = params.$2;
+
+  final tagGroupRepo = ref.watch(zerochanTagGroupRepoProvider(config));
+
+  return tagGroupRepo.getTagGroups(post);
+});
 
 TagCategory zerochanStringToTagCategory(String? value) {
   // remove ' fav' and ' primary' from the end of the string

@@ -19,6 +19,7 @@ import '../../core/posts/sources/source.dart';
 import '../../core/search/queries/providers.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
+import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import '../../core/utils/color_utils.dart';
 import 'post_votes/post_votes.dart';
@@ -209,6 +210,29 @@ final szurubooruTagCategoriesProvider =
         .toList();
   },
 );
+
+final szurubooruTagGroupRepoProvider =
+    Provider.family<TagGroupRepository<SzurubooruPost>, BooruConfigAuth>(
+  (ref, config) {
+    return TagGroupRepositoryBuilder(
+      ref: ref,
+      loadGroups: (post) async {
+        return createTagGroupItems(post.tagDetails);
+      },
+    );
+  },
+);
+
+final szurubooruGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>, (BooruConfigAuth, SzurubooruPost)>(
+        (ref, params) async {
+  final config = params.$1;
+  final post = params.$2;
+
+  final tagGroupRepo = ref.watch(szurubooruTagGroupRepoProvider(config));
+
+  return tagGroupRepo.getTagGroups(post);
+});
 
 class SzurubooruFavoriteRepository extends FavoriteRepository<SzurubooruPost> {
   SzurubooruFavoriteRepository(this.ref, this.config);

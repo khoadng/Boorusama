@@ -12,7 +12,6 @@ import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/settings/providers.dart';
-import '../../../core/tags/tag/tag.dart';
 import '../artists/artists.dart';
 import '../tags/tags.dart';
 import 'posts.dart';
@@ -93,54 +92,16 @@ class E621TagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<E621Post>(context);
+    final config = ref.watchConfigAuth;
+    final params = (config, post);
 
     return SliverToBoxAdapter(
       child: TagsTile(
         post: post,
-        tags: createTagGroupItems([
-          ...post.artistTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621ArtistTagCategory,
+        tags: ref.watch(e621TagGroupsProvider(params)).maybeWhen(
+              data: (data) => data,
+              orElse: () => null,
             ),
-          ),
-          ...post.characterTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621CharacterTagCategory,
-            ),
-          ),
-          ...post.speciesTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621SpeciesTagCategory,
-            ),
-          ),
-          ...post.copyrightTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621CopyrightTagCategory,
-            ),
-          ),
-          ...post.generalTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621GeneralTagCategory,
-            ),
-          ),
-          ...post.metaTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621MetaTagCagegory,
-            ),
-          ),
-          ...post.loreTags.map(
-            (e) => Tag.noCount(
-              name: e,
-              category: e621LoreTagCategory,
-            ),
-          ),
-        ]),
       ),
     );
   }
