@@ -16,7 +16,7 @@
         "view": "View"
     },
     "profile": {
-        "favorites": "Favorite",
+        "favorites": "Favorites",
         "profile": "Profile",
         "copy_user_id": "Copy User ID",
         "messages": "Messages"
