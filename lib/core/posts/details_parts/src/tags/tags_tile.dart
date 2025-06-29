@@ -46,19 +46,17 @@ class TagsTile extends StatelessWidget {
       onExpansionChanged: (value) =>
           value ? onExpand?.call() : onCollapse?.call(),
       children: [
-        Padding(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
-          child: PostTagList(
-            tags: tags,
-            itemBuilder: (context, tag) => GeneralTagContextMenu(
-              tag: tag.rawName,
-              child: Consumer(
-                builder: (_, ref, __) => PostTagListChip(
-                  tag: tag,
-                  auth: ref.watchConfigAuth,
-                  onTap: () => goToSearchPage(context, tag: tag.rawName),
-                  color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
-                ),
+        PostTagList(
+          padding: padding,
+          tags: tags,
+          itemBuilder: (context, tag) => GeneralTagContextMenu(
+            tag: tag.rawName,
+            child: Consumer(
+              builder: (_, ref, __) => PostTagListChip(
+                tag: tag,
+                auth: ref.watchConfigAuth,
+                onTap: () => goToSearchPage(context, tag: tag.rawName),
+                color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
               ),
             ),
           ),

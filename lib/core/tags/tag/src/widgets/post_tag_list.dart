@@ -20,11 +20,13 @@ class PostTagList extends StatelessWidget {
     required this.tags,
     super.key,
     this.maxTagWidth,
+    this.padding,
   });
 
   final double? maxTagWidth;
   final Widget Function(BuildContext context, Tag tag) itemBuilder;
   final List<TagGroupItem>? tags;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +54,14 @@ class PostTagList extends StatelessWidget {
         );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ...widgets,
-      ],
+    return Padding(
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...widgets,
+        ],
+      ),
     );
   }
 

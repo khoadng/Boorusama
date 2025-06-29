@@ -64,20 +64,18 @@ class DanbooruTagsTile extends ConsumerWidget {
       },
       children: [
         if (isExpanded)
-          Padding(
+          PostTagList(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: PostTagList(
-              tags: ref.watch(danbooruTagGroupsProvider(post)).maybeWhen(
-                    data: (data) => data,
-                    orElse: () => null,
-                  ),
-              itemBuilder: (context, tag) => DanbooruTagContextMenu(
-                tag: tag.rawName,
-                child: PostTagListChip(
-                  tag: tag,
-                  auth: config,
-                  onTap: () => goToSearchPage(context, tag: tag.rawName),
+            tags: ref.watch(danbooruTagGroupsProvider(post)).maybeWhen(
+                  data: (data) => data,
+                  orElse: () => null,
                 ),
+            itemBuilder: (context, tag) => DanbooruTagContextMenu(
+              tag: tag.rawName,
+              child: PostTagListChip(
+                tag: tag,
+                auth: config,
+                onTap: () => goToSearchPage(context, tag: tag.rawName),
               ),
             ),
           ),
