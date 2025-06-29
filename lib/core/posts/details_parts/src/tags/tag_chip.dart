@@ -79,7 +79,7 @@ class TagChip extends ConsumerWidget {
       return null;
     }
 
-    return NumberFormat.compact().format(postCount!);
+    return NumberFormat.compact().format(postCount);
   }
 }
 
