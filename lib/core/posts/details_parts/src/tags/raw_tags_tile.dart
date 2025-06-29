@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../foundation/display/media_query_utils.dart';
+import '../../../../tags/tag/routes.dart';
 import '../../../../widgets/booru_popup_menu_button.dart';
+import '../../../post/post.dart';
+import '../../../post/tags.dart';
 import '../_internal/details_widget_frame.dart';
 
 class RawTagsTile extends StatelessWidget {
@@ -56,29 +59,51 @@ class RawTagsTile extends StatelessWidget {
   }
 }
 
-class RawTagsTileTitle<T> extends StatelessWidget {
+class RawTagsTileTitle<T extends Post> extends StatelessWidget {
   const RawTagsTileTitle({
     required this.count,
+    required this.post,
     this.itemBuilder,
     this.onSelected,
+    this.onMultiSelect,
     super.key,
   });
 
   final int count;
-  final Map<T, Widget>? itemBuilder;
-  final void Function(T value)? onSelected;
+  final T post;
+  final Map<String, Widget>? itemBuilder;
+  final void Function(String value)? onSelected;
+  final VoidCallback? onMultiSelect;
 
   @override
   Widget build(BuildContext context) {
+    final effectiveItemBuilder = {
+      'select': const Text('Select'),
+      ...?itemBuilder,
+    };
+
     return Row(
       children: [
         Text('$count tags'),
-        if (itemBuilder?.isNotEmpty ?? false)
-          BooruPopupMenuButton(
-            iconColor: Theme.of(context).colorScheme.onSurface,
-            onSelected: onSelected,
-            itemBuilder: itemBuilder ?? <T, Widget>{},
-          ),
+        BooruPopupMenuButton(
+          iconColor: Theme.of(context).colorScheme.onSurface,
+          onSelected: (value) {
+            if (value == 'select') {
+              if (onMultiSelect != null) {
+                onMultiSelect!();
+              } else {
+                goToShowTaglistPage(
+                  context,
+                  post.extractTags(),
+                  initiallyMultiSelectEnabled: true,
+                );
+              }
+            } else {
+              onSelected?.call(value);
+            }
+          },
+          itemBuilder: effectiveItemBuilder,
+        ),
       ],
     );
   }

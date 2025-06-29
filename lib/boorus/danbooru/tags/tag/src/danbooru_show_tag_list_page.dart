@@ -17,10 +17,12 @@ import '../../../blacklist/providers.dart';
 class DanbooruShowTagListPage extends ConsumerWidget {
   const DanbooruShowTagListPage({
     required this.tags,
+    required this.initiallyMultiSelectEnabled,
     super.key,
   });
 
   final List<Tag> tags;
+  final bool initiallyMultiSelectEnabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +35,7 @@ class DanbooruShowTagListPage extends ConsumerWidget {
     return ShowTagListPage(
       tags: tags,
       auth: config,
+      initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
       onOpenWiki: (tag) {
         launchWikiPage(
           config.url,

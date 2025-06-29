@@ -9,8 +9,9 @@ import 'tag.dart';
 
 Future<bool?> goToShowTaglistPage(
   BuildContext context,
-  List<Tag> tags,
-) {
+  List<Tag> tags, {
+  bool initiallyMultiSelectEnabled = false,
+}) {
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? context,
     expand: true,
@@ -19,6 +20,7 @@ Future<bool?> goToShowTaglistPage(
     ),
     builder: (context) => DefaultShowTagListPage(
       tags: tags,
+      initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
     ),
   );
 }

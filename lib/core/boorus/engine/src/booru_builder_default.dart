@@ -190,7 +190,10 @@ class PostGestureHandler {
   }
 
   void handleViewTags(WidgetRef ref, Post post) {
-    goToShowTaglistPage(ref.context, post.extractTags());
+    goToShowTaglistPage(
+      ref.context,
+      post.extractTags(),
+    );
   }
 
   void handleViewOriginal(WidgetRef ref, Post post) {

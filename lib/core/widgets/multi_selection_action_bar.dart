@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class MultiSelectionActionBar extends StatelessWidget {
   const MultiSelectionActionBar({
     required this.children,
+    this.height,
     super.key,
   });
 
   final List<Widget> children;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class MultiSelectionActionBar extends StatelessWidget {
               children: children,
             )
           : SizedBox(
-              height: 52,
+              height: height ?? 52,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: children,

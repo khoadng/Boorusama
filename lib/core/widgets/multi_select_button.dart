@@ -1,5 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
 import '../theme.dart';
 
 class MultiSelectButton extends StatelessWidget {
@@ -7,11 +9,17 @@ class MultiSelectButton extends StatelessWidget {
     required this.icon,
     required this.name,
     required this.onPressed,
+    this.width,
+    this.maxLines,
+    this.mainAxisAlignment,
     super.key,
   });
 
   final Widget icon;
   final String name;
+  final int? maxLines;
+  final double? width;
+  final MainAxisAlignment? mainAxisAlignment;
   final void Function()? onPressed;
 
   @override
@@ -26,9 +34,9 @@ class MultiSelectButton extends StatelessWidget {
       ),
       onTap: onPressed,
       child: SizedBox(
-        width: 100,
+        width: width ?? 100,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
           children: [
             const SizedBox(height: 4),
             Theme(
@@ -51,7 +59,7 @@ class MultiSelectButton extends StatelessWidget {
               child: Text(
                 name,
                 textAlign: TextAlign.center,
-                maxLines: 1,
+                maxLines: maxLines ?? 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 11,

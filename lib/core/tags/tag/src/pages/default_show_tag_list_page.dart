@@ -16,10 +16,12 @@ import 'show_tag_list_page.dart';
 class DefaultShowTagListPage extends ConsumerWidget {
   const DefaultShowTagListPage({
     required this.tags,
+    required this.initiallyMultiSelectEnabled,
     super.key,
   });
 
   final List<Tag> tags;
+  final bool initiallyMultiSelectEnabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +35,7 @@ class DefaultShowTagListPage extends ConsumerWidget {
 
     return ref.watch(defaultTagsFromCacheProvider(params)).when(
           data: (tags) => ShowTagListPage(
+            initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
             tags: tags,
             auth: auth,
             onAddToGlobalBlacklist: (tag) {

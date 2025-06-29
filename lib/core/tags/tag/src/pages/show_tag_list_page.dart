@@ -25,6 +25,7 @@ class ShowTagListPage extends ConsumerStatefulWidget {
   const ShowTagListPage({
     required this.tags,
     required this.auth,
+    required this.initiallyMultiSelectEnabled,
     super.key,
     this.onAddToBlacklist,
     this.onAddToGlobalBlacklist,
@@ -38,13 +39,16 @@ class ShowTagListPage extends ConsumerStatefulWidget {
   final void Function(Tag tag)? onAddToFavoriteTags;
   final void Function(Tag tag)? onOpenWiki;
   final BooruConfigAuth auth;
+  final bool initiallyMultiSelectEnabled;
 
   @override
   ConsumerState<ShowTagListPage> createState() => _ShowTagListPageState();
 }
 
 class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
-  final _multiSelectController = MultiSelectController();
+  late final _multiSelectController = MultiSelectController(
+    initialMultiSelectEnabled: widget.initiallyMultiSelectEnabled,
+  );
 
   @override
   void dispose() {
@@ -156,13 +160,15 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
             ),
           ),
         MultiSelectionActionBar(
+          height: 68,
           children: [
             MultiSelectButton(
               onPressed: selectedItems.isNotEmpty
                   ? () => _copySelectedTags(selectedItems)
                   : null,
               icon: const Icon(Symbols.content_copy),
-              name: 'Copy',
+              name: 'Copy Tags',
+              mainAxisAlignment: MainAxisAlignment.start,
             ),
             if (widget.onAddToBlacklist != null)
               MultiSelectButton(
@@ -170,21 +176,27 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
                     ? () => _addSelectedToBlacklist(selectedItems)
                     : null,
                 icon: const Icon(Symbols.block),
-                name: 'Add to blacklist',
+                name: 'Add to Blacklist',
+                maxLines: 2,
+                mainAxisAlignment: MainAxisAlignment.start,
               ),
             MultiSelectButton(
               onPressed: selectedItems.isNotEmpty
                   ? () => _addSelectedToGlobalBlacklist(selectedItems)
                   : null,
               icon: const Icon(Symbols.block),
-              name: 'Add to global blacklist',
+              name: 'Add to Global Blacklist',
+              maxLines: 2,
+              mainAxisAlignment: MainAxisAlignment.start,
             ),
             MultiSelectButton(
               onPressed: selectedItems.isNotEmpty
                   ? () => _addSelectedToFavorites(selectedItems)
                   : null,
               icon: const Icon(Symbols.favorite),
-              name: 'Add to favorites',
+              name: 'Add to Favorites',
+              maxLines: 2,
+              mainAxisAlignment: MainAxisAlignment.start,
             ),
           ],
         ),

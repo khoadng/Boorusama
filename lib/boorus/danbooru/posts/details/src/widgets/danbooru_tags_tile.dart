@@ -11,6 +11,7 @@ import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
+import '../../../../tags/tag/routes.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';
@@ -44,9 +45,17 @@ class DanbooruTagsTile extends ConsumerWidget {
 
     return RawTagsTile(
       title: RawTagsTileTitle(
+        post: post,
         count: count,
         itemBuilder: {
           if (config.hasLoginDetails()) 'edit': const Text('Edit'),
+        },
+        onMultiSelect: () {
+          goToDanbooruShowTaglistPage(
+            ref,
+            post.extractTags(),
+            initiallyMultiSelectEnabled: true,
+          );
         },
         onSelected: (value) {
           if (value == 'edit') {

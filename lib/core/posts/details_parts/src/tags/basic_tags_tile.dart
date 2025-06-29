@@ -30,7 +30,7 @@ class DefaultInheritedTagsTile<T extends Post> extends ConsumerWidget {
 
     return SliverToBoxAdapter(
       child: BasicTagsTile(
-        tags: post.tags.toList(),
+        post: post,
         unknownCategoryColor: ref.watch(tagColorProvider((config, 'general'))),
         auth: config,
         initialExpanded: initialExpanded,
@@ -41,24 +41,26 @@ class DefaultInheritedTagsTile<T extends Post> extends ConsumerWidget {
 
 class BasicTagsTile extends StatelessWidget {
   const BasicTagsTile({
-    required this.tags,
+    required this.post,
     required this.auth,
     super.key,
     this.unknownCategoryColor,
     this.initialExpanded = true,
   });
 
-  final List<String> tags;
+  final Post post;
   final Color? unknownCategoryColor;
   final BooruConfigAuth auth;
   final bool initialExpanded;
 
   @override
   Widget build(BuildContext context) {
+    final tags = post.tags;
     final sortedTags = tags.sorted((a, b) => a.compareTo(b));
 
     return RawTagsTile(
       title: RawTagsTileTitle(
+        post: post,
         count: tags.length,
       ),
       initiallyExpanded: initialExpanded,

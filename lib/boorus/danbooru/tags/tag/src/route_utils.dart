@@ -12,8 +12,9 @@ import 'danbooru_show_tag_list_page.dart';
 
 Future<bool?> goToDanbooruShowTaglistPage(
   WidgetRef ref,
-  List<Tag> tags,
-) {
+  List<Tag> tags, {
+  bool initiallyMultiSelectEnabled = false,
+}) {
   return showAdaptiveSheet(
     navigatorKey.currentContext ?? ref.context,
     expand: true,
@@ -22,6 +23,7 @@ Future<bool?> goToDanbooruShowTaglistPage(
     ),
     builder: (context) => DanbooruShowTagListPage(
       tags: tags,
+      initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
     ),
   );
 }

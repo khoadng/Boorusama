@@ -281,7 +281,7 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
               },
             )
           : BasicTagsTile(
-              tags: post.tags.toList(),
+              post: post,
               auth: ref.watchConfigAuth,
             ),
     );

@@ -258,7 +258,7 @@ class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
               },
             )
           : BasicTagsTile(
-              tags: post.tags.toList(),
+              post: post,
               auth: ref.watchConfigAuth,
             ),
     );

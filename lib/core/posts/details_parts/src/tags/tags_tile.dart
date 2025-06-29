@@ -40,6 +40,7 @@ class TagsTile extends StatelessWidget {
 
     return RawTagsTile(
       title: RawTagsTileTitle(
+        post: post,
         count: count,
       ),
       initiallyExpanded: initialExpanded,
