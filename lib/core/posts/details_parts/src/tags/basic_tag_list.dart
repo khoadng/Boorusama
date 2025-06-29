@@ -12,10 +12,9 @@ import '../../../../search/search/routes.dart';
 import '../../../../tags/categories/providers.dart';
 import '../../../../tags/tag/providers.dart';
 import '../../../../theme/providers.dart';
-import '../../../../utils/flutter_utils.dart';
 import '../../../details/details.dart';
 import '../../../post/post.dart';
-import 'raw_tag_chip_list.dart';
+import 'raw_tag_chip.dart';
 
 class DefaultInheritedTagList<T extends Post> extends ConsumerWidget {
   const DefaultInheritedTagList({super.key});
@@ -55,80 +54,51 @@ class BasicTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return RawTagChipList(
-      items: tags.sorted((a, b) => a.compareTo(b)),
+    final sortedTags = tags.sorted((a, b) => a.compareTo(b));
+
+    return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 20,
         horizontal: 8,
       ),
-      chipBuilder: (context, tag) {
-        final categoryAsync = ref.watch(booruTagTypeProvider((auth, tag)));
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: sortedTags.map((tag) {
+          final categoryAsync = ref.watch(booruTagTypeProvider((auth, tag)));
 
-        return GestureDetector(
-          onTap: () => onTap(tag),
-          child: categoryAsync.maybeWhen(
-            data: (category) {
-              final colors = category != null
-                  ? ref.watch(
-                      chipColorsFromTagStringProvider((auth, category)),
-                    )
-                  : ref
-                      .watch(booruChipColorsProvider)
-                      .fromColor(unknownCategoryColor);
-
-              return Chip(
-                visualDensity: const ShrinkVisualDensity(),
-                backgroundColor: colors?.backgroundColor,
-                side: colors != null
-                    ? BorderSide(
-                        color: colors.borderColor,
+          return GestureDetector(
+            onTap: () => onTap(tag),
+            child: categoryAsync.maybeWhen(
+              data: (category) {
+                final colors = category != null
+                    ? ref.watch(
+                        chipColorsFromTagStringProvider((auth, category)),
                       )
-                    : null,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
-                label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.sizeOf(context).width * 0.7,
-                  ),
-                  child: Text(
-                    _getTagStringDisplayName(tag),
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: colors?.foregroundColor,
-                    ),
-                  ),
-                ),
-              );
-            },
-            orElse: () => Chip(
-              visualDensity: const ShrinkVisualDensity(),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
-              label: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.7,
-                ),
-                child: Text(
-                  _getTagStringDisplayName(tag),
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                    : ref
+                        .watch(booruChipColorsProvider)
+                        .fromColor(unknownCategoryColor);
+
+                return RawTagChip(
+                  text: _getTagStringDisplayName(tag),
+                  backgroundColor: colors?.backgroundColor,
+                  foregroundColor: colors?.foregroundColor,
+                  borderColor: colors?.borderColor,
+                  onTap: () => onTap(tag),
+                );
+              },
+              orElse: () => RawTagChip(
+                text: _getTagStringDisplayName(tag),
+                onTap: () => onTap(tag),
               ),
             ),
-          ),
-        );
-      },
+          );
+        }).toList(),
+      ),
     );
   }
 }
 
 String _getTagStringDisplayName(String tag) {
-  final sanitized = tag.toLowerCase().replaceAll('_', ' ');
-
-  return sanitized.length > 30 ? '${sanitized.substring(0, 30)}...' : sanitized;
+  return tag.toLowerCase().replaceAll('_', ' ');
 }

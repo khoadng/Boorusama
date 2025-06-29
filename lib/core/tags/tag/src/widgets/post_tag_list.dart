@@ -7,9 +7,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/config.dart';
-import '../../../../theme.dart';
+import '../../../../posts/details_parts/widgets.dart';
 import '../../../../theme/providers.dart';
 import '../tag.dart';
 import '../tag_display.dart';
@@ -108,58 +107,22 @@ class PostTagListChip extends ConsumerWidget {
               (auth, tag.category.name),
             ),
           );
-    final screenWith = MediaQuery.sizeOf(context).width;
 
-    return RawCompactChip(
+    final subtitle = (!auth.hasStrictSFW && tag.postCount > 0)
+        ? NumberFormat.compact().format(tag.postCount)
+        : null;
+
+    return RawTagChip(
+      text: tag.displayName,
+      subtitle: subtitle,
       onTap: onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 6,
-      ),
-      foregroundColor: colors?.foregroundColor,
+      maxWidth: maxTagWidth,
       backgroundColor: colors?.backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: colors != null
-            ? BorderSide(
-                color: colors.borderColor,
-              )
-            : BorderSide.none,
-      ),
-      label: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: maxTagWidth ?? screenWith * 0.7,
-        ),
-        child: RichText(
-          overflow: TextOverflow.ellipsis,
-          text: TextSpan(
-            text: _getTagStringDisplayName(tag),
-            style: TextStyle(
-              color: colors?.foregroundColor,
-              fontWeight: FontWeight.w600,
-            ),
-            children: [
-              if (!auth.hasStrictSFW && tag.postCount > 0)
-                TextSpan(
-                  text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 11,
-                        color: Theme.of(context).brightness.isLight
-                            ? Colors.white.withValues(alpha: 0.85)
-                            : Colors.grey.withValues(alpha: 0.85),
-                      ),
-                ),
-            ],
-          ),
-        ),
-      ),
+      foregroundColor: colors?.foregroundColor,
+      borderColor: colors?.borderColor,
     );
   }
 }
-
-String _getTagStringDisplayName(Tag tag) => tag.displayName.length > 30
-    ? '${tag.displayName.substring(0, 30)}...'
-    : tag.displayName;
 
 class _TagBlockTitle extends StatelessWidget {
   const _TagBlockTitle({
