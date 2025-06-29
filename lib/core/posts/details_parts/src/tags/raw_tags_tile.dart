@@ -75,6 +75,7 @@ class RawTagsTileTitle<T> extends StatelessWidget {
         Text('$count tags'),
         if (itemBuilder?.isNotEmpty ?? false)
           BooruPopupMenuButton(
+            iconColor: Theme.of(context).colorScheme.onSurface,
             onSelected: onSelected,
             itemBuilder: itemBuilder ?? <T, Widget>{},
           ),
