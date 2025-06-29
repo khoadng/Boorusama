@@ -33,7 +33,6 @@ import '../../core/posts/rating/rating.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/scaffolds/artist_page_scaffold.dart';
 import '../../core/search/queries/providers.dart';
-import '../../core/search/search/routes.dart';
 import '../../core/settings/providers.dart';
 import '../../core/tags/categories/tag_category.dart';
 import '../../core/tags/tag/tag.dart';
@@ -293,7 +292,6 @@ class SankakuTagsTile extends StatelessWidget {
           ...post.generalDetailsTags,
           ...post.metaDetailsTags,
         ]),
-        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),
     );
   }

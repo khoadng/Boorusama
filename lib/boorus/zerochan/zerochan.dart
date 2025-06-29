@@ -22,7 +22,6 @@ import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/search/search/routes.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
@@ -280,11 +279,9 @@ class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
                 // Don't set expanded to false to prevent rebuilding the tags list
                 setState(() => error = null);
               },
-              onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
             )
-          : BasicTagList(
+          : BasicTagsTile(
               tags: post.tags.toList(),
-              onTap: (tag) => goToSearchPage(context, tag: tag),
               auth: ref.watchConfigAuth,
             ),
     );

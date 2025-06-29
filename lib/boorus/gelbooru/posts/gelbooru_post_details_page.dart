@@ -11,9 +11,7 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
-import '../../../core/search/search/routes.dart';
 import '../../../core/tags/tag/providers.dart';
-import '../../../core/tags/tag/tag.dart';
 import '../artists/artists.dart';
 import 'posts.dart';
 
@@ -41,7 +39,6 @@ class _GelbooruTagListSectionState
               data: (data) => data.tags,
             ),
         post: post,
-        onTagTap: (tag) => goToSearchPage(context, tag: tag.rawName),
       ),
     );
   }

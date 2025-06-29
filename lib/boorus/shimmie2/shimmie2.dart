@@ -101,7 +101,7 @@ class Shimmie2Builder
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
       DetailsPart.tags: (context) =>
-          const DefaultInheritedTagList<Shimmie2Post>(),
+          const DefaultInheritedTagsTile<Shimmie2Post>(),
       DetailsPart.fileDetails: (context) => const Shimmie2FileDetailsSection(),
     },
   );

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../configs/ref.dart';
+import '../../../../search/search/routes.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../post/post.dart';
@@ -18,7 +19,6 @@ class TagsTile extends StatelessWidget {
     super.key,
     this.onExpand,
     this.onCollapse,
-    this.onTagTap,
     this.initialExpanded = false,
     this.tagColorBuilder,
     this.padding,
@@ -28,7 +28,6 @@ class TagsTile extends StatelessWidget {
   final Post post;
   final void Function()? onExpand;
   final void Function()? onCollapse;
-  final void Function(Tag tag)? onTagTap;
   final bool initialExpanded;
   final List<TagGroupItem>? tags;
   final Color? Function(Tag tag)? tagColorBuilder;
@@ -57,7 +56,7 @@ class TagsTile extends StatelessWidget {
                 builder: (_, ref, __) => PostTagListChip(
                   tag: tag,
                   auth: ref.watchConfigAuth,
-                  onTap: () => onTagTap?.call(tag),
+                  onTap: () => goToSearchPage(context, tag: tag.rawName),
                   color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
                 ),
               ),
