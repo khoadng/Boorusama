@@ -81,7 +81,7 @@
     "comment": {
         "comments": "Comentarios",
         "create": {
-            "hint": "Escribe un comentario...",
+            "hint": "Comenta",
             "loading": "Porfavor Espera...",
             "error": "Error"
         },
@@ -110,11 +110,11 @@
     "search": {
         "errors": {
             "generic": "Algo debe estar Fallando",
-            "tag_limit": "Limite de etiquetas alcanzado. Actualiza tu cuenta para buscar más Etiquetas",
+            "tag_limit": "Has llegado al límite máximo de etiquetas. Actualiza tu cuenta para buscar más etiquetas simultáneamente.",
             "database_timeout": "Tu búsqueda tardó demasiado en procesarse y fue cancelada.",
-            "rate_limited": "Estás realizando demasiadas búsquedas. Inténtalo más tarde.",
+            "rate_limited": "Estás realizando demasiadas búsquedas. Inténtalo más tarde",
             "pagination_limit": "Has llegado al límite de paginación. No puedes desplazarte más",
-            "max_capacity": "El servidor ha alcanzado su capacidad máxima. Por favor, inténtalo más tarde.",
+            "max_capacity": "El servidor ha alcanzado su capacidad máxima. Por favor, inténtalo más tarde",
             "down": "El servidor está caído. Por favor, inténtalo más tarde",
             "access_denied": "Acceso denegado",
             "forbidden": "Autenticación fallida",
@@ -122,8 +122,8 @@
         },
         "hint": "Buscar...",
         "no_result": "Hemos buscado, pero no se encontraron resultados.",
-        "search_options": "Buscar Opciones",
-        "metatags_notice": "Las MetaEtiquetas Gratis no cuentan como etiquetas en la busqueda",
+        "search_options": "Buscar opciones",
+        "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de etiquetas.",
         "history": {
             "history": "Historial",
             "clear": "Limpiar",
@@ -155,7 +155,7 @@
             "hint": "Buscar una Piscina"
         },
         "detail": {
-            "last_updated": "Ultima Actualizacion"
+            "last_updated": "Ultima actualización"
         }
     },
     "settings": {
@@ -174,7 +174,7 @@
             "auto_focus_search_bar": "Enfocar automáticamente la barra de búsqueda al abrir la vista de búsqueda por primera vez",
             "hide_bookmarked_posts_from_search_results": "Ocultar publicaciones marcadas como favoritas de los resultados de búsqueda"
         },
-        "information": "Informacion",
+        "information": "Información",
         "changelog": "Lista de Cambios",
         "infinite_scroll_warning": "Si haces un scroll excesivo, la aplicación podría bloquearse",
         "result_layout": {
@@ -249,7 +249,7 @@
             "enable_biometric_lock": "Habilitar bloqueo biométrico",
             "enable_biometric_lock_notice": "Solo funciona en dispositivos con soporte biométrico y que hayan sido configurados.",
             "enable_incognito_keyboard": "Habilitar teclado en modo incognito",
-            "enable_incognito_keyboard_notice": "Solo afecta Android."
+            "enable_incognito_keyboard_notice": "Solo afecta a Android."
         },
         "performance": {
             "performance": "Gestion",
