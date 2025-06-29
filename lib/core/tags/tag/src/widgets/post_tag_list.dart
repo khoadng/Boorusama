@@ -2,14 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../configs/config.dart';
 import '../../../../posts/details_parts/widgets.dart';
-import '../../../../theme/providers.dart';
 import '../tag.dart';
 import '../tag_display.dart';
 import '../tag_group_item.dart';
@@ -87,7 +84,7 @@ class PostTagList extends StatelessWidget {
   }
 }
 
-class PostTagListChip extends ConsumerWidget {
+class PostTagListChip extends StatelessWidget {
   const PostTagListChip({
     required this.tag,
     required this.auth,
@@ -104,27 +101,15 @@ class PostTagListChip extends ConsumerWidget {
   final BooruConfigAuth auth;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = color != null
-        ? ref.watch(booruChipColorsProvider).fromColor(color)
-        : ref.watch(
-            chipColorsFromTagStringProvider(
-              (auth, tag.category.name),
-            ),
-          );
-
-    final subtitle = (!auth.hasStrictSFW && tag.postCount > 0)
-        ? NumberFormat.compact().format(tag.postCount)
-        : null;
-
-    return RawTagChip(
+  Widget build(BuildContext context) {
+    return TagChip(
       text: tag.displayName,
-      subtitle: subtitle,
+      auth: auth,
+      category: tag.category.name,
+      postCount: tag.postCount,
       onTap: onTap,
       maxWidth: maxTagWidth,
-      backgroundColor: colors?.backgroundColor,
-      foregroundColor: colors?.foregroundColor,
-      borderColor: colors?.borderColor,
+      colorOverride: color,
     );
   }
 }

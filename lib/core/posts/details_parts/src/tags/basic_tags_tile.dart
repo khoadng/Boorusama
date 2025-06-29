@@ -9,13 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
 import '../../../../search/search/routes.dart';
-import '../../../../tags/categories/providers.dart';
 import '../../../../tags/tag/providers.dart';
-import '../../../../theme/providers.dart';
 import '../../../details/details.dart';
 import '../../../post/post.dart';
-import 'raw_tag_chip.dart';
 import 'raw_tags_tile.dart';
+import 'tag_chip.dart';
 
 class DefaultInheritedTagsTile<T extends Post> extends ConsumerWidget {
   const DefaultInheritedTagsTile({
@@ -75,13 +73,14 @@ class BasicTagsTile extends StatelessWidget {
             runSpacing: 4,
             children: sortedTags
                 .map(
-                  (tag) => _Chip(
-                    tag: tag,
+                  (tag) => AutoCategoryTagChip(
+                    text: tag,
+                    auth: auth,
                     onTap: () => goToSearchPage(
                       context,
                       tag: tag,
                     ),
-                    unknownCategoryColor: unknownCategoryColor,
+                    fallbackColor: unknownCategoryColor,
                   ),
                 )
                 .toList(),
@@ -89,37 +88,6 @@ class BasicTagsTile extends StatelessWidget {
         ),
         const SizedBox(height: 8),
       ],
-    );
-  }
-}
-
-class _Chip extends ConsumerWidget {
-  const _Chip({
-    required this.tag,
-    required this.onTap,
-    required this.unknownCategoryColor,
-  });
-
-  final String tag;
-  final VoidCallback onTap;
-  final Color? unknownCategoryColor;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final auth = ref.watchConfigAuth;
-    final category = ref.watch(booruTagTypeProvider((auth, tag))).valueOrNull;
-    final colors = category != null
-        ? ref.watch(
-            chipColorsFromTagStringProvider((auth, category)),
-          )
-        : ref.watch(booruChipColorsProvider).fromColor(unknownCategoryColor);
-
-    return RawTagChip(
-      text: tag.toLowerCase().replaceAll('_', ' '),
-      backgroundColor: colors?.backgroundColor,
-      foregroundColor: colors?.foregroundColor,
-      borderColor: colors?.borderColor,
-      onTap: onTap,
     );
   }
 }
