@@ -9,9 +9,11 @@ import 'package:foundation/widgets.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../artist/artist.dart';
-import 'widgets/artist_search_list.dart';
+import '../../artist/providers.dart';
+import 'widgets/artist_search_info_card.dart';
 
 class DanbooruArtistSearchPage extends ConsumerStatefulWidget {
   const DanbooruArtistSearchPage({
@@ -27,8 +29,10 @@ class _DanbooruArtistSearchPageState
     extends ConsumerState<DanbooruArtistSearchPage> {
   final nameController = TextEditingController();
   final urlController = TextEditingController();
-  final pagingController = PagingController<int, DanbooruArtist>(
-    firstPageKey: 1,
+  late final pagingController = PagingController(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: _fetchPage,
   );
 
   final focusScopeNode = FocusScopeNode();
@@ -36,11 +40,31 @@ class _DanbooruArtistSearchPageState
 
   @override
   void dispose() {
-    super.dispose();
     nameController.dispose();
     urlController.dispose();
     focusScopeNode.dispose();
     pagingController.dispose();
+
+    super.dispose();
+  }
+
+  Future<List<DanbooruArtist>> _fetchPage(int pageKey) async {
+    final artists = await ref
+        .read(danbooruArtistRepoProvider(ref.readConfigAuth))
+        .getArtists(
+          name: nameController.text,
+          url: urlController.text,
+          order: order.value,
+          page: pageKey,
+          isDeleted: false,
+          hasTag: true,
+          includeTag: true,
+        );
+
+    // exclude banned artists
+    artists.removeWhere((artist) => artist.name == 'banned_artist');
+
+    return artists;
   }
 
   @override
@@ -76,12 +100,23 @@ class _DanbooruArtistSearchPageState
               const SliverSizedBox(height: 8),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                sliver: DanbooruArtistSearchList(
-                  nameController: nameController,
-                  urlController: urlController,
-                  order: order,
-                  focusScopeNode: focusScopeNode,
-                  pagingController: pagingController,
+                sliver: PagingListener(
+                  controller: pagingController,
+                  builder: (context, state, fetchNextPage) => PagedSliverList(
+                    state: state,
+                    fetchNextPage: fetchNextPage,
+                    builderDelegate: PagedChildBuilderDelegate<DanbooruArtist>(
+                      newPageProgressIndicatorBuilder: (context) =>
+                          _buildLoading(),
+                      firstPageProgressIndicatorBuilder: (context) =>
+                          _buildLoading(),
+                      itemBuilder: (context, artist, index) =>
+                          ArtistSearchInfoCard(
+                        focusScopeNode: focusScopeNode,
+                        artist: artist,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -185,6 +220,17 @@ class _DanbooruArtistSearchPageState
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 20),
+        height: 24,
+        width: 24,
+        child: const CircularProgressIndicator.adaptive(),
       ),
     );
   }

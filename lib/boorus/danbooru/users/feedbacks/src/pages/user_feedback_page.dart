@@ -29,23 +29,20 @@ class UserFeedbackPage extends ConsumerStatefulWidget {
 }
 
 class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
-  final _pagingController = PagingController<int, DanbooruUserFeedback>(
-    firstPageKey: 1,
+  late final _pagingController = PagingController(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: _fetchPage,
   );
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFeedbacks();
-  }
 
   @override
   void dispose() {
     _pagingController.dispose();
+
     super.dispose();
   }
 
-  Future<void> _loadFeedbacks() async {
+  Future<List<DanbooruUserFeedback>> _fetchPage(int pageKey) async {
     try {
       final config = ref.readConfigAuth;
       final repo = ref.read(danbooruUserFeedbackRepoProvider(config));
@@ -56,9 +53,9 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
           ref.read(danbooruCreatorsProvider(config).notifier);
       await creatorsNotifier.load(feedbacks.map((e) => e.creatorId).toList());
 
-      _pagingController.appendLastPage(feedbacks);
+      return feedbacks;
     } catch (error) {
-      _pagingController.error = error;
+      return Future.error('Error fetching user feedbacks: $error');
     }
   }
 
@@ -70,28 +67,33 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async => _pagingController.refresh(),
-        child: PagedListView<int, DanbooruUserFeedback>(
-          pagingController: _pagingController,
-          builderDelegate: PagedChildBuilderDelegate<DanbooruUserFeedback>(
-            itemBuilder: (context, feedback, index) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              child: _UserFeedbackItem(feedback: feedback),
-            ),
-            firstPageProgressIndicatorBuilder: (context) => const Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
-            noItemsFoundIndicatorBuilder: (context) => const NoDataBox(),
-            firstPageErrorIndicatorBuilder: (context) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Error loading feedbacks'),
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () => _pagingController.refresh(),
-                    child: const Text('Retry'),
-                  ),
-                ],
+        child: PagingListener(
+          controller: _pagingController,
+          builder: (context, state, fetchNextPage) => PagedListView(
+            state: state,
+            fetchNextPage: fetchNextPage,
+            builderDelegate: PagedChildBuilderDelegate<DanbooruUserFeedback>(
+              itemBuilder: (context, feedback, index) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: _UserFeedbackItem(feedback: feedback),
+              ),
+              firstPageProgressIndicatorBuilder: (context) => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+              noItemsFoundIndicatorBuilder: (context) => const NoDataBox(),
+              firstPageErrorIndicatorBuilder: (context) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Error loading feedbacks'),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () => _pagingController.refresh(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
