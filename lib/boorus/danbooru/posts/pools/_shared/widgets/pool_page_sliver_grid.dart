@@ -48,23 +48,17 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
   late var name = widget.name;
   late var description = widget.description;
 
-  final controller = PagingController<int, DanbooruPool>(
-    firstPageKey: 1,
+  late final controller = PagingController<int, DanbooruPool>(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => _fetchPage(
+      pageKey,
+      category,
+      order,
+      name: name,
+      description: description,
+    ),
   );
-
-  @override
-  void initState() {
-    controller.addPageRequestListener((pageKey) {
-      _fetchPage(
-        pageKey,
-        category,
-        order,
-        name: name,
-        description: description,
-      );
-    });
-    super.initState();
-  }
 
   @override
   void didUpdateWidget(covariant PoolPagedSliverGrid oldWidget) {
@@ -84,7 +78,7 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
     controller.dispose();
   }
 
-  Future<void> _fetchPage(
+  Future<List<DanbooruPool>> _fetchPage(
     int pageKey,
     DanbooruPoolCategory category,
     DanbooruPoolOrder order, {
@@ -110,17 +104,9 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
         );
       }
 
-      final isLastPage = newItems.isEmpty;
-      if (isLastPage) {
-        controller.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        controller.appendPage(newItems, nextPageKey);
-      }
+      return newItems;
     } catch (error) {
-      if (mounted) {
-        controller.error = error;
-      }
+      return Future.error(error);
     }
   }
 
@@ -147,20 +133,24 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
 
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: imageGridPadding),
-      sliver: PagedSliverGrid(
-        pagingController: controller,
-        builderDelegate: PagedChildBuilderDelegate<DanbooruPool>(
-          itemBuilder: (context, pool, index) =>
-              DanbooruPoolGridItem(pool: pool),
-          firstPageProgressIndicatorBuilder: (context) => const Center(
-            child: CircularProgressIndicator.adaptive(),
+      sliver: PagingListener(
+        controller: controller,
+        builder: (context, state, fetchNextPage) => PagedSliverGrid(
+          state: state,
+          fetchNextPage: fetchNextPage,
+          builderDelegate: PagedChildBuilderDelegate<DanbooruPool>(
+            itemBuilder: (context, pool, index) =>
+                DanbooruPoolGridItem(pool: pool),
+            firstPageProgressIndicatorBuilder: (context) => const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
           ),
-        ),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          childAspectRatio: imageGridAspectRatio,
-          mainAxisSpacing: imageGridSpacing,
-          crossAxisSpacing: imageGridSpacing,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: imageGridAspectRatio,
+            mainAxisSpacing: imageGridSpacing,
+            crossAxisSpacing: imageGridSpacing,
+          ),
         ),
       ),
     );

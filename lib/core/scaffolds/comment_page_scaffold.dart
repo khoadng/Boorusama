@@ -54,38 +54,28 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 }
 
 class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
-  late final PagingController<int, Comment> _pagingController =
-      PagingController(firstPageKey: 1);
+  late final _pagingController = PagingController(
+    getNextPageKey: (state) => (widget.singlePage || state.lastPageIsEmpty)
+        ? null
+        : state.nextIntPageKey,
+    fetchPage: _fetchPage,
+  );
 
-  @override
-  void initState() {
-    super.initState();
-    _pagingController.addPageRequestListener(_fetchPage);
-  }
+  Future<List<Comment>> _fetchPage(int pageKey) async {
+    final comments = await widget.fetcher(
+      CommentFetchRequest(
+        postId: widget.postId,
+        page: pageKey,
+      ),
+    );
 
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      final comments = await widget.fetcher(
-        CommentFetchRequest(
-          postId: widget.postId,
-          page: pageKey,
-        ),
-      );
-
-      final isLastPage = widget.singlePage || comments.isEmpty;
-      if (isLastPage) {
-        _pagingController.appendLastPage(comments);
-      } else {
-        _pagingController.appendPage(comments, pageKey + 1);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
+    return comments;
   }
 
   @override
   void dispose() {
     _pagingController.dispose();
+
     super.dispose();
   }
 
@@ -105,30 +95,34 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
           onRefresh: () async {
             _pagingController.refresh();
           },
-          child: PagedListView<int, Comment>(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<Comment>(
-              itemBuilder: (context, comment, index) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: widget.commentItemBuilder != null
-                    ? widget.commentItemBuilder!(context, comment)
-                    : _CommentItem(comment: comment, config: config),
-              ),
-              firstPageProgressIndicatorBuilder: (context) => const Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
-              noItemsFoundIndicatorBuilder: (context) => const NoDataBox(),
-              firstPageErrorIndicatorBuilder: (context) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Error loading comments'),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: () => _pagingController.refresh(),
-                      child: const Text('Retry'),
-                    ),
-                  ],
+          child: PagingListener(
+            controller: _pagingController,
+            builder: (context, state, fetchNextPage) => PagedListView(
+              state: state,
+              fetchNextPage: fetchNextPage,
+              builderDelegate: PagedChildBuilderDelegate<Comment>(
+                itemBuilder: (context, comment, index) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: widget.commentItemBuilder != null
+                      ? widget.commentItemBuilder!(context, comment)
+                      : _CommentItem(comment: comment, config: config),
+                ),
+                firstPageProgressIndicatorBuilder: (context) => const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
+                noItemsFoundIndicatorBuilder: (context) => const NoDataBox(),
+                firstPageErrorIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Error loading comments'),
+                      const SizedBox(height: 16),
+                      FilledButton(
+                        onPressed: () => _pagingController.refresh(),
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

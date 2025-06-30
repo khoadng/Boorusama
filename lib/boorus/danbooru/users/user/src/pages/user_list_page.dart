@@ -25,58 +25,48 @@ class DanbooruSliverUserListPage extends ConsumerStatefulWidget {
 
 class _DanbooruUserListPageState
     extends ConsumerState<DanbooruSliverUserListPage> {
-  final pagingController = PagingController<int, DanbooruUser>(
-    firstPageKey: 1,
+  late final pagingController = PagingController(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: _fetchPage,
   );
 
   @override
-  void initState() {
-    super.initState();
-    pagingController.addPageRequestListener(_onPageChanged);
-  }
-
-  void _onPageChanged(int pageKey) {
-    _fetchPage(pageKey);
-  }
-
-  @override
   void dispose() {
+    pagingController.dispose();
+
     super.dispose();
-    pagingController
-      ..removePageRequestListener(_onPageChanged)
-      ..dispose();
   }
 
-  Future<void> _fetchPage(int pageKey) async {
+  Future<List<DanbooruUser>> _fetchPage(int pageKey) async {
     final users = await widget.fetchUsers(pageKey);
-    if (users.isEmpty) {
-      pagingController.appendLastPage(users);
-    } else {
-      final nextPageKey = pageKey + 1;
-      pagingController.appendPage(users, nextPageKey);
-    }
+    return users;
   }
 
   @override
   Widget build(BuildContext context) {
-    return PagedSliverList(
-      pagingController: pagingController,
-      builderDelegate: PagedChildBuilderDelegate<DanbooruUser>(
-        newPageProgressIndicatorBuilder: (context) => _buildLoading(),
-        firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
-        itemBuilder: (context, user, index) => ListTile(
-          title: Text(
-            user.name,
-            style: TextStyle(
-              color: DanbooruUserColor.of(context).fromUser(user),
+    return PagingListener(
+      controller: pagingController,
+      builder: (context, state, fetchNextPage) => PagedSliverList(
+        state: state,
+        fetchNextPage: fetchNextPage,
+        builderDelegate: PagedChildBuilderDelegate<DanbooruUser>(
+          newPageProgressIndicatorBuilder: (context) => _buildLoading(),
+          firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
+          itemBuilder: (context, user, index) => ListTile(
+            title: Text(
+              user.name,
+              style: TextStyle(
+                color: DanbooruUserColor.of(context).fromUser(user),
+              ),
             ),
+            onTap: () {
+              goToUserDetailsPage(
+                context,
+                uid: user.id,
+              );
+            },
           ),
-          onTap: () {
-            goToUserDetailsPage(
-              context,
-              uid: user.id,
-            );
-          },
         ),
       ),
     );
