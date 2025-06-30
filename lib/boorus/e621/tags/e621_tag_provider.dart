@@ -72,14 +72,3 @@ final e621TagGroupRepoProvider =
     );
   },
 );
-
-final e621TagGroupsProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, (BooruConfigAuth, E621Post)>(
-        (ref, params) async {
-  final config = params.$1;
-  final post = params.$2;
-
-  final tagGroupRepo = ref.watch(e621TagGroupRepoProvider(config));
-
-  return tagGroupRepo.getTagGroups(post);
-});

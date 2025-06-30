@@ -276,11 +276,12 @@ class GelbooruBuilder
           const DefaultInheritedPostActionToolbar<GelbooruPost>(),
       DetailsPart.source: (context) =>
           const DefaultInheritedSourceSection<GelbooruPost>(),
-      DetailsPart.tags: (context) => const GelbooruTagListSection(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<GelbooruPost>(),
       DetailsPart.fileDetails: (context) => const GelbooruFileDetailsSection(),
       DetailsPart.artistPosts: (context) => const GelbooruArtistPostsSection(),
       DetailsPart.characterList: (context) =>
-          const GelbooruCharacterListSection(),
+          const DefaultInheritedCharacterPostsSection<GelbooruPost>(),
     },
   );
 }
@@ -375,6 +376,11 @@ class GelbooruRepository extends BooruRepositoryDefault {
         ),
       ],
     );
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(gelbooruTagGroupRepoProvider(config));
   }
 }
 

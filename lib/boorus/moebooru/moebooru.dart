@@ -23,6 +23,7 @@ import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/scaffolds/scaffolds.dart';
@@ -165,7 +166,8 @@ class MoebooruBuilder
       DetailsPart.info: (context) => const MoebooruInformationSection(),
       DetailsPart.toolbar: (context) =>
           const MoebooruPostDetailsActionToolbar(),
-      DetailsPart.tags: (context) => const MoebooruTagListSection(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<MoebooruPost>(),
       DetailsPart.fileDetails: (context) => const MoebooruFileDetailsSection(),
       DetailsPart.artistPosts: (context) => const MoebooruArtistPostsSection(),
       DetailsPart.relatedPosts: (context) =>
@@ -247,6 +249,11 @@ class MoebooruRepository extends BooruRepositoryDefault {
         ),
       ],
     );
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(moebooruTagGroupRepoProvider(config));
   }
 }
 

@@ -69,7 +69,7 @@ class RawTagsTileTitle<T extends Post> extends StatelessWidget {
     super.key,
   });
 
-  final int count;
+  final int? count;
   final T post;
   final Map<String, Widget>? itemBuilder;
   final void Function(String value)? onSelected;
@@ -84,7 +84,7 @@ class RawTagsTileTitle<T extends Post> extends StatelessWidget {
 
     return Row(
       children: [
-        Text('$count tags'),
+        Text('${count ?? '???'} tags'),
         BooruPopupMenuButton(
           iconColor: Theme.of(context).colorScheme.onSurface,
           onSelected: (value) {

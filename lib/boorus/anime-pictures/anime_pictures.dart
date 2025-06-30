@@ -122,7 +122,8 @@ class AnimePicturesBuilder
     full: {
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
-      DetailsPart.tags: (context) => const AnimePicturesTagListSection(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<AnimePicturesPost>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<AnimePicturesPost>(),
       DetailsPart.relatedPosts: (context) =>
@@ -207,6 +208,11 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
   @override
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config) {
     return PluralPostLinkGenerator(baseUrl: config.url);
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(animePictureTagGroupRepoProvider(config));
   }
 }
 
@@ -363,17 +369,6 @@ final animePictureTagGroupRepoProvider =
   },
 );
 
-final postTagsProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, (BooruConfigAuth, AnimePicturesPost)>(
-        (ref, params) async {
-  final config = params.$1;
-  final post = params.$2;
-
-  final repo = ref.watch(animePictureTagGroupRepoProvider(config));
-
-  return repo.getTagGroups(post);
-});
-
 int _mapToOrder(AnimePicturesTagType type) => switch (type) {
       AnimePicturesTagType.copyrightProduct => 0,
       AnimePicturesTagType.copyrightGame => 1,
@@ -395,34 +390,6 @@ String _mapToGroupName(AnimePicturesTagType type) => switch (type) {
       AnimePicturesTagType.copyrightGame => 'Game Copyright',
       AnimePicturesTagType.copyrightOther => 'Other Copyright',
     };
-
-class AnimePicturesTagListSection extends ConsumerWidget {
-  const AnimePicturesTagListSection({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<AnimePicturesPost>(context);
-    final params = (ref.watchConfigAuth, post);
-
-    return SliverToBoxAdapter(
-      child: ref.watch(postTagsProvider(params)).when(
-            data: (tags) => TagsTile(
-              initialCount: post.tagsCount,
-              post: post,
-              tags: tags,
-            ),
-            loading: () => TagsTile(
-              initialCount: post.tagsCount,
-              post: post,
-              tags: null,
-            ),
-            error: (e, _) => Text('Error: $e'),
-          ),
-    );
-  }
-}
 
 class AnimePicturesRelatedPostsSection extends ConsumerWidget {
   const AnimePicturesRelatedPostsSection({

@@ -13,7 +13,6 @@ import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/settings/providers.dart';
 import '../artists/artists.dart';
-import '../tags/tags.dart';
 import 'posts.dart';
 
 class E621ArtistPostsSection extends ConsumerWidget {
@@ -79,29 +78,6 @@ class E621ArtistSection extends ConsumerWidget {
         commentary: ArtistCommentary.description(commentary),
         artistTags: post.artistTags,
         source: post.source,
-      ),
-    );
-  }
-}
-
-class E621TagsTile extends ConsumerWidget {
-  const E621TagsTile({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<E621Post>(context);
-    final config = ref.watchConfigAuth;
-    final params = (config, post);
-
-    return SliverToBoxAdapter(
-      child: TagsTile(
-        post: post,
-        tags: ref.watch(e621TagGroupsProvider(params)).maybeWhen(
-              data: (data) => data,
-              orElse: () => null,
-            ),
       ),
     );
   }

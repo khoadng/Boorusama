@@ -25,6 +25,7 @@ import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/tags/tag/colors.dart';
+import '../../core/tags/tag/tag.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
 import 'configs/configs.dart';
@@ -227,7 +228,7 @@ class E621Builder
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<E621Post>(),
       DetailsPart.artistInfo: (context) => const E621ArtistSection(),
-      DetailsPart.tags: (context) => const E621TagsTile(),
+      DetailsPart.tags: (context) => const DefaultInheritedTagsTile<E621Post>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<E621Post>(),
       DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
@@ -352,6 +353,11 @@ class E621Repository extends BooruRepositoryDefault {
         MPixelsTokenHandler(),
       ],
     );
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(e621TagGroupRepoProvider(config));
   }
 }
 

@@ -554,6 +554,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
       ],
     );
   }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(danbooruTagGroupRepoProvider(config));
+  }
 }
 
 BooruComponents createDanbooru() => BooruComponents(

@@ -18,7 +18,7 @@ import '../../../posts/post/post.dart';
 import '../../../search/queries/tag_query_composer.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
-import '../../../tags/tag/src/tag_repository.dart';
+import '../../../tags/tag/tag.dart';
 import 'booru_repository.dart';
 
 abstract class BooruRepositoryDefault implements BooruRepository {
@@ -92,5 +92,10 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TextMatcher? queryMatcher(BooruConfigAuth config) {
     return null;
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(emptyTagGroupRepoProvider(config));
   }
 }

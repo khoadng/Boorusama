@@ -59,7 +59,7 @@ final bookmarkUiBuilder = PostDetailsUIBuilder(
     DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
     DetailsPart.source: (context) => const BookmarkSourceSection(),
     DetailsPart.tags: (context) =>
-        const DefaultInheritedTagsTile<BookmarkPost>(),
+        const DefaultInheritedBasicTagsTile<BookmarkPost>(),
     DetailsPart.fileDetails: (context) =>
         const DefaultInheritedFileDetailsSection<BookmarkPost>(),
   },

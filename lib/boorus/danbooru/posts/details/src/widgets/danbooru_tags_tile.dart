@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
+import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
@@ -15,7 +16,6 @@ import '../../../../tags/tag/routes.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';
-import '../local_providers.dart';
 
 final danbooruTagTileExpansionStateProvider =
     StateProvider.autoDispose.family<bool, bool>((ref, value) {
@@ -75,11 +75,10 @@ class DanbooruTagsTile extends ConsumerWidget {
         if (isExpanded)
           PostTagList(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            tags:
-                ref.watch(danbooruTagGroupsProvider((config, post))).maybeWhen(
-                      data: (data) => data,
-                      orElse: () => null,
-                    ),
+            tags: ref.watch(tagGroupsProvider((config, post))).maybeWhen(
+                  data: (data) => data,
+                  orElse: () => null,
+                ),
             itemBuilder: (context, tag) => DanbooruTagContextMenu(
               tag: tag.rawName,
               child: PostTagListChip(

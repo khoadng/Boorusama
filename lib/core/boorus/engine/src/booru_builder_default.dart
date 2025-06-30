@@ -405,7 +405,7 @@ final PostDetailsUIBuilder kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(
   },
   full: {
     DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
-    DetailsPart.tags: (context) => const DefaultInheritedTagsTile(),
+    DetailsPart.tags: (context) => const DefaultInheritedBasicTagsTile(),
     DetailsPart.fileDetails: (context) =>
         const DefaultInheritedFileDetailsSection(),
   },

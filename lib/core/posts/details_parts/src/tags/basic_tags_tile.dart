@@ -15,8 +15,8 @@ import '../../../post/post.dart';
 import 'raw_tags_tile.dart';
 import 'tag_chip.dart';
 
-class DefaultInheritedTagsTile<T extends Post> extends ConsumerWidget {
-  const DefaultInheritedTagsTile({
+class DefaultInheritedBasicTagsTile<T extends Post> extends ConsumerWidget {
+  const DefaultInheritedBasicTagsTile({
     super.key,
     this.initialExpanded = true,
   });

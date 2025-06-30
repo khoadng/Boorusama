@@ -13,16 +13,15 @@ import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
-import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/http/providers.dart';
-import '../../core/posts/details/details.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/tag/colors.dart';
+import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'providers.dart';
 import 'zerochan_post.dart';
@@ -107,7 +106,8 @@ class ZerochanBuilder
           const DefaultInheritedPostActionToolbar<ZerochanPost>(),
       DetailsPart.source: (context) =>
           const DefaultInheritedSourceSection<ZerochanPost>(),
-      DetailsPart.tags: (context) => const ZerochanTagsTile(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<ZerochanPost>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<ZerochanPost>(),
     },
@@ -218,63 +218,10 @@ class ZerochanRepository extends BooruRepositoryDefault {
       ],
     );
   }
-}
-
-class ZerochanTagsTile extends ConsumerStatefulWidget {
-  const ZerochanTagsTile({
-    super.key,
-  });
 
   @override
-  ConsumerState<ZerochanTagsTile> createState() => _ZerochanTagsTileState();
-}
-
-class _ZerochanTagsTileState extends ConsumerState<ZerochanTagsTile> {
-  var expanded = false;
-  Object? error;
-
-  @override
-  Widget build(BuildContext context) {
-    final post = InheritedPost.of<ZerochanPost>(context);
-    final params = (ref.watchConfigAuth, post);
-
-    if (expanded) {
-      ref.listen(zerochanTagGroupsProvider(params), (previous, next) {
-        next.when(
-          data: (data) {
-            if (!mounted) return;
-
-            if (data.isEmpty && post.tags.isNotEmpty) {
-              // Just a dummy data so the check below will branch into the else block
-              setState(() => error = 'No tags found');
-            }
-          },
-          loading: () {},
-          error: (error, stackTrace) {
-            if (!mounted) return;
-            setState(() => this.error = error);
-          },
-        );
-      });
-    }
-    return SliverToBoxAdapter(
-      child: error == null
-          ? TagsTile(
-              tags: expanded
-                  ? ref.watch(zerochanTagGroupsProvider(params)).valueOrNull
-                  : null,
-              post: post,
-              onExpand: () => setState(() => expanded = true),
-              onCollapse: () {
-                // Don't set expanded to false to prevent rebuilding the tags list
-                setState(() => error = null);
-              },
-            )
-          : BasicTagsTile(
-              post: post,
-              auth: ref.watchConfigAuth,
-            ),
-    );
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(zerochanTagGroupRepoProvider(config));
   }
 }
 

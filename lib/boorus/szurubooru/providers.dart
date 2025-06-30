@@ -223,17 +223,6 @@ final szurubooruTagGroupRepoProvider =
   },
 );
 
-final szurubooruGroupsProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, (BooruConfigAuth, SzurubooruPost)>(
-        (ref, params) async {
-  final config = params.$1;
-  final post = params.$2;
-
-  final tagGroupRepo = ref.watch(szurubooruTagGroupRepoProvider(config));
-
-  return tagGroupRepo.getTagGroups(post);
-});
-
 class SzurubooruFavoriteRepository extends FavoriteRepository<SzurubooruPost> {
   SzurubooruFavoriteRepository(this.ref, this.config);
 

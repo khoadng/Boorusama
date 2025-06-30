@@ -285,17 +285,6 @@ final sankakuTagGroupRepoProvider =
   },
 );
 
-final sankakuGroupsProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, (BooruConfigAuth, SankakuPost)>(
-        (ref, params) async {
-  final config = params.$1;
-  final post = params.$2;
-
-  final tagGroupRepo = ref.watch(sankakuTagGroupRepoProvider(config));
-
-  return tagGroupRepo.getTagGroups(post);
-});
-
 String? extractFileExtension(
   String? mimeType, {
   String? fileUrl,

@@ -21,6 +21,7 @@ import '../../core/foundation/html.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
@@ -28,6 +29,7 @@ import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
+import '../../core/tags/tag/tag.dart';
 import '../../core/widgets/widgets.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru_v2/gelbooru_v2.dart';
@@ -132,7 +134,8 @@ class SzurubooruBuilder
     full: {
       DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
       DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
-      DetailsPart.tags: (context) => const SzurubooruTagListSection(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<SzurubooruPost>(),
       DetailsPart.fileDetails: (context) =>
           const SzurubooruFileDetailsSection(),
     },
@@ -197,6 +200,11 @@ class SzurubooruRepository extends BooruRepositoryDefault {
         AspectRatioTokenHandler(),
       ],
     );
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(szurubooruTagGroupRepoProvider(config));
   }
 }
 

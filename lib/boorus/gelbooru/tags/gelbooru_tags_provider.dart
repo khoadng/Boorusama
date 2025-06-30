@@ -1,9 +1,4 @@
-// Dart imports:
-import 'dart:async';
-
 // Package imports:
-import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -12,10 +7,6 @@ import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../gelbooru.dart';
-
-final invalidTags = [
-  ':&lt;',
-];
 
 final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -43,6 +34,10 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   },
 );
 
+final invalidTags = [
+  ':&lt;',
+];
+
 final gelbooruTagGroupRepoProvider =
     Provider.family<TagGroupRepository<GelbooruPost>, BooruConfigAuth>(
   (ref, config) {
@@ -65,63 +60,3 @@ final gelbooruTagGroupRepoProvider =
     );
   },
 );
-
-final tagGroupProvider = AsyncNotifierProvider.autoDispose
-    .family<TagGroupItemNotifier, TagGroup, TagGroupParams>(
-  TagGroupItemNotifier.new,
-);
-
-typedef TagGroupParams = ({
-  GelbooruPost post,
-  BooruConfigAuth auth,
-});
-
-class TagGroup extends Equatable {
-  const TagGroup({
-    required this.characterTags,
-    required this.artistTags,
-    required this.tags,
-  });
-
-  const TagGroup.empty()
-      : characterTags = const {},
-        artistTags = const {},
-        tags = const [];
-
-  final Set<String> characterTags;
-  final Set<String> artistTags;
-  final List<TagGroupItem> tags;
-
-  @override
-  List<Object?> get props => [characterTags, artistTags, tags];
-}
-
-class TagGroupItemNotifier
-    extends AutoDisposeFamilyAsyncNotifier<TagGroup, TagGroupParams> {
-  @override
-  FutureOr<TagGroup> build(TagGroupParams arg) async {
-    final post = arg.post;
-    final config = arg.auth;
-
-    final repo = ref.watch(gelbooruTagGroupRepoProvider(config));
-    final group = await repo.getTagGroups(post);
-
-    return TagGroup(
-      characterTags: group
-              .firstWhereOrNull(
-                (tag) => tag.groupName.toLowerCase() == 'character',
-              )
-              ?.extractCharacterTags()
-              .toSet() ??
-          {},
-      artistTags: group
-              .firstWhereOrNull(
-                (tag) => tag.groupName.toLowerCase() == 'artist',
-              )
-              ?.extractArtistTags()
-              .toSet() ??
-          {},
-      tags: group,
-    );
-  }
-}

@@ -7,6 +7,7 @@ import '../../../configs/config.dart';
 import '../../../downloads/filename.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
+import '../../../tags/tag/tag.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
 import 'booru_repository.dart';
@@ -76,4 +77,17 @@ final queryMatcherProvider = Provider.family<TextMatcher?, BooruConfigAuth>(
     return repository.queryMatcher(config);
   },
   name: 'queryMatcherProvider',
+);
+
+final tagGroupRepoProvider =
+    Provider.family<TagGroupRepository<Post>?, BooruConfigAuth>(
+  (ref, config) {
+    final repository =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    if (repository == null) return null;
+
+    return repository.tagGroup(config);
+  },
+  name: 'tagGroupRepoProvider',
 );

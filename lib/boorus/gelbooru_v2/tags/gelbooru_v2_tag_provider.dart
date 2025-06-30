@@ -44,14 +44,3 @@ final gelbooruV2TagGroupRepoProvider =
     );
   },
 );
-
-final gelbooruV2TagGroupsProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, (BooruConfigAuth, GelbooruV2Post)>(
-        (ref, params) async {
-  final config = params.$1;
-  final post = params.$2;
-
-  final tagGroupRepo = ref.watch(gelbooruV2TagGroupRepoProvider(config));
-
-  return tagGroupRepo.getTagGroups(post);
-});

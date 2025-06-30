@@ -140,7 +140,8 @@ class SankakuBuilder
           ),
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<SankakuPost>(),
-      DetailsPart.tags: (context) => const SankakuTagsTile(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<SankakuPost>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<SankakuPost>(),
       DetailsPart.artistPosts: (context) => const SankakuArtistPostsSection(),
@@ -211,6 +212,11 @@ class SankakuRepository extends BooruRepositoryDefault {
       ],
     );
   }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(sankakuTagGroupRepoProvider(config));
+  }
 }
 
 class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
@@ -269,25 +275,6 @@ class SankakuArtistPostsSection extends ConsumerWidget {
               )
               .toList()
           : [],
-    );
-  }
-}
-
-class SankakuTagsTile extends ConsumerWidget {
-  const SankakuTagsTile({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<SankakuPost>(context);
-    final params = (ref.watchConfigAuth, post);
-
-    return SliverToBoxAdapter(
-      child: TagsTile(
-        post: post,
-        tags: ref.watch(sankakuGroupsProvider(params)).valueOrNull,
-      ),
     );
   }
 }

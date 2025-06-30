@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -11,57 +10,9 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
+import '../../../core/tags/tag/providers.dart';
 import '../artists/artists.dart';
-import '../tags/gelbooru_tags_provider.dart';
 import 'posts.dart';
-
-class GelbooruTagListSection extends ConsumerStatefulWidget {
-  const GelbooruTagListSection({
-    super.key,
-  });
-
-  @override
-  ConsumerState<GelbooruTagListSection> createState() =>
-      _GelbooruTagListSectionState();
-}
-
-class _GelbooruTagListSectionState
-    extends ConsumerState<GelbooruTagListSection> {
-  @override
-  Widget build(BuildContext context) {
-    final post = InheritedPost.of<GelbooruPost>(context);
-    final params = (post: post, auth: ref.watchConfigAuth);
-
-    return SliverToBoxAdapter(
-      child: TagsTile(
-        tags: ref.watch(tagGroupProvider(params)).maybeWhen(
-              orElse: () => const [],
-              data: (data) => data.tags,
-            ),
-        post: post,
-      ),
-    );
-  }
-}
-
-class GelbooruCharacterListSection extends ConsumerWidget {
-  const GelbooruCharacterListSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<GelbooruPost>(context);
-
-    return ref
-        .watch(tagGroupProvider((post: post, auth: ref.watchConfigAuth)))
-        .maybeWhen(
-          data: (data) => data.characterTags.isNotEmpty
-              ? SliverCharacterPostList(
-                  tags: data.characterTags,
-                )
-              : const SliverSizedBox.shrink(),
-          orElse: () => const SliverSizedBox.shrink(),
-        );
-  }
-}
 
 class GelbooruFileDetailsSection extends StatelessWidget {
   const GelbooruFileDetailsSection({
@@ -93,7 +44,9 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
     final auth = ref.watchConfigAuth;
 
     return MultiSliver(
-      children: ref.watch(tagGroupProvider((post: post, auth: auth))).maybeWhen(
+      children: ref
+          .watch(artistCharacterGroupProvider((post: post, auth: auth)))
+          .maybeWhen(
             data: (data) => data.artistTags.isNotEmpty
                 ? data.artistTags
                     .map(

@@ -1,18 +1,24 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:ui';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
+import '../../../posts/post/post.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
 import 'tag_colors.dart';
+import 'tag_group_item.dart';
+import 'tag_group_repository_impl.dart';
 import 'tag_repository.dart';
 import 'tag_repository_impl.dart';
 
@@ -100,3 +106,95 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     return ref.watch(emptyTagRepoProvider);
   },
 );
+
+final tagGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>?, (BooruConfigAuth, Post)>((ref, params) async {
+  final keepAliveLink = ref.keepAlive();
+  Timer? disposeTimer;
+
+  ref
+    ..onCancel(() {
+      disposeTimer = Timer(const Duration(seconds: 15), () {
+        keepAliveLink.close();
+      });
+    })
+    ..onResume(() {
+      disposeTimer?.cancel();
+    })
+    ..onDispose(() {
+      disposeTimer?.cancel();
+    });
+
+  final config = params.$1;
+  final post = params.$2;
+
+  final tagGroupRepo = ref.watch(tagGroupRepoProvider(config));
+
+  return tagGroupRepo?.getTagGroups(post);
+});
+
+final emptyTagGroupRepoProvider =
+    Provider.family<TagGroupRepository<Post>, BooruConfigAuth>(
+  (ref, config) => const EmptyTagGroupRepository(),
+);
+
+final artistCharacterGroupProvider = AsyncNotifierProvider.autoDispose.family<
+    ArtistCharacterNotifier, ArtistCharacterGroup, ArtistCharacterGroupParams>(
+  ArtistCharacterNotifier.new,
+);
+
+typedef ArtistCharacterGroupParams = ({
+  Post post,
+  BooruConfigAuth auth,
+});
+
+class ArtistCharacterGroup extends Equatable {
+  const ArtistCharacterGroup({
+    required this.characterTags,
+    required this.artistTags,
+  });
+
+  const ArtistCharacterGroup.empty()
+      : characterTags = const {},
+        artistTags = const {};
+
+  final Set<String> characterTags;
+  final Set<String> artistTags;
+
+  @override
+  List<Object?> get props => [characterTags, artistTags];
+}
+
+class ArtistCharacterNotifier extends AutoDisposeFamilyAsyncNotifier<
+    ArtistCharacterGroup, ArtistCharacterGroupParams> {
+  @override
+  FutureOr<ArtistCharacterGroup> build(ArtistCharacterGroupParams arg) async {
+    final post = arg.post;
+    final config = arg.auth;
+
+    final repo = ref.watch(tagGroupRepoProvider(config));
+
+    if (repo == null) {
+      return const ArtistCharacterGroup.empty();
+    }
+
+    final group = await repo.getTagGroups(post);
+
+    return ArtistCharacterGroup(
+      characterTags: group
+              .firstWhereOrNull(
+                (tag) => tag.groupName.toLowerCase() == 'character',
+              )
+              ?.extractCharacterTags()
+              .toSet() ??
+          {},
+      artistTags: group
+              .firstWhereOrNull(
+                (tag) => tag.groupName.toLowerCase() == 'artist',
+              )
+              ?.extractArtistTags()
+              .toSet() ??
+          {},
+    );
+  }
+}

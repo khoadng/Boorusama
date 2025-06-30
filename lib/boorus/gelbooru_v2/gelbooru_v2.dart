@@ -32,6 +32,7 @@ import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
+import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
@@ -40,6 +41,7 @@ import 'home/gelbooru_v2_home_page.dart';
 import 'posts/gelbooru_v2_post_details_page.dart';
 import 'posts/posts_v2.dart';
 import 'syntax/src/providers/providers.dart';
+import 'tags/gelbooru_v2_tag_provider.dart';
 
 const kGelbooruV2CustomDownloadFileNameFormat =
     '{id}_{md5:maxlength=8}.{extension}';
@@ -228,7 +230,8 @@ class GelbooruV2Builder
           const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
       DetailsPart.source: (context) =>
           const DefaultInheritedSourceSection<GelbooruV2Post>(),
-      DetailsPart.tags: (context) => const GelbooruV2TagsTile(),
+      DetailsPart.tags: (context) =>
+          const DefaultInheritedTagsTile<GelbooruV2Post>(),
       DetailsPart.fileDetails: (context) =>
           const GelbooruV2FileDetailsSection(),
       DetailsPart.artistPosts: (context) =>
@@ -236,7 +239,7 @@ class GelbooruV2Builder
       DetailsPart.relatedPosts: (context) =>
           const GelbooruV2RelatedPostsSection(),
       DetailsPart.characterList: (context) =>
-          const GelbooruV2CharacterPostsSection(),
+          const DefaultInheritedCharacterPostsSection<GelbooruV2Post>(),
     },
   );
 }
@@ -317,6 +320,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
         ),
       ],
     );
+  }
+
+  @override
+  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2TagGroupRepoProvider(config));
   }
 }
 

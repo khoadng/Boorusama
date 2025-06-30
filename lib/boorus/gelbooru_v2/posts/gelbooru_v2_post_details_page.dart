@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -15,18 +13,9 @@ import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/search/search/routes.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/tag/providers.dart';
 import '../artists/artists.dart';
-import '../tags/gelbooru_v2_tag_provider.dart';
 import 'posts_v2.dart';
-
-final gelbooruV2PostDetailsArtistMapProvider = StateProvider.autoDispose(
-  (ref) => <int, List<String>>{},
-);
-
-final gelbooruV2PostDetailsCharacterMapProvider = StateProvider.autoDispose(
-  (ref) => <int, Set<String>>{},
-);
 
 class GelbooruV2FileDetailsSection extends ConsumerWidget {
   const GelbooruV2FileDetailsSection({super.key});
@@ -78,40 +67,19 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
   }
 }
 
-class GelbooruV2CharacterPostsSection extends ConsumerWidget {
-  const GelbooruV2CharacterPostsSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<GelbooruV2Post>(context);
-
-    return ref
-        .watch(gelbooruV2PostDetailsCharacterMapProvider)
-        .lookup(post.id)
-        .fold(
-          () => const SliverSizedBox.shrink(),
-          (tags) => tags.isNotEmpty
-              ? SliverCharacterPostList(
-                  tags: tags,
-                )
-              : const SliverSizedBox.shrink(),
-        );
-  }
-}
-
 class GelbooruV2ArtistPostsSection extends ConsumerWidget {
   const GelbooruV2ArtistPostsSection({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<GelbooruV2Post>(context);
+    final auth = ref.watchConfigAuth;
 
     return MultiSliver(
       children: ref
-          .watch(gelbooruV2PostDetailsArtistMapProvider)
-          .lookup(post.id)
-          .fold(
-            () => [],
-            (tags) => tags.isNotEmpty
-                ? tags
+          .watch(artistCharacterGroupProvider((post: post, auth: auth)))
+          .maybeWhen(
+            data: (data) => data.artistTags.isNotEmpty
+                ? data.artistTags
                     .map(
                       (tag) => SliverArtistPostList(
                         tag: tag,
@@ -145,122 +113,8 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
                     )
                     .toList()
                 : [],
+            orElse: () => [],
           ),
-    );
-  }
-}
-
-extension GelbooruV2ArtistMapProviderX on WidgetRef {
-  void setGelbooruPostDetailsArtistMap({
-    required Post post,
-    required List<TagGroupItem> tags,
-  }) {
-    final group =
-        tags.firstWhereOrNull((tag) => tag.groupName.toLowerCase() == 'artist');
-
-    if (group == null) return;
-    final map = read(gelbooruV2PostDetailsArtistMapProvider);
-
-    map[post.id] = group.tags.map((e) => e.rawName).toList();
-
-    read(gelbooruV2PostDetailsArtistMapProvider.notifier).state = {
-      ...map,
-    };
-  }
-
-  void setGelbooruPostDetailsCharacterMap({
-    required Post post,
-    required List<TagGroupItem> tags,
-  }) {
-    final group = tags.firstWhereOrNull(
-      (tag) => tag.groupName.toLowerCase() == 'character',
-    );
-
-    if (group == null) return;
-    final map = read(gelbooruV2PostDetailsCharacterMapProvider);
-
-    map[post.id] = group.tags.map((e) => e.rawName).toSet();
-
-    read(gelbooruV2PostDetailsCharacterMapProvider.notifier).state = {
-      ...map,
-    };
-  }
-}
-
-class GelbooruV2TagsTile extends ConsumerStatefulWidget {
-  const GelbooruV2TagsTile({
-    super.key,
-  });
-
-  @override
-  ConsumerState<GelbooruV2TagsTile> createState() => _GelbooruV2TagsTileState();
-}
-
-class _GelbooruV2TagsTileState extends ConsumerState<GelbooruV2TagsTile> {
-  var expanded = false;
-  Object? error;
-
-  @override
-  Widget build(BuildContext context) {
-    final post = InheritedPost.of<GelbooruV2Post>(context);
-    final params = (ref.watchConfigAuth, post);
-
-    if (expanded) {
-      ref.listen(gelbooruV2TagGroupsProvider(params), (previous, next) {
-        next.when(
-          data: (groups) {
-            if (!mounted) return;
-
-            if (groups.isNotEmpty) {
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                if (!mounted) return;
-
-                ref
-                  ..setGelbooruPostDetailsArtistMap(
-                    post: post,
-                    tags: groups,
-                  )
-                  ..setGelbooruPostDetailsCharacterMap(
-                    post: post,
-                    tags: groups,
-                  );
-              });
-            }
-
-            if (groups.isEmpty && post.tags.isNotEmpty) {
-              // Just a dummy data so the check below will branch into the else block
-              setState(() => error = 'No tags found');
-            }
-          },
-          loading: () {},
-          error: (error, stackTrace) {
-            if (!mounted) return;
-            setState(() => this.error = error);
-          },
-        );
-      });
-    }
-
-    return SliverToBoxAdapter(
-      child: error == null
-          ? TagsTile(
-              tags: expanded
-                  ? ref.watch(gelbooruV2TagGroupsProvider(params)).maybeWhen(
-                        data: (data) => data,
-                        orElse: () => null,
-                      )
-                  : null,
-              post: post,
-              onExpand: () => setState(() => expanded = true),
-              onCollapse: () {
-                // Don't set expanded to false to prevent rebuilding the tags list
-                setState(() => error = null);
-              },
-            )
-          : BasicTagsTile(
-              post: post,
-              auth: ref.watchConfigAuth,
-            ),
     );
   }
 }

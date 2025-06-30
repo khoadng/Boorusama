@@ -174,17 +174,6 @@ final zerochanTagGroupRepoProvider =
   },
 );
 
-final zerochanTagGroupsProvider = FutureProvider.autoDispose
-    .family<List<TagGroupItem>, (BooruConfigAuth, ZerochanPost)>(
-        (ref, params) async {
-  final config = params.$1;
-  final post = params.$2;
-
-  final tagGroupRepo = ref.watch(zerochanTagGroupRepoProvider(config));
-
-  return tagGroupRepo.getTagGroups(post);
-});
-
 TagCategory zerochanStringToTagCategory(String? value) {
   // remove ' fav' and ' primary' from the end of the string
   final type = value?.toLowerCase().replaceAll(RegExp(r' fav$| primary$'), '');
