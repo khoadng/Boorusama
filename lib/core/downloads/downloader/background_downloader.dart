@@ -10,6 +10,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:gal/gal.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../configs/ref.dart';

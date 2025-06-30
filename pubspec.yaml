@@ -21,6 +21,8 @@ dependencies:
   # local packages
   foundation:
     path: packages/foundation
+  i18n:
+    path: packages/i18n
   booru_clients:
     path: packages/booru_clients
   filename_generator:

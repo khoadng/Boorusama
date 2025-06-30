@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class ChangelogPage extends ConsumerWidget {

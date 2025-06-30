@@ -9,9 +9,9 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive/hive.dart';
+import 'package:i18n/i18n.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 

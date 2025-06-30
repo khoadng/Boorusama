@@ -3,7 +3,6 @@ library;
 // External exports:
 export 'package:jiffy/jiffy.dart' hide Unit;
 
-export 'src/i18n.dart';
 export 'src/functional.dart';
 export 'src/android.dart';
 export 'src/filesize.dart';

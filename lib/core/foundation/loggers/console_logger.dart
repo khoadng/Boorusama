@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
+import 'package:intl/intl.dart';
 
 // Project imports:
 import 'console.dart';

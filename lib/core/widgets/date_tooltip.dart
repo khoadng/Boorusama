@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:intl/intl.dart';
 
 const _kDefaultFormat = 'yyyy-MM-dd HH:mm:ss';
 
