@@ -231,7 +231,8 @@ class E621Builder
       DetailsPart.tags: (context) => const DefaultInheritedTagsTile<E621Post>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<E621Post>(),
-      DetailsPart.artistPosts: (context) => const E621ArtistPostsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const DefaultInheritedArtistPostsSection<E621Post>(),
     },
   );
 }

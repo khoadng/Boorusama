@@ -45,7 +45,7 @@ final gelbooruTagGroupRepoProvider =
 
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         final tagList = post.tags;
 
         // filter tagList to remove invalid tags

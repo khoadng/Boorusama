@@ -13,6 +13,7 @@ import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../posts/post/post.dart';
+import '../../../riverpod/riverpod.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
@@ -109,28 +110,19 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
 
 final tagGroupsProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>?, (BooruConfigAuth, Post)>((ref, params) async {
-  final keepAliveLink = ref.keepAlive();
-  Timer? disposeTimer;
-
-  ref
-    ..onCancel(() {
-      disposeTimer = Timer(const Duration(seconds: 15), () {
-        keepAliveLink.close();
-      });
-    })
-    ..onResume(() {
-      disposeTimer?.cancel();
-    })
-    ..onDispose(() {
-      disposeTimer?.cancel();
-    });
+  ref.cacheFor(const Duration(seconds: 15));
 
   final config = params.$1;
   final post = params.$2;
 
   final tagGroupRepo = ref.watch(tagGroupRepoProvider(config));
 
-  return tagGroupRepo?.getTagGroups(post);
+  return tagGroupRepo?.getTagGroups(
+    post,
+    options: const TagGroupOptions(
+      fetchTagCount: true,
+    ),
+  );
 });
 
 final emptyTagGroupRepoProvider =

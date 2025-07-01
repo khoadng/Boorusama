@@ -55,7 +55,11 @@ final danbooruTagGroupRepoProvider =
 
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
+        if (!options.fetchTagCount) {
+          return createTagGroupItems(post.extractTags());
+        }
+
         final tagList = post.tags;
 
         final tags = await tagRepo.getTagsByName(tagList, 1);

@@ -392,7 +392,8 @@ class DanbooruBuilder implements BooruBuilder {
       DetailsPart.stats: (context) => const DanbooruStatsSection(),
       DetailsPart.tags: (context) => const DanbooruTagsSection(),
       DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
-      DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const DefaultInheritedArtistPostsSection<DanbooruPost>(),
       DetailsPart.pool: (context) => const DanbooruPoolTiles(),
       DetailsPart.relatedPosts: (context) =>
           const DanbooruRelatedPostsSection2(),

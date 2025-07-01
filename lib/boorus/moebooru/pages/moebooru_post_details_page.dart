@@ -2,21 +2,16 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/providers.dart';
-import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
-import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../../../core/widgets/widgets.dart';
@@ -30,7 +25,7 @@ final moebooruTagGroupRepoProvider =
   (ref, config) {
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         final allTagMap =
             await ref.watch(moebooruAllTagsProvider(config).future);
 
@@ -153,126 +148,6 @@ class _MoebooruPostDetailsPageState
               : () => controller.startSlideshow(),
         ),
       ],
-    );
-  }
-}
-
-class MoebooruCharacterListSection extends ConsumerWidget {
-  const MoebooruCharacterListSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-    final post = InheritedPost.of<MoebooruPost>(context);
-    final params = (config, post);
-
-    return ref.watch(tagGroupsProvider(params)).maybeWhen(
-          data: (tags) {
-            final artistTags = _extractArtist(config, tags);
-            final characterTags = _extractCharacter(config, tags);
-
-            return artistTags != null && artistTags.isNotEmpty
-                ? ref
-                    .watch(
-                      moebooruPostDetailsArtistProvider(
-                        (
-                          ref.watchConfigFilter,
-                          ref.watchConfigSearch,
-                          artistTags.first
-                        ),
-                      ),
-                    )
-                    .maybeWhen(
-                      data: (_) {
-                        return characterTags != null && characterTags.isNotEmpty
-                            ? SliverCharacterPostList(tags: characterTags)
-                            : const SliverSizedBox.shrink();
-                      },
-                      orElse: () => const SliverSizedBox.shrink(),
-                    )
-                : const SliverSizedBox.shrink();
-          },
-          orElse: () => const SliverSizedBox.shrink(),
-        );
-  }
-}
-
-Set<String>? _extractCharacter(
-  BooruConfigAuth booruConfig,
-  List<TagGroupItem>? tagGroups,
-) {
-  if (tagGroups == null) return null;
-
-  final tag = tagGroups.firstWhereOrNull(
-    (e) => TagCategory.fromLegacyId(e.category) == TagCategory.character(),
-  );
-  final characterTags = tag?.tags.map((e) => e.rawName).toSet();
-  return characterTags;
-}
-
-List<String>? _extractArtist(
-  BooruConfigAuth booruConfig,
-  List<TagGroupItem>? tagGroups,
-) {
-  if (tagGroups == null) return null;
-
-  final tag = tagGroups.firstWhereOrNull(
-    (e) => TagCategory.fromLegacyId(e.category) == TagCategory.artist(),
-  );
-  final artistTags = tag?.tags.map((e) => e.rawName).toList();
-  return artistTags;
-}
-
-class MoebooruArtistPostsSection extends ConsumerWidget {
-  const MoebooruArtistPostsSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-    final post = InheritedPost.of<MoebooruPost>(context);
-    final params = (config, post);
-
-    return MultiSliver(
-      children: ref.watch(tagGroupsProvider(params)).maybeWhen(
-            data: (tags) {
-              final artistTags = _extractArtist(config, tags);
-
-              return artistTags != null && artistTags.isNotEmpty
-                  ? artistTags
-                      .map(
-                        (tag) => SliverArtistPostList(
-                          tag: tag,
-                          child: ref
-                              .watch(
-                                moebooruPostDetailsArtistProvider(
-                                  (
-                                    ref.watchConfigFilter,
-                                    ref.watchConfigSearch,
-                                    tag
-                                  ),
-                                ),
-                              )
-                              .maybeWhen(
-                                data: (data) => SliverPreviewPostGrid(
-                                  posts: data,
-                                  onTap: (postIdx) =>
-                                      goToPostDetailsPageFromPosts(
-                                    context: context,
-                                    posts: data,
-                                    initialIndex: postIdx,
-                                    initialThumbnailUrl:
-                                        data[postIdx].thumbnailImageUrl,
-                                  ),
-                                  imageUrl: (item) => item.thumbnailImageUrl,
-                                ),
-                                orElse: () =>
-                                    const SliverPreviewPostGridPlaceholder(),
-                              ),
-                        ),
-                      )
-                      .toList()
-                  : [];
-            },
-            orElse: () => [],
-          ),
     );
   }
 }

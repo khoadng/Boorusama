@@ -4,17 +4,14 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
-import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/search/search/routes.dart';
-import '../../../core/tags/tag/providers.dart';
 import 'gelbooru_v2_post.dart';
 import 'posts_v2_provider.dart';
 
@@ -65,57 +62,5 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
               orElse: () => const SliverSizedBox.shrink(),
             )
         : const SliverSizedBox.shrink();
-  }
-}
-
-class GelbooruV2ArtistPostsSection extends ConsumerWidget {
-  const GelbooruV2ArtistPostsSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<GelbooruV2Post>(context);
-    final auth = ref.watchConfigAuth;
-
-    return MultiSliver(
-      children: ref
-          .watch(artistCharacterGroupProvider((post: post, auth: auth)))
-          .maybeWhen(
-            data: (data) => data.artistTags.isNotEmpty
-                ? data.artistTags
-                    .map(
-                      (tag) => SliverArtistPostList(
-                        tag: tag,
-                        child: ref
-                            .watch(
-                              detailsArtistPostsProvider(
-                                (
-                                  ref.watchConfigFilter,
-                                  ref.watchConfigSearch,
-                                  tag
-                                ),
-                              ),
-                            )
-                            .maybeWhen(
-                              data: (data) => SliverPreviewPostGrid(
-                                posts: data,
-                                onTap: (postIdx) =>
-                                    goToPostDetailsPageFromPosts(
-                                  context: context,
-                                  posts: data,
-                                  initialIndex: postIdx,
-                                  initialThumbnailUrl:
-                                      data[postIdx].sampleImageUrl,
-                                ),
-                                imageUrl: (item) => item.sampleImageUrl,
-                              ),
-                              orElse: () =>
-                                  const SliverPreviewPostGridPlaceholder(),
-                            ),
-                      ),
-                    )
-                    .toList()
-                : [],
-            orElse: () => [],
-          ),
-    );
   }
 }

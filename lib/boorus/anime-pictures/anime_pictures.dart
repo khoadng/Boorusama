@@ -336,7 +336,7 @@ final animePictureTagGroupRepoProvider =
   (ref, id) {
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         final postDetails = await ref.read(postDetailsProvider(post.id).future);
 
         final tagGroups = <TagGroupItem>[

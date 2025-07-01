@@ -12,7 +12,10 @@ class EmptyTagGroupRepository implements TagGroupRepository {
   const EmptyTagGroupRepository();
 
   @override
-  Future<List<TagGroupItem>> getTagGroups(Post post) async {
+  Future<List<TagGroupItem>> getTagGroups(
+    Post post, {
+    TagGroupOptions options = const TagGroupOptions(),
+  }) async {
     return [];
   }
 }
@@ -25,16 +28,20 @@ class TagGroupRepositoryBuilder<T extends Post>
   });
 
   final Ref ref;
-  final Future<List<TagGroupItem>> Function(T post) loadGroups;
+  final Future<List<TagGroupItem>> Function(
+    T post,
+    TagGroupOptions options,
+  ) loadGroups;
 
   @override
   Future<List<TagGroupItem>> getTagGroups(
-    T post,
-  ) async {
+    T post, {
+    TagGroupOptions options = const TagGroupOptions(),
+  }) async {
     final booruTagTypeStore = await ref.read(booruTagTypeStoreProvider.future);
     final config = ref.readConfig;
 
-    final groups = await loadGroups(post);
+    final groups = await loadGroups(post, options);
 
     final tags = groups.expand((e) => e.tags).toList();
 

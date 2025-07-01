@@ -3,13 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/sankaku.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
-import '../../core/blacklists/providers.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
@@ -20,10 +17,7 @@ import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename.dart';
 import '../../core/downloads/urls.dart';
-import '../../core/foundation/caching.dart';
 import '../../core/http/providers.dart';
-import '../../core/posts/details/details.dart';
-import '../../core/posts/details/routes.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
@@ -144,7 +138,8 @@ class SankakuBuilder
           const DefaultInheritedTagsTile<SankakuPost>(),
       DetailsPart.fileDetails: (context) =>
           const DefaultInheritedFileDetailsSection<SankakuPost>(),
-      DetailsPart.artistPosts: (context) => const SankakuArtistPostsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const DefaultInheritedArtistPostsSection<SankakuPost>(),
     },
   );
 }
@@ -236,49 +231,6 @@ class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
   }
 }
 
-class SankakuArtistPostsSection extends ConsumerWidget {
-  const SankakuArtistPostsSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<SankakuPost>(context);
-
-    return MultiSliver(
-      children: post.artistTags.isNotEmpty
-          ? post.artistTags
-              .map(
-                (tag) => SliverArtistPostList(
-                  tag: tag,
-                  child: ref
-                      .watch(
-                        sankakuArtistPostsProvider(
-                          (
-                            ref.watchConfigFilter,
-                            ref.watchConfigSearch,
-                            post.artistTags.firstOrNull
-                          ),
-                        ),
-                      )
-                      .maybeWhen(
-                        data: (data) => SliverPreviewPostGrid(
-                          posts: data,
-                          onTap: (postIdx) => goToPostDetailsPageFromPosts(
-                            context: context,
-                            posts: data,
-                            initialIndex: postIdx,
-                            initialThumbnailUrl: data[postIdx].sampleImageUrl,
-                          ),
-                          imageUrl: (item) => item.sampleImageUrl,
-                        ),
-                        orElse: () => const SliverPreviewPostGridPlaceholder(),
-                      ),
-                ),
-              )
-              .toList()
-          : [],
-    );
-  }
-}
-
 class SankakuArtistPage extends ConsumerWidget {
   const SankakuArtistPage({
     required this.artistName,
@@ -294,7 +246,7 @@ class SankakuArtistPage extends ConsumerWidget {
     return ArtistPageScaffold(
       artistName: artistName,
       fetcher: (page, selectedCategory) =>
-          ref.read(sankakuArtistPostRepo(config)).getPosts(
+          ref.read(sankakuPostRepoProvider(config)).getPosts(
                 [
                   artistName,
                   if (selectedCategory == TagFilterCategory.popular)

@@ -245,34 +245,12 @@ final sankakuAutocompleteRepoProvider =
   );
 });
 
-final sankakuArtistPostRepo =
-    Provider.family<PostRepository<SankakuPost>, BooruConfigSearch>(
-        (ref, config) {
-  return PostRepositoryCacher(
-    keyBuilder: (tags, page, {limit}) =>
-        '${tags.split(' ').join('-')}_${page}_$limit',
-    repository: ref.watch(sankakuPostRepoProvider(config)),
-    cache: LruCacher(capacity: 100),
-  );
-});
-
-final sankakuArtistPostsProvider = FutureProvider.autoDispose
-    .family<List<SankakuPost>, (BooruConfigFilter, BooruConfigSearch, String?)>(
-        (ref, params) async {
-  final (filter, search, artistName) = params;
-
-  return ref.watch(sankakuArtistPostRepo(search)).getPostsFromTagWithBlacklist(
-        tag: artistName,
-        blacklist: ref.watch(blacklistTagsProvider(filter).future),
-      );
-});
-
 final sankakuTagGroupRepoProvider =
     Provider.family<TagGroupRepository<SankakuPost>, BooruConfigAuth>(
   (ref, config) {
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         return createTagGroupItems([
           ...post.artistDetailsTags,
           ...post.characterDetailsTags,

@@ -3,12 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
-import '../../../core/posts/post/providers.dart';
 import '../e621.dart';
-import '../posts/posts.dart';
 import 'artists.dart';
 
 final e621ArtistRepoProvider =
@@ -24,15 +21,4 @@ final e621ArtistProvider =
   final repo = ref.read(e621ArtistRepoProvider(config));
   final artist = await repo.getArtist(name);
   return artist.getOrElse(() => const E621Artist.empty());
-});
-
-final e621ArtistPostsProvider = FutureProvider.autoDispose
-    .family<List<E621Post>, (BooruConfigFilter, BooruConfigSearch, String?)>(
-        (ref, params) async {
-  final (filter, search, name) = params;
-
-  return ref.watch(e621PostRepoProvider(search)).getPostsFromTagWithBlacklist(
-        tag: name,
-        blacklist: ref.watch(blacklistTagsProvider(filter).future),
-      );
 });

@@ -234,7 +234,7 @@ class GelbooruV2Builder
       DetailsPart.fileDetails: (context) =>
           const GelbooruV2FileDetailsSection(),
       DetailsPart.artistPosts: (context) =>
-          const GelbooruV2ArtistPostsSection(),
+          const DefaultInheritedArtistPostsSection<GelbooruV2Post>(),
       DetailsPart.relatedPosts: (context) =>
           const GelbooruV2RelatedPostsSection(),
       DetailsPart.characterList: (context) =>

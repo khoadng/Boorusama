@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
-import '../../../core/settings/settings.dart';
 
 class E621Post extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
@@ -138,21 +137,4 @@ class E621Post extends Equatable
 
   @override
   final PostMetadata? metadata;
-}
-
-extension PostImageX on E621Post {
-  bool get hasFullView => originalImageUrl.isNotEmpty && !isVideo;
-
-  String thumbnailFromSettings(ImageQuality settings) => switch (settings) {
-        ImageQuality.automatic => sampleImageUrl,
-        ImageQuality.low => thumbnailImageUrl,
-        ImageQuality.high => sampleImageUrl,
-        ImageQuality.highest => sampleImageUrl,
-        ImageQuality.original => originalImageUrl
-      };
-
-  bool get hasNoImage =>
-      thumbnailImageUrl.isEmpty &&
-      sampleImageUrl.isEmpty &&
-      originalImageUrl.isEmpty;
 }

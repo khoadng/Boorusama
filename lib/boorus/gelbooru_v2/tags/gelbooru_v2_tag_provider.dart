@@ -35,7 +35,7 @@ final gelbooruV2TagGroupRepoProvider =
   (ref, config) {
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         final tags =
             await ref.read(gelbooruV2TagsFromIdProvider(post.id).future);
 

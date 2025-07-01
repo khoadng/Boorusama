@@ -14,6 +14,17 @@ abstract class TagRepository {
   });
 }
 
+class TagGroupOptions {
+  const TagGroupOptions({
+    this.fetchTagCount = false,
+  });
+
+  final bool fetchTagCount;
+}
+
 abstract class TagGroupRepository<T extends Post> {
-  Future<List<TagGroupItem>> getTagGroups(T post);
+  Future<List<TagGroupItem>> getTagGroups(
+    T post, {
+    TagGroupOptions options = const TagGroupOptions(),
+  });
 }

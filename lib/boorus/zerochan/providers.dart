@@ -165,7 +165,7 @@ final zerochanTagGroupRepoProvider =
   (ref, config) {
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         final tags = await ref.read(zerochanTagsFromIdProvider(post.id).future);
 
         return createTagGroupItems(tags);

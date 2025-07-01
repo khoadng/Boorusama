@@ -279,7 +279,8 @@ class GelbooruBuilder
       DetailsPart.tags: (context) =>
           const DefaultInheritedTagsTile<GelbooruPost>(),
       DetailsPart.fileDetails: (context) => const GelbooruFileDetailsSection(),
-      DetailsPart.artistPosts: (context) => const GelbooruArtistPostsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const DefaultInheritedArtistPostsSection<GelbooruPost>(),
       DetailsPart.characterList: (context) =>
           const DefaultInheritedCharacterPostsSection<GelbooruPost>(),
     },

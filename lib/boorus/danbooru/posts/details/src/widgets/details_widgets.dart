@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../../core/artists/artists.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/details/details.dart';
-import '../../../../../../core/posts/details/routes.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
@@ -112,45 +110,6 @@ class DanbooruFileDetailsSection extends ConsumerWidget {
 
     return SliverToBoxAdapter(
       child: DanbooruFileDetails(post: post),
-    );
-  }
-}
-
-class DanbooruArtistPostsSection extends ConsumerWidget {
-  const DanbooruArtistPostsSection({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<DanbooruPost>(context);
-
-    return MultiSliver(
-      children: post.artistTags.isNotEmpty
-          ? post.artistTags
-              .map(
-                (tag) => SliverArtistPostList(
-                  tag: tag,
-                  child: ref
-                      .watch(
-                        danbooruPostDetailsArtistProvider(
-                          (ref.watchConfigFilter, ref.watchConfigSearch, tag),
-                        ),
-                      )
-                      .maybeWhen(
-                        data: (data) => SliverPreviewPostGrid(
-                          posts: data,
-                          onTap: (postIdx) => goToPostDetailsPageFromPosts(
-                            context: context,
-                            posts: data,
-                            initialIndex: postIdx,
-                            initialThumbnailUrl: data[postIdx].url360x360,
-                          ),
-                          imageUrl: (item) => item.url360x360,
-                        ),
-                        orElse: () => const SliverPreviewPostGridPlaceholder(),
-                      ),
-                ),
-              )
-              .toList()
-          : [],
     );
   }
 }

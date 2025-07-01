@@ -98,21 +98,6 @@ final moebooruPostDetailsChildrenProvider =
   },
 );
 
-final moebooruPostDetailsArtistProvider = FutureProvider.family
-    .autoDispose<List<Post>, (BooruConfigFilter, BooruConfigSearch, String)>(
-        (ref, params) async {
-  final (filter, search, artistName) = params;
-  final repo = ref.watch(moebooruArtistCharacterPostRepoProvider(search));
-  final blacklistedTags = await ref.watch(blacklistTagsProvider(filter).future);
-
-  final r = await repo.getPostsFromTagsOrEmpty(artistName);
-
-  return filterTags(
-    r.posts.take(30).where((e) => !e.isFlash).toList(),
-    blacklistedTags,
-  );
-});
-
 final moebooruPostDetailsCharacterProvider = FutureProvider.family
     .autoDispose<List<Post>, (BooruConfigFilter, BooruConfigSearch, String)>(
         (ref, params) async {

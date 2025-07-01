@@ -7,16 +7,72 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../configs/config/providers.dart';
 import '../../../foundation/display/media_query_utils.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../settings/settings.dart';
+import '../../../tags/tag/providers.dart';
+import '../../details/details.dart';
+import '../../details/providers.dart';
 import '../../details/routes.dart';
 import '../../details/widgets.dart';
 import '../../listing/list.dart';
+import '../../listing/providers.dart';
 import '../../post/post.dart';
 import '../../post/tags.dart';
 import '../../post/widgets.dart';
+
+class DefaultInheritedArtistPostsSection<T extends Post>
+    extends ConsumerWidget {
+  const DefaultInheritedArtistPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<T>(context);
+    final auth = ref.watchConfigAuth;
+
+    final thumbUrlBuilder = ref.watch(gridThumbnailUrlGeneratorProvider(auth));
+    final thumbSettings = ref.watch(gridThumbnailSettingsProvider(auth));
+
+    return MultiSliver(
+      children: ref
+          .watch(artistCharacterGroupProvider((post: post, auth: auth)))
+          .maybeWhen(
+            data: (data) => data.artistTags.isNotEmpty
+                ? data.artistTags
+                    .map(
+                      (tag) => SliverArtistPostList(
+                        tag: tag,
+                        child: ref
+                            .watch(
+                              detailsArtistPostsProvider(
+                                (
+                                  ref.watchConfigFilter,
+                                  ref.watchConfigSearch,
+                                  tag
+                                ),
+                              ),
+                            )
+                            .maybeWhen(
+                              data: (data) => SliverPreviewPostGrid(
+                                posts: data,
+                                imageUrl: (p) => thumbUrlBuilder.generateUrl(
+                                  p,
+                                  settings: thumbSettings,
+                                ),
+                              ),
+                              orElse: () =>
+                                  const SliverPreviewPostGridPlaceholder(),
+                            ),
+                      ),
+                    )
+                    .toList()
+                : [],
+            orElse: () => [],
+          ),
+    );
+  }
+}
 
 class SliverArtistPostList extends ConsumerWidget {
   const SliverArtistPostList({
@@ -81,13 +137,11 @@ class SliverArtistPostList extends ConsumerWidget {
 class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
   const SliverPreviewPostGrid({
     required this.posts,
-    required this.onTap,
     required this.imageUrl,
     super.key,
   });
 
   final List<T> posts;
-  final void Function(int index) onTap;
   final String Function(T item) imageUrl;
 
   @override

@@ -23,7 +23,7 @@ final e621TagGroupRepoProvider =
   (ref, config) {
     return TagGroupRepositoryBuilder(
       ref: ref,
-      loadGroups: (post) async {
+      loadGroups: (post, options) async {
         return createTagGroupItems([
           ...post.artistTags.map(
             (e) => Tag.noCount(

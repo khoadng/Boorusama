@@ -3,64 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../core/artists/artists.dart';
-import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
-import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
-import '../../../core/settings/providers.dart';
-import '../artists/artists.dart';
 import 'posts.dart';
-
-class E621ArtistPostsSection extends ConsumerWidget {
-  const E621ArtistPostsSection({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final post = InheritedPost.of<E621Post>(context);
-
-    return MultiSliver(
-      children: post.artistTags.isNotEmpty
-          ? post.artistTags
-              .map(
-                (tag) => SliverArtistPostList(
-                  tag: tag,
-                  child: ref
-                      .watch(
-                        e621ArtistPostsProvider(
-                          (ref.watchConfigFilter, ref.watchConfigSearch, tag),
-                        ),
-                      )
-                      .maybeWhen(
-                        data: (data) => SliverPreviewPostGrid(
-                          posts: data,
-                          onTap: (postIdx) => goToPostDetailsPageFromPosts(
-                            context: context,
-                            posts: data,
-                            initialIndex: postIdx,
-                            initialThumbnailUrl:
-                                data[postIdx].thumbnailFromSettings(
-                              ref.watch(imageListingQualityProvider),
-                            ),
-                          ),
-                          imageUrl: (item) => item.thumbnailFromSettings(
-                            ref.watch(imageListingQualityProvider),
-                          ),
-                        ),
-                        orElse: () => const SliverPreviewPostGridPlaceholder(),
-                      ),
-                ),
-              )
-              .toList()
-          : [],
-    );
-  }
-}
 
 class E621ArtistSection extends ConsumerWidget {
   const E621ArtistSection({

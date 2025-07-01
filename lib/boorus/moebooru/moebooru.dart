@@ -169,12 +169,13 @@ class MoebooruBuilder
       DetailsPart.tags: (context) =>
           const DefaultInheritedTagsTile<MoebooruPost>(),
       DetailsPart.fileDetails: (context) => const MoebooruFileDetailsSection(),
-      DetailsPart.artistPosts: (context) => const MoebooruArtistPostsSection(),
+      DetailsPart.artistPosts: (context) =>
+          const DefaultInheritedArtistPostsSection<MoebooruPost>(),
       DetailsPart.relatedPosts: (context) =>
           const MoebooruRelatedPostsSection(),
       DetailsPart.comments: (context) => const MoebooruCommentSection(),
       DetailsPart.characterList: (context) =>
-          const MoebooruCharacterListSection(),
+          const DefaultInheritedCharacterPostsSection<MoebooruPost>(),
     },
   );
 }
