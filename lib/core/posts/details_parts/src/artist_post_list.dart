@@ -68,7 +68,9 @@ class DefaultInheritedArtistPostsSection<T extends Post>
                     )
                     .toList()
                 : [],
-            orElse: () => [],
+            orElse: () => [
+              const SliverPreviewPostGridPlaceholder(),
+            ],
           ),
     );
   }

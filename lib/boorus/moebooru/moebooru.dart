@@ -10,7 +10,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
-import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
@@ -32,42 +31,15 @@ import '../../core/search/queries/query.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import '../gelbooru/gelbooru.dart';
+import 'autocomplete/providers.dart';
+import 'comments/providers.dart';
 import 'configs/create_moebooru_config_page.dart';
-import 'feats/autocomplete/autocomplete.dart';
-import 'feats/comments/comments.dart';
-import 'feats/posts/posts.dart';
-import 'feats/tags/tags.dart';
-import 'pages/moebooru_favorites_page.dart';
-import 'pages/moebooru_home_page.dart';
-import 'pages/moebooru_popular_page.dart';
-import 'pages/moebooru_popular_recent_page.dart';
-import 'pages/moebooru_post_details_page.dart';
-import 'pages/widgets/moebooru_comment_section.dart';
-import 'pages/widgets/moebooru_information_section.dart';
-import 'pages/widgets/moebooru_related_post_section.dart';
-
-final moebooruClientProvider =
-    Provider.family<MoebooruClient, BooruConfigAuth>((ref, config) {
-  final dio = ref.watch(dioProvider(config));
-
-  return MoebooruClient.custom(
-    baseUrl: config.url,
-    login: config.login,
-    apiKey: config.apiKey,
-    dio: dio,
-  );
-});
-
-final moebooruProvider = Provider<Moebooru>((ref) {
-  final booruDb = ref.watch(booruDbProvider);
-  final booru = booruDb.getBooru<Moebooru>();
-
-  if (booru == null) {
-    throw Exception('Booru not found for type: ${BooruType.moebooru}');
-  }
-
-  return booru;
-});
+import 'favorites/widgets.dart';
+import 'moebooru_home_page.dart';
+import 'posts/posts.dart';
+import 'posts/providers.dart';
+import 'posts/widgets.dart';
+import 'tags/providers.dart';
 
 class MoebooruBuilder
     with
@@ -296,7 +268,7 @@ class MoebooruArtistPage extends ConsumerWidget {
     return ArtistPageScaffold(
       artistName: artistName,
       fetcher: (page, selectedCategory) =>
-          ref.read(moebooruArtistCharacterPostRepoProvider(config)).getPosts(
+          ref.read(moebooruPostRepoProvider(config)).getPosts(
                 queryFromTagFilterCategory(
                   category: selectedCategory,
                   tag: artistName,
