@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../blacklists/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
@@ -15,4 +16,14 @@ final singlePostDetailsProvider = FutureProvider.autoDispose
   final result = await postRepo.getPost(id).run();
 
   return result.getOrElse((_) => null);
+});
+
+final detailsArtistPostsProvider = FutureProvider.autoDispose
+    .family<List<Post>, (BooruConfigFilter, BooruConfigSearch, String?)>(
+        (ref, params) async {
+  final (filter, search, artistName) = params;
+  return ref.watch(postRepoProvider(search)).getPostsFromTagWithBlacklist(
+        tag: artistName,
+        blacklist: ref.watch(blacklistTagsProvider(filter).future),
+      );
 });

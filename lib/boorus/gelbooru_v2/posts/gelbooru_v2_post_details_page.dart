@@ -9,13 +9,14 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/search/search/routes.dart';
 import '../../../core/tags/tag/providers.dart';
-import '../artists/artists.dart';
-import 'posts_v2.dart';
+import 'gelbooru_v2_post.dart';
+import 'posts_v2_provider.dart';
 
 class GelbooruV2FileDetailsSection extends ConsumerWidget {
   const GelbooruV2FileDetailsSection({super.key});
@@ -85,7 +86,7 @@ class GelbooruV2ArtistPostsSection extends ConsumerWidget {
                         tag: tag,
                         child: ref
                             .watch(
-                              gelbooruV2ArtistPostsProvider(
+                              detailsArtistPostsProvider(
                                 (
                                   ref.watchConfigFilter,
                                   ref.watchConfigSearch,

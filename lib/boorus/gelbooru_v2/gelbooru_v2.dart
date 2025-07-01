@@ -38,7 +38,6 @@ import 'artists/artists.dart';
 import 'comments/comments.dart';
 import 'create_gelbooru_v2_config_page.dart';
 import 'home/gelbooru_v2_home_page.dart';
-import 'posts/gelbooru_v2_post_details_page.dart';
 import 'posts/posts_v2.dart';
 import 'syntax/src/providers/providers.dart';
 import 'tags/gelbooru_v2_tag_provider.dart';

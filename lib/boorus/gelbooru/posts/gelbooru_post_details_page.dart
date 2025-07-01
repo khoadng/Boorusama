@@ -8,10 +8,11 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details_parts/widgets.dart';
+import '../../../core/posts/post/post.dart';
 import '../../../core/tags/tag/providers.dart';
-import '../artists/artists.dart';
 import 'posts.dart';
 
 class GelbooruFileDetailsSection extends StatelessWidget {
@@ -54,7 +55,7 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
                         tag: tag,
                         child: ref
                             .watch(
-                              gelbooruArtistPostsProvider(
+                              detailsArtistPostsProvider(
                                 (
                                   ref.watchConfigFilter,
                                   ref.watchConfigSearch,
@@ -90,7 +91,7 @@ class GelbooruArtistPostsSection extends ConsumerWidget {
   }
 }
 
-String getGelbooruPostPreviewImageUrl(GelbooruPost post) {
+String getGelbooruPostPreviewImageUrl(Post post) {
   if (post.isVideo) return post.videoThumbnailUrl;
 
   if (post.sampleImageUrl.isNotEmpty) return post.sampleImageUrl;
