@@ -176,7 +176,7 @@ class _Content extends ConsumerWidget {
                     (context, index) => TagEditHistoryCard(
                       version: data[index],
                       onUserTap: () => goToUserDetailsPage(
-                        context,
+                        ref,
                         uid: data[index].updater.id,
                       ),
                     ),

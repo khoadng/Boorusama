@@ -107,7 +107,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                               false;
 
                           if (isGlobal) {
-                            goToGlobalBlacklistedTagsPage(context);
+                            goToGlobalBlacklistedTagsPage(ref);
                           } else {
                             showBooruModalBottomSheet(
                               context: context,
@@ -270,17 +270,17 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                           ),
                           onTap: () {
                             if (e == BlacklistSource.global) {
-                              goToGlobalBlacklistedTagsPage(context);
+                              goToGlobalBlacklistedTagsPage(ref);
                             } else if (e == BlacklistSource.config) {
                               goToUpdateBooruConfigPage(
-                                context,
+                                ref,
                                 config: ref.readConfig,
                                 initialTab: 'search',
                               );
                             } else {
                               //FIXME: if more booru specific blacklist pages are added, we should move this to the builder
                               if (config.auth.booruType == BooruType.danbooru) {
-                                goToBlacklistedTagPage(context);
+                                goToBlacklistedTagPage(ref);
                               }
                             }
                             Navigator.of(context).pop();
@@ -416,7 +416,7 @@ class PostGridActionSheet extends ConsumerWidget {
             child: FilledButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                openAppearancePage(context);
+                openAppearancePage(ref);
               },
               child: const Text('More'),
             ),

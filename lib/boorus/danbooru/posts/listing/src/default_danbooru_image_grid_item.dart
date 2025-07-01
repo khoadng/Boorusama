@@ -109,7 +109,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                                     ? null
                                     : () {
                                         goToPostDetailsPageFromController(
-                                          context: context,
+                                          ref: ref,
                                           controller: controller,
                                           initialIndex: index,
                                           scrollController:

@@ -59,15 +59,15 @@ class DanbooruMoreActionButton extends ConsumerWidget {
                   postLinkGenerator.getLink(post),
                 );
               case 'view_original':
-                goToOriginalImagePage(context, post);
+                goToOriginalImagePage(ref, post);
               case 'start_slideshow':
                 if (onStartSlideshow != null) {
                   onStartSlideshow!();
                 }
               case 'tag_history':
-                goToPostVersionPage(context, post);
+                goToPostVersionPage(ref, post);
               case 'settings':
-                openImageViewerSettingsPage(context);
+                openImageViewerSettingsPage(ref);
               default:
             }
           },

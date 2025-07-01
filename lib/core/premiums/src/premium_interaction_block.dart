@@ -76,7 +76,7 @@ class PremiumInteractionBlock extends ConsumerWidget {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    goToPremiumPage(context);
+                    goToPremiumPage(ref);
                   },
                 ),
               ),

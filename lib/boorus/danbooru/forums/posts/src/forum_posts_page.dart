@@ -143,7 +143,7 @@ class _DanbooruForumPostsPageState
                 createdAt: post.createdAt,
                 authorLevel: creatorLevel,
                 onTap: () => goToUserDetailsPage(
-                  context,
+                  ref,
                   uid: post.creatorId,
                 ),
               );

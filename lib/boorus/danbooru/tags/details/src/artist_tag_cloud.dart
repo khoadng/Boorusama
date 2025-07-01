@@ -91,7 +91,7 @@ class ArtistTagCloud extends ConsumerWidget {
                         tag: tags[i].tag,
                         color: tagColors[tags[i].category.name],
                         onPressed: () => goToSearchPage(
-                          context,
+                          ref,
                           tag: tags[i].tag,
                         ),
                       ),

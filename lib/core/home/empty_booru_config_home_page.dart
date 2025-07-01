@@ -72,7 +72,7 @@ class _EmptyBooruConfigHomePageState
                     ),
                     const SizedBox(height: 16),
                     FilledButton(
-                      onPressed: () => goToAddBooruConfigPage(context),
+                      onPressed: () => goToAddBooruConfigPage(ref),
                       child: const Text('Add Profile'),
                     ),
                   ],

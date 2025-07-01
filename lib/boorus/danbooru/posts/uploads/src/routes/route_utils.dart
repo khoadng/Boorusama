@@ -1,16 +1,16 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
 import '../types/danbooru_upload_post.dart';
 
 void goToTagEditUploadPage(
-  BuildContext context, {
+  WidgetRef ref, {
   required DanbooruUploadPost post,
   required int uploadId,
 }) {
-  context.push(
+  ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -23,8 +23,8 @@ void goToTagEditUploadPage(
   );
 }
 
-void goToMyUploadsPage(BuildContext context) {
-  context.push(
+void goToMyUploadsPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

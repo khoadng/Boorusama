@@ -1,11 +1,11 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
 
-void goToExplorePage(BuildContext context) {
-  context.push(
+void goToExplorePage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -16,8 +16,8 @@ void goToExplorePage(BuildContext context) {
   );
 }
 
-void goToExplorePopularPage(BuildContext context) {
-  context.push(
+void goToExplorePopularPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -30,8 +30,8 @@ void goToExplorePopularPage(BuildContext context) {
   );
 }
 
-void goToExploreHotPage(BuildContext context) {
-  context.push(
+void goToExploreHotPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -45,8 +45,8 @@ void goToExploreHotPage(BuildContext context) {
   );
 }
 
-void goToExploreMostViewedPage(BuildContext context) {
-  context.push(
+void goToExploreMostViewedPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

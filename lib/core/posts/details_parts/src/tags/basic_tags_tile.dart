@@ -39,7 +39,7 @@ class DefaultInheritedBasicTagsTile<T extends Post> extends ConsumerWidget {
   }
 }
 
-class BasicTagsTile extends StatelessWidget {
+class BasicTagsTile extends ConsumerWidget {
   const BasicTagsTile({
     required this.post,
     required this.auth,
@@ -54,7 +54,7 @@ class BasicTagsTile extends StatelessWidget {
   final bool initialExpanded;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tags = post.tags;
     final sortedTags = tags.sorted((a, b) => a.compareTo(b));
 
@@ -79,7 +79,7 @@ class BasicTagsTile extends StatelessWidget {
                     text: tag,
                     auth: auth,
                     onTap: () => goToSearchPage(
-                      context,
+                      ref,
                       tag: tag,
                     ),
                     fallbackColor: unknownCategoryColor,

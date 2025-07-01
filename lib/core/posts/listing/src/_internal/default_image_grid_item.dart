@@ -102,7 +102,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                             onTap: onTap ??
                                 () {
                                   goToPostDetailsPageFromController(
-                                    context: context,
+                                    ref: ref,
                                     controller: controller,
                                     initialIndex: index,
                                     scrollController: autoScrollController,

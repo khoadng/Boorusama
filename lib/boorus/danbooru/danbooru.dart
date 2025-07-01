@@ -226,7 +226,7 @@ class DanbooruBuilder implements BooruBuilder {
                     post.extractTags(),
                   ),
                 ),
-            onViewOriginal: () => goToOriginalImagePage(ref.context, post),
+            onViewOriginal: () => goToOriginalImagePage(ref, post),
             onOpenSource: () => post.source.whenWeb(
               (source) => launchExternalUrlString(source.url),
               () => false,

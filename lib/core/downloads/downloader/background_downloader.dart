@@ -147,7 +147,7 @@ class BackgroundDownloaderBuilder extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return BackgroundDownloaderScope(
       onTapNotification: (task, notificationType) {
-        context.go(
+        ref.router.go(
           Uri(
             path: '/download_manager',
             queryParameters: {

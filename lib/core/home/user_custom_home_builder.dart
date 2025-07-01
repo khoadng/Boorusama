@@ -138,7 +138,7 @@ class _AppBar extends StatelessWidget {
                   return InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () => goToUpdateBooruConfigPage(
-                      context,
+                      ref,
                       config: config,
                       initialTab: 'appearance',
                     ),

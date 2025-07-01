@@ -74,7 +74,7 @@ class DanbooruFavoritesPageInternal extends ConsumerWidget {
                   icon: const Icon(Symbols.search),
                   onPressed: () {
                     goToSearchPage(
-                      context,
+                      ref,
                       tag: query,
                     );
                   },

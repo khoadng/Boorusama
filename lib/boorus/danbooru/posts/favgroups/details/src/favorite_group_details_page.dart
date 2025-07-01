@@ -120,7 +120,7 @@ class _FavoriteGroupDetailsPageState
     return IconButton(
       onPressed: () {
         goToSearchPage(
-          context,
+          ref,
           tag: widget.group.getQueryString(),
         );
       },

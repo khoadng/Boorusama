@@ -1,5 +1,5 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../posts/listing/providers.dart';
@@ -7,9 +7,9 @@ import '../../../router.dart';
 import '../data/bookmark_convert.dart';
 
 Future<void> goToBookmarkPage(
-  BuildContext context,
+  WidgetRef ref,
 ) {
-  return context.push(
+  return ref.router.push(
     Uri(
       path: '/bookmarks',
     ).toString(),
@@ -17,12 +17,12 @@ Future<void> goToBookmarkPage(
 }
 
 Future<void> goToBookmarkDetailsPage(
-  BuildContext context,
+  WidgetRef ref,
   int index, {
   required String initialThumbnailUrl,
   required PostGridController<BookmarkPost> controller,
 }) {
-  return context.push(
+  return ref.router.push(
     Uri(
       path: '/bookmarks/details',
       queryParameters: {

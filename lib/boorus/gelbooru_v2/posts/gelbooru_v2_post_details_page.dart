@@ -49,11 +49,11 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
                 posts: data,
                 imageUrl: (post) => post.sampleImageUrl,
                 onViewAll: () => goToSearchPage(
-                  context,
+                  ref,
                   tag: post.relationshipQuery,
                 ),
                 onTap: (index) => goToPostDetailsPageFromPosts(
-                  context: context,
+                  ref: ref,
                   posts: data,
                   initialIndex: index,
                   initialThumbnailUrl: data[index].sampleImageUrl,

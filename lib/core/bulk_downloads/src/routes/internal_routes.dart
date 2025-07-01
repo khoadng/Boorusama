@@ -11,8 +11,8 @@ import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/create_download_options_sheet.dart';
 
-Future<void> goToBulkDownloadCompletedPage(BuildContext context) async {
-  await context.push(
+Future<void> goToBulkDownloadCompletedPage(WidgetRef ref) async {
+  await ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -23,8 +23,8 @@ Future<void> goToBulkDownloadCompletedPage(BuildContext context) async {
   );
 }
 
-Future<void> goToBulkDownloadSavedTasksPage(BuildContext context) async {
-  await context.push(
+Future<void> goToBulkDownloadSavedTasksPage(WidgetRef ref) async {
+  await ref.router.push(
     Uri(
       pathSegments: [
         '',

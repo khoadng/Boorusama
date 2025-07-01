@@ -122,7 +122,7 @@ class DownloadSettingsInteractionBlocker extends ConsumerWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   goToUpdateBooruConfigPage(
-                    context,
+                    ref,
                     config: config,
                     initialTab: 'download',
                   );

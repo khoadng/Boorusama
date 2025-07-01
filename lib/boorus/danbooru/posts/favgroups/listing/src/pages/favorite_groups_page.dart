@@ -87,7 +87,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
                         ],
                       ),
                       onTap: () {
-                        goToFavoriteGroupDetailsPage(context, group);
+                        goToFavoriteGroupDetailsPage(ref, group);
                       },
                       leading: _Preview(group: group),
                       trailing: IconButton(

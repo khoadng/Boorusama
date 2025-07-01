@@ -43,7 +43,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
                     icon: const Icon(Symbols.search),
                     onPressed: () {
                       goToSearchPage(
-                        context,
+                        ref,
                         tag: favQueryBuilder!(),
                       );
                     },

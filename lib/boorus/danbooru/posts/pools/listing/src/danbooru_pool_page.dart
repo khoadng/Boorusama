@@ -104,7 +104,7 @@ class PoolSearchButton extends ConsumerWidget {
     return IconButton(
       splashRadius: 24,
       onPressed: () {
-        goToPoolSearchPage(context);
+        goToPoolSearchPage(ref);
       },
       icon: const Icon(Symbols.search),
     );

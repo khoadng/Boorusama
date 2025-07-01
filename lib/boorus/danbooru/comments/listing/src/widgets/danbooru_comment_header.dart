@@ -26,7 +26,7 @@ class DanbooruCommentHeader extends ConsumerWidget {
           DanbooruUserColor.of(context).fromLevel(comment.authorLevel),
       createdAt: comment.createdAt,
       onTap: () => goToUserDetailsPage(
-        context,
+        ref,
         uid: comment.authorId,
       ),
     );

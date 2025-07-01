@@ -14,7 +14,7 @@ import '../../../posts/routes.dart';
 import '../types/forum_topic.dart';
 import 'forum_card.dart';
 
-class DanbooruForumCard extends StatelessWidget {
+class DanbooruForumCard extends ConsumerWidget {
   const DanbooruForumCard({
     required this.topic,
     super.key,
@@ -23,13 +23,13 @@ class DanbooruForumCard extends StatelessWidget {
   final DanbooruForumTopic topic;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ForumCard(
       title: topic.title,
       responseCount: topic.responseCount,
       createdAt: topic.createdAt,
-      creatorInfo: Consumer(
-        builder: (_, ref, __) {
+      creatorInfo: Builder(
+        builder: (_) {
           final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
           final creatorColor =
               DanbooruUserColor.of(context).fromLevel(creator?.level);
@@ -43,14 +43,14 @@ class DanbooruForumCard extends StatelessWidget {
             backgroundColor: colors?.backgroundColor,
             textColor: colors?.foregroundColor,
             onTap: () => goToUserDetailsPage(
-              context,
+              ref,
               uid: topic.creatorId,
             ),
           );
         },
       ),
       onTap: () => goToForumPostsPage(
-        context,
+        ref,
         topic: topic,
       ),
     );

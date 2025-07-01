@@ -89,7 +89,7 @@ class DetailsLayoutManagerPage extends StatelessWidget {
                     ? SafeArea(
                         child: PrimaryButton(
                           onPressed: () {
-                            goToPremiumPage(context);
+                            goToPremiumPage(ref);
                           },
                           child: const Text('Upgrade to save'),
                         ),

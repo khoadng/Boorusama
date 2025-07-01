@@ -47,7 +47,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         onTap: () => goToUserDetailsPage(
-                          context,
+                          ref,
                           uid: uploader.id,
                         ),
                         child: Text(
@@ -76,7 +76,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => goToUserDetailsPage(
-                      context,
+                      ref,
                       uid: approver.id,
                     ),
                     child: Text(

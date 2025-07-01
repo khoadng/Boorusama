@@ -27,11 +27,11 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
       posts: posts,
       imageUrl: (item) => item.url720x720,
       onViewAll: () => goToSearchPage(
-        context,
+        ref,
         tag: currentPost.relationshipQuery,
       ),
       onTap: (index) => goToPostDetailsPageFromPosts(
-        context: context,
+        ref: ref,
         posts: posts,
         initialIndex: index,
         initialThumbnailUrl: posts[index].url720x720,

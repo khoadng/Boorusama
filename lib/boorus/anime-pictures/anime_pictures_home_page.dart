@@ -64,7 +64,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
             ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
-              goToFavoritesPage(context);
+              goToFavoritesPage(ref);
             },
           ),
       ],

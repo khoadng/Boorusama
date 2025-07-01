@@ -33,7 +33,7 @@ class GeneralTagContextMenu extends ConsumerWidget
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           copyButton(context, tag),
-          searchButton(context, tag),
+          searchButton(ref, tag),
           ContextMenuButtonConfig(
             'post.detail.add_to_favorites'.tr(),
             onPressed: () {
@@ -71,11 +71,11 @@ mixin TagContextMenuButtonConfigMixin {
         },
       );
 
-  ContextMenuButtonConfig searchButton(BuildContext context, String tag) =>
+  ContextMenuButtonConfig searchButton(WidgetRef ref, String tag) =>
       ContextMenuButtonConfig(
         'Search',
         onPressed: () {
-          goToSearchPage(context, tag: tag);
+          goToSearchPage(ref, tag: tag);
         },
       );
 }

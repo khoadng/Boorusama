@@ -197,7 +197,7 @@ class PostGestureHandler {
   }
 
   void handleViewOriginal(WidgetRef ref, Post post) {
-    goToOriginalImagePage(ref.context, post);
+    goToOriginalImagePage(ref, post);
   }
 
   void handleOpenSource(WidgetRef ref, Post post) {
@@ -376,7 +376,7 @@ class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
               ),
               auth: config.auth,
               onTap: () => goToArtistPage(
-                context,
+                ref,
                 artist,
               ),
             );

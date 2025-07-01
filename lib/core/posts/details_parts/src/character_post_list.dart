@@ -106,7 +106,7 @@ class SliverCharacterPostList extends ConsumerWidget {
                     color: ref.watch(
                       tagColorProvider((ref.watchConfigAuth, 'character')),
                     ),
-                    onPressed: () => goToCharacterPage(context, tag),
+                    onPressed: () => goToCharacterPage(ref, tag),
                     label: Text(
                       tag.replaceAll('_', ' '),
                       textAlign: TextAlign.center,

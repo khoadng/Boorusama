@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/config/widgets.dart';
+import '../../../router.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -140,7 +140,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             RedirectAction(
               label: 'settings.accessibility.accessibility'.tr(),
               onPressed: () {
-                context.push(
+                ref.router.push(
                   Uri(
                     path: '/settings',
                     queryParameters: {

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/router.dart';
 import '../../../_shared/tag_list_notifier.dart';
 import '../providers/providers.dart';
 import '../providers/tag_edit_notifier.dart';
@@ -38,7 +37,7 @@ class TagEditSubmitButton extends ConsumerWidget {
                     removedTags: removedTags.toList(),
                     rating: rating != initialRating ? rating : null,
                   );
-              context.pop();
+              Navigator.of(context).pop();
             }
           : null,
       child: const Text('Submit'),

@@ -265,7 +265,7 @@ class SimpleInformationSection extends ConsumerWidget {
       source: post.source,
       showSource: showSource,
       onArtistTagTap: supportArtist
-          ? (context, artist) => goToArtistPage(context, artist)
+          ? (context, artist) => goToArtistPage(ref, artist)
           : null,
     );
   }

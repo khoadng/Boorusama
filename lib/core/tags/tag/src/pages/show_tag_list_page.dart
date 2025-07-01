@@ -404,17 +404,17 @@ class _SelectableTagItem extends StatelessWidget {
   }
 
   Widget _buildTile(bool multiSelect, BuildContext context) {
-    return ListTile(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      visualDensity: VisualDensity.compact,
-      contentPadding: const EdgeInsets.only(
-        left: 16,
-        right: 12,
-      ),
-      title: Consumer(
-        builder: (_, ref, __) => Text(
+    return Consumer(
+      builder: (_, ref, __) => ListTile(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        visualDensity: VisualDensity.compact,
+        contentPadding: const EdgeInsets.only(
+          left: 16,
+          right: 12,
+        ),
+        title: Text(
           tag.displayName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -426,14 +426,14 @@ class _SelectableTagItem extends StatelessWidget {
             ),
           ),
         ),
+        onTap: multiSelect
+            ? () => multiSelectController.toggleSelection(index)
+            : () => goToSearchPage(
+                  ref,
+                  tag: tag.rawName,
+                ),
+        trailing: const Icon(Symbols.chevron_right),
       ),
-      onTap: multiSelect
-          ? () => multiSelectController.toggleSelection(index)
-          : () => goToSearchPage(
-                context,
-                tag: tag.rawName,
-              ),
-      trailing: const Icon(Symbols.chevron_right),
     );
   }
 }

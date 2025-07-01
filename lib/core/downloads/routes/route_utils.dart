@@ -1,13 +1,13 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../router.dart';
 
 void goToDownloadManagerPage(
-  BuildContext context,
+  WidgetRef ref,
 ) {
-  context.push(
+  ref.router.push(
     Uri(
       path: '/download_manager',
     ).toString(),

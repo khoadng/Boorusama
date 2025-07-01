@@ -1,12 +1,12 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/router.dart';
 import '../../../posts/post/post.dart';
 
-void goToPostVersionPage(BuildContext context, DanbooruPost post) {
-  context.push(
+void goToPostVersionPage(WidgetRef ref, DanbooruPost post) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

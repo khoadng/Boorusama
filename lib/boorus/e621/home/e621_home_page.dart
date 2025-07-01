@@ -54,7 +54,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
             title: Text('profile.favorites'.tr()),
-            onTap: () => goToFavoritesPage(context),
+            onTap: () => goToFavoritesPage(ref),
           ),
         ],
       ],

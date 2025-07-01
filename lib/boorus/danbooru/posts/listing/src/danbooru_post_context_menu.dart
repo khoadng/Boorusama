@@ -100,7 +100,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         ContextMenuButtonConfig(
           'View tag history',
-          onPressed: () => goToPostVersionPage(context, post),
+          onPressed: () => goToPostVersionPage(ref, post),
         ),
         if (hasAccount)
           ContextMenuButtonConfig(

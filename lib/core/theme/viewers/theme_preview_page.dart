@@ -157,7 +157,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                         )
                       : TextButton(
                           onPressed: () {
-                            goToPremiumPage(context);
+                            goToPremiumPage(ref);
                           },
                           child: const Text('Upgrade'),
                         ),

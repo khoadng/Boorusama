@@ -11,7 +11,7 @@ import 'router.dart';
 
 export 'package:boorusama/core/routers/routers.dart';
 
-export 'package:go_router/go_router.dart';
+export 'package:go_router/go_router.dart' hide GoRouterHelper;
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -30,3 +30,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
+extension RouterRef on WidgetRef {
+  GoRouter get router => read(routerProvider);
+}

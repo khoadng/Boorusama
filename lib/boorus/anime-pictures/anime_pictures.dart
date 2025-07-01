@@ -410,7 +410,7 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
                   imageUrl:
                       defaultPostImageUrlBuilder(ref, configAuth, configViewer),
                   onTap: (index) => goToPostDetailsPageFromPosts(
-                    context: context,
+                    ref: ref,
                     posts: posts,
                     initialIndex: index,
                     initialThumbnailUrl: defaultPostImageUrlBuilder(

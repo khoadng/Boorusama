@@ -43,7 +43,7 @@ class DanbooruTagContextMenu extends ConsumerWidget {
             await AppClipboard.copy(tag);
 
             if (context.mounted) {
-              goToSavedSearchEditPage(context);
+              goToSavedSearchEditPage(ref);
             }
           },
       },

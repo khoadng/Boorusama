@@ -73,7 +73,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                           hideLabel: hideLabel,
                           config: config,
                           show: () => show(config, notifier),
-                          onTap: () => context.go('/?cid=${config.id}'),
+                          onTap: () => ref.router.go('/?cid=${config.id}'),
                           selected: currentConfig == config,
                         );
                       },
@@ -147,7 +147,7 @@ class _BooruSelectorHorizontalState
                               hideLabel: hideLabel,
                               config: config,
                               show: () => show(config, notifier),
-                              onTap: () => context.go('/?cid=${config.id}'),
+                              onTap: () => ref.router.go('/?cid=${config.id}'),
                               selected: currentConfig == config,
                               direction: Axis.horizontal,
                             ),
@@ -174,7 +174,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
           ContextMenuButtonConfig(
             'generic.action.edit'.tr(),
             onPressed: () => goToUpdateBooruConfigPage(
-              context,
+              ref,
               config: config,
             ),
           ),
@@ -224,7 +224,7 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
 
   Widget get addButton => IconButton(
         splashRadius: 20,
-        onPressed: () => goToAddBooruConfigPage(context),
+        onPressed: () => goToAddBooruConfigPage(ref),
         icon: const Icon(Symbols.add),
       );
 }

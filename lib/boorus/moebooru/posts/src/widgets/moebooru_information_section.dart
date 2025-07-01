@@ -45,7 +45,7 @@ class MoebooruInformationSection extends ConsumerWidget {
                 createdAt: post.createdAt,
                 source: post.source,
                 onArtistTagTap: (context, artist) => goToArtistPage(
-                  context,
+                  ref,
                   artist,
                 ),
                 showSource: true,

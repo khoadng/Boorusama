@@ -368,19 +368,19 @@ class HydrusRepository extends BooruRepositoryDefault {
   }
 }
 
-class HydrusHomePage extends StatelessWidget {
+class HydrusHomePage extends ConsumerWidget {
   const HydrusHomePage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contex, WidgetRef ref) {
     return HomePageScaffold(
       mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.favorite),
           title: Text('profile.favorites'.tr()),
-          onTap: () => goToFavoritesPage(context),
+          onTap: () => goToFavoritesPage(ref),
         ),
       ],
       desktopMenuBuilder: (context, constraints) => [

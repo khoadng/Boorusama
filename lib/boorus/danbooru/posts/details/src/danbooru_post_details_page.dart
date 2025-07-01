@@ -80,8 +80,8 @@ class DanbooruPostStatsTile extends ConsumerWidget {
       favCount: post.favCount,
       totalComments: commentCount ?? 0,
       votePercentText: _generatePercentText(post),
-      onScoreTap: () => goToPostVotesDetails(context, post),
-      onFavCountTap: () => goToPostFavoritesDetails(context, post),
+      onScoreTap: () => goToPostVotesDetails(ref, post),
+      onFavCountTap: () => goToPostFavoritesDetails(ref, post),
       onTotalCommentsTap: () => goToCommentPage(context, ref, post.id),
     );
   }

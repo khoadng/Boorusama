@@ -53,7 +53,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
             label: 'generic.view'.tr(),
             textColor: colorScheme.surface,
             onPressed: () {
-              goToBulkDownloadManagerPage(context);
+              goToBulkDownloadManagerPage(ref);
             },
           ),
         );

@@ -183,7 +183,7 @@ class ExploreList extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: GestureDetector(
                 onTap: () => goToPostDetailsPageFromPosts(
-                  context: context,
+                  ref: ref,
                   posts: filteredPosts,
                   initialIndex: index,
                   initialThumbnailUrl: defaultPostImageUrlBuilder(

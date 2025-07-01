@@ -246,7 +246,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           LogicalKeyboardKey.keyF,
           control: true,
         ): () => goToOriginalImagePage(
-              context,
+              ref,
               widget.posts[_controller.page],
             ),
       },
@@ -375,7 +375,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               Symbols.home,
               fill: 1,
             ),
-            onPressed: () => goToHomePage(context),
+            onPressed: () => goToHomePage(ref),
           ),
           const SizedBox(width: 8),
           if (widget.controller.dislclaimer != null)

@@ -33,11 +33,11 @@ class MoebooruRelatedPostsSection extends ConsumerWidget {
               posts: posts,
               imageUrl: (item) => item.sampleImageUrl,
               onViewAll: () => goToSearchPage(
-                context,
+                ref,
                 tag: post.relationshipQuery,
               ),
               onTap: (index) => goToPostDetailsPageFromPosts(
-                context: context,
+                ref: ref,
                 posts: posts,
                 initialIndex: index,
                 initialThumbnailUrl: posts[index].sampleImageUrl,

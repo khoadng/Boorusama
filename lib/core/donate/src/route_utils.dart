@@ -1,12 +1,12 @@
-// Flutter imports:
-import 'package:flutter/cupertino.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../router.dart';
 import 'donation_page.dart';
 
-Future<void> goToDonationPage(BuildContext context) {
-  return context.pushNamed(
+Future<void> goToDonationPage(WidgetRef ref) {
+  return ref.router.pushNamed(
     '/donate',
     extra: const DonationPage(),
   );

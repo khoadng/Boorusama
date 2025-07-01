@@ -31,7 +31,7 @@ class SankakuHomePage extends ConsumerWidget {
             icon: const Icon(Symbols.favorite),
             title: Text('profile.favorites'.tr()),
             onTap: () {
-              goToFavoritesPage(context);
+              goToFavoritesPage(ref);
             },
           ),
       ],

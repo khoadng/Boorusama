@@ -41,7 +41,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
                   ? SnackBarAction(
                       label: 'Upgrade',
                       textColor: Theme.of(context).colorScheme.surface,
-                      onPressed: () => goToPremiumPage(context),
+                      onPressed: () => goToPremiumPage(ref),
                     )
                   : null,
             );
@@ -54,7 +54,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
         (prev, cur) {
           if (prev == null) return;
 
-          goToBulkDownloadManagerPage(context, go: true);
+          goToBulkDownloadManagerPage(ref, go: true);
         },
       );
 

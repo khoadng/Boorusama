@@ -98,7 +98,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                     }
 
                     goToCommentCreatePage(
-                      context,
+                      ref,
                       postId: widget.postId,
                       initialContent: initialContent,
                     );

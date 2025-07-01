@@ -1,14 +1,14 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../router.dart';
 
 void goToSettingsPage(
-  BuildContext context, {
+  WidgetRef ref, {
   String? scrollTo,
 }) {
-  context.push(
+  ref.router.push(
     Uri(
       path: '/settings',
       queryParameters: {
@@ -18,8 +18,8 @@ void goToSettingsPage(
   );
 }
 
-Future<void> openImageViewerSettingsPage(BuildContext context) {
-  return context.push(
+Future<void> openImageViewerSettingsPage(WidgetRef ref) {
+  return ref.router.push(
     Uri(
       path: '/settings',
       queryParameters: {
@@ -29,8 +29,8 @@ Future<void> openImageViewerSettingsPage(BuildContext context) {
   );
 }
 
-Future<void> openDownloadSettingsPage(BuildContext context) {
-  return context.push(
+Future<void> openDownloadSettingsPage(WidgetRef ref) {
+  return ref.router.push(
     Uri(
       path: '/settings',
       queryParameters: {
@@ -40,8 +40,8 @@ Future<void> openDownloadSettingsPage(BuildContext context) {
   );
 }
 
-Future<void> openAppearancePage(BuildContext context) {
-  return context.push(
+Future<void> openAppearancePage(WidgetRef ref) {
+  return ref.router.push(
     Uri(
       path: '/settings',
       queryParameters: {

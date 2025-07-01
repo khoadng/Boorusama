@@ -19,7 +19,6 @@ import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/posts/rating/rating.dart';
 import '../../../../../../core/posts/sources/source.dart';
-import '../../../../../../core/router.dart';
 import '../../../../../../core/search/suggestions/providers.dart';
 import '../../../../../../core/search/suggestions/widgets.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
@@ -91,7 +90,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
             data: (data) {
               if (data != null) {
                 widget.onSubmitted?.call();
-                context.pop();
+                Navigator.of(context).pop();
               }
             },
             loading: () {},

@@ -111,7 +111,7 @@ class _SuccessView extends ConsumerWidget {
                         ),
                   onTap: savedSearch.labels.isNotEmpty
                       ? () => goToSearchPage(
-                            context,
+                            ref,
                             tag: 'search:${savedSearch.labels.first}',
                           )
                       : null,

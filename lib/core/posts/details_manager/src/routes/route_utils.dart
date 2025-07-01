@@ -1,17 +1,15 @@
-// Flutter imports:
-import 'package:flutter/cupertino.dart';
-
 // Package imports:
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../router.dart';
 import '../providers/details_layout_provider.dart';
 
 void goToDetailsLayoutManagerPage(
-  BuildContext context, {
+  WidgetRef ref, {
   required DetailsLayoutManagerParams params,
 }) {
-  context.push(
+  ref.router.push(
     '/details_manager',
     extra: params,
   );

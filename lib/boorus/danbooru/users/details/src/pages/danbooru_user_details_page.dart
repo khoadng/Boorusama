@@ -108,7 +108,7 @@ class UserDetailsActionButtons extends ConsumerWidget {
                     Theme.of(context).colorScheme.onSecondaryContainer,
               ),
               child: const Text('My Uploads'),
-              onPressed: () => goToMyUploadsPage(context),
+              onPressed: () => goToMyUploadsPage(ref),
             ),
           const SizedBox(width: 8),
           FilledButton(
@@ -118,7 +118,7 @@ class UserDetailsActionButtons extends ConsumerWidget {
                   Theme.of(context).colorScheme.onSecondaryContainer,
             ),
             child: const Text('profile.messages').tr(),
-            onPressed: () => goToDmailPage(context),
+            onPressed: () => goToDmailPage(ref),
           ),
         ],
       ),

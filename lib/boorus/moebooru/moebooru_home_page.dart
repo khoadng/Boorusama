@@ -83,7 +83,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
-              goToFavoritesPage(context);
+              goToFavoritesPage(ref);
             },
           ),
         ],

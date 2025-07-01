@@ -8,7 +8,6 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/router.dart';
 import '../../../../../../core/utils/duration_utils.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
@@ -70,7 +69,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
     if (isEditing.value) {
       isEditing.value = false;
     } else {
-      context.pop();
+      Navigator.of(context).pop();
     }
   }
 
@@ -112,7 +111,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                           authenticated: config.hasLoginDetails(),
                           onEdit: (comment) {
                             goToCommentUpdatePage(
-                              context,
+                              ref,
                               postId: widget.postId,
                               commentId: comment.id,
                               commentBody: comment.body,

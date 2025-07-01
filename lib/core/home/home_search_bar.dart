@@ -163,7 +163,7 @@ class HomeSearchBar extends ConsumerWidget {
           homeController?.openMenu();
         },
       ),
-      onTap: () => goToSearchPage(context),
+      onTap: () => goToSearchPage(ref),
     );
   }
 }

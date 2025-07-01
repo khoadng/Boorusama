@@ -363,7 +363,7 @@ class _DetailsInkWell extends ConsumerWidget {
               final updates = ref.read(downloadTaskUpdatesProvider).all(id);
 
               if (updates.isNotEmpty) {
-                context.push(
+                ref.router.push(
                   '/download_manager?group=$id',
                 );
               } else {

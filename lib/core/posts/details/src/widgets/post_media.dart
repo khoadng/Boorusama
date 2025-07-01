@@ -39,8 +39,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager Function(Post post)? imageCacheManager;
 
-  void _openSettings(BuildContext context) {
-    openImageViewerSettingsPage(context);
+  void _openSettings(WidgetRef ref) {
+    openImageViewerSettingsPage(ref);
   }
 
   @override
@@ -85,7 +85,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         sound: ref.isGlobalVideoSoundOn,
                         speed: ref.watchPlaybackSpeed(post.videoUrl),
                         thumbnailUrl: post.videoThumbnailUrl,
-                        onOpenSettings: () => _openSettings(context),
+                        onOpenSettings: () => _openSettings(ref),
                         headers: headers,
                         onInitializing: details.controller.onInitializing,
                       ),

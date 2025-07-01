@@ -61,13 +61,13 @@ class GeneralMoreActionButton extends ConsumerWidget {
                   post.extractTags(),
                 );
               case 'view_original':
-                goToOriginalImagePage(context, post);
+                goToOriginalImagePage(ref, post);
               case 'start_slideshow':
                 if (onStartSlideshow != null) {
                   onStartSlideshow!();
                 }
               case 'settings':
-                openImageViewerSettingsPage(context);
+                openImageViewerSettingsPage(ref);
               // ignore: no_default_cases
               default:
             }

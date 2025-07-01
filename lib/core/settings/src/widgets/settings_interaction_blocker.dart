@@ -99,7 +99,7 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   goToUpdateBooruConfigPage(
-                    context,
+                    ref,
                     config: config,
                     initialTab: 'listing',
                   );
@@ -158,7 +158,7 @@ class ThemeSettingsInteractionBlocker extends ConsumerWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   goToUpdateBooruConfigPage(
-                    context,
+                    ref,
                     config: config,
                     initialTab: 'appearance',
                   );

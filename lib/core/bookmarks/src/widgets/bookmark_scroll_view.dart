@@ -224,7 +224,6 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
   ) {
     final edit = ref.watch(bookmarkEditProvider);
 
-    final context = ref.context;
     final config = ref.watchConfigAuth;
 
     return ValueListenableBuilder(
@@ -278,7 +277,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               ),
               onTap: () {
                 goToBookmarkDetailsPage(
-                  context,
+                  ref,
                   index,
                   initialThumbnailUrl: post.isVideo
                       ? post.bookmark.thumbnailUrl

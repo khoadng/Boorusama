@@ -176,7 +176,7 @@ class FavoriteTagsPage extends ConsumerWidget {
           ),
           onTap: () {
             goToSearchPage(
-              context,
+              ref,
               tag: tag.name,
               queryType: tag.queryType,
             );

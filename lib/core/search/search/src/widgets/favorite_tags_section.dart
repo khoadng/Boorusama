@@ -85,7 +85,7 @@ class FavoriteTagsSection extends ConsumerWidget {
   }
 }
 
-class OptionTagsArenaNoEdit extends StatelessWidget {
+class OptionTagsArenaNoEdit extends ConsumerWidget {
   const OptionTagsArenaNoEdit({
     required this.title,
     required this.children,
@@ -98,7 +98,7 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -122,7 +122,7 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                     backgroundColor:
                         Theme.of(context).colorScheme.surfaceContainerHighest,
                   ),
-                  onPressed: () => context.push('/favorite_tags'),
+                  onPressed: () => ref.router.push('/favorite_tags'),
                   child: Icon(
                     Symbols.settings,
                     size: 16,

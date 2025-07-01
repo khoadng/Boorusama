@@ -41,7 +41,7 @@ class _GelbooruHomePageState extends ConsumerState<GelbooruHomePage> {
             ),
             title: Text('profile.favorites'.tr()),
             onTap: () {
-              goToFavoritesPage(context);
+              goToFavoritesPage(ref);
             },
           ),
       ],

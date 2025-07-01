@@ -109,7 +109,7 @@ class _EditConfigButton extends ConsumerWidget {
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: () => goToUpdateBooruConfigPage(
-          context,
+          ref,
           config: config,
         ),
         child: Container(

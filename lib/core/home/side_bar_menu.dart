@@ -128,28 +128,28 @@ class SideBarMenu extends ConsumerWidget {
                             icon: const Icon(Symbols.search),
                             title: const Text('settings.search.search').tr(),
                             onTap: () {
-                              goToSearchPage(context);
+                              goToSearchPage(ref);
                             },
                           ),
                         SideMenuTile(
                           icon: const Icon(Symbols.favorite),
                           title: const Text('sideMenu.your_bookmarks').tr(),
                           onTap: () {
-                            goToBookmarkPage(context);
+                            goToBookmarkPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.list),
                           title: const Text('sideMenu.your_blacklist').tr(),
                           onTap: () {
-                            goToGlobalBlacklistedTagsPage(context);
+                            goToGlobalBlacklistedTagsPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.tag),
                           title: const Text('favorite_tags.favorite_tags').tr(),
                           onTap: () {
-                            goToFavoriteTagsPage(context);
+                            goToFavoriteTagsPage(ref);
                           },
                         ),
                         SideMenuTile(
@@ -167,7 +167,7 @@ class SideBarMenu extends ConsumerWidget {
                           icon: const Icon(Symbols.download),
                           title: const Text('Download manager'),
                           onTap: () {
-                            goToDownloadManagerPage(context);
+                            goToDownloadManagerPage(ref);
                           },
                         ),
                         const Divider(
@@ -183,7 +183,7 @@ class SideBarMenu extends ConsumerWidget {
                             ),
                             title: const Text('Donate'),
                             onTap: () {
-                              goToDonationPage(context);
+                              goToDonationPage(ref);
                             },
                           )
                         else if (ref.watch(showPremiumFeatsProvider) &&
@@ -197,7 +197,7 @@ class SideBarMenu extends ConsumerWidget {
                             ),
                             title: const Text('Get $kPremiumBrandName'),
                             onTap: () {
-                              goToPremiumPage(context);
+                              goToPremiumPage(ref);
                             },
                           ),
                         SideMenuTile(
@@ -207,7 +207,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: const Text('sideMenu.get_support').tr(),
                           onTap: () {
-                            goToSettingsPage(context, scrollTo: 'support');
+                            goToSettingsPage(ref, scrollTo: 'support');
                           },
                         ),
                         SideMenuTile(
@@ -217,7 +217,7 @@ class SideBarMenu extends ConsumerWidget {
                           ),
                           title: Text('sideMenu.settings'.tr()),
                           onTap: () {
-                            goToSettingsPage(context);
+                            goToSettingsPage(ref);
                           },
                         ),
                       ].map(

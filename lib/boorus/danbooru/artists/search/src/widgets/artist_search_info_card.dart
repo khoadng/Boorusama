@@ -45,7 +45,7 @@ class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
       child: InkWell(
         onTap: () {
           widget.focusScopeNode.unfocus();
-          goToArtistPage(context, artist.name);
+          goToArtistPage(ref, artist.name);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(

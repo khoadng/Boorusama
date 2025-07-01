@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:go_router/go_router.dart';
 
 // Project imports:
-import '../../../../routers/common.dart';
-import '../../../../routers/widgets/failsafe_page.dart';
+import '../../../../router.dart';
 import '../pages/details_layout_manager_page.dart';
 import '../providers/details_layout_provider.dart';
 

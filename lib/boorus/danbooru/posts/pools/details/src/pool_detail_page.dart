@@ -50,7 +50,7 @@ class PoolDetailPage extends ConsumerWidget {
                 icon: const Icon(Symbols.search),
                 onPressed: () {
                   goToSearchPage(
-                    context,
+                    ref,
                     tag: pool.toSearchQuery(),
                   );
                 },

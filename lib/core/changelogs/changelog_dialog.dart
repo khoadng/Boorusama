@@ -155,11 +155,11 @@ class ChangelogDialog extends ConsumerWidget {
   }
 }
 
-class _ThanksBanner extends StatelessWidget {
+class _ThanksBanner extends ConsumerWidget {
   const _ThanksBanner();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 12,
@@ -173,7 +173,7 @@ class _ThanksBanner extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                goToPremiumPage(context);
+                goToPremiumPage(ref);
               },
               icon: const Icon(
                 color: Colors.red,
@@ -200,11 +200,11 @@ class _ThanksBanner extends StatelessWidget {
   }
 }
 
-class _SupportBanner extends StatelessWidget {
+class _SupportBanner extends ConsumerWidget {
   const _SupportBanner();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -217,7 +217,7 @@ class _SupportBanner extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           onTap: () {
-            goToPremiumPage(context);
+            goToPremiumPage(ref);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(
@@ -227,7 +227,7 @@ class _SupportBanner extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    goToPremiumPage(context);
+                    goToPremiumPage(ref);
                   },
                   icon: const Icon(
                     color: Colors.red,

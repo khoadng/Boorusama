@@ -1,16 +1,16 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../router.dart';
 import '../../../config/types.dart';
 
 void goToUpdateBooruConfigPage(
-  BuildContext context, {
+  WidgetRef ref, {
   required BooruConfig config,
   String? initialTab,
 }) {
-  context.push(
+  ref.router.push(
     Uri(
       path: '/boorus/${config.id}/update',
       queryParameters: {
@@ -21,9 +21,9 @@ void goToUpdateBooruConfigPage(
 }
 
 void goToAddBooruConfigPage(
-  BuildContext context,
+  WidgetRef ref,
 ) {
-  context.push(
+  ref.router.push(
     Uri(
       path: '/boorus/add',
     ).toString(),

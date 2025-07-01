@@ -39,9 +39,8 @@ class UserDetailsInfoView extends ConsumerWidget {
           const SizedBox(height: 24),
           UserDetailsSectionCard(
             title: InkWell(
-              onTap: hasFeedback
-                  ? () => goToUserFeedbackPage(context, user.id)
-                  : null,
+              onTap:
+                  hasFeedback ? () => goToUserFeedbackPage(ref, user.id) : null,
               child: Row(
                 children: [
                   const Text(

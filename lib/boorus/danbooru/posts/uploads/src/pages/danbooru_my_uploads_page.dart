@@ -256,7 +256,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                 onTap: () {
                   if (widget.type == UploadTabType.unposted) {
                     goToTagEditUploadPage(
-                      context,
+                      ref,
                       post: post,
                       uploadId: post.uploadId,
                       //TODO: Refresh later

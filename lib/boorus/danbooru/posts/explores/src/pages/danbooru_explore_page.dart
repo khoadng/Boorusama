@@ -38,17 +38,17 @@ class DanbooruExplorePageInternal extends ConsumerWidget {
       sliverOverviews: [
         SliverToBoxAdapter(
           child: PopularExplore(
-            onPressed: () => goToExplorePopularPage(context),
+            onPressed: () => goToExplorePopularPage(ref),
           ),
         ),
         SliverToBoxAdapter(
           child: HotExplore(
-            onPressed: () => goToExploreHotPage(context),
+            onPressed: () => goToExploreHotPage(ref),
           ),
         ),
         SliverToBoxAdapter(
           child: MostViewedExplore(
-            onPressed: () => goToExploreMostViewedPage(context),
+            onPressed: () => goToExploreMostViewedPage(ref),
           ),
         ),
       ],

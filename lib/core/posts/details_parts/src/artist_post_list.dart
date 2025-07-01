@@ -101,7 +101,7 @@ class SliverArtistPostList extends ConsumerWidget {
                   vertical: 8,
                 ),
                 child: InkWell(
-                  onTap: () => goToArtistPage(context, tag),
+                  onTap: () => goToArtistPage(ref, tag),
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -136,7 +136,7 @@ class SliverArtistPostList extends ConsumerWidget {
   }
 }
 
-class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
+class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPreviewPostGrid({
     required this.posts,
     required this.imageUrl,
@@ -147,7 +147,7 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
   final String Function(T item) imageUrl;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final constraints = PostDetailsSheetConstraints.of(context);
 
     return SliverGrid.builder(
@@ -160,7 +160,7 @@ class SliverPreviewPostGrid<T extends Post> extends StatelessWidget {
           isGif: post.isGif,
           isAI: post.isAI,
           onTap: () => goToPostDetailsPageFromPosts(
-            context: context,
+            ref: ref,
             posts: posts,
             initialIndex: index,
             initialThumbnailUrl: post.thumbnailImageUrl,

@@ -65,7 +65,7 @@ class _SavedSearchFeedContentViewState
             floating: true,
             actions: [
               IconButton(
-                onPressed: () => goToSavedSearchEditPage(context),
+                onPressed: () => goToSavedSearchEditPage(ref),
                 icon: const Icon(
                   Symbols.settings,
                   fill: 1,

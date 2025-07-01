@@ -169,7 +169,7 @@ class DanbooruPoolGridItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PoolGridItem(
       image: PoolImage(pool: pool),
-      onTap: () => goToPoolDetailPage(context, pool),
+      onTap: () => goToPoolDetailPage(ref, pool),
       total: pool.postCount,
       name: pool.name,
     );

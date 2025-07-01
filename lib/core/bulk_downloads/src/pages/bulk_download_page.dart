@@ -68,16 +68,20 @@ class BulkDownloadPageInternal extends StatelessWidget {
                     child: const Icon(Symbols.history),
                   ),
                   onPressed: () {
-                    goToBulkDownloadCompletedPage(context);
+                    goToBulkDownloadCompletedPage(ref);
                     notifier.clearUnseenFinishedSessions();
                   },
                 );
               },
             ),
-            IconButton(
-              icon: const Icon(Symbols.bookmark),
-              onPressed: () {
-                goToBulkDownloadSavedTasksPage(context);
+            Consumer(
+              builder: (_, ref, __) {
+                return IconButton(
+                  icon: const Icon(Symbols.bookmark),
+                  onPressed: () {
+                    goToBulkDownloadSavedTasksPage(ref);
+                  },
+                );
               },
             ),
           ],

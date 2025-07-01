@@ -31,7 +31,7 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
                           foregroundColor: Colors.white,
                           visualDensity: VisualDensity.compact,
                         ),
-                        onPressed: () => goToDmailPage(context),
+                        onPressed: () => goToDmailPage(ref),
                         child: const Text(
                           'generic.view',
                           style: TextStyle(

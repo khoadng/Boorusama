@@ -199,7 +199,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                 ),
               ),
               onPressed: () => goToSearchPage(
-                context,
+                ref,
                 tag: e.tag,
               ),
               label: ConstrainedBox(
@@ -278,8 +278,7 @@ class SliverUploadPostList extends ConsumerWidget {
               ),
               visualDensity: const ShrinkVisualDensity(),
               trailing: TextButton(
-                onPressed: () =>
-                    goToSearchPage(context, tag: 'user:${user.name}'),
+                onPressed: () => goToSearchPage(ref, tag: 'user:${user.name}'),
                 child: const Text('View all'),
               ),
             ),

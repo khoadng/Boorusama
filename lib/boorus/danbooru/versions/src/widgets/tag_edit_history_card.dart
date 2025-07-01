@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
@@ -57,22 +58,26 @@ class TagEditHistoryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (thumbnail != null)
-            SizedBox(
-              width: 100,
-              child: Material(
-                child: InkWell(
-                  onTap: config != null
-                      ? () {
-                          goToSinglePostDetailsPage(
-                            context: context,
-                            postId: NumericPostId(version.postId),
-                            configSearch: config,
-                          );
-                        }
-                      : null,
-                  child: BooruImage(imageUrl: thumbnail),
-                ),
-              ),
+            Consumer(
+              builder: (context, ref, _) {
+                return SizedBox(
+                  width: 100,
+                  child: Material(
+                    child: InkWell(
+                      onTap: config != null
+                          ? () {
+                              goToSinglePostDetailsPage(
+                                ref: ref,
+                                postId: NumericPostId(version.postId),
+                                configSearch: config,
+                              );
+                            }
+                          : null,
+                      child: BooruImage(imageUrl: thumbnail),
+                    ),
+                  ),
+                );
+              },
             ),
           Expanded(
             child: Column(
@@ -141,34 +146,38 @@ class TagEditHistoryCard extends StatelessWidget {
   }
 
   Widget _buildTags(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-      ),
-      child: Wrap(
-        children: [
-          ...version.addedTags.map(
-            (e) => PostVersionTagText(
-              tag: e,
-              style: const TextStyle(
-                color: Colors.green,
-              ),
-              onTap: () => goToSearchPage(context, tag: e),
-            ),
+    return Consumer(
+      builder: (context, ref, _) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
           ),
-          ...version.removedTags.map(
-            (e) => PostVersionTagText(
-              tag: e,
-              style: const TextStyle(
-                color: Colors.red,
-                decoration: TextDecoration.lineThrough,
-                decorationColor: Colors.red,
+          child: Wrap(
+            children: [
+              ...version.addedTags.map(
+                (e) => PostVersionTagText(
+                  tag: e,
+                  style: const TextStyle(
+                    color: Colors.green,
+                  ),
+                  onTap: () => goToSearchPage(ref, tag: e),
+                ),
               ),
-              onTap: () => goToSearchPage(context, tag: e),
-            ),
+              ...version.removedTags.map(
+                (e) => PostVersionTagText(
+                  tag: e,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    decoration: TextDecoration.lineThrough,
+                    decorationColor: Colors.red,
+                  ),
+                  onTap: () => goToSearchPage(ref, tag: e),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

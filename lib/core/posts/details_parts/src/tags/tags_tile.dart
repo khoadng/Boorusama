@@ -123,7 +123,7 @@ class TagsTile extends StatelessWidget {
               builder: (_, ref, __) => PostTagListChip(
                 tag: tag,
                 auth: ref.watchConfigAuth,
-                onTap: () => goToSearchPage(context, tag: tag.rawName),
+                onTap: () => goToSearchPage(ref, tag: tag.rawName),
                 color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
               ),
             ),

@@ -424,7 +424,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
               FontAwesomeIcons.gear,
             ),
             onTap: () => goToUpdateBooruConfigPage(
-              context,
+              ref,
               config: ref.watchConfig,
             ),
           ),
@@ -469,7 +469,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
             leading: const FaIcon(
               FontAwesomeIcons.solidStar,
             ),
-            onTap: () => goToPremiumPage(context),
+            onTap: () => goToPremiumPage(ref),
           ),
         SettingTile(
           title: 'settings.changelog'.tr(),

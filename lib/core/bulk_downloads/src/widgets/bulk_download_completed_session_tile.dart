@@ -171,7 +171,7 @@ class _CreateSavedTaskButton extends ConsumerWidget {
                 label: 'generic.view'.tr(),
                 textColor: colorScheme.surface,
                 onPressed: () {
-                  goToBulkDownloadSavedTasksPage(context);
+                  goToBulkDownloadSavedTasksPage(ref);
                 },
               ),
             );

@@ -205,7 +205,7 @@ class HomeSideMenu extends ConsumerWidget {
                                   constraints,
                                 ),
                               ...coreDesktopTabBuilder(
-                                context,
+                                ref,
                                 constraints,
                                 viewKey,
                                 ref.watch(hasPremiumProvider),
@@ -269,7 +269,7 @@ List<Widget> coreDesktopViewBuilder({
 }
 
 List<Widget> coreDesktopTabBuilder(
-  BuildContext context,
+  WidgetRef ref,
   BoxConstraints constraints,
   CustomHomeViewKey? viewKey,
   bool hasPremium,
@@ -329,7 +329,7 @@ List<Widget> coreDesktopTabBuilder(
         selectedIcon: Symbols.favorite,
         icon: Symbols.favorite,
         title: 'Donate',
-        onTap: () => goToDonationPage(context),
+        onTap: () => goToDonationPage(ref),
         forceFillIcon: true,
         forceIconColor: Colors.red,
       )
@@ -340,7 +340,7 @@ List<Widget> coreDesktopTabBuilder(
         selectedIcon: Symbols.favorite,
         icon: Symbols.favorite,
         title: 'Get $kPremiumBrandName',
-        onTap: () => goToPremiumPage(context),
+        onTap: () => goToPremiumPage(ref),
         forceFillIcon: true,
         forceIconColor: Colors.red,
       ),
@@ -350,7 +350,7 @@ List<Widget> coreDesktopTabBuilder(
       selectedIcon: Symbols.settings,
       icon: Symbols.settings,
       title: 'sideMenu.settings'.tr(),
-      onTap: () => goToSettingsPage(context),
+      onTap: () => goToSettingsPage(ref),
     ),
     const SizedBox(height: 8),
   ];

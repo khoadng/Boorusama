@@ -52,7 +52,7 @@ class SavedTaskListTile extends ConsumerWidget {
       opacity: 0.2,
       grayedOut: isLocked,
       onTap: () {
-        goToPremiumPage(context);
+        goToPremiumPage(ref);
       },
       stackOverlay: const [
         Positioned.fill(

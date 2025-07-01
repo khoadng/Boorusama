@@ -87,13 +87,13 @@ class DownloadManagerGatewayPage extends ConsumerWidget {
   }
 }
 
-class DisabledDownloadManagerPage extends StatelessWidget {
+class DisabledDownloadManagerPage extends ConsumerWidget {
   const DisabledDownloadManagerPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Downloads'),
@@ -119,7 +119,7 @@ class DisabledDownloadManagerPage extends StatelessWidget {
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: () {
-                  openDownloadSettingsPage(context);
+                  openDownloadSettingsPage(ref);
                 },
                 child: const Text('Open settings'),
               ),
@@ -306,7 +306,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                 ? IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () {
-                      openDownloadSettingsPage(context);
+                      openDownloadSettingsPage(ref);
                     },
                   )
                 : const SizedBox.shrink(),
