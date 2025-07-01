@@ -17,7 +17,7 @@ class CommentHeader extends StatelessWidget {
   });
 
   final String authorName;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final VoidCallback? onTap;
   final Color? authorTitleColor;
 
@@ -41,13 +41,14 @@ class CommentHeader extends StatelessWidget {
         const SizedBox(
           width: 6,
         ),
-        Text(
-          DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.hintColor,
-            fontSize: 12,
+        if (createdAt case final DateTime createdAt)
+          Text(
+            DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 12,
+            ),
           ),
-        ),
       ],
     );
   }

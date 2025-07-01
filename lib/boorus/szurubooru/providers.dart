@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/autocompletes/autocompletes.dart';
+import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
 import '../../core/foundation/path.dart';
 import '../../core/http/providers.dart';
@@ -222,6 +223,34 @@ final szurubooruTagGroupRepoProvider =
     );
   },
 );
+
+final szurubooruCommentRepoProvider =
+    Provider.family<CommentRepository, BooruConfigAuth>((ref, config) {
+  final client = ref.watch(szurubooruClientProvider(config));
+
+  return CommentRepositoryBuilder(
+    fetch: (postId, {page}) => client.getComments(postId: postId).then(
+          (value) => value
+              .map(
+                (e) => SimpleComment(
+                  id: e.id ?? 0,
+                  body: e.text ?? '',
+                  createdAt: e.creationTime != null
+                      ? DateTime.parse(e.creationTime!)
+                      : null,
+                  updatedAt: e.lastEditTime != null
+                      ? DateTime.parse(e.lastEditTime!)
+                      : null,
+                  creatorName: e.user?.name ?? '',
+                ),
+              )
+              .toList(),
+        ),
+    create: (postId, body) async => false,
+    update: (commentId, body) async => false,
+    delete: (commentId) async => false,
+  );
+});
 
 class SzurubooruFavoriteRepository extends FavoriteRepository<SzurubooruPost> {
   SzurubooruFavoriteRepository(this.ref, this.config);

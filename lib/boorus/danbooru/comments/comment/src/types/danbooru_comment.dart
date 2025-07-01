@@ -23,13 +23,13 @@ class DanbooruComment extends Equatable implements Comment {
     required this.creator,
   });
 
-  factory DanbooruComment.emty() => DanbooruComment(
+  factory DanbooruComment.emty() => const DanbooruComment(
         id: -1,
         score: 0,
         body: '',
         postId: -1,
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
+        createdAt: null,
+        updatedAt: null,
         isDeleted: false,
         creator: null,
       );
@@ -41,9 +41,9 @@ class DanbooruComment extends Equatable implements Comment {
   final CommentBody body;
   final CommentPostId postId;
   @override
-  final DateTime createdAt;
+  final DateTime? createdAt;
   @override
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
   final bool isDeleted;
   final DanbooruUser? creator;
 

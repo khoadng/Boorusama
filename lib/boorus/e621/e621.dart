@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/create/widgets.dart';
@@ -28,6 +29,7 @@ import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
 import 'artists/artists.dart';
 import 'comments/comments.dart';
+import 'comments/providers.dart';
 import 'configs/configs.dart';
 import 'favorites/favorite_repository_impl.dart';
 import 'favorites/favorites.dart';
@@ -359,6 +361,11 @@ class E621Repository extends BooruRepositoryDefault {
   @override
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
     return ref.watch(e621TagGroupRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(e621CommentRepoProvider(config));
   }
 }
 

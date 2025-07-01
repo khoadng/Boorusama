@@ -5,6 +5,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import '../../../autocompletes/autocompletes.dart';
 import '../../../blacklists/blacklist.dart';
+import '../../../comments/comment.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
 import '../../../downloads/filename.dart';
@@ -38,4 +39,5 @@ abstract class BooruRepository {
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
   TextMatcher? queryMatcher(BooruConfigAuth config);
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config);
+  CommentRepository comment(BooruConfigAuth config);
 }

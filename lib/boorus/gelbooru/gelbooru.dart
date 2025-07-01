@@ -11,6 +11,7 @@ import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/create/widgets.dart';
@@ -29,13 +30,14 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/rating/rating.dart';
+import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/search/search/src/pages/search_page.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/tags/tag/tag.dart';
 import '../danbooru/danbooru.dart';
 import 'artists/gelbooru_artist_page.dart';
-import 'comments/gelbooru_comment_page.dart';
+import 'comments/providers.dart';
 import 'configs/create_gelbooru_config_page.dart';
 import 'favorites/favorites.dart';
 import 'home/home.dart';
@@ -234,9 +236,10 @@ class GelbooruBuilder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => GelbooruCommentPage(
+      (context, useAppBar, postId) => CommentPageScaffold(
             postId: postId,
             useAppBar: useAppBar,
+            singlePage: false,
           );
 
   @override
@@ -382,6 +385,11 @@ class GelbooruRepository extends BooruRepositoryDefault {
   @override
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
     return ref.watch(gelbooruTagGroupRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(gelbooruCommentRepoProvider(config));
   }
 }
 

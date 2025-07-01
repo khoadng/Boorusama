@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import '../../../comments/comment.dart';
 import '../../../configs/config.dart';
 import '../../../downloads/filename.dart';
 import '../../../posts/post/post.dart';
@@ -90,4 +91,17 @@ final tagGroupRepoProvider =
     return repository.tagGroup(config);
   },
   name: 'tagGroupRepoProvider',
+);
+
+final commentRepoProvider =
+    Provider.family<CommentRepository?, BooruConfigAuth>(
+  (ref, config) {
+    final repository =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    if (repository == null) return null;
+
+    return repository.comment(config);
+  },
+  name: 'commentRepoProvider',
 );

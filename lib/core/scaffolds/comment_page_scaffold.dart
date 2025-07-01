@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
+import '../boorus/engine/providers.dart';
 import '../comments/comment.dart';
 import '../comments/comment_header.dart';
 import '../configs/config.dart';
@@ -15,37 +16,19 @@ import '../dtext/dtext.dart';
 import '../foundation/html.dart';
 import '../widgets/widgets.dart';
 
-typedef CommentFetcher = Future<List<Comment>> Function(
-  CommentFetchRequest request,
-);
-
-class CommentFetchRequest {
-  const CommentFetchRequest({
-    required this.postId,
-    this.page = 1,
-  });
-
-  final int postId;
-  final int page;
-}
-
 class CommentPageScaffold extends ConsumerStatefulWidget {
   const CommentPageScaffold({
     required this.postId,
-    required this.fetcher,
     required this.useAppBar,
     super.key,
     this.commentItemBuilder,
-    this.initialPageKey = 1,
     this.singlePage = true,
   });
 
   final int postId;
-  final CommentFetcher fetcher;
   final Widget Function(BuildContext context, Comment comment)?
       commentItemBuilder;
   final bool useAppBar;
-  final int initialPageKey;
   final bool singlePage;
 
   @override
@@ -55,18 +38,26 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 
 class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
   late final _pagingController = PagingController(
-    getNextPageKey: (state) => (widget.singlePage || state.lastPageIsEmpty)
-        ? null
-        : state.nextIntPageKey,
+    getNextPageKey: (state) {
+      if (widget.singlePage && state.nextIntPageKey > 1) {
+        return null;
+      }
+
+      return state.lastPageIsEmpty ? null : state.nextIntPageKey;
+    },
     fetchPage: _fetchPage,
   );
 
   Future<List<Comment>> _fetchPage(int pageKey) async {
-    final comments = await widget.fetcher(
-      CommentFetchRequest(
-        postId: widget.postId,
-        page: pageKey,
-      ),
+    final repo = ref.read(
+      commentRepoProvider(ref.watchConfigAuth),
+    );
+
+    if (repo == null) return [];
+
+    final comments = await repo.getComments(
+      widget.postId,
+      page: pageKey,
     );
 
     return comments;

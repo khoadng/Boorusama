@@ -14,7 +14,7 @@ final danbooruCommentRepoProvider =
   final client = ref.watch(danbooruClientProvider(config));
 
   return CommentRepositoryBuilder(
-    fetch: (postId) => client
+    fetch: (postId, {page}) => client
         .getComments(postId: postId, limit: 1000)
         .then((dtos) => dtos.map(commentDtoToComment).toList()),
     create: (postId, body) => client

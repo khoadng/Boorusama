@@ -12,6 +12,7 @@ import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/create/widgets.dart';
@@ -33,6 +34,7 @@ import '../danbooru/danbooru.dart';
 import '../gelbooru/gelbooru.dart';
 import 'configs/create_moebooru_config_page.dart';
 import 'feats/autocomplete/autocomplete.dart';
+import 'feats/comments/comments.dart';
 import 'feats/posts/posts.dart';
 import 'feats/tags/tags.dart';
 import 'pages/moebooru_favorites_page.dart';
@@ -255,6 +257,11 @@ class MoebooruRepository extends BooruRepositoryDefault {
   @override
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
     return ref.watch(moebooruTagGroupRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(moebooruCommentRepoProvider(config));
   }
 }
 

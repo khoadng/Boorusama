@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
-import '../../core/comments/comment.dart';
 import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
@@ -93,7 +92,7 @@ class SzurubooruBuilder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => SzurubooruCommentPage(
+      (context, useAppBar, postId) => CommentPageScaffold(
             postId: postId,
             useAppBar: useAppBar,
           );
@@ -233,44 +232,6 @@ class SzurubooruSearchPage extends ConsumerWidget {
       params: params,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),
-    );
-  }
-}
-
-class SzurubooruCommentPage extends ConsumerWidget {
-  const SzurubooruCommentPage({
-    required this.postId,
-    required this.useAppBar,
-    super.key,
-  });
-
-  final int postId;
-  final bool useAppBar;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final client = ref.watch(szurubooruClientProvider(ref.watchConfigAuth));
-
-    return CommentPageScaffold(
-      postId: postId,
-      useAppBar: useAppBar,
-      fetcher: (id) => client.getComments(postId: postId).then(
-            (value) => value
-                .map(
-                  (e) => SimpleComment(
-                    id: e.id ?? 0,
-                    body: e.text ?? '',
-                    createdAt: e.creationTime != null
-                        ? DateTime.parse(e.creationTime!)
-                        : DateTime(1),
-                    updatedAt: e.lastEditTime != null
-                        ? DateTime.parse(e.lastEditTime!)
-                        : DateTime(1),
-                    creatorName: e.user?.name ?? '',
-                  ),
-                )
-                .toList(),
-          ),
     );
   }
 }

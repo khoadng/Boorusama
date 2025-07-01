@@ -11,7 +11,6 @@ import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/dtext/dtext.dart';
 import '../../../core/scaffolds/scaffolds.dart';
-import '../e621.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({
@@ -26,7 +25,6 @@ class E621CommentPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final client = ref.watch(e621ClientProvider(config));
 
     return CommentPageScaffold(
       postId: postId,
@@ -35,20 +33,6 @@ class E621CommentPage extends ConsumerWidget {
         comment: comment,
         config: config,
       ),
-      fetcher: (id) => client.getComments(postId: postId, page: 1).then(
-            (value) => value
-                .map(
-                  (e) => SimpleComment(
-                    id: e.id ?? 0,
-                    body: e.body ?? '',
-                    createdAt: e.createdAt ?? DateTime(1),
-                    updatedAt: e.updatedAt ?? DateTime(1),
-                    creatorName: e.creatorName ?? '',
-                    creatorId: e.creatorId ?? 0,
-                  ),
-                )
-                .toList(),
-          ),
     );
   }
 }

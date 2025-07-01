@@ -7,14 +7,17 @@ import '../foundation/caching.dart';
 abstract class Comment {
   int get id;
   String get body;
-  DateTime get createdAt;
-  DateTime get updatedAt;
+  DateTime? get createdAt;
+  DateTime? get updatedAt;
   String? get creatorName;
   int? get creatorId;
 }
 
 abstract class CommentRepository<T extends Comment> {
-  Future<List<T>> getComments(int postId);
+  Future<List<T>> getComments(
+    int postId, {
+    int? page,
+  });
   Future<bool> createComment(int postId, String body);
   Future<bool> updateComment(int commentId, String body);
   Future<void> deleteComment(int commentId);
@@ -30,13 +33,17 @@ class CommentRepositoryBuilder<T extends Comment>
     required this.delete,
   });
 
-  final Future<List<T>> Function(int postId) fetch;
+  final Future<List<T>> Function(int postId, {int? page}) fetch;
   final Future<bool> Function(int postId, String body) create;
   final Future<bool> Function(int commentId, String body) update;
   final Future<void> Function(int commentId) delete;
 
   @override
-  Future<List<T>> getComments(int postId) => fetch(postId);
+  Future<List<T>> getComments(
+    int postId, {
+    int? page,
+  }) =>
+      fetch(postId, page: page);
 
   @override
   Future<bool> createComment(int postId, String body) => create(postId, body);
@@ -70,9 +77,9 @@ class SimpleComment extends Equatable implements Comment {
   @override
   final String body;
   @override
-  final DateTime createdAt;
+  final DateTime? createdAt;
   @override
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
   @override
   final String? creatorName;
   @override
@@ -80,4 +87,21 @@ class SimpleComment extends Equatable implements Comment {
 
   @override
   List<Object?> get props => [id, body, createdAt, creatorName, creatorId];
+}
+
+class EmptyCommentRepository<T extends Comment>
+    implements CommentRepository<T> {
+  const EmptyCommentRepository();
+
+  @override
+  Future<List<T>> getComments(int postId, {int? page}) async => [];
+
+  @override
+  Future<bool> createComment(int postId, String body) async => false;
+
+  @override
+  Future<bool> updateComment(int commentId, String body) async => false;
+
+  @override
+  Future<void> deleteComment(int commentId) async {}
 }

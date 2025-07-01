@@ -11,6 +11,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/comment.dart';
 import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
@@ -202,7 +203,7 @@ class GelbooruV2Builder
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => GelbooruV2CommentPage(
+      (context, useAppBar, postId) => CommentPageScaffold(
             postId: postId,
             useAppBar: useAppBar,
           );
@@ -324,6 +325,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
   @override
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
     return ref.watch(gelbooruV2TagGroupRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2CommentRepoProvider(config));
   }
 }
 

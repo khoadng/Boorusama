@@ -25,9 +25,10 @@ class DanbooruPoolTiles extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
+    final params = (ref.watchConfigAuth, post.id);
 
     return SliverToBoxAdapter(
-      child: ref.watch(danbooruPostDetailsPoolsProvider(post.id)).maybeWhen(
+      child: ref.watch(danbooruPostDetailsPoolsProvider(params)).maybeWhen(
             data: (pools) => PoolTiles(pools: pools),
             orElse: () => const SizedBox.shrink(),
           ),
@@ -56,11 +57,12 @@ class DanbooruArtistInfoSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
+    final params = (ref.watchConfigAuth, post.id);
 
     return SliverToBoxAdapter(
       child: ArtistSection(
         commentary:
-            ref.watch(danbooruArtistCommentaryProvider(post.id)).maybeWhen(
+            ref.watch(danbooruArtistCommentaryProvider(params)).maybeWhen(
                   data: (commentary) => commentary,
                   orElse: () => const ArtistCommentary.empty(),
                 ),
@@ -88,15 +90,13 @@ class DanbooruStatsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
+    final params = (ref.watchConfigAuth, post.id);
 
     return SliverToBoxAdapter(
       child: DanbooruPostStatsTile(
         post: post,
         commentCount:
-            ref.watch(danbooruCommentCountProvider(post.id)).maybeWhen(
-                  data: (count) => count,
-                  orElse: () => null,
-                ),
+            ref.watch(danbooruCommentCountProvider(params)).valueOrNull,
       ),
     );
   }

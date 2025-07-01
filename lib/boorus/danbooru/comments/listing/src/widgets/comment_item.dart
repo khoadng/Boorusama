@@ -53,17 +53,18 @@ class CommentItem extends ConsumerWidget {
             .where((e) => e.host == youtubeUrl)
             .map((e) => YoutubePreviewBox(uri: e)),
         if (comment.isEdited)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              '${'comment.list.last_updated'.tr()}: ${comment.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontStyle: FontStyle.italic,
-                fontSize: 12,
+          if (comment.updatedAt case final DateTime updatedAt)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '${'comment.list.last_updated'.tr()}: ${updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
               ),
             ),
-          ),
         if (!hasVoteSection) const SizedBox(height: 8),
         if (hasVoteSection)
           CommentVoteSection(

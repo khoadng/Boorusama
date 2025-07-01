@@ -13,6 +13,7 @@ import '../../core/autocompletes/autocompletes.dart';
 import '../../core/blacklists/blacklist.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/comment.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/create/widgets.dart';
@@ -54,6 +55,7 @@ import 'artists/search/src/artist_search_page.dart';
 import 'autocompletes/providers.dart';
 import 'autocompletes/widgets.dart';
 import 'blacklist/providers.dart';
+import 'comments/comment/data.dart';
 import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
 import 'forums/topics/src/forum_page.dart';
@@ -559,6 +561,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
   @override
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
     return ref.watch(danbooruTagGroupRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(danbooruCommentRepoProvider(config));
   }
 }
 

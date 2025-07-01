@@ -6,6 +6,8 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import '../../../autocompletes/autocomplete_repository.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../blacklists/providers.dart';
+import '../../../comments/comment.dart';
+import '../../../comments/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
 import '../../../downloads/urls/download_url.dart';
@@ -97,5 +99,10 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
     return ref.watch(emptyTagGroupRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(emptyCommentRepoProvider);
   }
 }

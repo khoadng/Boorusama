@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/artists/artists.dart';
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../data/providers.dart';
 
 final danbooruArtistCommentaryProvider =
-    FutureProvider.autoDispose.family<ArtistCommentary, int>(
-  (ref, postId) async {
-    final config = ref.watchConfigAuth;
+    FutureProvider.autoDispose.family<ArtistCommentary, (BooruConfigAuth, int)>(
+  (ref, params) async {
+    final (config, postId) = params;
     final repo = ref.watch(danbooruArtistCommentaryRepoProvider(config));
     final commentary = await repo.getCommentary(postId);
 
