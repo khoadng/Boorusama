@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/forums/forum_topic.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../types/forum_topic.dart';
 import 'converter.dart';
 

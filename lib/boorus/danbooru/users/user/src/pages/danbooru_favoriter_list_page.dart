@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../../providers.dart';
 import 'user_list_page.dart';
 

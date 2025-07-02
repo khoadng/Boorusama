@@ -10,7 +10,7 @@ import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/tags/metatag/providers.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../danbooru.dart';
 import '../../../../tags/user_metatags/providers.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {

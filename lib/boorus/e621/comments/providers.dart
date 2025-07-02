@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/comments/comment.dart';
 import '../../../core/configs/config/types.dart';
-import '../e621.dart';
+import '../client_provider.dart';
 
 final e621CommentRepoProvider =
     Provider.family<CommentRepository, BooruConfigAuth>((ref, config) {

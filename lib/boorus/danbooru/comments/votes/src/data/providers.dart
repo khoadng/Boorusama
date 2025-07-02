@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/comments/comment_vote.dart';
 import '../../../../../../core/configs/config.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../types/danbooru_comment_vote.dart';
 import 'converter.dart';
 

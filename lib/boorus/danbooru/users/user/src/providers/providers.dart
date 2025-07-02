@@ -7,7 +7,7 @@ import '../../../../../../core/cache/providers.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/http/providers.dart';
 import '../../../../../../core/tags/configs/providers.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../data/user_repository_api.dart';
 import '../types/user.dart';
 import '../types/user_repository.dart';

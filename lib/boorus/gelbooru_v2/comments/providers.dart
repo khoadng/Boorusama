@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import '../../../core/comments/comment.dart';
 import '../../../core/configs/config.dart';
-import '../gelbooru_v2.dart';
+import '../client_provider.dart';
 
 final gelbooruV2CommentRepoProvider =
     Provider.family<CommentRepository, BooruConfigAuth>((ref, config) {

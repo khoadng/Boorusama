@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/constants.dart';
 import '../../../../../core/posts/count/count.dart';
-import '../../../danbooru.dart';
-import '../../../danbooru_provider.dart';
+import '../../../client_provider.dart';
 
 final danbooruPostCountRepoProvider =
     Provider.family<PostCountRepository, BooruConfigSearch>((ref, config) {

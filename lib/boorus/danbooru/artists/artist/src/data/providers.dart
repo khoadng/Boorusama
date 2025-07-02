@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../types/artist_repository.dart';
 import 'artist_repository_api.dart';
 

@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../danbooru_provider.dart';
+import '../../../client_provider.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
 import '../data/providers.dart';

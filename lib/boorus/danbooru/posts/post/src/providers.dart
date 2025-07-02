@@ -11,7 +11,7 @@ import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/search/queries/providers.dart';
 import '../../../../../core/settings/providers.dart';
-import '../../../danbooru_provider.dart';
+import '../../../client_provider.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../users/user/providers.dart';
 import '../../votes/providers.dart';

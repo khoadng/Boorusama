@@ -8,7 +8,6 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../boorus/danbooru/danbooru.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../home/custom_home.dart';
@@ -17,6 +16,7 @@ import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/theme_configs.dart';
+import '../../../constants.dart';
 import '../../../gesture/gesture.dart';
 import '../../../search/search.dart';
 import 'booru_config_repository.dart';

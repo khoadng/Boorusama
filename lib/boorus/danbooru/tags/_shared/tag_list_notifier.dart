@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../core/configs/config.dart';
 import '../../../../core/foundation/loggers.dart';
 import '../../../../core/posts/rating/rating.dart';
-import '../../danbooru_provider.dart';
+import '../../client_provider.dart';
 import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';
 

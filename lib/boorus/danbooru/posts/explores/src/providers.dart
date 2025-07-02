@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/constants.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/explores/explore.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/settings/providers.dart';
-import '../../../danbooru.dart';
-import '../../../danbooru_provider.dart';
+import '../../../client_provider.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
 import 'data/explore_repository_cacher.dart';

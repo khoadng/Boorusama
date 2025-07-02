@@ -33,7 +33,6 @@ import '../../../posts/statistics/stats.dart';
 import '../../../posts/statistics/widgets.dart';
 import '../../../router.dart';
 import '../../../scaffolds/scaffolds.dart';
-import '../../../search/search/src/pages/search_page.dart';
 import '../../../search/search/widgets.dart';
 import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';

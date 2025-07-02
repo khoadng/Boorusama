@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config.dart';
 import '../../../core/notes/notes.dart';
-import '../danbooru_provider.dart';
+import '../client_provider.dart';
 
 final danbooruNoteRepoProvider =
     Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {

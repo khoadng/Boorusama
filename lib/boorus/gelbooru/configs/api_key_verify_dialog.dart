@@ -9,7 +9,7 @@ import '../../../core/configs/config.dart';
 import '../../../core/foundation/toast.dart';
 import '../../../core/foundation/url_launcher.dart';
 import '../../../core/theme.dart';
-import '../gelbooru.dart';
+import '../client_provider.dart';
 
 class ApiKeyVerifyDialog extends ConsumerWidget {
   const ApiKeyVerifyDialog({
