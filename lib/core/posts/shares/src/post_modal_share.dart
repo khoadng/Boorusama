@@ -11,7 +11,7 @@ import 'package:share_plus/share_plus.dart';
 // Project imports:
 import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
-import '../../../foundation/path.dart';
+import '../../../downloads/urls.dart';
 import '../../sources/source.dart';
 
 final _cachedImageFileProvider =
@@ -22,7 +22,7 @@ final _cachedImageFileProvider =
 
     if (imageUrl == null) return null;
 
-    final ext = extension(imageUrl);
+    final ext = sanitizedExtension(imageUrl);
     final effectiveExt = ext.isNotEmpty ? ext : imageExt;
 
     final cacheManager = DefaultImageCacheManager();
