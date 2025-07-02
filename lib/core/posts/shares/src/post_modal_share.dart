@@ -9,9 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import '../../../../foundation/path.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
+import '../../../downloads/urls/sanitizer.dart';
 import '../../post/post.dart';
 import '../../sources/source.dart';
 import 'download_and_share.dart';
@@ -24,7 +24,7 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
 
         if (imageUrl == null) return null;
 
-        final ext = extension(imageUrl);
+        final ext = sanitizedExtension(imageUrl);
         final effectiveExt = ext.isNotEmpty ? ext : imageExt;
 
         final cacheManager = DefaultImageCacheManager();
