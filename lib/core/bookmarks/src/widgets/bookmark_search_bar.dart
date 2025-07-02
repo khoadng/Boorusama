@@ -119,6 +119,10 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                           )
                         : const SizedBox.shrink(),
                   ),
+                  onSubmitted: (value) {
+                    ref.read(selectedTagsProvider.notifier).state =
+                        value.trim().replaceAll(RegExp(r'\s+'), ' ');
+                  },
                 ),
               );
             },
@@ -179,6 +183,8 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
 
   Widget _buildItem(WidgetRef ref, String tag, BuildContext context) {
     final config = ref.watchConfigAuth;
+    final color =
+        ref.watch(bookmarkTagColorProvider((config, tag))).valueOrNull;
 
     return Material(
       shape: RoundedRectangleBorder(
@@ -190,10 +196,16 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
           borderRadius: BorderRadius.circular(8),
         ),
         onTap: () {
-          ref.read(selectedTagsProvider.notifier).state = tag;
-          widget.controller.text = tag;
-          widget.focusNode.unfocus();
-          _overlay.value = false;
+          // trim excess spaces, keep only the final space
+          final currentTag = ref
+              .read(selectedTagsProvider)
+              .trim()
+              .replaceAll(RegExp(r'\s+'), ' ');
+
+          final newTagString =
+              currentTag.isEmpty ? '$tag ' : '$currentTag $tag ';
+          ref.read(selectedTagsProvider.notifier).state = newTagString;
+          widget.controller.text = newTagString;
         },
         child: IgnorePointer(
           child: Container(
@@ -216,12 +228,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                       style: {
                         'p': Style(
                           fontSize: FontSize.medium,
-                          color: ref
-                              .watch(bookmarkTagColorProvider((config, tag)))
-                              .maybeWhen(
-                                data: (color) => color,
-                                orElse: () => null,
-                              ),
+                          color: color,
                           margin: Margins.zero,
                         ),
                         'b': Style(

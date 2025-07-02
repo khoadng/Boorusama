@@ -64,7 +64,7 @@ final tagCountProvider =
 });
 
 final bookmarkTagColorProvider =
-    FutureProvider.autoDispose.family<Color?, (BooruConfigAuth, String)>(
+    FutureProvider.family<Color?, (BooruConfigAuth, String)>(
   (ref, params) async {
     final (config, tag) = params;
     final tagTypeStore = ref.watch(booruTagTypeStoreProvider);
@@ -104,8 +104,14 @@ final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
 
 final tagSuggestionsProvider =
     FutureProvider.autoDispose<List<String>>((ref) async {
-  final tag = ref.watch(tagInputProvider);
-  if (tag.isEmpty) return const [];
+  final tagString = ref.watch(tagInputProvider);
+  if (tagString.isEmpty) return const [];
+
+  final tags = tagString.trim().split(' ');
+
+  final tag = tags.lastOrNull?.trim();
+
+  if (tag == null || tag.isEmpty) return const [];
 
   final tagMap = await ref.watch(tagMapProvider.future);
 
