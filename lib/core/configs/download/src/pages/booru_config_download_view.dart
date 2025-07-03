@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../downloads/widgets.dart';
-import '../../../../info/device_info.dart';
+import '../../../../../foundation/info/device_info.dart';
+import '../../../../downloads/configs/widgets.dart';
 import '../../../../theme.dart';
 import '../../../create/providers.dart';
 import '../widgets/custom_download_file_name_section.dart';

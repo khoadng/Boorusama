@@ -5,8 +5,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment.dart';
-import '../../../../../../core/comments/comment_parser.dart';
+import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../users/user/providers.dart';

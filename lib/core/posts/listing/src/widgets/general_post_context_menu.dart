@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/url_launcher.dart';
 import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
-import '../../../../downloads/downloader.dart';
-import '../../../../foundation/url_launcher.dart';
+import '../../../../downloads/downloader/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../post/post.dart';

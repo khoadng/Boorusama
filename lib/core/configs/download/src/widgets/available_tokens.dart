@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../downloads/filename.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/toast.dart';
+import '../../../../downloads/filename/types.dart';
 import 'token_option_help_modal.dart';
 
 class AvailableTokens extends ConsumerWidget {

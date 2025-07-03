@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../comments/comment.dart';
+import '../../../comments/types.dart';
 import '../../../configs/config.dart';
-import '../../../downloads/filename.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
 import '../../../tags/tag/tag.dart';

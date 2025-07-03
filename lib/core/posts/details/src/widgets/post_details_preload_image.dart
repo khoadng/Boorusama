@@ -6,11 +6,11 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../foundation/info/device_info.dart';
 import '../../../../configs/ref.dart';
 import '../../../../http/http.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/providers.dart';
-import '../../../../info/device_info.dart';
 import '../../../post/post.dart';
 
 class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {

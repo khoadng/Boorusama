@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/artists/artists.dart';
+import '../../../../../../core/artists/types.dart';
 import '../../../../../../core/configs/config/types.dart';
 import '../data/providers.dart';
 

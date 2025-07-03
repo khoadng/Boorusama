@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/ref.dart';
-import '../../../core/scaffolds/scaffolds.dart';
+import '../../../core/posts/favorites/widgets.dart';
 import '../posts/providers.dart';
 
 class E621FavoritesPage extends ConsumerWidget {

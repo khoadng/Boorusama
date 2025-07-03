@@ -2,7 +2,7 @@
 import 'package:booru_clients/sankaku.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 
 AutocompleteData tagDtoToAutocompleteData(TagDto e) {
   final alias = e.aliasOf;

@@ -8,7 +8,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../foundation/mobile.dart';
+import '../../../../foundation/mobile.dart';
 import '../../../widgets/widgets.dart';
 import 'auto_slide_mixin.dart';
 import 'constants.dart';

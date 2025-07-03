@@ -3,7 +3,7 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:path/path.dart' show extension;
 
 // Project imports:
-import '../../../core/downloads/urls.dart';
+import '../../../core/downloads/urls/sanitizer.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/tags.dart';
 import '../../../core/posts/rating/rating.dart';

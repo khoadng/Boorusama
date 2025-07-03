@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/clipboard.dart';
 import '../../../../configs/config.dart';
-import '../../../../foundation/clipboard.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
 import '../../widgets.dart';

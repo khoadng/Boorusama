@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/create/providers.dart';
-import '../../../core/foundation/clipboard.dart';
+import '../../../foundation/clipboard.dart';
 
 const _exampleApiKey =
     '2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf';

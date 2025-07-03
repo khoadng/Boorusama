@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
+import '../../../../foundation/toast.dart';
 import '../../../premiums/src/routes/routes.dart';
 import '../../providers.dart';
 import '../../routes.dart';

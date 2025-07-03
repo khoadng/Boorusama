@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
-import '../../../core/riverpod/riverpod.dart';
+import '../../../foundation/riverpod/riverpod.dart';
 import '../posts/providers.dart';
 
 final moebooruPostDetailsChildrenProvider =

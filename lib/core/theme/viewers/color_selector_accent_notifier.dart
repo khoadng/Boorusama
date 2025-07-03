@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../utils/color_utils.dart';
+import '../../../foundation/utils/color_utils.dart';
 import '../named_colors.dart';
 import '../theme_configs.dart';
 import 'theme_previewer_notifier.dart';

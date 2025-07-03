@@ -12,10 +12,10 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/toast.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';

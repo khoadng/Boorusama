@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
+import '../../../../../foundation/loggers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../theme/theme_configs.dart';
 import '../../../config/types.dart';

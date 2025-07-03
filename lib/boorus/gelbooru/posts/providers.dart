@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
-import '../../../core/foundation/caching/lru_cacher.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
+import '../../../foundation/caching/lru_cacher.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 import 'types.dart';

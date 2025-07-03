@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../../../../foundation/display.dart';
 import '../../../../config_widgets/booru_logo.dart';
-import '../../../../foundation/display.dart';
 import '../../../../widgets/conditional_parent_widget.dart';
 import '../../../config/types.dart';
 

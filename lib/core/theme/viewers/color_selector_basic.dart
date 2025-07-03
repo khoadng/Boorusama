@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../foundation/platform.dart';
+import '../../../foundation/platform.dart';
 import '../colors.dart';
 import 'theme_previewer_notifier.dart';
 import 'theme_widgets.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../widgets/theme_section.dart';

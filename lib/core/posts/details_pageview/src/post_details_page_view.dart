@@ -12,9 +12,9 @@ import 'package:flutter/services.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../foundation/display.dart';
-import '../../../foundation/mobile.dart';
-import '../../../foundation/platform.dart';
+import '../../../../foundation/display.dart';
+import '../../../../foundation/mobile.dart';
+import '../../../../foundation/platform.dart';
 import '../../../widgets/widgets.dart';
 import 'constants.dart';
 import 'drag_sheet.dart';

@@ -3,18 +3,17 @@ import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
-import '../../core/downloads/filename.dart';
-import '../../core/downloads/filename/constants.dart';
-import '../../core/downloads/urls.dart';
-import '../../core/foundation/caching.dart';
+import '../../core/downloads/filename/types.dart';
+import '../../core/downloads/urls/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
+import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
+import '../../foundation/caching.dart';
 import 'client_provider.dart';
 import 'posts/providers.dart';
 import 'tags/parser.dart';

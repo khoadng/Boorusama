@@ -7,7 +7,7 @@ import 'dart:collection';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/utils/collection_utils.dart';
+import 'package:boorusama/foundation/utils/collection_utils.dart';
 
 void main() {
   test('dequeue test', () {

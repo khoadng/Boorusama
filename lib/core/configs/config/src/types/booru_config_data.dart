@@ -2,12 +2,12 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import '../../../../../foundation/utils/int_utils.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/theme_configs.dart';
-import '../../../../utils/int_utils.dart';
 import '../../../gesture/gesture.dart';
 import '../../../search/search.dart';
 import 'booru_config.dart';

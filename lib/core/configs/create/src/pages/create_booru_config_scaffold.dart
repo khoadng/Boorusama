@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../config_widgets/booru_logo.dart';
-import '../../../../foundation/display.dart';
 import '../../../../posts/sources/source.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../theme.dart';

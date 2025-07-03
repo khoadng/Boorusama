@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment_header.dart';
+import '../../../../../../core/comments/widgets.dart';
 import '../../../../users/details/routes.dart';
 import '../../../../users/user/providers.dart';
 import '../../../comment/comment.dart';

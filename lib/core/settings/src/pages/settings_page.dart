@@ -11,14 +11,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
-import '../../../analytics.dart';
+import '../../../../foundation/info/app_info.dart';
+import '../../../../foundation/scrolling.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../foundation/url_launcher.dart';
+import '../../../analytics/providers.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/scrolling.dart';
-import '../../../foundation/toast.dart';
-import '../../../foundation/url_launcher.dart';
-import '../../../info/app_info.dart';
 import '../../../premiums/premiums.dart';
 import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';

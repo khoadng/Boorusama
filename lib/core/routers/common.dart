@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
 // Project imports:
-import '../foundation/display.dart';
+import '../../foundation/display.dart';
 import '../widgets/widgets.dart';
 import 'routers.dart';
 

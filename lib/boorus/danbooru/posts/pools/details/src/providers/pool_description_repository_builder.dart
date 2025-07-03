@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../../core/foundation/caching.dart';
+import '../../../../../../../foundation/caching.dart';
 import '../types/pool_description_repository.dart';
 
 class PoolDescriptionRepoBuilder

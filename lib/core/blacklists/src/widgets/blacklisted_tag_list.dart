@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../foundation/html.dart';
+import '../../../../foundation/html.dart';
 import '../../../widgets/widgets.dart';
 import '../routes/local_routes.dart';
 import '../types/utils.dart';

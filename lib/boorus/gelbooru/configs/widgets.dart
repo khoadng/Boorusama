@@ -15,13 +15,13 @@ import '../../../core/configs/gesture/gesture.dart';
 import '../../../core/configs/gesture/widgets.dart';
 import '../../../core/configs/search/widgets.dart';
 import '../../../core/configs/viewer/widgets.dart';
-import '../../../core/foundation/toast.dart';
-import '../../../core/foundation/url_launcher.dart';
 import '../../../core/theme.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../foundation/toast.dart';
+import '../../../foundation/url_launcher.dart';
 import '../gelbooru.dart';
-import 'api_key_verify_dialog.dart';
 import '_internal_widgets.dart';
+import 'api_key_verify_dialog.dart';
 
 class CreateGelbooruConfigPage extends ConsumerWidget {
   const CreateGelbooruConfigPage({

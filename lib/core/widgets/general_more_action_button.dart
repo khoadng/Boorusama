@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../foundation/url_launcher.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/config.dart';
-import '../downloads/downloader.dart';
-import '../foundation/url_launcher.dart';
+import '../downloads/downloader/providers.dart';
 import '../posts/post/post.dart';
 import '../posts/post/routes.dart';
 import '../posts/post/tags.dart';

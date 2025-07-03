@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../autocompletes/autocompletes.dart';
-import '../../autocompletes/providers.dart';
+import '../../../foundation/debounce_mixin.dart';
 import '../../configs/config.dart';
-import '../../foundation/debounce_mixin.dart';
+import '../../tags/autocompletes/providers.dart';
+import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';

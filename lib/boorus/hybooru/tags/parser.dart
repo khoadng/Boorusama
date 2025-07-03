@@ -2,7 +2,7 @@
 import 'package:booru_clients/hybooru.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) {
   final tagName = e.name ?? '';

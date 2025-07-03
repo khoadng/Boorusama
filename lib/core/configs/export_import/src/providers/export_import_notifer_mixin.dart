@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
+import '../../../../../foundation/info/package_info.dart';
+import '../../../../../foundation/version.dart';
 import '../../../../backups/data_converter.dart';
 import '../../../../backups/import/backward_import_alert_dialog.dart';
-import '../../../../foundation/version.dart';
-import '../../../../info/package_info.dart';
 import '../../../config/types.dart';
 import '../../../manage/providers.dart';
 import '../types/booru_config_export_data.dart';

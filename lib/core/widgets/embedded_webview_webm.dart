@@ -9,8 +9,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // Project imports:
-import '../utils/color_utils.dart';
-import '../utils/object_utils.dart';
+import '../../foundation/utils/color_utils.dart';
+import '../../foundation/utils/object_utils.dart';
 import 'booru_hero.dart';
 
 class WebmVideoController {

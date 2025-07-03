@@ -6,14 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../foundation/display.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../../configs/config.dart';
 import '../../../configs/gesture/gesture.dart';
 import '../../../configs/ref.dart';
-import '../../../downloads/downloader.dart';
-import '../../../foundation/display.dart';
-import '../../../foundation/url_launcher.dart';
+import '../../../downloads/downloader/providers.dart';
 import '../../../home/custom_home.dart';
 import '../../../home/home_page_scaffold.dart';
+import '../../../home/mobile_home_page_scaffold.dart';
 import '../../../home/user_custom_home_builder.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
@@ -32,7 +33,6 @@ import '../../../posts/sources/source.dart';
 import '../../../posts/statistics/stats.dart';
 import '../../../posts/statistics/widgets.dart';
 import '../../../router.dart';
-import '../../../scaffolds/scaffolds.dart';
 import '../../../search/search/widgets.dart';
 import '../../../search/suggestions/widgets.dart';
 import '../../../settings/providers.dart';

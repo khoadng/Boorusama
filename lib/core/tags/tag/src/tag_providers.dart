@@ -9,11 +9,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../foundation/riverpod/riverpod.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../posts/post/post.dart';
-import '../../../riverpod/riverpod.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';

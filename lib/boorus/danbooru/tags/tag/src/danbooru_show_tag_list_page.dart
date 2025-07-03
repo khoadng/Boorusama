@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/configs/ref.dart';
-import '../../../../../core/foundation/toast.dart';
 import '../../../../../core/tags/favorites/providers.dart';
 import '../../../../../core/tags/tag/tag.dart';
 import '../../../../../core/tags/tag/widgets.dart';
 import '../../../../../core/wikis/launcher.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../blacklist/providers.dart';
 import 'danbooru_tag_context_menu.dart';
 

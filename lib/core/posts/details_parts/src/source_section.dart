@@ -6,8 +6,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/url_launcher.dart';
 import '../../../config_widgets/website_logo.dart';
-import '../../../foundation/url_launcher.dart';
 import '../../../theme.dart';
 import '../../details/details.dart';
 import '../../post/post.dart';

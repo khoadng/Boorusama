@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/display.dart';
 import '../pages/edit_saved_search_sheet.dart';
 import '../types/saved_search.dart';
 

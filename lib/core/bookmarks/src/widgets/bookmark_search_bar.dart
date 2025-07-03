@@ -11,9 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/display.dart';
+import '../../../../foundation/html.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/display.dart';
-import '../../../foundation/html.dart';
 import '../../../search/search/widgets.dart';
 import '../../../theme.dart';
 import '../providers/bookmark_provider.dart';

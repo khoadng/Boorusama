@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
+import '../../../../foundation/platform.dart';
 import '../../../search/histories/history.dart';
 import '../../../search/histories/providers.dart';
 import '../../../search/histories/widgets.dart';

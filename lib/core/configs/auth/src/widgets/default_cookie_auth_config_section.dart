@@ -6,7 +6,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';

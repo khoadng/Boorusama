@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/caching.dart';
+import '../../../../../foundation/caching.dart';
 import '../../../../search/queries/query.dart';
 import '../../../../search/selected_tags/tag.dart';
 import '../types/post.dart';

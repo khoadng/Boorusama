@@ -11,13 +11,14 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../../foundation/utils/stream/text_editing_controller_utils.dart';
+import '../../../../analytics/analytics_interface.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../posts/listing/providers.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
-import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';

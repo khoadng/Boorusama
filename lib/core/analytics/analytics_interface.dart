@@ -194,38 +194,3 @@ enum SettingsChangedSource {
   settings,
   configs,
 }
-
-class NoAnalyticsInterface implements AnalyticsInterface {
-  @override
-  bool get enabled => false;
-
-  @override
-  bool isPlatformSupported() => false;
-
-  @override
-  Future<void> ensureInitialized() async {}
-
-  @override
-  Future<void> changeCurrentAnalyticConfig(BooruConfig config) async {}
-
-  @override
-  Future<void> updateNetworkInfo(AnalyticsNetworkInfo info) async {}
-
-  @override
-  Future<void> updateViewInfo(AnalyticsViewInfo info) async {}
-
-  @override
-  NavigatorObserver getAnalyticsObserver() => NavigatorObserver();
-
-  @override
-  Future<void> logScreenView(
-    String screenName, {
-    Map<String, dynamic>? parameters,
-  }) async {}
-
-  @override
-  Future<void> logEvent(
-    String name, {
-    Map<String, dynamic>? parameters,
-  }) async {}
-}

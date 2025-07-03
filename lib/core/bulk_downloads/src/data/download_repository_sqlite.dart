@@ -8,8 +8,8 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:uuid/uuid.dart';
 
 // Project imports:
+import '../../../../foundation/database/utils.dart';
 import '../../../configs/config.dart';
-import '../../../database/utils.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
 import '../types/download_record.dart';

@@ -1,5 +1,5 @@
 // Project imports:
-import '../../foundation/path.dart';
+import '../../../foundation/path.dart';
 
 String sanitizedExtension(String url) {
   return extension(sanitizedUrl(url));

@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import '../../../../boorus/booru/booru.dart';
-import '../../../../downloads/filename.dart';
+import '../../../../downloads/filename/types.dart';
 import '../types/booru_config.dart';
 import '../types/booru_config_data.dart';
 import '../types/booru_config_repository.dart';

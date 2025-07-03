@@ -3,7 +3,7 @@ import 'package:booru_clients/philomena.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 
 const _kSlugReplacement = [
   ['-colon-', ':'],

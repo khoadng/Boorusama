@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../foundation/display.dart';
+import '../../../../foundation/display.dart';
 import '../../../theme.dart';
 import 'post_details_page_view_controller.dart';
 

@@ -10,13 +10,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../app_update/providers.dart';
-import '../app_update/types.dart';
+import '../../foundation/app_update/providers.dart';
+import '../../foundation/app_update/types.dart';
+import '../../foundation/display.dart';
+import '../../foundation/url_launcher.dart';
 import '../boorus/engine/engine.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/ref.dart';
-import '../foundation/display.dart';
-import '../foundation/url_launcher.dart';
 import '../search/histories/providers.dart';
 import '../search/search/routes.dart';
 import '../search/search/src/widgets/search_app_bar.dart';

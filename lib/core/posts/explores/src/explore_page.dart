@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../../../foundation/display.dart';
 import '../../../blacklists/providers.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/display.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
 import '../../../videos/video_play_duration_icon.dart';

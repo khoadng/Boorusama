@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../foundation/display.dart';
+import '../../foundation/display.dart';
 import '../widgets/mobile_config_tile.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {

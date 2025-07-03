@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../core/comments/comment.dart';
+import '../../../core/comments/types.dart';
 
 class MoebooruComment extends Equatable implements Comment {
   const MoebooruComment({

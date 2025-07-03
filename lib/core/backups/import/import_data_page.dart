@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
-import '../../foundation/version.dart';
-import '../../info/package_info.dart';
+import '../../../foundation/info/package_info.dart';
+import '../../../foundation/toast.dart';
+import '../../../foundation/version.dart';
 import '../../theme/app_theme.dart';
 import '../servers/discovery_client.dart';
 import 'manual_device_input_dialog.dart';

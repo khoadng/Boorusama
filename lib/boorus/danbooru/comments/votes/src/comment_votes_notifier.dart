@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/comments/comment_vote.dart';
+import '../../../../../core/comments/types.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../comment/comment.dart';

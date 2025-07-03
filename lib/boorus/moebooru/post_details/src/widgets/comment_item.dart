@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/comments/comment_header.dart';
+import '../../../../../core/comments/widgets.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/dtext/dtext.dart';
-import '../../../../../core/foundation/html.dart';
+import '../../../../../foundation/html.dart';
 import '../../../comments/types.dart';
 
 class MoebooruCommentItem extends ConsumerWidget {

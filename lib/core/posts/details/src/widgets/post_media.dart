@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/path.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../configs/ref.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/path.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';

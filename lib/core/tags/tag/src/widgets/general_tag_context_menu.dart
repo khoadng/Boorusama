@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/clipboard.dart';
 import '../../../../blacklists/providers.dart';
-import '../../../../foundation/clipboard.dart';
 import '../../../../search/search/routes.dart';
 import '../../../favorites/providers.dart';
 

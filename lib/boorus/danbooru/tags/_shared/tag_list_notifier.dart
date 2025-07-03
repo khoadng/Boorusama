@@ -4,8 +4,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../core/configs/config.dart';
-import '../../../../core/foundation/loggers.dart';
 import '../../../../core/posts/rating/rating.dart';
+import '../../../../foundation/loggers.dart';
 import '../../client_provider.dart';
 import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';

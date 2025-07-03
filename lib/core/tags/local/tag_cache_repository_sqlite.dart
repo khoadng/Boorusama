@@ -6,7 +6,7 @@ import 'package:flutter_sqlite3_migration/flutter_sqlite3_migration.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import '../../database/utils.dart';
+import '../../../foundation/database/utils.dart';
 import 'cached_tag.dart';
 import 'tag_alias.dart';
 import 'tag_cache_repository.dart';

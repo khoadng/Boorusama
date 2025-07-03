@@ -2,7 +2,7 @@
 import 'package:booru_clients/szurubooru.dart';
 
 // Project imports:
-import '../../../core/comments/comment.dart';
+import '../../../core/comments/types.dart';
 
 SimpleComment parseSzurubooruComment(CommentDto e) {
   return SimpleComment(

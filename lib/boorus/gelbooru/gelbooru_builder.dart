@@ -6,19 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/config/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/gesture/gesture.dart';
 import '../../core/configs/manage/widgets.dart';
-import '../../core/downloads/filename/constants.dart';
+import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/rating/rating.dart';
-import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';

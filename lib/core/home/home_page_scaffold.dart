@@ -8,6 +8,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../foundation/boot/providers.dart';
+import '../../foundation/display.dart';
 import '../blacklists/widgets.dart';
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
@@ -16,9 +18,7 @@ import '../cache/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
 import '../donate/routes.dart';
-import '../downloads/manager.dart';
-import '../foundation/boot/providers.dart';
-import '../foundation/display.dart';
+import '../download_manager/widgets.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';

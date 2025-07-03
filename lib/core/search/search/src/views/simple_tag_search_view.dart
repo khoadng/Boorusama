@@ -8,10 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../../core/widgets/widgets.dart';
-import '../../../../autocompletes/autocompletes.dart';
+import '../../../../../foundation/display.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
-import '../../../../foundation/display.dart';
+import '../../../../tags/autocompletes/types.dart';
 import '../../../queries/query_utils.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';

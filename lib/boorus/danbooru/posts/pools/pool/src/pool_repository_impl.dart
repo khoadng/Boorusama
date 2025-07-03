@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../core/foundation/caching.dart';
+import '../../../../../../foundation/caching.dart';
 import 'danbooru_pool.dart';
 import 'pool_repository.dart';
 

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/display.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/display.dart';
 import '../../post/post.dart';
 import 'post_modal_share.dart';
 import 'post_share_notifier.dart';

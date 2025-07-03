@@ -8,8 +8,8 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
-import '../../../foundation/loggers.dart';
-import '../../../foundation/platform.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../../foundation/platform.dart';
 import '../../../proxy/proxy.dart';
 import '../../../router.dart';
 import '../http_utils.dart';

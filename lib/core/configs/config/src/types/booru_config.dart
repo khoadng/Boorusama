@@ -8,8 +8,8 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../foundation/platform.dart';
 import '../../../../boorus/booru/booru.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../home/custom_home.dart';
 import '../../../../posts/details_manager/types.dart';
 import '../../../../posts/rating/rating.dart';

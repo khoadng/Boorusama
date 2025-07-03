@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/utils/duration_utils.dart';
+import '../../../../../../foundation/utils/duration_utils.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
 import '../../../votes/providers.dart';

@@ -9,8 +9,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../foundation/animations.dart';
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/animations/constants.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../theme.dart';
 
 class FavoritePostButton extends StatelessWidget {

@@ -8,12 +8,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../analytics.dart';
+import '../../../../foundation/info/package_info.dart';
+import '../../../../foundation/loggers/providers.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../foundation/version.dart';
+import '../../../analytics/providers.dart';
+import '../../../analytics/types.dart';
 import '../../../backups/import/backward_import_alert_dialog.dart';
-import '../../../foundation/loggers/providers.dart';
-import '../../../foundation/toast.dart';
-import '../../../foundation/version.dart';
-import '../../../info/package_info.dart';
 import '../data/providers.dart';
 import '../data/settings_io_handler.dart';
 import '../types/settings.dart';

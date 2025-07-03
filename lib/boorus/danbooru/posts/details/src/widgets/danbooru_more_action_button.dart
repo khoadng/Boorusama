@@ -8,13 +8,13 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/downloads/downloader.dart';
-import '../../../../../../core/foundation/url_launcher.dart';
+import '../../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/post/routes.dart';
 import '../../../../../../core/settings/routes.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/url_launcher.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../../versions/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';

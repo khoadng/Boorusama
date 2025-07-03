@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/boot/providers.dart';
-import '../../../foundation/display.dart';
+import '../../../../foundation/boot/providers.dart';
+import '../../../../foundation/display.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/premium_page.dart';

@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
-import '../../../downloads/downloader.dart';
+import '../../../downloads/downloader/providers.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';

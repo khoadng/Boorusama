@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../foundation/html.dart';
+import '../../foundation/html.dart';
 import '../theme/providers.dart';
 
 class DismissableInfoContainer extends StatefulWidget {

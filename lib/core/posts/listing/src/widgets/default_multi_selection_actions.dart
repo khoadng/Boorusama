@@ -14,7 +14,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/ref.dart';
-import '../../../../downloads/downloader.dart';
+import '../../../../downloads/downloader/providers.dart';
 import '../../../post/post.dart';
 import 'post_grid_controller.dart';
 

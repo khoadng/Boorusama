@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/url_launcher.dart';
 import '../../../router.dart';
 import '../../../tags/categories/tag_category.dart';
 import '../../../tags/tag/widgets.dart';

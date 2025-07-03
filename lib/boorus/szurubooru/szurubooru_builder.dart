@@ -6,17 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
+import '../../core/comments/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
-import '../../core/foundation/html.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/scaffolds/scaffolds.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/widgets/widgets.dart';
+import '../../foundation/html.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
 import 'home/widgets.dart';

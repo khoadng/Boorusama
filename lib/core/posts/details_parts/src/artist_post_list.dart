@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../../foundation/display/media_query_utils.dart';
 import '../../../configs/config/providers.dart';
-import '../../../foundation/display/media_query_utils.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../settings/settings.dart';

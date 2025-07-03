@@ -6,9 +6,9 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/error.dart';
+import '../../../../../foundation/error.dart';
+import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../settings/settings.dart';
-import '../../../../utils/collection_utils.dart';
 import '../../../filter/filter.dart';
 import '../../../post/post.dart';
 import 'post_duplicate_checker.dart';

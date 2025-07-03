@@ -3,7 +3,7 @@ import 'package:flutter_sqlite3_migration/flutter_sqlite3_migration.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import '../../../../database/utils.dart';
+import '../../../../../foundation/database/utils.dart';
 import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 import 'search_history_repository.dart';

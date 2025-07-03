@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
 import '../../../../../../core/widgets/booru_chip.dart';
+import '../../../../../../foundation/platform.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../trending_tag.dart';
 

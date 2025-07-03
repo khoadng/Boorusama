@@ -12,10 +12,11 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/toast.dart';
 import '../../../config_widgets/booru_logo.dart';
-import '../../../downloads/manager.dart';
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/toast.dart';
+import '../../../download_manager/providers.dart';
+import '../../../download_manager/types.dart';
 import '../../../images/booru_image.dart';
 import '../../../premiums/providers.dart';
 import '../../../router.dart';

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../info/device_info.dart';
+import '../../../../foundation/info/device_info.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../types/download_options.dart';

@@ -8,7 +8,7 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/errors.dart';
-import '../../../../foundation/error.dart';
+import '../../../../../foundation/error.dart';
 import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';

@@ -1,6 +1,7 @@
 // Project imports:
-import '../analytics/analytics_interface.dart';
-import '../foundation/errors/reporter.dart';
+import '../../foundation/errors/reporter.dart';
+import '../analytics/providers.dart';
+import '../analytics/types.dart';
 
 abstract class Tracker {
   AnalyticsInterface get analytics;

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../../core/artists/artists.dart';
+import '../../../../../../core/artists/types.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/details/details.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
+import '../../../foundation/toast.dart';
 import '../../widgets/widgets.dart';
 
 class ManualDeviceInputDialog extends StatefulWidget {

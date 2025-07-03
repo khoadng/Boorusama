@@ -3,8 +3,8 @@ import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
 import '../../../core/configs/config/types.dart';
+import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';

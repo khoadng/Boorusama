@@ -1,0 +1,42 @@
+const kDanbooruPostSamples = [
+  {
+    'id': '123456',
+    'artist': 'artist_x_(abc) artist_2',
+    'character':
+        'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
+    'copyright': 'genshin_impact fate/grand_order',
+    'general': '1girl solo',
+    'meta': 'highres translated',
+    'tags':
+        '1girl solo genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) highres translated',
+    'extension': 'jpg',
+    'md5': '9cf364e77f46183e2ebd75de757488e2',
+    'width': '2232',
+    'height': '1000',
+    'aspect_ratio': '0.44776119402985076',
+    'mpixels': '2.232356356345635',
+    'source': 'https://example.com/filename.jpg',
+    'rating': 'general',
+    'index': '0',
+    'search': 'genshin_impact solo',
+  },
+  {
+    'id': '654321',
+    'artist': 'artist_3',
+    'character': 'hatsune_miku',
+    'copyright': 'vocaloid',
+    'general': '1girl solo',
+    'meta': 'highres translated',
+    'tags': '1girl solo hatsune_miku vocaloid highres translated',
+    'extension': 'png',
+    'md5': '2ebd75de757488e29cf364e77f46183e',
+    'width': '1334',
+    'height': '2232',
+    'aspect_ratio': '0.598744769874477',
+    'mpixels': '2.976527856856785678',
+    'source': 'https://example.com/example_filename.jpg',
+    'rating': 'general',
+    'index': '1',
+    'search': '1girl solo',
+  }
+];

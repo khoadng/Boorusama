@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 import '../tag_summary/types.dart';
 import 'parser.dart';
 

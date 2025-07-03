@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/comments/comment.dart';
-import '../../../core/comments/comment_header.dart';
+import '../../../core/comments/types.dart';
+import '../../../core/comments/widgets.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/dtext/dtext.dart';
-import '../../../core/scaffolds/scaffolds.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({

@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../theme/providers.dart';
-import '../../../../utils/flutter_utils.dart';
 import '../pages/favorite_tag_label_details_page.dart';
 
 class FavoriteTagLabelChip extends ConsumerWidget {

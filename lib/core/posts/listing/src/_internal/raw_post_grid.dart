@@ -12,8 +12,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
-import '../../../../foundation/keyboard.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/keyboard.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';

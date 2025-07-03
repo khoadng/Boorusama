@@ -10,7 +10,7 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/count/widgets.dart';
 import '../../../../../core/search/search/widgets.dart';
 import '../../../../../core/tags/metatag/providers.dart';
-import '../../../../../core/utils/flutter_utils.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
 import 'widgets/danbooru_metatags_section.dart';

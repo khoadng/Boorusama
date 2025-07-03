@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../utils/file_utils.dart';
+import '../../foundation/utils/file_utils.dart';
 
 typedef CacheSizeInfo = ({
   DirectorySizeInfo appCacheSize,

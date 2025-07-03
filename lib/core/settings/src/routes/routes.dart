@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../foundation/display.dart';
+import '../../../../foundation/display.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/settings_page.dart';

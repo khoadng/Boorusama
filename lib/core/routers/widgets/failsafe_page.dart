@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
+import '../../../foundation/display.dart';
 import '../../widgets/widgets.dart';
 
 class UnimplementedPage extends StatelessWidget {

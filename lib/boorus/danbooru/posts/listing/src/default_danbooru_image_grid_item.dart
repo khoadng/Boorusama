@@ -10,8 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../../core/boorus/engine/engine.dart';
 import '../../../../../core/config_widgets/website_logo.dart';
 import '../../../../../core/configs/ref.dart';
-import '../../../../../core/foundation/clipboard.dart';
-import '../../../../../core/foundation/url_launcher.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/details/routes.dart';
 import '../../../../../core/posts/listing/providers.dart';
@@ -21,6 +19,8 @@ import '../../../../../core/posts/sources/source.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../core/settings/settings.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../../foundation/url_launcher.dart';
 import '../../post/post.dart';
 import 'danbooru_post_context_menu.dart';
 

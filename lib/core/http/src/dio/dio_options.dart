@@ -1,8 +1,8 @@
 // Project imports:
+import '../../../../foundation/loggers.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../configs/config.dart';
 import '../../../ddos_solver/protection_handler.dart';
-import '../../../foundation/loggers.dart';
 import '../../../proxy/proxy.dart';
 
 class DioOptions {

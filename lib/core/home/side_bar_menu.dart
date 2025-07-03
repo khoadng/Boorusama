@@ -10,14 +10,14 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../foundation/boot/providers.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../bulk_downloads/routes.dart';
 import '../configs/config/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../donate/routes.dart';
-import '../downloads/routes.dart';
-import '../foundation/boot/providers.dart';
+import '../download_manager/routes.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';

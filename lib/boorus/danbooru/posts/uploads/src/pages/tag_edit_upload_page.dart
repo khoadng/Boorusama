@@ -10,22 +10,22 @@ import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../../core/autocompletes/autocompletes.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/animations.dart';
-import '../../../../../../core/foundation/toast.dart';
-import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/posts/rating/rating.dart';
 import '../../../../../../core/posts/sources/source.dart';
 import '../../../../../../core/search/suggestions/providers.dart';
 import '../../../../../../core/search/suggestions/widgets.dart';
+import '../../../../../../core/tags/autocompletes/types.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/utils/flutter_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/animations/constants.dart';
+import '../../../../../../foundation/toast.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../artists/urls/widgets.dart';
 import '../../../../sources/providers.dart';
 import '../../../../tags/edit/providers.dart';

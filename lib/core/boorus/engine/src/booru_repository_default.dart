@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../autocompletes/autocomplete_repository.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../blacklists/providers.dart';
-import '../../../comments/comment.dart';
 import '../../../comments/providers.dart';
+import '../../../comments/types.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
-import '../../../downloads/urls/download_url.dart';
+import '../../../downloads/urls/providers.dart';
+import '../../../downloads/urls/types.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/favorites/providers.dart';
@@ -18,6 +18,7 @@ import '../../../posts/listing/list.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/queries/tag_query_composer.dart';
+import '../../../tags/autocompletes/autocomplete_repository.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/tag.dart';

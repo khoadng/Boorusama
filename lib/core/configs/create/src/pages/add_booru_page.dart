@@ -8,11 +8,11 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/booru/providers.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../foundation/clipboard.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../config/types.dart';
 import '../types/edit_booru_config_id.dart';

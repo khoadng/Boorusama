@@ -7,10 +7,10 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
+import '../../../../../foundation/utils/int_utils.dart';
 import '../../../../theme/app_theme.dart';
-import '../../../../utils/flutter_utils.dart';
-import '../../../../utils/int_utils.dart';
 import 'post_list_configuration_header.dart';
 
 final _currentPageProvider = StateProvider<int>((ref) => 1);

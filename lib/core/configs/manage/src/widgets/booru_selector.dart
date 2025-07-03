@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../config/providers.dart';

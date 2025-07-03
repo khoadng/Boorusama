@@ -15,8 +15,8 @@ import '../../../../core/configs/gesture/gesture.dart';
 import '../../../../core/configs/gesture/widgets.dart';
 import '../../../../core/configs/search/widgets.dart';
 import '../../../../core/configs/viewer/widgets.dart';
-import '../../../../core/foundation/url_launcher.dart';
 import '../../../../core/theme.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../users/user/user.dart';
 import 'hide_deleted_switch.dart';
 

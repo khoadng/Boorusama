@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
+import '../../../foundation/display.dart';
 import 'page_preview.dart';
 import 'theme_previewer_notifier.dart';
 

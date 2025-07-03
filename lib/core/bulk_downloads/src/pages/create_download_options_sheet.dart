@@ -7,20 +7,20 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/info/device_info.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../foundation/utils/collection_utils.dart';
 import '../../../blacklists/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../configs/search/search.dart';
+import '../../../downloads/configs/widgets/download_folder_selector_section.dart';
 import '../../../downloads/l10n.dart' as d;
-import '../../../downloads/widgets/download_folder_selector_section.dart';
-import '../../../foundation/toast.dart';
-import '../../../info/device_info.dart';
 import '../../../router.dart';
 import '../../../search/search/routes.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
 import '../../../theme.dart';
-import '../../../utils/collection_utils.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';

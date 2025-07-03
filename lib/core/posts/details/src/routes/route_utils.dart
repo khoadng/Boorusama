@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../../foundation/display.dart';
 import '../../../../configs/config.dart';
-import '../../../../foundation/display.dart';
 import '../../../../router.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';

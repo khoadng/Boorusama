@@ -2,7 +2,7 @@
 import 'package:booru_clients/zerochan.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/tag.dart';
 

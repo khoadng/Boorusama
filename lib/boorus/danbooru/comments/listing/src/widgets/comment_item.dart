@@ -7,10 +7,8 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment_vote.dart';
-import '../../../../../../core/comments/comment_vote_section.dart';
-import '../../../../../../core/comments/vote_event.dart';
-import '../../../../../../core/comments/youtube_preview_box.dart';
+import '../../../../../../core/comments/types.dart';
+import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/dtext/dtext.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../dtext/dtext.dart';

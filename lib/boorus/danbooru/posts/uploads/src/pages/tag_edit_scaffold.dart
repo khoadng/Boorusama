@@ -10,9 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/display.dart';
 
 //FIXME: Split view is broken, need to fix it later, check tag_edit_page.dart for the correct implementation
 class TagEditUploadScaffold extends ConsumerStatefulWidget {

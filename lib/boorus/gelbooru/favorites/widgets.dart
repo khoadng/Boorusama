@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/favorites/providers.dart';
-import '../../../core/scaffolds/scaffolds.dart';
+import '../../../core/posts/favorites/widgets.dart';
 import '../posts/providers.dart';
 
 class GelbooruFavoritesPage extends ConsumerWidget {

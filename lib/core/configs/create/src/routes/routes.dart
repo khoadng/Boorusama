@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../foundation/display.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../foundation/display.dart';
 import '../../../../router.dart';
 import '../../../../widgets/booru_dialog.dart';
 import '../../../config/types.dart';

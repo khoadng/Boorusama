@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/tags/tag/providers.dart';
-import '../../../../../../core/utils/flutter_utils.dart';
+import '../../../../../../foundation/utils/flutter_utils.dart';
 import '../../../artist/artist.dart';
 import '../../../urls/widgets.dart';
 

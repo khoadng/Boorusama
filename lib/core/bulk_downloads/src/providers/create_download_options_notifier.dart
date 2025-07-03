@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../info/device_info.dart';
+import '../../../../foundation/info/device_info.dart';
 import '../../../search/histories/history.dart';
 import '../../../search/selected_tags/tag.dart';
 import '../types/download_options.dart';

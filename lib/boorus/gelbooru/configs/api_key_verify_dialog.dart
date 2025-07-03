@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
-import '../../../core/foundation/toast.dart';
-import '../../../core/foundation/url_launcher.dart';
 import '../../../core/theme.dart';
+import '../../../foundation/toast.dart';
+import '../../../foundation/url_launcher.dart';
 import '../client_provider.dart';
 
 class ApiKeyVerifyDialog extends ConsumerWidget {

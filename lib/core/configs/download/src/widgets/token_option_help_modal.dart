@@ -6,8 +6,8 @@ import 'package:filename_generator/filename_generator.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../downloads/filename.dart';
-import '../../../../foundation/clipboard.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../downloads/filename/types.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../widgets/compact_chip.dart';
 

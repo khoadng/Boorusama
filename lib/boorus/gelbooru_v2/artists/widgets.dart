@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../core/artists/widgets.dart';
 import '../../../core/configs/ref.dart';
-import '../../../core/scaffolds/artist_page_scaffold.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../posts/providers.dart';
 

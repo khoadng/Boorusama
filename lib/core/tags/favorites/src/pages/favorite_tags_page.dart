@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
 import '../providers/favorite_tags_notifier.dart';

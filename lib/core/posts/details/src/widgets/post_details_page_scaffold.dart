@@ -14,15 +14,15 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/gesture/gesture.dart';
 import '../../../../configs/manage/providers.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../notes/notes.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../router.dart';

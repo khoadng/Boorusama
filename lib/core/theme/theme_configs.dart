@@ -9,8 +9,8 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../foundation/utils/color_utils.dart';
 import '../tags/tag/colors.dart';
-import '../utils/color_utils.dart';
 import 'app_theme.dart';
 import 'color_settings.dart';
 import 'colors.dart';

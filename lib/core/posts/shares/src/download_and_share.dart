@@ -10,12 +10,14 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
+import '../../../../foundation/path.dart';
 import '../../../configs/config.dart';
 import '../../../configs/config/providers.dart';
-import '../../../downloads/downloader.dart';
-import '../../../downloads/internal_widgets/download_tile.dart';
-import '../../../downloads/manager.dart';
-import '../../../foundation/path.dart';
+import '../../../download_manager/providers.dart';
+import '../../../download_manager/types.dart';
+import '../../../downloads/configs/widgets.dart';
+import '../../../downloads/downloader/providers.dart';
+import '../../../downloads/downloader/types.dart';
 import '../../../widgets/booru_dialog.dart';
 import '../../post/post.dart';
 

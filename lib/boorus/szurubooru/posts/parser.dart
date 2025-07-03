@@ -3,12 +3,12 @@ import 'package:booru_clients/szurubooru.dart';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import '../../../core/foundation/path.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
 import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/tag.dart';
+import '../../../foundation/path.dart';
 import 'types.dart';
 
 SzurubooruPost postDtoToPost(

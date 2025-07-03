@@ -2,7 +2,7 @@
 import 'package:booru_clients/hydrus.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 
 AutocompleteData parseHydrusAutocompleteData(AutocompleteDto dto) {
   final category = parseHydrusCategory(dto.value);

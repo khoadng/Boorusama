@@ -11,7 +11,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/platform.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../videos/video_progress.dart';
 import '../../../post/post.dart';
 

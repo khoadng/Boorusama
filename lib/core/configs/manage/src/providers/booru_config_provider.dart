@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../foundation/loggers.dart';
+import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../analytics/analytics_interface.dart';
-import '../../../../analytics/analytics_providers.dart';
-import '../../../../foundation/loggers.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../settings/providers.dart';
-import '../../../../utils/collection_utils.dart';
 import '../../../config/data.dart';
 import '../../../config/types.dart';
 import '../../../create/create.dart';

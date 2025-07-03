@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../foundation/riverpod/riverpod.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../configs/config.dart';
-import '../../../../riverpod/riverpod.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
 

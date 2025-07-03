@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/artists/artists.dart';
+import '../../../core/artists/types.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';

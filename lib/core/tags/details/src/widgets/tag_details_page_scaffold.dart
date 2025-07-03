@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/platform.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../posts/post/post.dart';
 import '../../../tag/tag.dart';
 import '../internal_widgets/category_toggle_switch.dart';

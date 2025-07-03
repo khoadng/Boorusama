@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../utils/color_utils.dart';
+import '../../foundation/utils/color_utils.dart';
 import 'color_scheme_converter.dart';
 import 'extended_color_scheme.dart';
 import 'named_colors.dart';

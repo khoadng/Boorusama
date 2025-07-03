@@ -7,10 +7,10 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/toast.dart';
+import '../../../../../foundation/utils/file_utils.dart';
 import '../../../../cache/providers.dart';
-import '../../../../foundation/toast.dart';
 import '../../../../router.dart';
-import '../../../../utils/file_utils.dart';
 import '../../../../widgets/widgets.dart';
 
 // Only need check once at the start

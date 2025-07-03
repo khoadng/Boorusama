@@ -11,9 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
-import '../../../../foundation/mobile.dart';
-import '../../../../foundation/platform.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/mobile.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';

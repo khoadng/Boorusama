@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../utils/color_utils.dart';
+import '../../../foundation/utils/color_utils.dart';
 import 'color_selector_accent_notifier.dart';
 import 'theme_previewer_notifier.dart';
 import 'theme_widgets.dart';

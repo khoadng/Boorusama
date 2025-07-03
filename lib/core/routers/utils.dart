@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../foundation/display.dart';
 import '../boorus/engine/providers.dart';
-import '../comments/utils.dart';
+import '../comments/routes.dart';
 import '../configs/ref.dart';
-import '../foundation/display.dart';
 import '../router.dart';
 import '../tags/favorites/providers.dart';
 import '../widgets/widgets.dart';

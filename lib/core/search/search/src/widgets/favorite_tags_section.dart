@@ -8,8 +8,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../foundation/platform.dart';
 import '../../../../cache/providers.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../router.dart';
 import '../../../../tags/favorites/favorited.dart';
 import '../../../../tags/favorites/widgets.dart';

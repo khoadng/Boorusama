@@ -15,8 +15,8 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/utils/stream/text_editing_controller_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/utils/stream/text_editing_controller_utils.dart';
 import '../../../../syntax/providers.dart';
 import '../types/saved_search.dart';
 

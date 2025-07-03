@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/tags/autocompletes/types.dart';
 
 AutocompleteData autocompleteData([String? value, String? antecedent]) =>
     value != null

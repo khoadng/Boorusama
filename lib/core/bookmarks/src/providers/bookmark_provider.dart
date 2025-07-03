@@ -13,20 +13,21 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../foundation/animations/constants.dart';
+import '../../../../foundation/info/device_info.dart';
+import '../../../../foundation/path.dart';
+import '../../../../foundation/permissions.dart';
+import '../../../../foundation/toast.dart';
 import '../../../backups/types.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
-import '../../../downloads/downloader.dart';
-import '../../../downloads/filename.dart';
-import '../../../foundation/animations.dart';
-import '../../../foundation/path.dart';
-import '../../../foundation/permissions.dart';
-import '../../../foundation/toast.dart';
+import '../../../downloads/downloader/providers.dart';
+import '../../../downloads/downloader/types.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../http/http.dart';
 import '../../../http/providers.dart';
 import '../../../images/providers.dart';
-import '../../../info/device_info.dart';
 import '../../../posts/post/post.dart';
 import '../../../settings/providers.dart';
 import '../data/bookmark_convert.dart';
@@ -40,7 +41,6 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   dependencies: [
     bookmarkRepoProvider,
     settingsProvider,
-    downloadServiceProvider,
   ],
 );
 

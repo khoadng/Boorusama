@@ -3,7 +3,7 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
-import '../../core/downloads/filename.dart';
+import '../../core/downloads/filename/types.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';

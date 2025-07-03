@@ -3,15 +3,14 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/autocompletes/autocompletes.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
-import '../../core/downloads/filename.dart';
-import '../../core/downloads/filename/constants.dart';
+import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
+import '../../core/tags/autocompletes/types.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
 

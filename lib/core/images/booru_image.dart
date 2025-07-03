@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../foundation/info/device_info.dart';
 import '../configs/ref.dart';
 import '../http/http.dart';
 import '../http/providers.dart';
-import '../info/device_info.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
 import 'providers.dart';

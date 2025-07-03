@@ -9,7 +9,6 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/widgets.dart';
 import '../../../core/posts/post/post.dart';
-import '../../../core/scaffolds/scaffolds.dart';
 import '../posts/providers.dart';
 import 'providers.dart';
 

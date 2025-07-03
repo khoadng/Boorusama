@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
+import '../../../../foundation/toast.dart';
 import '../data/providers.dart';
 import '../types/blacklisted_tag.dart';
 import '../types/blacklisted_tag_repository.dart';

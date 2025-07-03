@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../../core/comments/comment.dart';
+import '../../../core/comments/types.dart';
 import '../../../core/configs/config.dart';
 import '../client_provider.dart';
 

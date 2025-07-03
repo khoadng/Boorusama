@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../foundation/display/media_query_utils.dart';
+import '../../../../../foundation/display/media_query_utils.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../../widgets/booru_popup_menu_button.dart';
 import '../../../post/post.dart';

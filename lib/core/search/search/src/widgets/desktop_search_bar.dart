@@ -11,11 +11,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/posts/search/src/widgets/danbooru_metatags_section.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../configs/ref.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../utils/flutter_utils.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../suggestions/suggestions_notifier.dart';

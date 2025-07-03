@@ -2,9 +2,9 @@
 import 'package:flutter/cupertino.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/display.dart';
 import '../pages/user_feedback_page.dart';
 
 final danbooruUserFeedbackRoutes = GoRoute(

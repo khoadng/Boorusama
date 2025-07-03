@@ -2,7 +2,7 @@
 import 'package:booru_clients/sankaku.dart';
 
 // Project imports:
-import '../../../core/downloads/urls.dart';
+import '../../../core/downloads/urls/sanitizer.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';

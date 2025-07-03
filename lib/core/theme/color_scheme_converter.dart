@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../foundation/utils/color_utils.dart';
 import '../theme.dart';
-import '../utils/color_utils.dart';
 
 Color? _parse(dynamic value) => switch (value) {
       final String hex => ColorUtils.hexToColor(hex),

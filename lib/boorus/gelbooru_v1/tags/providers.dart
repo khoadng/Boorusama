@@ -3,8 +3,8 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
 import '../../../core/configs/config/types.dart';
+import '../../../core/tags/autocompletes/types.dart';
 
 final gelbooruV1AutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {

@@ -6,7 +6,7 @@ import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
-import '../../../../../core/riverpod/riverpod.dart';
+import '../../../../../foundation/riverpod/riverpod.dart';
 import '../../pools/pool/pool.dart';
 import '../../pools/pool/providers.dart';
 import '../../post/post.dart';

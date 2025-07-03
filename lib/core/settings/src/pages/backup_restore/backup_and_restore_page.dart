@@ -13,6 +13,13 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' show join;
 
 // Project imports:
+import '../../../../../foundation/clipboard.dart';
+import '../../../../../foundation/info/device_info.dart';
+import '../../../../../foundation/info/package_info.dart';
+import '../../../../../foundation/path.dart' as p;
+import '../../../../../foundation/picker.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../backups/routes.dart';
 import '../../../../backups/sync_data_page.dart';
 import '../../../../blacklists/providers.dart';
@@ -22,13 +29,6 @@ import '../../../../config_widgets/booru_logo.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/export_import/types.dart';
 import '../../../../configs/manage/providers.dart';
-import '../../../../foundation/clipboard.dart';
-import '../../../../foundation/path.dart' as p;
-import '../../../../foundation/picker.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/toast.dart';
-import '../../../../info/device_info.dart';
-import '../../../../info/package_info.dart';
 import '../../../../router.dart';
 import '../../../../search/histories/providers.dart';
 import '../../../../tags/favorites/providers.dart';

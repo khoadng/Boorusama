@@ -10,11 +10,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import '../../../../../core/foundation/display.dart';
-import '../../../../../core/foundation/scrolling.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/scrolling.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
 import 'tag_edit_view_controller.dart';

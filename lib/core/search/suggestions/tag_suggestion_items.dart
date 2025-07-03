@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../autocompletes/autocompletes.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
+import '../../tags/autocompletes/types.dart';
 import 'tag_suggestion_item.dart';
 
 class TagSuggestionItems extends ConsumerWidget {

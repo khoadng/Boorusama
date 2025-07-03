@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/posts/statistics/widgets.dart';
 import '../../../../../../core/tags/tag/providers.dart';
-import '../../../../../../core/utils/statistics.dart';
+import '../../../../../../foundation/display.dart';
+import '../../../../../../foundation/utils/statistics.dart';
 import '../post_stats.dart';
 
 class PostStatsCharacterSection extends ConsumerWidget {
