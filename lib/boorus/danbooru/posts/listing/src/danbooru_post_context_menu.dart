@@ -14,8 +14,8 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/router.dart';
+import '../../../../../core/tags/tag/routes.dart';
 import '../../../../../foundation/url_launcher.dart';
-import '../../../tags/tag/routes.dart';
 import '../../../versions/routes.dart';
 import '../../favgroups/favgroups/routes.dart';
 import '../../post/post.dart';
@@ -92,10 +92,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             'View tags',
             onPressed: () {
-              goToDanbooruShowTaglistPage(
-                ref,
-                post.extractTags(),
-              );
+              goToShowTaglistPage(ref, post);
             },
           ),
         ContextMenuButtonConfig(

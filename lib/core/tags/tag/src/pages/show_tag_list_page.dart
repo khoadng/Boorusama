@@ -9,9 +9,14 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/clipboard.dart';
+import '../../../../../foundation/toast.dart';
+import '../../../../blacklists/providers.dart';
+import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
+import '../../../../posts/post/post.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
+import '../../../favorites/providers.dart';
 import '../../widgets.dart';
 import '../tag.dart';
 import '../tag_display.dart';
@@ -21,8 +26,90 @@ import '../widgets/filterable_scope.dart';
 final selectedViewTagQueryProvider =
     StateProvider.autoDispose<String>((ref) => '');
 
-class ShowTagListPage extends ConsumerStatefulWidget {
+final _tagsProvider = FutureProvider.autoDispose
+    .family<List<Tag>, (BooruConfigAuth, Post)>((ref, params) async {
+  final (config, post) = params;
+  final tagExtractor = ref.watch(tagExtractorProvider(config));
+
+  if (tagExtractor == null) return [];
+
+  return tagExtractor.extractTags(post);
+});
+
+class ShowTagListPage extends ConsumerWidget {
   const ShowTagListPage({
+    required this.post,
+    required this.auth,
+    required this.initiallyMultiSelectEnabled,
+    super.key,
+    this.onAddToBlacklist,
+    this.onOpenWiki,
+    this.contextMenuBuilder,
+  });
+
+  final Post post;
+  final void Function(Tag tag)? onAddToBlacklist;
+  final void Function(Tag tag)? onOpenWiki;
+  final BooruConfigAuth auth;
+  final bool initiallyMultiSelectEnabled;
+  final Widget Function(Widget child, String tag)? contextMenuBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final params = (auth, post);
+
+    final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
+    final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
+
+    return ref.watch(_tagsProvider(params)).when(
+          data: (tags) => ShowTagListPageInternal(
+            tags: tags,
+            auth: auth,
+            initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+            onAddToBlacklist: onAddToBlacklist,
+            onAddToGlobalBlacklist: (tag) {
+              globalNotifier.addTagWithToast(
+                context,
+                tag.rawName,
+              );
+            },
+            onAddToFavoriteTags: (tag) async {
+              await favoriteNotifier.add(tag.rawName);
+
+              if (!context.mounted) return;
+
+              showSuccessToast(
+                context,
+                'Added',
+                backgroundColor: Theme.of(context).colorScheme.onSurface,
+                textStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+              );
+            },
+            onOpenWiki: onOpenWiki,
+            contextMenuBuilder: contextMenuBuilder,
+          ),
+          error: (error, stack) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Error'),
+            ),
+            body: Center(
+              child: Text('Error loading tags: $error'),
+            ),
+          ),
+          loading: () => Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
+  }
+}
+
+class ShowTagListPageInternal extends ConsumerStatefulWidget {
+  const ShowTagListPageInternal({
     required this.tags,
     required this.auth,
     required this.initiallyMultiSelectEnabled,
@@ -44,10 +131,11 @@ class ShowTagListPage extends ConsumerStatefulWidget {
   final Widget Function(Widget child, String tag)? contextMenuBuilder;
 
   @override
-  ConsumerState<ShowTagListPage> createState() => _ShowTagListPageState();
+  ConsumerState<ShowTagListPageInternal> createState() =>
+      _ShowTagListPageState();
 }
 
-class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
+class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   late final _multiSelectController = MultiSelectController(
     initialMultiSelectEnabled: widget.initiallyMultiSelectEnabled,
   );

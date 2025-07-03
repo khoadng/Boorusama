@@ -93,6 +93,18 @@ final tagGroupRepoProvider =
   name: 'tagGroupRepoProvider',
 );
 
+final tagExtractorProvider = Provider.family<TagExtractor?, BooruConfigAuth>(
+  (ref, config) {
+    final repository =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    if (repository == null) return null;
+
+    return repository.tagExtractor(config);
+  },
+  name: 'tagExtractorProvider',
+);
+
 final commentRepoProvider =
     Provider.family<CommentRepository?, BooruConfigAuth>(
   (ref, config) {

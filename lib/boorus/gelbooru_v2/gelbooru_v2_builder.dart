@@ -30,6 +30,7 @@ class GelbooruV2Builder
     with
         FavoriteNotSupportedMixin,
         UnknownMetatagsMixin,
+        DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,

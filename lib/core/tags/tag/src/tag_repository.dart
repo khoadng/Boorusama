@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -27,4 +30,8 @@ abstract class TagGroupRepository<T extends Post> {
     T post, {
     TagGroupOptions options = const TagGroupOptions(),
   });
+}
+
+abstract class TagExtractor<T extends Post> {
+  FutureOr<List<Tag>> extractTags(T post);
 }

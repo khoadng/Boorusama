@@ -9,10 +9,10 @@ import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/tag/providers.dart';
+import '../../../../../../core/tags/tag/routes.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
-import '../../../../tags/tag/routes.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';
@@ -51,9 +51,9 @@ class DanbooruTagsTile extends ConsumerWidget {
           if (config.hasLoginDetails()) 'edit': const Text('Edit'),
         },
         onMultiSelect: () {
-          goToDanbooruShowTaglistPage(
+          goToShowTaglistPage(
             ref,
-            post.extractTags(),
+            post,
             initiallyMultiSelectEnabled: true,
           );
         },

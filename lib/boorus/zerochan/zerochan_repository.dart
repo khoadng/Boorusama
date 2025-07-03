@@ -32,7 +32,7 @@ class ZerochanRepository extends BooruRepositoryDefault {
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
-    return ref.watch(zerochanPostRepoProvider(config));
+    return ref.read(zerochanPostRepoProvider(config));
   }
 
   @override

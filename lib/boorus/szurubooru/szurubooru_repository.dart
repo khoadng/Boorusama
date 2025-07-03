@@ -26,7 +26,7 @@ class SzurubooruRepository extends BooruRepositoryDefault {
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
-    return ref.watch(szurubooruPostRepoProvider(config));
+    return ref.read(szurubooruPostRepoProvider(config));
   }
 
   @override

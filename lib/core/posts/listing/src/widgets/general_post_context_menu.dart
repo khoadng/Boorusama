@@ -16,7 +16,6 @@ import '../../../../downloads/downloader/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../post/post.dart';
-import '../../../post/tags.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({
@@ -76,10 +75,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
           ContextMenuButtonConfig(
             'View tags',
             onPressed: () {
-              goToShowTaglistPage(
-                context,
-                post.extractTags(),
-              );
+              goToShowTaglistPage(ref, post);
             },
           ),
         if (!booruConfig.hasStrictSFW)

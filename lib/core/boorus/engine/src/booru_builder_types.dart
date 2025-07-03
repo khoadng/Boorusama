@@ -131,6 +131,12 @@ typedef HomeViewBuilder = Widget Function(
   BuildContext context,
 );
 
+typedef ViewTagListBuilder = Widget Function(
+  BuildContext context,
+  Post post,
+  bool initiallyMultiSelectEnabled,
+);
+
 const kDefaultPostDetailsPreviewPart = {
   DetailsPart.info,
   DetailsPart.toolbar,

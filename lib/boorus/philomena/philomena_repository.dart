@@ -27,7 +27,7 @@ class PhilomenaRepository extends BooruRepositoryDefault {
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
-    return ref.watch(philomenaPostRepoProvider(config));
+    return ref.read(philomenaPostRepoProvider(config));
   }
 
   @override

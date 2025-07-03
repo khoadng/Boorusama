@@ -145,6 +145,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
   }
 
   @override
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(danbooruTagExtractorProvider(config));
+  }
+
+  @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(danbooruCommentRepoProvider(config));
   }

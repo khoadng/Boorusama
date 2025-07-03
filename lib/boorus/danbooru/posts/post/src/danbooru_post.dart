@@ -5,8 +5,6 @@ import 'package:equatable/equatable.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/posts/sources/source.dart';
-import '../../../../../core/tags/categories/tag_category.dart';
-import '../../../../../core/tags/tag/tag.dart';
 import 'post_variant.dart';
 
 typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
@@ -199,57 +197,6 @@ extension PostX on DanbooruPost {
     final tagSet = tags.toSet();
 
     return kCensoredTags.any(tagSet.contains);
-  }
-
-  List<Tag> extractTags() {
-    final tags = <Tag>[];
-
-    for (final t in artistTags) {
-      tags.add(
-        Tag.noCount(
-          name: t,
-          category: TagCategory.artist(),
-        ),
-      );
-    }
-
-    for (final t in copyrightTags) {
-      tags.add(
-        Tag.noCount(
-          name: t,
-          category: TagCategory.copyright(),
-        ),
-      );
-    }
-
-    for (final t in characterTags) {
-      tags.add(
-        Tag.noCount(
-          name: t,
-          category: TagCategory.character(),
-        ),
-      );
-    }
-
-    for (final t in metaTags) {
-      tags.add(
-        Tag.noCount(
-          name: t,
-          category: TagCategory.meta(),
-        ),
-      );
-    }
-
-    for (final t in generalTags) {
-      tags.add(
-        Tag.noCount(
-          name: t,
-          category: TagCategory.general(),
-        ),
-      );
-    }
-
-    return tags;
   }
 
   DanbooruPost copyWith({

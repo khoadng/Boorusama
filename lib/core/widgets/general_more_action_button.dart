@@ -12,7 +12,6 @@ import '../configs/config.dart';
 import '../downloads/downloader/providers.dart';
 import '../posts/post/post.dart';
 import '../posts/post/routes.dart';
-import '../posts/post/tags.dart';
 import '../settings/routes.dart';
 import '../tags/tag/routes.dart';
 import '../theme.dart';
@@ -56,10 +55,7 @@ class GeneralMoreActionButton extends ConsumerWidget {
                   postLinkGenerator.getLink(post),
                 );
               case 'show_tag_list':
-                goToShowTaglistPage(
-                  context,
-                  post.extractTags(),
-                );
+                goToShowTaglistPage(ref, post);
               case 'view_original':
                 goToOriginalImagePage(ref, post);
               case 'start_slideshow':

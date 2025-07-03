@@ -25,7 +25,6 @@ import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
 import '../../../posts/post/routes.dart';
-import '../../../posts/post/tags.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../posts/shares/providers.dart';
 import '../../../posts/shares/widgets.dart';
@@ -189,10 +188,7 @@ class PostGestureHandler {
   }
 
   void handleViewTags(WidgetRef ref, Post post) {
-    goToShowTaglistPage(
-      ref.context,
-      post.extractTags(),
-    );
+    goToShowTaglistPage(ref, post);
   }
 
   void handleViewOriginal(WidgetRef ref, Post post) {
@@ -301,6 +297,34 @@ mixin DefaultHomeMixin implements BooruBuilder {
   @override
   final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders =
       kDefaultAltHomeView;
+}
+
+mixin DefaultViewTagListBuilderMixin implements BooruBuilder {
+  @override
+  ViewTagListBuilder get viewTagListBuilder =>
+      (context, post, initiallyMultiSelectEnabled) => _DefaultShowTagListPage(
+            post: post,
+            initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+          );
+}
+
+class _DefaultShowTagListPage extends ConsumerWidget {
+  const _DefaultShowTagListPage({
+    required this.post,
+    required this.initiallyMultiSelectEnabled,
+  });
+
+  final Post post;
+  final bool initiallyMultiSelectEnabled;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ShowTagListPage(
+      post: post,
+      initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+      auth: ref.watchConfigAuth,
+    );
+  }
 }
 
 String Function(

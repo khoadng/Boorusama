@@ -31,6 +31,7 @@ import 'posts/widgets.dart';
 class GelbooruBuilder
     with
         UnknownMetatagsMixin,
+        DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,

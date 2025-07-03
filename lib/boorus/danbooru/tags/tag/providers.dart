@@ -10,6 +10,7 @@ import '../../../../core/tags/tag/providers.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../client_provider.dart';
 import '../../posts/post/post.dart';
+import 'src/tag_extractor.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -48,16 +49,23 @@ final danbooruTagCategoryProvider =
   return TagCategory.fromLegacyIdString(type);
 });
 
+final danbooruTagExtractorProvider =
+    Provider.family<TagExtractor<DanbooruPost>, BooruConfigAuth>(
+  (ref, config) => const DanbooruTagExtractor(),
+);
+
 final danbooruTagGroupRepoProvider =
     Provider.family<TagGroupRepository<DanbooruPost>, BooruConfigAuth>(
   (ref, config) {
     final tagRepo = ref.watch(danbooruTagRepoProvider(config));
+    final tagExtractor = ref.watch(danbooruTagExtractorProvider(config));
 
     return TagGroupRepositoryBuilder(
       ref: ref,
       loadGroups: (post, options) async {
         if (!options.fetchTagCount) {
-          return createTagGroupItems(post.extractTags());
+          final extractTags = await tagExtractor.extractTags(post);
+          return createTagGroupItems(extractTags);
         }
 
         final tagList = post.tags;

@@ -1,12 +1,14 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import '../../../../../foundation/display/media_query_utils.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../../widgets/booru_popup_menu_button.dart';
 import '../../../post/post.dart';
-import '../../../post/tags.dart';
 import '../_internal/details_widget_frame.dart';
 
 class RawTagsTile extends StatelessWidget {
@@ -59,7 +61,7 @@ class RawTagsTile extends StatelessWidget {
   }
 }
 
-class RawTagsTileTitle<T extends Post> extends StatelessWidget {
+class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
   const RawTagsTileTitle({
     required this.count,
     required this.post,
@@ -76,7 +78,7 @@ class RawTagsTileTitle<T extends Post> extends StatelessWidget {
   final VoidCallback? onMultiSelect;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final effectiveItemBuilder = {
       'select': const Text('Select'),
       ...?itemBuilder,
@@ -93,8 +95,8 @@ class RawTagsTileTitle<T extends Post> extends StatelessWidget {
                 onMultiSelect!();
               } else {
                 goToShowTaglistPage(
-                  context,
-                  post.extractTags(),
+                  ref,
+                  post,
                   initiallyMultiSelectEnabled: true,
                 );
               }

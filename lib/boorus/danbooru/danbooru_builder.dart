@@ -21,7 +21,6 @@ import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/routes.dart';
-import '../../core/posts/post/tags.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/shares/providers.dart';
 import '../../core/posts/shares/widgets.dart';
@@ -52,7 +51,7 @@ import 'posts/statistics/widgets.dart';
 import 'posts/votes/providers.dart';
 import 'saved_searches/feed/widgets.dart';
 import 'tags/details/widgets.dart';
-import 'tags/tag/routes.dart';
+import 'tags/tag/widgets.dart';
 
 class DanbooruBuilder implements BooruBuilder {
   DanbooruBuilder();
@@ -144,16 +143,7 @@ class DanbooruBuilder implements BooruBuilder {
               state: ref.read(postShareProvider(post)),
             ),
             onToggleBookmark: () => ref.toggleBookmark(post),
-            onViewTags: () => castOrNull<DanbooruPost>(post).toOption().fold(
-                  () => goToShowTaglistPage(
-                    ref.context,
-                    post.extractTags(),
-                  ),
-                  (post) => goToDanbooruShowTaglistPage(
-                    ref,
-                    post.extractTags(),
-                  ),
-                ),
+            onViewTags: () => goToShowTaglistPage(ref, post),
             onViewOriginal: () => goToOriginalImagePage(ref, post),
             onOpenSource: () => post.source.whenWeb(
               (source) => launchExternalUrlString(source.url),
@@ -342,6 +332,15 @@ class DanbooruBuilder implements BooruBuilder {
             currentQuery: currentQuery,
             onItemTap: onItemTap,
           );
+
+  @override
+  ViewTagListBuilder get viewTagListBuilder =>
+      (context, post, initiallyMultiSelectEnabled) {
+        return DanbooruShowTagListPage(
+          post: post,
+          initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+        );
+      };
 }
 
 bool handleDanbooruGestureAction(
