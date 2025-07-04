@@ -15,6 +15,7 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
     this.onSelected,
     this.iconColor,
     this.offset,
+    this.icon,
   });
 
   final Map<T, Widget> itemBuilder;
@@ -22,6 +23,7 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
 
   final Color? iconColor;
   final Offset? offset;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +36,15 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
             )
           : null,
       icon: kPreferredLayout.isMobile
-          ? const Icon(
-              Icons.more_vert,
+          ? Icon(
+              icon ?? Icons.more_vert,
             )
-          : const Icon(
-              Symbols.more_vert,
+          : Icon(
+              icon ?? Symbols.more_vert,
               weight: 400,
             ),
       iconColor: iconColor,
+      position: PopupMenuPosition.over,
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [
         for (final item in itemBuilder.entries)

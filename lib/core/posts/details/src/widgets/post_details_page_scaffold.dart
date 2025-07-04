@@ -582,15 +582,6 @@ class _PostDetailPageScaffoldState<T extends Post>
                 config: widget.authConfig,
               ),
             ),
-            const SizedBox(width: 8),
-            ValueListenableBuilder(
-              valueListenable: widget.controller.currentPost,
-              builder: (context, post, _) => GeneralMoreActionButton(
-                post: post,
-                config: widget.authConfig,
-                onStartSlideshow: () => _controller.startSlideshow(),
-              ),
-            ),
           ],
         ],
         onExpanded: () {

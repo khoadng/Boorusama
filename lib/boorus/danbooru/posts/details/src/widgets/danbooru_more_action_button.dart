@@ -13,7 +13,6 @@ import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/post/routes.dart';
 import '../../../../../../core/settings/routes.dart';
 import '../../../../../../core/tags/tag/routes.dart';
-import '../../../../../../core/theme.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/url_launcher.dart';
 import '../../../../versions/routes.dart';
@@ -39,10 +38,11 @@ class DanbooruMoreActionButton extends ConsumerWidget {
     return SizedBox(
       width: 40,
       child: Material(
-        color: context.extendedColorScheme.surfaceContainerOverlay,
+        color: Colors.transparent,
         shape: const CircleBorder(),
         child: BooruPopupMenuButton(
-          iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
+          offset: const Offset(0, -300),
+          icon: Icons.more_horiz,
           onSelected: (value) {
             switch (value) {
               case 'download':

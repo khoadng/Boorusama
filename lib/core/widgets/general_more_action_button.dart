@@ -14,7 +14,6 @@ import '../posts/post/post.dart';
 import '../posts/post/routes.dart';
 import '../settings/routes.dart';
 import '../tags/tag/routes.dart';
-import '../theme.dart';
 import 'booru_popup_menu_button.dart';
 
 class GeneralMoreActionButton extends ConsumerWidget {
@@ -38,10 +37,10 @@ class GeneralMoreActionButton extends ConsumerWidget {
     return SizedBox(
       width: 40,
       child: Material(
-        color: context.extendedColorScheme.surfaceContainerOverlay,
+        color: Colors.transparent,
         shape: const CircleBorder(),
         child: BooruPopupMenuButton(
-          iconColor: context.extendedColorScheme.onSurfaceContainerOverlay,
+          icon: Icons.more_horiz,
           onSelected: (value) {
             switch (value) {
               case 'download':

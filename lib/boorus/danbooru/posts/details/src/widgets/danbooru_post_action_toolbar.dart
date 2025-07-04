@@ -16,6 +16,7 @@ import '../../../../../../core/posts/votes/widgets.dart';
 import '../../../../../../core/router.dart';
 import '../../../post/post.dart';
 import '../../../votes/providers.dart';
+import 'danbooru_more_action_button.dart';
 
 class DanbooruInheritedPostActionToolbar extends StatelessWidget {
   const DanbooruInheritedPostActionToolbar({super.key});
@@ -74,6 +75,10 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           ),
           DownloadPostButton(post: post),
           SharePostButton(post: post),
+          DanbooruMoreActionButton(
+            post: post,
+            config: config,
+          ),
         ],
       ),
     );
