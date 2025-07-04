@@ -256,6 +256,7 @@ class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
     final controller = data.controller;
 
     return PostDetailsPageScaffold(
+      pageViewController: data.pageViewController,
       controller: controller,
       posts: posts,
       viewerConfig: ref.watchConfigViewer,

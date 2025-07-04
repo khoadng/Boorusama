@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import '../../../../../foundation/display.dart';
 import '../../../../settings/providers.dart';
+import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../types/inherited_post.dart';
 import '../types/post_details.dart';
@@ -37,25 +39,45 @@ class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostDetailsLayoutSwitcherState<T extends Post>
     extends ConsumerState<PostDetailsScope<T>> {
-  late PostDetailsController<T> controller;
+  late final PostDetailsController<T> _controller;
+  late final PostDetailsPageViewController _pageViewController;
 
   @override
   void initState() {
     super.initState();
 
-    controller = PostDetailsController<T>(
+    final initialPage = widget.initialIndex;
+    final settings = ref.read(settingsProvider);
+
+    final reduceAnimations = settings.reduceAnimations;
+    final hideOverlay = settings.hidePostDetailsOverlay;
+    final slideshowOptions = toSlideShowOptions(settings);
+    final hoverToControlOverlay = widget.posts[initialPage].isVideo;
+
+    _controller = PostDetailsController<T>(
       scrollController: widget.scrollController,
-      initialPage: widget.initialIndex,
+      initialPage: initialPage,
       initialThumbnailUrl: widget.initialThumbnailUrl,
       posts: widget.posts,
-      reduceAnimations: ref.read(settingsProvider).reduceAnimations,
+      reduceAnimations: reduceAnimations,
       dislclaimer: widget.dislclaimer,
+    );
+
+    _pageViewController = PostDetailsPageViewController(
+      initialPage: initialPage,
+      initialHideOverlay: hideOverlay,
+      slideshowOptions: slideshowOptions,
+      hoverToControlOverlay: hoverToControlOverlay,
+      checkIfLargeScreen: () => context.isLargeScreen,
+      totalPage: widget.posts.length,
+      disableAnimation: reduceAnimations,
     );
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
+    _pageViewController.dispose();
 
     super.dispose();
   }
@@ -65,10 +87,11 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
     return PostDetails(
       data: PostDetailsData(
         posts: widget.posts,
-        controller: controller,
+        controller: _controller,
+        pageViewController: _pageViewController,
       ),
       child: CurrentPostScope(
-        post: controller.currentPost,
+        post: _controller.currentPost,
         child: widget.child,
       ),
     );

@@ -82,16 +82,18 @@ class _BookmarkDetailsPageState
     final data = PostDetails.of<BookmarkPost>(context);
     final posts = data.posts;
     final controller = data.controller;
+    final pageViewController = data.pageViewController;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
     final auth = ref.watchConfigAuth;
+    final post = InheritedPost.of<BookmarkPost>(context);
 
     return PostDetailsPageScaffold(
+      pageViewController: data.pageViewController,
       controller: controller,
       posts: posts,
       viewerConfig: ref.watchConfigViewer,
       authConfig: auth,
       gestureConfig: ref.watchPostGestures,
-
       // Needed to prevent type inference error
       // ignore: avoid_types_on_closure_parameters
       imageUrlBuilder: (Post post) => post.originalImageUrl,
@@ -99,28 +101,24 @@ class _BookmarkDetailsPageState
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
-      topRightButtonsBuilder: (controller) {
-        final post = InheritedPost.of<BookmarkPost>(context);
-
-        return [
-          GeneralMoreActionButton(
-            post: post,
-            config: auth,
-            onStartSlideshow: () => controller.startSlideshow(),
-            onDownload: (_) {
-              ref.bookmarks.downloadBookmarks(
-                ref.readConfig,
-                [
-                  post.toBookmark(
-                    imageUrlResolver: (booruId) =>
-                        ref.read(bookmarkUrlResolverProvider(booruId)),
-                  ),
-                ],
-              );
-            },
-          ),
-        ];
-      },
+      topRightButtons: [
+        GeneralMoreActionButton(
+          post: post,
+          config: auth,
+          onStartSlideshow: () => pageViewController.startSlideshow(),
+          onDownload: (_) {
+            ref.bookmarks.downloadBookmarks(
+              ref.readConfig,
+              [
+                post.toBookmark(
+                  imageUrlResolver: (booruId) =>
+                      ref.read(bookmarkUrlResolverProvider(booruId)),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }

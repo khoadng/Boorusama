@@ -39,6 +39,7 @@ import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
 import '../../../shares/providers.dart';
+import '../types/post_details.dart';
 import 'post_details_controller.dart';
 import 'post_details_full_info_sheet.dart';
 import 'post_details_preload_image.dart';
@@ -52,13 +53,14 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     required this.posts,
     required this.controller,
+    required this.pageViewController,
     required this.viewerConfig,
     required this.authConfig,
     required this.gestureConfig,
     super.key,
     this.onExpanded,
     this.imageUrlBuilder,
-    this.topRightButtonsBuilder,
+    this.topRightButtons,
     this.uiBuilder,
     this.preferredParts,
     this.preferredPreviewParts,
@@ -69,9 +71,9 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final void Function()? onExpanded;
   final String Function(T post)? imageUrlBuilder;
   final ImageCacheManager Function(Post post)? imageCacheManager;
-  final List<Widget> Function(PostDetailsPageViewController controller)?
-      topRightButtonsBuilder;
+  final List<Widget>? topRightButtons;
   final PostDetailsController<T> controller;
+  final PostDetailsPageViewController pageViewController;
   final PostDetailsUIBuilder? uiBuilder;
   final Set<DetailsPart>? preferredParts;
   final Set<DetailsPart>? preferredPreviewParts;
@@ -87,16 +89,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>> {
   late final _posts = widget.posts;
-  late final _controller = PostDetailsPageViewController(
-    initialPage: widget.controller.initialPage,
-    initialHideOverlay: ref.read(settingsProvider).hidePostDetailsOverlay,
-    slideshowOptions: toSlideShowOptions(ref.read(settingsProvider)),
-    hoverToControlOverlay: widget.posts[widget.controller.initialPage].isVideo,
-    checkIfLargeScreen: () => context.isLargeScreen,
-    totalPage: _posts.length,
-    disableAnimation:
-        ref.read(settingsProvider.select((value) => value.reduceAnimations)),
-  );
+  late final _controller = widget.pageViewController;
   late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
     pageViewController: _controller,
     totalPosts: _posts.length,
@@ -154,7 +147,6 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   void dispose() {
-    _controller.dispose();
     _transformController.dispose();
     _volumeKeyPageNavigator.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
@@ -197,14 +189,6 @@ class _PostDetailPageScaffoldState<T extends Post>
     }
 
     _videoControlsHiddenByTimer = false;
-  }
-
-  SlideshowOptions toSlideShowOptions(Settings settings) {
-    return SlideshowOptions(
-      duration: settings.slideshowDuration,
-      direction: settings.slideshowDirection,
-      skipTransition: settings.skipSlideshowTransition,
-    );
   }
 
   void _isVideoPlayingChanged() {
@@ -570,10 +554,8 @@ class _PostDetailPageScaffoldState<T extends Post>
           },
         ),
         actions: [
-          if (widget.topRightButtonsBuilder != null)
-            ...widget.topRightButtonsBuilder!(
-              _controller,
-            )
+          if (widget.topRightButtons case final List<Widget> buttons)
+            ...buttons
           else ...[
             ValueListenableBuilder(
               valueListenable: widget.controller.currentPost,
