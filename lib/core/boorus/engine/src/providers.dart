@@ -6,6 +6,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 import '../../../comments/types.dart';
 import '../../../configs/config.dart';
 import '../../../downloads/filename/types.dart';
+import '../../../http/http.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
 import '../../../tags/tag/tag.dart';
@@ -116,4 +117,17 @@ final commentRepoProvider =
     return repository.comment(config);
   },
   name: 'commentRepoProvider',
+);
+
+final additionalHttpHeadersProvider =
+    Provider.family<CustomHttpHeaders, BooruConfigAuth>(
+  (ref, config) {
+    final repository =
+        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+
+    if (repository == null) return const CustomHttpHeaders.empty();
+
+    return repository.customHttpHeaders(config);
+  },
+  name: 'additionalHttpHeadersProvider',
 );

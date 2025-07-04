@@ -48,18 +48,6 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   );
 });
 
-final userAgentProvider = Provider.family<String, BooruType>(
-  (ref, booruType) {
-    final appVersion = ref.watch(packageInfoProvider).version;
-    final appName = ref.watch(appInfoProvider).appName;
-
-    return switch (booruType) {
-      BooruType.zerochan => '${appName.sentenceCase}/$appVersion - boorusama',
-      _ => '${appName.sentenceCase}/$appVersion',
-    };
-  },
-);
-
 final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
   (ref) {
     final cookieJar = ref.watch(cookieJarProvider);

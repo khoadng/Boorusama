@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import '../../../../foundation/info/app_info.dart';
+import '../../../../foundation/info/package_info.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../blacklists/providers.dart';
 import '../../../comments/providers.dart';
@@ -11,6 +13,9 @@ import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
 import '../../../downloads/urls/providers.dart';
 import '../../../downloads/urls/types.dart';
+import '../../../http/http.dart';
+import '../../../http/providers.dart';
+import '../../../images/providers.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/favorites/providers.dart';
@@ -114,5 +119,21 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(emptyCommentRepoProvider);
+  }
+
+  @override
+  CustomHttpHeaders customHttpHeaders(BooruConfigAuth config) {
+    final packageInfo = ref.watch(packageInfoProvider);
+    final appInfo = ref.watch(appInfoProvider);
+
+    return CustomHttpHeaders.defaults(
+      packageInfo,
+      appInfo,
+      headers: {
+        ...ref.watch(extraHttpHeaderProvider(
+            config)), // this cause issue since there is client provider in it which need dio provider which need this header again.
+        ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
+      },
+    );
   }
 }

@@ -25,9 +25,6 @@ import '../../../configs/config.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
-import '../../../http/http.dart';
-import '../../../http/providers.dart';
-import '../../../images/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../settings/providers.dart';
 import '../data/bookmark_convert.dart';
@@ -342,12 +339,8 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   ) async {
     final settings = ref.read(settingsProvider);
     final downloader = ref.read(downloadServiceProvider);
-    final headers = {
-      AppHttpHeaders.userAgentHeader:
-          ref.read(userAgentProvider(config.auth.booruType)),
-      ...ref.read(extraHttpHeaderProvider(config.auth)),
-      ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
-    };
+    final headers =
+        ref.read(additionalHttpHeadersProvider(config.auth)).toMap();
 
     final fileNameBuilder = fallbackFileNameBuilder;
 

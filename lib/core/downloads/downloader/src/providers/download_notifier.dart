@@ -161,12 +161,8 @@ Future<DownloadTaskInfo?> _download(
       ref.read(downloadFilenameBuilderProvider(booruConfig.auth));
   final logger = ref.read(loggerProvider);
 
-  final headers = {
-    AppHttpHeaders.userAgentHeader:
-        ref.read(userAgentProvider(booruConfig.auth.booruType)),
-    ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
-    ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),
-  };
+  final headers =
+      ref.read(additionalHttpHeadersProvider(booruConfig.auth)).toMap();
 
   final deviceStoragePermissionNotifier =
       ref.read(deviceStoragePermissionProvider.notifier);

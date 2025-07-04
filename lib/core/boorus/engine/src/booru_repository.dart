@@ -9,6 +9,7 @@ import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/types.dart';
+import '../../../http/http.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/favorites/providers.dart';
@@ -41,4 +42,5 @@ abstract class BooruRepository {
   TagGroupRepository<Post> tagGroup(BooruConfigAuth config);
   TagExtractor tagExtractor(BooruConfigAuth config);
   CommentRepository comment(BooruConfigAuth config);
+  CustomHttpHeaders customHttpHeaders(BooruConfigAuth config);
 }

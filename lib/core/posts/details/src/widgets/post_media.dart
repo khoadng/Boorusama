@@ -10,6 +10,7 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/path.dart';
 import '../../../../../foundation/platform.dart';
+import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
@@ -71,8 +72,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                             .onWebmVideoPlayerCreated(wvpc, post.id),
                         sound: ref.isGlobalVideoSoundOn,
                         playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                        userAgent:
-                            ref.watch(userAgentProvider(config.booruType)),
+                        userAgent: ref
+                            .watch(additionalHttpHeadersProvider(config))
+                            .getUserAgent(),
                       )
                     : BooruVideo(
                         heroTag: heroTag,

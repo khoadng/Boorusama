@@ -8,6 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/config/providers.dart';
 import '../../../downloads/downloader/providers.dart';
@@ -48,21 +49,9 @@ class RetryAllFailedButton extends ConsumerWidget {
                   ref.invalidate(cachedBypassDdosHeadersProvider);
                   WidgetsBinding.instance.addPostFrameCallback(
                     (_) {
-                      final headers = {
-                        AppHttpHeaders.userAgentHeader: ref.read(
-                          userAgentProvider(
-                            config.auth.booruType,
-                          ),
-                        ),
-                        ...ref.read(
-                          extraHttpHeaderProvider(config.auth),
-                        ),
-                        ...ref.read(
-                          cachedBypassDdosHeadersProvider(
-                            config.url,
-                          ),
-                        ),
-                      };
+                      final headers = ref
+                          .read(additionalHttpHeadersProvider(config.auth))
+                          .toMap();
 
                       FileDownloader().retryTask(
                         dt,
