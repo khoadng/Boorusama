@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../router.dart';
+import '../../../../widgets/general_more_action_button.dart';
 import '../../../details/details.dart';
 import '../../../favorites/providers.dart';
 import '../../../favorites/widgets.dart';
@@ -39,6 +40,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final commentPageBuilder = booruBuilder?.commentPageBuilder;
+    final config = ref.watchConfigAuth;
 
     return PostActionToolbar(
       children: [
@@ -60,6 +62,10 @@ class SimplePostActionToolbar extends ConsumerWidget {
             onPressed: () => goToCommentPage(context, ref, post.id),
           ),
         SharePostButton(post: post),
+        GeneralMoreActionButton(
+          post: post,
+          config: config,
+        ),
       ],
     );
   }
