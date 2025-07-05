@@ -92,6 +92,7 @@ dependencies:
   native_dio_adapter: ^1.4.0
   oktoast: ^3.4.0
   package_info_plus: ^8.0.2
+  pasteboard: ^0.4.0
   path: ^1.8.3
   path_drawing: ^1.0.1
   path_provider: ^2.1.2

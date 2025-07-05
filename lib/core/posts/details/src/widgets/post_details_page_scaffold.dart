@@ -570,6 +570,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               builder: (context, post, _) => GeneralMoreActionButton(
                 post: post,
                 config: widget.authConfig,
+                configViewer: widget.viewerConfig,
                 onStartSlideshow: () => _controller.startSlideshow(),
               ),
             ),

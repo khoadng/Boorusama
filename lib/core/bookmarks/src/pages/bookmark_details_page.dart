@@ -85,6 +85,7 @@ class _BookmarkDetailsPageState
     final pageViewController = data.pageViewController;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
     final auth = ref.watchConfigAuth;
+    final viewer = ref.watchConfigViewer;
     final post = InheritedPost.of<BookmarkPost>(context);
 
     return PostDetailsPageScaffold(
@@ -105,6 +106,7 @@ class _BookmarkDetailsPageState
         GeneralMoreActionButton(
           post: post,
           config: auth,
+          configViewer: viewer,
           onStartSlideshow: () => pageViewController.startSlideshow(),
           onDownload: (_) {
             ref.bookmarks.downloadBookmarks(

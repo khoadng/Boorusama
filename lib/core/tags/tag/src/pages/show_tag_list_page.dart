@@ -18,9 +18,9 @@ import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
 import '../../../favorites/providers.dart';
 import '../../widgets.dart';
+import '../tag_providers.dart';
 import '../types/tag.dart';
 import '../types/tag_display.dart';
-import '../tag_providers.dart';
 import '../widgets/filterable_scope.dart';
 
 final selectedViewTagQueryProvider =

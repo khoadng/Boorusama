@@ -17,11 +17,11 @@ import '../../../posts/post/post.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
+import 'tag_group_repository_impl.dart';
+import 'tag_repository_impl.dart';
 import 'types/tag_colors.dart';
 import 'types/tag_group_item.dart';
-import 'tag_group_repository_impl.dart';
 import 'types/tag_repository.dart';
-import 'tag_repository_impl.dart';
 
 final emptyTagRepoProvider =
     Provider<TagRepository>((ref) => EmptyTagRepository());

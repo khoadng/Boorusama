@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:oktoast/oktoast.dart';
+import 'package:pasteboard/pasteboard.dart';
 
 // Project imports:
 import 'animations/constants.dart';
@@ -11,6 +12,9 @@ import 'animations/constants.dart';
 abstract class AppClipboard {
   static Future<void> copy(String text) =>
       Clipboard.setData(ClipboardData(text: text));
+
+  static Future<void> copyImageBytes(Uint8List bytes) =>
+      Pasteboard.writeImage(bytes);
 
   static Future<String?> paste(String format) async {
     final data = await Clipboard.getData(format);

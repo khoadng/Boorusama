@@ -9,6 +9,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/downloads/downloader/providers.dart';
+import '../../../../../../core/images/copy.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/post/routes.dart';
 import '../../../../../../core/settings/routes.dart';
@@ -20,16 +21,20 @@ import '../../../../versions/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';
 import '../../../post/post.dart';
 
-class DanbooruMoreActionButton extends ConsumerWidget {
+class DanbooruMoreActionButton extends ConsumerWidget with CopyImageMixin {
   const DanbooruMoreActionButton({
     required this.post,
     required this.config,
+    required this.configViewer,
     super.key,
     this.onStartSlideshow,
   });
 
   final DanbooruPost post;
+  @override
   final BooruConfigAuth config;
+  @override
+  final BooruConfigViewer configViewer;
   final void Function()? onStartSlideshow;
 
   @override
@@ -47,6 +52,8 @@ class DanbooruMoreActionButton extends ConsumerWidget {
             switch (value) {
               case 'download':
                 ref.download(post);
+              case 'copy_image':
+                copyImage(ref, post);
               case 'add_to_favgroup':
                 goToAddToFavoriteGroupSelectionPage(context, [post]);
               case 'show_tag_list':
@@ -70,6 +77,7 @@ class DanbooruMoreActionButton extends ConsumerWidget {
           },
           itemBuilder: {
             'download': const Text('download.download').tr(),
+            'copy_image': const Text('Copy image'),
             if (config.hasLoginDetails())
               'add_to_favgroup':
                   const Text('post.action.add_to_favorite_group').tr(),

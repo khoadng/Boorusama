@@ -34,13 +34,14 @@ class DanbooruPostDetailsPage extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           final config = ref.watchConfigAuth;
+          final configViewer = ref.watchConfigViewer;
           final post = InheritedPost.of<DanbooruPost>(context);
 
           return PostDetailsPageScaffold(
             pageViewController: pageViewController,
             controller: detailsController,
             posts: posts,
-            viewerConfig: ref.watchConfigViewer,
+            viewerConfig: configViewer,
             authConfig: config,
             gestureConfig: ref.watchPostGestures,
             topRightButtons: [
@@ -52,6 +53,7 @@ class DanbooruPostDetailsPage extends StatelessWidget {
               DanbooruMoreActionButton(
                 post: post,
                 config: config,
+                configViewer: configViewer,
                 onStartSlideshow: () => pageViewController.startSlideshow(),
               ),
             ],

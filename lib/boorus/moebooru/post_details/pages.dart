@@ -97,6 +97,7 @@ class _MoebooruPostDetailsPageState
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final configViewer = ref.watchConfigViewer;
     final pageViewController = data.pageViewController;
 
     return PostDetailsPageScaffold(
@@ -109,6 +110,7 @@ class _MoebooruPostDetailsPageState
       topRightButtons: [
         GeneralMoreActionButton(
           config: config,
+          configViewer: configViewer,
           post: InheritedPost.of<MoebooruPost>(context),
           onStartSlideshow: config.hasLoginDetails()
               ? null
