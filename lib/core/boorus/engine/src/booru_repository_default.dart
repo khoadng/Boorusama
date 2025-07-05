@@ -106,9 +106,12 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return DefaultTagExtractor(
-      tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
-      siteHost: config.url,
-      tagRepository: tag(config),
+      resolver: TagResolver(
+        tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
+        siteHost: config.url,
+        tagRepository: tag(config),
+      ),
+      sorter: TagSorter.defaults(),
     );
   }
 

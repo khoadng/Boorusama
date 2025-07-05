@@ -1,6 +1,7 @@
-// packages/booru_clients/lib/src/hybooru/hybooru_client.dart
 // Package imports:
+import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:html/parser.dart';
 
 // Project imports:
 import 'types/types.dart';
@@ -16,6 +17,8 @@ typedef HybooruTags = ({
   int? total,
   int? pageSize,
 });
+
+const _kDefaultPageSize = 20;
 
 class HybooruClient {
   HybooruClient({
@@ -55,7 +58,7 @@ class HybooruClient {
     return (
       posts: posts,
       total: data['total'] as int?,
-      pageSize: data['pageSize'] as int?,
+      pageSize: _parsePageSize(data['pageSize']),
     );
   }
 
@@ -94,7 +97,7 @@ class HybooruClient {
     return (
       tags: tags,
       total: data['total'] as int?,
-      pageSize: data['pageSize'] as int?,
+      pageSize: _parsePageSize(data['pageSize']),
     );
   }
 
@@ -136,4 +139,46 @@ class HybooruClient {
       return [];
     }
   }
+
+  Future<List<TagDto>> getTagsFromPostId({required int postId}) async {
+    final crawlerDio = Dio(
+      BaseOptions(
+        baseUrl: _dio.options.baseUrl,
+        headers: _dio.options.headers,
+      ),
+    );
+
+    try {
+      final response = await crawlerDio.get('/posts/$postId');
+      final html = parse(response.data);
+
+      // Find the script element containing the JSON data
+      final scriptElement = html.querySelector('script#initialData');
+      if (scriptElement == null) return [];
+
+      final jsonText = scriptElement.text;
+      if (jsonText.isEmpty) return [];
+
+      final jsonData = json.decode(jsonText) as Map<String, dynamic>;
+      final post = jsonData['post'] as Map<String, dynamic>?;
+      if (post == null) return [];
+
+      final tags = post['tags'] as Map<String, dynamic>?;
+      if (tags == null) return [];
+
+      return tags.entries
+          .map((entry) => TagDto.fromJson(entry.key, entry.value as int))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+}
+
+int _parsePageSize(dynamic pageSize) {
+  return switch (pageSize) {
+    int size => size,
+    String size => int.tryParse(size) ?? _kDefaultPageSize,
+    _ => _kDefaultPageSize,
+  };
 }

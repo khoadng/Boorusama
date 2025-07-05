@@ -86,7 +86,7 @@ class HybooruBuilder
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<HybooruPost>(),
       DetailsPart.tags: (context) =>
-          const DefaultInheritedBasicTagsTile<HybooruPost>(),
+          const DefaultInheritedTagsTile<HybooruPost>(),
       DetailsPart.fileDetails: (context) => const HybooruFileDetailsSection(),
     },
   );

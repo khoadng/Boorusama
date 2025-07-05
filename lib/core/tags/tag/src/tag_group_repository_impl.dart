@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../configs/config/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../categories/providers.dart';
-import 'tag_group_item.dart';
-import 'tag_repository.dart';
+import 'types/tag_group_item.dart';
+import 'types/tag_repository.dart';
 
 class EmptyTagGroupRepository implements TagGroupRepository {
   const EmptyTagGroupRepository();

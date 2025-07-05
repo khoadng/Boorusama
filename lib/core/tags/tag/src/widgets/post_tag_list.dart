@@ -7,9 +7,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 // Project imports:
 import '../../../../configs/config.dart';
 import '../../../../posts/details_parts/widgets.dart';
-import '../tag.dart';
-import '../tag_display.dart';
-import '../tag_group_item.dart';
+import '../types/tag.dart';
+import '../types/tag_display.dart';
+import '../types/tag_group_item.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({

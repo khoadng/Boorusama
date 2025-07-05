@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/utils/collection_utils.dart';
-import '../../categories/tag_category.dart';
+import '../../../../../foundation/utils/collection_utils.dart';
+import '../../../categories/tag_category.dart';
 import 'tag.dart';
 import 'tag_display.dart';
 

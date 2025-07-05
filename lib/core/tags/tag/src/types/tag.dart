@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../categories/tag_category.dart';
+import '../../../categories/tag_category.dart';
 
 typedef PostCount = int;
 
@@ -57,3 +57,5 @@ class Tag extends Equatable {
   @override
   List<Object?> get props => [name, category, postCount];
 }
+
+typedef TagFetcher = Future<List<Tag>> Function(int postId);

@@ -3,6 +3,8 @@ import 'package:booru_clients/hybooru.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
+import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/tag/tag.dart';
 
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) {
   final tagName = e.name ?? '';
@@ -16,4 +18,25 @@ AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) {
     postCount: e.posts,
     category: category,
   );
+}
+
+Tag tagDtoToTag(TagDto dto) {
+  return Tag(
+    name: dto.name ?? '',
+    category: _mapTagTypeToTagCategory(dto.type),
+    postCount: dto.count,
+  );
+}
+
+TagCategory _mapTagTypeToTagCategory(TagType type) {
+  return switch (type) {
+    TagType.artist || TagType.creator => TagCategory.artist(),
+    TagType.character || TagType.person => TagCategory.character(),
+    TagType.copyright ||
+    TagType.series ||
+    TagType.studio =>
+      TagCategory.copyright(),
+    TagType.meta || TagType.system || TagType.rating => TagCategory.meta(),
+    TagType.medium || TagType.fm || TagType.general => TagCategory.general(),
+  };
 }

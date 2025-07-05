@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
-import 'tag_colors.dart';
+import 'types/tag_colors.dart';
 
 abstract class TagColorGenerator {
   Color? generateColor(

@@ -73,6 +73,7 @@ class _DefaultInheritedTagsTileState<T extends Post>
             )
           : BasicTagsTile(
               post: post,
+              tags: post.tags,
               auth: ref.watchConfigAuth,
             ),
     );
