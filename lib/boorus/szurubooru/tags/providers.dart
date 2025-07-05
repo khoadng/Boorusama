@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../../../foundation/utils/color_utils.dart';
 import '../client_provider.dart';
@@ -66,13 +65,17 @@ final szurubooruTagCategoriesProvider =
   },
 );
 
-final szurubooruTagGroupRepoProvider =
-    Provider.family<TagGroupRepository<SzurubooruPost>, BooruConfigAuth>(
+final szurubooruTagExtractorProvider =
+    Provider.family<TagExtractor<SzurubooruPost>, BooruConfigAuth>(
   (ref, config) {
-    return TagGroupRepositoryBuilder(
-      ref: ref,
-      loadGroups: (post, options) async {
-        return createTagGroupItems(post.tagDetails);
+    return TagExtractorBuilder(
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) {
+        if (post case final SzurubooruPost szurubooruPost) {
+          return szurubooruPost.tagDetails;
+        } else {
+          return TagExtractor.extractTagsFromGenericPost(post);
+        }
       },
     );
   },

@@ -47,7 +47,7 @@ final trendingTagsProvider = FutureProvider.autoDispose
   final tagResolver = ref.watch(tagResolverProvider(arg.auth));
 
   final tags =
-      await tagResolver.resolveTags(filtered.map((e) => e.keyword).toList());
+      await tagResolver.resolveRawTags(filtered.map((e) => e.keyword).toList());
 
   // Sort tags by hit count (descending order)
   // Create a map from keyword to hit count for efficient lookup

@@ -1,7 +1,11 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import '../../../../posts/post/post.dart';
 import '../../../categories/tag_category.dart';
 
 typedef PostCount = int;
@@ -58,4 +62,15 @@ class Tag extends Equatable {
   List<Object?> get props => [name, category, postCount];
 }
 
-typedef TagFetcher = Future<List<Tag>> Function(int postId);
+typedef TagFetcher = FutureOr<List<Tag>> Function(
+  Post post,
+  ExtractOptions options,
+);
+
+class ExtractOptions {
+  const ExtractOptions({
+    this.fetchTagCount = false,
+  });
+
+  final bool fetchTagCount;
+}

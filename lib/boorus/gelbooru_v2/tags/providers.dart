@@ -3,18 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
-import '../../../core/configs/config/providers.dart';
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
+import '../../../foundation/riverpod/riverpod.dart';
 import '../client_provider.dart';
-import '../posts/types.dart';
 import 'parser.dart';
 
 final gelbooruV2TagsFromIdProvider =
-    FutureProvider.autoDispose.family<List<Tag>, int>(
-  (ref, id) async {
-    final config = ref.watchConfigAuth;
+    FutureProvider.autoDispose.family<List<Tag>, (BooruConfigAuth, int)>(
+  (ref, params) async {
+    ref.cacheFor(const Duration(minutes: 5));
+
+    final (config, id) = params;
     final client = ref.watch(gelbooruV2ClientProvider(config));
 
     final data = await client.getTagsFromPostId(postId: id);
@@ -23,16 +23,16 @@ final gelbooruV2TagsFromIdProvider =
   },
 );
 
-final gelbooruV2TagGroupRepoProvider =
-    Provider.family<TagGroupRepository<GelbooruV2Post>, BooruConfigAuth>(
+final gelbooruV2TagExtractorProvider =
+    Provider.family<TagExtractor, BooruConfigAuth>(
   (ref, config) {
-    return TagGroupRepositoryBuilder(
-      ref: ref,
-      loadGroups: (post, options) async {
-        final tags =
-            await ref.read(gelbooruV2TagsFromIdProvider(post.id).future);
+    return TagExtractorBuilder(
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) async {
+        final tags = await ref
+            .read(gelbooruV2TagsFromIdProvider((config, post.id)).future);
 
-        return createTagGroupItems(tags);
+        return tags;
       },
     );
   },

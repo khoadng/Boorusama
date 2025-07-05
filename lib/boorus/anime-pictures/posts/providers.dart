@@ -8,6 +8,7 @@ import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
+import '../../../foundation/riverpod/riverpod.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 
@@ -58,6 +59,8 @@ final animePicturesPostRepoProvider =
 
 final postDetailsProvider = FutureProvider.autoDispose
     .family<PostDetailsDto, (BooruConfigAuth, int)>((ref, params) async {
+  ref.cacheFor(const Duration(seconds: 30));
+
   final (config, id) = params;
 
   final client = ref.watch(animePicturesClientProvider(config));

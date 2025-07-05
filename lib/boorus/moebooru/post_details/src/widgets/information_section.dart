@@ -11,7 +11,6 @@ import '../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../core/router.dart';
 import '../../../../../core/tags/tag/tag.dart';
 import '../../../posts/types.dart';
-import '../../../tag_groups/providers.dart';
 import '../../../tags/providers.dart';
 
 class MoebooruInformationSection extends ConsumerWidget {

@@ -18,7 +18,6 @@ import 'autocompletes/providers.dart';
 import 'comments/providers.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
-import 'tag_groups/providers.dart';
 import 'tags/providers.dart';
 
 class MoebooruRepository extends BooruRepositoryDefault {
@@ -94,8 +93,8 @@ class MoebooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(moebooruTagGroupRepoProvider(config));
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(moebooruTagExtractorProvider(config));
   }
 
   @override

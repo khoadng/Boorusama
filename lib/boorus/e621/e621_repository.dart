@@ -25,6 +25,7 @@ import 'favorites/providers.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
+import 'tags/parser.dart';
 import 'tags/providers.dart';
 
 const kE621PostSamples = [
@@ -154,8 +155,8 @@ class E621Repository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(e621TagGroupRepoProvider(config));
+  TagExtractor<Post> tagExtractor(BooruConfigAuth config) {
+    return ref.watch(e621TagExtractorProvider(config));
   }
 
   @override
@@ -169,17 +170,28 @@ class E621TagColorGenerator implements TagColorGenerator {
 
   @override
   Color? generateColor(TagColorOptions options) {
-    return switch (options.tagType) {
-      'general' => options.colors.general,
-      'artist' => options.colors.artist,
-      'copyright' => options.colors.copyright,
-      'character' => options.colors.character,
-      'species' => options.colors.get('species'),
-      'invalid' => options.colors.get('invalid'),
-      'meta' => options.colors.meta,
-      'lore' => options.colors.get('lore'),
-      _ => options.colors.general,
-    };
+    final tagCategory = stringToE621TagCategory(options.tagType);
+
+    if (tagCategory == e621InvalidTagCategory) {
+      return options.colors.customColors['invalid'];
+    } else if (tagCategory == e621SpeciesTagCategory) {
+      return options.colors.customColors['species'];
+    } else if (tagCategory == e621LoreTagCategory) {
+      return options.colors.customColors['lore'];
+    } else if (tagCategory == e621MetaTagCagegory) {
+      return options.colors.meta;
+    } else if (tagCategory == e621ArtistTagCategory) {
+      return options.colors.artist;
+    } else if (tagCategory == e621CopyrightTagCategory) {
+      return options.colors.copyright;
+    } else if (tagCategory == e621CharacterTagCategory) {
+      return options.colors.character;
+    } else if (tagCategory == e621GeneralTagCategory) {
+      return options.colors.general;
+    } else {
+      return options.colors.customColors[tagCategory.name] ??
+          options.colors.general;
+    }
   }
 
   @override

@@ -32,14 +32,15 @@ final invalidTags = [
   ':&lt;',
 ];
 
-final gelbooruTagGroupRepoProvider =
-    Provider.family<TagGroupRepository<GelbooruPost>, BooruConfigAuth>(
+final gelbooruTagExtractorProvider =
+    Provider.family<TagExtractor<GelbooruPost>, BooruConfigAuth>(
   (ref, config) {
-    final tagRepo = ref.watch(gelbooruTagRepoProvider(config));
+    return TagExtractorBuilder(
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) async {
+        // Use read to avoid circular dependency
+        final tagResolver = ref.read(tagResolverProvider(config));
 
-    return TagGroupRepositoryBuilder(
-      ref: ref,
-      loadGroups: (post, options) async {
         final tagList = post.tags;
 
         // filter tagList to remove invalid tags
@@ -47,9 +48,9 @@ final gelbooruTagGroupRepoProvider =
 
         if (filtered.isEmpty) return const [];
 
-        final tags = await tagRepo.getTagsByName(filtered, 1);
+        final tags = await tagResolver.resolveRawTags(filtered);
 
-        return createTagGroupItems(tags);
+        return tags;
       },
     );
   },

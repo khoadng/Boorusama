@@ -98,8 +98,8 @@ class ZerochanRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(zerochanTagGroupRepoProvider(config));
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(zerochanTagExtractorProvider(config));
   }
 }
 

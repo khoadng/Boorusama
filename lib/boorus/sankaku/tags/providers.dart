@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
@@ -27,19 +26,23 @@ final sankakuAutocompleteRepoProvider =
   );
 });
 
-final sankakuTagGroupRepoProvider =
-    Provider.family<TagGroupRepository<SankakuPost>, BooruConfigAuth>(
+final sankakuTagExtractorProvider =
+    Provider.family<TagExtractor<SankakuPost>, BooruConfigAuth>(
   (ref, config) {
-    return TagGroupRepositoryBuilder(
-      ref: ref,
-      loadGroups: (post, options) async {
-        return createTagGroupItems([
-          ...post.artistDetailsTags,
-          ...post.characterDetailsTags,
-          ...post.copyrightDetailsTags,
-          ...post.generalDetailsTags,
-          ...post.metaDetailsTags,
-        ]);
+    return TagExtractorBuilder(
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) {
+        if (post case final SankakuPost sankakuPost) {
+          return [
+            ...sankakuPost.artistDetailsTags,
+            ...sankakuPost.characterDetailsTags,
+            ...sankakuPost.copyrightDetailsTags,
+            ...sankakuPost.generalDetailsTags,
+            ...sankakuPost.metaDetailsTags,
+          ];
+        } else {
+          return TagExtractor.extractTagsFromGenericPost(post);
+        }
       },
     );
   },

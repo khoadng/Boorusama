@@ -1,15 +1,12 @@
 // Package imports:
-import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
 import '../posts/providers.dart';
-import '../posts/types.dart';
 import 'parser.dart';
 
 final animePicturesAutocompleteRepoProvider =
@@ -29,27 +26,20 @@ final animePicturesAutocompleteRepoProvider =
   },
 );
 
-final animePictureTagGroupRepoProvider =
-    Provider.family<TagGroupRepository<AnimePicturesPost>, BooruConfigAuth>(
-  (ref, config) {
-    return TagGroupRepositoryBuilder(
-      ref: ref,
-      loadGroups: (post, options) async {
-        final postDetails =
-            await ref.read(postDetailsProvider((config, post.id)).future);
+final animePicturesTagExtractorProvider =
+    Provider.family<TagExtractor, BooruConfigAuth>((ref, config) {
+  return TagExtractorBuilder(
+    sorter: TagSorter.defaults(),
+    fetcher: (post, options) async {
+      final postDetails =
+          await ref.read(postDetailsProvider((config, post.id)).future);
 
-        final tagGroups = <TagGroupItem>[
-          for (final c in AnimePicturesTagType.values)
-            animePicturesTagTypeToTagGroupItem(
-              c,
-              postDetails: postDetails,
-            ),
-        ]..sort((a, b) => a.order.compareTo(b.order));
-
-        final filtered = tagGroups.where((e) => e.tags.isNotEmpty).toList();
-
-        return filtered;
-      },
-    );
-  },
-);
+      return postDetails.tags
+              ?.map((e) => e.tag)
+              .nonNulls
+              .map(tagDtoToTag)
+              .toList() ??
+          const <Tag>[];
+    },
+  );
+});

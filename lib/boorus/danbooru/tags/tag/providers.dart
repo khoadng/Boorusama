@@ -3,14 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../core/configs/config.dart';
-import '../../../../core/configs/ref.dart';
-import '../../../../core/tags/categories/providers.dart';
 import '../../../../core/tags/categories/tag_category.dart';
 import '../../../../core/tags/tag/providers.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../client_provider.dart';
 import '../../posts/post/post.dart';
-import 'src/tag_extractor.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -40,40 +37,78 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   },
 );
 
-final danbooruTagCategoryProvider =
-    FutureProvider.family<TagCategory?, String>((ref, tag) async {
-  final config = ref.watchConfigAuth;
-  final store = await ref.watch(booruTagTypeStoreProvider.future);
-  final type = await store.getTagCategory(config.url, tag);
-
-  return TagCategory.fromLegacyIdString(type);
-});
-
 final danbooruTagExtractorProvider =
     Provider.family<TagExtractor<DanbooruPost>, BooruConfigAuth>(
-  (ref, config) => const DanbooruTagExtractor(),
-);
-
-final danbooruTagGroupRepoProvider =
-    Provider.family<TagGroupRepository<DanbooruPost>, BooruConfigAuth>(
   (ref, config) {
-    final tagRepo = ref.watch(danbooruTagRepoProvider(config));
-    final tagExtractor = ref.watch(danbooruTagExtractorProvider(config));
+    return TagExtractorBuilder(
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) {
+        // Use read to avoid circular dependency
+        final tagResolver = ref.read(tagResolverProvider(config));
 
-    return TagGroupRepositoryBuilder(
-      ref: ref,
-      loadGroups: (post, options) async {
-        if (!options.fetchTagCount) {
-          final extractTags = await tagExtractor.extractTags(post);
-          return createTagGroupItems(extractTags);
+        if (post case final DanbooruPost danbooruPost) {
+          final tags = _extractTagsFromPost(danbooruPost);
+
+          if (!options.fetchTagCount) {
+            return tags;
+          }
+
+          return tagResolver.resolvePartialTags(tags);
+        } else {
+          return TagExtractor.extractTagsFromGenericPost(post);
         }
-
-        final tagList = post.tags;
-
-        final tags = await tagRepo.getTagsByName(tagList, 1);
-
-        return createTagGroupItems(tags);
       },
     );
   },
 );
+
+List<Tag> _extractTagsFromPost(DanbooruPost post) {
+  final tags = <Tag>[];
+
+  for (final t in post.artistTags) {
+    tags.add(
+      Tag.noCount(
+        name: t,
+        category: TagCategory.artist(),
+      ),
+    );
+  }
+
+  for (final t in post.copyrightTags) {
+    tags.add(
+      Tag.noCount(
+        name: t,
+        category: TagCategory.copyright(),
+      ),
+    );
+  }
+
+  for (final t in post.characterTags) {
+    tags.add(
+      Tag.noCount(
+        name: t,
+        category: TagCategory.character(),
+      ),
+    );
+  }
+
+  for (final t in post.metaTags) {
+    tags.add(
+      Tag.noCount(
+        name: t,
+        category: TagCategory.meta(),
+      ),
+    );
+  }
+
+  for (final t in post.generalTags) {
+    tags.add(
+      Tag.noCount(
+        name: t,
+        category: TagCategory.general(),
+      ),
+    );
+  }
+
+  return tags;
+}

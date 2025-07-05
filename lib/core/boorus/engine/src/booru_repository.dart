@@ -38,7 +38,6 @@ abstract class BooruRepository {
   TagColorGenerator tagColorGenerator();
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
   TextMatcher? queryMatcher(BooruConfigAuth config);
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config);
   TagExtractor tagExtractor(BooruConfigAuth config);
   CommentRepository comment(BooruConfigAuth config);
 }

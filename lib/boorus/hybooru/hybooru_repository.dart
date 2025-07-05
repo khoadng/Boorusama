@@ -11,7 +11,6 @@ import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
-import '../../core/tags/tag/providers.dart';
 import '../../core/tags/tag/tag.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
@@ -66,20 +65,7 @@ class HybooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(hybooruTagGroupRepoProvider(config));
-  }
-
-  @override
-  TagExtractor<Post> tagExtractor(BooruConfigAuth config) {
-    return TagExtractorBuilder(
-      fetcher: (postId) async {
-        final tags =
-            await ref.read(hybooruTagsFromIdProvider((config, postId)).future);
-
-        return tags;
-      },
-      sorter: TagSorter.defaults(),
-    );
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(hybooruTagExtractorProvider(config));
   }
 }

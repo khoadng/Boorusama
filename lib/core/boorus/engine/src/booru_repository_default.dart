@@ -98,15 +98,10 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(emptyTagGroupRepoProvider(config));
-  }
-
-  @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
-    return DefaultTagExtractor(
-      resolver: ref.watch(tagResolverProvider(config)),
+    return TagExtractorBuilder(
       sorter: TagSorter.defaults(),
+      fetcher: (post, options) => TagExtractor.extractTagsFromGenericPost(post),
     );
   }
 

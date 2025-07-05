@@ -78,7 +78,7 @@ class SzurubooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(szurubooruTagGroupRepoProvider(config));
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(szurubooruTagExtractorProvider(config));
   }
 }

@@ -80,19 +80,6 @@ final queryMatcherProvider = Provider.family<TextMatcher?, BooruConfigAuth>(
   name: 'queryMatcherProvider',
 );
 
-final tagGroupRepoProvider =
-    Provider.family<TagGroupRepository<Post>?, BooruConfigAuth>(
-  (ref, config) {
-    final repository =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
-
-    if (repository == null) return null;
-
-    return repository.tagGroup(config);
-  },
-  name: 'tagGroupRepoProvider',
-);
-
 final tagExtractorProvider = Provider.family<TagExtractor?, BooruConfigAuth>(
   (ref, config) {
     final repository =

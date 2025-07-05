@@ -81,8 +81,8 @@ class SankakuRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(sankakuTagGroupRepoProvider(config));
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(sankakuTagExtractorProvider(config));
   }
 }
 

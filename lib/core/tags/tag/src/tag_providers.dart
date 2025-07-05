@@ -18,8 +18,8 @@ import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
 import '../../local/providers.dart';
-import 'tag_group_repository_impl.dart';
 import 'tag_repository_impl.dart';
+import 'types/tag.dart';
 import 'types/tag_colors.dart';
 import 'types/tag_group_item.dart';
 import 'types/tag_repository.dart';
@@ -117,14 +117,18 @@ final tagGroupsProvider = FutureProvider.autoDispose
   final config = params.$1;
   final post = params.$2;
 
-  final tagGroupRepo = ref.watch(tagGroupRepoProvider(config));
+  final tagExtractor = ref.watch(tagExtractorProvider(config));
 
-  return tagGroupRepo?.getTagGroups(
+  if (tagExtractor == null) return null;
+
+  final tags = await tagExtractor.extractTags(
     post,
-    options: const TagGroupOptions(
+    options: const ExtractOptions(
       fetchTagCount: true,
     ),
   );
+
+  return createTagGroupItems(tags);
 });
 
 final tagResolverProvider =
@@ -132,14 +136,10 @@ final tagResolverProvider =
   return TagResolver(
     tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
     siteHost: config.url,
-    tagRepository: ref.watch(tagRepoProvider(config)),
+    tagRepositoryBuilder: () => ref
+        .read(tagRepoProvider(config)), // use read to avoid circular dependency
   );
 });
-
-final emptyTagGroupRepoProvider =
-    Provider.family<TagGroupRepository<Post>, BooruConfigAuth>(
-  (ref, config) => const EmptyTagGroupRepository(),
-);
 
 final artistCharacterGroupProvider = AsyncNotifierProvider.autoDispose.family<
     ArtistCharacterNotifier, ArtistCharacterGroup, ArtistCharacterGroupParams>(
@@ -175,13 +175,14 @@ class ArtistCharacterNotifier extends AutoDisposeFamilyAsyncNotifier<
     final post = arg.post;
     final config = arg.auth;
 
-    final repo = ref.watch(tagGroupRepoProvider(config));
+    final extractor = ref.watch(tagExtractorProvider(config));
 
-    if (repo == null) {
+    if (extractor == null) {
       return const ArtistCharacterGroup.empty();
     }
 
-    final group = await repo.getTagGroups(post);
+    final tags = await extractor.extractTags(post);
+    final group = createTagGroupItems(tags);
 
     return ArtistCharacterGroup(
       characterTags: group

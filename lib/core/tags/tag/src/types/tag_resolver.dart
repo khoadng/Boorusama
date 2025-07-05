@@ -13,55 +13,54 @@ class TagResolver {
   TagResolver({
     required this.tagCacheBuilder,
     required this.siteHost,
-    this.tagRepository,
+    this.tagRepositoryBuilder,
   });
 
   final Future<TagCacheRepository> Function() tagCacheBuilder;
-  final TagRepository? tagRepository;
+  final TagRepository Function()? tagRepositoryBuilder;
   final String siteHost;
 
-  Future<List<Tag>> resolveTags(List<String> tagNames) async {
-    if (tagNames.isEmpty) return [];
+  Future<List<Tag>> resolvePartialTags(List<Tag> tags) async {
+    if (tags.isEmpty) return [];
+
+    // Find tags with 0 post count that need resolution
+    final tagsNeedingResolution =
+        tags.where((tag) => tag.postCount == 0).toList();
+
+    if (tagsNeedingResolution.isEmpty) return tags;
 
     final tagCache = await tagCacheBuilder();
+    final tagNames = tagsNeedingResolution.map((tag) => tag.name).toList();
     final result = await tagCache.resolveTags(siteHost, tagNames);
 
     // Try to resolve unknown tags if tag repository is available
-    final resolvedTags = <CachedTag>[];
-    if (tagRepository != null && result.missing.isNotEmpty) {
-      try {
-        final unknownTags =
-            await tagRepository!.getTagsByName(result.missing.toSet(), 1);
+    final resolvedTags = await _resolveUnknownTags(result.missing);
 
-        // Convert resolved tags to CachedTag and save to cache
-        for (final tag in unknownTags) {
-          final cachedTag = CachedTag(
-            siteHost: siteHost,
-            tagName: tag.name,
-            category: tag.category.name,
-            postCount: tag.postCount,
-          );
-          resolvedTags.add(cachedTag);
-        }
-
-        // Save to cache for future use
-        await tagCache.saveTagsBatch(
-          resolvedTags
-              .map(
-                (tag) => TagInfo(
-                  siteHost: siteHost,
-                  tagName: tag.tagName,
-                  category: tag.category,
-                  postCount: tag.postCount,
-                  metadata: tag.metadata,
-                ),
-              )
-              .toList(),
-        );
-      } catch (e) {
-        // If resolution fails, continue with cached results only
+    // Create a map of tag names to their cached post counts
+    final cachedPostCounts = <String, int>{};
+    for (final cachedTag in [...result.found, ...resolvedTags]) {
+      if (cachedTag.postCount != null) {
+        cachedPostCounts[cachedTag.tagName] = cachedTag.postCount!;
       }
     }
+
+    // Update tags with cached post counts
+    return tags.map((tag) {
+      if (tag.postCount == 0 && cachedPostCounts.containsKey(tag.name)) {
+        return tag.copyWith(tag.name, tag.category, cachedPostCounts[tag.name]);
+      }
+      return tag;
+    }).toList();
+  }
+
+  Future<List<Tag>> resolveRawTags(Iterable<String> tagNames) async {
+    if (tagNames.isEmpty) return [];
+
+    final tagCache = await tagCacheBuilder();
+    final result = await tagCache.resolveTags(siteHost, tagNames.toList());
+
+    // Try to resolve unknown tags if tag repository is available
+    final resolvedTags = await _resolveUnknownTags(result.missing);
 
     final resolvedTagNames = resolvedTags.map((tag) => tag.tagName).toSet();
 
@@ -80,6 +79,55 @@ class TagResolver {
     final tags = _mapCachedTagsToTags(finalTags);
 
     return tags;
+  }
+
+  Future<List<CachedTag>> _resolveUnknownTags(
+    List<String> missingTagNames,
+  ) async {
+    if (tagRepositoryBuilder == null || missingTagNames.isEmpty) {
+      return [];
+    }
+
+    try {
+      final tagRepository = tagRepositoryBuilder!();
+      final unknownTags =
+          await tagRepository.getTagsByName(missingTagNames.toSet(), 1);
+
+      // Convert resolved tags to CachedTag and save to cache
+      final resolvedTags = <CachedTag>[];
+      for (final tag in unknownTags) {
+        final cachedTag = CachedTag(
+          siteHost: siteHost,
+          tagName: tag.name,
+          category: tag.category.name,
+          postCount: tag.postCount,
+        );
+        resolvedTags.add(cachedTag);
+      }
+
+      // Save to cache for future use
+      if (resolvedTags.isNotEmpty) {
+        final tagCache = await tagCacheBuilder();
+        await tagCache.saveTagsBatch(
+          resolvedTags
+              .map(
+                (tag) => TagInfo(
+                  siteHost: siteHost,
+                  tagName: tag.tagName,
+                  category: tag.category,
+                  postCount: tag.postCount,
+                  metadata: tag.metadata,
+                ),
+              )
+              .toList(),
+        );
+      }
+
+      return resolvedTags;
+    } catch (e) {
+      // If resolution fails, return empty list
+      return [];
+    }
   }
 
   List<Tag> _mapCachedTagsToTags(List<CachedTag> cachedTags) => cachedTags

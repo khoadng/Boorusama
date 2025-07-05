@@ -104,8 +104,8 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(animePictureTagGroupRepoProvider(config));
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(animePicturesTagExtractorProvider(config));
   }
 }
 

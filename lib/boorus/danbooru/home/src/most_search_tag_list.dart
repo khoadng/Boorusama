@@ -9,7 +9,6 @@ import '../../../../core/configs/ref.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../../../core/tags/tag/widgets.dart';
 import '../../../../core/theme/providers.dart';
-import '../../tags/tag/providers.dart';
 import '../../tags/tag/widgets.dart';
 import '../../tags/trending/providers.dart';
 
@@ -71,17 +70,11 @@ class _Chip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors =
-        ref.watch(danbooruTagCategoryProvider(search.rawName)).maybeWhen(
-              data: (data) => data != null
-                  ? ref.watch(
-                      chipColorsFromTagStringProvider(
-                        (ref.watchConfigAuth, data.name),
-                      ),
-                    )
-                  : null,
-              orElse: () => null,
-            );
+    final colors = ref.watch(
+      chipColorsFromTagStringProvider(
+        (ref.watchConfigAuth, search.category.name),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),

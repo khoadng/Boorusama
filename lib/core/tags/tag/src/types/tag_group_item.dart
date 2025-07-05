@@ -44,7 +44,7 @@ List<TagGroupItem> createTagGroupItems(List<Tag> tags) {
       .map(
         (e) => TagGroupItem(
           category: e.key.id,
-          groupName: e.key.name.sentenceCase,
+          groupName: e.key.displayName ?? e.key.name.sentenceCase,
           tags: e.value,
           order: e.key.order ?? 99999,
         ),

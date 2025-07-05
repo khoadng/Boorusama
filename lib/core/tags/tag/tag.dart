@@ -5,3 +5,4 @@ export 'src/types/filter_category.dart';
 export 'src/types/tag_group_item.dart';
 export 'src/types/tag_resolver.dart';
 export 'src/types/tag_sorter.dart';
+export 'src/types/tag_extractor.dart';

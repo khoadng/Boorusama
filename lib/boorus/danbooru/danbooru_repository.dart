@@ -140,11 +140,6 @@ class DanbooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(danbooruTagGroupRepoProvider(config));
-  }
-
-  @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(danbooruTagExtractorProvider(config));
   }

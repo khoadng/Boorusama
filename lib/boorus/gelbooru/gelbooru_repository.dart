@@ -119,8 +119,8 @@ class GelbooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  TagGroupRepository<Post> tagGroup(BooruConfigAuth config) {
-    return ref.watch(gelbooruTagGroupRepoProvider(config));
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return ref.watch(gelbooruTagExtractorProvider(config));
   }
 
   @override
