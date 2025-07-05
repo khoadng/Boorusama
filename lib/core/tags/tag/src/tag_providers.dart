@@ -17,11 +17,13 @@ import '../../../posts/post/post.dart';
 import '../../../theme.dart';
 import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
+import '../../local/providers.dart';
 import 'tag_group_repository_impl.dart';
 import 'tag_repository_impl.dart';
 import 'types/tag_colors.dart';
 import 'types/tag_group_item.dart';
 import 'types/tag_repository.dart';
+import 'types/tag_resolver.dart';
 
 final emptyTagRepoProvider =
     Provider<TagRepository>((ref) => EmptyTagRepository());
@@ -122,6 +124,15 @@ final tagGroupsProvider = FutureProvider.autoDispose
     options: const TagGroupOptions(
       fetchTagCount: true,
     ),
+  );
+});
+
+final tagResolverProvider =
+    Provider.family<TagResolver, BooruConfigAuth>((ref, config) {
+  return TagResolver(
+    tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
+    siteHost: config.url,
+    tagRepository: ref.watch(tagRepoProvider(config)),
   );
 });
 

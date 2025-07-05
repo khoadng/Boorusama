@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../../../core/tags/categories/tag_category.dart';
-import '../../../tags/trending/trending.dart';
+import '../../../tags/trending/types.dart';
 
 class TrendingTag extends Equatable {
   const TrendingTag({

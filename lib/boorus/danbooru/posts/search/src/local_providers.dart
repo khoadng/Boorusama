@@ -6,35 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
-import '../../../tags/tag/providers.dart';
+import '../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../core/tags/tag/tag.dart';
 import '../../../tags/trending/providers.dart';
-import '../../../tags/trending/trending.dart';
-import 'trending_tag.dart';
 
 const _kTrendingTagCount = 15;
 
 final top15TrendingTagsProvider = FutureProvider.autoDispose
-    .family<List<TrendingTag>, BooruConfigFilter>((ref, config) async {
+    .family<List<Tag>, BooruConfigFilter>((ref, config) async {
   final tags = await ref.watch(trendingTagsProvider(config).future);
 
-  final trendingTags = <TrendingTag>[];
-
-  for (final tag in tags.take(_kTrendingTagCount)) {
-    final cat =
-        await ref.watch(danbooruTagCategoryProvider(tag.keyword).future);
-    trendingTags.add(
-      TrendingTag(
-        name: tag,
-        category: cat,
-      ),
-    );
-  }
-
-  return trendingTags;
+  return tags.take(_kTrendingTagCount).toList(growable: false);
 });
 
-final top15PlaceholderTagsProvider = Provider<List<TrendingTag>>((ref) {
-  final tags = <TrendingTag>[];
+final top15PlaceholderTagsProvider = Provider<List<Tag>>((ref) {
+  final tags = <Tag>[];
   final rnd = Random();
   const minChar = 6;
   const maxChar = 20;
@@ -47,8 +33,10 @@ final top15PlaceholderTagsProvider = Provider<List<TrendingTag>>((ref) {
     }
 
     tags.add(
-      TrendingTag(
-        name: Search(keyword: sb.toString(), hitCount: 1),
+      Tag(
+        name: sb.toString(),
+        category: TagCategory.unknown(),
+        postCount: rnd.nextInt(1000),
       ),
     );
   }

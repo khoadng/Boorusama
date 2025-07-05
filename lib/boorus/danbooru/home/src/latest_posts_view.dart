@@ -16,6 +16,7 @@ import '../../../../core/search/selected_tags/providers.dart';
 import '../../../../core/settings/providers.dart';
 import '../../../../core/settings/settings.dart';
 import '../../../../core/tags/configs/providers.dart';
+import '../../../../core/tags/tag/tag.dart';
 import '../../../../foundation/display.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';
@@ -116,13 +117,13 @@ class _LatestViewState extends ConsumerState<LatestView> {
                         selected: value,
                         onSelected: (search, sel) {
                           _selectedMostSearchedTag.value =
-                              search.keyword == value ? '' : search.keyword;
+                              search.rawName == value ? '' : search.rawName;
 
-                          selectedTagString.value = search.keyword;
+                          selectedTagString.value = search.rawName;
                           if (sel) {
                             selectedTagController
                               ..clear()
-                              ..addTag(search.keyword);
+                              ..addTag(search.rawName);
                           } else {
                             selectedTagController.clear();
                           }
