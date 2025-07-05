@@ -16,7 +16,6 @@ import '../../core/posts/post/providers.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
-import 'client_provider.dart';
 import 'comments/providers.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -74,8 +73,6 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    final client = ref.watch(gelbooruV2ClientProvider(config));
-
     return DownloadFileNameBuilder<GelbooruV2Post>(
       defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
@@ -89,12 +86,7 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
       asyncTokenHandlers: [
         AsyncTokenHandler(
           ClassicTagsTokenResolver(
-            tagFetcher: (post) async {
-              final tags = await client.getTagsFromPostId(postId: post.id);
-              return tags
-                  .map((tag) => (name: tag.name, type: tag.type.toString()))
-                  .toList();
-            },
+            tagExtractor: tagExtractor(config),
           ),
         ),
       ],

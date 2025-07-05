@@ -1,6 +1,7 @@
 // Project imports:
 import '../../../posts/post/post.dart';
 import '../../../tags/categories/tag_category.dart';
+import '../../../tags/tag/tag.dart';
 import 'token_options.dart';
 
 abstract class AsyncTokenResolver<T extends Post> {
@@ -12,18 +13,13 @@ abstract class AsyncTokenResolver<T extends Post> {
   );
 }
 
-typedef TagDto = ({
-  String? name,
-  String? type,
-});
-
 class ClassicTagsTokenResolver<T extends Post>
     implements AsyncTokenResolver<T> {
   ClassicTagsTokenResolver({
-    required this.tagFetcher,
+    required this.tagExtractor,
   });
 
-  final Future<List<TagDto>> Function(T post) tagFetcher;
+  final TagExtractor? tagExtractor;
 
   @override
   String get groupKey => 'tag_details';
@@ -42,15 +38,19 @@ class ClassicTagsTokenResolver<T extends Post>
     T post,
     DownloadFilenameTokenOptions options,
   ) async {
-    final tags = await tagFetcher(post);
+    final extractor = tagExtractor;
+
+    if (extractor == null) return {};
+
+    final tags = await extractor.extractTags(post);
 
     final groupedTags = <String, String>{};
 
     for (final tag in tags) {
-      final category = TagCategory.fromLegacyIdString(tag.type).name;
-      final name = tag.name?.replaceAll('_', ' ');
+      final category = tag.category.name;
+      final name = tag.rawName;
 
-      if (name == null || name.isEmpty) continue;
+      if (name.isEmpty) continue;
 
       if (groupedTags.containsKey(category)) {
         groupedTags[category] = '${groupedTags[category]} $name';

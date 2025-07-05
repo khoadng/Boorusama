@@ -16,9 +16,7 @@ import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
-import 'client_provider.dart';
 import 'posts/providers.dart';
-import 'tags/parser.dart';
 import 'tags/providers.dart';
 
 const kZerochanCustomDownloadFileNameFormat =
@@ -63,8 +61,6 @@ class ZerochanRepository extends BooruRepositoryDefault {
   DownloadFilenameGenerator<Post> downloadFilenameBuilder(
     BooruConfigAuth config,
   ) {
-    final client = ref.watch(zerochanClientProvider(config));
-
     return DownloadFileNameBuilder<Post>(
       defaultFileNameFormat: kZerochanCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kZerochanCustomDownloadFileNameFormat,
@@ -79,18 +75,7 @@ class ZerochanRepository extends BooruRepositoryDefault {
       asyncTokenHandlers: [
         AsyncTokenHandler(
           ClassicTagsTokenResolver(
-            tagFetcher: (post) async {
-              final tags = await client.getTagsFromPostId(postId: post.id);
-
-              return tags
-                  .map(
-                    (tag) => (
-                      name: normalizeZerochanTag(tag.value) ?? '???',
-                      type: zerochanStringToTagCategory(tag.type).name,
-                    ),
-                  )
-                  .toList();
-            },
+            tagExtractor: tagExtractor(config),
           ),
         ),
       ],

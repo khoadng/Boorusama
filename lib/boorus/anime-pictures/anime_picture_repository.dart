@@ -16,7 +16,6 @@ import '../../core/tags/tag/tag.dart';
 import '../../foundation/caching.dart';
 import 'client_provider.dart';
 import 'posts/providers.dart';
-import 'tags/parser.dart';
 import 'tags/providers.dart';
 
 final animePicturesDownloadFileUrlExtractorProvider =
@@ -49,8 +48,6 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    final client = ref.watch(animePicturesClientProvider(config));
-
     return DownloadFileNameBuilder<Post>(
       defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
@@ -66,22 +63,7 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
       asyncTokenHandlers: [
         AsyncTokenHandler(
           ClassicTagsTokenResolver(
-            tagFetcher: (post) async {
-              final details = await client.getPostDetails(id: post.id);
-
-              return details.tags
-                      ?.where((e) => e.tag != null)
-                      .map((e) => e.tag!)
-                      .map(
-                        (tag) => (
-                          name: tag.tag ?? '???',
-                          type:
-                              animePicturesTagTypeToTagCategory(tag.type).name,
-                        ),
-                      )
-                      .toList() ??
-                  [];
-            },
+            tagExtractor: tagExtractor(config),
           ),
         ),
       ],

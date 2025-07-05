@@ -65,8 +65,6 @@ class MoebooruRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    final tagRepo = ref.watch(moebooruTagRepoProvider(config));
-
     return DownloadFileNameBuilder<MoebooruPost>(
       defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
@@ -80,12 +78,7 @@ class MoebooruRepository extends BooruRepositoryDefault {
       asyncTokenHandlers: [
         AsyncTokenHandler(
           ClassicTagsTokenResolver(
-            tagFetcher: (post) async {
-              final tags = await tagRepo.getTagsByName(post.tags.toSet(), 1);
-              return tags
-                  .map((tag) => (name: tag.name, type: tag.category.name))
-                  .toList();
-            },
+            tagExtractor: tagExtractor(config),
           ),
         ),
       ],
