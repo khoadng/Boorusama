@@ -1,5 +1,3 @@
-// cached_tag.dart
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 
