@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/clipboard.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../boorus/engine/providers.dart';
@@ -498,6 +499,7 @@ class _SelectableTagItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         visualDensity: VisualDensity.compact,
+        dense: isDesktopPlatform(),
         contentPadding: const EdgeInsets.only(
           left: 16,
           right: 12,
@@ -512,6 +514,7 @@ class _SelectableTagItem extends StatelessWidget {
                 (auth, tag.category.name),
               ),
             ),
+            fontSize: 14,
           ),
         ),
         onTap: multiSelect
@@ -520,7 +523,8 @@ class _SelectableTagItem extends StatelessWidget {
                   ref,
                   tag: tag.rawName,
                 ),
-        trailing: const Icon(Symbols.chevron_right),
+        trailing:
+            !isDesktopPlatform() ? const Icon(Symbols.chevron_right) : null,
       ),
     );
   }

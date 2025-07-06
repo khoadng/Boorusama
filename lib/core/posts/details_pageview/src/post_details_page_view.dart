@@ -206,6 +206,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       return;
     }
 
+    if (widget.disableAnimation) {
+      return;
+    }
+
     if (value) {
       _controller.showOverlay(
         includeSystemStatus: false,

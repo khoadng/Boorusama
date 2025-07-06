@@ -164,15 +164,17 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   void _startAutoHideVideoControlsTimer() {
-    final hideOverlay = ref.read(settingsProvider).hidePostDetailsOverlay;
+    final settings = ref.read(settingsProvider);
 
-    if (hideOverlay) return;
+    if (settings.hidePostDetailsOverlay) return;
 
     _clearAutoHideVideoControlsTimer();
 
     _autoHideVideoControlsTimer = Timer(const Duration(seconds: 4), () {
       if (mounted) {
-        _controller.hideAllUI();
+        if (!settings.reduceAnimations) {
+          _controller.hideAllUI();
+        }
 
         _videoControlsHiddenByTimer = true;
       }

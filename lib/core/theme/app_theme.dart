@@ -235,6 +235,12 @@ class AppTheme {
             color: colorScheme.onSurface,
           ),
         ),
+        checkboxTheme: CheckboxThemeData(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+          ),
+          checkColor: WidgetStateProperty.all(colorScheme.onPrimary),
+        ),
         chipTheme: const ChipThemeData(
           shape: StadiumBorder(),
           side: BorderSide.none,

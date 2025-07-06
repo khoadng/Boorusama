@@ -50,7 +50,18 @@ class BulkDownloadPageInternal extends StatelessWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(DownloadTranslations.title).tr(),
+          title: LayoutBuilder(
+            builder: (context, constraints) => Row(
+              children: [
+                const Text(DownloadTranslations.title).tr(),
+                Consumer(
+                  builder: (_, ref, __) => constraints.maxWidth >= 432
+                      ? _buildCreateButton(ref, dense: true)
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
           actions: [
             Consumer(
               builder: (_, ref, __) {
@@ -99,18 +110,12 @@ class BulkDownloadPageInternal extends StatelessWidget {
                         const Expanded(
                           child: BulkDownloadActionSessions(),
                         ),
-                        PrimaryButton(
-                          onPressed: () {
-                            goToNewBulkDownloadTaskPage(
-                              ref,
-                              context,
-                              initialValue: null,
-                              showStartNotification: false,
-                            );
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            return constraints.maxWidth < 600
+                                ? _buildCreateButton(ref)
+                                : const SizedBox.shrink();
                           },
-                          child: const Text(
-                            DownloadTranslations.create,
-                          ).tr(),
                         ),
                       ],
                     )
@@ -121,6 +126,26 @@ class BulkDownloadPageInternal extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildCreateButton(
+    WidgetRef ref, {
+    bool dense = false,
+  }) {
+    return PrimaryButton(
+      dense: dense,
+      onPressed: () {
+        goToNewBulkDownloadTaskPage(
+          ref,
+          ref.context,
+          initialValue: null,
+          showStartNotification: false,
+        );
+      },
+      child: Text(
+        dense ? DownloadTranslations.createShort : DownloadTranslations.create,
+      ).tr(),
     );
   }
 }

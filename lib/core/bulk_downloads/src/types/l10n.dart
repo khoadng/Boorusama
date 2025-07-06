@@ -2,6 +2,7 @@ class DownloadTranslations {
   const DownloadTranslations._();
   static const String title = 'sideMenu.bulk_download';
   static const String create = 'New download';
+  static const String createShort = 'Create';
   static const String empty = 'No active download sessions';
   static const String delete = 'Delete';
   static const String copyPath = 'Copy path';
