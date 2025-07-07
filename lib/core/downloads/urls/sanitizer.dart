@@ -6,13 +6,10 @@ String sanitizedExtension(String url) {
 }
 
 String sanitizedUrl(String url) {
-  final ext = extension(url);
-  final indexOfQuestionMark = ext.indexOf('?');
+  final indexOfQuestionMark = url.indexOf('?');
 
   if (indexOfQuestionMark != -1) {
-    final trimmedExt = ext.substring(0, indexOfQuestionMark);
-
-    return url.replaceFirst(ext, trimmedExt);
+    return url.substring(0, indexOfQuestionMark);
   } else {
     return url;
   }
