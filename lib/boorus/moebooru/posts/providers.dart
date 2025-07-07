@@ -13,42 +13,42 @@ import 'types.dart';
 
 final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfigSearch>(
-  (ref, config) {
-    final client = ref.watch(moebooruClientProvider(config.auth));
+      (ref, config) {
+        final client = ref.watch(moebooruClientProvider(config.auth));
 
-    return PostRepositoryBuilder(
-      getComposer: () => ref.read(tagQueryComposerProvider(config)),
-      fetchSingle: (id, {options}) async {
-        final numericId = id as NumericPostId?;
+        return PostRepositoryBuilder(
+          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          fetchSingle: (id, {options}) async {
+            final numericId = id as NumericPostId?;
 
-        if (numericId == null) return Future.value(null);
+            if (numericId == null) return Future.value(null);
 
-        final post = await client.getPost(numericId.value);
+            final post = await client.getPost(numericId.value);
 
-        return post != null ? postDtoToPost(post, null) : null;
+            return post != null ? postDtoToPost(post, null) : null;
+          },
+          fetch: (tags, page, {limit, options}) => client
+              .getPosts(
+                page: page,
+                tags: tags,
+                limit: limit,
+              )
+              .then(
+                (value) => value
+                    .map(
+                      (e) => postDtoToPost(
+                        e,
+                        PostMetadata(
+                          page: page,
+                          search: tags.join(' '),
+                          limit: limit,
+                        ),
+                      ),
+                    )
+                    .toList()
+                    .toResult(),
+              ),
+          getSettings: () async => ref.read(imageListingSettingsProvider),
+        );
       },
-      fetch: (tags, page, {limit, options}) => client
-          .getPosts(
-            page: page,
-            tags: tags,
-            limit: limit,
-          )
-          .then(
-            (value) => value
-                .map(
-                  (e) => postDtoToPost(
-                    e,
-                    PostMetadata(
-                      page: page,
-                      search: tags.join(' '),
-                      limit: limit,
-                    ),
-                  ),
-                )
-                .toList()
-                .toResult(),
-          ),
-      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
-  },
-);

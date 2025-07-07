@@ -74,7 +74,8 @@ class InformationSection extends ConsumerWidget {
     final createdAt = this.createdAt;
 
     return Padding(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.only(
             top: 4,
             bottom: 4,
@@ -91,14 +92,14 @@ class InformationSection extends ConsumerWidget {
               children: [
                 if (characterTags.isNotEmpty) ...[
                   Text(
-                    generateCharacterOnlyReadableName(characterTags)
-                        .replaceAll('_', ' ')
-                        .titleCase,
+                    generateCharacterOnlyReadableName(
+                      characterTags,
+                    ).replaceAll('_', ' ').titleCase,
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
                     maxLines: 1,
                     softWrap: false,
                   ),
@@ -106,9 +107,9 @@ class InformationSection extends ConsumerWidget {
                 ],
                 if (copyrightTags.isNotEmpty)
                   Text(
-                    generateCopyrightOnlyReadableName(copyrightTags)
-                        .replaceAll('_', ' ')
-                        .titleCase,
+                    generateCopyrightOnlyReadableName(
+                      copyrightTags,
+                    ).replaceAll('_', ' ').titleCase,
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.bodyLarge,
                     maxLines: 1,
@@ -135,13 +136,12 @@ class InformationSection extends ConsumerWidget {
                             createdAt.fuzzify(
                               locale: Localizations.localeOf(context),
                             ),
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context)
-                                          .listTileTheme
-                                          .subtitleTextStyle
-                                          ?.color,
-                                    ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).listTileTheme.subtitleTextStyle?.color,
+                                ),
                           ),
                         ),
                       ),

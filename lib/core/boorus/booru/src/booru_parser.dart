@@ -17,9 +17,8 @@ class BooruDefinition {
 
   T createStandardBooru<T extends Booru>(
     T Function(String name, NetworkProtocol protocol, List<String> sites)
-        constructor,
-  ) =>
-      constructor(name, getProtocol(), getSites());
+    constructor,
+  ) => constructor(name, getProtocol(), getSites());
 
   final String name;
   final dynamic rawConfig;
@@ -61,24 +60,23 @@ class YamlBooruParser implements BooruParser {
   const YamlBooruParser({
     required BooruType type,
     required BooruMapper mapper,
-  })  : _type = type,
-        _mapper = mapper;
+  }) : _type = type,
+       _mapper = mapper;
 
   factory YamlBooruParser.standard({
     required BooruType type,
     required Booru Function(BooruSiteDefinition siteDef) constructor,
-  }) =>
-      YamlBooruParser(
-        type: type,
-        mapper: (def) {
-          final siteDef = BooruSiteDefinition(
-            name: def.name,
-            protocol: def.getProtocol(),
-            sites: def.getSites(),
-          );
-          return constructor(siteDef);
-        },
+  }) => YamlBooruParser(
+    type: type,
+    mapper: (def) {
+      final siteDef = BooruSiteDefinition(
+        name: def.name,
+        protocol: def.getProtocol(),
+        sites: def.getSites(),
       );
+      return constructor(siteDef);
+    },
+  );
 
   final BooruType _type;
   final BooruMapper _mapper;

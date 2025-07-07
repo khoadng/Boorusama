@@ -23,10 +23,10 @@ final animePicturesProvider = Provider<AnimePictures>(
 );
 
 BooruComponents createAnimePictures() => BooruComponents(
-      parser: AnimePicturesParser(),
-      createBuilder: AnimePicturesBuilder.new,
-      createRepository: (ref) => AnimePicturesRepository(ref: ref),
-    );
+  parser: AnimePicturesParser(),
+  createBuilder: AnimePicturesBuilder.new,
+  createRepository: (ref) => AnimePicturesRepository(ref: ref),
+);
 
 class AnimePictures extends Booru with PassHashAuthMixin {
   const AnimePictures({

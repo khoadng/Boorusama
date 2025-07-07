@@ -82,21 +82,22 @@ class _FavoriteGroupDetailsPageState
                 backgroundColor: Theme.of(context).colorScheme.surface,
               ),
             ],
-            itemBuilder: (
-              context,
-              index,
-              multiSelectController,
-              autoScrollController,
-              useHero,
-            ) {
-              return DefaultDanbooruImageGridItem(
-                index: index,
-                multiSelectController: multiSelectController,
-                autoScrollController: autoScrollController,
-                controller: controller,
-                useHero: useHero,
-              );
-            },
+            itemBuilder:
+                (
+                  context,
+                  index,
+                  multiSelectController,
+                  autoScrollController,
+                  useHero,
+                ) {
+                  return DefaultDanbooruImageGridItem(
+                    index: index,
+                    multiSelectController: multiSelectController,
+                    autoScrollController: autoScrollController,
+                    controller: controller,
+                    useHero: useHero,
+                  );
+                },
           ),
         ),
       ),
@@ -134,8 +135,9 @@ class _FavoriteGroupDetailsPageState
   ) {
     return IconButton(
       onPressed: () {
-        final notifier =
-            ref.read(danbooruFavoriteGroupsProvider(config).notifier);
+        final notifier = ref.read(
+          danbooruFavoriteGroupsProvider(config).notifier,
+        );
 
         Navigator.of(context).push(
           CupertinoPageRoute(

@@ -44,16 +44,17 @@ class _App extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final appInfo = ref.watch(appInfoProvider);
-    final reduceAnimations =
-        ref.watch(settingsProvider.select((value) => value.reduceAnimations));
+    final reduceAnimations = ref.watch(
+      settingsProvider.select((value) => value.reduceAnimations),
+    );
 
     return ThemeBuilder(
       builder: (theme, themeMode) => MaterialApp.router(
         builder: (context, child) => Theme(
           data: Theme.of(context).copyWith(
             iconTheme: Theme.of(context).iconTheme.copyWith(
-                  weight: isWindows() ? 200 : 400,
-                ),
+              weight: isWindows() ? 200 : 400,
+            ),
           ),
           child: AnnotatedRegion(
             // Needed to make the bottom navigation bar transparent

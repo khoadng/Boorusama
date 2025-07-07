@@ -15,10 +15,9 @@ extension IntX on int {
 int parseIntSafe(
   dynamic value, {
   int fallback = 0,
-}) =>
-    switch (value) {
-      final int i => i,
-      final double d => d.toInt(),
-      final String s => int.tryParse(s) ?? fallback,
-      _ => fallback,
-    };
+}) => switch (value) {
+  final int i => i,
+  final double d => d.toInt(),
+  final String s => int.tryParse(s) ?? fallback,
+  _ => fallback,
+};

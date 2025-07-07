@@ -43,8 +43,9 @@ class SubscriptionPlanTile extends StatelessWidget {
             borderRadius: borderRadius,
             border: Border.all(
               width: selected ? 2.5 : 0.25,
-              color:
-                  selected ? colorScheme.primary : colorScheme.outlineVariant,
+              color: selected
+                  ? colorScheme.primary
+                  : colorScheme.outlineVariant,
             ),
           ),
           child: Row(

@@ -23,8 +23,9 @@ class DefaultTagQueryComposer implements TagQueryComposer {
 
   @override
   List<String> compose(List<String> tags) {
-    final alwaysIncludeTags =
-        _parseAlwaysIncludeTags(config.filter.alwaysIncludeTags);
+    final alwaysIncludeTags = _parseAlwaysIncludeTags(
+      config.filter.alwaysIncludeTags,
+    );
 
     final data = {
       ...alwaysIncludeTags,
@@ -73,22 +74,23 @@ class LegacyTagQueryComposer implements TagQueryComposer {
     ratingTagsFilter: switch (config.filter.ratingFilter) {
       BooruConfigRatingFilter.none => [],
       BooruConfigRatingFilter.hideNSFW => [
-          'rating:safe',
-        ],
+        'rating:safe',
+      ],
       BooruConfigRatingFilter.hideExplicit => [
-          '-rating:explicit',
-        ],
+        '-rating:explicit',
+      ],
       BooruConfigRatingFilter.custom =>
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => [],
-              (ratings) => [
-                ...ratings.map(
-                  (e) => '-rating:${e.toFullString(
+          () => [],
+          (ratings) => [
+            ...ratings.map(
+              (e) =>
+                  '-rating:${e.toFullString(
                     legacy: true,
                   )}',
-                ),
-              ],
             ),
+          ],
+        ),
     },
   );
 
@@ -109,19 +111,19 @@ class DanbooruTagQueryComposer implements TagQueryComposer {
     ratingTagsFilter: switch (config.filter.ratingFilter) {
       BooruConfigRatingFilter.none => <String>[],
       BooruConfigRatingFilter.hideNSFW => [
-          'rating:g',
-        ],
+        'rating:g',
+      ],
       BooruConfigRatingFilter.hideExplicit => [
-          '-rating:e',
-          '-rating:q',
-        ],
+        '-rating:e',
+        '-rating:q',
+      ],
       BooruConfigRatingFilter.custom =>
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => <String>[],
-              (ratings) => [
-                ...ratings.map((e) => '-rating:${e.toShortString()}'),
-              ],
-            ),
+          () => <String>[],
+          (ratings) => [
+            ...ratings.map((e) => '-rating:${e.toShortString()}'),
+          ],
+        ),
     },
   );
 
@@ -131,7 +133,7 @@ class DanbooruTagQueryComposer implements TagQueryComposer {
       ...tags,
       switch (config.filter.deletedItemBehavior) {
         BooruConfigDeletedItemBehavior.show => null,
-        BooruConfigDeletedItemBehavior.hide => '-status:deleted'
+        BooruConfigDeletedItemBehavior.hide => '-status:deleted',
       },
     ].nonNulls.toList();
 
@@ -150,18 +152,18 @@ class GelbooruTagQueryComposer implements TagQueryComposer {
     ratingTagsFilter: switch (config.filter.ratingFilter) {
       BooruConfigRatingFilter.none => <String>[],
       BooruConfigRatingFilter.hideNSFW => [
-          'rating:general',
-        ],
+        'rating:general',
+      ],
       BooruConfigRatingFilter.hideExplicit => [
-          '-rating:explicit',
-        ],
+        '-rating:explicit',
+      ],
       BooruConfigRatingFilter.custom =>
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => <String>[],
-              (ratings) => [
-                ...ratings.map((e) => '-rating:${e.toFullString()}'),
-              ],
-            ),
+          () => <String>[],
+          (ratings) => [
+            ...ratings.map((e) => '-rating:${e.toFullString()}'),
+          ],
+        ),
     },
   );
 
@@ -182,22 +184,23 @@ class GelbooruV2TagQueryComposer implements TagQueryComposer {
     ratingTagsFilter: switch (config.filter.ratingFilter) {
       BooruConfigRatingFilter.none => <String>[],
       BooruConfigRatingFilter.hideNSFW => [
-          'rating:safe',
-        ],
+        'rating:safe',
+      ],
       BooruConfigRatingFilter.hideExplicit => [
-          '-rating:explicit',
-        ],
+        '-rating:explicit',
+      ],
       BooruConfigRatingFilter.custom =>
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => <String>[],
-              (ratings) => [
-                ...ratings.map(
-                  (e) => '-rating:${e.toFullString(
+          () => <String>[],
+          (ratings) => [
+            ...ratings.map(
+              (e) =>
+                  '-rating:${e.toFullString(
                     legacy: true,
                   )}',
-                ),
-              ],
             ),
+          ],
+        ),
     },
   );
 
@@ -218,19 +221,20 @@ class SzurubooruTagQueryComposer implements TagQueryComposer {
     ratingTagsFilter: switch (config.filter.ratingFilter) {
       BooruConfigRatingFilter.none => [],
       BooruConfigRatingFilter.hideNSFW => [
-          '-rating:sketchy,unsafe',
-        ],
+        '-rating:sketchy,unsafe',
+      ],
       BooruConfigRatingFilter.hideExplicit => [
-          '-rating:unsafe',
-        ],
+        '-rating:unsafe',
+      ],
       BooruConfigRatingFilter.custom =>
         config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-              () => [],
-              (ratings) => [
-                ...ratings
-                    .map((e) => '-rating:${ratingToSzurubooruRatingString(e)}'),
-              ],
+          () => [],
+          (ratings) => [
+            ...ratings.map(
+              (e) => '-rating:${ratingToSzurubooruRatingString(e)}',
             ),
+          ],
+        ),
     },
   );
 
@@ -241,9 +245,9 @@ class SzurubooruTagQueryComposer implements TagQueryComposer {
 }
 
 String ratingToSzurubooruRatingString(Rating rating) => switch (rating) {
-      Rating.unknown => 'sketchy',
-      Rating.explicit => 'unsafe',
-      Rating.questionable => 'sketchy',
-      Rating.sensitive => 'sketchy',
-      Rating.general => 'safe',
-    };
+  Rating.unknown => 'sketchy',
+  Rating.explicit => 'unsafe',
+  Rating.questionable => 'sketchy',
+  Rating.sensitive => 'sketchy',
+  Rating.general => 'safe',
+};

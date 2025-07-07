@@ -249,8 +249,9 @@ class TagCacheRepositorySqlite
             continue; // Skip invalid entries
           }
 
-          final metadataJson =
-              tagInfo.metadata != null ? jsonEncode(tagInfo.metadata) : null;
+          final metadataJson = tagInfo.metadata != null
+              ? jsonEncode(tagInfo.metadata)
+              : null;
 
           stmt.execute([
             tagInfo.siteHost,
@@ -282,8 +283,9 @@ class TagCacheRepositorySqlite
     }
 
     // Normalize tag names (lowercase, replace spaces with underscores)
-    final normalizedTagNames =
-        tagNames.map((tag) => tag.toLowerCase().replaceAll(' ', '_')).toList();
+    final normalizedTagNames = tagNames
+        .map((tag) => tag.toLowerCase().replaceAll(' ', '_'))
+        .toList();
     final tagNameSet = normalizedTagNames.toSet();
 
     // Create placeholders for IN clause
@@ -333,8 +335,9 @@ class TagCacheRepositorySqlite
     }
 
     // Find missing tags
-    final missingTags =
-        tagNameSet.where((tag) => !foundTagNames.contains(tag)).toList();
+    final missingTags = tagNameSet
+        .where((tag) => !foundTagNames.contains(tag))
+        .toList();
 
     return TagResolutionResult(
       found: foundTags,

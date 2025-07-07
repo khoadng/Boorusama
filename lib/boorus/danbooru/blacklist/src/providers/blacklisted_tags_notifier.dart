@@ -10,10 +10,14 @@ import '../../../posts/post/post.dart';
 import '../../../users/user/providers.dart';
 import '../../../users/user/user.dart';
 
-final danbooruBlacklistedTagsProvider = AsyncNotifierProvider.family<
-    BlacklistedTagsNotifier, List<String>?, BooruConfigAuth>(
-  BlacklistedTagsNotifier.new,
-);
+final danbooruBlacklistedTagsProvider =
+    AsyncNotifierProvider.family<
+      BlacklistedTagsNotifier,
+      List<String>?,
+      BooruConfigAuth
+    >(
+      BlacklistedTagsNotifier.new,
+    );
 
 class BlacklistedTagsNotifier
     extends FamilyAsyncNotifier<List<String>?, BooruConfigAuth> {
@@ -44,7 +48,9 @@ class BlacklistedTagsNotifier
     final tags = [...currentTags, ...tagSet];
 
     try {
-      await ref.read(danbooruClientProvider(arg)).setBlacklistedTags(
+      await ref
+          .read(danbooruClientProvider(arg))
+          .setBlacklistedTags(
             id: user.id,
             blacklistedTags: tags,
           );
@@ -134,15 +140,17 @@ class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
 
   @override
   Future<Set<String>> getBlacklistedTags(BooruConfigAuth config) async {
-    final currentUser =
-        await ref.watch(danbooruCurrentUserProvider(config).future);
+    final currentUser = await ref.watch(
+      danbooruCurrentUserProvider(config).future,
+    );
 
     if (currentUser == null) {
       return {};
     }
 
-    final danbooruBlacklistedTags =
-        await ref.watch(danbooruBlacklistedTagsProvider(config).future);
+    final danbooruBlacklistedTags = await ref.watch(
+      danbooruBlacklistedTagsProvider(config).future,
+    );
     final isUnverified = config.isUnverified();
     final booru = ref.watch(danbooruProvider);
     final censoredTagsBanned = booru.hasCensoredTagsBanned(config.url);

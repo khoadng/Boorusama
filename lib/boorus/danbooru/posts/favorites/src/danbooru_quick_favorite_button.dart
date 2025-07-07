@@ -24,8 +24,9 @@ class DanbooruQuickFavoriteButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(favoritesProvider(ref.watchConfigAuth).notifier);
-    final isFaved =
-        post.isBanned ? false : ref.watch(favoriteProvider(post.id));
+    final isFaved = post.isBanned
+        ? false
+        : ref.watch(favoriteProvider(post.id));
 
     return QuickFavoriteButton(
       isFaved: isFaved,

@@ -26,8 +26,9 @@ class EffectiveTagPreview extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     final tags = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.alwaysIncludeTags),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.alwaysIncludeTags),
     );
 
     final effectiveConfigData = configData.copyWith(
@@ -46,8 +47,8 @@ class EffectiveTagPreview extends ConsumerWidget {
       header: Text(
         'Preview',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
+          color: colorScheme.onSurfaceVariant,
+        ),
       ),
       content: Wrap(
         runAlignment: WrapAlignment.center,
@@ -60,10 +61,9 @@ class EffectiveTagPreview extends ConsumerWidget {
               label: Text(
                 '<any search query>',
                 style: TextStyle(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurfaceVariant
-                      .withValues(alpha: 0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                   fontStyle: FontStyle.italic,
                 ),
               ),

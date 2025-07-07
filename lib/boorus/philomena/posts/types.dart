@@ -147,15 +147,15 @@ class PhilomenaRepresentation extends Equatable {
 
   @override
   List<Object> get props => [
-        full,
-        large,
-        medium,
-        small,
-        tall,
-        thumb,
-        thumbSmall,
-        thumbTiny,
-      ];
+    full,
+    large,
+    medium,
+    small,
+    tall,
+    thumb,
+    thumbSmall,
+    thumbTiny,
+  ];
 }
 
 enum PhilomenaPostQualityType {
@@ -171,15 +171,15 @@ enum PhilomenaPostQualityType {
 
 extension PhilomenaPostQualityTypeX on PhilomenaPostQualityType {
   String stringify() => switch (this) {
-        PhilomenaPostQualityType.full => 'full',
-        PhilomenaPostQualityType.large => 'large',
-        PhilomenaPostQualityType.medium => 'medium',
-        PhilomenaPostQualityType.small => 'small',
-        PhilomenaPostQualityType.tall => 'tall',
-        PhilomenaPostQualityType.thumb => 'thumb',
-        PhilomenaPostQualityType.thumbSmall => 'thumbSmall',
-        PhilomenaPostQualityType.thumbTiny => 'thumbTiny'
-      };
+    PhilomenaPostQualityType.full => 'full',
+    PhilomenaPostQualityType.large => 'large',
+    PhilomenaPostQualityType.medium => 'medium',
+    PhilomenaPostQualityType.small => 'small',
+    PhilomenaPostQualityType.tall => 'tall',
+    PhilomenaPostQualityType.thumb => 'thumb',
+    PhilomenaPostQualityType.thumbSmall => 'thumbSmall',
+    PhilomenaPostQualityType.thumbTiny => 'thumbTiny',
+  };
 }
 
 PhilomenaPostQualityType? stringToPhilomenaPostQualityType(String? value) =>

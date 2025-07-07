@@ -13,11 +13,11 @@ import 'providers.dart';
 
 final favoriteTagsProvider =
     NotifierProvider<FavoriteTagsNotifier, List<FavoriteTag>>(
-  FavoriteTagsNotifier.new,
-  dependencies: [
-    favoriteTagRepoProvider,
-  ],
-);
+      FavoriteTagsNotifier.new,
+      dependencies: [
+        favoriteTagRepoProvider,
+      ],
+    );
 
 final favoriteTagLabelsProvider = Provider<List<String>>((ref) {
   final tags = ref.watch(favoriteTagsProvider);

@@ -39,7 +39,9 @@ class AppAnnouncementBanner extends ConsumerStatefulWidget {
 class _AnnouncementBannerState extends ConsumerState<AppAnnouncementBanner> {
   @override
   Widget build(BuildContext context) {
-    return ref.watch(announcementProvider).maybeWhen(
+    return ref
+        .watch(announcementProvider)
+        .maybeWhen(
           data: (announcement) => announcement.trimRight().isNotEmpty
               ? DismissableInfoContainer(
                   content: announcement,

@@ -26,7 +26,8 @@ class OptionDropDownButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: backgroundColor ??
+      color:
+          backgroundColor ??
           Theme.of(context).colorScheme.surfaceContainerHighest,
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
@@ -35,7 +36,8 @@ class OptionDropDownButton<T> extends StatelessWidget {
           isDense: true,
           value: value,
           borderRadius: BorderRadius.circular(8),
-          padding: padding ??
+          padding:
+              padding ??
               const EdgeInsets.symmetric(
                 horizontal: 8,
                 vertical: 8,
@@ -75,7 +77,8 @@ class OptionDropDownButtonDesktop<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: backgroundColor ??
+      color:
+          backgroundColor ??
           Theme.of(context).colorScheme.surfaceContainerHighest,
       child: DropdownButtonHideUnderline(
         child: DropdownButton2(

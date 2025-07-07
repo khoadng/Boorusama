@@ -51,8 +51,10 @@ class DanbooruFavoriterListPage extends ConsumerWidget {
         slivers: [
           DanbooruSliverUserListPage(
             fetchUsers: (page) async {
-              final votes =
-                  await client.getFavorites(postId: postId, page: page);
+              final votes = await client.getFavorites(
+                postId: postId,
+                page: page,
+              );
               final userIds = votes.map((e) => e.userId).toList();
               final users = await userRepo.getUsersByIds(userIds);
               return users;

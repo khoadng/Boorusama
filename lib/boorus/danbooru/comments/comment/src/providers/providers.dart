@@ -8,11 +8,11 @@ import '../../../../client_provider.dart';
 
 final danbooruCommentCountProvider = FutureProvider.autoDispose
     .family<int, (BooruConfigAuth, int)>((ref, params) {
-  ref.cacheFor(const Duration(seconds: 60));
+      ref.cacheFor(const Duration(seconds: 60));
 
-  final (config, postId) = params;
+      final (config, postId) = params;
 
-  final client = ref.watch(danbooruClientProvider(config));
+      final client = ref.watch(danbooruClientProvider(config));
 
-  return client.getCommentCount(postId: postId);
-});
+      return client.getCommentCount(postId: postId);
+    });

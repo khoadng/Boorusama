@@ -9,8 +9,9 @@ import 'parser.dart';
 import 'styler.dart';
 import 'tokens.dart';
 
-final gelbooruV2GrammarProvider =
-    Provider<BooruGrammar<GelbooruV2TokenData>>((ref) {
+final gelbooruV2GrammarProvider = Provider<BooruGrammar<GelbooruV2TokenData>>((
+  ref,
+) {
   return BooruGrammar<GelbooruV2TokenData>(
     parser: GelbooruV2Parser(),
     styler: GelbooruV2Styler(),

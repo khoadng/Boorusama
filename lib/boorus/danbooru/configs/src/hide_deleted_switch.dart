@@ -44,8 +44,9 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bannedVis = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.bannedPostVisibilityTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.bannedPostVisibilityTyped),
     );
 
     return SwitchListTile(
@@ -68,8 +69,9 @@ class DanbooruImageDetailsQualityProvider extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageDetailsQuality = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.imageDetaisQuality),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.imageDetaisQuality),
     );
 
     return CreateBooruImageDetailsResolutionOptionTile(

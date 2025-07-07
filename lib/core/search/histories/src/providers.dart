@@ -14,8 +14,8 @@ import 'search_history_state.dart';
 
 final searchHistoryProvider =
     AsyncNotifierProvider<SearchHistoryNotifier, SearchHistoryState>(
-  SearchHistoryNotifier.new,
-);
+      SearchHistoryNotifier.new,
+    );
 
 class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
   @override
@@ -113,8 +113,9 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
 
     if (currentState == null) return;
 
-    final filteredHistories =
-        currentState.histories.where((e) => e.query.contains(pattern)).toList();
+    final filteredHistories = currentState.histories
+        .where((e) => e.query.contains(pattern))
+        .toList();
     state = AsyncData(
       currentState.copyWith(
         currentQuery: pattern,

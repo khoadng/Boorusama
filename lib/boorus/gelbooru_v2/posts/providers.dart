@@ -16,62 +16,61 @@ import 'types.dart';
 
 final gelbooruV2PostRepoProvider =
     Provider.family<PostRepository<GelbooruV2Post>, BooruConfigSearch>(
-  (ref, config) {
-    final client = ref.watch(gelbooruV2ClientProvider(config.auth));
+      (ref, config) {
+        final client = ref.watch(gelbooruV2ClientProvider(config.auth));
 
-    return PostRepositoryBuilder(
-      getComposer: () => ref.read(tagQueryComposerProvider(config)),
-      fetch: client.getPostResults,
-      fetchSingle: (id, {options}) async {
-        final numericId = id as NumericPostId?;
+        return PostRepositoryBuilder(
+          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          fetch: client.getPostResults,
+          fetchSingle: (id, {options}) async {
+            final numericId = id as NumericPostId?;
 
-        if (numericId == null) return Future.value(null);
+            if (numericId == null) return Future.value(null);
 
-        final post = await client.getPost(numericId.value);
+            final post = await client.getPost(numericId.value);
 
-        return post != null
-            ? gelbooruV2PostDtoToGelbooruPost(post, null)
-            : null;
+            return post != null
+                ? gelbooruV2PostDtoToGelbooruPost(post, null)
+                : null;
+          },
+          fetchFromController: (controller, page, {limit, options}) {
+            final tags = controller.tags.map((e) => e.originalTag).toList();
+
+            final newTags = ref
+                .read(tagQueryComposerProvider(config))
+                .compose(tags);
+
+            return client.getPostResults(newTags, page, limit: limit);
+          },
+          getSettings: () async => ref.read(imageListingSettingsProvider),
+        );
       },
-      fetchFromController: (controller, page, {limit, options}) {
-        final tags = controller.tags.map((e) => e.originalTag).toList();
-
-        final newTags =
-            ref.read(tagQueryComposerProvider(config)).compose(tags);
-
-        return client.getPostResults(newTags, page, limit: limit);
-      },
-      getSettings: () async => ref.read(imageListingSettingsProvider),
     );
-  },
-);
 
 final gelbooruV2ArtistCharacterPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
-  (ref, config) {
-    return PostRepositoryCacher(
-      repository: ref.watch(gelbooruV2PostRepoProvider(config)),
-      cache: LruCacher<String, List<Post>>(capacity: 100),
+      (ref, config) {
+        return PostRepositoryCacher(
+          repository: ref.watch(gelbooruV2PostRepoProvider(config)),
+          cache: LruCacher<String, List<Post>>(capacity: 100),
+        );
+      },
     );
-  },
-);
 
-final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose.family<
-    List<GelbooruV2Post>,
-    (
-      BooruConfigFilter,
-      BooruConfigSearch,
-      GelbooruV2Post
-    )>((ref, params) async {
-  final (filter, search, post) = params;
+final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
+    .family<
+      List<GelbooruV2Post>,
+      (BooruConfigFilter, BooruConfigSearch, GelbooruV2Post)
+    >((ref, params) async {
+      final (filter, search, post) = params;
 
-  return ref
-      .watch(gelbooruV2PostRepoProvider(search))
-      .getPostsFromTagWithBlacklist(
-        tag: post.relationshipQuery,
-        blacklist: ref.watch(blacklistTagsProvider(filter).future),
-      );
-});
+      return ref
+          .watch(gelbooruV2PostRepoProvider(search))
+          .getPostsFromTagWithBlacklist(
+            tag: post.relationshipQuery,
+            blacklist: ref.watch(blacklistTagsProvider(filter).future),
+          );
+    });
 
 extension GelbooruV2ClientX on GelbooruV2Client {
   Future<PostResult<GelbooruV2Post>> getPostResults(

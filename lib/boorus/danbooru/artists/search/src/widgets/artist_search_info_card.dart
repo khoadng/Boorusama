@@ -68,19 +68,20 @@ class _ArtistCardState extends ConsumerState<ArtistSearchInfoCard> {
                   child: Text(
                     artist.name.replaceAll('_', ' '),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: ref.watch(
-                            tagColorProvider(
-                              (ref.watchConfigAuth, 'artist'),
-                            ),
-                          ),
+                      color: ref.watch(
+                        tagColorProvider(
+                          (ref.watchConfigAuth, 'artist'),
                         ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Chip(
                   padding: const EdgeInsets.all(2),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.secondaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.secondaryContainer,
                   visualDensity: const ShrinkVisualDensity(),
                   label: Text(artist.postCount.toString()),
                 ),

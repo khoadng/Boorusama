@@ -49,5 +49,5 @@ LookupMessages getMessagesForLocale(Locale locale) =>
       'ta-IN' => TaMessages(),
       'ko-KR' => KoMessages(),
       'it-IT' => ItMessages(),
-      _ => throw Exception('Unsupported locale $locale')
+      _ => throw Exception('Unsupported locale $locale'),
     };

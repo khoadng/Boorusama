@@ -36,15 +36,17 @@ class PostStatsUploaderSection extends ConsumerWidget {
         ...stats.uploaders.topN(5).entries.map(
           (e) {
             final percent = (e.value / totalPosts) * 100;
-            final creator =
-                ref.watch(danbooruCreatorProvider(int.tryParse(e.key)));
+            final creator = ref.watch(
+              danbooruCreatorProvider(int.tryParse(e.key)),
+            );
 
             final valueText = '${e.value} (${percent.toStringAsFixed(1)}%)';
             return PostStatsTile(
               title: creator?.name ?? e.key,
               value: valueText,
-              titleColor:
-                  DanbooruUserColor.of(context).fromLevel(creator?.level),
+              titleColor: DanbooruUserColor.of(
+                context,
+              ).fromLevel(creator?.level),
             );
           },
         ),

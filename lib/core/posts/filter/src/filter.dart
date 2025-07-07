@@ -51,20 +51,19 @@ List<T> filterTags<T extends Post>(List<T> posts, Set<String> tags) =>
 
 extension PostFilterX on Post {
   TagFilterData extractTagFilterData() => TagFilterData(
-        tags: tags.map((tag) => tag.toLowerCase()).toSet(),
-        rating: rating,
-        score: score,
-        downvotes: downvotes,
-        uploaderId: uploaderId,
-        uploaderName: uploaderName,
-        source: switch (source) {
-          final WebSource w => w.url,
-          final NonWebSource nw => nw.value,
-          _ => null,
-        }
-            ?.toLowerCase(),
-        id: id,
-      );
+    tags: tags.map((tag) => tag.toLowerCase()).toSet(),
+    rating: rating,
+    score: score,
+    downvotes: downvotes,
+    uploaderId: uploaderId,
+    uploaderName: uploaderName,
+    source: switch (source) {
+      final WebSource w => w.url,
+      final NonWebSource nw => nw.value,
+      _ => null,
+    }?.toLowerCase(),
+    id: id,
+  );
 
   bool containsTagPattern(List<TagExpression> pattern) =>
       checkIfTagsContainsTagExpression(

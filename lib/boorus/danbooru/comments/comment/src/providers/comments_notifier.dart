@@ -16,16 +16,20 @@ import '../types/comment_data.dart';
 import '../types/constants.dart';
 import '../types/danbooru_comment.dart';
 
-final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
-    Map<int, List<CommentData>?>, BooruConfigAuth>(
-  CommentsNotifier.new,
-);
+final danbooruCommentsProvider =
+    NotifierProvider.family<
+      CommentsNotifier,
+      Map<int, List<CommentData>?>,
+      BooruConfigAuth
+    >(
+      CommentsNotifier.new,
+    );
 
-final danbooruCommentProvider =
-    Provider.autoDispose.family<List<CommentData>?, int>((ref, postId) {
-  final config = ref.watchConfigAuth;
-  return ref.watch(danbooruCommentsProvider(config))[postId];
-});
+final danbooruCommentProvider = Provider.autoDispose
+    .family<List<CommentData>?, int>((ref, postId) {
+      final config = ref.watchConfigAuth;
+      return ref.watch(danbooruCommentsProvider(config))[postId];
+    });
 
 class CommentsNotifier
     extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfigAuth> {

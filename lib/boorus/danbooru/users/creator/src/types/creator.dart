@@ -15,10 +15,10 @@ class Creator extends Equatable {
   });
 
   factory Creator.empty() => const Creator(
-        id: -1,
-        name: 'Creator',
-        level: UserLevel.member,
-      );
+    id: -1,
+    name: 'Creator',
+    level: UserLevel.member,
+  );
 
   factory Creator.fromJson(String jsonStr) {
     final jsonData = json.decode(jsonStr);

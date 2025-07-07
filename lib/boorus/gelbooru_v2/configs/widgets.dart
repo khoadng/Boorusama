@@ -48,14 +48,16 @@ class GelbooruV2AuthView extends ConsumerStatefulWidget {
 class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
   late final loginController = TextEditingController(
     text: ref.read(
-      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-          .select((value) => value.login),
+      editBooruConfigProvider(
+        ref.read(editBooruConfigIdProvider),
+      ).select((value) => value.login),
     ),
   );
   late final apiKeyController = TextEditingController(
     text: ref.read(
-      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-          .select((value) => value.apiKey),
+      editBooruConfigProvider(
+        ref.read(editBooruConfigIdProvider),
+      ).select((value) => value.apiKey),
     ),
   );
 

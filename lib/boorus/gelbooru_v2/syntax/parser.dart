@@ -116,11 +116,15 @@ class GelbooruV2Parser extends QueryParser<GelbooruV2TokenData> {
       }
     }
 
-    final parenPairs =
-        ParsingUtils.findParenthesesPairs(query, tildeOperationPositions);
+    final parenPairs = ParsingUtils.findParenthesesPairs(
+      query,
+      tildeOperationPositions,
+    );
 
-    final focusedPairIndex =
-        ParsingUtils.findFocusedPair(parenPairs, cursorPos);
+    final focusedPairIndex = ParsingUtils.findFocusedPair(
+      parenPairs,
+      cursorPos,
+    );
 
     return ParsingUtils.createParenthesesTokens(
       parenPairs,

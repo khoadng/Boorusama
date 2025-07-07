@@ -52,7 +52,7 @@ class SimpleTagSearchView extends ConsumerStatefulWidget {
   final Widget Function(String currentText)? floatingActionButton;
   final Widget? backButton;
   final void Function(BuildContext context, String text, bool isRaw)?
-      onSubmitted;
+  onSubmitted;
   final Color? Function(AutocompleteData tag)? textColorBuilder;
   final Widget Function(TextEditingController controller)? emptyBuilder;
 
@@ -81,8 +81,9 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final config = widget.initialConfig ?? ref.watchConfigAuth;
-    final suggestionNotifier =
-        ref.watch(suggestionsNotifierProvider(config).notifier);
+    final suggestionNotifier = ref.watch(
+      suggestionsNotifierProvider(config).notifier,
+    );
 
     final inputType = ref.watch(selectedInputTypeSelectorProvider);
     final isRaw = inputType == InputType.raw;
@@ -193,8 +194,9 @@ class _SimpleTagSearchViewState extends ConsumerState<SimpleTagSearchView> {
   }
 }
 
-final selectedInputTypeSelectorProvider =
-    StateProvider<InputType>((ref) => InputType.single);
+final selectedInputTypeSelectorProvider = StateProvider<InputType>(
+  (ref) => InputType.single,
+);
 
 enum InputType {
   single,
@@ -211,9 +213,9 @@ class InputSelectorButton extends ConsumerWidget {
     return OptionDropDownButton(
       alignment: AlignmentDirectional.centerStart,
       value: ref.watch(selectedInputTypeSelectorProvider),
-      onChanged: (value) => ref
-          .read(selectedInputTypeSelectorProvider.notifier)
-          .state = value ?? InputType.single,
+      onChanged: (value) =>
+          ref.read(selectedInputTypeSelectorProvider.notifier).state =
+              value ?? InputType.single,
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
         vertical: 12,

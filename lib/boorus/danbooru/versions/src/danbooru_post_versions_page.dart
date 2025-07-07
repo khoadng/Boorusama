@@ -32,12 +32,11 @@ class DanbooruPostVersionsPage extends ConsumerStatefulWidget {
   factory DanbooruPostVersionsPage.post({
     required DanbooruPost post,
     Key? key,
-  }) =>
-      DanbooruPostVersionsPage(
-        key: key,
-        postId: post.id,
-        previewUrl: post.url720x720,
-      );
+  }) => DanbooruPostVersionsPage(
+    key: key,
+    postId: post.id,
+    previewUrl: post.url720x720,
+  );
 
   final int postId;
   final String previewUrl;
@@ -170,7 +169,9 @@ class _Content extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 8,
           ),
-          sliver: ref.watch(danbooruPostVersionsProvider(postId)).when(
+          sliver: ref
+              .watch(danbooruPostVersionsProvider(postId))
+              .when(
                 data: (data) => SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) => TagEditHistoryCard(

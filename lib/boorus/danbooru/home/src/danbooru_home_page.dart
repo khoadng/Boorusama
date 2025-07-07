@@ -63,8 +63,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     // Only support Android for now
     if (!isAndroid()) return;
 
-    _sharedMediaSubscription =
-        ShareHandler.instance.sharedMediaStream.listen(_onSharedTextsReceived);
+    _sharedMediaSubscription = ShareHandler.instance.sharedMediaStream.listen(
+      _onSharedTextsReceived,
+    );
   }
 
   void _onSharedTextsReceived(SharedMedia media) {
@@ -123,7 +124,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     final configFilter = ref.watchConfigFilter;
     final config = configFilter.auth;
 
-    final userId = ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+    final userId = ref
+        .watch(danbooruCurrentUserProvider(config))
+        .maybeWhen(
           data: (user) => user?.id,
           orElse: () => null,
         );

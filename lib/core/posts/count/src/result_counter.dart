@@ -45,8 +45,8 @@ class ResultCounter extends StatelessWidget {
           Text(
             'search.result_counter'.plural(count),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+              fontWeight: FontWeight.w800,
+            ),
           ),
           const SizedBox(width: 4),
           if (onRefresh != null)

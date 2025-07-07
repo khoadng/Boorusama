@@ -31,31 +31,30 @@ class ExploreRepositoryApi implements ExploreRepository {
   DanbooruPostsOrError getHotPosts(
     int page, {
     int? limit,
-  }) =>
-      postRepository.getPosts(
-        'order:rank',
-        page,
-        limit: limit,
-      );
+  }) => postRepository.getPosts(
+    'order:rank',
+    page,
+    limit: limit,
+  );
 
   @override
   DanbooruPostsOrError getMostViewedPosts(
     DateTime date,
-  ) =>
-      TaskEither.Do(($) async {
-        final dtos = await $(
-          tryFetchRemoteData(
-            fetcher: () => client.getMostViewedPosts(date: date),
-          ),
-        );
+  ) => TaskEither.Do(($) async {
+    final dtos = await $(
+      tryFetchRemoteData(
+        fetcher: () => client.getMostViewedPosts(date: date),
+      ),
+    );
 
-        final data = dtos.map(postDtoToPostNoMetadata).toList();
+    final data = dtos.map(postDtoToPostNoMetadata).toList();
 
-        final filtered =
-            shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
+    final filtered = shouldFilter != null
+        ? data.whereNot(shouldFilter!).toList()
+        : data;
 
-        return transformer(filtered.toResult());
-      });
+    return transformer(filtered.toResult());
+  });
 
   @override
   DanbooruPostsOrError getPopularPosts(
@@ -63,28 +62,28 @@ class ExploreRepositoryApi implements ExploreRepository {
     int page,
     TimeScale scale, {
     int? limit,
-  }) =>
-      TaskEither.Do(($) async {
-        final dtos = await $(
-          tryFetchRemoteData(
-            fetcher: () => client.getPopularPosts(
-              date: date,
-              scale: switch (scale) {
-                TimeScale.day => danbooru.TimeScale.day,
-                TimeScale.week => danbooru.TimeScale.week,
-                TimeScale.month => danbooru.TimeScale.month,
-              },
-              page: page,
-              limit: limit ?? settings().postsPerPage,
-            ),
-          ),
-        );
+  }) => TaskEither.Do(($) async {
+    final dtos = await $(
+      tryFetchRemoteData(
+        fetcher: () => client.getPopularPosts(
+          date: date,
+          scale: switch (scale) {
+            TimeScale.day => danbooru.TimeScale.day,
+            TimeScale.week => danbooru.TimeScale.week,
+            TimeScale.month => danbooru.TimeScale.month,
+          },
+          page: page,
+          limit: limit ?? settings().postsPerPage,
+        ),
+      ),
+    );
 
-        final data = dtos.map(postDtoToPostNoMetadata).toList();
+    final data = dtos.map(postDtoToPostNoMetadata).toList();
 
-        final filtered =
-            shouldFilter != null ? data.whereNot(shouldFilter!).toList() : data;
+    final filtered = shouldFilter != null
+        ? data.whereNot(shouldFilter!).toList()
+        : data;
 
-        return transformer(filtered.toResult());
-      });
+    return transformer(filtered.toResult());
+  });
 }

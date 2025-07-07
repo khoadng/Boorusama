@@ -23,8 +23,8 @@ class ColorSettings extends Equatable {
     required this.followSystemDarkMode,
     required this.harmonizeWithPrimary,
     this.nickname,
-  })  : _schemeType = schemeType,
-        _dynamicSchemeVariant = dynamicSchemeVariant;
+  }) : _schemeType = schemeType,
+       _dynamicSchemeVariant = dynamicSchemeVariant;
 
   factory ColorSettings.fromAccentColor(
     Color color, {
@@ -33,7 +33,8 @@ class ColorSettings extends Equatable {
     required bool harmonizeWithPrimary,
   }) {
     final name = color.hexWithoutAlpha;
-    final nickname = namedColors.entries
+    final nickname =
+        namedColors.entries
             .firstWhereOrNull((e) => e.value.hexWithoutAlpha == name)
             ?.key ??
         name;
@@ -155,8 +156,9 @@ class ColorSettings extends Equatable {
         schemeType: json['schemeType'],
         colorScheme: colorSchemeFromJson(json['scheme']),
         extendedColorScheme: extendedColorSchemeFromJson(json['extended']),
-        brightness:
-            json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
+        brightness: json['brightness'] == 'dark'
+            ? Brightness.dark
+            : Brightness.light,
         dynamicSchemeVariant: json['dynamicSchemeVariant'],
         enableDynamicColoring: json['enableDynamicColoring'],
         harmonizeWithPrimary: json['harmonizeWithPrimary'],
@@ -185,17 +187,17 @@ class ColorSettings extends Equatable {
 
   @override
   List<Object?> get props => [
-        name,
-        nickname,
-        _schemeType,
-        colorScheme,
-        extendedColorScheme,
-        brightness,
-        _dynamicSchemeVariant,
-        enableDynamicColoring,
-        harmonizeWithPrimary,
-        followSystemDarkMode,
-      ];
+    name,
+    nickname,
+    _schemeType,
+    colorScheme,
+    extendedColorScheme,
+    brightness,
+    _dynamicSchemeVariant,
+    enableDynamicColoring,
+    harmonizeWithPrimary,
+    followSystemDarkMode,
+  ];
 }
 
 enum SchemeType {
@@ -206,48 +208,47 @@ enum SchemeType {
 }
 
 SchemeType? _parseSchemeType(String? schemeType) => switch (schemeType) {
-      'basic' => SchemeType.basic,
-      'builtIn' => SchemeType.builtIn,
-      'accent' => SchemeType.accent,
-      'custom' => SchemeType.custom,
-      _ => null,
-    };
+  'basic' => SchemeType.basic,
+  'builtIn' => SchemeType.builtIn,
+  'accent' => SchemeType.accent,
+  'custom' => SchemeType.custom,
+  _ => null,
+};
 
 extension SchemeTypeX on SchemeType {
   String get value => switch (this) {
-        SchemeType.basic => 'basic',
-        SchemeType.builtIn => 'builtIn',
-        SchemeType.accent => 'accent',
-        SchemeType.custom => 'custom',
-      };
+    SchemeType.basic => 'basic',
+    SchemeType.builtIn => 'builtIn',
+    SchemeType.accent => 'accent',
+    SchemeType.custom => 'custom',
+  };
 }
 
 DynamicSchemeVariant? _parseDynamicSchemeVariant(
   String? dynamicSchemeVariant,
-) =>
-    switch (dynamicSchemeVariant) {
-      'tonalSpot' => DynamicSchemeVariant.tonalSpot,
-      'fidelity' => DynamicSchemeVariant.fidelity,
-      'monochrome' => DynamicSchemeVariant.monochrome,
-      'neutral' => DynamicSchemeVariant.neutral,
-      'vibrant' => DynamicSchemeVariant.vibrant,
-      'expressive' => DynamicSchemeVariant.expressive,
-      'content' => DynamicSchemeVariant.content,
-      'rainbow' => DynamicSchemeVariant.rainbow,
-      'fruitSalad' => DynamicSchemeVariant.fruitSalad,
-      _ => null,
-    };
+) => switch (dynamicSchemeVariant) {
+  'tonalSpot' => DynamicSchemeVariant.tonalSpot,
+  'fidelity' => DynamicSchemeVariant.fidelity,
+  'monochrome' => DynamicSchemeVariant.monochrome,
+  'neutral' => DynamicSchemeVariant.neutral,
+  'vibrant' => DynamicSchemeVariant.vibrant,
+  'expressive' => DynamicSchemeVariant.expressive,
+  'content' => DynamicSchemeVariant.content,
+  'rainbow' => DynamicSchemeVariant.rainbow,
+  'fruitSalad' => DynamicSchemeVariant.fruitSalad,
+  _ => null,
+};
 
 extension DynamicSchemeVariantX on DynamicSchemeVariant {
   String get value => switch (this) {
-        DynamicSchemeVariant.tonalSpot => 'tonalSpot',
-        DynamicSchemeVariant.fidelity => 'fidelity',
-        DynamicSchemeVariant.monochrome => 'monochrome',
-        DynamicSchemeVariant.neutral => 'neutral',
-        DynamicSchemeVariant.vibrant => 'vibrant',
-        DynamicSchemeVariant.expressive => 'expressive',
-        DynamicSchemeVariant.content => 'content',
-        DynamicSchemeVariant.rainbow => 'rainbow',
-        DynamicSchemeVariant.fruitSalad => 'fruitSalad',
-      };
+    DynamicSchemeVariant.tonalSpot => 'tonalSpot',
+    DynamicSchemeVariant.fidelity => 'fidelity',
+    DynamicSchemeVariant.monochrome => 'monochrome',
+    DynamicSchemeVariant.neutral => 'neutral',
+    DynamicSchemeVariant.vibrant => 'vibrant',
+    DynamicSchemeVariant.expressive => 'expressive',
+    DynamicSchemeVariant.content => 'content',
+    DynamicSchemeVariant.rainbow => 'rainbow',
+    DynamicSchemeVariant.fruitSalad => 'fruitSalad',
+  };
 }

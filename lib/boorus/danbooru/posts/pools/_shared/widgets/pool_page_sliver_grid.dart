@@ -118,11 +118,14 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
     final imageGridPadding = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageGridPadding),
     );
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
-    final imageGridAspectRatio = ref.watch(
-          imageListingSettingsProvider
-              .select((value) => value.imageGridAspectRatio),
+    final gridSize = ref.watch(
+      imageListingSettingsProvider.select((value) => value.gridSize),
+    );
+    final imageGridAspectRatio =
+        ref.watch(
+          imageListingSettingsProvider.select(
+            (value) => value.imageGridAspectRatio,
+          ),
         ) -
         _kLabelOffset;
 

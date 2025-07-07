@@ -15,8 +15,9 @@ class ProxyPortInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final proxySettings = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.proxySettingsTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.proxySettingsTyped),
     );
 
     final initialValue = proxySettings?.port.toString() ?? '';
@@ -30,8 +31,9 @@ class ProxyPortInput extends ConsumerWidget {
           return;
         }
 
-        ref.editNotifier
-            .updateProxySettings(proxySettings?.copyWith(port: port));
+        ref.editNotifier.updateProxySettings(
+          proxySettings?.copyWith(port: port),
+        );
       },
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(

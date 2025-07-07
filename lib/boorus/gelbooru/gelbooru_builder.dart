@@ -43,61 +43,61 @@ class GelbooruBuilder
   GelbooruBuilder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat:
-                  kDefaultCustomDownloadFileNameFormat,
-            ),
-            child: CreateGelbooruConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
+        ),
+        child: CreateGelbooruConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  HomePageBuilder get homePageBuilder => (context) => const GelbooruHomePage();
+  HomePageBuilder get homePageBuilder =>
+      (context) => const GelbooruHomePage();
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateGelbooruConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateGelbooruConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => GelbooruSearchPage(
-            params: params,
-          );
+        params: params,
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as GelbooruPost).toList();
+    final posts = payload.posts.map((e) => e as GelbooruPost).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<GelbooruPost>(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DefaultPostDetailsPage<GelbooruPost>(),
+    );
+  };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -106,25 +106,26 @@ class GelbooruBuilder
   @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => GelbooruArtistPage(
-            artistName: artistName,
-          );
+        artistName: artistName,
+      );
 
   @override
   CharacterPageBuilder? get characterPageBuilder =>
       (context, characterName) => GelbooruArtistPage(
-            artistName: characterName,
-          );
+        artistName: characterName,
+      );
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => CommentPageScaffold(
-            postId: postId,
-            useAppBar: useAppBar,
-            singlePage: false,
-          );
+        postId: postId,
+        useAppBar: useAppBar,
+        singlePage: false,
+      );
 
   @override
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder =>
+      () => {
         Rating.explicit,
         Rating.questionable,
         Rating.sensitive,

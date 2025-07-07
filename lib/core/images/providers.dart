@@ -12,20 +12,21 @@ import '../configs/config.dart';
 
 final extraHttpHeaderProvider =
     Provider.family<Map<String, String>, BooruConfigAuth>(
-  (ref, config) => switch (config.booruType) {
-    //FIXME: don't reference the client provider here, it should be done somewhere else
-    BooruType.hydrus => ref.watch(hydrusClientProvider(config)).apiKeyHeader,
-    _ => {},
-  },
-);
+      (ref, config) => switch (config.booruType) {
+        //FIXME: don't reference the client provider here, it should be done somewhere else
+        BooruType.hydrus =>
+          ref.watch(hydrusClientProvider(config)).apiKeyHeader,
+        _ => {},
+      },
+    );
 
-final defaultCachedImageFileProvider =
-    FutureProvider.autoDispose.family<Uint8List?, String>(
-  (ref, imageUrl) async {
-    final cacheManager = DefaultImageCacheManager();
-    final cacheKey = cacheManager.generateCacheKey(imageUrl);
-    final bytes = await cacheManager.getCachedFileBytes(cacheKey);
+final defaultCachedImageFileProvider = FutureProvider.autoDispose
+    .family<Uint8List?, String>(
+      (ref, imageUrl) async {
+        final cacheManager = DefaultImageCacheManager();
+        final cacheKey = cacheManager.generateCacheKey(imageUrl);
+        final bytes = await cacheManager.getCachedFileBytes(cacheKey);
 
-    return bytes;
-  },
-);
+        return bytes;
+      },
+    );

@@ -19,7 +19,7 @@ enum MigrationMode {
   repair,
 
   /// Ignores history validation and runs migrations anyway
-  force
+  force,
 }
 
 class MigrationState {

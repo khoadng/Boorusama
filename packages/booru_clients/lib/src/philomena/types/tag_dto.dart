@@ -22,8 +22,9 @@ class TagDto {
   factory TagDto.fromJson(Map<String, dynamic> json) {
     return TagDto(
       aliasedTag: json['aliased_tag'],
-      aliases:
-          (json['aliases'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      aliases: (json['aliases'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       category: json['category'],
       description: json['description'],
       // dnpEntries: json['dnp_entries'] ?? [],

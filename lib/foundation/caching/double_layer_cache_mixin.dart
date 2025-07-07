@@ -38,8 +38,9 @@ mixin DoubleLayerCacheMixin<TData> {
 
     final cachedData = _checkTempStorage(keys);
 
-    final notInMemKeys =
-        keys.where((key) => !cachedData.any((d) => getKey(d) == key)).toList();
+    final notInMemKeys = keys
+        .where((key) => !cachedData.any((d) => getKey(d) == key))
+        .toList();
 
     _debugPrint(
       'Reaching out to persistent storage for ${notInMemKeys.length} $debugObjectName',

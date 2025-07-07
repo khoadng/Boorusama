@@ -44,8 +44,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   @override
   Future<List<DownloadSession>> getSessionsByStatus(
     DownloadSessionStatus status,
-  ) async =>
-      [];
+  ) async => [];
 
   @override
   Future<List<BulkDownloadSession>> getActiveSessions() async => [];
@@ -56,14 +55,12 @@ class DownloadRepositoryEmpty implements DownloadRepository {
     DateTime? endDate,
     int offset = 0,
     int limit = 20,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   Future<List<DownloadSession>> getSessionsByStatuses(
     List<DownloadSessionStatus> statuses,
-  ) async =>
-      [];
+  ) async => [];
 
   @override
   Future<void> updateSession(
@@ -88,8 +85,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
     String sessionId, {
     DownloadRecordStatus? status,
     int? recordPage,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   Future<void> updateRecord({
@@ -121,15 +117,13 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<DownloadRecord?> getRecordByDownloadId(
     String sessionId,
     String downloadId,
-  ) async =>
-      null;
+  ) async => null;
 
   @override
   Future<List<DownloadRecord>> getRecordsBySessionIdAndStatuses(
     String sessionId,
     List<DownloadRecordStatus> statuses,
-  ) async =>
-      [];
+  ) async => [];
 
   @override
   Future<void> resetSessions(List<String> sessionIds) async {}
@@ -154,8 +148,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<SavedDownloadTask> createSavedTask(
     DownloadTask task,
     String name,
-  ) async =>
-      throw Exception('Empty repository, cannot create saved task');
+  ) async => throw Exception('Empty repository, cannot create saved task');
 
   @override
   Future<List<SavedDownloadTask>> getSavedTasks() async => [];
@@ -173,8 +166,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<int> getRecordsCountBySessionId(
     String sessionId, {
     DownloadRecordStatus? status,
-  }) async =>
-      0;
+  }) async => 0;
 
   @override
   Future<void> updateRecordsByStatus(

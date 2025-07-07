@@ -22,7 +22,8 @@ class TagCloud extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
-        height: switch (constraints.maxWidth) {
+        height:
+            switch (constraints.maxWidth) {
               > 500 => 240,
               > 300 => 180,
               > 250 => 140,

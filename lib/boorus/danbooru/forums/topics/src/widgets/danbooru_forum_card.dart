@@ -31,12 +31,14 @@ class DanbooruForumCard extends ConsumerWidget {
       creatorInfo: Builder(
         builder: (_) {
           final creator = ref.watch(danbooruCreatorProvider(topic.creatorId));
-          final creatorColor =
-              DanbooruUserColor.of(context).fromLevel(creator?.level);
+          final creatorColor = DanbooruUserColor.of(
+            context,
+          ).fromLevel(creator?.level);
           final creatorName = creator?.name ?? '...';
 
-          final colors =
-              ref.watch(booruChipColorsProvider).fromColor(creatorColor);
+          final colors = ref
+              .watch(booruChipColorsProvider)
+              .fromColor(creatorColor);
 
           return CompactChip(
             label: creatorName.replaceAll('_', ' '),

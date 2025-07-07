@@ -17,23 +17,22 @@ class CommentDto {
   });
 
   factory CommentDto.fromJson(Map<String, dynamic> json) => CommentDto(
-        id: json['id'],
-        createdAt: json['created_at'] == null
-            ? null
-            : DateTime.parse(json['created_at']),
-        postId: json['post_id'],
-        body: json['body'],
-        score: json['score'],
-        updatedAt: json['updated_at'] == null
-            ? null
-            : DateTime.parse(json['updated_at']),
-        updaterId: json['updater_id'],
-        doNotBumpPost: json['do_not_bump_post'],
-        isDeleted: json['is_deleted'],
-        isSticky: json['is_sticky'],
-        creator:
-            json['creator'] == null ? null : UserDto.fromJson(json['creator']),
-      );
+    id: json['id'],
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at']),
+    postId: json['post_id'],
+    body: json['body'],
+    score: json['score'],
+    updatedAt: json['updated_at'] == null
+        ? null
+        : DateTime.parse(json['updated_at']),
+    updaterId: json['updater_id'],
+    doNotBumpPost: json['do_not_bump_post'],
+    isDeleted: json['is_deleted'],
+    isSticky: json['is_sticky'],
+    creator: json['creator'] == null ? null : UserDto.fromJson(json['creator']),
+  );
 
   final int? id;
   final DateTime? createdAt;

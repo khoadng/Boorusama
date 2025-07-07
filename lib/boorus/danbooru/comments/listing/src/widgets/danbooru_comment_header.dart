@@ -22,8 +22,9 @@ class DanbooruCommentHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CommentHeader(
       authorName: comment.authorName,
-      authorTitleColor:
-          DanbooruUserColor.of(context).fromLevel(comment.authorLevel),
+      authorTitleColor: DanbooruUserColor.of(
+        context,
+      ).fromLevel(comment.authorLevel),
       createdAt: comment.createdAt,
       onTap: () => goToUserDetailsPage(
         ref,

@@ -16,15 +16,14 @@ void goToPostDetailsPageFromPosts<T extends Post>({
   required int initialIndex,
   required String? initialThumbnailUrl,
   AutoScrollController? scrollController,
-}) =>
-    goToPostDetailsPageCore(
-      ref: ref,
-      posts: posts,
-      initialIndex: initialIndex,
-      scrollController: scrollController,
-      initialThumbnailUrl: initialThumbnailUrl,
-      hero: false,
-    );
+}) => goToPostDetailsPageCore(
+  ref: ref,
+  posts: posts,
+  initialIndex: initialIndex,
+  scrollController: scrollController,
+  initialThumbnailUrl: initialThumbnailUrl,
+  hero: false,
+);
 
 void goToPostDetailsPageFromController<T extends Post>({
   required WidgetRef ref,
@@ -32,15 +31,14 @@ void goToPostDetailsPageFromController<T extends Post>({
   required PostGridController<T> controller,
   required String? initialThumbnailUrl,
   AutoScrollController? scrollController,
-}) =>
-    goToPostDetailsPageCore(
-      ref: ref,
-      posts: controller.items.toList(),
-      initialIndex: initialIndex,
-      scrollController: scrollController,
-      initialThumbnailUrl: initialThumbnailUrl,
-      hero: true,
-    );
+}) => goToPostDetailsPageCore(
+  ref: ref,
+  posts: controller.items.toList(),
+  initialIndex: initialIndex,
+  scrollController: scrollController,
+  initialThumbnailUrl: initialThumbnailUrl,
+  hero: true,
+);
 
 void goToPostDetailsPageCore<T extends Post>({
   required WidgetRef ref,

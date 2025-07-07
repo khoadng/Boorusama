@@ -22,11 +22,13 @@ class PoolDto {
       category: json['category'] as String?,
       posts: json['posts'] != null
           ? (json['posts'] as List)
-              .map((e) => MicroPostDto.fromJson(
+                .map(
+                  (e) => MicroPostDto.fromJson(
                     e as Map<String, dynamic>,
                     baseUrl: baseUrl,
-                  ))
-              .toList()
+                  ),
+                )
+                .toList()
           : null,
       creationTime: json['creationTime'] as String?,
       lastEditTime: json['lastEditTime'] as String?,

@@ -61,16 +61,18 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
     }
 
     final notifier = ref.watch(bulkDownloadProvider.notifier);
-    final quality =
-        ref.watch(settingsProvider.select((e) => e.downloadQuality));
+    final quality = ref.watch(
+      settingsProvider.select((e) => e.downloadQuality),
+    );
     final initial = DownloadOptions.initial(
       quality: quality.name,
       tags: initialValue,
     );
     final options = ref.watch(createDownloadOptionsProvider(initial));
     final androidSdkInt = ref.watch(
-      deviceInfoProvider
-          .select((value) => value.androidDeviceInfo?.version.sdkInt),
+      deviceInfoProvider.select(
+        (value) => value.androidDeviceInfo?.version.sdkInt,
+      ),
     );
     final validOptions = options.valid(androidSdkInt: androidSdkInt);
     final navigator = Navigator.of(context);
@@ -269,8 +271,9 @@ class _CreateDownloadOptionsRawSheetState
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  title: const Text(d.DownloadTranslations.skipDownloadIfExists)
-                      .tr(),
+                  title: const Text(
+                    d.DownloadTranslations.skipDownloadIfExists,
+                  ).tr(),
                   value: options.skipIfExists,
                   onChanged: (value) {
                     notifier.setSkipIfExists(value);
@@ -322,7 +325,9 @@ class _ExcludedTagsSection extends ConsumerWidget {
     final extraTags = queryAsList(options.blacklistedTags);
     final config = ref.watchConfigAuth;
 
-    return ref.watch(blacklistTagEntriesProvider(ref.watchConfigFilter)).when(
+    return ref
+        .watch(blacklistTagEntriesProvider(ref.watchConfigFilter))
+        .when(
           data: (tags) => SettingsCard(
             title: 'Excluded tags',
             trailing: Tooltip(
@@ -465,7 +470,8 @@ class SettingsCard extends StatelessWidget {
     final title = this.title;
 
     return Container(
-      margin: margin ??
+      margin:
+          margin ??
           const EdgeInsets.only(
             left: 16,
             right: 16,
@@ -505,7 +511,8 @@ class SettingsCard extends StatelessWidget {
               ),
               onTap: onTap,
               child: Container(
-                padding: padding ??
+                padding:
+                    padding ??
                     const EdgeInsets.symmetric(
                       horizontal: 8,
                     ),

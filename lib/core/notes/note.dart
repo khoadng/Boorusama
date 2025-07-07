@@ -11,9 +11,9 @@ class Note extends Equatable {
   });
 
   factory Note.empty() => Note(
-        coordinate: NoteCoordinate.shrink(),
-        content: '',
-      );
+    coordinate: NoteCoordinate.shrink(),
+    content: '',
+  );
 
   final NoteCoordinate coordinate;
   final String content;
@@ -26,11 +26,10 @@ extension NoteX on Note {
   Note copyWith({
     NoteCoordinate? coordinate,
     String? content,
-  }) =>
-      Note(
-        coordinate: coordinate ?? this.coordinate,
-        content: content ?? this.content,
-      );
+  }) => Note(
+    coordinate: coordinate ?? this.coordinate,
+    content: content ?? this.content,
+  );
 }
 
 abstract interface class NoteRepository {
@@ -64,11 +63,11 @@ class NoteCoordinate extends Equatable {
   });
 
   factory NoteCoordinate.shrink() => const NoteCoordinate(
-        x: 0,
-        y: 0,
-        height: 0,
-        width: 0,
-      );
+    x: 0,
+    y: 0,
+    height: 0,
+    width: 0,
+  );
 
   final double x;
   final double y;

@@ -30,7 +30,7 @@ class CommentItem extends ConsumerWidget {
   final VoidCallback? onReply;
   final bool hasVoteSection;
   final void Function(VoteEvent event, DanbooruCommentVote? commentVote)
-      onVoteChanged;
+  onVoteChanged;
   final Widget Function(BuildContext context)? moreBuilder;
 
   @override

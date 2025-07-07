@@ -24,8 +24,9 @@ class PostStatsCopyrightSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final copyrightColor =
-        ref.watch(tagColorProvider((ref.watchConfigAuth, 'copyright')));
+    final copyrightColor = ref.watch(
+      tagColorProvider((ref.watchConfigAuth, 'copyright')),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,

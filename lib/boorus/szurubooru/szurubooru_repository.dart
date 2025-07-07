@@ -44,11 +44,11 @@ class SzurubooruRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => SzurubooruClient(
-          baseUrl: config.url,
-          dio: dio,
-          username: config.login,
-          token: config.apiKey,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      username: config.login,
+      token: config.apiKey,
+    ).getPosts().then((value) => true);
   }
 
   @override

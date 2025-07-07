@@ -24,10 +24,13 @@ class HybooruClient {
   HybooruClient({
     Dio? dio,
     required String baseUrl,
-  }) : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl,
-            ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl,
+             ),
+           );
 
   final Dio _dio;
 
@@ -50,7 +53,8 @@ class HybooruClient {
     );
 
     final data = response.data as Map<String, dynamic>;
-    final posts = (data['posts'] as List<dynamic>?)
+    final posts =
+        (data['posts'] as List<dynamic>?)
             ?.map((e) => PostSummaryDto.fromJson(e as Map<String, dynamic>))
             .toList() ??
         [];
@@ -124,14 +128,15 @@ class HybooruClient {
             .toList();
       } else if (result.tags is Map) {
         // Simple format - map of tag names to post counts
-        return (result.tags as Map<String, dynamic>)
-            .entries
-            .map((e) => AutocompleteDto(
-                  name: e.key,
-                  posts: e.value as int?,
-                  parents: null,
-                  siblings: null,
-                ))
+        return (result.tags as Map<String, dynamic>).entries
+            .map(
+              (e) => AutocompleteDto(
+                name: e.key,
+                posts: e.value as int?,
+                parents: null,
+                siblings: null,
+              ),
+            )
             .toList();
       }
       return [];

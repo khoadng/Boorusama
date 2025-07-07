@@ -20,11 +20,12 @@ class E621FavoriteRepository extends FavoriteRepository<E621Post> {
   bool canFavorite() => config.hasLoginDetails();
 
   @override
-  Future<AddFavoriteStatus> addToFavorites(int postId) async =>
-      client.addToFavorites(postId: postId).then(
-            (value) =>
-                value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
-          );
+  Future<AddFavoriteStatus> addToFavorites(int postId) async => client
+      .addToFavorites(postId: postId)
+      .then(
+        (value) =>
+            value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
+      );
 
   @override
   Future<bool> removeFromFavorites(int postId) async =>

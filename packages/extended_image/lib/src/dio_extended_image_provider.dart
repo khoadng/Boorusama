@@ -169,8 +169,10 @@ class DioExtendedNetworkImageProvider
     }
 
     final manager = _getEffectiveCacheManager();
-    final effectiveCacheKey =
-        manager.generateCacheKey(url, customKey: cacheKey);
+    final effectiveCacheKey = manager.generateCacheKey(
+      url,
+      customKey: cacheKey,
+    );
 
     final hasValidCache = await manager.hasValidCache(
       effectiveCacheKey,
@@ -280,17 +282,17 @@ class DioExtendedNetworkImageProvider
 
   @override
   int get hashCode => Object.hash(
-        url,
-        scale,
-        cacheRawData,
-        timeLimit,
-        fetchStrategy,
-        cancelToken,
-        cache,
-        cacheKey,
-        imageCacheName,
-        cacheMaxAge,
-      );
+    url,
+    scale,
+    cacheRawData,
+    timeLimit,
+    fetchStrategy,
+    cancelToken,
+    cache,
+    cacheKey,
+    imageCacheName,
+    cacheMaxAge,
+  );
 
   @override
   String toString() => 'DioExtendedNetworkImageProvider("$url", scale: $scale)';

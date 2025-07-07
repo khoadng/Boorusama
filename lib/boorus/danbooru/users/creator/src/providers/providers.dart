@@ -8,12 +8,12 @@ import '../../../../../../core/configs/config.dart';
 
 final danbooruCreatorHiveBoxProvider =
     FutureProvider.family<Box, BooruConfigAuth>((ref, config) async {
-  final tempPath = await getTemporaryDirectory();
+      final tempPath = await getTemporaryDirectory();
 
-  final danbooruCreatorBox = await Hive.openBox(
-    '${Uri.encodeComponent(config.url)}_creators_v1',
-    path: tempPath.path,
-  );
+      final danbooruCreatorBox = await Hive.openBox(
+        '${Uri.encodeComponent(config.url)}_creators_v1',
+        path: tempPath.path,
+      );
 
-  return danbooruCreatorBox;
-});
+      return danbooruCreatorBox;
+    });

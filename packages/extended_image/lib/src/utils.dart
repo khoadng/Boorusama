@@ -6,5 +6,5 @@ enum LoadState {
   completed,
 
   /// failed
-  failed
+  failed,
 }

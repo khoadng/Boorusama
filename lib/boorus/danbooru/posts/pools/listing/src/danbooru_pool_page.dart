@@ -54,23 +54,23 @@ class _PostList extends ConsumerWidget {
                 child: DefaultTabController(
                   initialIndex:
                       ref.watch(danbooruSelectedPoolCategoryProvider) ==
-                              DanbooruPoolCategory.collection
-                          ? 0
-                          : 1,
+                          DanbooruPoolCategory.collection
+                      ? 0
+                      : 1,
                   length: 2,
                   child: TabBar(
                     isScrollable: true,
                     onTap: (value) {
                       ref
                           .read(danbooruSelectedPoolCategoryProvider.notifier)
-                          .state = value ==
-                              0
+                          .state = value == 0
                           ? DanbooruPoolCategory.collection
                           : DanbooruPoolCategory.series;
                     },
                     tabs: [
-                      for (final e in DanbooruPoolCategory.values
-                          .where((e) => e != DanbooruPoolCategory.unknown))
+                      for (final e in DanbooruPoolCategory.values.where(
+                        (e) => e != DanbooruPoolCategory.unknown,
+                      ))
                         Tab(
                           text: 'pool.category.${e.name}'.tr(),
                         ),

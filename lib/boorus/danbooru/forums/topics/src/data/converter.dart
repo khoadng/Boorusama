@@ -14,10 +14,12 @@ DanbooruForumTopic dtoToTopic(ForumTopicDto dto) {
     responseCount: dto.responseCount ?? 0,
     isSticky: dto.isSticky ?? false,
     isLocked: dto.isLocked ?? false,
-    createdAt:
-        dto.createdAt != null ? DateTime.parse(dto.createdAt!) : DateTime.now(),
-    updatedAt:
-        dto.updatedAt != null ? DateTime.parse(dto.updatedAt!) : DateTime.now(),
+    createdAt: dto.createdAt != null
+        ? DateTime.parse(dto.createdAt!)
+        : DateTime.now(),
+    updatedAt: dto.updatedAt != null
+        ? DateTime.parse(dto.updatedAt!)
+        : DateTime.now(),
     isDeleted: dto.isDeleted ?? false,
     category: dto.categoryId != null
         ? intToDanbooruTopicCategory(dto.categoryId!)

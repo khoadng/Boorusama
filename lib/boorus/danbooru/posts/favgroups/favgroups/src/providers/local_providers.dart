@@ -9,7 +9,7 @@ import 'favorite_group_repository_api.dart';
 
 final danbooruFavoriteGroupRepoProvider =
     Provider.family<FavoriteGroupRepository, BooruConfigAuth>((ref, config) {
-  return FavoriteGroupRepositoryApi(
-    client: ref.watch(danbooruClientProvider(config)),
-  );
-});
+      return FavoriteGroupRepositoryApi(
+        client: ref.watch(danbooruClientProvider(config)),
+      );
+    });

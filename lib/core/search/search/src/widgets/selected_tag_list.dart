@@ -72,70 +72,66 @@ class SelectedTagList extends StatelessWidget {
 
                   return switch (it) {
                     final TagSearchItem item => Builder(
-                        builder: (context) {
-                          final chip = SelectedTagChip(
-                            tagSearchItem: item,
-                            onDeleted: () => onDelete(item),
-                            onUpdated: (tag) => onUpdate?.call(item, tag),
-                          );
+                      builder: (context) {
+                        final chip = SelectedTagChip(
+                          tagSearchItem: item,
+                          onDeleted: () => onDelete(item),
+                          onUpdated: (tag) => onUpdate?.call(item, tag),
+                        );
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: item.isRaw
-                                ? SelectedTagContextMenu(
-                                    tag: item.toString(),
-                                    child: chip,
-                                  )
-                                : GeneralTagContextMenu(
-                                    tag: item.rawTag,
-                                    child: chip,
-                                  ),
-                          );
-                        },
-                      ),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: item.isRaw
+                              ? SelectedTagContextMenu(
+                                  tag: item.toString(),
+                                  child: chip,
+                                )
+                              : GeneralTagContextMenu(
+                                  tag: item.rawTag,
+                                  child: chip,
+                                ),
+                        );
+                      },
+                    ),
                     final String otherTagsCount => Center(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            customBorder: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          customBorder: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          onTap: onOtherTagsCountTap,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
                             ),
-                            onTap: onOtherTagsCountTap,
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Symbols.add,
-                                    size: 14,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .outline
-                                        .withValues(alpha: 0.75),
-                                  ),
-                                  Text(
-                                    otherTagsCount,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          letterSpacing: 0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline
-                                              .withValues(alpha: 0.5),
-                                        ),
-                                  ),
-                                ],
-                              ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Symbols.add,
+                                  size: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.outline.withValues(alpha: 0.75),
+                                ),
+                                Text(
+                                  otherTagsCount,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        letterSpacing: 0,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline
+                                            .withValues(alpha: 0.5),
+                                      ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
+                    ),
                     _ => Text('Unknown type: ${it.runtimeType}'),
                   };
                 },

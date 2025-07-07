@@ -16,15 +16,17 @@ final biometricDeviceSupportProvider = FutureProvider<bool>((ref) async {
 });
 
 final canUseBiometricLockProvider = FutureProvider<bool>((ref) async {
-  final hardwareSupport =
-      await ref.watch(biometricDeviceSupportProvider.future);
+  final hardwareSupport = await ref.watch(
+    biometricDeviceSupportProvider.future,
+  );
 
   return hardwareSupport;
 });
 
 Future<bool> startAuthenticate(LocalAuthentication localAuth) async {
-  final didAuthenticate =
-      await localAuth.authenticate(localizedReason: 'Please authenticate');
+  final didAuthenticate = await localAuth.authenticate(
+    localizedReason: 'Please authenticate',
+  );
 
   return didAuthenticate;
 }

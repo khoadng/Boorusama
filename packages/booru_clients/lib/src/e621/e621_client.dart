@@ -20,10 +20,13 @@ class E621Client {
     String? apiKey,
     Dio? dio,
   }) {
-    _dio = dio ??
-        Dio(BaseOptions(
-          baseUrl: baseUrl,
-        ));
+    _dio =
+        dio ??
+        Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+          ),
+        );
 
     if (login != null && apiKey != null) {
       _dio.options.headers['Authorization'] =
@@ -140,8 +143,10 @@ class E621Client {
         .toList();
   }
 
-  Future<List<PostDto>> getPopularPosts(
-      {required DateTime date, required TimeScale scale}) async {
+  Future<List<PostDto>> getPopularPosts({
+    required DateTime date,
+    required TimeScale scale,
+  }) async {
     final response = await _dio.get(
       '/popular.json',
       queryParameters: {
@@ -180,19 +185,22 @@ class E621Client {
 
   Future<List<AutocompleteDto>> getAutocomplete({
     required String query,
-  }) =>
-      switch (query.length) {
-        0 || 1 => Future.value(<AutocompleteDto>[]),
-        2 => getTags(name: query).then((value) => value
-            .map((e) => AutocompleteDto(
-                  id: e.id,
-                  name: e.name,
-                  postCount: e.postCount,
-                  category: e.category,
-                ))
-            .toList()),
-        _ => _autocomplete(query: query),
-      };
+  }) => switch (query.length) {
+    0 || 1 => Future.value(<AutocompleteDto>[]),
+    2 => getTags(name: query).then(
+      (value) => value
+          .map(
+            (e) => AutocompleteDto(
+              id: e.id,
+              name: e.name,
+              postCount: e.postCount,
+              category: e.category,
+            ),
+          )
+          .toList(),
+    ),
+    _ => _autocomplete(query: query),
+  };
 
   Future<List<AutocompleteDto>> _autocomplete({
     required String query,

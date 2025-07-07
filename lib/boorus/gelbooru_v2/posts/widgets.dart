@@ -38,29 +38,29 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
 
     return post.hasParent
         ? ref
-            .watch(
-              gelbooruV2ChildPostsProvider(
-                (ref.watchConfigFilter, ref.watchConfigSearch, post),
-              ),
-            )
-            .maybeWhen(
-              data: (data) => SliverRelatedPostsSection(
-                title: 'Child posts',
-                posts: data,
-                imageUrl: (post) => post.sampleImageUrl,
-                onViewAll: () => goToSearchPage(
-                  ref,
-                  tag: post.relationshipQuery,
+              .watch(
+                gelbooruV2ChildPostsProvider(
+                  (ref.watchConfigFilter, ref.watchConfigSearch, post),
                 ),
-                onTap: (index) => goToPostDetailsPageFromPosts(
-                  ref: ref,
+              )
+              .maybeWhen(
+                data: (data) => SliverRelatedPostsSection(
+                  title: 'Child posts',
                   posts: data,
-                  initialIndex: index,
-                  initialThumbnailUrl: data[index].sampleImageUrl,
+                  imageUrl: (post) => post.sampleImageUrl,
+                  onViewAll: () => goToSearchPage(
+                    ref,
+                    tag: post.relationshipQuery,
+                  ),
+                  onTap: (index) => goToPostDetailsPageFromPosts(
+                    ref: ref,
+                    posts: data,
+                    initialIndex: index,
+                    initialThumbnailUrl: data[index].sampleImageUrl,
+                  ),
                 ),
-              ),
-              orElse: () => const SliverSizedBox.shrink(),
-            )
+                orElse: () => const SliverSizedBox.shrink(),
+              )
         : const SliverSizedBox.shrink();
   }
 }

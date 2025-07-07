@@ -7,9 +7,9 @@ import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/tag.dart';
 
 Tag tagDtoToTag(TagDto e) => Tag.noCount(
-      name: normalizeZerochanTag(e.value)!,
-      category: zerochanStringToTagCategory(e.type),
-    );
+  name: normalizeZerochanTag(e.value)!,
+  category: zerochanStringToTagCategory(e.type),
+);
 
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) =>
     AutocompleteData(
@@ -29,8 +29,7 @@ TagCategory zerochanStringToTagCategory(String? value) {
     'series' ||
     'copyright' ||
     'game' ||
-    'visual novel' =>
-      TagCategory.copyright(),
+    'visual novel' => TagCategory.copyright(),
     'character' => TagCategory.character(),
     'meta' || 'source' => TagCategory.meta(),
     _ => TagCategory.general(),

@@ -8,14 +8,14 @@ class TagSorter {
   });
 
   factory TagSorter.defaults() => TagSorter(
-        categoryOrder: {
-          TagCategory.artist().name: 0,
-          TagCategory.copyright().name: 1,
-          TagCategory.character().name: 2,
-          TagCategory.general().name: 3,
-          TagCategory.meta().name: 4,
-        },
-      );
+    categoryOrder: {
+      TagCategory.artist().name: 0,
+      TagCategory.copyright().name: 1,
+      TagCategory.character().name: 2,
+      TagCategory.general().name: 3,
+      TagCategory.meta().name: 4,
+    },
+  );
 
   final Map<String, int> categoryOrder;
 

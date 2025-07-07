@@ -1,11 +1,3 @@
-enum PoolCategory {
-  collection,
-  series;
-}
+enum PoolCategory { collection, series }
 
-enum PoolOrder {
-  updatedAt,
-  createdAt,
-  postCount,
-  name;
-}
+enum PoolOrder { updatedAt, createdAt, postCount, name }

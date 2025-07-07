@@ -32,7 +32,7 @@ class CommentList extends StatelessWidget {
   final void Function(CommentData comment) onUpvote;
   final void Function(CommentData comment) onDownvote;
   final void Function(CommentData comment, DanbooruCommentVote? commentVote)
-      onClearVote;
+  onClearVote;
 
   @override
   Widget build(BuildContext context) {

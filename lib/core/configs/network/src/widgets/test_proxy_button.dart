@@ -18,8 +18,9 @@ class TestProxyButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final proxySettings = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.proxySettingsTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.proxySettingsTyped),
     );
 
     final notifier = ref.watch(testProxyProvider.notifier);
@@ -31,7 +32,8 @@ class TestProxyButton extends ConsumerWidget {
     return Column(
       children: [
         FilledButton(
-          onPressed: proxySettings != null &&
+          onPressed:
+              proxySettings != null &&
                   proxySettings.isValid &&
                   status == TestProxyStatus.idle
               ? () async {

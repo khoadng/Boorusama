@@ -81,8 +81,9 @@ class SavedTaskListTile extends ConsumerWidget {
                 ? () async {
                     await showBooruModalBottomSheet(
                       context: context,
-                      routeSettings:
-                          const RouteSettings(name: 'bulk_download_create'),
+                      routeSettings: const RouteSettings(
+                        name: 'bulk_download_create',
+                      ),
                       builder: (_) => BulkDownloadEditSavedTaskPage(
                         savedTask: savedTask,
                         edit: true,

@@ -2,12 +2,12 @@
 import 'package:flutter/services.dart';
 
 Future<void> hideSystemStatus() => SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.immersiveSticky,
-    );
+  SystemUiMode.immersiveSticky,
+);
 
 Future<void> showSystemStatus() => SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-    );
+  SystemUiMode.edgeToEdge,
+);
 
 Future<void> setDeviceToLandscapeMode() =>
     SystemChrome.setPreferredOrientations(
@@ -15,8 +15,8 @@ Future<void> setDeviceToLandscapeMode() =>
     );
 
 Future<void> setDeviceToPortraitMode() => SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp],
-    );
+  [DeviceOrientation.portraitUp],
+);
 
 Future<void> setDeviceToAutoRotateMode() =>
     SystemChrome.setPreferredOrientations(
@@ -25,5 +25,4 @@ Future<void> setDeviceToAutoRotateMode() =>
 
 Future<void> setSystemActiveStatus({
   required bool active,
-}) =>
-    active ? showSystemStatus() : hideSystemStatus();
+}) => active ? showSystemStatus() : hideSystemStatus();

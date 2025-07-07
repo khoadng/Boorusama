@@ -6,9 +6,10 @@ RouteTransitionsBuilder parallaxSlideInTransitionBuilder(
   Widget oldWidget,
 ) =>
     (context, animation, secondaryAnimation, child) => Stack(
-          children: [
-            SlideTransition(
-              position: Tween<Offset>(
+      children: [
+        SlideTransition(
+          position:
+              Tween<Offset>(
                 begin: Offset.zero,
                 end: const Offset(-1, 0),
               ).animate(
@@ -17,23 +18,25 @@ RouteTransitionsBuilder parallaxSlideInTransitionBuilder(
                   curve: Curves.fastOutSlowIn,
                 ),
               ),
-              child: oldWidget,
-            ),
-            SlideTransition(
-              position: Tween<Offset>(
+          child: oldWidget,
+        ),
+        SlideTransition(
+          position:
+              Tween<Offset>(
                 begin: const Offset(1, 0),
                 end: Offset.zero,
               ).animate(
                 CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
               ),
-              child: enterWidget,
-            ),
-          ],
-        );
+          child: enterWidget,
+        ),
+      ],
+    );
 
 RouteTransitionsBuilder leftToRightTransitionBuilder() =>
     (context, animation, secondaryAnimation, child) => SlideTransition(
-          position: Tween<Offset>(
+      position:
+          Tween<Offset>(
             begin: const Offset(1, 0),
             end: Offset.zero,
           ).animate(
@@ -42,12 +45,13 @@ RouteTransitionsBuilder leftToRightTransitionBuilder() =>
               curve: Curves.fastOutSlowIn,
             ),
           ),
-          child: child,
-        );
+      child: child,
+    );
 
 RouteTransitionsBuilder fadeTransitionBuilder() =>
     (context, animation, secondaryAnimation, child) => FadeTransition(
-          opacity: Tween<double>(
+      opacity:
+          Tween<double>(
             begin: 0, // Start with a fully transparent page
             end: 1, // End with a fully opaque page
           ).animate(
@@ -57,5 +61,5 @@ RouteTransitionsBuilder fadeTransitionBuilder() =>
               reverseCurve: Curves.easeOutSine,
             ),
           ),
-          child: child,
-        );
+      child: child,
+    );

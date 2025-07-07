@@ -43,7 +43,9 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
 
     if (performed) return const SizedBox.shrink();
 
-    return ref.watch(_imageCachesProvider).when(
+    return ref
+        .watch(_imageCachesProvider)
+        .when(
           data: (cacheSize) {
             if (cacheSize > threshold) {
               final miscData = ref.watch(miscDataBoxProvider);
@@ -56,8 +58,11 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                   FilledButton(
                     onPressed: () async {
                       ref
-                          .read(_cacheImageActionsPerformedProvider.notifier)
-                          .state = true;
+                              .read(
+                                _cacheImageActionsPerformedProvider.notifier,
+                              )
+                              .state =
+                          true;
                       final success = await clearImageCache();
 
                       final c = navigatorKey.currentState?.context;
@@ -76,8 +81,11 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                     onPressed: () {
                       miscData.put(_kHideImageCacheWarningKey, 'true');
                       ref
-                          .read(_cacheImageActionsPerformedProvider.notifier)
-                          .state = true;
+                              .read(
+                                _cacheImageActionsPerformedProvider.notifier,
+                              )
+                              .state =
+                          true;
                     },
                     child: const Text("Don't show again"),
                   ),

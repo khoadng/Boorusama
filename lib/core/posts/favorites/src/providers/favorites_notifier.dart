@@ -10,10 +10,14 @@ import '../../../../configs/ref.dart';
 import '../../../post/post.dart';
 import 'favorite.dart';
 
-final favoritesProvider = NotifierProvider.family<FavoritesNotifier,
-    IMap<int, bool>, BooruConfigAuth>(
-  FavoritesNotifier.new,
-);
+final favoritesProvider =
+    NotifierProvider.family<
+      FavoritesNotifier,
+      IMap<int, bool>,
+      BooruConfigAuth
+    >(
+      FavoritesNotifier.new,
+    );
 
 final favoriteProvider = Provider.autoDispose.family<bool, int>(
   (ref, postId) {
@@ -24,19 +28,20 @@ final favoriteProvider = Provider.autoDispose.family<bool, int>(
 
 final favoriteRepoProvider =
     Provider.family<FavoriteRepository, BooruConfigAuth>(
-  (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
 
-    final favoriteRepo = repo?.favorite(config);
+        final favoriteRepo = repo?.favorite(config);
 
-    if (favoriteRepo != null) {
-      return favoriteRepo;
-    }
+        if (favoriteRepo != null) {
+          return favoriteRepo;
+        }
 
-    return EmptyFavoriteRepository();
-  },
-);
+        return EmptyFavoriteRepository();
+      },
+    );
 
 class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     with FavoritesNotifierMixin {
@@ -48,9 +53,9 @@ class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
   FavoriteRepository get repo => ref.read(favoriteRepoProvider(arg));
 
   void preload<T extends Post>(List<T> posts) => preloadInternal(
-        posts,
-        selfFavorited: (post) => repo.isPostFavorited(post),
-      );
+    posts,
+    selfFavorited: (post) => repo.isPostFavorited(post),
+  );
 
   @override
   Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
@@ -58,8 +63,9 @@ class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
 
   Future<void> checkFavorites(List<int> postIds) async {
     // Filter postIds not in cache
-    final postIdsToCheck =
-        postIds.where((postId) => !state.containsKey(postId)).toList();
+    final postIdsToCheck = postIds
+        .where((postId) => !state.containsKey(postId))
+        .toList();
 
     if (postIdsToCheck.isEmpty) return;
 
@@ -87,8 +93,10 @@ class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
       (data) => state = data;
 }
 
-final canFavoriteProvider =
-    Provider.family<bool, BooruConfigAuth>((ref, config) {
+final canFavoriteProvider = Provider.family<bool, BooruConfigAuth>((
+  ref,
+  config,
+) {
   return ref.watch(favoriteRepoProvider(config)).canFavorite();
 });
 

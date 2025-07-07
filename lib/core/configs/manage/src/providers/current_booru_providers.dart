@@ -10,14 +10,14 @@ import '../../../gesture/gesture.dart';
 
 final currentBooruConfigProvider =
     NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
-  CurrentBooruConfigNotifier.new,
-  dependencies: [
-    settingsProvider,
-    loggerProvider,
-    initialSettingsBooruConfigProvider,
-  ],
-  name: 'currentBooruConfigProvider',
-);
+      CurrentBooruConfigNotifier.new,
+      dependencies: [
+        settingsProvider,
+        loggerProvider,
+        initialSettingsBooruConfigProvider,
+      ],
+      name: 'currentBooruConfigProvider',
+    );
 
 final initialSettingsBooruConfigProvider = Provider<BooruConfig>(
   (ref) => throw UnimplementedError(),
@@ -47,8 +47,9 @@ final currentReadOnlyBooruConfigFilterProvider = Provider<BooruConfigFilter>(
 );
 
 final currentReadOnlyBooruConfigGestureProvider = Provider<PostGestureConfig?>(
-  (ref) => ref
-      .watch(currentBooruConfigProvider.select((value) => value.postGestures)),
+  (ref) => ref.watch(
+    currentBooruConfigProvider.select((value) => value.postGestures),
+  ),
   name: 'currentReadOnlyBooruConfigGestureProvider',
 );
 

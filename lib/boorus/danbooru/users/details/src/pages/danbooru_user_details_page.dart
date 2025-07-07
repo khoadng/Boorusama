@@ -47,7 +47,9 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
       ],
       body: SafeArea(
         bottom: false,
-        child: ref.watch(danbooruUserProvider(uid)).when(
+        child: ref
+            .watch(danbooruUserProvider(uid))
+            .when(
               data: (user) => UserDetailsTabView(
                 sliverInfoOverview: UserOverviewScaffold(
                   userInfo: DanbooruUserInfoBox(user: user),
@@ -102,10 +104,12 @@ class UserDetailsActionButtons extends ConsumerWidget {
           if (ref.watch(isDevEnvironmentProvider))
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
-                foregroundColor:
-                    Theme.of(context).colorScheme.onSecondaryContainer,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
+                foregroundColor: Theme.of(
+                  context,
+                ).colorScheme.onSecondaryContainer,
               ),
               child: const Text('My Uploads'),
               onPressed: () => goToMyUploadsPage(ref),
@@ -114,8 +118,9 @@ class UserDetailsActionButtons extends ConsumerWidget {
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-              foregroundColor:
-                  Theme.of(context).colorScheme.onSecondaryContainer,
+              foregroundColor: Theme.of(
+                context,
+              ).colorScheme.onSecondaryContainer,
             ),
             child: const Text('profile.messages').tr(),
             onPressed: () => goToDmailPage(ref),

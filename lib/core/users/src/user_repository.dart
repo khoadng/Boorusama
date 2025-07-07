@@ -1,9 +1,10 @@
 // Project imports:
 import 'user.dart';
 
-typedef UserListFetcher<T extends User> = Future<List<T>> Function(
-  List<int> ids,
-);
+typedef UserListFetcher<T extends User> =
+    Future<List<T>> Function(
+      List<int> ids,
+    );
 
 abstract class UserRepository<T extends User> {
   Future<T> getUserById(int id);

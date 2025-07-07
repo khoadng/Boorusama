@@ -29,8 +29,10 @@ class ChangelogDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final version = data.version;
     final colorScheme = Theme.of(context).colorScheme;
-    final significantUpdate =
-        isSignificantUpdate(data.previousVersion, data.version);
+    final significantUpdate = isSignificantUpdate(
+      data.previousVersion,
+      data.version,
+    );
     final hasPrem =
         ref.watch(showPremiumFeatsProvider) && ref.watch(hasPremiumProvider);
 
@@ -65,9 +67,7 @@ class ChangelogDialog extends ConsumerWidget {
                           children: [
                             Text(
                               'app_update.whats_new',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
+                              style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -106,19 +106,19 @@ class ChangelogDialog extends ConsumerWidget {
                     children: [
                       switch (data.version) {
                         final Prereleased u => Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8,
-                              bottom: 4,
-                            ),
-                            child: Text(
-                              '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
-                              style: TextStyle(
-                                color: colorScheme.hintColor,
-                                fontStyle: FontStyle.italic,
-                                fontSize: 12,
-                              ),
+                          padding: const EdgeInsets.only(
+                            left: 8,
+                            bottom: 4,
+                          ),
+                          child: Text(
+                            '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
+                            style: TextStyle(
+                              color: colorScheme.hintColor,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 12,
                             ),
                           ),
+                        ),
                         _ => const SizedBox.shrink(),
                       },
                       SingleChildScrollView(

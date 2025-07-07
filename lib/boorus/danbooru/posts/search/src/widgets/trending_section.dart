@@ -23,7 +23,9 @@ class TrendingSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigFilter;
 
-    return ref.watch(top15TrendingTagsProvider(config)).when(
+    return ref
+        .watch(top15TrendingTagsProvider(config))
+        .when(
           data: (tags) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -55,8 +57,8 @@ class TrendingSection extends ConsumerWidget {
       child: Text(
         'search.trending'.tr().toUpperCase(),
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

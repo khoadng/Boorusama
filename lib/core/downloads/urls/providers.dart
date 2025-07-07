@@ -10,19 +10,20 @@ import 'types.dart';
 
 final downloadFileUrlExtractorProvider =
     Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>(
-  (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
 
-    final downloadFileUrlExtractor = repo?.downloadFileUrlExtractor(config);
+        final downloadFileUrlExtractor = repo?.downloadFileUrlExtractor(config);
 
-    if (downloadFileUrlExtractor != null) {
-      return downloadFileUrlExtractor;
-    }
+        if (downloadFileUrlExtractor != null) {
+          return downloadFileUrlExtractor;
+        }
 
-    return const UrlInsidePostExtractor();
-  },
-);
+        return const UrlInsidePostExtractor();
+      },
+    );
 
 final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
   const UrlInsidePostExtractor();

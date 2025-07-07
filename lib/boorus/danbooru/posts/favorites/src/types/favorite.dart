@@ -9,10 +9,10 @@ class Favorite extends Equatable {
   });
 
   factory Favorite.empty() => const Favorite(
-        id: -1,
-        postId: -1,
-        userId: -1,
-      );
+    id: -1,
+    postId: -1,
+    userId: -1,
+  );
 
   final int id;
   final int postId;
@@ -27,12 +27,11 @@ extension FavoriteX on Favorite {
     int? id,
     int? postId,
     int? userId,
-  }) =>
-      Favorite(
-        id: id ?? this.id,
-        postId: postId ?? this.postId,
-        userId: userId ?? this.userId,
-      );
+  }) => Favorite(
+    id: id ?? this.id,
+    postId: postId ?? this.postId,
+    userId: userId ?? this.userId,
+  );
 }
 
 String buildFavoriteQuery(String username) =>

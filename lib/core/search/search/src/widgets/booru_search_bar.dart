@@ -109,7 +109,8 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
                   hoverColor: Colors.transparent,
-                  contentPadding: widget.contentPadding ??
+                  contentPadding:
+                      widget.contentPadding ??
                       const EdgeInsets.symmetric(
                         vertical: 12,
                       ),

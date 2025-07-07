@@ -57,61 +57,61 @@ class DanbooruBuilder implements BooruBuilder {
   DanbooruBuilder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat:
-                  kBoorusamaCustomDownloadFileNameFormat,
-            ),
-            child: CreateDanbooruConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        ),
+        child: CreateDanbooruConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  HomePageBuilder get homePageBuilder => (context) => const DanbooruHomePage();
+  HomePageBuilder get homePageBuilder =>
+      (context) => const DanbooruHomePage();
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateDanbooruConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateDanbooruConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => DanbooruSearchPage(
-            params: params,
-          );
+        params: params,
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as DanbooruPost).toList();
+    final posts = payload.posts.map((e) => e as DanbooruPost).toList();
 
-        return PostDetailsScope<DanbooruPost>(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DanbooruPostDetailsPage(),
-        );
-      };
+    return PostDetailsScope<DanbooruPost>(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DanbooruPostDetailsPage(),
+    );
+  };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -122,100 +122,99 @@ class DanbooruBuilder implements BooruBuilder {
       (context, artistName) => DanbooruArtistPage(artistName: artistName);
 
   @override
-  CharacterPageBuilder? get characterPageBuilder => (context, characterName) =>
-      DanbooruCharacterPage(characterName: characterName);
+  CharacterPageBuilder? get characterPageBuilder =>
+      (context, characterName) =>
+          DanbooruCharacterPage(characterName: characterName);
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => CommentPage(
-            postId: postId,
-            useAppBar: useAppBar,
-          );
+        postId: postId,
+        useAppBar: useAppBar,
+      );
 
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post) => handleDanbooruGestureAction(
-            action,
-            onDownload: () => ref.download(post),
-            onShare: () => ref.sharePost(
-              post,
-              context: ref.context,
-              state: ref.read(postShareProvider(post)),
-            ),
-            onToggleBookmark: () => ref.toggleBookmark(post),
-            onViewTags: () => goToShowTaglistPage(ref, post),
-            onViewOriginal: () => goToOriginalImagePage(ref, post),
-            onOpenSource: () => post.source.whenWeb(
-              (source) => launchExternalUrlString(source.url),
-              () => false,
-            ),
-            onToggleFavorite: () => ref.toggleFavorite(post.id),
-            onUpvote: () => ref.danbooruUpvote(post.id),
-            onDownvote: () => ref.danbooruDownvote(post.id),
-            onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
-                  () => false,
-                  (post) => ref.danbooruEdit(post),
-                ),
-          );
+        action,
+        onDownload: () => ref.download(post),
+        onShare: () => ref.sharePost(
+          post,
+          context: ref.context,
+          state: ref.read(postShareProvider(post)),
+        ),
+        onToggleBookmark: () => ref.toggleBookmark(post),
+        onViewTags: () => goToShowTaglistPage(ref, post),
+        onViewOriginal: () => goToOriginalImagePage(ref, post),
+        onOpenSource: () => post.source.whenWeb(
+          (source) => launchExternalUrlString(source.url),
+          () => false,
+        ),
+        onToggleFavorite: () => ref.toggleFavorite(post.id),
+        onUpvote: () => ref.danbooruUpvote(post.id),
+        onDownvote: () => ref.danbooruDownvote(post.id),
+        onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
+          () => false,
+          (post) => ref.danbooruEdit(post),
+        ),
+      );
 
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
       (imageQuality, rawPost, config) =>
           castOrNull<DanbooruPost>(rawPost).toOption().fold(
-                () => rawPost.sampleImageUrl,
-                (post) => post.isGif
-                    ? post.sampleImageUrl
-                    : config.imageDetaisQuality.toOption().fold(
-                          () => switch (imageQuality) {
-                            ImageQuality.highest ||
-                            ImageQuality.original =>
-                              post.sampleImageUrl,
-                            _ => post.url720x720,
-                          },
-                          (quality) => switch (PostQualityType.parse(quality)) {
-                            PostQualityType.v180x180 => post.url180x180,
-                            PostQualityType.v360x360 => post.url360x360,
-                            PostQualityType.v720x720 => post.url720x720,
-                            PostQualityType.sample => post.isVideo
-                                ? post.url720x720
-                                : post.sampleImageUrl,
-                            PostQualityType.original => post.isVideo
-                                ? post.url720x720
-                                : post.originalImageUrl,
-                            null => post.url720x720,
-                          },
-                        ),
-              );
+            () => rawPost.sampleImageUrl,
+            (post) => post.isGif
+                ? post.sampleImageUrl
+                : config.imageDetaisQuality.toOption().fold(
+                    () => switch (imageQuality) {
+                      ImageQuality.highest ||
+                      ImageQuality.original => post.sampleImageUrl,
+                      _ => post.url720x720,
+                    },
+                    (quality) => switch (PostQualityType.parse(quality)) {
+                      PostQualityType.v180x180 => post.url180x180,
+                      PostQualityType.v360x360 => post.url360x360,
+                      PostQualityType.v720x720 => post.url720x720,
+                      PostQualityType.sample =>
+                        post.isVideo ? post.url720x720 : post.sampleImageUrl,
+                      PostQualityType.original =>
+                        post.isVideo ? post.url720x720 : post.originalImageUrl,
+                      null => post.url720x720,
+                    },
+                  ),
+          );
 
   @override
   PostStatisticsPageBuilder get postStatisticsPageBuilder => (context, posts) {
-        try {
-          return DanbooruPostStatisticsPage(
-            posts: posts.map((e) => e as DanbooruPost).toList(),
-          );
-        } catch (e) {
-          return PostStatisticsPage(
-            totalPosts: () => posts.length,
-            generalStats: () => posts.getStats(),
-          );
-        }
-      };
+    try {
+      return DanbooruPostStatisticsPage(
+        posts: posts.map((e) => e as DanbooruPost).toList(),
+      );
+    } catch (e) {
+      return PostStatisticsPage(
+        totalPosts: () => posts.length,
+        generalStats: () => posts.getStats(),
+      );
+    }
+  };
 
   @override
   GranularRatingFilterer? get granularRatingFilterer =>
       (post, config) => switch (config.filter.ratingFilter) {
-            BooruConfigRatingFilter.none => false,
-            BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
-            BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
-            BooruConfigRatingFilter.custom =>
-              config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-                    () => false,
-                    (ratings) => ratings.contains(post.rating),
-                  ),
-          };
+        BooruConfigRatingFilter.none => false,
+        BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
+        BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
+        BooruConfigRatingFilter.custom =>
+          config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
+            () => false,
+            (ratings) => ratings.contains(post.rating),
+          ),
+      };
 
   @override
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder =>
+      () => {
         Rating.explicit,
         Rating.questionable,
         Rating.sensitive,
@@ -224,25 +223,25 @@ class DanbooruBuilder implements BooruBuilder {
 
   @override
   HomeViewBuilder get homeViewBuilder => (context) {
-        return const UserCustomHomeBuilder(
-          defaultView: LatestView(),
-        );
-      };
+    return const UserCustomHomeBuilder(
+      defaultView: LatestView(),
+    );
+  };
 
   @override
   MetatagExtractorBuilder get metatagExtractorBuilder =>
       (tagInfo) => DefaultMetatagExtractor(
-            metatags: tagInfo.metatags,
-          );
+        metatags: tagInfo.metatags,
+      );
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
       (context, post) => castOrNull<DanbooruPost>(post).toOption().fold(
-            () => const SizedBox.shrink(),
-            (post) => DanbooruQuickFavoriteButton(
-              post: post,
-            ),
-          );
+        () => const SizedBox.shrink(),
+        (post) => DanbooruQuickFavoriteButton(
+          post: post,
+        ),
+      );
 
   @override
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>

@@ -59,8 +59,9 @@ class DummySubscriptionManager implements SubscriptionManager {
 
   @override
   Future<bool> hasActiveSubscription(String id) async {
-    final package =
-        iap.purchasedPackages.firstWhereOrNull((element) => element.id == id);
+    final package = iap.purchasedPackages.firstWhereOrNull(
+      (element) => element.id == id,
+    );
 
     if (package == null) return false;
 

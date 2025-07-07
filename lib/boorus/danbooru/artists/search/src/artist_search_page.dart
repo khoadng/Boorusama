@@ -112,9 +112,9 @@ class _DanbooruArtistSearchPageState
                           _buildLoading(),
                       itemBuilder: (context, artist, index) =>
                           ArtistSearchInfoCard(
-                        focusScopeNode: focusScopeNode,
-                        artist: artist,
-                      ),
+                            focusScopeNode: focusScopeNode,
+                            artist: artist,
+                          ),
                     ),
                   ),
                 ),

@@ -51,14 +51,15 @@ Future<PermissionStatus> _requestMediaPermissionsIos() async {
     Permission.storage,
   ].request();
 
-  final allAccepted =
-      statuses.values.every((e) => e == PermissionStatus.granted);
+  final allAccepted = statuses.values.every(
+    (e) => e == PermissionStatus.granted,
+  );
 
   return allAccepted
       ? PermissionStatus.granted
       : statuses.values.contains(PermissionStatus.permanentlyDenied)
-          ? PermissionStatus.permanentlyDenied
-          : PermissionStatus.denied;
+      ? PermissionStatus.permanentlyDenied
+      : PermissionStatus.denied;
 }
 
 Future<PermissionStatus> _checkMediaPermissionsIos() async {

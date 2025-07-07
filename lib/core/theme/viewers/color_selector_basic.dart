@@ -68,22 +68,22 @@ class BasicColorSelector extends ConsumerWidget {
             title: const Text('settings.theme.dynamic_color').tr(),
             subtitle: dynamicColorSupported
                 ? !isDesktopPlatform()
-                    ? const Text(
-                        'settings.theme.dynamic_color_mobile_description',
-                      ).tr()
-                    : const Text(
-                        'settings.theme.dynamic_color_desktop_description',
-                      ).tr()
+                      ? const Text(
+                          'settings.theme.dynamic_color_mobile_description',
+                        ).tr()
+                      : const Text(
+                          'settings.theme.dynamic_color_desktop_description',
+                        ).tr()
                 : Text(
                     '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
                   ),
             value: enableDynamicColoring,
             onChanged: dynamicColorSupported
                 ? (value) => notifier.updateColors(
-                      currentColors.copyWith(
-                        enableDynamicColoring: value,
-                      ),
-                    )
+                    currentColors.copyWith(
+                      enableDynamicColoring: value,
+                    ),
+                  )
                 : null,
           ),
         ],

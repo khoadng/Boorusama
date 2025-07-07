@@ -9,8 +9,9 @@ String dtext(
   required String booruUrl,
 }) {
   final tagSearchUrl = '$booruUrl/posts?tags=';
-  final result =
-      DTextGrammarDefinition(tagSearchUrl: tagSearchUrl).build().parse(value);
+  final result = DTextGrammarDefinition(
+    tagSearchUrl: tagSearchUrl,
+  ).build().parse(value);
   return result is Success ? grammarToHtmlString(result.value) : value;
 }
 
@@ -24,12 +25,12 @@ String grammarToHtmlString(List<dynamic> value) {
 }
 
 String mapDataToString(dynamic data) => switch (data) {
-      final BBCode c => parseBBcodeToHtml(c),
-      LineBreakElement _ => '<br>',
-      final UrlElement url => parseUrl(url),
-      String _ => data,
-      _ => data.toString(),
-    };
+  final BBCode c => parseBBcodeToHtml(c),
+  LineBreakElement _ => '<br>',
+  final UrlElement url => parseUrl(url),
+  String _ => data,
+  _ => data.toString(),
+};
 
 String parseUrl(UrlElement url) {
   final displayText = url.displayText ?? url.url;
@@ -37,12 +38,12 @@ String parseUrl(UrlElement url) {
 }
 
 String parseBBcodeToHtml(BBCode text) => switch (text.tag) {
-      'b' => '<b>${text.text}</b>',
-      'i' => '<i>${text.text}</i>',
-      'u' => '<u>${text.text}</u>',
-      's' => '<s>${text.text}</s>',
-      'expand' =>
-        '<details><summary>${text.attributes ?? 'Show'}</summary>${text.text}</details>',
-      'quote' => '<blockquote>${text.text}</blockquote>',
-      _ => text.text
-    };
+  'b' => '<b>${text.text}</b>',
+  'i' => '<i>${text.text}</i>',
+  'u' => '<u>${text.text}</u>',
+  's' => '<s>${text.text}</s>',
+  'expand' =>
+    '<details><summary>${text.attributes ?? 'Show'}</summary>${text.text}</details>',
+  'quote' => '<blockquote>${text.text}</blockquote>',
+  _ => text.text,
+};

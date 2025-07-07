@@ -98,8 +98,8 @@ class MoebooruHashedPasswordField extends ConsumerWidget {
                   child: Text(
                     hashedPassword,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 IconButton(

@@ -6,14 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/configs/config.dart';
 import '../../core/http/providers.dart';
 
-final danbooruClientProvider =
-    Provider.family<DanbooruClient, BooruConfigAuth>((ref, config) {
-  final dio = ref.watch(dioProvider(config));
+final danbooruClientProvider = Provider.family<DanbooruClient, BooruConfigAuth>(
+  (ref, config) {
+    final dio = ref.watch(dioProvider(config));
 
-  return DanbooruClient(
-    dio: dio,
-    baseUrl: config.url,
-    login: config.login,
-    apiKey: config.apiKey,
-  );
-});
+    return DanbooruClient(
+      dio: dio,
+      baseUrl: config.url,
+      login: config.login,
+      apiKey: config.apiKey,
+    );
+  },
+);

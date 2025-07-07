@@ -8,9 +8,11 @@ import '../data/user_feedback_repository_api.dart';
 import '../types/user_feedback.dart';
 
 final danbooruUserFeedbackRepoProvider =
-    Provider.family<DanbooruUserFeedbacksRepository, BooruConfigAuth>(
-        (ref, config) {
-  return UserFeedbackRepositoryApi(
-    ref.watch(danbooruClientProvider(config)),
-  );
-});
+    Provider.family<DanbooruUserFeedbacksRepository, BooruConfigAuth>((
+      ref,
+      config,
+    ) {
+      return UserFeedbackRepositoryApi(
+        ref.watch(danbooruClientProvider(config)),
+      );
+    });

@@ -56,8 +56,9 @@ Future<IAP?> initRevenuecatIap(
     purchase: iap,
   );
 
-  final activePackages =
-      await getActiveSubscriptionPackages(subscriptionManager);
+  final activePackages = await getActiveSubscriptionPackages(
+    subscriptionManager,
+  );
 
   return DefaultIAP(
     purchaser: iap,

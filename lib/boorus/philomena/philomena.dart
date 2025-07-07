@@ -5,17 +5,17 @@ import 'philomena_builder.dart';
 import 'philomena_repository.dart';
 
 BooruComponents createPhilomena() => BooruComponents(
-      parser: YamlBooruParser.standard(
-        type: BooruType.philomena,
-        constructor: (siteDef) => Philomena(
-          name: siteDef.name,
-          protocol: siteDef.protocol,
-          sites: siteDef.sites,
-        ),
-      ),
-      createBuilder: PhilomenaBuilder.new,
-      createRepository: (ref) => PhilomenaRepository(ref: ref),
-    );
+  parser: YamlBooruParser.standard(
+    type: BooruType.philomena,
+    constructor: (siteDef) => Philomena(
+      name: siteDef.name,
+      protocol: siteDef.protocol,
+      sites: siteDef.sites,
+    ),
+  ),
+  createBuilder: PhilomenaBuilder.new,
+  createRepository: (ref) => PhilomenaRepository(ref: ref),
+);
 
 class Philomena extends Booru {
   const Philomena({

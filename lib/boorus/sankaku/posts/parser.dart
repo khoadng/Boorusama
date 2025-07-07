@@ -18,7 +18,8 @@ SankakuPost postDtoToPost(
   final hasParent = e.parentId != null;
   final hasChilren = e.hasChildren ?? false;
   final hasParentOrChildren = hasParent || hasChilren;
-  final artistTags = e.tags
+  final artistTags =
+      e.tags
           ?.where(
             (e) => TagCategory.fromLegacyId(e.type) == TagCategory.artist(),
           )
@@ -32,7 +33,8 @@ SankakuPost postDtoToPost(
           .toList() ??
       [];
 
-  final characterTags = e.tags
+  final characterTags =
+      e.tags
           ?.where(
             (e) => TagCategory.fromLegacyId(e.type) == TagCategory.character(),
           )
@@ -46,7 +48,8 @@ SankakuPost postDtoToPost(
           .toList() ??
       [];
 
-  final copyrightTags = e.tags
+  final copyrightTags =
+      e.tags
           ?.where(
             (e) => TagCategory.fromLegacyId(e.type) == TagCategory.copyright(),
           )
@@ -60,7 +63,8 @@ SankakuPost postDtoToPost(
           .toList() ??
       [];
 
-  final generalTags = e.tags
+  final generalTags =
+      e.tags
           ?.where(
             (e) => TagCategory.fromLegacyId(e.type) == TagCategory.general(),
           )
@@ -74,7 +78,8 @@ SankakuPost postDtoToPost(
           .toList() ??
       [];
 
-  final metaTags = e.tags
+  final metaTags =
+      e.tags
           ?.where(
             (e) => TagCategory.fromLegacyId(e.type) == TagCategory.meta(),
           )
@@ -117,7 +122,8 @@ SankakuPost postDtoToPost(
     score: e.totalScore ?? 0,
     duration: e.videoDuration ?? 0,
     fileSize: e.fileSize ?? 0,
-    format: extractFileExtension(
+    format:
+        extractFileExtension(
           e.fileType,
           fileUrl: e.fileUrl,
         ) ??

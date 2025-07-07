@@ -58,7 +58,9 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
       color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ref.watch(orderedConfigsProvider).maybeWhen(
+        child: ref
+            .watch(orderedConfigsProvider)
+            .maybeWhen(
               data: (configs) => CustomScrollView(
                 reverse: reverseScroll,
                 slivers: [
@@ -127,7 +129,9 @@ class _BooruSelectorHorizontalState
       color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ref.watch(orderedConfigsProvider).maybeWhen(
+        child: ref
+            .watch(orderedConfigsProvider)
+            .maybeWhen(
               data: (configs) => Row(
                 children: [
                   if (reverseScroll) addButton,
@@ -215,16 +219,17 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
   }
 
   bool get reverseScroll => ref.watch(
-        settingsProvider
-            .select((value) => value.reverseBooruConfigSelectorScrollDirection),
-      );
+    settingsProvider.select(
+      (value) => value.reverseBooruConfigSelectorScrollDirection,
+    ),
+  );
 
   bool get hideLabel =>
       ref.watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 
   Widget get addButton => IconButton(
-        splashRadius: 20,
-        onPressed: () => goToAddBooruConfigPage(ref),
-        icon: const Icon(Symbols.add),
-      );
+    splashRadius: 20,
+    onPressed: () => goToAddBooruConfigPage(ref),
+    icon: const Icon(Symbols.add),
+  );
 }

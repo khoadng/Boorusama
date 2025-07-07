@@ -19,24 +19,21 @@ import 'shimmie2/shimmie2.dart';
 import 'szurubooru/szurubooru.dart';
 import 'zerochan/zerochan.dart';
 
-typedef EngineParams = ({
-  BooruDb db,
-  BooruRegistry registry,
-});
+typedef EngineParams = ({BooruDb db, BooruRegistry registry});
 
 final booruInitEngineProvider =
     Provider.family<BooruEngineRegistry, EngineParams>((ref, params) {
-  final registry = BooruEngineRegistry();
+      final registry = BooruEngineRegistry();
 
-  for (final booru in params.db.boorus) {
-    registry.register(
-      booru.type,
-      params.registry.createEngine(booru, ref),
-    );
-  }
+      for (final booru in params.db.boorus) {
+        registry.register(
+          booru.type,
+          params.registry.createEngine(booru, ref),
+        );
+      }
 
-  return registry;
-});
+      return registry;
+    });
 
 typedef BooruFactory = BooruComponents Function();
 

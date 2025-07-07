@@ -109,5 +109,5 @@ class CreateDownloadOptionsNotifier
 
 final createDownloadOptionsProvider = NotifierProvider.autoDispose
     .family<CreateDownloadOptionsNotifier, DownloadOptions, DownloadOptions>(
-  CreateDownloadOptionsNotifier.new,
-);
+      CreateDownloadOptionsNotifier.new,
+    );

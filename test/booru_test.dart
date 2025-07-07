@@ -19,22 +19,27 @@ void main() {
     });
 
     test(
-        'returns BooruUrlError.stringHasInbetweenSpaces for string with spaces',
-        () {
-      final result = mapBooruUrlToUri('https://danbooru.donmai.us/ posts/1234');
-      expect(result, left(BooruUrlError.stringHasInbetweenSpaces));
-    });
+      'returns BooruUrlError.stringHasInbetweenSpaces for string with spaces',
+      () {
+        final result = mapBooruUrlToUri(
+          'https://danbooru.donmai.us/ posts/1234',
+        );
+        expect(result, left(BooruUrlError.stringHasInbetweenSpaces));
+      },
+    );
 
     test('returns BooruUrlError.invalidUrlFormat for "https://a"', () {
       final result = mapBooruUrlToUri('https://a');
       expect(result, left(BooruUrlError.invalidUrlFormat));
     });
 
-    test('returns BooruUrlError.invalidUrlFormat for "https://.danbooru.com/"',
-        () {
-      final result = mapBooruUrlToUri('https://.danbooru.com/');
-      expect(result, left(BooruUrlError.invalidUrlFormat));
-    });
+    test(
+      'returns BooruUrlError.invalidUrlFormat for "https://.danbooru.com/"',
+      () {
+        final result = mapBooruUrlToUri('https://.danbooru.com/');
+        expect(result, left(BooruUrlError.invalidUrlFormat));
+      },
+    );
 
     test('returns BooruUrlError.missingScheme for URL without scheme', () {
       final result = mapBooruUrlToUri('danbooru.donmai.us');
@@ -47,11 +52,12 @@ void main() {
     });
 
     test(
-        'returns BooruUrlError.missingLastSlash for URL without trailing slash',
-        () {
-      final result = mapBooruUrlToUri('https://danbooru.donmai.us');
-      expect(result, left(BooruUrlError.missingLastSlash));
-    });
+      'returns BooruUrlError.missingLastSlash for URL without trailing slash',
+      () {
+        final result = mapBooruUrlToUri('https://danbooru.donmai.us');
+        expect(result, left(BooruUrlError.missingLastSlash));
+      },
+    );
 
     test('returns BooruUrlError.redundantWww for URL with www', () {
       final result = mapBooruUrlToUri('https://www.danbooru.donmai.us/');

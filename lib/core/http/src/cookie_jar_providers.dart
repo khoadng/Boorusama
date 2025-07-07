@@ -16,32 +16,32 @@ final cookieJarProvider = Provider<CookieJar>((ref) {
 
 final bypassDdosHeadersProvider =
     FutureProvider.family<Map<String, String>, String>((ref, url) async {
-  final cookieJar = ref.watch(cookieJarProvider);
+      final cookieJar = ref.watch(cookieJarProvider);
 
-  final cookies = await cookieJar.loadForRequest(Uri.parse(url));
+      final cookies = await cookieJar.loadForRequest(Uri.parse(url));
 
-  if (cookies.isEmpty) return const {};
+      if (cookies.isEmpty) return const {};
 
-  final cookieString = cookies.cookieString;
+      final cookieString = cookies.cookieString;
 
-  final webviewController = WebViewController();
-  final userAgent = await webviewController.getUserAgent();
+      final webviewController = WebViewController();
+      final userAgent = await webviewController.getUserAgent();
 
-  return {
-    if (cookieString.isNotEmpty) 'cookie': cookieString,
-    if (userAgent != null && userAgent.isNotEmpty) 'user-agent': userAgent,
-  };
-});
+      return {
+        if (cookieString.isNotEmpty) 'cookie': cookieString,
+        if (userAgent != null && userAgent.isNotEmpty) 'user-agent': userAgent,
+      };
+    });
 
 final cachedBypassDdosHeadersProvider =
     Provider.family<Map<String, String>, String>((ref, url) {
-  final headers = ref.watch(bypassDdosHeadersProvider(url));
+      final headers = ref.watch(bypassDdosHeadersProvider(url));
 
-  return headers.maybeWhen(
-    data: (value) => value,
-    orElse: () => const {},
-  );
-});
+      return headers.maybeWhen(
+        data: (value) => value,
+        orElse: () => const {},
+      );
+    });
 
 extension CookieJarX on List<Cookie> {
   String get cookieString => map((e) => e.toString()).join('; ');

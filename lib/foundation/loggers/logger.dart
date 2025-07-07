@@ -31,6 +31,5 @@ mixin LoggerMixin {
     String serviceName,
     String message, {
     LogLevel? level,
-  }) =>
-      logger.log(serviceName, message, level: level);
+  }) => logger.log(serviceName, message, level: level);
 }

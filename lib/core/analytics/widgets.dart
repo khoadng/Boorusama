@@ -62,7 +62,9 @@ class _AnalyticsScopeState extends ConsumerState<AnalyticsScope>
 
     if (_lastAspectRatio == aspectRatio) return;
 
-    ref.read(analyticsProvider).whenData(
+    ref
+        .read(analyticsProvider)
+        .whenData(
           (a) => a?.updateViewInfo(
             AnalyticsViewInfo(aspectRatio: aspectRatio),
           ),

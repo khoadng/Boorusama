@@ -11,18 +11,17 @@ Future<T?> showCommentPage<T>(
   required int postId,
   required Widget Function(BuildContext context, bool useAppBar) builder,
   RouteSettings? settings,
-}) =>
-    Screen.of(context).size == ScreenSize.small
-        ? Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (context) => builder(context, true),
-            ),
-          )
-        : showSideSheetFromRight(
-            settings: settings,
-            width: MediaQuery.sizeOf(context).width * 0.41,
-            body: CommentSideSheetContainer(
-              builder: builder,
-            ),
-            context: context,
-          );
+}) => Screen.of(context).size == ScreenSize.small
+    ? Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: (context) => builder(context, true),
+        ),
+      )
+    : showSideSheetFromRight(
+        settings: settings,
+        width: MediaQuery.sizeOf(context).width * 0.41,
+        body: CommentSideSheetContainer(
+          builder: builder,
+        ),
+        context: context,
+      );

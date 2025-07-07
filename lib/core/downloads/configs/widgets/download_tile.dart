@@ -45,17 +45,17 @@ class DownloadTileBuilder extends StatelessWidget {
         ? Filesize.parse(fileSize, round: 1)
         : null;
     final networkSpeedText = networkSpeed.toOption().fold(
-          () => null,
-          (s) => switch (s) {
-            <= 0 => '-- MB/s',
-            >= 1 => '${s.round()} MB/s',
-            _ => '${(s * 1000).round()} kB/s'
-          },
-        );
+      () => null,
+      (s) => switch (s) {
+        <= 0 => '-- MB/s',
+        >= 1 => '${s.round()} MB/s',
+        _ => '${(s * 1000).round()} kB/s',
+      },
+    );
     final timeRemainingText = timeRemaining.toOption().fold(
-          () => null,
-          (t) => _durationToTime(t),
-        );
+      () => null,
+      (t) => _durationToTime(t),
+    );
     final extensionText = sanitizedExtension(url);
 
     final infoText = [
@@ -79,18 +79,18 @@ class DownloadTileBuilder extends StatelessWidget {
             SizedBox(
               width: 60,
               child: thumbnailUrl.toOption().fold(
-                    () => SizedBox(
-                      height: 60,
-                      child: Card(
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
-                        child: const Icon(
-                          Symbols.image,
-                          color: Colors.white,
-                        ),
-                      ),
+                () => SizedBox(
+                  height: 60,
+                  child: Card(
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                    child: const Icon(
+                      Symbols.image,
+                      color: Colors.white,
                     ),
-                    (t) => _Thumbnail(url: t),
                   ),
+                ),
+                (t) => _Thumbnail(url: t),
+              ),
             ),
             const SizedBox(width: 8),
             Expanded(

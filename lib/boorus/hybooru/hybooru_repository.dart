@@ -35,9 +35,10 @@ class HybooruRepository extends BooruRepositoryDefault {
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(dioProvider(config));
 
-    return () => HybooruClient(baseUrl: config.url, dio: dio)
-        .getPosts()
-        .then((value) => true);
+    return () => HybooruClient(
+      baseUrl: config.url,
+      dio: dio,
+    ).getPosts().then((value) => true);
   }
 
   @override

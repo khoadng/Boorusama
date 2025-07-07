@@ -18,10 +18,10 @@ class Tag extends Equatable {
   });
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-        name: json['name'],
-        category: TagCategory.fromLegacyId(json['category']),
-        postCount: json['postCount'],
-      );
+    name: json['name'],
+    category: TagCategory.fromLegacyId(json['category']),
+    postCount: json['postCount'],
+  );
 
   const Tag.noCount({
     required this.name,
@@ -29,27 +29,26 @@ class Tag extends Equatable {
   }) : postCount = 0;
 
   factory Tag.empty() => Tag(
-        name: '',
-        category: TagCategory.unknown(),
-        postCount: 0,
-      );
+    name: '',
+    category: TagCategory.unknown(),
+    postCount: 0,
+  );
 
   Tag copyWith(
     String? name,
     TagCategory? category,
     PostCount? postCount,
-  ) =>
-      Tag(
-        name: name ?? this.name,
-        category: category ?? this.category,
-        postCount: postCount ?? this.postCount,
-      );
+  ) => Tag(
+    name: name ?? this.name,
+    category: category ?? this.category,
+    postCount: postCount ?? this.postCount,
+  );
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'category': category.id,
-        'postCount': postCount,
-      };
+    'name': name,
+    'category': category.id,
+    'postCount': postCount,
+  };
 
   final String name;
   final TagCategory category;
@@ -62,10 +61,11 @@ class Tag extends Equatable {
   List<Object?> get props => [name, category, postCount];
 }
 
-typedef TagFetcher = FutureOr<List<Tag>> Function(
-  Post post,
-  ExtractOptions options,
-);
+typedef TagFetcher =
+    FutureOr<List<Tag>> Function(
+      Post post,
+      ExtractOptions options,
+    );
 
 class ExtractOptions {
   const ExtractOptions({

@@ -9,13 +9,13 @@ import 'parser.dart';
 
 final gelbooruV2NoteRepoProvider =
     Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(gelbooruV2ClientProvider(config));
+      final client = ref.watch(gelbooruV2ClientProvider(config));
 
-  return NoteRepositoryBuilder(
-    fetch: (postId) => client
-        .getNotesFromPostId(
-          postId: postId,
-        )
-        .then((value) => value.map(gelbooruV2NoteToNote).toList()),
-  );
-});
+      return NoteRepositoryBuilder(
+        fetch: (postId) => client
+            .getNotesFromPostId(
+              postId: postId,
+            )
+            .then((value) => value.map(gelbooruV2NoteToNote).toList()),
+      );
+    });

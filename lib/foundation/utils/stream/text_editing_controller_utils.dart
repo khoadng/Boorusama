@@ -14,8 +14,10 @@ extension TextEditingControllerX on TextEditingController {
       controller.close();
     }
 
-    controller =
-        StreamController<String>(onListen: onListen, onCancel: onCancel);
+    controller = StreamController<String>(
+      onListen: onListen,
+      onCancel: onCancel,
+    );
 
     return controller.stream;
   }

@@ -18,14 +18,17 @@ class TagEditSubmitButton extends ConsumerWidget {
     final notifier = ref.watch(tagEditProvider.notifier);
     final initialRating = notifier.initialRating;
     final postId = notifier.postId;
-    final addedTags =
-        ref.watch(tagEditProvider.select((value) => value.toBeAdded));
-    final removedTags =
-        ref.watch(tagEditProvider.select((value) => value.toBeRemoved));
+    final addedTags = ref.watch(
+      tagEditProvider.select((value) => value.toBeAdded),
+    );
+    final removedTags = ref.watch(
+      tagEditProvider.select((value) => value.toBeRemoved),
+    );
     final rating = ref.watch(selectedTagEditRatingProvider(initialRating));
 
     return TextButton(
-      onPressed: (addedTags.isNotEmpty ||
+      onPressed:
+          (addedTags.isNotEmpty ||
               removedTags.isNotEmpty ||
               rating != initialRating)
           ? () {

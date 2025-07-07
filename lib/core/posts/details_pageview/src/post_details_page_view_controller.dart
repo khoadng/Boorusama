@@ -26,12 +26,12 @@ class PostDetailsPageViewController extends ChangeNotifier
     this.maxSize = 0.7,
     this.thresholdSizeToExpand = 0.02,
     SlideshowOptions slideshowOptions = const SlideshowOptions(),
-  })  : currentPage = ValueNotifier(initialPage),
-        _slideshowOptions = slideshowOptions,
-        overlay = ValueNotifier(!initialHideOverlay),
-        bottomSheet = ValueNotifier(!initialHideOverlay),
-        hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
-        sheetState = ValueNotifier(SheetState.collapsed);
+  }) : currentPage = ValueNotifier(initialPage),
+       _slideshowOptions = slideshowOptions,
+       overlay = ValueNotifier(!initialHideOverlay),
+       bottomSheet = ValueNotifier(!initialHideOverlay),
+       hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
+       sheetState = ValueNotifier(SheetState.collapsed);
 
   final int initialPage;
   final int totalPage;
@@ -387,12 +387,11 @@ class PostDetailsPageViewController extends ChangeNotifier
     int page, {
     Duration? duration,
     Curve? curve,
-  }) =>
-      _pageController.animateToPage(
-        page,
-        duration: duration ?? const Duration(milliseconds: 300),
-        curve: curve ?? Curves.easeInOut,
-      );
+  }) => _pageController.animateToPage(
+    page,
+    duration: duration ?? const Duration(milliseconds: 300),
+    curve: curve ?? Curves.easeInOut,
+  );
 
   Future<void> resetSheet({
     Duration? duration,

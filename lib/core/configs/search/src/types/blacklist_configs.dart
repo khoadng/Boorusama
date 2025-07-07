@@ -16,9 +16,9 @@ class BlacklistConfigs extends Equatable {
   });
 
   BlacklistConfigs.defaults()
-      : combinationMode = BlacklistCombinationMode.merge.id,
-        blacklistedTags = null,
-        enable = false;
+    : combinationMode = BlacklistCombinationMode.merge.id,
+      blacklistedTags = null,
+      enable = false;
 
   factory BlacklistConfigs.fromJson(Map<String, dynamic> json) {
     try {
@@ -36,9 +36,9 @@ class BlacklistConfigs extends Equatable {
       switch (jsonString) {
         null => BlacklistConfigs.defaults(),
         final String s => tryDecodeJson(s).fold(
-            (_) => BlacklistConfigs.defaults(),
-            (json) => BlacklistConfigs.fromJson(json),
-          ),
+          (_) => BlacklistConfigs.defaults(),
+          (json) => BlacklistConfigs.fromJson(json),
+        ),
       };
 
   BlacklistConfigs copyWith({

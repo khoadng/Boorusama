@@ -50,10 +50,13 @@ class DanbooruClient
     String? apiKey,
     Dio? dio,
   }) {
-    _dio = dio ??
-        Dio(BaseOptions(
-          baseUrl: baseUrl,
-        ));
+    _dio =
+        dio ??
+        Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+          ),
+        );
 
     if (login != null && apiKey != null) {
       _dio.options.headers['Authorization'] =

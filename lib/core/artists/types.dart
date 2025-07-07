@@ -11,15 +11,15 @@ class ArtistCommentary extends Equatable {
 
   const ArtistCommentary.description(
     this.originalDescription,
-  )   : originalTitle = '',
-        translatedTitle = '',
-        translatedDescription = '';
+  ) : originalTitle = '',
+      translatedTitle = '',
+      translatedDescription = '';
 
   const ArtistCommentary.empty()
-      : originalTitle = '',
-        originalDescription = '',
-        translatedTitle = '',
-        translatedDescription = '';
+    : originalTitle = '',
+      originalDescription = '',
+      translatedTitle = '',
+      translatedDescription = '';
 
   final String originalTitle;
   final String originalDescription;
@@ -33,11 +33,11 @@ class ArtistCommentary extends Equatable {
 
   @override
   List<Object?> get props => [
-        originalTitle,
-        originalDescription,
-        translatedDescription,
-        translatedTitle,
-      ];
+    originalTitle,
+    originalDescription,
+    translatedDescription,
+    translatedTitle,
+  ];
 }
 
 extension CommentaryX on ArtistCommentary {
@@ -48,12 +48,10 @@ extension CommentaryX on ArtistCommentary {
     String? originalDescription,
     String? translatedTitle,
     String? translatedDescription,
-  }) =>
-      ArtistCommentary(
-        originalTitle: originalTitle ?? this.originalTitle,
-        originalDescription: originalDescription ?? this.originalDescription,
-        translatedTitle: translatedTitle ?? this.translatedTitle,
-        translatedDescription:
-            translatedDescription ?? this.translatedDescription,
-      );
+  }) => ArtistCommentary(
+    originalTitle: originalTitle ?? this.originalTitle,
+    originalDescription: originalDescription ?? this.originalDescription,
+    translatedTitle: translatedTitle ?? this.translatedTitle,
+    translatedDescription: translatedDescription ?? this.translatedDescription,
+  );
 }

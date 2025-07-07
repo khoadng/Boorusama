@@ -85,16 +85,17 @@ class PoolDetailPage extends ConsumerWidget {
               horizontal: 12,
             ),
             sliver: poolDesc.maybeWhen(
-              data: (data) => data.description.isNotEmpty &&
+              data: (data) =>
+                  data.description.isNotEmpty &&
                       hasTextBetweenDiv(data.description)
                   ? SliverToBoxAdapter(
                       child: AppHtml(
                         onLinkTap: !config.hasStrictSFW
                             ? (url, attributes, element) => _onHtmlLinkTapped(
-                                  attributes,
-                                  url,
-                                  data.descriptionEndpointRefUrl,
-                                )
+                                attributes,
+                                url,
+                                data.descriptionEndpointRefUrl,
+                              )
                             : null,
                         data: data.description,
                       ),
@@ -155,10 +156,10 @@ void _onHtmlLinkTapped(
     );
     // ignore: no-empty-block
   } else if (att.contains('dtext-post-search-link')) {
-// AppRouter.router.navigateTo(
-//             context,
-//             "/posts/search",
-//             routeSettings: RouteSettings(arguments: [tag.rawName]),
-//           )
+    // AppRouter.router.navigateTo(
+    //             context,
+    //             "/posts/search",
+    //             routeSettings: RouteSettings(arguments: [tag.rawName]),
+    //           )
   }
 }

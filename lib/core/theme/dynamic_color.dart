@@ -13,7 +13,8 @@ class AppDynamicColorBuilder extends StatelessWidget {
   final Widget Function(
     ColorScheme? lightDynamic,
     ColorScheme? darkDynamic,
-  ) builder;
+  )
+  builder;
 
   @override
   Widget build(BuildContext context) {
@@ -60,27 +61,26 @@ class AppDynamicColorBuilder extends StatelessWidget {
 }
 
 List<Color> _extractAdditionalColours(ColorScheme scheme) => [
-      scheme.surface,
-      scheme.surfaceDim,
-      scheme.surfaceBright,
-      scheme.surfaceContainerLowest,
-      scheme.surfaceContainerLow,
-      scheme.surfaceContainer,
-      scheme.surfaceContainerHigh,
-      scheme.surfaceContainerHighest,
-    ];
+  scheme.surface,
+  scheme.surfaceDim,
+  scheme.surfaceBright,
+  scheme.surfaceContainerLowest,
+  scheme.surfaceContainerLow,
+  scheme.surfaceContainer,
+  scheme.surfaceContainerHigh,
+  scheme.surfaceContainerHighest,
+];
 
 ColorScheme _insertAdditionalColours(
   ColorScheme scheme,
   List<Color> additionalColours,
-) =>
-    scheme.copyWith(
-      surface: additionalColours[0],
-      surfaceDim: additionalColours[1],
-      surfaceBright: additionalColours[2],
-      surfaceContainerLowest: additionalColours[3],
-      surfaceContainerLow: additionalColours[4],
-      surfaceContainer: additionalColours[5],
-      surfaceContainerHigh: additionalColours[6],
-      surfaceContainerHighest: additionalColours[7],
-    );
+) => scheme.copyWith(
+  surface: additionalColours[0],
+  surfaceDim: additionalColours[1],
+  surfaceBright: additionalColours[2],
+  surfaceContainerLowest: additionalColours[3],
+  surfaceContainerLow: additionalColours[4],
+  surfaceContainer: additionalColours[5],
+  surfaceContainerHigh: additionalColours[6],
+  surfaceContainerHighest: additionalColours[7],
+);

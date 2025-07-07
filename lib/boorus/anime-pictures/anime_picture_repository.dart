@@ -20,10 +20,10 @@ import 'tags/providers.dart';
 
 final animePicturesDownloadFileUrlExtractorProvider =
     Provider.family<DownloadFileUrlExtractor, BooruConfigAuth>((ref, config) {
-  return AnimePicturesDownloadFileUrlExtractor(
-    client: ref.watch(animePicturesClientProvider(config)),
-  );
-});
+      return AnimePicturesDownloadFileUrlExtractor(
+        client: ref.watch(animePicturesClientProvider(config)),
+      );
+    });
 
 class AnimePicturesRepository extends BooruRepositoryDefault {
   const AnimePicturesRepository({required this.ref});
@@ -75,9 +75,9 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => AnimePicturesClient(
-          baseUrl: config.url,
-          dio: dio,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+    ).getPosts().then((value) => true);
   }
 
   @override
@@ -104,22 +104,21 @@ class AnimePicturesDownloadFileUrlExtractor
   Future<DownloadUrlData?> getDownloadFileUrl({
     required Post post,
     required String quality,
-  }) =>
-      tryGet(
-        post.id.toString(),
-        orElse: () async {
-          final data = await client.getDownloadUrl(post.id);
+  }) => tryGet(
+    post.id.toString(),
+    orElse: () async {
+      final data = await client.getDownloadUrl(post.id);
 
-          if (data == null) {
-            return null;
-          }
+      if (data == null) {
+        return null;
+      }
 
-          return DownloadUrlData(
-            url: data.url,
-            cookie: data.cookie,
-          );
-        },
+      return DownloadUrlData(
+        url: data.url,
+        cookie: data.cookie,
       );
+    },
+  );
 
   @override
   final Cache<DownloadUrlData> cache = Cache(

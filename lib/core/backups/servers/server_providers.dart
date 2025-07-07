@@ -100,9 +100,9 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       handler: (request) async {
         final bookmarks = await (await ref.read(bookmarkRepoProvider.future))
             .getAllBookmarksOrEmpty(
-          imageUrlResolver: (booruId) =>
-              ref.read(bookmarkUrlResolverProvider(booruId)),
-        );
+              imageUrlResolver: (booruId) =>
+                  ref.read(bookmarkUrlResolverProvider(booruId)),
+            );
         final json = bookmarks.map((bookmark) => bookmark.toJson()).toList();
         final jsonString = jsonEncode(json);
 

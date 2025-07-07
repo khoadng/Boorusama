@@ -36,16 +36,9 @@ enum MatchType {
   groupingParen,
 }
 
-typedef ParenthesesPair = ({
-  int openPos,
-  int closePos,
-  int level,
-});
+typedef ParenthesesPair = ({int openPos, int closePos, int level});
 
-typedef StackItem = ({
-  int position,
-  int level,
-});
+typedef StackItem = ({int position, int level});
 
 sealed class MatchData {
   const MatchData();
@@ -59,9 +52,9 @@ sealed class MatchData {
     return switch (type) {
       MatchType.or => const OrData(),
       MatchType.groupingParen => GroupingParenData(
-          level: map['level'] as int,
-          focused: map['focused'] as bool? ?? false,
-        ),
+        level: map['level'] as int,
+        focused: map['focused'] as bool? ?? false,
+      ),
       null => null,
     };
   }
@@ -85,10 +78,10 @@ class GroupingParenData extends MatchData {
 
   @override
   Map<String, dynamic> toMap() => {
-        'type': MatchType.groupingParen.name,
-        'level': level,
-        'focused': focused,
-      };
+    'type': MatchType.groupingParen.name,
+    'level': level,
+    'focused': focused,
+  };
 }
 
 class SavedSearchQueryMatcher extends FunctionMatcher {
@@ -97,15 +90,15 @@ class SavedSearchQueryMatcher extends FunctionMatcher {
     this.groupParenColors = _defaultGroupParenColors,
     super.priority,
     super.options,
-  })  : orColor = orColor ?? _kDefaultOrColor,
-        super(
-          finder: _findTagMatches,
-          spanBuilder: (candidate) => _buildSavedSearchSpan(
-            candidate,
-            orColor ?? _kDefaultOrColor,
-            groupParenColors,
-          ),
-        );
+  }) : orColor = orColor ?? _kDefaultOrColor,
+       super(
+         finder: _findTagMatches,
+         spanBuilder: (candidate) => _buildSavedSearchSpan(
+           candidate,
+           orColor ?? _kDefaultOrColor,
+           groupParenColors,
+         ),
+       );
 
   static final _orRegex = RegExp(r'\bor\b');
   static final _tagRegex = RegExp(r'[a-zA-Z0-9_]+_\([^)]*\)');
@@ -127,8 +120,10 @@ class SavedSearchQueryMatcher extends FunctionMatcher {
       // Find grouping parentheses
       final tagParenPositions = _findTagParenthesesPositions(text);
       final parenPairs = _findGroupingParenthesesPairs(text, tagParenPositions);
-      final focusedPairIndex =
-          _findFocusedPair(parenPairs, context.selection.baseOffset);
+      final focusedPairIndex = _findFocusedPair(
+        parenPairs,
+        context.selection.baseOffset,
+      );
 
       matches.addAll(
         _createParenthesesMatches(parenPairs, focusedPairIndex, baseMatch),

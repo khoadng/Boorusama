@@ -14,22 +14,22 @@ class NoteDto {
   });
 
   factory NoteDto.fromJson(Map<String, dynamic> json) => NoteDto(
-        id: json['id'],
-        createdAt: json['created_at'] == null
-            ? null
-            : DateTime.parse(json['created_at']),
-        updatedAt: json['updated_at'] == null
-            ? null
-            : DateTime.parse(json['updated_at']),
-        x: json['x'],
-        y: json['y'],
-        width: json['width'],
-        height: json['height'],
-        isActive: json['is_active'],
-        postId: json['post_id'],
-        body: json['body'],
-        version: json['version'],
-      );
+    id: json['id'],
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at']),
+    updatedAt: json['updated_at'] == null
+        ? null
+        : DateTime.parse(json['updated_at']),
+    x: json['x'],
+    y: json['y'],
+    width: json['width'],
+    height: json['height'],
+    isActive: json['is_active'],
+    postId: json['post_id'],
+    body: json['body'],
+    version: json['version'],
+  );
 
   final int? id;
   final DateTime? createdAt;

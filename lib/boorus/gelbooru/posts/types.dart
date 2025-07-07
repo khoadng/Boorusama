@@ -38,27 +38,27 @@ class GelbooruPost extends Equatable
   }) : _sampleImageUrl = sampleImageUrl;
 
   factory GelbooruPost.empty() => GelbooruPost(
-        format: '',
-        height: 0,
-        id: 0,
-        md5: '',
-        originalImageUrl: '',
-        rating: Rating.general,
-        sampleImageUrl: '',
-        source: PostSource.none(),
-        tags: const {},
-        thumbnailImageUrl: '',
-        width: 0,
-        hasComment: false,
-        hasParentOrChildren: false,
-        fileSize: 0,
-        score: 0,
-        createdAt: null,
-        parentId: null,
-        uploaderId: null,
-        uploaderName: null,
-        metadata: null,
-      );
+    format: '',
+    height: 0,
+    id: 0,
+    md5: '',
+    originalImageUrl: '',
+    rating: Rating.general,
+    sampleImageUrl: '',
+    source: PostSource.none(),
+    tags: const {},
+    thumbnailImageUrl: '',
+    width: 0,
+    hasComment: false,
+    hasParentOrChildren: false,
+    fileSize: 0,
+    score: 0,
+    createdAt: null,
+    parentId: null,
+    uploaderId: null,
+    uploaderName: null,
+    metadata: null,
+  );
 
   final String _sampleImageUrl;
 

@@ -34,8 +34,9 @@ class QuickEditDetailsConfigPage extends ConsumerWidget {
     }
 
     final notifier = ref.watch(booruConfigProvider.notifier);
-    final currentConfigNotifier =
-        ref.watch(currentBooruConfigProvider.notifier);
+    final currentConfigNotifier = ref.watch(
+      currentBooruConfigProvider.notifier,
+    );
     final config = ref.watchConfig;
 
     return DetailsConfigPage(

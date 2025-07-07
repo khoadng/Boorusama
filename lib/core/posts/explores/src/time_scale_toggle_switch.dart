@@ -32,7 +32,7 @@ class TimeScaleToggleSwitch extends StatelessWidget {
 }
 
 String _timeScaleToString(TimeScale scale) => switch (scale) {
-      TimeScale.month => 'dateRange.month',
-      TimeScale.week => 'dateRange.week',
-      TimeScale.day => 'dateRange.day'
-    };
+  TimeScale.month => 'dateRange.month',
+  TimeScale.week => 'dateRange.week',
+  TimeScale.day => 'dateRange.day',
+};

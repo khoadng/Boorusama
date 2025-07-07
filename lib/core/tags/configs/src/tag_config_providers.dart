@@ -12,8 +12,9 @@ Future<Override> createTagInfoOverride({
   required BootLogger bootLogger,
 }) async {
   bootLogger.l('Initialize tag info');
-  final tagInfo =
-      await TagInfoService.create().then((value) => value.getInfo());
+  final tagInfo = await TagInfoService.create().then(
+    (value) => value.getInfo(),
+  );
 
   return tagInfoProvider.overrideWithValue(tagInfo);
 }

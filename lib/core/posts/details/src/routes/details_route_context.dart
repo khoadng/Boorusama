@@ -46,12 +46,12 @@ class DetailsRouteContext<T extends Post> extends Equatable {
 
   @override
   List<Object?> get props => [
-        initialIndex,
-        posts,
-        scrollController,
-        isDesktop,
-        hero,
-        initialThumbnailUrl,
-        dislclaimer,
-      ];
+    initialIndex,
+    posts,
+    scrollController,
+    isDesktop,
+    hero,
+    initialThumbnailUrl,
+    dislclaimer,
+  ];
 }

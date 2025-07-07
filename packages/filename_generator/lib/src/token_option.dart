@@ -70,25 +70,25 @@ final class TokenOptionPair extends Equatable {
 
     return switch (split.length) {
       1 => TokenOptionPair(
-          key: split[0]!,
-          value: null,
-          attribute: null,
-        ),
+        key: split[0]!,
+        value: null,
+        attribute: null,
+      ),
       2 => TokenOptionPair(
-          key: split[0]!,
-          value: split[1],
-          attribute: null,
-        ),
+        key: split[0]!,
+        value: split[1],
+        attribute: null,
+      ),
       3 => TokenOptionPair(
-          key: split[0]!,
-          attribute: split[1],
-          value: split[2],
-        ),
+        key: split[0]!,
+        attribute: split[1],
+        value: split[2],
+      ),
       _ => const TokenOptionPair(
-          key: '',
-          value: null,
-          attribute: null,
-        ),
+        key: '',
+        value: null,
+        attribute: null,
+      ),
     };
   }
 
@@ -155,116 +155,111 @@ extension TokenOptionX on String {
 }
 
 typedef TokenOptionHandler = String Function(TokenContext context);
-typedef TokenOptionDocs = ({
-  TokenOption tokenOption,
-  String description,
-});
+typedef TokenOptionDocs = ({TokenOption tokenOption, String description});
 
 TokenOption getTokenOption(
   String? token,
   TokenOptionPair pair,
   TokenizerConfigs configs,
-) =>
-    switch (token.toOption().fold(
-          () => pair.key,
-          (t) => configs.namespacedTokens.contains(t)
-              ? '$t:${pair.key}'
-              : pair.key,
-        )) {
-      'maxlength' => MaxLengthOption(pair.value),
-      'delimiter' => DelimiterOption(pair.value),
-      'unsafe' => UnsafeOption(
-          pair.value,
-          unsafeCharacters: configs.unsafeCharacters,
-        ),
-      'format' => DateFormatOption(pair.value),
-      'single_letter' => RatingSingleLetterOption(pair.value),
-      'urlencode' => UrlEncodeOption(pair.value),
-      'sort' => SortOption.parse(attribute: pair.attribute, value: pair.value),
-      'case' => CaseOption.parse(value: pair.value),
-      'nomod' => NoModifiersOption(pair.value),
-      'limit' => LimitOption(pair.value),
-      'index' => UniqueCounterOption(pair.value),
-      'pad_left' => PadLeftOption(pair.value ?? ''),
-      'include_namespace' => IncludeNamesOption(pair.value),
-      'separator' => FloatingPointSeparator.parse(value: pair.value),
-      'precision' => FloatingPointPrecisionOption(pair.value),
-      'count' => CountOption(pair.value),
-      'uuid:version' => UuidVersionOption.parse(value: pair.value),
-      _ => UnknownOption(pair.key, pair.value ?? '')
-    };
+) => switch (token.toOption().fold(
+  () => pair.key,
+  (t) => configs.namespacedTokens.contains(t) ? '$t:${pair.key}' : pair.key,
+)) {
+  'maxlength' => MaxLengthOption(pair.value),
+  'delimiter' => DelimiterOption(pair.value),
+  'unsafe' => UnsafeOption(
+    pair.value,
+    unsafeCharacters: configs.unsafeCharacters,
+  ),
+  'format' => DateFormatOption(pair.value),
+  'single_letter' => RatingSingleLetterOption(pair.value),
+  'urlencode' => UrlEncodeOption(pair.value),
+  'sort' => SortOption.parse(attribute: pair.attribute, value: pair.value),
+  'case' => CaseOption.parse(value: pair.value),
+  'nomod' => NoModifiersOption(pair.value),
+  'limit' => LimitOption(pair.value),
+  'index' => UniqueCounterOption(pair.value),
+  'pad_left' => PadLeftOption(pair.value ?? ''),
+  'include_namespace' => IncludeNamesOption(pair.value),
+  'separator' => FloatingPointSeparator.parse(value: pair.value),
+  'precision' => FloatingPointPrecisionOption(pair.value),
+  'count' => CountOption(pair.value),
+  'uuid:version' => UuidVersionOption.parse(value: pair.value),
+  _ => UnknownOption(pair.key, pair.value ?? ''),
+};
 
 TokenOptionHandler getTokenOptionHandler(
   String data,
   TokenOption option, {
   required Uuid uuid,
   Clock? clock,
-}) =>
-    switch (option) {
-      final CountOption o => (context) =>
-          o.value ? data.split(' ').length.toString() : data,
-      final MaxLengthOption o => (context) =>
-          data.length > o.value ? data.substring(0, o.value) : data,
-      final FloatingPointSeparator o => (context) => switch (o.value) {
-            FloatingPointSeparatorType.comma => data.replaceAll('.', ','),
-            FloatingPointSeparatorType.dot => data.replaceAll(',', '.'),
-          },
-      final FloatingPointPrecisionOption o => (context) => switch (o.value) {
-            0 => data.toDoubleCommaAware()?.round().toString() ?? data,
-            _ => data.toDoubleCommaAware()?.toStringAsFixed(o.value) ?? data,
-          },
-      final UuidVersionOption o => (context) => switch (o.value) {
-            UuidVersion.v1 => uuid.v1(),
-            UuidVersion.v4 => uuid.v4(),
-          },
-      final DelimiterOption o => (context) {
-          final l = o.value.contains('comma')
-              ? o.value.replaceAll('comma', ',')
-              : o.value;
+}) => switch (option) {
+  final CountOption o =>
+    (context) => o.value ? data.split(' ').length.toString() : data,
+  final MaxLengthOption o =>
+    (context) => data.length > o.value ? data.substring(0, o.value) : data,
+  final FloatingPointSeparator o => (context) => switch (o.value) {
+    FloatingPointSeparatorType.comma => data.replaceAll('.', ','),
+    FloatingPointSeparatorType.dot => data.replaceAll(',', '.'),
+  },
+  final FloatingPointPrecisionOption o => (context) => switch (o.value) {
+    0 => data.toDoubleCommaAware()?.round().toString() ?? data,
+    _ => data.toDoubleCommaAware()?.toStringAsFixed(o.value) ?? data,
+  },
+  final UuidVersionOption o => (context) => switch (o.value) {
+    UuidVersion.v1 => uuid.v1(),
+    UuidVersion.v4 => uuid.v4(),
+  },
+  final DelimiterOption o => (context) {
+    final l = o.value.contains('comma')
+        ? o.value.replaceAll('comma', ',')
+        : o.value;
 
-          return data.split(' ').join(l);
-        },
-      final UnsafeOption o => (context) => o.value
-          ? data
-          : data
+    return data.split(' ').join(l);
+  },
+  final UnsafeOption o =>
+    (context) => o.value
+        ? data
+        : data
               .split('')
               .map((e) => o.unsafeCharacters.contains(e) ? '_' : e)
               .join(),
-      final DateFormatOption o => (context) =>
-          DateFormat(o.value).format(clock?.now() ?? DateTime.now()),
-      RatingSingleLetterOption _ => (context) => data.substring(0, 1),
-      UrlEncodeOption _ => (context) => Uri.encodeComponent(data),
-      final CaseOption o => (context) => switch (o.value) {
-            StringCase.lower => data.toLowerCase(),
-            StringCase.upper => data.toUpperCase(),
-            StringCase.upperFirst => data.capitalize(),
-            StringCase.none => data,
-          },
-      final SortOption o => (context) => switch ((o.attribute, o.value)) {
-            (SortAttribute.name, SortOptionValue.asc) =>
-              [...data.split(' ')..sort()].join(' '),
-            (SortAttribute.name, SortOptionValue.desc) =>
-              [...data.split(' ')..sort((a, b) => b.compareTo(a))].join(' '),
-            (SortAttribute.length, SortOptionValue.asc) => [
-                ...data.split(' ')
-                  ..sort((a, b) => a.length.compareTo(b.length)),
-              ].join(' '),
-            (SortAttribute.length, SortOptionValue.desc) => [
-                ...data.split(' ')
-                  ..sort((a, b) => b.length.compareTo(a.length)),
-              ].join(' '),
-            _ => data,
-          },
-      final LimitOption o => (context) =>
-          data.split(' ').take(o.value).join(' '),
-      final NoModifiersOption o => (context) =>
-          o.value ? cleanAndRemoveDuplicates(data.split(' ')).join(' ') : data,
-      final UniqueCounterOption o => (context) => o.value ? data : '',
-      final PadLeftOption o => (context) => data.padLeft(o.value, '0'),
-      final IncludeNamesOption o => (context) =>
-          o.value ? '${context.token.name}:$data' : data,
-      UnknownOption _ => (context) => data,
-    };
+  final DateFormatOption o => (context) => DateFormat(
+    o.value,
+  ).format(clock?.now() ?? DateTime.now()),
+  RatingSingleLetterOption _ => (context) => data.substring(0, 1),
+  UrlEncodeOption _ => (context) => Uri.encodeComponent(data),
+  final CaseOption o => (context) => switch (o.value) {
+    StringCase.lower => data.toLowerCase(),
+    StringCase.upper => data.toUpperCase(),
+    StringCase.upperFirst => data.capitalize(),
+    StringCase.none => data,
+  },
+  final SortOption o => (context) => switch ((o.attribute, o.value)) {
+    (SortAttribute.name, SortOptionValue.asc) => [
+      ...data.split(' ')..sort(),
+    ].join(' '),
+    (SortAttribute.name, SortOptionValue.desc) => [
+      ...data.split(' ')..sort((a, b) => b.compareTo(a)),
+    ].join(' '),
+    (SortAttribute.length, SortOptionValue.asc) => [
+      ...data.split(' ')..sort((a, b) => a.length.compareTo(b.length)),
+    ].join(' '),
+    (SortAttribute.length, SortOptionValue.desc) => [
+      ...data.split(' ')..sort((a, b) => b.length.compareTo(a.length)),
+    ].join(' '),
+    _ => data,
+  },
+  final LimitOption o => (context) => data.split(' ').take(o.value).join(' '),
+  final NoModifiersOption o =>
+    (context) =>
+        o.value ? cleanAndRemoveDuplicates(data.split(' ')).join(' ') : data,
+  final UniqueCounterOption o => (context) => o.value ? data : '',
+  final PadLeftOption o => (context) => data.padLeft(o.value, '0'),
+  final IncludeNamesOption o =>
+    (context) => o.value ? '${context.token.name}:$data' : data,
+  UnknownOption _ => (context) => data,
+};
 
 final class UrlEncodeOption extends BooleanTokenOption {
   UrlEncodeOption(
@@ -368,10 +363,10 @@ enum SortAttribute {
 
 extension SortOptionValueX on SortOptionValue {
   String get value => switch (this) {
-        SortOptionValue.asc => 'asc',
-        SortOptionValue.desc => 'desc',
-        SortOptionValue.none => '',
-      };
+    SortOptionValue.asc => 'asc',
+    SortOptionValue.desc => 'desc',
+    SortOptionValue.none => '',
+  };
 }
 
 final class SortOption extends TokenOption with TokenValue<SortOptionValue> {
@@ -383,19 +378,18 @@ final class SortOption extends TokenOption with TokenValue<SortOptionValue> {
   factory SortOption.parse({
     required String? value,
     required String? attribute,
-  }) =>
-      SortOption(
-        value: switch (value) {
-          'asc' => SortOptionValue.asc,
-          'desc' => SortOptionValue.desc,
-          _ => SortOptionValue.none,
-        },
-        attribute: switch (attribute) {
-          'name' => SortAttribute.name,
-          'length' => SortAttribute.length,
-          _ => SortAttribute.none,
-        },
-      );
+  }) => SortOption(
+    value: switch (value) {
+      'asc' => SortOptionValue.asc,
+      'desc' => SortOptionValue.desc,
+      _ => SortOptionValue.none,
+    },
+    attribute: switch (attribute) {
+      'name' => SortAttribute.name,
+      'length' => SortAttribute.length,
+      _ => SortAttribute.none,
+    },
+  );
 
   @override
   final SortOptionValue value;
@@ -416,15 +410,14 @@ final class CaseOption extends TokenOption with TokenValue<StringCase> {
 
   factory CaseOption.parse({
     required String? value,
-  }) =>
-      CaseOption(
-        value: switch (value) {
-          'lower' => StringCase.lower,
-          'upper' => StringCase.upper,
-          'upper_first' => StringCase.upperFirst,
-          _ => StringCase.none,
-        },
-      );
+  }) => CaseOption(
+    value: switch (value) {
+      'lower' => StringCase.lower,
+      'upper' => StringCase.upper,
+      'upper_first' => StringCase.upperFirst,
+      _ => StringCase.none,
+    },
+  );
 
   @override
   final StringCase value;
@@ -443,14 +436,13 @@ final class FloatingPointSeparator extends TokenOption
 
   factory FloatingPointSeparator.parse({
     required String? value,
-  }) =>
-      FloatingPointSeparator(
-        switch (value) {
-          'dot' => FloatingPointSeparatorType.dot,
-          'comma' => FloatingPointSeparatorType.comma,
-          _ => FloatingPointSeparatorType.dot,
-        },
-      );
+  }) => FloatingPointSeparator(
+    switch (value) {
+      'dot' => FloatingPointSeparatorType.dot,
+      'comma' => FloatingPointSeparatorType.comma,
+      _ => FloatingPointSeparatorType.dot,
+    },
+  );
 
   @override
   final FloatingPointSeparatorType value;
@@ -468,14 +460,13 @@ final class UuidVersionOption extends TokenOption with TokenValue<UuidVersion> {
 
   factory UuidVersionOption.parse({
     required String? value,
-  }) =>
-      UuidVersionOption(
-        value: switch (value) {
-          '1' => UuidVersion.v1,
-          '4' => UuidVersion.v4,
-          _ => UuidVersion.v4,
-        },
-      );
+  }) => UuidVersionOption(
+    value: switch (value) {
+      '1' => UuidVersion.v1,
+      '4' => UuidVersion.v4,
+      _ => UuidVersion.v4,
+    },
+  );
 
   @override
   final UuidVersion value;

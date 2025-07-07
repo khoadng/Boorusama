@@ -46,7 +46,8 @@ class HomePageScaffold extends ConsumerStatefulWidget {
   final List<Widget> Function(
     BuildContext context,
     BoxConstraints constraints,
-  )? desktopMenuBuilder;
+  )?
+  desktopMenuBuilder;
 
   final List<Widget>? desktopViews;
 
@@ -155,7 +156,8 @@ class HomeSideMenu extends ConsumerWidget {
   final List<Widget> Function(
     BuildContext context,
     BoxConstraints constraints,
-  )? desktopMenuBuilder;
+  )?
+  desktopMenuBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -231,8 +233,9 @@ class CustomHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customHome =
-        ref.watch(booruBuilderProvider(ref.watchConfigAuth))?.homeViewBuilder;
+    final customHome = ref
+        .watch(booruBuilderProvider(ref.watchConfigAuth))
+        ?.homeViewBuilder;
 
     return customHome != null
         ? customHome(context)
@@ -251,7 +254,8 @@ List<Widget> coreDesktopViewBuilder({
   required CustomHomeViewKey? viewKey,
 }) {
   // skip previousItemCount to prevent access the wrong index
-  final totalPlaceholder = _kPlaceholderOffset -
+  final totalPlaceholder =
+      _kPlaceholderOffset -
       previousItemCount +
       (viewKey != null && viewKey.isAlt ? 1 : 2);
 

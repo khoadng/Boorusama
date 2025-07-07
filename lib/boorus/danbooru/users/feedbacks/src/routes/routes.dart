@@ -13,8 +13,9 @@ final danbooruUserFeedbackRoutes = GoRoute(
   pageBuilder: largeScreenAwarePageBuilder(
     useDialog: true,
     builder: (context, state) {
-      final userId =
-          int.tryParse(state.uri.queryParameters['search[user_id]'] ?? '');
+      final userId = int.tryParse(
+        state.uri.queryParameters['search[user_id]'] ?? '',
+      );
 
       final landscape = context.orientation.isLandscape;
 

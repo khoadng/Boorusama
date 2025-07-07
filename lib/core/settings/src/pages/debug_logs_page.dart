@@ -114,33 +114,30 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   Future<void> writeLogsToFile(
     BuildContext context,
     List<LogData> logs,
-  ) async =>
-      tryGetDownloadDirectory().run().then(
-            (value) => value.fold(
-              (error) => showErrorToast(context, error.name),
-              (directory) async {
-                final timestamp =
-                    DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-                final file =
-                    File('${directory.path}/boorusama_logs_$timestamp.txt');
-                final buffer = StringBuffer();
-                for (final log in logs) {
-                  buffer.write(
-                    '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
-                  );
-                }
-                await file.writeAsString(buffer.toString());
-
-                if (context.mounted) {
-                  showSuccessToast(
-                    context,
-                    'Logs written to ${file.path}',
-                    duration: AppDurations.longToast,
-                  );
-                }
-              },
-            ),
+  ) async => tryGetDownloadDirectory().run().then(
+    (value) => value.fold(
+      (error) => showErrorToast(context, error.name),
+      (directory) async {
+        final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+        final file = File('${directory.path}/boorusama_logs_$timestamp.txt');
+        final buffer = StringBuffer();
+        for (final log in logs) {
+          buffer.write(
+            '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
           );
+        }
+        await file.writeAsString(buffer.toString());
+
+        if (context.mounted) {
+          showSuccessToast(
+            context,
+            'Logs written to ${file.path}',
+            duration: AppDurations.longToast,
+          );
+        }
+      },
+    ),
+  );
 
   Widget _buildBody(List<LogData> logs) {
     return ListView.builder(
@@ -184,10 +181,9 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     style: TextStyle(
                       fontSize: 13,
                       color: switch (log.level) {
-                        LogLevel.info => Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withAlpha(222),
+                        LogLevel.info => Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withAlpha(222),
                         LogLevel.warning => Colors.yellow.withAlpha(222),
                         LogLevel.error => Theme.of(context).colorScheme.error,
                       },

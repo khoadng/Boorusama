@@ -86,14 +86,15 @@ class DbMigrationManager {
       }
     }
 
-    final manager = DbMigrationManager._(
-      db: db,
-      targetVersion: targetVersion,
-      migrations: migrationMap,
-      mode: mode,
-    )
-      .._createMigrationHistoryTable() // Ensure the migration history table exists and is valid
-      .._validateHistoryTable();
+    final manager =
+        DbMigrationManager._(
+            db: db,
+            targetVersion: targetVersion,
+            migrations: migrationMap,
+            mode: mode,
+          )
+          .._createMigrationHistoryTable() // Ensure the migration history table exists and is valid
+          .._validateHistoryTable();
 
     return manager;
   }
@@ -211,8 +212,9 @@ class DbMigrationManager {
 
     return MigrationState(
       hasHistoryGap: missingVersions.isNotEmpty,
-      hasVersionMismatch:
-          appliedVersions.any((v) => !_migrations.containsKey(v)),
+      hasVersionMismatch: appliedVersions.any(
+        (v) => !_migrations.containsKey(v),
+      ),
       missingVersions: missingVersions,
     );
   }

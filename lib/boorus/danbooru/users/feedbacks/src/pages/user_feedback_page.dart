@@ -49,8 +49,9 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
       final feedbacks = await repo.getUserFeedbacks(userId: widget.userId);
 
       // Load creators
-      final creatorsNotifier =
-          ref.read(danbooruCreatorsProvider(config).notifier);
+      final creatorsNotifier = ref.read(
+        danbooruCreatorsProvider(config).notifier,
+      );
       await creatorsNotifier.load(feedbacks.map((e) => e.creatorId).toList());
 
       return feedbacks;
@@ -74,8 +75,10 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
             fetchNextPage: fetchNextPage,
             builderDelegate: PagedChildBuilderDelegate<DanbooruUserFeedback>(
               itemBuilder: (context, feedback, index) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
                 child: _UserFeedbackItem(feedback: feedback),
               ),
               firstPageProgressIndicatorBuilder: (context) => const Center(
@@ -114,12 +117,14 @@ class _UserFeedbackItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.readConfigAuth;
     final creator = ref.watch(
-      danbooruCreatorsProvider(config)
-          .select((value) => value[feedback.creatorId]),
+      danbooruCreatorsProvider(
+        config,
+      ).select((value) => value[feedback.creatorId]),
     );
 
-    final creatorColor =
-        DanbooruUserColor.of(context).fromLevel(creator?.level);
+    final creatorColor = DanbooruUserColor.of(
+      context,
+    ).fromLevel(creator?.level);
     final colors = ref.watch(booruChipColorsProvider).fromColor(creatorColor);
 
     return Card(
@@ -131,7 +136,8 @@ class _UserFeedbackItem extends ConsumerWidget {
             Row(
               children: [
                 CompactChip(
-                  label: creator?.name.replaceAll('_', ' ') ??
+                  label:
+                      creator?.name.replaceAll('_', ' ') ??
                       'User #${feedback.creatorId}',
                   backgroundColor: colors?.backgroundColor,
                   textColor: colors?.foregroundColor,
@@ -140,8 +146,9 @@ class _UserFeedbackItem extends ConsumerWidget {
                 _buildCategoryLabel(context),
                 const Spacer(),
                 Text(
-                  feedback.createdAt
-                      .fuzzify(locale: Localizations.localeOf(context)),
+                  feedback.createdAt.fuzzify(
+                    locale: Localizations.localeOf(context),
+                  ),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.hintColor,
                     fontSize: 12,

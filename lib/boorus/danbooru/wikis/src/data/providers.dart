@@ -9,5 +9,5 @@ import 'wiki_repository_api.dart';
 
 final danbooruWikiRepoProvider =
     Provider.family<WikiRepository, BooruConfigAuth>((ref, config) {
-  return WikiRepositoryApi(ref.watch(danbooruClientProvider(config)));
-});
+      return WikiRepositoryApi(ref.watch(danbooruClientProvider(config)));
+    });

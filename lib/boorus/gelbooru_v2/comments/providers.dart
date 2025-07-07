@@ -10,24 +10,26 @@ import '../client_provider.dart';
 
 final gelbooruV2CommentRepoProvider =
     Provider.family<CommentRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(gelbooruV2ClientProvider(config));
+      final client = ref.watch(gelbooruV2ClientProvider(config));
 
-  return CommentRepositoryBuilder(
-    fetch: (postId, {page}) => client
-        .getComments(postId: postId)
-        .then(
-          (value) => value.map(gelboorucommentDtoToGelbooruComment).toList(),
-        )
-        .catchError((e) => <Comment>[]),
-    create: (postId, body) async => false,
-    update: (commentId, body) async => false,
-    delete: (commentId) async => false,
-  );
-});
+      return CommentRepositoryBuilder(
+        fetch: (postId, {page}) => client
+            .getComments(postId: postId)
+            .then(
+              (value) =>
+                  value.map(gelboorucommentDtoToGelbooruComment).toList(),
+            )
+            .catchError((e) => <Comment>[]),
+        create: (postId, body) async => false,
+        update: (commentId, body) async => false,
+        delete: (commentId) async => false,
+      );
+    });
 
 Comment gelboorucommentDtoToGelbooruComment(CommentDto dto) {
-  final createdAt =
-      DateFormat('yyyy-MM-dd HH:mm').tryParse(dto.createdAt ?? '');
+  final createdAt = DateFormat(
+    'yyyy-MM-dd HH:mm',
+  ).tryParse(dto.createdAt ?? '');
 
   return SimpleComment(
     id: int.tryParse(dto.id ?? '') ?? 0,

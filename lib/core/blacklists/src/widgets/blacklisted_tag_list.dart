@@ -27,46 +27,48 @@ class BlacklistedTagList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return tags.toOption().fold(
-          () => const Center(child: CircularProgressIndicator()),
-          (tags) => tags.isNotEmpty
-              ? CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: WarningContainer(
-                        title: 'Limitation',
-                        contentBuilder: (context) => AppHtml(
-                          data: 'blacklisted_tags.limitation_notice'.tr(),
-                        ),
-                      ),
+      () => const Center(child: CircularProgressIndicator()),
+      (tags) => tags.isNotEmpty
+          ? CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: WarningContainer(
+                    title: 'Limitation',
+                    contentBuilder: (context) => AppHtml(
+                      data: 'blacklisted_tags.limitation_notice'.tr(),
                     ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final tag = tags[index];
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final tag = tags[index];
 
-                          return BlacklistedTagTile(
-                            tag: tag,
-                            onRemoveTag: (_) => onRemoveTag(tag),
-                            onEditTap: () {
-                              goToBlacklistedTagsSearchPage(
-                                context,
-                                initialTags: tag.split(' '),
-                                onSelectDone: (tagItems, currentQuery) {
-                                  final tagString =
-                                      joinBlackTagItems(tagItems, currentQuery);
-
-                                  onEditTap(tag, tagString);
-                                },
+                      return BlacklistedTagTile(
+                        tag: tag,
+                        onRemoveTag: (_) => onRemoveTag(tag),
+                        onEditTap: () {
+                          goToBlacklistedTagsSearchPage(
+                            context,
+                            initialTags: tag.split(' '),
+                            onSelectDone: (tagItems, currentQuery) {
+                              final tagString = joinBlackTagItems(
+                                tagItems,
+                                currentQuery,
                               );
+
+                              onEditTap(tag, tagString);
                             },
                           );
                         },
-                        childCount: tags.length,
-                      ),
-                    ),
-                  ],
-                )
-              : const Center(child: Text('No blacklisted tags')),
-        );
+                      );
+                    },
+                    childCount: tags.length,
+                  ),
+                ),
+              ],
+            )
+          : const Center(child: Text('No blacklisted tags')),
+    );
   }
 }

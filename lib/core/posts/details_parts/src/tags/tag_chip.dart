@@ -41,8 +41,9 @@ class TagChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = _resolveColors(ref);
-    final displayText =
-        transformText ? text.toLowerCase().replaceAll('_', ' ') : text;
+    final displayText = transformText
+        ? text.toLowerCase().replaceAll('_', ' ')
+        : text;
     final subtitle = _buildSubtitle();
 
     return RawTagChip(

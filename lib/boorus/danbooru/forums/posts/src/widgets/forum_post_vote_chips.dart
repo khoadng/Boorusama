@@ -30,34 +30,36 @@ class DanbooruForumVoteChips extends ConsumerWidget {
             (e) => ForumVoteChip(
               icon: switch (e.type) {
                 DanbooruForumPostVoteType.upvote => Icon(
-                    Symbols.arrow_upward,
-                    color: _iconColor(e.type),
-                  ),
+                  Symbols.arrow_upward,
+                  color: _iconColor(e.type),
+                ),
                 DanbooruForumPostVoteType.downvote => Icon(
-                    Symbols.arrow_downward,
+                  Symbols.arrow_downward,
+                  color: _iconColor(e.type),
+                ),
+                DanbooruForumPostVoteType.unsure => Container(
+                  margin: const EdgeInsets.all(4),
+                  child: FaIcon(
+                    FontAwesomeIcons.faceMeh,
+                    size: 16,
                     color: _iconColor(e.type),
                   ),
-                DanbooruForumPostVoteType.unsure => Container(
-                    margin: const EdgeInsets.all(4),
-                    child: FaIcon(
-                      FontAwesomeIcons.faceMeh,
-                      size: 16,
-                      color: _iconColor(e.type),
-                    ),
-                  ),
+                ),
               },
               color: _color(e.type),
               borderColor: _borderColor(e.type),
               label: Builder(
                 builder: (context) {
-                  final creator =
-                      ref.watch(danbooruCreatorProvider(e.creatorId));
+                  final creator = ref.watch(
+                    danbooruCreatorProvider(e.creatorId),
+                  );
 
                   return Text(
                     creator?.name.replaceAll('_', ' ') ?? 'User',
                     style: TextStyle(
-                      color: DanbooruUserColor.of(context)
-                          .fromLevel(creator?.level),
+                      color: DanbooruUserColor.of(
+                        context,
+                      ).fromLevel(creator?.level),
                       fontWeight: FontWeight.w500,
                     ),
                   );
@@ -71,19 +73,19 @@ class DanbooruForumVoteChips extends ConsumerWidget {
 }
 
 Color _color(DanbooruForumPostVoteType type) => switch (type) {
-      DanbooruForumPostVoteType.upvote => const Color(0xff01370a),
-      DanbooruForumPostVoteType.downvote => const Color(0xff5c1212),
-      DanbooruForumPostVoteType.unsure => const Color(0xff382c00),
-    };
+  DanbooruForumPostVoteType.upvote => const Color(0xff01370a),
+  DanbooruForumPostVoteType.downvote => const Color(0xff5c1212),
+  DanbooruForumPostVoteType.unsure => const Color(0xff382c00),
+};
 
 Color _borderColor(DanbooruForumPostVoteType type) => switch (type) {
-      DanbooruForumPostVoteType.upvote => const Color(0xff016f19),
-      DanbooruForumPostVoteType.downvote => const Color(0xffc10105),
-      DanbooruForumPostVoteType.unsure => const Color(0xff675403),
-    };
+  DanbooruForumPostVoteType.upvote => const Color(0xff016f19),
+  DanbooruForumPostVoteType.downvote => const Color(0xffc10105),
+  DanbooruForumPostVoteType.unsure => const Color(0xff675403),
+};
 
 Color _iconColor(DanbooruForumPostVoteType type) => switch (type) {
-      DanbooruForumPostVoteType.upvote => const Color(0xff01aa2d),
-      DanbooruForumPostVoteType.downvote => const Color(0xffff5b5a),
-      DanbooruForumPostVoteType.unsure => const Color(0xffdac278),
-    };
+  DanbooruForumPostVoteType.upvote => const Color(0xff01aa2d),
+  DanbooruForumPostVoteType.downvote => const Color(0xffff5b5a),
+  DanbooruForumPostVoteType.unsure => const Color(0xffdac278),
+};

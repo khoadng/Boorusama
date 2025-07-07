@@ -8,18 +8,20 @@ import '../../../http/http.dart';
 
 extension TaskUpdateX on TaskUpdate {
   int? get fileSize => switch (this) {
-        final TaskStatusUpdate s => () {
-            final defaultSize =
-                DownloaderMetadata.fromJsonString(task.metaData).fileSize;
-            final fileSizeString = s.responseHeaders.toOption().fold(
-                  () => '',
-                  (headers) => headers[AppHttpHeaders.contentLengthHeader],
-                );
-            final fileSize =
-                fileSizeString != null ? int.tryParse(fileSizeString) : null;
+    final TaskStatusUpdate s => () {
+      final defaultSize = DownloaderMetadata.fromJsonString(
+        task.metaData,
+      ).fileSize;
+      final fileSizeString = s.responseHeaders.toOption().fold(
+        () => '',
+        (headers) => headers[AppHttpHeaders.contentLengthHeader],
+      );
+      final fileSize = fileSizeString != null
+          ? int.tryParse(fileSizeString)
+          : null;
 
-            return fileSize ?? defaultSize;
-          }(),
-        final TaskProgressUpdate p => p.expectedFileSize,
-      };
+      return fileSize ?? defaultSize;
+    }(),
+    final TaskProgressUpdate p => p.expectedFileSize,
+  };
 }

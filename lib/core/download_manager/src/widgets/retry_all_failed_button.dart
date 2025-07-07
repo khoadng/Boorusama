@@ -29,7 +29,9 @@ class RetryAllFailedButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final failed = ref.watch(downloadTaskUpdatesProvider).failed(
+    final failed = ref
+        .watch(downloadTaskUpdatesProvider)
+        .failed(
           ref.watch(downloadGroupProvider),
         );
     final config = ref.watchConfig;

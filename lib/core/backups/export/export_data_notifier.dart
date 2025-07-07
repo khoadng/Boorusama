@@ -25,18 +25,18 @@ class ExportDataState extends Equatable {
   });
 
   const ExportDataState.initial()
-      : status = ServerStatus.stopped,
-        ipAddress = '',
-        port = '',
-        serverName = '',
-        appVersion = '';
+    : status = ServerStatus.stopped,
+      ipAddress = '',
+      port = '',
+      serverName = '',
+      appVersion = '';
 
   const ExportDataState.invalid()
-      : status = ServerStatus.stopped,
-        ipAddress = 'null',
-        port = 'null',
-        serverName = '',
-        appVersion = '';
+    : status = ServerStatus.stopped,
+      ipAddress = 'null',
+      port = 'null',
+      serverName = '',
+      appVersion = '';
 
   final ServerStatus status;
   final String ipAddress;
@@ -52,8 +52,8 @@ class ExportDataState extends Equatable {
 
 final exportDataProvider =
     AsyncNotifierProvider.autoDispose<ExportDataNotifier, ExportDataState>(
-  ExportDataNotifier.new,
-);
+      ExportDataNotifier.new,
+    );
 
 class ExportDataNotifier extends AutoDisposeAsyncNotifier<ExportDataState> {
   @override
@@ -79,8 +79,8 @@ class ExportDataNotifier extends AutoDisposeAsyncNotifier<ExportDataState> {
     return ExportDataState(
       status: server.isRunning
           ? server.isBroadcasting
-              ? ServerStatus.broadcasting
-              : ServerStatus.running
+                ? ServerStatus.broadcasting
+                : ServerStatus.running
           : ServerStatus.stopped,
       ipAddress: localIpAddress,
       port: httpServer.port.toString(),

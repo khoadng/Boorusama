@@ -68,8 +68,8 @@ mixin GelbooruClientFavorites {
   }
 
   Map<String, dynamic> _buildHeaders() => {
-        'cookie': 'user_id=$userId; pass_hash=$passHash',
-      };
+    'cookie': 'user_id=$userId; pass_hash=$passHash',
+  };
 
   Future<List<PostFavoriteDto>> getFavorites({
     int? page,
@@ -95,8 +95,10 @@ mixin GelbooruClientFavorites {
     final html = parse(data);
 
     // get all class "thumb" elements
-    final thumbs =
-        html.getElementsByClassName('thumb').map((e) => e.firstChild).toList();
+    final thumbs = html
+        .getElementsByClassName('thumb')
+        .map((e) => e.firstChild)
+        .toList();
 
     return thumbs.nonNulls.map((e) {
       final id = int.tryParse(e.attributes['id']?.substring(1) ?? '');

@@ -15,22 +15,22 @@ class SavedSearch extends Equatable {
   });
 
   factory SavedSearch.empty() => SavedSearch(
-        id: -1,
-        query: '',
-        labels: const [],
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-        canDelete: false,
-      );
+    id: -1,
+    query: '',
+    labels: const [],
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+    canDelete: false,
+  );
 
   factory SavedSearch.all() => SavedSearch(
-        id: 0,
-        query: '',
-        labels: const ['all'],
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-        canDelete: false,
-      );
+    id: 0,
+    query: '',
+    labels: const ['all'],
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+    canDelete: false,
+  );
 
   final int id;
   final String query;
@@ -40,8 +40,14 @@ class SavedSearch extends Equatable {
   final bool canDelete;
 
   @override
-  List<Object?> get props =>
-      [id, query, labels, createdAt, updatedAt, canDelete];
+  List<Object?> get props => [
+    id,
+    query,
+    labels,
+    createdAt,
+    updatedAt,
+    canDelete,
+  ];
 }
 
 extension SavedSearchX on SavedSearch {
@@ -52,15 +58,14 @@ extension SavedSearchX on SavedSearch {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? canDelete,
-  }) =>
-      SavedSearch(
-        id: id ?? this.id,
-        query: query ?? this.query,
-        labels: labels ?? this.labels,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        canDelete: canDelete ?? this.canDelete,
-      );
+  }) => SavedSearch(
+    id: id ?? this.id,
+    query: query ?? this.query,
+    labels: labels ?? this.labels,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    canDelete: canDelete ?? this.canDelete,
+  );
 
   String toQuery() => labels.isEmpty ? 'search:all' : 'search:${labels.first}';
 

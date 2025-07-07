@@ -166,10 +166,9 @@ class RevenuecatPurchase implements i.Purchaser {
 
   @override
   String? describePurchaseError(Object error) => switch (error) {
-        final PlatformException pe =>
-          PurchasesErrorHelper.getErrorCode(pe).name,
-        _ => null,
-      };
+    final PlatformException pe => PurchasesErrorHelper.getErrorCode(pe).name,
+    _ => null,
+  };
 }
 
 const _kFallbackAndroidManagementURL =

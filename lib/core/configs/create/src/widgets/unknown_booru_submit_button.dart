@@ -26,20 +26,25 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
     final config = ref.watch(initialBooruConfigProvider);
     final auth = ref.watch(
-      editBooruConfigProvider(editId)
-          .select((value) => AuthConfigData.fromConfig(value)),
+      editBooruConfigProvider(
+        editId,
+      ).select((value) => AuthConfigData.fromConfig(value)),
     );
-    final configName = ref
-        .watch(editBooruConfigProvider(editId).select((value) => value.name));
+    final configName = ref.watch(
+      editBooruConfigProvider(editId).select((value) => value.name),
+    );
     final url = ref.watch(siteUrlProvider(config));
     final engine = ref.watch(booruEngineProvider);
 
-    final isValid = engine != null &&
+    final isValid =
+        engine != null &&
         //FIXME: make this check customisable
         (engine == BooruType.hydrus ? auth.apiKey.isNotEmpty : auth.isValid) &&
         configName.isNotEmpty;
 
-    return ref.watch(validateConfigProvider).when(
+    return ref
+        .watch(validateConfigProvider)
+        .when(
           data: (value) => value != null
               ? BooruConfigDataProvider(
                   builder: (data) => CreateBooruSubmitButton(
@@ -47,7 +52,9 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                     backgroundColor: value ? Colors.green : null,
                     onSubmit: isValid
                         ? () {
-                            ref.read(booruConfigProvider.notifier).addOrUpdate(
+                            ref
+                                .read(booruConfigProvider.notifier)
+                                .addOrUpdate(
                                   id: editId,
                                   newConfig: data.copyWith(
                                     booruIdHint: () => engine.id,
@@ -99,24 +106,26 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
       fill: true,
       onSubmit: isValid && engine != null
           ? () {
-              final notifier =
-                  ref.read(targetConfigToValidateProvider.notifier);
+              final notifier = ref.read(
+                targetConfigToValidateProvider.notifier,
+              );
 
               if (forceRefresh) {
                 notifier.state = null;
               }
 
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                notifier.state = BooruConfig.defaultConfig(
-                  booruType: engine,
-                  url: url!,
-                  customDownloadFileNameFormat: null,
-                )
-                    .copyWith(
-                      login: auth.login,
-                      apiKey: auth.apiKey,
-                    )
-                    .auth;
+                notifier.state =
+                    BooruConfig.defaultConfig(
+                          booruType: engine,
+                          url: url!,
+                          customDownloadFileNameFormat: null,
+                        )
+                        .copyWith(
+                          login: auth.login,
+                          apiKey: auth.apiKey,
+                        )
+                        .auth;
               });
             }
           : null,

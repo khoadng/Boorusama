@@ -27,10 +27,10 @@ final gelbooruProvider = Provider<Gelbooru>(
 );
 
 BooruComponents createGelbooru() => BooruComponents(
-      parser: GelbooruParser(),
-      createBuilder: GelbooruBuilder.new,
-      createRepository: (ref) => GelbooruRepository(ref: ref),
-    );
+  parser: GelbooruParser(),
+  createBuilder: GelbooruBuilder.new,
+  createRepository: (ref) => GelbooruRepository(ref: ref),
+);
 
 final class Gelbooru extends Booru with PassHashAuthMixin {
   const Gelbooru({

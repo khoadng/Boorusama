@@ -50,8 +50,9 @@ class AddUnknownBooruPage extends ConsumerWidget {
                   ),
                   child: Text(
                     'Select a booru engine to continue',
-                    style: theme.textTheme.headlineSmall!
-                        .copyWith(fontWeight: FontWeight.w900),
+                    style: theme.textTheme.headlineSmall!.copyWith(
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
                 const Divider(

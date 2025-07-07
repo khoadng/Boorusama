@@ -6,9 +6,9 @@ class PluralPostLinkGenerator<T extends Post> implements PostLinkGenerator<T> {
   PluralPostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          pathTemplate: 'posts/{id}',
-        );
+         baseUrl: baseUrl,
+         pathTemplate: 'posts/{id}',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;
@@ -22,9 +22,9 @@ class SingularPostLinkGenerator<T extends Post>
   SingularPostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          pathTemplate: 'post/{id}',
-        );
+         baseUrl: baseUrl,
+         pathTemplate: 'post/{id}',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;
@@ -75,13 +75,13 @@ class IndexPhpPostLinkGenerator<T extends Post>
   IndexPhpPostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          queryParams: const {
-            'page': 'post',
-            's': 'view',
-          },
-          idQueryParam: 'id',
-        );
+         baseUrl: baseUrl,
+         queryParams: const {
+           'page': 'post',
+           's': 'view',
+         },
+         idQueryParam: 'id',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;
@@ -101,9 +101,9 @@ class ShowPostLinkGenerator<T extends Post> implements PostLinkGenerator<T> {
   ShowPostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          pathTemplate: 'post/show/{id}',
-        );
+         baseUrl: baseUrl,
+         pathTemplate: 'post/show/{id}',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;
@@ -116,9 +116,9 @@ class ViewPostLinkGenerator<T extends Post> implements PostLinkGenerator<T> {
   ViewPostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          pathTemplate: 'post/view/{id}',
-        );
+         baseUrl: baseUrl,
+         pathTemplate: 'post/view/{id}',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;
@@ -131,9 +131,9 @@ class ImagePostLinkGenerator<T extends Post> implements PostLinkGenerator<T> {
   ImagePostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          pathTemplate: 'images/{id}',
-        );
+         baseUrl: baseUrl,
+         pathTemplate: 'images/{id}',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;
@@ -147,9 +147,9 @@ class DirectIdPathPostLinkGenerator<T extends Post>
   DirectIdPathPostLinkGenerator({
     required this.baseUrl,
   }) : _urlGenerator = IntIdPostLinkGenerator(
-          baseUrl: baseUrl,
-          pathTemplate: '{id}',
-        );
+         baseUrl: baseUrl,
+         pathTemplate: '{id}',
+       );
 
   final String baseUrl;
   final IntIdPostLinkGenerator _urlGenerator;

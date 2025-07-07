@@ -15,15 +15,17 @@ class ProxyHostInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final proxySettings = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.proxySettingsTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.proxySettingsTyped),
     );
 
     return BooruTextFormField(
       initialValue: proxySettings?.host,
       onChanged: (value) {
-        ref.editNotifier
-            .updateProxySettings(proxySettings?.copyWith(host: value));
+        ref.editNotifier.updateProxySettings(
+          proxySettings?.copyWith(host: value),
+        );
       },
       decoration: const InputDecoration(
         labelText: 'Host or IP (*)',

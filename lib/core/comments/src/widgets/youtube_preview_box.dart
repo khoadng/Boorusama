@@ -46,10 +46,9 @@ class YoutubePreviewBox extends StatelessWidget {
                       onPressed: () => launchExternalUrl(uri),
                       child: Text(
                         data.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(color: Colors.blue),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium!.copyWith(color: Colors.blue),
                       ),
                     ),
                     if (data.previewImage != null)
@@ -59,8 +58,9 @@ class YoutubePreviewBox extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(8)),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8),
+                              ),
                               child: ExtendedImage.network(
                                 data.previewImage!,
                                 dio: dio,
@@ -71,8 +71,9 @@ class YoutubePreviewBox extends StatelessWidget {
                               Align(
                                 child: DecoratedBox(
                                   decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
                                     color: Colors.black87,
                                   ),
                                   child: IconButton(
@@ -125,13 +126,14 @@ PreviewUrlData parseHtml(String text) {
   final html = parse(text);
   final metas = html.getElementsByTagName('meta');
 
-  final props =
-      metas.where((e) => e.attributes['property']?.isNotEmpty ?? false).map(
-            (e) => _MetaElement(
-              e.attributes['property']!,
-              e.attributes['content'] ?? '',
-            ),
-          );
+  final props = metas
+      .where((e) => e.attributes['property']?.isNotEmpty ?? false)
+      .map(
+        (e) => _MetaElement(
+          e.attributes['property']!,
+          e.attributes['content'] ?? '',
+        ),
+      );
 
   final propMap = {for (final p in props) p.property: p.content};
 

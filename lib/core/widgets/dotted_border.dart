@@ -143,14 +143,14 @@ class DashedPainter extends CustomPainter {
 
   /// Returns a [Path] based on the the [borderType] parameter
   Path _getPath(Size size) => dashPath(
-        switch (borderType) {
-          BorderType.circle => _getCirclePath(size),
-          BorderType.rrect => _getRRectPath(size, radius),
-          BorderType.rect => _getRectPath(size),
-          BorderType.oval => _getOvalPath(size)
-        },
-        dashArray: CircularIntervalList(dashPattern),
-      );
+    switch (borderType) {
+      BorderType.circle => _getCirclePath(size),
+      BorderType.rrect => _getRRectPath(size, radius),
+      BorderType.rect => _getRectPath(size),
+      BorderType.oval => _getOvalPath(size),
+    },
+    dashArray: CircularIntervalList(dashPattern),
+  );
 
   /// Returns a circular path of [size]
   Path _getCirclePath(Size size) {
@@ -158,60 +158,56 @@ class DashedPainter extends CustomPainter {
     final h = size.height;
     final s = size.shortestSide;
 
-    return Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            w > s ? (w - s) / 2 : 0,
-            h > s ? (h - s) / 2 : 0,
-            s,
-            s,
-          ),
-          Radius.circular(s / 2),
+    return Path()..addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          w > s ? (w - s) / 2 : 0,
+          h > s ? (h - s) / 2 : 0,
+          s,
+          s,
         ),
-      );
+        Radius.circular(s / 2),
+      ),
+    );
   }
 
   /// Returns a Rounded Rectangular Path with [radius] of [size]
   Path _getRRectPath(Size size, Radius radius) {
-    return Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            0,
-            0,
-            size.width,
-            size.height,
-          ),
-          radius,
+    return Path()..addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          0,
+          0,
+          size.width,
+          size.height,
         ),
-      );
+        radius,
+      ),
+    );
   }
 
   /// Returns a path of [size]
   Path _getRectPath(Size size) {
-    return Path()
-      ..addRect(
-        Rect.fromLTWH(
-          0,
-          0,
-          size.width,
-          size.height,
-        ),
-      );
+    return Path()..addRect(
+      Rect.fromLTWH(
+        0,
+        0,
+        size.width,
+        size.height,
+      ),
+    );
   }
 
   /// Return an oval path of [size]
   Path _getOvalPath(Size size) {
-    return Path()
-      ..addOval(
-        Rect.fromLTWH(
-          0,
-          0,
-          size.width,
-          size.height,
-        ),
-      );
+    return Path()..addOval(
+      Rect.fromLTWH(
+        0,
+        0,
+        size.width,
+        size.height,
+      ),
+    );
   }
 
   @override

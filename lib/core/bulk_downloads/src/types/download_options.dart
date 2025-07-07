@@ -91,8 +91,9 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       perPage: perPage ?? this.perPage,
       concurrency: concurrency ?? this.concurrency,
       tags: tags ?? this.tags,
-      blacklistedTags:
-          blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
+      blacklistedTags: blacklistedTags != null
+          ? blacklistedTags()
+          : this.blacklistedTags,
     );
   }
 
@@ -101,15 +102,15 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
 
   @override
   List<Object?> get props => [
-        path,
-        notifications,
-        skipIfExists,
-        quality,
-        perPage,
-        concurrency,
-        tags,
-        blacklistedTags,
-      ];
+    path,
+    notifications,
+    skipIfExists,
+    quality,
+    perPage,
+    concurrency,
+    tags,
+    blacklistedTags,
+  ];
 }
 
 extension DownloadOptionsX on DownloadOptions {

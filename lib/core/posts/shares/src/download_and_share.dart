@@ -21,27 +21,29 @@ import '../../../downloads/downloader/types.dart';
 import '../../../widgets/booru_dialog.dart';
 import '../../post/post.dart';
 
-final _downloadTaskDetailsProvider =
-    Provider.autoDispose.family<TaskUpdate?, String>((ref, downloadId) {
-  final updates = ref.watch(downloadTaskUpdatesProvider);
-  final allTasks = [
-    ...updates.inProgress(FileDownloader.defaultGroup),
-    ...updates.completed(FileDownloader.defaultGroup),
-    ...updates.failed(FileDownloader.defaultGroup),
-    ...updates.canceled(FileDownloader.defaultGroup),
-  ];
+final _downloadTaskDetailsProvider = Provider.autoDispose
+    .family<TaskUpdate?, String>((ref, downloadId) {
+      final updates = ref.watch(downloadTaskUpdatesProvider);
+      final allTasks = [
+        ...updates.inProgress(FileDownloader.defaultGroup),
+        ...updates.completed(FileDownloader.defaultGroup),
+        ...updates.failed(FileDownloader.defaultGroup),
+        ...updates.canceled(FileDownloader.defaultGroup),
+      ];
 
-  return allTasks.firstWhereOrNull(
-    (update) => update.task.taskId == downloadId,
-  );
-});
+      return allTasks.firstWhereOrNull(
+        (update) => update.task.taskId == downloadId,
+      );
+    });
 
 final _downloadProvider =
-    FutureProvider.family<DownloadTaskInfo?, (BooruConfigAuth, Post)>(
-        (ref, params) async {
-  final (_, post) = params;
-  return ref.watch(downloadNotifierProvider.notifier).download(post);
-});
+    FutureProvider.family<DownloadTaskInfo?, (BooruConfigAuth, Post)>((
+      ref,
+      params,
+    ) async {
+      final (_, post) = params;
+      return ref.watch(downloadNotifierProvider.notifier).download(post);
+    });
 
 class DownloadAndShareDialog extends ConsumerWidget {
   const DownloadAndShareDialog({
@@ -53,7 +55,9 @@ class DownloadAndShareDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(_downloadProvider((ref.watchConfigAuth, post))).when(
+    return ref
+        .watch(_downloadProvider((ref.watchConfigAuth, post)))
+        .when(
           data: (info) {
             if (info == null) {
               return Center(
@@ -96,7 +100,8 @@ class DownloadAndShareDialogInternal extends ConsumerWidget {
     final task = ref.watch(_downloadTaskDetailsProvider(info.id));
     final fileName = basename(info.path);
 
-    final isCompleted = task != null &&
+    final isCompleted =
+        task != null &&
         task is TaskStatusUpdate &&
         task.status == TaskStatus.complete;
 

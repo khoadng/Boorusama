@@ -5,18 +5,18 @@ import 'sankaku_builder.dart';
 import 'sankaku_repository.dart';
 
 BooruComponents createSankaku() => BooruComponents(
-      parser: YamlBooruParser(
-        type: BooruType.sankaku,
-        mapper: (def) => Sankaku(
-          name: def.name,
-          protocol: def.getProtocol(),
-          sites: def.getSites(),
-          headers: def.getHeaders(),
-        ),
-      ),
-      createBuilder: SankakuBuilder.new,
-      createRepository: (ref) => SankakuRepository(ref: ref),
-    );
+  parser: YamlBooruParser(
+    type: BooruType.sankaku,
+    mapper: (def) => Sankaku(
+      name: def.name,
+      protocol: def.getProtocol(),
+      sites: def.getSites(),
+      headers: def.getHeaders(),
+    ),
+  ),
+  createBuilder: SankakuBuilder.new,
+  createRepository: (ref) => SankakuRepository(ref: ref),
+);
 
 class Sankaku extends Booru {
   const Sankaku({

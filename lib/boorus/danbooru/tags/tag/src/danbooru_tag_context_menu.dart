@@ -31,9 +31,9 @@ class DanbooruTagContextMenu extends ConsumerWidget {
       tag: tag,
       itemBindings: {
         'post.detail.open_wiki'.tr(): () => launchWikiPage(
-              config.url,
-              tag,
-            ),
+          config.url,
+          tag,
+        ),
         if (config.hasLoginDetails())
           'post.detail.add_to_blacklist'.tr(): () => ref
               .read(danbooruBlacklistedTagsProvider(config).notifier)

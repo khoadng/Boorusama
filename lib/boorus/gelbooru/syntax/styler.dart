@@ -13,31 +13,29 @@ class GelbooruStyler extends TokenStyler<GelbooruTokenData> {
   ) {
     return switch (token.data) {
       GelbooruCommonToken(:final data) => switch (data.type) {
-          CommonTokenType.or => StylingUtils.buildOperatorSpan(
-              token.text,
-              style.operator,
-            ),
-          CommonTokenType.openParen ||
-          CommonTokenType.closeParen =>
-            StylingUtils.buildParenthesisSpan(
-              token.text,
-              style.groupingColor(data.level),
-              data.isFocused,
-            ),
-        },
+        CommonTokenType.or => StylingUtils.buildOperatorSpan(
+          token.text,
+          style.operator,
+        ),
+        CommonTokenType.openParen ||
+        CommonTokenType.closeParen => StylingUtils.buildParenthesisSpan(
+          token.text,
+          style.groupingColor(data.level),
+          data.isFocused,
+        ),
+      },
       GelbooruSpecificToken(:final data) => switch (data.type) {
-          GelbooruSpecificTokenType.tilde => StylingUtils.buildOperatorSpan(
-              token.text,
-              style.operator,
-            ),
-          GelbooruSpecificTokenType.openBrace ||
-          GelbooruSpecificTokenType.closeBrace =>
-            StylingUtils.buildFocusableSpan(
-              token.text,
-              style.operator,
-              data.isFocused,
-            ),
-        },
+        GelbooruSpecificTokenType.tilde => StylingUtils.buildOperatorSpan(
+          token.text,
+          style.operator,
+        ),
+        GelbooruSpecificTokenType.openBrace ||
+        GelbooruSpecificTokenType.closeBrace => StylingUtils.buildFocusableSpan(
+          token.text,
+          style.operator,
+          data.isFocused,
+        ),
+      },
     };
   }
 }

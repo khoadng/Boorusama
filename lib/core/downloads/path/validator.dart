@@ -100,6 +100,6 @@ mixin DownloadPathValidatorMixin {
       storagePath!.isNotEmpty &&
       (hasScopeStorage
           ? (isPublicDirectories(storagePath) ||
-              isSdCardPublicDirectories(storagePath))
+                isSdCardPublicDirectories(storagePath))
           : true);
 }

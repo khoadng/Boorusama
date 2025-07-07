@@ -22,8 +22,9 @@ final hasPremiumProvider = Provider<bool>((ref) {
   return package.valueOrNull != null;
 });
 
-final premiumManagementURLProvider =
-    FutureProvider.autoDispose<String?>((ref) async {
+final premiumManagementURLProvider = FutureProvider.autoDispose<String?>((
+  ref,
+) async {
   final isFoss = ref.watch(isFossBuildProvider);
   if (isFoss) return null;
 

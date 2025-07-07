@@ -7,16 +7,23 @@ import '../../favgroup.dart';
 import 'favorite_groups_notifier.dart';
 
 final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose
-    .family<FavoriteGroupFilterableNotifier, List<DanbooruFavoriteGroup>?,
-        BooruConfigSearch>(
-  FavoriteGroupFilterableNotifier.new,
-  dependencies: [
-    danbooruFavoriteGroupsProvider,
-  ],
-);
+    .family<
+      FavoriteGroupFilterableNotifier,
+      List<DanbooruFavoriteGroup>?,
+      BooruConfigSearch
+    >(
+      FavoriteGroupFilterableNotifier.new,
+      dependencies: [
+        danbooruFavoriteGroupsProvider,
+      ],
+    );
 
-class FavoriteGroupFilterableNotifier extends AutoDisposeFamilyNotifier<
-    List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
+class FavoriteGroupFilterableNotifier
+    extends
+        AutoDisposeFamilyNotifier<
+          List<DanbooruFavoriteGroup>?,
+          BooruConfigSearch
+        > {
   @override
   List<DanbooruFavoriteGroup>? build(BooruConfigSearch arg) {
     return ref.watch(danbooruFavoriteGroupsProvider(arg));

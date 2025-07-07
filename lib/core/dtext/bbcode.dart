@@ -1,11 +1,12 @@
 part of 'dtext_grammar.dart';
 
-Parser taggedElement(String tag) => (string('[$tag') &
-        ref0(attribute).optional() &
-        string(']') &
-        (string('[/$tag]').not() & any()).star().flatten() &
-        string('[/$tag]'))
-    .map((value) => BBCode(tag, value[3], value[1]));
+Parser taggedElement(String tag) =>
+    (string('[$tag') &
+            ref0(attribute).optional() &
+            string(']') &
+            (string('[/$tag]').not() & any()).star().flatten() &
+            string('[/$tag]'))
+        .map((value) => BBCode(tag, value[3], value[1]));
 
 Parser attribute() => (char('=') & (char(']').not() & any()).star().flatten())
     .map((value) => value[1]);
@@ -40,13 +41,13 @@ class BBCode {
   final String? attributes;
 
   BBCodeTagType get type => switch (tag) {
-        'b' => BBCodeTagType.bold,
-        'i' => BBCodeTagType.italic,
-        'u' => BBCodeTagType.underline,
-        's' => BBCodeTagType.strikethrough,
-        'spoiler' => BBCodeTagType.spoiler,
-        'expand' => BBCodeTagType.expand,
-        'quote' => BBCodeTagType.quote,
-        _ => throw Exception('Unknown tag type: $tag')
-      };
+    'b' => BBCodeTagType.bold,
+    'i' => BBCodeTagType.italic,
+    'u' => BBCodeTagType.underline,
+    's' => BBCodeTagType.strikethrough,
+    'spoiler' => BBCodeTagType.spoiler,
+    'expand' => BBCodeTagType.expand,
+    'quote' => BBCodeTagType.quote,
+    _ => throw Exception('Unknown tag type: $tag'),
+  };
 }

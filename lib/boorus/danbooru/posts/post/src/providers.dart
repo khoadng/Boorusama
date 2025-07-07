@@ -19,54 +19,57 @@ import 'converter.dart';
 import 'danbooru_post.dart';
 
 final danbooruPostRepoProvider =
-    Provider.family<PostRepository<DanbooruPost>, BooruConfigSearch>(
-        (ref, config) {
-  final client = ref.watch(danbooruClientProvider(config.auth));
+    Provider.family<PostRepository<DanbooruPost>, BooruConfigSearch>((
+      ref,
+      config,
+    ) {
+      final client = ref.watch(danbooruClientProvider(config.auth));
 
-  return PostRepositoryBuilder(
-    getComposer: () => ref.read(tagQueryComposerProvider(config)),
-    fetchSingle: (id, {options}) async {
-      final numericId = id as NumericPostId?;
+      return PostRepositoryBuilder(
+        getComposer: () => ref.read(tagQueryComposerProvider(config)),
+        fetchSingle: (id, {options}) async {
+          final numericId = id as NumericPostId?;
 
-      if (numericId == null) return Future.value(null);
+          if (numericId == null) return Future.value(null);
 
-      final post = await client.getPost(numericId.value);
+          final post = await client.getPost(numericId.value);
 
-      return post != null ? postDtoToPost(post, null) : null;
-    },
-    fetch: (tags, page, {limit, options}) async {
-      final posts = await client
-          .getPosts(
-            page: page,
-            tags: tags,
-            limit: limit,
-          )
-          .then(
-            (value) => value
-                .map(
-                  (e) => postDtoToPost(
-                    e,
-                    PostMetadata(
-                      page: page,
-                      search: tags.join(' '),
-                      limit: limit,
-                    ),
-                  ),
-                )
-                .toList(),
-          );
+          return post != null ? postDtoToPost(post, null) : null;
+        },
+        fetch: (tags, page, {limit, options}) async {
+          final posts = await client
+              .getPosts(
+                page: page,
+                tags: tags,
+                limit: limit,
+              )
+              .then(
+                (value) => value
+                    .map(
+                      (e) => postDtoToPost(
+                        e,
+                        PostMetadata(
+                          page: page,
+                          search: tags.join(' '),
+                          limit: limit,
+                        ),
+                      ),
+                    )
+                    .toList(),
+              );
 
-      return (options?.cascadeRequest ?? true)
-          ? transformPosts(ref, posts.toResult(), config)
-          : posts.toResult();
-    },
-    getSettings: () async => ref.read(imageListingSettingsProvider),
-  );
-});
+          return (options?.cascadeRequest ?? true)
+              ? transformPosts(ref, posts.toResult(), config)
+              : posts.toResult();
+        },
+        getSettings: () async => ref.read(imageListingSettingsProvider),
+      );
+    });
 
-typedef PostFetchTransformer = Future<PostResult<DanbooruPost>> Function(
-  PostResult<DanbooruPost> posts,
-);
+typedef PostFetchTransformer =
+    Future<PostResult<DanbooruPost>> Function(
+      PostResult<DanbooruPost> posts,
+    );
 
 Future<PostResult<DanbooruPost>> transformPosts(
   Ref ref,

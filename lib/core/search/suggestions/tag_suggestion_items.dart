@@ -53,7 +53,8 @@ class TagSuggestionItems extends ConsumerWidget {
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
             child: ListView.builder(
               reverse: reverse ?? false,
-              padding: padding ??
+              padding:
+                  padding ??
                   const EdgeInsets.symmetric(
                     horizontal: 12,
                   ).copyWith(bottom: 16),
@@ -79,7 +80,7 @@ class TagSuggestionItems extends ConsumerWidget {
             ),
           )
         : emptyBuilder != null
-            ? emptyBuilder!()
-            : const SizedBox.shrink();
+        ? emptyBuilder!()
+        : const SizedBox.shrink();
   }
 }

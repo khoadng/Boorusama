@@ -12,38 +12,39 @@ import '../posts/types.dart';
 import 'parser.dart';
 import 'types.dart';
 
-final e621TagRepoProvider =
-    Provider.family<E621TagRepository, BooruConfigAuth>((ref, config) {
-  return E621TagRepositoryApi(
-    ref.watch(e621ClientProvider(config)),
-    config,
-  );
-});
-
-final e621TagExtractorProvider =
-    Provider.family<TagExtractor<E621Post>, BooruConfigAuth>(
+final e621TagRepoProvider = Provider.family<E621TagRepository, BooruConfigAuth>(
   (ref, config) {
-    return TagExtractorBuilder(
-      sorter: TagSorter.defaults(),
-      fetcher: (post, options) {
-        // Use read to avoid circular dependency
-        final tagResolver = ref.read(tagResolverProvider(config));
-
-        if (post case final E621Post e621Post) {
-          final tags = _extractTagsFromPost(e621Post);
-
-          if (!options.fetchTagCount) {
-            return tags;
-          }
-
-          return tagResolver.resolvePartialTags(tags);
-        } else {
-          return TagExtractor.extractTagsFromGenericPost(post);
-        }
-      },
+    return E621TagRepositoryApi(
+      ref.watch(e621ClientProvider(config)),
+      config,
     );
   },
 );
+
+final e621TagExtractorProvider =
+    Provider.family<TagExtractor<E621Post>, BooruConfigAuth>(
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) {
+            // Use read to avoid circular dependency
+            final tagResolver = ref.read(tagResolverProvider(config));
+
+            if (post case final E621Post e621Post) {
+              final tags = _extractTagsFromPost(e621Post);
+
+              if (!options.fetchTagCount) {
+                return tags;
+              }
+
+              return tagResolver.resolvePartialTags(tags);
+            } else {
+              return TagExtractor.extractTagsFromGenericPost(post);
+            }
+          },
+        );
+      },
+    );
 
 List<Tag> _extractTagsFromPost(E621Post post) {
   return [
@@ -94,30 +95,30 @@ List<Tag> _extractTagsFromPost(E621Post post) {
 
 final e621AutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(e621ClientProvider(config));
+      final client = ref.watch(e621ClientProvider(config));
 
-  return AutocompleteRepositoryBuilder(
-    persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
-    persistentStaleDuration: const Duration(days: 1),
-    autocomplete: (query) async {
-      final dtos = await client.getAutocomplete(query: query.text);
+      return AutocompleteRepositoryBuilder(
+        persistentStorageKey:
+            '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+        persistentStaleDuration: const Duration(days: 1),
+        autocomplete: (query) async {
+          final dtos = await client.getAutocomplete(query: query.text);
 
-      return dtos
-          .map(
-            (e) => AutocompleteData(
-              type: AutocompleteData.tag,
-              label: e.name?.replaceAll('_', ' ') ?? '',
-              value: e.name ?? '',
-              category: intToE621TagCategory(e.category).name,
-              postCount: e.postCount,
-              antecedent: e.antecedentName,
-            ),
-          )
-          .toList();
-    },
-  );
-});
+          return dtos
+              .map(
+                (e) => AutocompleteData(
+                  type: AutocompleteData.tag,
+                  label: e.name?.replaceAll('_', ' ') ?? '',
+                  value: e.name ?? '',
+                  category: intToE621TagCategory(e.category).name,
+                  postCount: e.postCount,
+                  antecedent: e.antecedentName,
+                ),
+              )
+              .toList();
+        },
+      );
+    });
 
 class E621TagRepositoryApi implements E621TagRepository {
   E621TagRepositoryApi(
@@ -132,9 +133,8 @@ class E621TagRepositoryApi implements E621TagRepository {
   Future<List<E621Tag>> getTagsWithWildcard(
     String tag, {
     TagSortOrder order = TagSortOrder.count,
-  }) =>
-      client
-          .getTags(name: tag)
-          .then((value) => value.map(e621TagDtoToTag).toList())
-          .catchError((e, stackTrace) => <E621Tag>[]);
+  }) => client
+      .getTags(name: tag)
+      .then((value) => value.map(e621TagDtoToTag).toList())
+      .catchError((e, stackTrace) => <E621Tag>[]);
 }

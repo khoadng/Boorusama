@@ -34,7 +34,8 @@ class SimplePostStatsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsWidgetSeparator(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             horizontal: 8,
             vertical: 8,

@@ -12,28 +12,28 @@ import '../../widgets/booru_dialog.dart';
 import 'donation_page.dart';
 
 GoRoute donationRoutes(Ref ref) => GoRoute(
-      path: 'donate',
-      name: '/donate',
-      redirect: (context, state) {
-        // Redirect to premium page if not foss build
-        if (!ref.read(isFossBuildProvider)) {
-          return '/premium';
-        }
-        return null;
-      },
-      pageBuilder: largeScreenAwarePageBuilder(
-        useDialog: true,
-        builder: (context, state) {
-          final landscape = context.orientation.isLandscape;
+  path: 'donate',
+  name: '/donate',
+  redirect: (context, state) {
+    // Redirect to premium page if not foss build
+    if (!ref.read(isFossBuildProvider)) {
+      return '/premium';
+    }
+    return null;
+  },
+  pageBuilder: largeScreenAwarePageBuilder(
+    useDialog: true,
+    builder: (context, state) {
+      final landscape = context.orientation.isLandscape;
 
-          const page = DonationPage();
+      const page = DonationPage();
 
-          return landscape
-              ? const BooruDialog(
-                  padding: EdgeInsets.all(8),
-                  child: page,
-                )
-              : page;
-        },
-      ),
-    );
+      return landscape
+          ? const BooruDialog(
+              padding: EdgeInsets.all(8),
+              child: page,
+            )
+          : page;
+    },
+  ),
+);

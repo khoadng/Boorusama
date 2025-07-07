@@ -21,7 +21,9 @@ class DanbooruProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final userId = ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+    final userId = ref
+        .watch(danbooruCurrentUserProvider(config))
+        .maybeWhen(
           data: (user) => user?.id,
           orElse: () => null,
         );

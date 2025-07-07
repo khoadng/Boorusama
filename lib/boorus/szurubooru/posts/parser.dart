@@ -22,11 +22,13 @@ SzurubooruPost postDtoToPost(
     sampleImageUrl: e.contentUrl ?? '',
     originalImageUrl: e.contentUrl ?? '',
     tags: e.tags?.map((e) => e.names?.firstOrNull).nonNulls.toSet() ?? {},
-    tagDetails: e.tags
+    tagDetails:
+        e.tags
             ?.map(
               (e) => Tag(
                 name: e.names?.firstOrNull ?? '???',
-                category: categories?.firstWhereOrNull(
+                category:
+                    categories?.firstWhereOrNull(
                       (element) => element.name == e.category,
                     ) ??
                     TagCategory.general(),
@@ -56,8 +58,9 @@ SzurubooruPost postDtoToPost(
     videoThumbnailUrl: e.thumbnailUrl ?? '',
     videoUrl: e.contentUrl ?? '',
     width: e.canvasWidth?.toDouble() ?? 0,
-    createdAt:
-        e.creationTime != null ? DateTime.tryParse(e.creationTime!) : null,
+    createdAt: e.creationTime != null
+        ? DateTime.tryParse(e.creationTime!)
+        : null,
     uploaderName: e.user?.name,
     ownFavorite: e.ownFavorite ?? false,
     favoriteCount: e.favoriteCount ?? 0,

@@ -154,8 +154,9 @@ class _ImageListingSettingsSectionState
               _onUpdate(settings.copyWith(showScoresInGrid: value)),
         ),
         SwitchListTile(
-          title: const Text('settings.appearance.show_post_list_config_header')
-              .tr(),
+          title: const Text(
+            'settings.appearance.show_post_list_config_header',
+          ).tr(),
           value: settings.showPostListConfigHeader,
           onChanged: (value) => _onUpdate(
             settings.copyWith(
@@ -176,7 +177,8 @@ class _ImageListingSettingsSectionState
         ),
         SwitchListTile(
           title: const Text('Autoplay GIFs').tr(),
-          value: settings.animatedPostsDefaultState ==
+          value:
+              settings.animatedPostsDefaultState ==
               AnimatedPostsDefaultState.autoplay,
           onChanged: (value) => _onUpdate(
             settings.copyWith(

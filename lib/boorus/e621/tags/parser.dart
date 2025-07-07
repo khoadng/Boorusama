@@ -10,7 +10,8 @@ E621Tag e621TagDtoToTag(TagDto dto) {
     id: dto.id ?? 0,
     name: dto.name ?? '',
     postCount: dto.postCount ?? 0,
-    relatedTags: dto.relatedTags
+    relatedTags:
+        dto.relatedTags
             ?.map(
               (e) => E621RelatedTag(
                 tag: e.tag,
@@ -29,28 +30,28 @@ E621Tag e621TagDtoToTag(TagDto dto) {
 }
 
 TagCategory intToE621TagCategory(int? value) => switch (value) {
-      0 => e621GeneralTagCategory,
-      1 => e621ArtistTagCategory,
-      3 => e621CopyrightTagCategory,
-      4 => e621CharacterTagCategory,
-      5 => e621SpeciesTagCategory,
-      6 => e621InvalidTagCategory,
-      7 => e621MetaTagCagegory,
-      8 => e621LoreTagCategory,
-      _ => e621InvalidTagCategory,
-    };
+  0 => e621GeneralTagCategory,
+  1 => e621ArtistTagCategory,
+  3 => e621CopyrightTagCategory,
+  4 => e621CharacterTagCategory,
+  5 => e621SpeciesTagCategory,
+  6 => e621InvalidTagCategory,
+  7 => e621MetaTagCagegory,
+  8 => e621LoreTagCategory,
+  _ => e621InvalidTagCategory,
+};
 
 TagCategory stringToE621TagCategory(String? value) => switch (value) {
-      'general' => e621GeneralTagCategory,
-      'artist' => e621ArtistTagCategory,
-      'copyright' => e621CopyrightTagCategory,
-      'character' => e621CharacterTagCategory,
-      'species' => e621SpeciesTagCategory,
-      'invalid' => e621InvalidTagCategory,
-      'meta' => e621MetaTagCagegory,
-      'lore' => e621LoreTagCategory,
-      _ => e621InvalidTagCategory,
-    };
+  'general' => e621GeneralTagCategory,
+  'artist' => e621ArtistTagCategory,
+  'copyright' => e621CopyrightTagCategory,
+  'character' => e621CharacterTagCategory,
+  'species' => e621SpeciesTagCategory,
+  'invalid' => e621InvalidTagCategory,
+  'meta' => e621MetaTagCagegory,
+  'lore' => e621LoreTagCategory,
+  _ => e621InvalidTagCategory,
+};
 
 final e621ArtistTagCategory = TagCategory.artist().copyWith(
   id: 101,

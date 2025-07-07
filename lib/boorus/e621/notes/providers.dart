@@ -7,8 +7,10 @@ import '../../../core/notes/notes.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 
-final e621NoteRepoProvider =
-    Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
+final e621NoteRepoProvider = Provider.family<NoteRepository, BooruConfigAuth>((
+  ref,
+  config,
+) {
   final client = ref.watch(e621ClientProvider(config));
 
   return NoteRepositoryBuilder(

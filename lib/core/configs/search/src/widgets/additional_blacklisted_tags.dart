@@ -29,13 +29,16 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
     final id = ref.watch(editBooruConfigIdProvider);
     final rawTags = queryAsList(
       ref.watch(
-        editBooruConfigProvider(id)
-            .select((value) => value.blacklistConfigsTyped?.blacklistedTags),
+        editBooruConfigProvider(
+          id,
+        ).select((value) => value.blacklistConfigsTyped?.blacklistedTags),
       ),
     );
-    final enabled = ref.watch(
-          editBooruConfigProvider(id)
-              .select((value) => value.blacklistConfigsTyped?.enable),
+    final enabled =
+        ref.watch(
+          editBooruConfigProvider(
+            id,
+          ).select((value) => value.blacklistConfigsTyped?.enable),
         ) ??
         false;
 
@@ -63,8 +66,8 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
               header: Text(
                 'Blacklist',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

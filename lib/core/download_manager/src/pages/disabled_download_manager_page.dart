@@ -34,8 +34,8 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
               Text(
                 'You are using the legacy downloader. Please enable the new downloader in the settings.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.hintColor,
-                    ),
+                  color: Theme.of(context).colorScheme.hintColor,
+                ),
               ),
               const SizedBox(height: 16),
               FilledButton(

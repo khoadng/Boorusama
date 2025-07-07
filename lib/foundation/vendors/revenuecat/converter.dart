@@ -33,5 +33,5 @@ i.PackageType mapRevenuecatPackageTypeToPackageType(PackageType type) =>
       PackageType.threeMonth => i.PackageType.monthly,
       PackageType.twoMonth => i.PackageType.monthly,
       PackageType.monthly => i.PackageType.monthly,
-      PackageType.weekly => i.PackageType.monthly
+      PackageType.weekly => i.PackageType.monthly,
     };

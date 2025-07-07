@@ -37,11 +37,11 @@ class SankakuRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => SankakuClient(
-          baseUrl: config.url,
-          dio: dio,
-          username: config.login,
-          password: config.apiKey,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      username: config.login,
+      password: config.apiKey,
+    ).getPosts().then((value) => true);
   }
 
   @override

@@ -103,29 +103,37 @@ class FavoriteTagsPage extends ConsumerWidget {
                   Expanded(
                     child: BooruSearchBar(
                       hintText: 'Filter...',
-                      onChanged: (value) => ref
-                          .read(selectedFavoriteTagQueryProvider.notifier)
-                          .state = value,
+                      onChanged: (value) =>
+                          ref
+                                  .read(
+                                    selectedFavoriteTagQueryProvider.notifier,
+                                  )
+                                  .state =
+                              value,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
-                        routeSettings:
-                            const RouteSettings(name: 'favorite_tag_config'),
-                        backgroundColor:
-                            Theme.of(context).colorScheme.surfaceContainer,
+                        routeSettings: const RouteSettings(
+                          name: 'favorite_tag_config',
+                        ),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         builder: (context) => FavoriteTagConfigSheet(
                           onSorted: (value) {
                             ref
-                                .read(
-                                  selectedFavoriteTagsSortTypeProvider.notifier,
-                                )
-                                .state = value;
+                                    .read(
+                                      selectedFavoriteTagsSortTypeProvider
+                                          .notifier,
+                                    )
+                                    .state =
+                                value;
                           },
                         ),
                       );
@@ -205,14 +213,17 @@ class FavoriteTagsPage extends ConsumerWidget {
                 case 'edit':
                   showBooruModalBottomSheet(
                     context: context,
-                    routeSettings:
-                        const RouteSettings(name: 'edit_favorite_tag'),
+                    routeSettings: const RouteSettings(
+                      name: 'edit_favorite_tag',
+                    ),
                     resizeToAvoidBottomInset: true,
                     builder: (context) => EditFavoriteTagSheet(
                       initialValue: tag,
                       title: tag.name,
                       onSubmit: (tag) {
-                        ref.read(favoriteTagsProvider.notifier).update(
+                        ref
+                            .read(favoriteTagsProvider.notifier)
+                            .update(
                               tag.name,
                               tag,
                             );

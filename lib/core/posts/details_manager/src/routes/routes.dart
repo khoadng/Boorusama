@@ -39,8 +39,10 @@ class InheritedDetailsLayoutManagerParams extends InheritedWidget {
   final DetailsLayoutManagerParams params;
 
   static DetailsLayoutManagerParams of(BuildContext context) {
-    final widget = context.dependOnInheritedWidgetOfExactType<
-        InheritedDetailsLayoutManagerParams>();
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<
+          InheritedDetailsLayoutManagerParams
+        >();
     if (widget == null) {
       throw Exception('InheritedDetailsLayoutManagerParams not found');
     }

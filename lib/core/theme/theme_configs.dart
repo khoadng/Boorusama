@@ -89,8 +89,8 @@ ColorScheme getSchemeFromBasic(
 
   final (dark, light) = enableDynamicColoring
       ? dynamicLightScheme != null && dynamicDarkScheme != null
-          ? (dynamicDarkScheme, dynamicLightScheme)
-          : (null, null)
+            ? (dynamicDarkScheme, dynamicLightScheme)
+            : (null, null)
       : (null, null);
 
   return AppTheme.generateScheme(
@@ -117,26 +117,26 @@ ColorScheme? getSchemeFromPredefined(String? name) {
 TagColors? getTagColorsFromPredefined(String name, Brightness? brightness) {
   return switch (name) {
     'green' => const TagColors(
-        general: Color(0xff000198),
-        artist: Color(0xffaa0101),
-        character: Color(0xff01aa01),
-        copyright: Color(0xffab00ab),
-        meta: Color(0xfffe8900),
-      ),
+      general: Color(0xff000198),
+      artist: Color(0xffaa0101),
+      character: Color(0xff01aa01),
+      copyright: Color(0xffab00ab),
+      meta: Color(0xfffe8900),
+    ),
     'dark_green' => const TagColors(
-        general: Color(0xffb0e0b0),
-        artist: Color(0xffeea0a1),
-        character: Color(0xfff1f1a0),
-        copyright: Color(0xffeea0ee),
-        meta: Color(0xff8ed8ec),
-      ),
+      general: Color(0xffb0e0b0),
+      artist: Color(0xffeea0a1),
+      character: Color(0xfff1f1a0),
+      copyright: Color(0xffeea0ee),
+      meta: Color(0xff8ed8ec),
+    ),
     'coral_pink' => const TagColors(
-        general: Color(0xffe36d5e),
-        artist: Color(0xffcaca05),
-        character: Color(0xff2b9122),
-        copyright: Color(0xffdc00dc),
-        meta: Color(0xfffe1e1e),
-      ),
+      general: Color(0xffe36d5e),
+      artist: Color(0xffcaca05),
+      character: Color(0xff2b9122),
+      copyright: Color(0xffdc00dc),
+      meta: Color(0xfffe1e1e),
+    ),
     _ => null,
   };
 }
@@ -147,9 +147,9 @@ TagColors? getTagColorsFromColorSettings(ColorSettings? colorSettings) {
 
   return switch (settings.schemeType) {
     SchemeType.builtIn => getTagColorsFromPredefined(
-        settings.name,
-        settings.colorScheme?.brightness,
-      ),
+      settings.name,
+      settings.colorScheme?.brightness,
+    ),
     _ => null,
   };
 }
@@ -165,27 +165,27 @@ ColorScheme? getSchemeFromColorSettings(
 
   return switch (settings.schemeType) {
     SchemeType.basic => getSchemeFromBasic(
-        settings.name,
-        systemDarkMode: systemDarkMode,
-        dynamicLightScheme: dynamicLightScheme,
-        dynamicDarkScheme: dynamicDarkScheme,
-        enableDynamicColoring: settings.enableDynamicColoring,
-        followSystemDarkMode: settings.followSystemDarkMode,
-      ),
+      settings.name,
+      systemDarkMode: systemDarkMode,
+      dynamicLightScheme: dynamicLightScheme,
+      dynamicDarkScheme: dynamicDarkScheme,
+      enableDynamicColoring: settings.enableDynamicColoring,
+      followSystemDarkMode: settings.followSystemDarkMode,
+    ),
     SchemeType.builtIn => getSchemeFromPredefined(settings.name),
     SchemeType.accent => () {
-        final accentColor = settings.name;
-        final color = ColorUtils.hexToColor(accentColor);
+      final accentColor = settings.name;
+      final color = ColorUtils.hexToColor(accentColor);
 
-        if (color == null) return null;
+      if (color == null) return null;
 
-        return ColorScheme.fromSeed(
-          seedColor: color,
-          brightness: settings.brightness ?? Brightness.dark,
-          dynamicSchemeVariant:
-              settings.dynamicSchemeVariant ?? DynamicSchemeVariant.tonalSpot,
-        );
-      }(),
+      return ColorScheme.fromSeed(
+        seedColor: color,
+        brightness: settings.brightness ?? Brightness.dark,
+        dynamicSchemeVariant:
+            settings.dynamicSchemeVariant ?? DynamicSchemeVariant.tonalSpot,
+      );
+    }(),
     _ => colorSettings?.colorScheme,
   };
 }
@@ -358,17 +358,15 @@ class ThemeConfigs extends Equatable {
     required this.enable,
   });
 
-  const ThemeConfigs.undefined()
-      : colors = null,
-        enable = false;
+  const ThemeConfigs.undefined() : colors = null, enable = false;
 
   factory ThemeConfigs.fromJsonString(String? jsonString) =>
       switch (jsonString) {
         null => const ThemeConfigs.undefined(),
         final String s => tryDecodeJson(s).fold(
-            (_) => const ThemeConfigs.undefined(),
-            (json) => ThemeConfigs.fromJson(json),
-          ),
+          (_) => const ThemeConfigs.undefined(),
+          (json) => ThemeConfigs.fromJson(json),
+        ),
       };
 
   factory ThemeConfigs.fromJson(Map<String, dynamic> json) {
@@ -397,9 +395,9 @@ class ThemeConfigs extends Equatable {
   List<Object?> get props => [colors, enable];
 
   Map<String, dynamic> toJson() => {
-        'colors': colors?.toJson(),
-        'enable': enable,
-      };
+    'colors': colors?.toJson(),
+    'enable': enable,
+  };
 
   String toJsonString() => jsonEncode(toJson());
 }

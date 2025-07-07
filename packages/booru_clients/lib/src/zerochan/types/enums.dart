@@ -13,9 +13,9 @@ enum PictureDimension {
 
 extension ZerochanSortOrderX on ZerochanSortOrder {
   String get queryParam => switch (this) {
-        ZerochanSortOrder.recency => 'id',
-        ZerochanSortOrder.popularity => 'fav',
-      };
+    ZerochanSortOrder.recency => 'id',
+    ZerochanSortOrder.popularity => 'fav',
+  };
 }
 
 extension PictureDimensionX on PictureDimension {

@@ -8,8 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../foundation/iap/iap.dart';
 
-final premiumPurchaseProvider = AsyncNotifierProvider.autoDispose<
-    PremiumPurchaseNotifier, PremiumPurchaseState>(PremiumPurchaseNotifier.new);
+final premiumPurchaseProvider =
+    AsyncNotifierProvider.autoDispose<
+      PremiumPurchaseNotifier,
+      PremiumPurchaseState
+    >(PremiumPurchaseNotifier.new);
 
 class PremiumPurchaseNotifier
     extends AutoDisposeAsyncNotifier<PremiumPurchaseState> {

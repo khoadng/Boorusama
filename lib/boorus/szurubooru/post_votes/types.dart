@@ -19,10 +19,10 @@ class SzurubooruPostVote extends Equatable implements PostVote {
   }) : id = kLocalPostVoteId;
 
   factory SzurubooruPostVote.fromPostDto(PostDto post) => SzurubooruPostVote(
-        id: post.id ?? kLocalPostVoteId,
-        postId: post.id ?? -1,
-        score: post.score ?? 0,
-      );
+    id: post.id ?? kLocalPostVoteId,
+    postId: post.id ?? -1,
+    score: post.score ?? 0,
+  );
 
   factory SzurubooruPostVote.fromPost(SzurubooruPost post) =>
       SzurubooruPostVote(

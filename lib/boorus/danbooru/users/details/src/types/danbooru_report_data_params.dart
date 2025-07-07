@@ -13,9 +13,9 @@ class DanbooruReportDataParams extends Equatable {
 
   DanbooruReportDataParams.forUser(
     DanbooruUser user,
-  )   : username = user.name,
-        tag = 'user:${user.name}',
-        uploadCount = user.uploadCount;
+  ) : username = user.name,
+      tag = 'user:${user.name}',
+      uploadCount = user.uploadCount;
 
   DanbooruReportDataParams withDateRange({
     DateTime? from,

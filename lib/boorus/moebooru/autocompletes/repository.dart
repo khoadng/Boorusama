@@ -13,8 +13,9 @@ class MoebooruAutocompleteRepository implements AutocompleteRepository {
 
   Future<void> initialize() async {
     final tagSummaries = await tagSummaryRepository.getTagSummaries();
-    _autocompleteDataList =
-        tagSummaries.expand(convertTagSummaryToAutocompleteData).toList();
+    _autocompleteDataList = tagSummaries
+        .expand(convertTagSummaryToAutocompleteData)
+        .toList();
   }
 
   @override
@@ -25,9 +26,9 @@ class MoebooruAutocompleteRepository implements AutocompleteRepository {
       await initialize();
     }
     final matchingAutocompleteData = _autocompleteDataList.where(
-      (autocompleteData) => autocompleteData.value
-          .toLowerCase()
-          .startsWith(query.text.toLowerCase()),
+      (autocompleteData) => autocompleteData.value.toLowerCase().startsWith(
+        query.text.toLowerCase(),
+      ),
     );
     return matchingAutocompleteData.take(20).toList();
   }

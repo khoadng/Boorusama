@@ -24,8 +24,9 @@ class PostStatsCharacterSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final characterColor =
-        ref.watch(tagColorProvider((ref.watchConfigAuth, 'character')));
+    final characterColor = ref.watch(
+      tagColorProvider((ref.watchConfigAuth, 'character')),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,

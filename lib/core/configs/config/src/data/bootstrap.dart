@@ -19,8 +19,9 @@ Future<BooruConfigRepository> createBooruConfigsRepo({
   if (isNewBox && onCreateNew != null) {
     logger.l('Add default booru config');
 
-    final id =
-        await booruConfigBox.add(HiveBooruConfigRepository.defaultValue());
+    final id = await booruConfigBox.add(
+      HiveBooruConfigRepository.defaultValue(),
+    );
 
     await onCreateNew(id);
   }

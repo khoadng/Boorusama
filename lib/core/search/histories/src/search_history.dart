@@ -20,16 +20,15 @@ class SearchHistory extends Equatable with QueryTypeMixin {
     QueryType queryType, {
     required String booruTypeName,
     required String siteUrl,
-  }) =>
-      SearchHistory(
-        query: query,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        searchCount: 0,
-        queryType: queryType,
-        booruTypeName: booruTypeName,
-        siteUrl: siteUrl,
-      );
+  }) => SearchHistory(
+    query: query,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+    searchCount: 0,
+    queryType: queryType,
+    booruTypeName: booruTypeName,
+    siteUrl: siteUrl,
+  );
 
   @override
   final String query;
@@ -49,25 +48,24 @@ class SearchHistory extends Equatable with QueryTypeMixin {
     QueryType? Function()? queryType,
     String? booruTypeName,
     String? siteUrl,
-  }) =>
-      SearchHistory(
-        query: query ?? this.query,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        searchCount: searchCount ?? this.searchCount,
-        queryType: queryType != null ? queryType() : this.queryType,
-        booruTypeName: booruTypeName ?? this.booruTypeName,
-        siteUrl: siteUrl ?? this.siteUrl,
-      );
+  }) => SearchHistory(
+    query: query ?? this.query,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    searchCount: searchCount ?? this.searchCount,
+    queryType: queryType != null ? queryType() : this.queryType,
+    booruTypeName: booruTypeName ?? this.booruTypeName,
+    siteUrl: siteUrl ?? this.siteUrl,
+  );
 
   @override
   List<Object?> get props => [
-        query,
-        createdAt,
-        updatedAt,
-        searchCount,
-        queryType,
-        booruTypeName,
-        siteUrl,
-      ];
+    query,
+    createdAt,
+    updatedAt,
+    searchCount,
+    queryType,
+    booruTypeName,
+    siteUrl,
+  ];
 }

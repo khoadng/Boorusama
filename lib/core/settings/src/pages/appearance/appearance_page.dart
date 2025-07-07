@@ -105,20 +105,20 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
               title: const Text('settings.theme.dynamic_color').tr(),
               subtitle: dynamicColorSupported
                   ? !isDesktopPlatform()
-                      ? const Text(
-                          'settings.theme.dynamic_color_mobile_description',
-                        ).tr()
-                      : const Text(
-                          'settings.theme.dynamic_color_desktop_description',
-                        ).tr()
+                        ? const Text(
+                            'settings.theme.dynamic_color_mobile_description',
+                          ).tr()
+                        : const Text(
+                            'settings.theme.dynamic_color_desktop_description',
+                          ).tr()
                   : Text(
                       '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
                     ),
               value: settings.enableDynamicColoring,
               onChanged: dynamicColorSupported
                   ? (value) => notifier.updateSettings(
-                        settings.copyWith(enableDynamicColoring: value),
-                      )
+                      settings.copyWith(enableDynamicColoring: value),
+                    )
                   : null,
             );
           },

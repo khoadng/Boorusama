@@ -28,12 +28,17 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
     final configViewer = ref.watchConfigViewer;
     final params = (configAuth, post.id);
 
-    return ref.watch(postDetailsProvider(params)).when(
+    return ref
+        .watch(postDetailsProvider(params))
+        .when(
           data: (details) => details.tied != null && details.tied!.isNotEmpty
               ? SliverRelatedPostsSection(
                   posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                  imageUrl:
-                      defaultPostImageUrlBuilder(ref, configAuth, configViewer),
+                  imageUrl: defaultPostImageUrlBuilder(
+                    ref,
+                    configAuth,
+                    configViewer,
+                  ),
                   onTap: (index) => goToPostDetailsPageFromPosts(
                     ref: ref,
                     posts: posts,

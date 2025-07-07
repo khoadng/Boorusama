@@ -50,18 +50,15 @@ class PostResult<T extends Post> extends Equatable {
     required this.total,
   });
 
-  PostResult.empty()
-      : posts = <T>[],
-        total = 0;
+  PostResult.empty() : posts = <T>[], total = 0;
 
   PostResult<T> copyWith({
     List<T>? posts,
     int? Function()? total,
-  }) =>
-      PostResult(
-        posts: posts ?? this.posts,
-        total: total != null ? total() : this.total,
-      );
+  }) => PostResult(
+    posts: posts ?? this.posts,
+    total: total != null ? total() : this.total,
+  );
 
   final List<T> posts;
   final int? total;
@@ -73,35 +70,36 @@ class PostResult<T extends Post> extends Equatable {
 extension PostResultX<T extends Post> on List<T> {
   PostResult<T> toResult({
     int? total,
-  }) =>
-      PostResult(
-        posts: this,
-        total: total,
-      );
+  }) => PostResult(
+    posts: this,
+    total: total,
+  );
 }
 
-typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
-  List<String> tags,
-  int page, {
-  int? limit,
-  PostFetchOptions? options,
-});
+typedef PostFutureFetcher<T extends Post> =
+    Future<PostResult<T>> Function(
+      List<String> tags,
+      int page, {
+      int? limit,
+      PostFetchOptions? options,
+    });
 
-typedef PostSingleFutureFetcher<T extends Post> = Future<T?> Function(
-  PostId id, {
-  PostFetchOptions? options,
-});
+typedef PostSingleFutureFetcher<T extends Post> =
+    Future<T?> Function(
+      PostId id, {
+      PostFetchOptions? options,
+    });
 
-typedef PostFutureControllerFetcher<T extends Post> = Future<PostResult<T>>
-    Function(
-  SearchTagSet controller,
-  int page, {
-  int? limit,
-  PostFetchOptions? options,
-});
+typedef PostFutureControllerFetcher<T extends Post> =
+    Future<PostResult<T>> Function(
+      SearchTagSet controller,
+      int page, {
+      int? limit,
+      PostFetchOptions? options,
+    });
 
-typedef PostsOrErrorCore<T extends Post>
-    = TaskEither<BooruError, PostResult<T>>;
+typedef PostsOrErrorCore<T extends Post> =
+    TaskEither<BooruError, PostResult<T>>;
 
 typedef PostsOrError<T extends Post> = PostsOrErrorCore<T>;
 

@@ -27,7 +27,7 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 
   final int postId;
   final Widget Function(BuildContext context, Comment comment)?
-      commentItemBuilder;
+  commentItemBuilder;
   final bool useAppBar;
   final bool singlePage;
 

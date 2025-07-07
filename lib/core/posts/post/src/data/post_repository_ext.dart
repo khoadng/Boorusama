@@ -16,11 +16,11 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
         limit: limit,
         options: options,
       ).run().then(
-            (value) => value.fold(
-              (l) => PostResult.empty(),
-              (r) => r,
-            ),
-          );
+        (value) => value.fold(
+          (l) => PostResult.empty(),
+          (r) => r,
+        ),
+      );
 
   Future<List<T>> getPostsFromTagsWithBlacklist({
     required String tags,
@@ -39,8 +39,9 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
 
     final bl = await blacklist;
 
-    final postsWithLimit =
-        softLimit == null ? posts.posts : posts.posts.take(softLimit).toList();
+    final postsWithLimit = softLimit == null
+        ? posts.posts
+        : posts.posts.take(softLimit).toList();
 
     return filterTags(
       postsWithLimit.where((e) => !e.isFlash).toList(),

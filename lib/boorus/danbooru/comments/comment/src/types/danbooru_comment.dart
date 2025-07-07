@@ -24,15 +24,15 @@ class DanbooruComment extends Equatable implements Comment {
   });
 
   factory DanbooruComment.emty() => const DanbooruComment(
-        id: -1,
-        score: 0,
-        body: '',
-        postId: -1,
-        createdAt: null,
-        updatedAt: null,
-        isDeleted: false,
-        creator: null,
-      );
+    id: -1,
+    score: 0,
+    body: '',
+    postId: -1,
+    createdAt: null,
+    updatedAt: null,
+    isDeleted: false,
+    creator: null,
+  );
 
   @override
   final CommentId id;
@@ -55,14 +55,14 @@ class DanbooruComment extends Equatable implements Comment {
 
   @override
   List<Object?> get props => [
-        id,
-        score,
-        body,
-        postId,
-        createdAt,
-        updatedAt,
-        isDeleted,
-      ];
+    id,
+    score,
+    body,
+    postId,
+    createdAt,
+    updatedAt,
+    isDeleted,
+  ];
 }
 
 extension CommentX on DanbooruComment {
@@ -73,19 +73,18 @@ extension CommentX on DanbooruComment {
     bool? isDeleted,
     String? body,
     int? score,
-  }) =>
-      DanbooruComment(
-        id: id ?? this.id,
-        score: score ?? this.score,
-        body: body ?? this.body,
-        postId: postId,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isDeleted: isDeleted ?? this.isDeleted,
-        creator: creator,
-      );
+  }) => DanbooruComment(
+    id: id ?? this.id,
+    score: score ?? this.score,
+    body: body ?? this.body,
+    postId: postId,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: isDeleted ?? this.isDeleted,
+    creator: creator,
+  );
 }
 
 List<DanbooruComment> Function(List<DanbooruComment> comments)
-    filterDeleted() =>
-        (comments) => comments.where((e) => !e.isDeleted).toList();
+filterDeleted() =>
+    (comments) => comments.where((e) => !e.isDeleted).toList();

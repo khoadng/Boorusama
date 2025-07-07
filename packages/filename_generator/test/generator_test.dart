@@ -467,8 +467,7 @@ class MockUuid implements Uuid {
     Map<String, dynamic>? options,
     V1Options? config,
     int offset = 0,
-  }) =>
-      [];
+  }) => [];
   @override
   UuidValue v1obj({Map<String, dynamic>? options, V1Options? config}) =>
       Namespace.dns.uuidValue;
@@ -481,8 +480,7 @@ class MockUuid implements Uuid {
     Map<String, dynamic>? options,
     V4Options? config,
     int offset = 0,
-  }) =>
-      [];
+  }) => [];
   @override
   UuidValue v4obj({Map<String, dynamic>? options, V4Options? config}) =>
       Namespace.dns.uuidValue;
@@ -492,8 +490,7 @@ class MockUuid implements Uuid {
     String? name, {
     Map<String, dynamic>? options,
     V5Options? config,
-  }) =>
-      '55555555-5555-5555-5555-555555555555';
+  }) => '55555555-5555-5555-5555-555555555555';
   @override
   List<int> v5buffer(
     String? namespace,
@@ -502,16 +499,14 @@ class MockUuid implements Uuid {
     Map<String, dynamic>? options,
     V5Options? config,
     int offset = 0,
-  }) =>
-      [];
+  }) => [];
   @override
   UuidValue v5obj(
     String? namespace,
     String? name, {
     Map<String, dynamic>? options,
     V5Options? config,
-  }) =>
-      Namespace.dns.uuidValue;
+  }) => Namespace.dns.uuidValue;
   @override
   String v6({V6Options? config}) => '66666666-6666-6666-6666-666666666666';
   @override
@@ -543,8 +538,7 @@ class MockUuid implements Uuid {
     List<int> buffer, {
     V8GenericOptions? config,
     int offset = 0,
-  }) =>
-      [];
+  }) => [];
 
   @override
   UuidValue v8gobj({V8GenericOptions? config}) => Namespace.dns.uuidValue;

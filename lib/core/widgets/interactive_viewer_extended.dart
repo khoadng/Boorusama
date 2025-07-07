@@ -141,8 +141,9 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
           panEnabled: enable,
           scaleEnabled: enable,
           child: GestureDetector(
-            onDoubleTapDown:
-                enable ? (details) => _doubleTapDetails = details : null,
+            onDoubleTapDown: enable
+                ? (details) => _doubleTapDetails = details
+                : null,
             onDoubleTap: enable
                 ? () {
                     if (widget.onDoubleTap != null) {
@@ -210,12 +211,13 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
     final position = _doubleTapDetails!.localPosition;
     final endMatrix = _calculateDoubleTapMatrix(position);
 
-    _animation = Matrix4Tween(
-      begin: _controller.value,
-      end: endMatrix,
-    ).animate(
-      CurveTween(curve: Curves.easeInOut).animate(_animationController),
-    );
+    _animation =
+        Matrix4Tween(
+          begin: _controller.value,
+          end: endMatrix,
+        ).animate(
+          CurveTween(curve: Curves.easeInOut).animate(_animationController),
+        );
     _animationController.forward(from: 0);
   }
 }
@@ -235,12 +237,14 @@ Matrix4 _calcZoomMatrixFromSize({
   final fitHeightScale = viewport.height / content.height;
 
   // Determine current scale (content is already fit by either width or height)
-  final currentScale =
-      fitWidthScale < fitHeightScale ? fitWidthScale : fitHeightScale;
+  final currentScale = fitWidthScale < fitHeightScale
+      ? fitWidthScale
+      : fitHeightScale;
 
   // Calculate target scale (we want to fit the other dimension)
-  final targetScale =
-      fitWidthScale > fitHeightScale ? fitWidthScale : fitHeightScale;
+  final targetScale = fitWidthScale > fitHeightScale
+      ? fitWidthScale
+      : fitHeightScale;
 
   // Calculate zoom factor relative to current scale
   final zoomFactor = targetScale / currentScale;

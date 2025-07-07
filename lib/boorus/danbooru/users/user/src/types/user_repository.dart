@@ -16,13 +16,12 @@ abstract class UserRepository {
 
 Future<List<DanbooruUser>> Function(List<Favorite> favs) createUserWith(
   UserRepository userRepository,
-) =>
-    (favs) async {
-      if (favs.isEmpty) {
-        return [];
-      }
+) => (favs) async {
+  if (favs.isEmpty) {
+    return [];
+  }
 
-      return userRepository.getUsersByIds(
-        favs.map((e) => e.userId).toList(),
-      );
-    };
+  return userRepository.getUsersByIds(
+    favs.map((e) => e.userId).toList(),
+  );
+};

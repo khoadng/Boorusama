@@ -45,8 +45,8 @@ class SearchHistorySection extends StatelessWidget {
                       Text(
                         'search.history.history'.tr().toUpperCase(),
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       if (onFullHistoryRequested != null)
                         IconButton(
@@ -56,7 +56,9 @@ class SearchHistorySection extends StatelessWidget {
                     ],
                   ),
                 ),
-                ...histories.take(maxHistory).map(
+                ...histories
+                    .take(maxHistory)
+                    .map(
                       (item) => ListTile(
                         visualDensity: VisualDensity.compact,
                         title: SearchHistoryQueryWidget(
@@ -99,27 +101,27 @@ class SearchHistoryQueryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (history.queryType) {
       QueryType.list => Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: history
-              .queryAsList()
-              .map(
-                (e) => IgnorePointer(
-                  child: CompactChip(
-                    label: e,
-                    borderRadius: BorderRadius.circular(8),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 2,
-                      horizontal: 8,
-                    ),
-                    backgroundColor: reverseScheme == true
-                        ? Theme.of(context).colorScheme.surface
-                        : Theme.of(context).colorScheme.surfaceContainerHighest,
+        spacing: 4,
+        runSpacing: 4,
+        children: history
+            .queryAsList()
+            .map(
+              (e) => IgnorePointer(
+                child: CompactChip(
+                  label: e,
+                  borderRadius: BorderRadius.circular(8),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 8,
                   ),
+                  backgroundColor: reverseScheme == true
+                      ? Theme.of(context).colorScheme.surface
+                      : Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
-              )
-              .toList(),
-        ),
+              ),
+            )
+            .toList(),
+      ),
       _ => Text(history.query),
     };
   }

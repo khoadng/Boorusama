@@ -95,9 +95,7 @@ class _DownloadFolderSelectorSectionState
                             widget.hint ??
                                 DownloadTranslations.downloadSelectFolder.tr(),
                             overflow: TextOverflow.fade,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   color: colorScheme.hintColor,
                                 ),
@@ -122,11 +120,12 @@ class _DownloadFolderSelectorSectionState
         ),
         if (isAndroid())
           shouldDisplayWarning(
-            hasScopeStorage: hasScopedStorage(
-                  widget.deviceInfo.androidDeviceInfo?.version.sdkInt,
-                ) ??
-                true,
-          )
+                hasScopeStorage:
+                    hasScopedStorage(
+                      widget.deviceInfo.androidDeviceInfo?.version.sdkInt,
+                    ) ??
+                    true,
+              )
               ? DownloadPathWarning(
                   padding: const EdgeInsets.only(
                     top: 12,
@@ -134,7 +133,7 @@ class _DownloadFolderSelectorSectionState
                   ),
                   releaseName:
                       widget.deviceInfo.androidDeviceInfo?.version.release ??
-                          'Unknown',
+                      'Unknown',
                   allowedFolders: allowedFolders,
                 )
               : const SizedBox.shrink(),
@@ -145,9 +144,9 @@ class _DownloadFolderSelectorSectionState
   bool showPath() => storagePath != null && storagePath!.isNotEmpty;
 
   Future<void> _pickFolder() => pickDirectoryPathToastOnError(
-        context: context,
-        onPick: (path) => widget.onPathChanged(path),
-      );
+    context: context,
+    onPick: (path) => widget.onPathChanged(path),
+  );
 }
 
 class DownloadPathWarning extends StatelessWidget {

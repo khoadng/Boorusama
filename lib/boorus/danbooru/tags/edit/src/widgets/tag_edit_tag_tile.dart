@@ -50,10 +50,10 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
                 valueListenable: hover,
                 builder: (_, value, child) =>
                     !kPreferredLayout.isMobile && !value
-                        ? const SizedBox(
-                            height: 32,
-                          )
-                        : child!,
+                    ? const SizedBox(
+                        height: 32,
+                      )
+                    : child!,
                 child: IconButton(
                   splashRadius: 20,
                   visualDensity: VisualDensity.compact,

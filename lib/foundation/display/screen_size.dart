@@ -17,11 +17,11 @@ class Screen {
   ScreenSize get size => screenWidthToDisplaySize(_size.width);
 
   ScreenSize nextBreakpoint() => switch (size) {
-        ScreenSize.small => ScreenSize.medium,
-        ScreenSize.medium => ScreenSize.large,
-        ScreenSize.large => ScreenSize.veryLarge,
-        ScreenSize.veryLarge => ScreenSize.veryLarge
-      };
+    ScreenSize.small => ScreenSize.medium,
+    ScreenSize.medium => ScreenSize.large,
+    ScreenSize.large => ScreenSize.veryLarge,
+    ScreenSize.veryLarge => ScreenSize.veryLarge,
+  };
 }
 
 extension ScreenSizeX on ScreenSize {

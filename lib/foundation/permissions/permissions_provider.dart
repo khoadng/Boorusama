@@ -7,14 +7,17 @@ import '../loggers.dart';
 import 'device_storage_permission_notifier.dart';
 import 'permission_utils.dart';
 
-final deviceStoragePermissionProvider = AsyncNotifierProvider<
-    DeviceStoragePermissionNotifier, DeviceStoragePermissionState>(
-  DeviceStoragePermissionNotifier.new,
-  dependencies: [
-    deviceInfoProvider,
-    loggerProvider,
-  ],
-);
+final deviceStoragePermissionProvider =
+    AsyncNotifierProvider<
+      DeviceStoragePermissionNotifier,
+      DeviceStoragePermissionState
+    >(
+      DeviceStoragePermissionNotifier.new,
+      dependencies: [
+        deviceInfoProvider,
+        loggerProvider,
+      ],
+    );
 
 final mediaPermissionManagerProvider = Provider<MediaPermissionManager>(
   (ref) => MediaPermissionManager(
@@ -24,5 +27,5 @@ final mediaPermissionManagerProvider = Provider<MediaPermissionManager>(
 
 final notificationPermissionManagerProvider =
     Provider<NotificationPermissionManager>(
-  (ref) => NotificationPermissionManager(),
-);
+      (ref) => NotificationPermissionManager(),
+    );

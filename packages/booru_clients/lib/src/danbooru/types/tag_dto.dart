@@ -11,21 +11,21 @@ class TagDto {
   });
 
   factory TagDto.fromJson(Map<String, dynamic> json) => TagDto(
-        id: json['id'],
-        name: json['name'],
-        postCount: json['post_count'],
-        category: json['category'],
-        createdAt: json['created_at'] == null
-            ? null
-            : DateTime.parse(json['created_at']),
-        updatedAt: json['updated_at'] == null
-            ? null
-            : DateTime.parse(json['updated_at']),
-        isDeprecated: json['is_deprecated'],
-        words: json['words'] == null
-            ? null
-            : List<String>.from(json['words'].map((x) => x)),
-      );
+    id: json['id'],
+    name: json['name'],
+    postCount: json['post_count'],
+    category: json['category'],
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at']),
+    updatedAt: json['updated_at'] == null
+        ? null
+        : DateTime.parse(json['updated_at']),
+    isDeprecated: json['is_deprecated'],
+    words: json['words'] == null
+        ? null
+        : List<String>.from(json['words'].map((x) => x)),
+  );
 
   final int? id;
   final String? name;

@@ -32,11 +32,11 @@ class MoebooruComment extends Equatable implements Comment {
 
   @override
   List<Object> get props => [
-        id,
-        createdAt,
-        postId,
-        creator,
-        creatorId,
-        body,
-      ];
+    id,
+    createdAt,
+    postId,
+    creator,
+    creatorId,
+    body,
+  ];
 }

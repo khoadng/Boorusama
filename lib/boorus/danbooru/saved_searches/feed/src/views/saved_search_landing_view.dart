@@ -136,8 +136,10 @@ class _ExampleContainer extends StatelessWidget {
                 margin: const EdgeInsets.all(8),
                 color: Theme.of(context).colorScheme.surface,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
+                  ),
                   child: Text(query),
                 ),
               ),

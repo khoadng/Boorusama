@@ -51,6 +51,7 @@ class BootData {
   final AppUpdateBuilder? appUpdateChecker;
 }
 
-typedef AppUpdateBuilder = AppUpdateChecker Function(
-  PackageInfo packageInfo,
-);
+typedef AppUpdateBuilder =
+    AppUpdateChecker Function(
+      PackageInfo packageInfo,
+    );

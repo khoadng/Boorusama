@@ -168,20 +168,21 @@ class _Toolbar extends ConsumerWidget {
     final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
 
     return SimplePostActionToolbar(
-      isFaved:
-          ref.watch(moebooruFavoritesProvider(post.id))?.contains(config.login),
+      isFaved: ref
+          .watch(moebooruFavoritesProvider(post.id))
+          ?.contains(config.login),
       addFavorite: () => ref
           .read(moebooruClientProvider(config))
           .favoritePost(postId: post.id)
           .then((value) {
-        notifier.clear();
-      }),
+            notifier.clear();
+          }),
       removeFavorite: () => ref
           .read(moebooruClientProvider(config))
           .unfavoritePost(postId: post.id)
           .then((value) {
-        notifier.clear();
-      }),
+            notifier.clear();
+          }),
       isAuthorized: config.hasLoginDetails(),
       forceHideFav: !config.hasLoginDetails(),
       post: post,

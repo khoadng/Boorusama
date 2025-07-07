@@ -36,14 +36,16 @@ class ThemePreviewerNotifier extends AutoDisposeNotifier<ThemePreviewerState> {
   @override
   ThemePreviewerState build() {
     final settingsColors = ref.watch(settingsProvider.select((v) => v.colors));
-    final effectiveColors = initialColors ??
+    final effectiveColors =
+        initialColors ??
         settingsColors ??
         ColorSettings.fromBasicScheme(
           'boorusama_black',
           nickname: 'Midnight',
         );
 
-    final colorScheme = configs.getSchemeFromColorSettings(
+    final colorScheme =
+        configs.getSchemeFromColorSettings(
           effectiveColors,
           dynamicLightScheme: light,
           dynamicDarkScheme: dark,
@@ -101,12 +103,12 @@ class ThemePreviewerNotifier extends AutoDisposeNotifier<ThemePreviewerState> {
       ThemeCategory.basic => state.basicColors.first,
       ThemeCategory.builtIn => state.builtinColors.first,
       ThemeCategory.accent => ColorSettings.fromAccentColor(
-          themeAccentColors.values.first,
-          brightness: state.colors.brightness ?? Brightness.dark,
-          dynamicSchemeVariant: state.colors.dynamicSchemeVariant ??
-              DynamicSchemeVariant.tonalSpot,
-          harmonizeWithPrimary: state.colors.harmonizeWithPrimary,
-        ),
+        themeAccentColors.values.first,
+        brightness: state.colors.brightness ?? Brightness.dark,
+        dynamicSchemeVariant:
+            state.colors.dynamicSchemeVariant ?? DynamicSchemeVariant.tonalSpot,
+        harmonizeWithPrimary: state.colors.harmonizeWithPrimary,
+      ),
     };
 
     state = state.copyWith(
@@ -165,19 +167,19 @@ class ThemePreviewerState extends Equatable {
 
   @override
   List<Object?> get props => [
-        colors,
-        category,
-        colorScheme,
-        basicColors,
-        builtinColors,
-        accentColors,
-      ];
+    colors,
+    category,
+    colorScheme,
+    basicColors,
+    builtinColors,
+    accentColors,
+  ];
 }
 
 final themePreviewerProvider =
     NotifierProvider.autoDispose<ThemePreviewerNotifier, ThemePreviewerState>(
-  () => throw UnimplementedError(),
-);
+      () => throw UnimplementedError(),
+    );
 
 final themePreviewerSchemeProvider = Provider.autoDispose<ColorScheme>(
   (ref) =>

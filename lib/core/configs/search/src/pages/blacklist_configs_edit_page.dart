@@ -19,8 +19,9 @@ class BlacklistConfigsEditPage extends ConsumerWidget {
     final id = ref.watch(editBooruConfigIdProvider);
     final tags = queryAsList(
       ref.watch(
-        editBooruConfigProvider(id)
-            .select((value) => value.blacklistConfigsTyped?.blacklistedTags),
+        editBooruConfigProvider(
+          id,
+        ).select((value) => value.blacklistConfigsTyped?.blacklistedTags),
       ),
     );
     final notifier = ref.watch(blacklistConfigsProvider(id).notifier);

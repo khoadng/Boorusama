@@ -50,8 +50,8 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
       title: Text(
         title ?? 'post.detail.related_posts'.tr(),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
 
@@ -103,10 +103,12 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                               width: 25,
                               height: 25,
                               decoration: BoxDecoration(
-                                color: context.extendedColorScheme
+                                color: context
+                                    .extendedColorScheme
                                     .surfaceContainerOverlay,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(4)),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
                               ),
                               child: ConfigAwareWebsiteLogo(
                                 url: source.faviconUrl,
@@ -119,16 +121,19 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                               padding: const EdgeInsets.all(4),
                               margin: const EdgeInsets.all(1),
                               decoration: BoxDecoration(
-                                color: context.extendedColorScheme
+                                color: context
+                                    .extendedColorScheme
                                     .surfaceContainerOverlay,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(4)),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
                               ),
                               child: Text(
                                 Filesize.parse(post.fileSize, round: 1),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: context.extendedColorScheme
+                                  color: context
+                                      .extendedColorScheme
                                       .onSurfaceContainerOverlay,
                                 ),
                               ),
@@ -138,15 +143,18 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                             margin: const EdgeInsets.all(1),
                             decoration: BoxDecoration(
                               color: context
-                                  .extendedColorScheme.surfaceContainerOverlay,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4)),
+                                  .extendedColorScheme
+                                  .surfaceContainerOverlay,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(4),
+                              ),
                             ),
                             child: Text(
                               '${post.width.toInt()}x${post.height.toInt()}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: context.extendedColorScheme
+                                color: context
+                                    .extendedColorScheme
                                     .onSurfaceContainerOverlay,
                               ),
                             ),

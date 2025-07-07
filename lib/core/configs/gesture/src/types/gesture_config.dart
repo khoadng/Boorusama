@@ -26,13 +26,13 @@ class GestureConfig extends Equatable {
   });
 
   const GestureConfig.undefined()
-      : swipeUp = null,
-        swipeDown = null,
-        swipeLeft = null,
-        swipeRight = null,
-        doubleTap = null,
-        longPress = null,
-        tap = null;
+    : swipeUp = null,
+      swipeDown = null,
+      swipeLeft = null,
+      swipeRight = null,
+      doubleTap = null,
+      longPress = null,
+      tap = null;
 
   factory GestureConfig.fromJson(Map<String, dynamic> json) {
     return GestureConfig(
@@ -89,14 +89,14 @@ class GestureConfig extends Equatable {
 
   @override
   List<Object?> get props => [
-        swipeUp,
-        swipeDown,
-        swipeLeft,
-        swipeRight,
-        doubleTap,
-        longPress,
-        tap,
-      ];
+    swipeUp,
+    swipeDown,
+    swipeLeft,
+    swipeRight,
+    doubleTap,
+    longPress,
+    tap,
+  ];
 }
 
 extension BooruBuilderGestures on GestureConfig? {

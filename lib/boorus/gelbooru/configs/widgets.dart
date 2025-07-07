@@ -69,14 +69,16 @@ class GelbooruAuthView extends ConsumerStatefulWidget {
 class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   late final loginController = TextEditingController(
     text: ref.read(
-      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-          .select((value) => value.login),
+      editBooruConfigProvider(
+        ref.read(editBooruConfigIdProvider),
+      ).select((value) => value.login),
     ),
   );
   late final apiKeyController = TextEditingController(
     text: ref.read(
-      editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-          .select((value) => value.apiKey),
+      editBooruConfigProvider(
+        ref.read(editBooruConfigIdProvider),
+      ).select((value) => value.apiKey),
     ),
   );
 
@@ -91,8 +93,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
   Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
     final passHash = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.passHash),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.passHash),
     );
 
     return SingleChildScrollView(
@@ -108,10 +111,10 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               Text(
                 'Basic Auth (required)',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.hintColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               _VerifyApiKeyButton(
                 loginController: loginController,
@@ -123,10 +126,10 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Text(
             'Providing this information gives the app read access to your account. This is required by Gelbooru as of 06/2025.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 24),
           GelbooruLoginField(
@@ -140,10 +143,10 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           RichText(
             text: TextSpan(
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
+                color: Theme.of(context).colorScheme.hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
               children: [
                 const TextSpan(
                   text: '*Log in to your account in the browser, visit ',
@@ -196,19 +199,19 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Text(
             'Advanced Auth (optional)',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             'Providing this information allows you to edit your favorites and provides write access to your account. Note that if you change your password, you will need to log in again.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           if (passHash == null)
             _buildLoginButton(context, config: config)
@@ -259,8 +262,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           Row(
             children: [
               RawChip(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
                 onPressed: () {
                   _openBrowser(config);
                 },
@@ -268,8 +272,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
               ),
               const SizedBox(width: 8),
               RawChip(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
@@ -297,8 +302,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           url: loginUrl,
           onGet: (cookies) {
             if (cookies.isNotEmpty) {
-              final pashHash =
-                  cookies.firstWhereOrNull((e) => e.name == 'pass_hash');
+              final pashHash = cookies.firstWhereOrNull(
+                (e) => e.name == 'pass_hash',
+              );
               final uid = cookies.firstWhereOrNull((e) => e.name == 'user_id');
 
               if (pashHash != null) {

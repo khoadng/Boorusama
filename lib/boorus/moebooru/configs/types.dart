@@ -10,7 +10,10 @@ String hashBooruPasswordSHA1({
   required Moebooru booru,
   required String password,
 }) =>
-    booru.getSalt(url).toOption().fold(
+    booru
+        .getSalt(url)
+        .toOption()
+        .fold(
           () => '',
           (salt) => hashPasswordSHA1(
             salt: salt,

@@ -43,11 +43,11 @@ class SankakuPost extends Equatable
     this.createdAt,
     this.parentId,
     this.downvotes,
-  })  : artistTags = artistDetailsTags.map((e) => e.name).toSet(),
-        characterTags = characterDetailsTags.map((e) => e.name).toSet(),
-        copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet(),
-        generalTags = generalDetailsTags.map((e) => e.name).toSet(),
-        metaTags = metaDetailsTags.map((e) => e.name).toSet();
+  }) : artistTags = artistDetailsTags.map((e) => e.name).toSet(),
+       characterTags = characterDetailsTags.map((e) => e.name).toSet(),
+       copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet(),
+       generalTags = generalDetailsTags.map((e) => e.name).toSet(),
+       metaTags = metaDetailsTags.map((e) => e.name).toSet();
 
   @override
   final int id;

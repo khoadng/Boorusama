@@ -71,6 +71,6 @@ String? _resolveUrl(String? url, String? baseUrl) {
   return url.startsWith('http')
       ? url
       : baseUrl != null
-          ? '$baseUrl$url'
-          : null;
+      ? '$baseUrl$url'
+      : null;
 }

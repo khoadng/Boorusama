@@ -9,9 +9,9 @@ import 'artist_url_repository_api.dart';
 
 final danbooruArtistUrlRepoProvider =
     Provider.family<DanbooruArtistUrlRepository, BooruConfigAuth>(
-  (ref, config) {
-    return DanbooruArtistUrlRepositoryApi(
-      client: ref.watch(danbooruClientProvider(config)),
+      (ref, config) {
+        return DanbooruArtistUrlRepositoryApi(
+          client: ref.watch(danbooruClientProvider(config)),
+        );
+      },
     );
-  },
-);

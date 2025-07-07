@@ -82,8 +82,9 @@ class GeneralMoreActionButton extends ConsumerWidget with CopyImageMixin {
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
             if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             if (post.hasFullView)
-              'view_original':
-                  const Text('post.image_fullview.view_original').tr(),
+              'view_original': const Text(
+                'post.image_fullview.view_original',
+              ).tr(),
             if (onStartSlideshow != null)
               'start_slideshow': const Text('Slideshow'),
             'settings': const Text('settings.settings').tr(),

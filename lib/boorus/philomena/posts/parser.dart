@@ -57,6 +57,6 @@ PhilomenaPost postDtoToPost(ImageDto e, PostMetadata? metadata) {
 
 String? _parseVideoThumbnail(ImageDto e) =>
     e.representations?.thumb.toOption().fold(
-          () => '',
-          (url) => '${url.substring(0, url.lastIndexOf("/") + 1)}thumb.gif',
-        );
+      () => '',
+      (url) => '${url.substring(0, url.lastIndexOf("/") + 1)}thumb.gif',
+    );

@@ -51,15 +51,15 @@ class E621Post extends Equatable
   final int id;
   @override
   Set<String> get tags => {
-        ...characterTags,
-        ...artistTags,
-        ...generalTags,
-        ...copyrightTags,
-        ...metaTags,
-        ...speciesTags,
-        ...invalidTags,
-        ...loreTags,
-      };
+    ...characterTags,
+    ...artistTags,
+    ...generalTags,
+    ...copyrightTags,
+    ...metaTags,
+    ...speciesTags,
+    ...invalidTags,
+    ...loreTags,
+  };
   @override
   final Set<String> copyrightTags;
   @override

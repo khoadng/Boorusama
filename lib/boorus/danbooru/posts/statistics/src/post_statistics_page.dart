@@ -55,8 +55,9 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                 onPressed: () {
                   showAppModalBarBottomSheet(
                     context: context,
-                    settings:
-                        const RouteSettings(name: 'posts_file_size_stats'),
+                    settings: const RouteSettings(
+                      name: 'posts_file_size_stats',
+                    ),
                     builder: (context) => StatisticalSummaryDetailsPage(
                       title: 'File size',
                       stats: stats.fileSizes,

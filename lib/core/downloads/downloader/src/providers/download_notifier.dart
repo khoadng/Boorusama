@@ -30,8 +30,9 @@ import '../types/download.dart';
 import '../types/metadata.dart';
 import 'service_provider.dart';
 
-final downloadNotifierProvider =
-    NotifierProvider<DownloadNotifier, void>(DownloadNotifier.new);
+final downloadNotifierProvider = NotifierProvider<DownloadNotifier, void>(
+  DownloadNotifier.new,
+);
 
 class DownloadNotifier extends Notifier<void> {
   @override
@@ -54,8 +55,9 @@ class DownloadNotifier extends Notifier<void> {
 
   Future<DownloadTaskInfo?> download(Post post) async {
     final settings = ref.read(settingsProvider);
-    final urlExtractor =
-        ref.read(downloadFileUrlExtractorProvider(ref.readConfigAuth));
+    final urlExtractor = ref.read(
+      downloadFileUrlExtractorProvider(ref.readConfigAuth),
+    );
     final perm = await _getPermissionStatus();
     final analyticsAsync = ref.read(analyticsProvider);
 
@@ -157,22 +159,26 @@ Future<DownloadTaskInfo?> _download(
 }) async {
   final booruConfig = ref.readConfig;
   final service = ref.read(downloadServiceProvider);
-  final fileNameBuilder =
-      ref.read(downloadFilenameBuilderProvider(booruConfig.auth));
+  final fileNameBuilder = ref.read(
+    downloadFilenameBuilderProvider(booruConfig.auth),
+  );
   final logger = ref.read(loggerProvider);
 
   final headers = {
-    AppHttpHeaders.userAgentHeader:
-        ref.read(userAgentProvider(booruConfig.auth.booruType)),
+    AppHttpHeaders.userAgentHeader: ref.read(
+      userAgentProvider(booruConfig.auth.booruType),
+    ),
     ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
     ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),
   };
 
-  final deviceStoragePermissionNotifier =
-      ref.read(deviceStoragePermissionProvider.notifier);
+  final deviceStoragePermissionNotifier = ref.read(
+    deviceStoragePermissionProvider.notifier,
+  );
 
-  final notificationPermManager =
-      ref.read(notificationPermissionManagerProvider);
+  final notificationPermManager = ref.read(
+    notificationPermissionManagerProvider,
+  );
 
   final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
     post: downloadable,

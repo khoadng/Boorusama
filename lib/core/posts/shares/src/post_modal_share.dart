@@ -16,36 +16,33 @@ import '../../post/post.dart';
 import '../../sources/source.dart';
 import 'download_and_share.dart';
 
-final _cachedImageFileProvider =
-    FutureProvider.autoDispose.family<XFile?, ModalShareImageData>(
-  (ref, data) async {
-    final imageUrl = data.imageUrl;
-    final imageExt = data.imageExt;
+final _cachedImageFileProvider = FutureProvider.autoDispose
+    .family<XFile?, ModalShareImageData>(
+      (ref, data) async {
+        final imageUrl = data.imageUrl;
+        final imageExt = data.imageExt;
 
-    if (imageUrl == null) return null;
+        if (imageUrl == null) return null;
 
-    final ext = extension(imageUrl);
-    final effectiveExt = ext.isNotEmpty ? ext : imageExt;
+        final ext = extension(imageUrl);
+        final effectiveExt = ext.isNotEmpty ? ext : imageExt;
 
-    final cacheManager = DefaultImageCacheManager();
-    final cacheKey = cacheManager.generateCacheKey(imageUrl);
-    final file = await cacheManager.getCachedFile(cacheKey);
+        final cacheManager = DefaultImageCacheManager();
+        final cacheKey = cacheManager.generateCacheKey(imageUrl);
+        final file = await cacheManager.getCachedFile(cacheKey);
 
-    if (file == null || effectiveExt == null) return null;
+        if (file == null || effectiveExt == null) return null;
 
-    // attach the extension to the file
-    final newPath = file.path + effectiveExt;
-    final newFile = file.copySync(newPath);
-    final xFile = XFile(newFile.path);
+        // attach the extension to the file
+        final newPath = file.path + effectiveExt;
+        final newFile = file.copySync(newPath);
+        final xFile = XFile(newFile.path);
 
-    return xFile;
-  },
-);
+        return xFile;
+      },
+    );
 
-typedef ModalShareImageData = ({
-  String? imageUrl,
-  String? imageExt,
-});
+typedef ModalShareImageData = ({String? imageUrl, String? imageExt});
 
 class PostModalShare extends ConsumerWidget {
   const PostModalShare({
@@ -71,14 +68,14 @@ class PostModalShare extends ConsumerWidget {
           children: [
             switch (sourceLink) {
               final WebSource s => ListTile(
-                  title: const Text('post.detail.share.source').tr(),
-                  subtitle: Text(s.uri.toString()),
-                  leading: ConfigAwareWebsiteLogo(url: s.faviconUrl),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    SharePlus.instance.share(ShareParams(uri: s.uri));
-                  },
-                ),
+                title: const Text('post.detail.share.source').tr(),
+                subtitle: Text(s.uri.toString()),
+                leading: ConfigAwareWebsiteLogo(url: s.faviconUrl),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  SharePlus.instance.share(ShareParams(uri: s.uri));
+                },
+              ),
               _ => const SizedBox.shrink(),
             },
             if (Uri.tryParse(booruLink) case final Uri uri)
@@ -96,7 +93,9 @@ class PostModalShare extends ConsumerWidget {
                   );
                 },
               ),
-            ref.watch(_cachedImageFileProvider(imageData())).when(
+            ref
+                .watch(_cachedImageFileProvider(imageData()))
+                .when(
                   data: (file) {
                     return file != null
                         ? ListTile(

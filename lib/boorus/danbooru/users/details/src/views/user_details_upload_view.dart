@@ -125,8 +125,8 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       _kTopCopyrigthTags.toString(),
                     ),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   ref
@@ -160,28 +160,29 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
     return Wrap(
       spacing: 8,
       runSpacing: isDesktopPlatform() ? 4 : 0,
-      children: [
-        'aaaaaaaaaaaaa',
-        'fffffffffffffffff',
-        'ccccccccccccccccc',
-        'dddddddddd',
-        'bbbddddddbb',
-      ]
-          .map(
-            (e) => BooruChip(
-              visualDensity: VisualDensity.compact,
-              label: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+      children:
+          [
+                'aaaaaaaaaaaaa',
+                'fffffffffffffffff',
+                'ccccccccccccccccc',
+                'dddddddddd',
+                'bbbddddddbb',
+              ]
+              .map(
+                (e) => BooruChip(
+                  visualDensity: VisualDensity.compact,
+                  label: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+                    ),
+                    child: Text(
+                      e,
+                      style: const TextStyle(color: Colors.transparent),
+                    ),
+                  ),
                 ),
-                child: Text(
-                  e,
-                  style: const TextStyle(color: Colors.transparent),
-                ),
-              ),
-            ),
-          )
-          .toList(),
+              )
+              .toList(),
     );
   }
 
@@ -227,10 +228,10 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       TextSpan(
                         text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).brightness.isLight
-                                  ? Colors.white.withValues(alpha: 0.85)
-                                  : null,
-                            ),
+                          color: Theme.of(context).brightness.isLight
+                              ? Colors.white.withValues(alpha: 0.85)
+                              : null,
+                        ),
                       ),
                     ],
                   ),
@@ -286,7 +287,9 @@ class SliverUploadPostList extends ConsumerWidget {
         ),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: ref.watch(danbooruUserUploadsProvider(params)).maybeWhen(
+          sliver: ref
+              .watch(danbooruUserUploadsProvider(params))
+              .maybeWhen(
                 data: (data) => SliverPreviewPostGrid(
                   posts: data,
                   imageUrl: (item) => item.url360x360,

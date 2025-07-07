@@ -9,9 +9,9 @@ import 'artist_commentary_repository_api.dart';
 
 final danbooruArtistCommentaryRepoProvider =
     Provider.family<DanbooruArtistCommentaryRepository, BooruConfigAuth>(
-  (ref, config) {
-    return DanbooruArtistCommentaryRepositoryApi(
-      ref.watch(danbooruClientProvider(config)),
+      (ref, config) {
+        return DanbooruArtistCommentaryRepositoryApi(
+          ref.watch(danbooruClientProvider(config)),
+        );
+      },
     );
-  },
-);

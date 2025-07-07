@@ -76,7 +76,8 @@ class HomePageSidebarKeyboardListener extends StatefulWidget {
 }
 
 class _HomePageSidebarKeyboardListenerState
-    extends State<HomePageSidebarKeyboardListener> with KeyboardListenerMixin {
+    extends State<HomePageSidebarKeyboardListener>
+    with KeyboardListenerMixin {
   @override
   void initState() {
     super.initState();

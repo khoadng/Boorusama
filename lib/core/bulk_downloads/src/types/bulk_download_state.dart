@@ -34,9 +34,9 @@ class BulkDownloadState extends Equatable {
 
   @override
   List<Object?> get props => [
-        sessions,
-        error,
-        ready,
-        hasUnseenFinishedSessions,
-      ];
+    sessions,
+    error,
+    ready,
+    hasUnseenFinishedSessions,
+  ];
 }

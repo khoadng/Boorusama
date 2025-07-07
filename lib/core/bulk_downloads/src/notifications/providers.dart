@@ -6,11 +6,13 @@ import 'bulk_download_notification.dart';
 
 final bulkDownloadNotificationProvider =
     FutureProvider<BulkDownloadNotifications>(
-  (ref) => BulkDownloadNotifications.create(),
-);
+      (ref) => BulkDownloadNotifications.create(),
+    );
 
 final bulkDownloadOnTapStreamProvider = StreamProvider<String>(
-  (ref) => ref.watch(bulkDownloadNotificationProvider).maybeWhen(
+  (ref) => ref
+      .watch(bulkDownloadNotificationProvider)
+      .maybeWhen(
         data: (notifications) => notifications.tapStream,
         orElse: () => const Stream.empty(),
       ),

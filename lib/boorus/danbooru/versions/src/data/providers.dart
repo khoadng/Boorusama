@@ -7,9 +7,11 @@ import '../../../client_provider.dart';
 import 'post_version_repository.dart';
 
 final danbooruPostVersionsRepoProvider =
-    Provider.family<DanbooruPostVersionRepository, BooruConfigAuth>(
-        (ref, config) {
-  final client = ref.watch(danbooruClientProvider(config));
+    Provider.family<DanbooruPostVersionRepository, BooruConfigAuth>((
+      ref,
+      config,
+    ) {
+      final client = ref.watch(danbooruClientProvider(config));
 
-  return DanbooruPostVersionRepository(client: client);
-});
+      return DanbooruPostVersionRepository(client: client);
+    });

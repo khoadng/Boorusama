@@ -111,8 +111,9 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                 ),
                 tabMap: tabMap,
                 length: tabMap.length,
-                animationDuration:
-                    Screen.of(context).size.isLarge ? Duration.zero : null,
+                animationDuration: Screen.of(context).size.isLarge
+                    ? Duration.zero
+                    : null,
                 builder: (controller) => Column(
                   children: [
                     const SizedBox(height: 4),
@@ -151,12 +152,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                           children: [
                             Text(
                               'Not sure? Leave it as it is, you can change it later.',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
+                              style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.hintColor,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.hintColor,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -208,49 +208,49 @@ class CreateBooruConfigCategory extends Equatable {
   });
 
   const CreateBooruConfigCategory.auth()
-      : title = 'booru.authentication',
-        name = 'config/auth',
-        id = 'auth';
+    : title = 'booru.authentication',
+      name = 'config/auth',
+      id = 'auth';
 
   const CreateBooruConfigCategory.listing()
-      : title = 'Listing',
-        name = 'config/listing',
-        id = 'listing';
+    : title = 'Listing',
+      name = 'config/listing',
+      id = 'listing';
 
   const CreateBooruConfigCategory.download()
-      : title = 'booru.download',
-        name = 'config/download',
-        id = 'download';
+    : title = 'booru.download',
+      name = 'config/download',
+      id = 'download';
 
   const CreateBooruConfigCategory.search()
-      : title = 'Search',
-        name = 'config/search',
-        id = 'search';
+    : title = 'Search',
+      name = 'config/search',
+      id = 'search';
 
   const CreateBooruConfigCategory.gestures()
-      : title = 'booru.gestures',
-        name = 'config/gestures',
-        id = 'gestures';
+    : title = 'booru.gestures',
+      name = 'config/gestures',
+      id = 'gestures';
 
   const CreateBooruConfigCategory.viewer()
-      : title = 'settings.image_viewer.image_viewer',
-        name = 'config/viewer',
-        id = 'viewer';
+    : title = 'settings.image_viewer.image_viewer',
+      name = 'config/viewer',
+      id = 'viewer';
 
   const CreateBooruConfigCategory.network()
-      : title = 'Network',
-        name = 'config/network',
-        id = 'network';
+    : title = 'Network',
+      name = 'config/network',
+      id = 'network';
 
   const CreateBooruConfigCategory.appearance()
-      : title = 'settings.appearance.appearance',
-        name = 'config/appearance',
-        id = 'appearance';
+    : title = 'settings.appearance.appearance',
+      name = 'config/appearance',
+      id = 'appearance';
 
   const CreateBooruConfigCategory.misc()
-      : title = 'booru.misc',
-        name = 'config/misc',
-        id = 'misc';
+    : title = 'booru.misc',
+      name = 'config/misc',
+      id = 'misc';
 
   final String title;
   final String id;
@@ -329,7 +329,9 @@ class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
       final item = widget.tabMap.keys.elementAtOrNull(_controller.index);
 
       if (item != null) {
-        ref.read(analyticsProvider).whenData(
+        ref
+            .read(analyticsProvider)
+            .whenData(
               (a) => a?.logScreenView(item.name),
             );
       }
@@ -390,8 +392,9 @@ class BooruConfigPopScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final initialData =
-        ref.watch(initialBooruConfigProvider).toBooruConfigData();
+    final initialData = ref
+        .watch(initialBooruConfigProvider)
+        .toBooruConfigData();
     final editId = ref.watch(editBooruConfigIdProvider);
     final configData = ref.watch(
       editBooruConfigProvider(editId),

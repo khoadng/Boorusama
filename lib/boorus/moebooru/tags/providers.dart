@@ -14,58 +14,61 @@ import 'repository.dart';
 
 final moebooruTagRepoProvider =
     Provider.family<MoebooruTagRepository, BooruConfigAuth>((ref, config) {
-  return MoebooruTagRepository(
-    repo: ref.watch(moebooruTagSummaryRepoProvider(config)),
-  );
-});
+      return MoebooruTagRepository(
+        repo: ref.watch(moebooruTagSummaryRepoProvider(config)),
+      );
+    });
 
 final moebooruTagExtractorProvider =
     Provider.family<TagExtractor<MoebooruPost>, BooruConfigAuth>(
-  (ref, config) {
-    return TagExtractorBuilder(
-      sorter: TagSorter.defaults(),
-      fetcher: (post, options) async {
-        final allTagMap =
-            await ref.read(moebooruAllTagsProvider(config).future);
-
-        final tags = <Tag>[];
-
-        for (final t in post.tags) {
-          final tag = allTagMap[t];
-          if (tag != null) {
-            tags.add(tag);
-          } else {
-            tags.add(
-              Tag.noCount(
-                name: t,
-                category: TagCategory.unknown(),
-              ),
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) async {
+            final allTagMap = await ref.read(
+              moebooruAllTagsProvider(config).future,
             );
-          }
-        }
 
-        return tags;
+            final tags = <Tag>[];
+
+            for (final t in post.tags) {
+              final tag = allTagMap[t];
+              if (tag != null) {
+                tags.add(tag);
+              } else {
+                tags.add(
+                  Tag.noCount(
+                    name: t,
+                    category: TagCategory.unknown(),
+                  ),
+                );
+              }
+            }
+
+            return tags;
+          },
+        );
       },
     );
-  },
-);
 
 final moebooruAllTagsProvider =
-    FutureProvider.family<Map<String, Tag>, BooruConfigAuth>(
-        (ref, config) async {
-  if (config.booruType != BooruType.moebooru) return {};
+    FutureProvider.family<Map<String, Tag>, BooruConfigAuth>((
+      ref,
+      config,
+    ) async {
+      if (config.booruType != BooruType.moebooru) return {};
 
-  final repo = ref.watch(moebooruTagSummaryRepoProvider(config));
-  final data = await repo.getTagSummaries();
+      final repo = ref.watch(moebooruTagSummaryRepoProvider(config));
+      final data = await repo.getTagSummaries();
 
-  final tags = data
-      .map(tagSummaryToTag)
-      .sorted((a, b) => a.rawName.compareTo(b.rawName));
+      final tags = data
+          .map(tagSummaryToTag)
+          .sorted((a, b) => a.rawName.compareTo(b.rawName));
 
-  return {
-    for (final tag in tags) tag.rawName: tag,
-  };
-});
+      return {
+        for (final tag in tags) tag.rawName: tag,
+      };
+    });
 
 List<TagGroupItem> createMoebooruTagGroupItems(
   Set<String> tagStrings,

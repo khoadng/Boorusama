@@ -45,44 +45,44 @@ class SzurubooruBuilder
   SzurubooruBuilder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat: null,
-            ),
-            child: CreateSzurubooruConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: null,
+        ),
+        child: CreateSzurubooruConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateSzurubooruConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateSzurubooruConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => CommentPageScaffold(
-            postId: postId,
-            useAppBar: useAppBar,
-          );
+        postId: postId,
+        useAppBar: useAppBar,
+      );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -95,22 +95,22 @@ class SzurubooruBuilder
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => SzurubooruSearchPage(
-            params: params,
-          );
+        params: params,
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
+    final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<SzurubooruPost>(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DefaultPostDetailsPage<SzurubooruPost>(),
+    );
+  };
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(

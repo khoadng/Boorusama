@@ -24,8 +24,9 @@ class SavedSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchesAsync =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth));
+    final searchesAsync = ref.watch(
+      danbooruSavedSearchesProvider(ref.watchConfigAuth),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -81,9 +82,7 @@ class _SuccessView extends ConsumerWidget {
                         'saved_search.saved_search_counter'
                             .plural(savedSearches.length)
                             .toUpperCase(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
                               color: Theme.of(context).colorScheme.hintColor,
                               fontWeight: FontWeight.bold,
@@ -111,9 +110,9 @@ class _SuccessView extends ConsumerWidget {
                         ),
                   onTap: savedSearch.labels.isNotEmpty
                       ? () => goToSearchPage(
-                            ref,
-                            tag: 'search:${savedSearch.labels.first}',
-                          )
+                          ref,
+                          tag: 'search:${savedSearch.labels.first}',
+                        )
                       : null,
                   onLongPress: savedSearch.readOnly
                       ? null

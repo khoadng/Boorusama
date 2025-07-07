@@ -53,8 +53,9 @@ class BooruConfigSearchView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final alwaysIncludeTags = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.alwaysIncludeTags),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.alwaysIncludeTags),
     );
 
     return SingleChildScrollView(
@@ -79,10 +80,9 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Include these tags in every search',
                   style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.8),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -107,10 +107,9 @@ class BooruConfigSearchView extends ConsumerWidget {
                 child: Text(
                   'Exclude these tags in every search',
                   style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.8),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.8),
                     fontSize: 13,
                   ),
                 ),
@@ -223,9 +222,10 @@ class BooruConfigSearchView extends ConsumerWidget {
   }
 
   String? alwaysIncludeTags(WidgetRef ref) => ref.read(
-        editBooruConfigProvider(ref.read(editBooruConfigIdProvider))
-            .select((value) => value.alwaysIncludeTags),
-      );
+    editBooruConfigProvider(
+      ref.read(editBooruConfigIdProvider),
+    ).select((value) => value.alwaysIncludeTags),
+  );
 
   void _addTag(
     WidgetRef ref,

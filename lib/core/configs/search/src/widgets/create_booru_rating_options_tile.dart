@@ -68,11 +68,10 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
           Text(
             'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 8),
           CreateBooruConfigGranularRatingOptions(
@@ -115,7 +114,8 @@ class _CreateBooruConfigGranularRatingOptionsState
 
   @override
   Widget build(BuildContext context) {
-    final options = widget.options ??
+    final options =
+        widget.options ??
         ref
             .watch(booruBuilderProvider(widget.config.auth))
             ?.granularRatingOptionsBuilder

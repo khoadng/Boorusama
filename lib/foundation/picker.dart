@@ -13,35 +13,33 @@ Future<void> pickDirectoryPathToastOnError({
   required BuildContext context,
   required void Function(String path) onPick,
   void Function()? onCanceled,
-}) =>
-    pickDirectoryPath(
-      onPick: onPick,
-      onCanceled: onCanceled,
-      onError: (e) {
-        showErrorToast(
-          context,
-          e.toString(),
-        );
-      },
+}) => pickDirectoryPath(
+  onPick: onPick,
+  onCanceled: onCanceled,
+  onError: (e) {
+    showErrorToast(
+      context,
+      e.toString(),
     );
+  },
+);
 
 Future<void> pickSingleFilePathToastOnError({
   required BuildContext context,
   required void Function(String path) onPick,
   FileType type = FileType.any,
   List<String>? allowedExtensions,
-}) =>
-    pickSingleFilePath(
-      type: type,
-      allowedExtensions: allowedExtensions,
-      onPick: onPick,
-      onError: (e) {
-        showErrorToast(
-          context,
-          e.toString(),
-        );
-      },
+}) => pickSingleFilePath(
+  type: type,
+  allowedExtensions: allowedExtensions,
+  onPick: onPick,
+  onError: (e) {
+    showErrorToast(
+      context,
+      e.toString(),
     );
+  },
+);
 
 Future<void> pickSingleFilePath({
   required void Function(String path) onPick,

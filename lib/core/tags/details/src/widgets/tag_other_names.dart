@@ -19,26 +19,28 @@ class TagOtherNames extends StatelessWidget {
   Widget build(BuildContext context) {
     return !context.isLargeScreen
         ? otherNames != null
-            ? otherNames!.length > 3
-                ? Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    height: 32,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: otherNames!.length,
-                      itemBuilder: (context, index) =>
-                          OtherNameChip(otherName: otherNames![index]),
-                    ),
-                  )
-                : Wrap(
-                    alignment: WrapAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    children: otherNames!
-                        .map((e) => OtherNameChip(otherName: e))
-                        .toList(),
-                  )
-            : const TagChipsPlaceholder(height: 42, itemCount: 10)
+              ? otherNames!.length > 3
+                    ? Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        height: 32,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: otherNames!.length,
+                          itemBuilder: (context, index) =>
+                              OtherNameChip(otherName: otherNames![index]),
+                        ),
+                      )
+                    : Wrap(
+                        alignment: WrapAlignment.center,
+                        runAlignment: WrapAlignment.center,
+                        children: otherNames!
+                            .map((e) => OtherNameChip(otherName: e))
+                            .toList(),
+                      )
+              : const TagChipsPlaceholder(height: 42, itemCount: 10)
         : SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),

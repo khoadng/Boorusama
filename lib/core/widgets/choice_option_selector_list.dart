@@ -113,91 +113,92 @@ class _ChoiceOptionSelectorListState<T>
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: switch (value) {
               null => AutoScrollTag(
-                  controller: scrollController,
-                  index: index,
-                  key: ValueKey(index),
-                  child: BooruChip(
-                    borderRadius: BorderRadius.circular(8),
-                    disabled: !selected,
-                    color: selected
-                        ? colorScheme.onSurface
-                        : colorScheme.hintColor,
-                    onPressed: () => _onSelect(
-                      null,
-                      index,
-                      options.length,
-                    ),
-                    label: Text(
-                      widget.optionLabelBuilder(null),
-                      style: TextStyle(
-                        color: selected ? null : colorScheme.onSurface,
-                      ),
+                controller: scrollController,
+                index: index,
+                key: ValueKey(index),
+                child: BooruChip(
+                  borderRadius: BorderRadius.circular(8),
+                  disabled: !selected,
+                  color: selected
+                      ? colorScheme.onSurface
+                      : colorScheme.hintColor,
+                  onPressed: () => _onSelect(
+                    null,
+                    index,
+                    options.length,
+                  ),
+                  label: Text(
+                    widget.optionLabelBuilder(null),
+                    style: TextStyle(
+                      color: selected ? null : colorScheme.onSurface,
                     ),
                   ),
                 ),
+              ),
               final OptionType o => AutoScrollTag(
-                  controller: scrollController,
-                  index: index,
-                  key: ValueKey(index),
-                  child: BooruChip(
-                    borderRadius: BorderRadius.circular(8),
-                    disabled: !selected,
-                    color: selected
-                        ? colorScheme.onSurface
-                        : colorScheme.hintColor,
-                    onPressed: () => _onSelect(
-                      o.data,
-                      index,
-                      options.length,
-                    ),
-                    label: Text(
-                      widget.optionLabelBuilder(o.data),
-                      style: TextStyle(
-                        color: selected ? null : colorScheme.onSurface,
-                      ),
+                controller: scrollController,
+                index: index,
+                key: ValueKey(index),
+                child: BooruChip(
+                  borderRadius: BorderRadius.circular(8),
+                  disabled: !selected,
+                  color: selected
+                      ? colorScheme.onSurface
+                      : colorScheme.hintColor,
+                  onPressed: () => _onSelect(
+                    o.data,
+                    index,
+                    options.length,
+                  ),
+                  label: Text(
+                    widget.optionLabelBuilder(o.data),
+                    style: TextStyle(
+                      color: selected ? null : colorScheme.onSurface,
                     ),
                   ),
                 ),
+              ),
               ButtonType _ => IconButton(
-                  iconSize: 20,
-                  onPressed: () {
-                    final items = options.whereType<OptionType<T>>().toList();
-                    showBarModalBottomSheet(
-                      context: context,
-                      settings:
-                          const RouteSettings(name: 'choice_option_selector'),
-                      duration: const Duration(milliseconds: 300),
-                      builder: (context) => OptionSearchableSheet(
-                        title: widget.sheetTitle,
-                        items: items,
-                        scrollController: ModalScrollController.of(context),
-                        onFilter: (query) => items.where((e) {
-                          final value = widget.optionLabelBuilder(e.data);
+                iconSize: 20,
+                onPressed: () {
+                  final items = options.whereType<OptionType<T>>().toList();
+                  showBarModalBottomSheet(
+                    context: context,
+                    settings: const RouteSettings(
+                      name: 'choice_option_selector',
+                    ),
+                    duration: const Duration(milliseconds: 300),
+                    builder: (context) => OptionSearchableSheet(
+                      title: widget.sheetTitle,
+                      items: items,
+                      scrollController: ModalScrollController.of(context),
+                      onFilter: (query) => items.where((e) {
+                        final value = widget.optionLabelBuilder(e.data);
 
-                          return value
-                              .toLowerCase()
-                              .contains(query.toLowerCase());
-                        }).toList(),
-                        itemBuilder: (context, option) => ListTile(
-                          minVerticalPadding: 4,
-                          title: Text(
-                            widget.optionLabelBuilder(option.data),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            final valueIndex = options.indexOf(option);
-                            _onSelect(
-                              option.data,
-                              valueIndex,
-                              options.length,
-                            );
-                          },
+                        return value.toLowerCase().contains(
+                          query.toLowerCase(),
+                        );
+                      }).toList(),
+                      itemBuilder: (context, option) => ListTile(
+                        minVerticalPadding: 4,
+                        title: Text(
+                          widget.optionLabelBuilder(option.data),
                         ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          final valueIndex = options.indexOf(option);
+                          _onSelect(
+                            option.data,
+                            valueIndex,
+                            options.length,
+                          );
+                        },
                       ),
-                    );
-                  },
-                  icon: widget.icon ?? const Icon(Symbols.tune),
-                ),
+                    ),
+                  );
+                },
+                icon: widget.icon ?? const Icon(Symbols.tune),
+              ),
             },
           );
         },

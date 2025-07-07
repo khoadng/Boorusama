@@ -30,13 +30,13 @@ class OriginalImagePage extends ConsumerStatefulWidget {
   OriginalImagePage.post(
     Post post, {
     super.key,
-  })  : imageUrl = post.originalImageUrl,
-        aspectRatio = post.aspectRatio,
-        contentSize = Size(
-          post.width,
-          post.height,
-        ),
-        id = post.id;
+  }) : imageUrl = post.originalImageUrl,
+       aspectRatio = post.aspectRatio,
+       contentSize = Size(
+         post.width,
+         post.height,
+       ),
+       id = post.id;
 
   final String imageUrl;
   final int id;

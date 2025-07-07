@@ -42,8 +42,9 @@ class ColorVariantSelector extends ConsumerWidget {
           BooruChipColors.colorScheme(
             colorScheme,
             harmonizeWithPrimary: ref.watch(
-              themePreviewerProvider
-                  .select((value) => value.colors.harmonizeWithPrimary),
+              themePreviewerProvider.select(
+                (value) => value.colors.harmonizeWithPrimary,
+              ),
             ),
           ),
         ),
@@ -92,8 +93,9 @@ class DarkModeToggleButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return CircularIconButton(
       padding: const EdgeInsets.all(8),
-      backgroundColor:
-          isDark ? colorScheme.primary : colorScheme.surfaceContainerHighest,
+      backgroundColor: isDark
+          ? colorScheme.primary
+          : colorScheme.surfaceContainerHighest,
       iconColor: isDark ? colorScheme.onPrimary : colorScheme.onSurface,
       icon: const Icon(Symbols.dark_mode),
       onPressed: () {
@@ -198,8 +200,9 @@ class PreviewColorContainer extends StatelessWidget {
         child: selected
             ? Builder(
                 builder: (context) {
-                  final iconSurfaceColor =
-                      followSystem ? colorScheme.surface : primary;
+                  final iconSurfaceColor = followSystem
+                      ? colorScheme.surface
+                      : primary;
 
                   return Icon(
                     Icons.check,

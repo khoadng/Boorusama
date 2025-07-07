@@ -33,8 +33,9 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
   Future<List<DanbooruForumTopic>> _fetchPage(int pageKey) async {
     try {
       final config = ref.readConfigAuth;
-      final creatorsNotifier =
-          ref.read(danbooruCreatorsProvider(config).notifier);
+      final creatorsNotifier = ref.read(
+        danbooruCreatorsProvider(config).notifier,
+      );
 
       final topics = await ref
           .read(danbooruForumTopicRepoProvider(config))

@@ -5,9 +5,9 @@ class SearchKeywordDto {
   });
 
   factory SearchKeywordDto.fromJson(List<dynamic> json) => SearchKeywordDto(
-        keyword: json[0],
-        hitCount: json[1].toInt(),
-      );
+    keyword: json[0],
+    hitCount: json[1].toInt(),
+  );
 
   final int hitCount;
   final String keyword;

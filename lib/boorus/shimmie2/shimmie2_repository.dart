@@ -34,9 +34,10 @@ class Shimmie2Repository extends BooruRepositoryDefault {
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(dioProvider(config));
 
-    return () => Shimmie2Client(baseUrl: config.url, dio: dio)
-        .getPosts()
-        .then((value) => true);
+    return () => Shimmie2Client(
+      baseUrl: config.url,
+      dio: dio,
+    ).getPosts().then((value) => true);
   }
 
   @override

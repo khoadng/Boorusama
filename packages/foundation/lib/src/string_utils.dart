@@ -100,7 +100,8 @@ List<String> _groupIntoWords(String text) {
 
     sb.write(char);
 
-    final isEndOfWord = nextChar == null ||
+    final isEndOfWord =
+        nextChar == null ||
         (_upperAlphaRegex.hasMatch(nextChar) && !isAllCaps) ||
         _symbolSet.contains(nextChar);
 

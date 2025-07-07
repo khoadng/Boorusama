@@ -84,8 +84,9 @@ class _UserDetailsTagChangesState extends ConsumerState<UserDetailsTagChanges> {
               itemPerPage: itemsPerPage,
               onPageSelect: (page) => _fetchPage(page),
               onNext: () => _fetchPage(currentPage + 1),
-              onPrevious:
-                  currentPage > 1 ? () => _fetchPage(currentPage - 1) : null,
+              onPrevious: currentPage > 1
+                  ? () => _fetchPage(currentPage - 1)
+                  : null,
               showLastPage: true,
             ),
           ),
@@ -111,23 +112,23 @@ class _UserDetailsTagChangesState extends ConsumerState<UserDetailsTagChanges> {
                         ),
                       )
                     : versions.isEmpty
-                        ? const SliverToBoxAdapter(
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Text('No tag changes found'),
-                              ),
-                            ),
-                          )
-                        : SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) => TagEditHistoryCard(
-                                version: versions[index],
-                                configSearch: ref.watchConfigSearch,
-                              ),
-                              childCount: versions.length,
-                            ),
+                    ? const SliverToBoxAdapter(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Text('No tag changes found'),
                           ),
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) => TagEditHistoryCard(
+                            version: versions[index],
+                            configSearch: ref.watchConfigSearch,
+                          ),
+                          childCount: versions.length,
+                        ),
+                      ),
               ),
             ],
           ),

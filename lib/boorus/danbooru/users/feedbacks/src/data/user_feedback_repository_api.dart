@@ -13,8 +13,7 @@ class UserFeedbackRepositoryApi implements DanbooruUserFeedbacksRepository {
   @override
   Future<List<DanbooruUserFeedback>> getUserFeedbacks({
     required int userId,
-  }) =>
-      client
-          .getUserFeedbacks(userId: userId)
-          .then(userFeedbackDtosToUserFeedbacks);
+  }) => client
+      .getUserFeedbacks(userId: userId)
+      .then(userFeedbackDtosToUserFeedbacks);
 }

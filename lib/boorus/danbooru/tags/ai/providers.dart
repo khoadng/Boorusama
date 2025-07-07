@@ -20,7 +20,9 @@ final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
 
     final client = ref.watch(danbooruClientProvider(config));
 
-    final tags = await client.getAITags(query: 'id:$postId').then(
+    final tags = await client
+        .getAITags(query: 'id:$postId')
+        .then(
           (value) => value
               .map(
                 (e) => AITag(

@@ -14,47 +14,47 @@ import 'types.dart';
 
 final e621PostRepoProvider =
     Provider.family<PostRepository<E621Post>, BooruConfigSearch>((ref, config) {
-  final client = ref.watch(e621ClientProvider(config.auth));
+      final client = ref.watch(e621ClientProvider(config.auth));
 
-  return PostRepositoryBuilder(
-    getComposer: () => ref.read(tagQueryComposerProvider(config)),
-    fetchSingle: (id, {options}) async {
-      final numericId = id as NumericPostId?;
+      return PostRepositoryBuilder(
+        getComposer: () => ref.read(tagQueryComposerProvider(config)),
+        fetchSingle: (id, {options}) async {
+          final numericId = id as NumericPostId?;
 
-      if (numericId == null) return Future.value(null);
+          if (numericId == null) return Future.value(null);
 
-      final post = await client.getPost(numericId.value);
+          final post = await client.getPost(numericId.value);
 
-      return post != null ? postDtoToPost(post, null) : null;
-    },
-    fetch: (tags, page, {limit, options}) async {
-      final data = await client
-          .getPosts(
-            page: page,
-            tags: tags,
-            limit: limit,
-          )
-          .then(
-            (value) => value
-                .map(
-                  (e) => postDtoToPost(
-                    e,
-                    PostMetadata(
-                      page: page,
-                      search: tags.join(' '),
-                      limit: limit,
-                    ),
-                  ),
-                )
-                .toList(),
-          );
+          return post != null ? postDtoToPost(post, null) : null;
+        },
+        fetch: (tags, page, {limit, options}) async {
+          final data = await client
+              .getPosts(
+                page: page,
+                tags: tags,
+                limit: limit,
+              )
+              .then(
+                (value) => value
+                    .map(
+                      (e) => postDtoToPost(
+                        e,
+                        PostMetadata(
+                          page: page,
+                          search: tags.join(' '),
+                          limit: limit,
+                        ),
+                      ),
+                    )
+                    .toList(),
+              );
 
-      if (options?.cascadeRequest ?? true) {
-        ref.read(favoritesProvider(config.auth).notifier).preload(data);
-      }
+          if (options?.cascadeRequest ?? true) {
+            ref.read(favoritesProvider(config.auth).notifier).preload(data);
+          }
 
-      return data.toResult();
-    },
-    getSettings: () async => ref.read(imageListingSettingsProvider),
-  );
-});
+          return data.toResult();
+        },
+        getSettings: () async => ref.read(imageListingSettingsProvider),
+      );
+    });

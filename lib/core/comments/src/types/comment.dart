@@ -42,8 +42,7 @@ class CommentRepositoryBuilder<T extends Comment>
   Future<List<T>> getComments(
     int postId, {
     int? page,
-  }) =>
-      fetch(postId, page: page);
+  }) => fetch(postId, page: page);
 
   @override
   Future<bool> createComment(int postId, String body) => create(postId, body);

@@ -25,8 +25,9 @@ import 'types/tag_group_item.dart';
 import 'types/tag_repository.dart';
 import 'types/tag_resolver.dart';
 
-final emptyTagRepoProvider =
-    Provider<TagRepository>((ref) => EmptyTagRepository());
+final emptyTagRepoProvider = Provider<TagRepository>(
+  (ref) => EmptyTagRepository(),
+);
 
 final tagColorProvider = Provider.family<Color?, (BooruConfigAuth, String)>(
   (ref, params) {
@@ -42,7 +43,8 @@ final tagColorProvider = Provider.family<Color?, (BooruConfigAuth, String)>(
 
     final colorScheme = ref.watch(colorSchemeProvider);
 
-    final colors = ref.watch(tagColorsProvider(config)) ??
+    final colors =
+        ref.watch(tagColorsProvider(config)) ??
         TagColors.fromBrightness(colorScheme.brightness);
 
     final color = colorBuilder.generateColor(
@@ -97,8 +99,9 @@ final tagColorsProvider = Provider.family<TagColors?, BooruConfigAuth>(
 
 final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+    final repo = ref
+        .watch(booruEngineRegistryProvider)
+        .getRepository(config.booruType);
 
     final tagRepo = repo?.tag(config);
 
@@ -112,44 +115,48 @@ final tagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
 
 final tagGroupsProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>?, (BooruConfigAuth, Post)>((ref, params) async {
-  ref.cacheFor(const Duration(seconds: 15));
+      ref.cacheFor(const Duration(seconds: 15));
 
-  final config = params.$1;
-  final post = params.$2;
+      final config = params.$1;
+      final post = params.$2;
 
-  final tagExtractor = ref.watch(tagExtractorProvider(config));
+      final tagExtractor = ref.watch(tagExtractorProvider(config));
 
-  if (tagExtractor == null) return null;
+      if (tagExtractor == null) return null;
 
-  final tags = await tagExtractor.extractTags(
-    post,
-    options: const ExtractOptions(
-      fetchTagCount: true,
-    ),
-  );
+      final tags = await tagExtractor.extractTags(
+        post,
+        options: const ExtractOptions(
+          fetchTagCount: true,
+        ),
+      );
 
-  return createTagGroupItems(tags);
-});
+      return createTagGroupItems(tags);
+    });
 
-final tagResolverProvider =
-    Provider.family<TagResolver, BooruConfigAuth>((ref, config) {
+final tagResolverProvider = Provider.family<TagResolver, BooruConfigAuth>((
+  ref,
+  config,
+) {
   return TagResolver(
     tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
     siteHost: config.url,
-    tagRepositoryBuilder: () => ref
-        .read(tagRepoProvider(config)), // use read to avoid circular dependency
+    tagRepositoryBuilder: () => ref.read(
+      tagRepoProvider(config),
+    ), // use read to avoid circular dependency
   );
 });
 
-final artistCharacterGroupProvider = AsyncNotifierProvider.autoDispose.family<
-    ArtistCharacterNotifier, ArtistCharacterGroup, ArtistCharacterGroupParams>(
-  ArtistCharacterNotifier.new,
-);
+final artistCharacterGroupProvider = AsyncNotifierProvider.autoDispose
+    .family<
+      ArtistCharacterNotifier,
+      ArtistCharacterGroup,
+      ArtistCharacterGroupParams
+    >(
+      ArtistCharacterNotifier.new,
+    );
 
-typedef ArtistCharacterGroupParams = ({
-  Post post,
-  BooruConfigAuth auth,
-});
+typedef ArtistCharacterGroupParams = ({Post post, BooruConfigAuth auth});
 
 class ArtistCharacterGroup extends Equatable {
   const ArtistCharacterGroup({
@@ -158,8 +165,8 @@ class ArtistCharacterGroup extends Equatable {
   });
 
   const ArtistCharacterGroup.empty()
-      : characterTags = const {},
-        artistTags = const {};
+    : characterTags = const {},
+      artistTags = const {};
 
   final Set<String> characterTags;
   final Set<String> artistTags;
@@ -168,8 +175,12 @@ class ArtistCharacterGroup extends Equatable {
   List<Object?> get props => [characterTags, artistTags];
 }
 
-class ArtistCharacterNotifier extends AutoDisposeFamilyAsyncNotifier<
-    ArtistCharacterGroup, ArtistCharacterGroupParams> {
+class ArtistCharacterNotifier
+    extends
+        AutoDisposeFamilyAsyncNotifier<
+          ArtistCharacterGroup,
+          ArtistCharacterGroupParams
+        > {
   @override
   FutureOr<ArtistCharacterGroup> build(ArtistCharacterGroupParams arg) async {
     final post = arg.post;
@@ -185,14 +196,16 @@ class ArtistCharacterNotifier extends AutoDisposeFamilyAsyncNotifier<
     final group = createTagGroupItems(tags);
 
     return ArtistCharacterGroup(
-      characterTags: group
+      characterTags:
+          group
               .firstWhereOrNull(
                 (tag) => tag.groupName.toLowerCase() == 'character',
               )
               ?.extractCharacterTags()
               .toSet() ??
           {},
-      artistTags: group
+      artistTags:
+          group
               .firstWhereOrNull(
                 (tag) => tag.groupName.toLowerCase() == 'artist',
               )

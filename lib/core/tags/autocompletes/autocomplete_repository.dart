@@ -22,7 +22,7 @@ class AutocompleteRepositoryBuilder
   });
 
   final Future<List<AutocompleteData>> Function(AutocompleteQuery query)
-      autocomplete;
+  autocomplete;
 
   @override
   Future<List<AutocompleteData>> getAutocomplete(

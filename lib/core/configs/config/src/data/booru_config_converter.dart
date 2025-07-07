@@ -56,11 +56,12 @@ extension BooruConfigDataConverter on BooruConfigData? {
       layout: booruConfigData.layout != null
           ? LayoutConfigs.fromJsonString(booruConfigData.layout)
           : null,
-      proxySettings:
-          ProxySettings.fromJsonString(booruConfigData.proxySettings),
+      proxySettings: ProxySettings.fromJsonString(
+        booruConfigData.proxySettings,
+      ),
       viewerNotesFetchBehavior: booruConfigData.viewerNotesFetchBehavior != null
-          ? BooruConfigViewerNotesFetchBehavior
-              .values[booruConfigData.viewerNotesFetchBehavior!]
+          ? BooruConfigViewerNotesFetchBehavior.values[booruConfigData
+                .viewerNotesFetchBehavior!]
           : null,
     );
   }

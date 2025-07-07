@@ -11,16 +11,18 @@ import '../data/favorite_tag_repository_hive.dart';
 import '../types/favorite_tag.dart';
 import 'favorite_tag_io_handler.dart';
 
-final favoriteTagRepoProvider =
-    FutureProvider<FavoriteTagRepository>((ref) async {
+final favoriteTagRepoProvider = FutureProvider<FavoriteTagRepository>((
+  ref,
+) async {
   final adapter = FavoriteTagHiveObjectAdapter();
 
   if (!Hive.isAdapterRegistered(adapter.typeId)) {
     Hive.registerAdapter(adapter);
   }
 
-  final favoriteTagsBox =
-      await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
+  final favoriteTagsBox = await Hive.openBox<FavoriteTagHiveObject>(
+    'favorite_tags',
+  );
   final favoriteTagsRepo = FavoriteTagRepositoryHive(
     favoriteTagsBox,
   );

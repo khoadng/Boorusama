@@ -68,8 +68,9 @@ class _AddButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bulkNotifier = ref.watch(bulkDownloadProvider.notifier);
-    final hasSavedTaskLocked =
-        ref.watch(hasAnySavedTaskLockedProvider).valueOrNull;
+    final hasSavedTaskLocked = ref
+        .watch(hasAnySavedTaskLockedProvider)
+        .valueOrNull;
 
     return IconButton(
       icon: const Icon(Symbols.add),

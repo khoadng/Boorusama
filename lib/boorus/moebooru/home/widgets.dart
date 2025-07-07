@@ -30,8 +30,9 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
-    final favoritesPageBuilder =
-        ref.watch(booruBuilderProvider(config))?.favoritesPageBuilder;
+    final favoritesPageBuilder = ref
+        .watch(booruBuilderProvider(config))
+        ?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [

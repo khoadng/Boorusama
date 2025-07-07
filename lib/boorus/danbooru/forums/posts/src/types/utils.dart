@@ -5,6 +5,5 @@ class DanbooruForumUtils {
 
   static int getFirstPageKey({
     required int responseCount,
-  }) =>
-      (responseCount / postPerPage).ceil();
+  }) => (responseCount / postPerPage).ceil();
 }

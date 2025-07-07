@@ -21,8 +21,9 @@ Map<String, dynamic> defaultParamsExtractor(
 ) {
   // only need last two digits of the aspect ratio
   final aspectRatioString = deviceInfo?.aspectRatio.toStringAsFixed(2);
-  final aspectRatioNum =
-      aspectRatioString != null ? double.tryParse(aspectRatioString) : null;
+  final aspectRatioNum = aspectRatioString != null
+      ? double.tryParse(aspectRatioString)
+      : null;
 
   return {
     if (config != null) ...{

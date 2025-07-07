@@ -23,7 +23,8 @@ class CircularIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: backgroundColor ??
+      color:
+          backgroundColor ??
           context.extendedColorScheme.surfaceContainerOverlay,
       shape: const CircleBorder(),
       child: InkWell(
@@ -35,9 +36,10 @@ class CircularIconButton extends StatelessWidget {
           child: Theme(
             data: Theme.of(context).copyWith(
               iconTheme: Theme.of(context).iconTheme.copyWith(
-                    color: iconColor ??
-                        context.extendedColorScheme.onSurfaceContainerOverlay,
-                  ),
+                color:
+                    iconColor ??
+                    context.extendedColorScheme.onSurfaceContainerOverlay,
+              ),
             ),
             child: icon,
           ),

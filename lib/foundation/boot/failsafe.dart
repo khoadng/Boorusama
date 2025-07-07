@@ -22,8 +22,9 @@ Future<void> failsafe({
   required StackTrace stackTrace,
   required BootLogger logger,
 }) async {
-  final deviceInfo =
-      await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
+  final deviceInfo = await DeviceInfoService(
+    plugin: DeviceInfoPlugin(),
+  ).getDeviceInfo();
   final logs = logger.dump();
 
   runApp(
@@ -167,21 +168,20 @@ class AppFailedToInitialize extends ConsumerWidget {
   Future<void> _saveTo(
     BuildContext context,
     String data,
-  ) =>
-      pickDirectoryPathToastOnError(
-        context: context,
-        onPick: (path) async {
-          final file = File('$path/boorusama_crash.txt');
-          await file.writeAsString(data);
-          if (!context.mounted) return;
+  ) => pickDirectoryPathToastOnError(
+    context: context,
+    onPick: (path) async {
+      final file = File('$path/boorusama_crash.txt');
+      await file.writeAsString(data);
+      if (!context.mounted) return;
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              behavior: SnackBarBehavior.floating,
-              content: Text('Copied'),
-              duration: AppDurations.shortToast,
-            ),
-          );
-        },
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text('Copied'),
+          duration: AppDurations.shortToast,
+        ),
       );
+    },
+  );
 }

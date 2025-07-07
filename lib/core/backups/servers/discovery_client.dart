@@ -66,13 +66,15 @@ class DiscoveryClient {
     BonsoirDiscovery discovery,
   ) async {
     try {
-      await service.resolve(discovery.serviceResolver).timeout(
-        _defaultResolutionTimeout,
-        onTimeout: () {
-          onError?.call('Service resolution timed out for ${service.name}');
-          return null;
-        },
-      );
+      await service
+          .resolve(discovery.serviceResolver)
+          .timeout(
+            _defaultResolutionTimeout,
+            onTimeout: () {
+              onError?.call('Service resolution timed out for ${service.name}');
+              return null;
+            },
+          );
     } catch (e) {
       onError?.call('Service resolution failed: $e');
     }

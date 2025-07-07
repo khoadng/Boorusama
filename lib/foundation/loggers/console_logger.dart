@@ -21,8 +21,8 @@ class ConsoleLoggerOptions extends Equatable {
 
   @override
   List<Object?> get props => [
-        decodeUriParameters,
-      ];
+    decodeUriParameters,
+  ];
 }
 
 class ConsoleLogger extends Logger {

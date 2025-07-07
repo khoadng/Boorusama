@@ -20,9 +20,9 @@ class PoolDescriptionRepoBuilder
 
   @override
   Future<String> getDescription(int poolId) => tryGet(
-        'pool_desc_$poolId',
-        orElse: () => fetchDescription(poolId),
-      );
+    'pool_desc_$poolId',
+    orElse: () => fetchDescription(poolId),
+  );
 
   @override
   late Cache<String> cache;

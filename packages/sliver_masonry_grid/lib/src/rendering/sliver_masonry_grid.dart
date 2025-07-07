@@ -39,11 +39,11 @@ class RenderSliverMasonryGrid extends RenderSliverMultiBoxAdaptor {
     required SliverSimpleGridDelegate gridDelegate,
     required double mainAxisSpacing,
     required double crossAxisSpacing,
-  })  : assert(mainAxisSpacing >= 0),
-        assert(crossAxisSpacing >= 0),
-        _gridDelegate = gridDelegate,
-        _mainAxisSpacing = mainAxisSpacing,
-        _crossAxisSpacing = crossAxisSpacing;
+  }) : assert(mainAxisSpacing >= 0),
+       assert(crossAxisSpacing >= 0),
+       _gridDelegate = gridDelegate,
+       _mainAxisSpacing = mainAxisSpacing,
+       _crossAxisSpacing = crossAxisSpacing;
 
   /// {@template fsgv.global.gridDelegate}
   /// The delegate that controls the size and position of the children.
@@ -534,8 +534,9 @@ class RenderSliverMasonryGrid extends RenderSliverMultiBoxAdaptor {
       }
     }
 
-    bool foundFirstVisibleChild = scrollOffsets
-        .any((scrollOffset) => scrollOffset >= constraints.scrollOffset);
+    bool foundFirstVisibleChild = scrollOffsets.any(
+      (scrollOffset) => scrollOffset >= constraints.scrollOffset,
+    );
     _lastFirstVisibleChildIndex = indexOf(firstChild!);
 
     // Returns true if we advanced, false if we have no more children
@@ -581,8 +582,9 @@ class RenderSliverMasonryGrid extends RenderSliverMultiBoxAdaptor {
     }
 
     // Find the first child that ends after the scroll offset.
-    while (scrollOffsets
-        .every((offset) => offset - mainAxisSpacing < scrollOffset)) {
+    while (scrollOffsets.every(
+      (offset) => offset - mainAxisSpacing < scrollOffset,
+    )) {
       leadingGarbage += 1;
       if (!advance()) {
         assert(leadingGarbage == childCount);
@@ -657,7 +659,8 @@ class RenderSliverMasonryGrid extends RenderSliverMultiBoxAdaptor {
       cacheExtent: cacheExtent,
       maxPaintExtent: estimatedMaxScrollOffset,
       // Conservative to avoid flickering away the clip during scroll.
-      hasVisualOverflow: endScrollOffset > targetEndScrollOffsetForPaint ||
+      hasVisualOverflow:
+          endScrollOffset > targetEndScrollOffsetForPaint ||
           constraints.scrollOffset > 0.0,
     );
 

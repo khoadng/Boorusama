@@ -14,10 +14,10 @@ const _kTrendingTagCount = 15;
 
 final top15TrendingTagsProvider = FutureProvider.autoDispose
     .family<List<Tag>, BooruConfigFilter>((ref, config) async {
-  final tags = await ref.watch(trendingTagsProvider(config).future);
+      final tags = await ref.watch(trendingTagsProvider(config).future);
 
-  return tags.take(_kTrendingTagCount).toList(growable: false);
-});
+      return tags.take(_kTrendingTagCount).toList(growable: false);
+    });
 
 final top15PlaceholderTagsProvider = Provider<List<Tag>>((ref) {
   final tags = <Tag>[];

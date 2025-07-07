@@ -11,11 +11,12 @@ final uidProvider = Provider.autoDispose<int>((ref) {
 
 final animePicturesCurrentUserIdProvider =
     FutureProvider.family<int?, BooruConfigAuth>((ref, config) async {
-  final cookie = config.passHash;
-  if (cookie == null || cookie.isEmpty) return null;
+      final cookie = config.passHash;
+      if (cookie == null || cookie.isEmpty) return null;
 
-  final user =
-      await ref.watch(animePicturesClientProvider(config)).getProfile();
+      final user = await ref
+          .watch(animePicturesClientProvider(config))
+          .getProfile();
 
-  return user.id;
-});
+      return user.id;
+    });

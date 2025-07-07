@@ -77,13 +77,13 @@ String _buildFileUrl(dynamic post, String baseUrl, {bool thumbnail = false}) {
   final hash = post is PostDto
       ? (post.sha256 ?? post.hash)
       : post is PostSummaryDto
-          ? (post.sha256 ?? post.hash)
-          : null;
+      ? (post.sha256 ?? post.hash)
+      : null;
   final extension = post is PostDto
       ? post.extension
       : post is PostSummaryDto
-          ? post.extension
-          : null;
+      ? post.extension
+      : null;
 
   if (hash == null) return '';
 

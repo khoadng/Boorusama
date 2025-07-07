@@ -9,8 +9,8 @@ class DioProtectionInterceptor extends Interceptor {
   DioProtectionInterceptor({
     required HttpProtectionHandler protectionHandler,
     required Dio dio,
-  })  : _protectionHandler = protectionHandler,
-        _dio = dio;
+  }) : _protectionHandler = protectionHandler,
+       _dio = dio;
 
   final HttpProtectionHandler _protectionHandler;
   final Dio _dio;
@@ -40,8 +40,9 @@ class DioProtectionInterceptor extends Interceptor {
     ResponseInterceptorHandler handler,
   ) async {
     try {
-      final isProtection =
-          await _protectionHandler.handleResponse(DioResponseAdapter(response));
+      final isProtection = await _protectionHandler.handleResponse(
+        DioResponseAdapter(response),
+      );
 
       if (isProtection) {
         final retryResponse = await _dio.fetch(response.requestOptions);

@@ -62,8 +62,9 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
 
       for (final e in creators) {
         if (!box.containsKey(e.id.toString()) ||
-            DateTime.parse(box.get(e.id.toString())['time'])
-                .isBefore(twoDaysAgo)) {
+            DateTime.parse(
+              box.get(e.id.toString())['time'],
+            ).isBefore(twoDaysAgo)) {
           // Update cache with new creators
           await box.put(e.id.toString(), {
             'time': now.toIso8601String(),

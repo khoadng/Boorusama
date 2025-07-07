@@ -27,20 +27,20 @@ class DanbooruUser extends Equatable {
   });
 
   factory DanbooruUser.placeholder() => DanbooruUser(
-        id: 0,
-        level: UserLevel.member,
-        name: 'User',
-        joinedDate: DateTime(1),
-        uploadCount: 0,
-        tagEditCount: 0,
-        noteEditCount: 0,
-        commentCount: 0,
-        forumPostCount: 0,
-        favoriteGroupCount: 0,
-        positiveFeedbackCount: 0,
-        neutralFeedbackCount: 0,
-        negativeFeedbackCount: 0,
-      );
+    id: 0,
+    level: UserLevel.member,
+    name: 'User',
+    joinedDate: DateTime(1),
+    uploadCount: 0,
+    tagEditCount: 0,
+    noteEditCount: 0,
+    commentCount: 0,
+    forumPostCount: 0,
+    favoriteGroupCount: 0,
+    positiveFeedbackCount: 0,
+    neutralFeedbackCount: 0,
+    negativeFeedbackCount: 0,
+  );
 
   final UserId id;
   final UserLevel level;
@@ -71,20 +71,20 @@ class DanbooruUser extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        level,
-        name,
-        joinedDate,
-        uploadCount,
-        tagEditCount,
-        noteEditCount,
-        commentCount,
-        forumPostCount,
-        favoriteGroupCount,
-        positiveFeedbackCount,
-        neutralFeedbackCount,
-        negativeFeedbackCount,
-      ];
+    id,
+    level,
+    name,
+    joinedDate,
+    uploadCount,
+    tagEditCount,
+    noteEditCount,
+    commentCount,
+    forumPostCount,
+    favoriteGroupCount,
+    positiveFeedbackCount,
+    neutralFeedbackCount,
+    negativeFeedbackCount,
+  ];
 }
 
 extension UserX on DanbooruUser {
@@ -93,22 +93,21 @@ extension UserX on DanbooruUser {
     UserLevel? level,
     Username? name,
     DateTime? joinedDate,
-  }) =>
-      DanbooruUser(
-        id: id ?? this.id,
-        level: level ?? this.level,
-        name: name ?? this.name,
-        joinedDate: joinedDate ?? this.joinedDate,
-        uploadCount: uploadCount,
-        tagEditCount: tagEditCount,
-        noteEditCount: noteEditCount,
-        commentCount: commentCount,
-        forumPostCount: forumPostCount,
-        favoriteGroupCount: favoriteGroupCount,
-        positiveFeedbackCount: positiveFeedbackCount,
-        neutralFeedbackCount: neutralFeedbackCount,
-        negativeFeedbackCount: negativeFeedbackCount,
-      );
+  }) => DanbooruUser(
+    id: id ?? this.id,
+    level: level ?? this.level,
+    name: name ?? this.name,
+    joinedDate: joinedDate ?? this.joinedDate,
+    uploadCount: uploadCount,
+    tagEditCount: tagEditCount,
+    noteEditCount: noteEditCount,
+    commentCount: commentCount,
+    forumPostCount: forumPostCount,
+    favoriteGroupCount: favoriteGroupCount,
+    positiveFeedbackCount: positiveFeedbackCount,
+    neutralFeedbackCount: neutralFeedbackCount,
+    negativeFeedbackCount: negativeFeedbackCount,
+  );
 }
 
 class UserSelf extends Equatable implements User {
@@ -120,11 +119,11 @@ class UserSelf extends Equatable implements User {
   });
 
   factory UserSelf.placeholder() => const UserSelf(
-        id: 0,
-        level: UserLevel.member,
-        name: 'User',
-        blacklistedTags: {},
-      );
+    id: 0,
+    level: UserLevel.member,
+    name: 'User',
+    blacklistedTags: {},
+  );
 
   @override
   final UserId id;
@@ -141,13 +140,12 @@ extension UserSelfX on UserSelf {
     UserId? id,
     UserLevel? level,
     Username? name,
-  }) =>
-      UserSelf(
-        id: id ?? this.id,
-        level: level ?? this.level,
-        name: name ?? this.name,
-        blacklistedTags: blacklistedTags,
-      );
+  }) => UserSelf(
+    id: id ?? this.id,
+    level: level ?? this.level,
+    name: name ?? this.name,
+    blacklistedTags: blacklistedTags,
+  );
 }
 
 typedef UserId = int;

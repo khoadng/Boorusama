@@ -24,10 +24,9 @@ class ExploreSection extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 4),
           title: Text(
             title,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: onPressed != null
               ? TextButton(

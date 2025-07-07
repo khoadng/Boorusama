@@ -57,17 +57,19 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
           ),
         if (ref.watch(isDevEnvironmentProvider))
           if (config.hasLoginDetails())
-            ref.watch(danbooruCurrentUserProvider(config)).when(
+            ref
+                .watch(danbooruCurrentUserProvider(config))
+                .when(
                   data: (user) => DanbooruUserLevel.of(user?.level).isUnres
                       ? MultiSelectButton(
                           onPressed: selectedPosts.isNotEmpty
                               ? () async {
                                   final shouldEnd =
                                       await goToMassEditRatingSheet(
-                                    context,
-                                    ref,
-                                    selectedPosts,
-                                  );
+                                        context,
+                                        ref,
+                                        selectedPosts,
+                                      );
                                   if (shouldEnd != null && shouldEnd) {
                                     controller.disableMultiSelect();
                                   }
@@ -100,8 +102,9 @@ Future<bool?> goToMassEditRatingSheet(
   );
 }
 
-final _selectedRatingProvider =
-    StateProvider.autoDispose<Rating?>((ref) => null);
+final _selectedRatingProvider = StateProvider.autoDispose<Rating?>(
+  (ref) => null,
+);
 
 class MassEditRatingSheet extends ConsumerWidget {
   const MassEditRatingSheet({
@@ -114,8 +117,9 @@ class MassEditRatingSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedRating = ref.watch(_selectedRatingProvider);
-    final notifier =
-        ref.watch(danbooruTagListProvider(ref.watchConfigAuth).notifier);
+    final notifier = ref.watch(
+      danbooruTagListProvider(ref.watchConfigAuth).notifier,
+    );
 
     return Material(
       color: Theme.of(context).colorScheme.surfaceContainer,

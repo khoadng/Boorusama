@@ -37,8 +37,9 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
     return ValueListenableBuilder(
       valueListenable: controller.selectedItemsNotifier,
       builder: (context, selectedKeys, child) {
-        final selectedPosts =
-            postController.getPostsFromIds(selectedKeys.toList());
+        final selectedPosts = postController.getPostsFromIds(
+          selectedKeys.toList(),
+        );
 
         return MultiSelectionActionBar(
           children: [

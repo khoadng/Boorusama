@@ -10,8 +10,9 @@ class MultiSelectController extends ChangeNotifier {
   final Set<int> _selectedItems = <int>{};
 
   final ValueNotifier<Set<int>> selectedItemsNotifier = ValueNotifier({});
-  late final ValueNotifier<bool> multiSelectNotifier =
-      ValueNotifier(_multiSelectEnabled);
+  late final ValueNotifier<bool> multiSelectNotifier = ValueNotifier(
+    _multiSelectEnabled,
+  );
 
   bool get multiSelectEnabled => _multiSelectEnabled;
 

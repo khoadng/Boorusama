@@ -124,8 +124,10 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                       context,
                       ref: ref,
                       onSelected: (tag, _) {
-                        final baseOffset =
-                            max(0, queryTextController.selection.baseOffset);
+                        final baseOffset = max(
+                          0,
+                          queryTextController.selection.baseOffset,
+                        );
                         queryTextController
                           ..text = queryTextController.text.addCharAtPosition(
                             tag,

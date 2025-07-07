@@ -11,10 +11,10 @@ import 'moebooru_builder.dart';
 import 'moebooru_repository.dart';
 
 BooruComponents createMoebooru() => BooruComponents(
-      parser: MoebooruParser(),
-      createBuilder: MoebooruBuilder.new,
-      createRepository: (ref) => MoebooruRepository(ref: ref),
-    );
+  parser: MoebooruParser(),
+  createBuilder: MoebooruBuilder.new,
+  createRepository: (ref) => MoebooruRepository(ref: ref),
+);
 
 final moebooruProvider = Provider<Moebooru>((ref) {
   final booruDb = ref.watch(booruDbProvider);
@@ -81,8 +81,9 @@ class MoebooruParser extends BooruParser {
           url: url,
           salt: salt,
           favoriteSupport: favoriteSupport,
-          overrideProtocol:
-              overrideProtocol != null ? parseProtocol(overrideProtocol) : null,
+          overrideProtocol: overrideProtocol != null
+              ? parseProtocol(overrideProtocol)
+              : null,
         ),
       );
     }

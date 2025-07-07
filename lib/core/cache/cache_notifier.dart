@@ -10,8 +10,8 @@ import '../tags/local/providers.dart';
 
 final cacheSizeProvider =
     AsyncNotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
-  CacheSizeNotifier.new,
-);
+      CacheSizeNotifier.new,
+    );
 
 class CacheSizeInfo {
   const CacheSizeInfo({

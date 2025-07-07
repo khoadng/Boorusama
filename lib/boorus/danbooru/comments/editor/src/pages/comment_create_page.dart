@@ -28,8 +28,9 @@ class CommentCreatePage extends ConsumerStatefulWidget {
 }
 
 class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
-  late final textEditingController =
-      TextEditingController(text: widget.initialContent);
+  late final textEditingController = TextEditingController(
+    text: widget.initialContent,
+  );
 
   @override
   void dispose() {
@@ -98,7 +99,9 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
 
   void _handleSend(String content, BooruConfigAuth config) {
     FocusScope.of(context).unfocus();
-    ref.read(danbooruCommentsProvider(config).notifier).send(
+    ref
+        .read(danbooruCommentsProvider(config).notifier)
+        .send(
           postId: widget.postId,
           content: content,
         );

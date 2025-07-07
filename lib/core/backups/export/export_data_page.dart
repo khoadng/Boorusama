@@ -37,13 +37,15 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
             horizontal: 12,
           ),
           child: connectedToWifi
-              ? ref.watch(exportDataProvider).when(
-                    data: (data) => _buildBody(data),
-                    error: (error, _) => Text('Error: $error'),
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
+              ? ref
+                    .watch(exportDataProvider)
+                    .when(
+                      data: (data) => _buildBody(data),
+                      error: (error, _) => Text('Error: $error'),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
               : Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -54,8 +56,8 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.hintColor,
-                            ),
+                          color: Theme.of(context).colorScheme.hintColor,
+                        ),
                         children: const [
                           TextSpan(
                             text:
@@ -169,8 +171,9 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                           horizontal: 8,
                         ),
                         decoration: BoxDecoration(
-                          color:
-                              colorScheme.errorContainer.withValues(alpha: 0.2),
+                          color: colorScheme.errorContainer.withValues(
+                            alpha: 0.2,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(

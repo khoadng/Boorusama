@@ -24,7 +24,9 @@ class MoebooruInformationSection extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return SliverToBoxAdapter(
-      child: ref.watch(moebooruAllTagsProvider(config)).maybeWhen(
+      child: ref
+          .watch(moebooruAllTagsProvider(config))
+          .maybeWhen(
             data: (tags) {
               final tagGroups = createMoebooruTagGroupItems(post.tags, tags);
 

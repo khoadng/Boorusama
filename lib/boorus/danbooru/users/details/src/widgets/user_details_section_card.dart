@@ -12,18 +12,17 @@ class UserDetailsSectionCard extends StatelessWidget {
     required Widget child,
     required String title,
     Key? key,
-  }) =>
-      UserDetailsSectionCard(
-        key: key,
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        child: child,
-      );
+  }) => UserDetailsSectionCard(
+    key: key,
+    title: Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+    child: child,
+  );
 
   final Widget child;
   final Widget title;

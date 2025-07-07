@@ -21,7 +21,9 @@ class FavoriteTagLabelChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = ref.watch(booruChipColorsProvider).fromColor(
+    final colors = ref
+        .watch(booruChipColorsProvider)
+        .fromColor(
           Theme.of(context).colorScheme.primary,
         );
 

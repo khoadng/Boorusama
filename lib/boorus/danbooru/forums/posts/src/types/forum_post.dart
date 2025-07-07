@@ -19,16 +19,16 @@ class DanbooruForumPost extends Equatable implements ForumPost {
   });
 
   factory DanbooruForumPost.empty() => DanbooruForumPost(
-        id: -1,
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-        body: '',
-        isDeleted: false,
-        topicId: -1,
-        creatorId: -1,
-        updaterId: -1,
-        votes: const [],
-      );
+    id: -1,
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+    body: '',
+    isDeleted: false,
+    topicId: -1,
+    creatorId: -1,
+    updaterId: -1,
+    votes: const [],
+  );
 
   @override
   final int id;
@@ -48,14 +48,14 @@ class DanbooruForumPost extends Equatable implements ForumPost {
 
   @override
   List<Object?> get props => [
-        id,
-        createdAt,
-        updatedAt,
-        body,
-        isDeleted,
-        topicId,
-        creatorId,
-        updaterId,
-        votes,
-      ];
+    id,
+    createdAt,
+    updatedAt,
+    body,
+    isDeleted,
+    topicId,
+    creatorId,
+    updaterId,
+    votes,
+  ];
 }

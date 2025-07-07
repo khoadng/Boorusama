@@ -59,14 +59,14 @@ class _DanbooruExplorePageDesktopState
         builder: (context, category, child) {
           return switch (category) {
             'popular' => ExplorePopularPage(
-                onBack: controller.back,
-              ),
+              onBack: controller.back,
+            ),
             'mostViewed' => ExploreMostViewedPage(
-                onBack: controller.back,
-              ),
+              onBack: controller.back,
+            ),
             _ => ExploreHotPage(
-                onBack: controller.back,
-              ),
+              onBack: controller.back,
+            ),
           };
         },
       ),

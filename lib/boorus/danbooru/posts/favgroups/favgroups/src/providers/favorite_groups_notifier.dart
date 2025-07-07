@@ -13,14 +13,18 @@ import '../../favgroup.dart';
 import '../types/update_order.dart';
 import 'local_providers.dart';
 
-final danbooruFavoriteGroupsProvider = NotifierProvider.family<
-    FavoriteGroupsNotifier, List<DanbooruFavoriteGroup>?, BooruConfigSearch>(
-  FavoriteGroupsNotifier.new,
-  dependencies: [
-    danbooruFavoriteGroupRepoProvider,
-    danbooruCurrentUserProvider,
-  ],
-);
+final danbooruFavoriteGroupsProvider =
+    NotifierProvider.family<
+      FavoriteGroupsNotifier,
+      List<DanbooruFavoriteGroup>?,
+      BooruConfigSearch
+    >(
+      FavoriteGroupsNotifier.new,
+      dependencies: [
+        danbooruFavoriteGroupRepoProvider,
+        danbooruCurrentUserProvider,
+      ],
+    );
 
 class FavoriteGroupsNotifier
     extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
@@ -35,8 +39,9 @@ class FavoriteGroupsNotifier
 
   Future<void> refresh() async {
     if (!arg.auth.hasLoginDetails()) return;
-    final groups =
-        await repo.getFavoriteGroupsByCreatorName(name: arg.auth.login!);
+    final groups = await repo.getFavoriteGroupsByCreatorName(
+      name: arg.auth.login!,
+    );
 
     //TODO: shouldn't load everything
     final ids = groups
@@ -60,8 +65,9 @@ class FavoriteGroupsNotifier
     required bool isPrivate,
     void Function(String message, bool translatable)? onFailure,
   }) async {
-    final currentUser =
-        await ref.read(danbooruCurrentUserProvider(arg.auth).future);
+    final currentUser = await ref.read(
+      danbooruCurrentUserProvider(arg.auth).future,
+    );
 
     if (currentUser == null) return;
 

@@ -21,7 +21,8 @@ class ArtistPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final PostsOrErrorCore<T> Function(
     int page,
     TagFilterCategory selectedCategory,
-  ) fetcher;
+  )
+  fetcher;
 
   @override
   ConsumerState<ArtistPageScaffold<T>> createState() =>

@@ -42,10 +42,10 @@ class HydrusRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => HydrusClient(
-          baseUrl: config.url,
-          apiKey: config.apiKey ?? '',
-          dio: dio,
-        ).getFiles().then((value) => true);
+      baseUrl: config.url,
+      apiKey: config.apiKey ?? '',
+      dio: dio,
+    ).getFiles().then((value) => true);
   }
 
   @override

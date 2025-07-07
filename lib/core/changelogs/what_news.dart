@@ -16,19 +16,20 @@ sealed class ReleaseVersion {
 
   factory ReleaseVersion.fromText(String? text) =>
       switch (text?.toLowerCase()) {
-        final String s => s.startsWith('prereleased')
-            ? Prereleased.fromText(s)
-            : Official(Version.parse(s)),
+        final String s =>
+          s.startsWith('prereleased')
+              ? Prereleased.fromText(s)
+              : Official(Version.parse(s)),
         _ => Invalid(),
       };
 
   String? getChangelogKey() => switch (this) {
-        final Prereleased u =>
-          '${kChangelogKey}_prereleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
-        final Official o =>
-          '${kChangelogKey}_${o.version.withoutPreRelease()}_seen',
-        Invalid _ => null,
-      };
+    final Prereleased u =>
+      '${kChangelogKey}_prereleased_${u.lastUpdated?.toIso8601String() ?? 'no-date'}_seen',
+    final Official o =>
+      '${kChangelogKey}_${o.version.withoutPreRelease()}_seen',
+    Invalid _ => null,
+  };
 
   static ReleaseVersion? getVersionFromChangelogKey(String key) {
     final parts = key.split('_');
@@ -52,10 +53,10 @@ sealed class ReleaseVersion {
 
   @override
   String toString() => switch (this) {
-        Prereleased _ => 'pre-released',
-        final Official o => o.version.toString(),
-        Invalid _ => 'invalid',
-      };
+    Prereleased _ => 'pre-released',
+    final Official o => o.version.toString(),
+    Invalid _ => 'invalid',
+  };
 }
 
 Version? _tryParseVersion(String? text) {

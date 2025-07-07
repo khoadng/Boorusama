@@ -13,8 +13,8 @@ import '../types/blacklisted_tag_repository.dart';
 
 final globalBlacklistedTagsProvider =
     NotifierProvider<GlobalBlacklistedTagsNotifier, IList<BlacklistedTag>>(
-  GlobalBlacklistedTagsNotifier.new,
-);
+      GlobalBlacklistedTagsNotifier.new,
+    );
 
 class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
   @override

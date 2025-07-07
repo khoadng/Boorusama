@@ -38,5 +38,5 @@ const kDanbooruPostSamples = [
     'rating': 'general',
     'index': '1',
     'search': '1girl solo',
-  }
+  },
 ];

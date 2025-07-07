@@ -9,15 +9,12 @@ import 'gelbooru_v2_builder.dart';
 import 'gelbooru_v2_repository.dart';
 
 BooruComponents createGelbooruV2() => BooruComponents(
-      parser: GelbooruV2Parser(),
-      createBuilder: GelbooruV2Builder.new,
-      createRepository: (ref) => GelbooruV2Repository(ref: ref),
-    );
+  parser: GelbooruV2Parser(),
+  createBuilder: GelbooruV2Builder.new,
+  createRepository: (ref) => GelbooruV2Repository(ref: ref),
+);
 
-typedef GelbooruV2Site = ({
-  String url,
-  String? apiUrl,
-});
+typedef GelbooruV2Site = ({String url, String? apiUrl});
 
 class GelbooruV2 extends Booru {
   const GelbooruV2({

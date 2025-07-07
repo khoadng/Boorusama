@@ -50,8 +50,8 @@ class CustomHomeViewKey extends Equatable {
   String toString() => name;
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   List<Object?> get props => [name];
@@ -70,13 +70,13 @@ class CustomHomeDataBuilder extends Equatable {
 
   final String displayName;
   final Widget Function(BuildContext context, BooruBuilder booruBuilder)?
-      builder;
+  builder;
 
   @override
   List<Object?> get props => [
-        displayName,
-        builder,
-      ];
+    displayName,
+    builder,
+  ];
 }
 
 final kDefaultAltHomeView = {

@@ -32,8 +32,9 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     final voteState = postVote?.voteState ?? VoteState.unvote;
 
     final favNotifier = ref.watch(favoritesProvider(config).notifier);
-    final voteNotifier =
-        ref.watch(szurubooruPostVotesProvider(config).notifier);
+    final voteNotifier = ref.watch(
+      szurubooruPostVotesProvider(config).notifier,
+    );
 
     return SliverToBoxAdapter(
       child: PostActionToolbar(

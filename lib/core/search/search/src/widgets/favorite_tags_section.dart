@@ -28,8 +28,9 @@ class FavoriteTagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref
-        .watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier);
+    final notifier = ref.watch(
+      miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier,
+    );
 
     return FavoriteTagsFilterScope(
       initialValue: selectedLabel,
@@ -52,7 +53,9 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors = ref.watch(booruChipColorsProvider).fromColor(
+        final colors = ref
+            .watch(booruChipColorsProvider)
+            .fromColor(
               Theme.of(ref.context).colorScheme.onSurface,
             );
 
@@ -110,8 +113,8 @@ class OptionTagsArenaNoEdit extends ConsumerWidget {
                 Text(
                   title.toUpperCase(),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
@@ -119,8 +122,9 @@ class OptionTagsArenaNoEdit extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     minimumSize: const Size(32, 32),
                     shape: const CircleBorder(),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                   ),
                   onPressed: () => ref.router.push('/favorite_tags'),
                   child: Icon(

@@ -147,8 +147,9 @@ class CombinationModeOptionTile extends StatelessWidget {
             borderRadius: borderRadius,
             border: Border.all(
               width: selected ? 1.5 : 0.25,
-              color:
-                  selected ? colorScheme.onSurface : colorScheme.outlineVariant,
+              color: selected
+                  ? colorScheme.onSurface
+                  : colorScheme.outlineVariant,
             ),
           ),
           child: Column(

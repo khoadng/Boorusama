@@ -45,8 +45,9 @@ class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
           _buildBanner('Press the button below after you logged in.'),
           FilledButton(
             onPressed: () async {
-              final cookies =
-                  await WebviewCookieManager().getCookies(widget.url);
+              final cookies = await WebviewCookieManager().getCookies(
+                widget.url,
+              );
               widget.onGet(cookies);
             },
             child: const Text('Access Cookie'),

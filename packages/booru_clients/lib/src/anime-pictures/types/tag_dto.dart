@@ -10,16 +10,16 @@ enum AnimePicturesTagType {
 }
 
 AnimePicturesTagType? tagTypeFromInt(dynamic type) => switch (type) {
-      0 => AnimePicturesTagType.unknown,
-      1 => AnimePicturesTagType.character,
-      2 => AnimePicturesTagType.reference,
-      3 => AnimePicturesTagType.copyrightProduct,
-      4 => AnimePicturesTagType.author,
-      5 => AnimePicturesTagType.copyrightGame,
-      6 => AnimePicturesTagType.copyrightOther,
-      7 => AnimePicturesTagType.object,
-      _ => null,
-    };
+  0 => AnimePicturesTagType.unknown,
+  1 => AnimePicturesTagType.character,
+  2 => AnimePicturesTagType.reference,
+  3 => AnimePicturesTagType.copyrightProduct,
+  4 => AnimePicturesTagType.author,
+  5 => AnimePicturesTagType.copyrightGame,
+  6 => AnimePicturesTagType.copyrightOther,
+  7 => AnimePicturesTagType.object,
+  _ => null,
+};
 
 class TagDto {
   const TagDto({

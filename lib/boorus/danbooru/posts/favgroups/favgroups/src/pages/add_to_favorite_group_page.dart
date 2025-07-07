@@ -61,8 +61,8 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
               title: Text(
                 'favorite_groups.add_to'.tr().toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               trailing: FilledButton(
                 style: FilledButton.styleFrom(

@@ -30,7 +30,8 @@ class TagDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(
     BuildContext context,
     List<Widget> slivers,
-  ) gridBuilder;
+  )
+  gridBuilder;
   final List<Widget>? extras;
   final void Function(TagFilterCategory category)? onCategoryToggle;
 
@@ -61,24 +62,24 @@ class _TagDetailsPageState<T extends Post>
           final widgets = [
             () => TagTitleName(tagName: widget.tagName),
             () => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: widget.otherNames,
-                    ),
-                  ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: widget.otherNames,
                 ),
+              ],
+            ),
             if (widget.extras != null)
               for (final extra in widget.extras!) () => extra,
             () => const SizedBox(height: 20),
             () => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: CategoryToggleSwitch(
-                    onToggle: (category) {
-                      widget.onCategoryToggle?.call(category);
-                    },
-                  ),
-                ),
+              padding: const EdgeInsets.only(bottom: 10),
+              child: CategoryToggleSwitch(
+                onToggle: (category) {
+                  widget.onCategoryToggle?.call(category);
+                },
+              ),
+            ),
           ];
 
           return widget.gridBuilder.call(

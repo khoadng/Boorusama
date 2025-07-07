@@ -38,10 +38,9 @@ abstract class AppClipboard {
   static Future<void> copyWithDefaultToast(
     BuildContext context,
     String text,
-  ) =>
-      copyAndToast(
-        context,
-        text,
-        message: 'Copied',
-      );
+  ) => copyAndToast(
+    context,
+    text,
+    message: 'Copied',
+  );
 }

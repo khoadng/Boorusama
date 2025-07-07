@@ -35,53 +35,53 @@ class MoebooruBuilder
   MoebooruBuilder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat:
-                  kDefaultCustomDownloadFileNameFormat,
-            ),
-            child: CreateMoebooruConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
+        ),
+        child: CreateMoebooruConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  HomePageBuilder get homePageBuilder => (context) => const MoebooruHomePage();
+  HomePageBuilder get homePageBuilder =>
+      (context) => const MoebooruHomePage();
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateMoebooruConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateMoebooruConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => MoebooruArtistPage(
-            artistName: artistName,
-          );
+        artistName: artistName,
+      );
 
   @override
   CharacterPageBuilder? get characterPageBuilder =>
       (context, characterName) => MoebooruArtistPage(
-            artistName: characterName,
-          );
+        artistName: characterName,
+      );
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -89,17 +89,17 @@ class MoebooruBuilder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as MoebooruPost).toList();
+    final posts = payload.posts.map((e) => e as MoebooruPost).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const MoebooruPostDetailsPage(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const MoebooruPostDetailsPage(),
+    );
+  };
 
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>

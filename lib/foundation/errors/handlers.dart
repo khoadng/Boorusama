@@ -27,44 +27,42 @@ void initializeErrorHandlers(ErrorReporter? reporter) {
 
 FlutterExceptionHandler? onUncaughtError(
   ErrorReporter reporter,
-) =>
-    (details) {
-      if (reporter.isRemoteErrorReportingSupported) {
-        // Ignore 304 errors
-        if (details.exception is DioException) {
-          final exception = details.exception as DioException;
-          if (exception.response?.statusCode == 304) return;
-        }
+) => (details) {
+  if (reporter.isRemoteErrorReportingSupported) {
+    // Ignore 304 errors
+    if (details.exception is DioException) {
+      final exception = details.exception as DioException;
+      if (exception.response?.statusCode == 304) return;
+    }
 
-        // Ignore image service errors
-        if (details.library == 'image resource service') return;
+    // Ignore image service errors
+    if (details.library == 'image resource service') return;
 
-        reporter.recordFlutterFatalError(details);
+    reporter.recordFlutterFatalError(details);
 
-        return;
-      }
+    return;
+  }
 
-      FlutterError.presentError(details);
-    };
+  FlutterError.presentError(details);
+};
 
 ErrorCallback? onAsyncFlutterUncaughtError(
   ErrorReporter reporter,
-) =>
-    (error, stack) {
-      if (reporter.isRemoteErrorReportingSupported) {
-        if (error is DioException) {
-          // Ignore 304 errors
-          if (error.response?.statusCode == 304) return true;
-          // Ignore image loading errors
-          final uri = error.requestOptions.uri.toString();
-          if (_isImageUrl(uri)) return true;
-        }
+) => (error, stack) {
+  if (reporter.isRemoteErrorReportingSupported) {
+    if (error is DioException) {
+      // Ignore 304 errors
+      if (error.response?.statusCode == 304) return true;
+      // Ignore image loading errors
+      final uri = error.requestOptions.uri.toString();
+      if (_isImageUrl(uri)) return true;
+    }
 
-        reporter.recordError(error, stack);
-      }
+    reporter.recordError(error, stack);
+  }
 
-      return true;
-    };
+  return true;
+};
 
 const _kExtensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'};
 

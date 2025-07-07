@@ -164,10 +164,13 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                           }
 
                           final parsedVersion = Version.parse(appVersion);
-                          final shouldShowDialog = currentVersion
-                                  .significantlyLowerThan(parsedVersion) ||
-                              currentVersion
-                                  .significantlyHigherThan(parsedVersion);
+                          final shouldShowDialog =
+                              currentVersion.significantlyLowerThan(
+                                parsedVersion,
+                              ) ||
+                              currentVersion.significantlyHigherThan(
+                                parsedVersion,
+                              );
 
                           if (shouldShowDialog) {
                             final result = await showDialog(
@@ -204,8 +207,8 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.hintColor,
-                          ),
+                        color: Theme.of(context).colorScheme.hintColor,
+                      ),
                       children: const [
                         TextSpan(
                           text:

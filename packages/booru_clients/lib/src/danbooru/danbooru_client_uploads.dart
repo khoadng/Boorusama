@@ -44,8 +44,10 @@ mixin DanbooruClientUploads {
       },
     );
 
-    return Isolate.run(() => (response.data as List)
-        .map((item) => UploadDto.fromJson(item))
-        .toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => UploadDto.fromJson(item))
+          .toList(),
+    );
   }
 }

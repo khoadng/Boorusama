@@ -16,10 +16,7 @@ final appInfoProvider = Provider<AppInfo>(
 
 const String _assetUrl = 'assets/information.json';
 
-typedef YearRange = ({
-  int start,
-  int end,
-});
+typedef YearRange = ({int start, int end});
 
 class AppInfo {
   AppInfo({
@@ -37,28 +34,28 @@ class AppInfo {
     required this.booruDefUrl,
     required this.termsOfServiceUrl,
     required this.privacyPolicyUrl,
-  })  : copyrightYearRange = (
-          start: 2020,
-          end: DateTime.now().toUtc().year,
-        ),
-        author = 'Nguyen Duc Khoa';
+  }) : copyrightYearRange = (
+         start: 2020,
+         end: DateTime.now().toUtc().year,
+       ),
+       author = 'Nguyen Duc Khoa';
 
   factory AppInfo.fromJson(Map<String, dynamic> json) => AppInfo(
-        discordUrl: json['discordUrl'],
-        githubUrl: json['githubUrl'],
-        patreonUrl: json['patreonUrl'],
-        koFiUrl: json['koFiUrl'],
-        buyMeCoffeeUrl: json['buyMeACoffeeUrl'],
-        playStoreUrl: json['playStoreUrl'],
-        appName: const String.fromEnvironment('APP_NAME'),
-        translationProjectUrl: json['translationProjectUrl'],
-        translationStatusUrl: json['translationStatusUrl'],
-        translationBadgeUrl: json['translationBadgeUrl'],
-        supportEmail: json['supportEmail'],
-        booruDefUrl: json['booruDefUrl'],
-        termsOfServiceUrl: json['termsOfServiceUrl'],
-        privacyPolicyUrl: json['privacyPolicyUrl'],
-      );
+    discordUrl: json['discordUrl'],
+    githubUrl: json['githubUrl'],
+    patreonUrl: json['patreonUrl'],
+    koFiUrl: json['koFiUrl'],
+    buyMeCoffeeUrl: json['buyMeACoffeeUrl'],
+    playStoreUrl: json['playStoreUrl'],
+    appName: const String.fromEnvironment('APP_NAME'),
+    translationProjectUrl: json['translationProjectUrl'],
+    translationStatusUrl: json['translationStatusUrl'],
+    translationBadgeUrl: json['translationBadgeUrl'],
+    supportEmail: json['supportEmail'],
+    booruDefUrl: json['booruDefUrl'],
+    termsOfServiceUrl: json['termsOfServiceUrl'],
+    privacyPolicyUrl: json['privacyPolicyUrl'],
+  );
 
   static final empty = AppInfo(
     discordUrl: '',
@@ -96,10 +93,10 @@ class AppInfo {
   final String author;
 
   List<String> get donationUrls => [
-        patreonUrl,
-        koFiUrl,
-        buyMeCoffeeUrl,
-      ];
+    patreonUrl,
+    koFiUrl,
+    buyMeCoffeeUrl,
+  ];
 }
 
 Future<AppInfo> getAppInfo() async {

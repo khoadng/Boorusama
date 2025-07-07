@@ -6,8 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../types/custom_details.dart';
 import '../types/details_part.dart';
 
-class DetailsLayoutNotifier extends AutoDisposeFamilyNotifier<
-    DetailsLayoutState, DetailsLayoutManagerParams> {
+class DetailsLayoutNotifier
+    extends
+        AutoDisposeFamilyNotifier<
+          DetailsLayoutState,
+          DetailsLayoutManagerParams
+        > {
   @override
   DetailsLayoutState build(DetailsLayoutManagerParams arg) {
     return DetailsLayoutState(
@@ -28,8 +32,9 @@ class DetailsLayoutNotifier extends AutoDisposeFamilyNotifier<
   }
 
   void remove(CustomDetailsPartKey key) {
-    final newDetails =
-        state.details.where((element) => element != key).toList();
+    final newDetails = state.details
+        .where((element) => element != key)
+        .toList();
 
     state = state.copyWith(
       details: newDetails,
@@ -110,14 +115,18 @@ class DetailsLayoutManagerParams extends Equatable {
 
   @override
   List<Object?> get props => [
-        details,
-        availableParts,
-        defaultParts,
-        onUpdate,
-      ];
+    details,
+    availableParts,
+    defaultParts,
+    onUpdate,
+  ];
 }
 
-final detailsLayoutProvider = NotifierProvider.autoDispose.family<
-    DetailsLayoutNotifier, DetailsLayoutState, DetailsLayoutManagerParams>(
-  DetailsLayoutNotifier.new,
-);
+final detailsLayoutProvider = NotifierProvider.autoDispose
+    .family<
+      DetailsLayoutNotifier,
+      DetailsLayoutState,
+      DetailsLayoutManagerParams
+    >(
+      DetailsLayoutNotifier.new,
+    );

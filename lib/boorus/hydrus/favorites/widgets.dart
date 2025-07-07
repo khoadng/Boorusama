@@ -21,7 +21,9 @@ class HydrusFavoritesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
 
-    return ref.watch(ratingServiceNameProvider(config.auth)).when(
+    return ref
+        .watch(ratingServiceNameProvider(config.auth))
+        .when(
           data: (serviceName) => serviceName == null || serviceName.isEmpty
               ? _buildError()
               : Builder(
@@ -90,7 +92,9 @@ class HydrusQuickFavoriteButton extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final notifier = ref.watch(favoritesProvider(config).notifier);
 
-    return ref.watch(hydrusCanFavoriteProvider(config)).when(
+    return ref
+        .watch(hydrusCanFavoriteProvider(config))
+        .when(
           data: (canFavorite) => canFavorite
               ? QuickFavoriteButton(
                   isFaved: ref.watch(favoriteProvider(post.id)),

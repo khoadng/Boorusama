@@ -86,21 +86,21 @@ class DownloadRecord extends Equatable {
 
   @override
   List<Object?> get props => [
-        url,
-        sessionId,
-        status,
-        page,
-        pageIndex,
-        createdAt,
-        fileSize,
-        fileName,
-        extension,
-        error,
-        downloadId,
-        headers,
-        thumbnailImageUrl,
-        sourceUrl,
-      ];
+    url,
+    sessionId,
+    status,
+    page,
+    pageIndex,
+    createdAt,
+    fileSize,
+    fileName,
+    extension,
+    error,
+    downloadId,
+    headers,
+    thumbnailImageUrl,
+    sourceUrl,
+  ];
 
   @override
   String toString() => 'url: $url, status: $status';

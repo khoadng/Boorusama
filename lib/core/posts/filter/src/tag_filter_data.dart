@@ -15,13 +15,13 @@ class TagFilterData {
 
   TagFilterData.tags({
     required this.tags,
-  })  : rating = Rating.general,
-        score = 0,
-        source = null,
-        uploaderId = null,
-        uploaderName = null,
-        id = null,
-        downvotes = null;
+  }) : rating = Rating.general,
+       score = 0,
+       source = null,
+       uploaderId = null,
+       uploaderName = null,
+       id = null,
+       downvotes = null;
 
   final Set<String> tags;
   final Rating rating;
@@ -35,6 +35,6 @@ class TagFilterData {
 
 extension TagFilterDataX on Set<String> {
   TagFilterData toTagFilterData() => TagFilterData.tags(
-        tags: map((tag) => tag.toLowerCase()).toSet(),
-      );
+    tags: map((tag) => tag.toLowerCase()).toSet(),
+  );
 }

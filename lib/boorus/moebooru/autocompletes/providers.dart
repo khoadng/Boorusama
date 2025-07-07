@@ -7,12 +7,15 @@ import '../tag_summary/providers.dart';
 import 'repository.dart';
 
 final moebooruAutocompleteRepoProvider =
-    Provider.family<MoebooruAutocompleteRepository, BooruConfigAuth>(
-        (ref, config) {
-  final tagSummaryRepository =
-      ref.watch(moebooruTagSummaryRepoProvider(config));
+    Provider.family<MoebooruAutocompleteRepository, BooruConfigAuth>((
+      ref,
+      config,
+    ) {
+      final tagSummaryRepository = ref.watch(
+        moebooruTagSummaryRepoProvider(config),
+      );
 
-  return MoebooruAutocompleteRepository(
-    tagSummaryRepository: tagSummaryRepository,
-  );
-});
+      return MoebooruAutocompleteRepository(
+        tagSummaryRepository: tagSummaryRepository,
+      );
+    });

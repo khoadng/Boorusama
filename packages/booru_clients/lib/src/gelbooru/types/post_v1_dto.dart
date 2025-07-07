@@ -33,7 +33,9 @@ class PostV1Dto {
     final tags = imageElement.attributes['title'];
 
     final md5 = thumbUrl.substring(
-        thumbUrl.lastIndexOf('_') + 1, thumbUrl.lastIndexOf('.'));
+      thumbUrl.lastIndexOf('_') + 1,
+      thumbUrl.lastIndexOf('.'),
+    );
 
     int? score;
     String? rating;

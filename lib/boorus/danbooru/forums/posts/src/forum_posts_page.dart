@@ -132,8 +132,9 @@ class _DanbooruForumPostsPageState
         children: [
           Builder(
             builder: (context) {
-              final creator =
-                  ref.watch(danbooruCreatorProvider(post.creatorId));
+              final creator = ref.watch(
+                danbooruCreatorProvider(post.creatorId),
+              );
 
               final creatorName = creator?.name ?? '...';
               final creatorLevel = creator?.level ?? UserLevel.member;
@@ -152,7 +153,7 @@ class _DanbooruForumPostsPageState
           AppHtml(
             onLinkTap: !config.hasStrictSFW
                 ? (url, attributes, element) =>
-                    url != null ? launchExternalUrlString(url) : null
+                      url != null ? launchExternalUrlString(url) : null
                 : null,
             style: {
               'body': Style(

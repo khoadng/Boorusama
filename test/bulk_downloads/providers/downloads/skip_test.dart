@@ -46,8 +46,9 @@ void main() {
       // Arrange
       when(() => existChecker.exists(any(), any())).thenAnswer((i) {
         final filename = i.positionalArguments[0] as String;
-        return filename
-            .contains('test-original-url-1'); // Only first file exists
+        return filename.contains(
+          'test-original-url-1',
+        ); // Only first file exists
       });
 
       final task = await repository.createTask(_options);
@@ -72,8 +73,9 @@ void main() {
       expect(skippedRecord, isNull);
 
       // Verify other files were not skipped
-      final notSkippedRecords =
-          records.where((r) => !r.url.contains('test-original-url-1'));
+      final notSkippedRecords = records.where(
+        (r) => !r.url.contains('test-original-url-1'),
+      );
       for (final record in notSkippedRecords) {
         expect(record.status, equals(DownloadRecordStatus.downloading));
       }

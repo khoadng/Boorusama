@@ -10,11 +10,11 @@ import 'types.dart';
 
 final moebooruTagSummaryRepoProvider =
     Provider.family<TagSummaryRepository, BooruConfigAuth>((ref, config) {
-  final api = ref.watch(moebooruClientProvider(config));
-  final path = '${Uri.encodeComponent(config.url)}_tag_summary';
+      final api = ref.watch(moebooruClientProvider(config));
+      final path = '${Uri.encodeComponent(config.url)}_tag_summary';
 
-  return MoebooruTagSummaryRepository(
-    api,
-    TagSummaryRepositoryFile(path),
-  );
-});
+      return MoebooruTagSummaryRepository(
+        api,
+        TagSummaryRepositoryFile(path),
+      );
+    });

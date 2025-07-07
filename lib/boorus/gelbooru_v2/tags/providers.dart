@@ -9,49 +9,50 @@ import '../../../foundation/riverpod/riverpod.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 
-final gelbooruV2TagsFromIdProvider =
-    FutureProvider.autoDispose.family<List<Tag>, (BooruConfigAuth, int)>(
-  (ref, params) async {
-    ref.cacheFor(const Duration(minutes: 5));
+final gelbooruV2TagsFromIdProvider = FutureProvider.autoDispose
+    .family<List<Tag>, (BooruConfigAuth, int)>(
+      (ref, params) async {
+        ref.cacheFor(const Duration(minutes: 5));
 
-    final (config, id) = params;
-    final client = ref.watch(gelbooruV2ClientProvider(config));
+        final (config, id) = params;
+        final client = ref.watch(gelbooruV2ClientProvider(config));
 
-    final data = await client.getTagsFromPostId(postId: id);
+        final data = await client.getTagsFromPostId(postId: id);
 
-    return data.map(mapGelbooruV2TagDtoToTag).toList();
-  },
-);
+        return data.map(mapGelbooruV2TagDtoToTag).toList();
+      },
+    );
 
 final gelbooruV2TagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
-  (ref, config) {
-    return TagExtractorBuilder(
-      sorter: TagSorter.defaults(),
-      fetcher: (post, options) async {
-        final tags = await ref
-            .read(gelbooruV2TagsFromIdProvider((config, post.id)).future);
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) async {
+            final tags = await ref.read(
+              gelbooruV2TagsFromIdProvider((config, post.id)).future,
+            );
 
-        return tags;
+            return tags;
+          },
+        );
       },
     );
-  },
-);
 
 final gelbooruV2AutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(gelbooruV2ClientProvider(config));
+      final client = ref.watch(gelbooruV2ClientProvider(config));
 
-  return AutocompleteRepositoryBuilder(
-    autocomplete: (query) async {
-      final dtos = await client.autocomplete(term: query.text, limit: 20);
+      return AutocompleteRepositoryBuilder(
+        autocomplete: (query) async {
+          final dtos = await client.autocomplete(term: query.text, limit: 20);
 
-      return dtos
-          .map(mapGelbooruV2AutocompleteDtoToData)
-          .where((e) => e != AutocompleteData.empty)
-          .toList();
-    },
-    persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
-  );
-});
+          return dtos
+              .map(mapGelbooruV2AutocompleteDtoToData)
+              .where((e) => e != AutocompleteData.empty)
+              .toList();
+        },
+        persistentStorageKey:
+            '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+      );
+    });

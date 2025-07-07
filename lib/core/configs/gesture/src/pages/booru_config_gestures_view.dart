@@ -38,8 +38,9 @@ class BooruConfigGesturesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postGesturesConfigTyped = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.postGesturesConfigTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.postGesturesConfigTyped),
     );
 
     return SingleChildScrollView(
@@ -190,10 +191,10 @@ class BooruConfigGesturesView extends ConsumerWidget {
           Text(
             'Override the default gestures for this profile, select "None" to keep the original behavior.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ],
       ),

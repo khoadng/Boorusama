@@ -14,67 +14,69 @@ import 'types.dart';
 
 final hydrusPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
-  (ref, config) {
-    final client = ref.watch(hydrusClientProvider(config.auth));
+      (ref, config) {
+        final client = ref.watch(hydrusClientProvider(config.auth));
 
-    Future<PostResult<HydrusPost>> getPosts(
-      List<String> tags,
-      int page, {
-      int? limit,
-      PostFetchOptions? options,
-    }) async {
-      final files = await client.getFiles(
-        tags: tags,
-        page: page,
-        limit: limit,
-      );
-
-      final data = files.files
-          .map(
-            (e) => postDtoToPost(
-              e,
-              PostMetadata(
-                page: page,
-                search: tags.join(' '),
-                limit: limit,
-              ),
-            ),
-          )
-          .toList()
-          .toResult(
-            total: files.count,
+        Future<PostResult<HydrusPost>> getPosts(
+          List<String> tags,
+          int page, {
+          int? limit,
+          PostFetchOptions? options,
+        }) async {
+          final files = await client.getFiles(
+            tags: tags,
+            page: page,
+            limit: limit,
           );
 
-      if (options?.cascadeRequest ?? true) {
-        ref.read(favoritesProvider(config.auth).notifier).preload(data.posts);
-      }
+          final data = files.files
+              .map(
+                (e) => postDtoToPost(
+                  e,
+                  PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                    limit: limit,
+                  ),
+                ),
+              )
+              .toList()
+              .toResult(
+                total: files.count,
+              );
 
-      return data;
-    }
+          if (options?.cascadeRequest ?? true) {
+            ref
+                .read(favoritesProvider(config.auth).notifier)
+                .preload(data.posts);
+          }
 
-    return PostRepositoryBuilder(
-      getComposer: () => ref.read(tagQueryComposerProvider(config)),
-      getSettings: () async => ref.read(imageListingSettingsProvider),
-      fetchSingle: (id, {options}) async {
-        final numericId = id as NumericPostId?;
+          return data;
+        }
 
-        if (numericId == null) return Future.value(null);
+        return PostRepositoryBuilder(
+          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          getSettings: () async => ref.read(imageListingSettingsProvider),
+          fetchSingle: (id, {options}) async {
+            final numericId = id as NumericPostId?;
 
-        final file = await client.getFile(numericId.value);
+            if (numericId == null) return Future.value(null);
 
-        return file != null ? postDtoToPost(file, null) : null;
-      },
-      fetchFromController: (controller, page, {limit, options}) {
-        final tags = controller.tags.map((e) => e.originalTag).toList();
-        final composer = ref.read(tagQueryComposerProvider(config));
+            final file = await client.getFile(numericId.value);
 
-        return getPosts(
-          composer.compose(tags),
-          page,
-          limit: limit,
+            return file != null ? postDtoToPost(file, null) : null;
+          },
+          fetchFromController: (controller, page, {limit, options}) {
+            final tags = controller.tags.map((e) => e.originalTag).toList();
+            final composer = ref.read(tagQueryComposerProvider(config));
+
+            return getPosts(
+              composer.compose(tags),
+              page,
+              limit: limit,
+            );
+          },
+          fetch: getPosts,
         );
       },
-      fetch: getPosts,
     );
-  },
-);

@@ -73,7 +73,9 @@ class _MostViewedExploreState extends ConsumerState<MostViewedExplore> {
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.most_viewed'.tr(),
-      builder: (_) => ref.watch(danbooruMostViewedTodayProvider).maybeWhen(
+      builder: (_) => ref
+          .watch(danbooruMostViewedTodayProvider)
+          .maybeWhen(
             data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
@@ -99,7 +101,9 @@ class _HotExploreState extends ConsumerState<HotExplore> {
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.hot'.tr(),
-      builder: (_) => ref.watch(danbooruHotTodayProvider).maybeWhen(
+      builder: (_) => ref
+          .watch(danbooruHotTodayProvider)
+          .maybeWhen(
             data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
@@ -125,7 +129,9 @@ class _PopularExploreState extends ConsumerState<PopularExplore> {
   Widget build(BuildContext context) {
     return ExploreSection(
       title: 'explore.popular'.tr(),
-      builder: (_) => ref.watch(danbooruPopularTodayProvider).maybeWhen(
+      builder: (_) => ref
+          .watch(danbooruPopularTodayProvider)
+          .maybeWhen(
             data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),

@@ -20,9 +20,11 @@ class HomeScreenSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
     final booruBuilder = ref.watch(booruBuilderProvider(config.auth));
-    final layout = ref.watch(
-          editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-              .select((value) => value.layoutTyped),
+    final layout =
+        ref.watch(
+          editBooruConfigProvider(
+            ref.watch(editBooruConfigIdProvider),
+          ).select((value) => value.layoutTyped),
         ) ??
         const LayoutConfigs.undefined();
     final data = booruBuilder?.customHomeViewBuilders ?? kDefaultAltHomeView;
@@ -57,6 +59,5 @@ class HomeScreenSection extends ConsumerWidget {
   String _describeView(
     Map<CustomHomeViewKey, CustomHomeDataBuilder> data,
     CustomHomeViewKey viewKey,
-  ) =>
-      data[viewKey]?.displayName ?? 'Unknown';
+  ) => data[viewKey]?.displayName ?? 'Unknown';
 }

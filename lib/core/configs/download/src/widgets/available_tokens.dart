@@ -35,8 +35,9 @@ class AvailableTokens extends ConsumerWidget {
             visualDensity: VisualDensity.compact,
             label: Text(token),
             onPressed: () {
-              final tokenOptions =
-                  downloadFilenameBuilder?.getTokenOptions(token);
+              final tokenOptions = downloadFilenameBuilder?.getTokenOptions(
+                token,
+              );
 
               if (tokenOptions == null) {
                 showErrorToast(context, 'Token $token is not available');

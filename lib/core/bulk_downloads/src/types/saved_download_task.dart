@@ -45,10 +45,10 @@ class SavedDownloadTask extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        task,
-        name,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    task,
+    name,
+    createdAt,
+    updatedAt,
+  ];
 }

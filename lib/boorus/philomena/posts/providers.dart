@@ -12,42 +12,42 @@ import 'parser.dart';
 
 final philomenaPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>((ref, config) {
-  final client = ref.watch(philomenaClientProvider(config.auth));
+      final client = ref.watch(philomenaClientProvider(config.auth));
 
-  return PostRepositoryBuilder(
-    getComposer: () => ref.read(tagQueryComposerProvider(config)),
-    getSettings: () async => ref.read(imageListingSettingsProvider),
-    fetchSingle: (id, {options}) async {
-      final numericId = id as NumericPostId?;
+      return PostRepositoryBuilder(
+        getComposer: () => ref.read(tagQueryComposerProvider(config)),
+        getSettings: () async => ref.read(imageListingSettingsProvider),
+        fetchSingle: (id, {options}) async {
+          final numericId = id as NumericPostId?;
 
-      if (numericId == null) return Future.value(null);
+          if (numericId == null) return Future.value(null);
 
-      final post = await client.getImage(numericId.value);
+          final post = await client.getImage(numericId.value);
 
-      return post != null ? postDtoToPost(post, null) : null;
-    },
-    fetch: (tags, page, {limit, options}) async {
-      final isEmpty = tags.join(' ').isEmpty;
+          return post != null ? postDtoToPost(post, null) : null;
+        },
+        fetch: (tags, page, {limit, options}) async {
+          final isEmpty = tags.join(' ').isEmpty;
 
-      final posts = await client.getImages(
-        tags: isEmpty ? ['*'] : tags,
-        page: page,
-        perPage: limit,
+          final posts = await client.getImages(
+            tags: isEmpty ? ['*'] : tags,
+            page: page,
+            perPage: limit,
+          );
+
+          return posts.images
+              .map(
+                (e) => postDtoToPost(
+                  e,
+                  PostMetadata(
+                    page: page,
+                    search: tags.join(' '),
+                    limit: limit,
+                  ),
+                ),
+              )
+              .toList()
+              .toResult(total: posts.count);
+        },
       );
-
-      return posts.images
-          .map(
-            (e) => postDtoToPost(
-              e,
-              PostMetadata(
-                page: page,
-                search: tags.join(' '),
-                limit: limit,
-              ),
-            ),
-          )
-          .toList()
-          .toResult(total: posts.count);
-    },
-  );
-});
+    });

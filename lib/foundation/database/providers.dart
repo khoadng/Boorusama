@@ -18,17 +18,16 @@ final databaseFolderPathProvider = FutureProvider<String>((ref) async {
   return switch (defaultTargetPlatform) {
     TargetPlatform.android ||
     TargetPlatform.iOS ||
-    TargetPlatform.macOS =>
-      join(applicationDocumentsDir.path, _kFolderName),
+    TargetPlatform.macOS => join(applicationDocumentsDir.path, _kFolderName),
     TargetPlatform.windows => join(
-        applicationDocumentsDir.path,
-        appName,
-        _kFolderName,
-      ),
+      applicationDocumentsDir.path,
+      appName,
+      _kFolderName,
+    ),
     TargetPlatform.linux || TargetPlatform.fuchsia => join(
-        applicationDocumentsDir.path,
-        appName.toLowerCase().replaceAll(' ', '_'),
-        _kFolderName,
-      ),
+      applicationDocumentsDir.path,
+      appName.toLowerCase().replaceAll(' ', '_'),
+      _kFolderName,
+    ),
   };
 });

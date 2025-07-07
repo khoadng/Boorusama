@@ -15,8 +15,9 @@ final iapProvider = FutureProvider<IAP>((ref) async {
   return iap;
 });
 
-final subscriptionManagerProvider =
-    FutureProvider<SubscriptionManager>((ref) async {
+final subscriptionManagerProvider = FutureProvider<SubscriptionManager>((
+  ref,
+) async {
   final iap = await ref.watch(iapProvider.future);
 
   return iap.subscriptionManager;
@@ -37,8 +38,9 @@ Future<IAP> initDummyIap() async {
   return iap;
 }
 
-final subscriptionPackagesProvider =
-    FutureProvider.autoDispose<List<Package>>((ref) async {
+final subscriptionPackagesProvider = FutureProvider.autoDispose<List<Package>>((
+  ref,
+) async {
   final iap = await ref.watch(iapProvider.future);
   final availablePackages = await iap.purchaser.getAvailablePackages();
 

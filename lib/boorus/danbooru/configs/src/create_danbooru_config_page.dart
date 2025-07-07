@@ -42,10 +42,10 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         customInstruction: RichText(
           text: TextSpan(
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
             children: [
               const TextSpan(
                 text: '*Log in to your account on the browser, visit ',

@@ -37,11 +37,11 @@ class FileDetailsSection extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(
           listTileTheme: Theme.of(context).listTileTheme.copyWith(
-                visualDensity: VisualDensity.compact,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
-              ),
+            visualDensity: VisualDensity.compact,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+            ),
+          ),
           dividerColor: Colors.transparent,
         ),
         child: RemoveLeftPaddingOnLargeScreen(
@@ -150,14 +150,17 @@ class FileDetailsSection extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Column(
-                          children:
-                              children.sublist(0, (children.length / 2).ceil()),
+                          children: children.sublist(
+                            0,
+                            (children.length / 2).ceil(),
+                          ),
                         ),
                       ),
                       Expanded(
                         child: Column(
-                          children:
-                              children.sublist((children.length / 2).ceil()),
+                          children: children.sublist(
+                            (children.length / 2).ceil(),
+                          ),
                         ),
                       ),
                     ],

@@ -27,17 +27,19 @@ class SzurubooruPostVotesNotifier
   SzurubooruClient get client => ref.read(szurubooruClientProvider(arg));
 
   @override
-  Future<SzurubooruPostVote?> Function(int postId) get upvoter => (postId) =>
-      client.upvotePost(postId: postId).then(SzurubooruPostVote.fromPostDto);
+  Future<SzurubooruPostVote?> Function(int postId) get upvoter =>
+      (postId) => client
+          .upvotePost(postId: postId)
+          .then(SzurubooruPostVote.fromPostDto);
 
   @override
   Future<bool> Function(int postId) get voteRemover => (postId) async {
-        await client.unvotePost(postId: postId);
+    await client.unvotePost(postId: postId);
 
-        _removeLocalFavorite(postId);
+    _removeLocalFavorite(postId);
 
-        return true;
-      };
+    return true;
+  };
 
   @override
   Future<SzurubooruPostVote?> Function(int postId) get downvoter =>
@@ -62,24 +64,26 @@ class SzurubooruPostVotesNotifier
 
   @override
   Future<List<SzurubooruPostVote>> Function(List<SzurubooruPost> posts)
-      get votesFetcher => (posts) async {
-            final votes = posts.map(SzurubooruPostVote.fromPost).toList();
+  get votesFetcher => (posts) async {
+    final votes = posts.map(SzurubooruPostVote.fromPost).toList();
 
-            return votes;
-          };
+    return votes;
+  };
 }
 
-final szurubooruPostVotesProvider = NotifierProvider.family<
-    SzurubooruPostVotesNotifier,
-    IMap<int, SzurubooruPostVote?>,
-    BooruConfigAuth>(
-  SzurubooruPostVotesNotifier.new,
-);
+final szurubooruPostVotesProvider =
+    NotifierProvider.family<
+      SzurubooruPostVotesNotifier,
+      IMap<int, SzurubooruPostVote?>,
+      BooruConfigAuth
+    >(
+      SzurubooruPostVotesNotifier.new,
+    );
 
-final szurubooruPostVoteProvider =
-    Provider.autoDispose.family<SzurubooruPostVote?, int>(
-  (ref, postId) {
-    final config = ref.watchConfigAuth;
-    return ref.watch(szurubooruPostVotesProvider(config))[postId];
-  },
-);
+final szurubooruPostVoteProvider = Provider.autoDispose
+    .family<SzurubooruPostVote?, int>(
+      (ref, postId) {
+        final config = ref.watchConfigAuth;
+        return ref.watch(szurubooruPostVotesProvider(config))[postId];
+      },
+    );

@@ -30,7 +30,10 @@ mixin DanbooruFavoriteGroupPostMixin {
     final ids = queue.skip(skip).take(limit).toList();
 
     // Get posts from repository
-    final r = await postRepository.getPostsFromIds(ids).run().then(
+    final r = await postRepository
+        .getPostsFromIds(ids)
+        .run()
+        .then(
           (value) => value.fold(
             (l) => <DanbooruPost>[].toResult(),
             (r) => r,

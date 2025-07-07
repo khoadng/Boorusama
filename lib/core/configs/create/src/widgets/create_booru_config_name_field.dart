@@ -19,8 +19,9 @@ class BooruConfigNameField extends ConsumerWidget {
     final id = ref.watch(editBooruConfigIdProvider);
 
     return CreateBooruConfigNameField(
-      text:
-          ref.watch(editBooruConfigProvider(id).select((value) => value.name)),
+      text: ref.watch(
+        editBooruConfigProvider(id).select((value) => value.name),
+      ),
       onChanged: (value) => ref.editNotifier.updateName(value),
     );
   }

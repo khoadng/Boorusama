@@ -48,8 +48,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     final details = PostDetails.of<T>(context);
     final config = ref.watchConfigAuth;
     final useDefault = ref.watch(
-      settingsProvider
-          .select((value) => value.videoPlayerEngine != VideoPlayerEngine.mdk),
+      settingsProvider.select(
+        (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+      ),
     );
     final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
     final heroTag = '${post.id}_hero';
@@ -58,7 +59,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
         ? Stack(
             children: [
               Positioned.fill(
-                child: extension(post.videoUrl) == '.webm' &&
+                child:
+                    extension(post.videoUrl) == '.webm' &&
                         isAndroid() &&
                         useDefault
                     ? EmbeddedWebViewWebm(
@@ -71,8 +73,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                             .onWebmVideoPlayerCreated(wvpc, post.id),
                         sound: ref.isGlobalVideoSoundOn,
                         playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                        userAgent:
-                            ref.watch(userAgentProvider(config.booruType)),
+                        userAgent: ref.watch(
+                          userAgentProvider(config.booruType),
+                        ),
                       )
                     : BooruVideo(
                         heroTag: heroTag,

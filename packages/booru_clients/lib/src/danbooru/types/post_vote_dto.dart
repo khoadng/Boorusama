@@ -10,18 +10,18 @@ class PostVoteDto {
   });
 
   factory PostVoteDto.fromJson(Map<String, dynamic> json) => PostVoteDto(
-        id: json['id'],
-        postId: json['post_id'],
-        userId: json['user_id'],
-        createdAt: json['created_at'] == null
-            ? null
-            : DateTime.parse(json['created_at']),
-        updatedAt: json['updated_at'] == null
-            ? null
-            : DateTime.parse(json['updated_at']),
-        score: json['score'],
-        isDeleted: json['is_deleted'],
-      );
+    id: json['id'],
+    postId: json['post_id'],
+    userId: json['user_id'],
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at']),
+    updatedAt: json['updated_at'] == null
+        ? null
+        : DateTime.parse(json['updated_at']),
+    score: json['score'],
+    isDeleted: json['is_deleted'],
+  );
 
   final int? id;
   final int? postId;

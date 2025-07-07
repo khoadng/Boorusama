@@ -13,15 +13,15 @@ import 'types.dart';
 
 final moebooruPopularRepoProvider =
     Provider.family<MoebooruPopularRepository, BooruConfigAuth>(
-  (ref, config) {
-    final client = ref.watch(moebooruClientProvider(config));
+      (ref, config) {
+        final client = ref.watch(moebooruClientProvider(config));
 
-    return MoebooruPopularRepositoryApi(
-      client,
-      config,
+        return MoebooruPopularRepositoryApi(
+          client,
+          config,
+        );
+      },
     );
-  },
-);
 
 class MoebooruPopularRepositoryApi implements MoebooruPopularRepository {
   MoebooruPopularRepositoryApi(

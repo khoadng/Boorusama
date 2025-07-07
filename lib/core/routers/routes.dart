@@ -52,70 +52,70 @@ const kCharacterNameKey = 'name';
 
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
-        path: '/',
-        builder: (context, state) => BooruConfigDeepLinkResolver(
-          path: state.uri.toString(),
-          child: const AppLockWithSettings(
-            child: AppRatingScope(
-              child: BackgroundDownloaderBuilder(
-                child: CustomContextMenuOverlay(
-                  child: Focus(
-                    autofocus: true,
-                    child: EntryPage(),
-                  ),
-                ),
+    path: '/',
+    builder: (context, state) => BooruConfigDeepLinkResolver(
+      path: state.uri.toString(),
+      child: const AppLockWithSettings(
+        child: AppRatingScope(
+          child: BackgroundDownloaderBuilder(
+            child: CustomContextMenuOverlay(
+              child: Focus(
+                autofocus: true,
+                child: EntryPage(),
               ),
             ),
           ),
         ),
-        routes: [
-          addBooruConfigRoutes(ref),
-          updateBooruConfigRoutes(ref),
-          searchRoutes(ref),
-          postDetailsRoutes(ref),
-          singlePostDetailsRoutes(ref),
-          postFavoritesRoutes(ref),
-          artists(ref),
-          characters(ref),
-          settingsRoutes,
-          settingsDesktopRoutes,
-          bookmarkRoutes,
-          globalBlacklistedTagsRoutes,
-          downloadManagerRoutes,
-          bulkDownloadsRoutes,
-          favoriteTags(),
-          originalImageRoutes,
-          premiumRoutes(ref),
-          donationRoutes(ref),
-          detailsManagerRoutes,
-        ],
-      );
+      ),
+    ),
+    routes: [
+      addBooruConfigRoutes(ref),
+      updateBooruConfigRoutes(ref),
+      searchRoutes(ref),
+      postDetailsRoutes(ref),
+      singlePostDetailsRoutes(ref),
+      postFavoritesRoutes(ref),
+      artists(ref),
+      characters(ref),
+      settingsRoutes,
+      settingsDesktopRoutes,
+      bookmarkRoutes,
+      globalBlacklistedTagsRoutes,
+      downloadManagerRoutes,
+      bulkDownloadsRoutes,
+      favoriteTags(),
+      originalImageRoutes,
+      premiumRoutes(ref),
+      donationRoutes(ref),
+      detailsManagerRoutes,
+    ],
+  );
 
   static GoRoute artists(Ref ref) => GoRoute(
-        path: 'artists',
-        name: '/artists',
-        pageBuilder: largeScreenAwarePageBuilder(
-          builder: (context, state) {
-            return InheritedArtistName(
-              artistName: state.uri.queryParameters[kArtistNameKey],
-              child: const ArtistPage(),
-            );
-          },
-        ),
-      );
+    path: 'artists',
+    name: '/artists',
+    pageBuilder: largeScreenAwarePageBuilder(
+      builder: (context, state) {
+        return InheritedArtistName(
+          artistName: state.uri.queryParameters[kArtistNameKey],
+          child: const ArtistPage(),
+        );
+      },
+    ),
+  );
 
   static GoRoute characters(Ref ref) => GoRoute(
-        path: 'characters',
-        name: '/characters',
-        pageBuilder: largeScreenAwarePageBuilder(
-          builder: (context, state) {
-            return InheritedCharacterName(
-              characterName: state.uri.queryParameters[kCharacterNameKey],
-              child: const CharacterPage(),
-            );
-          },
-        ),
-      );
+    path: 'characters',
+    name: '/characters',
+    pageBuilder: largeScreenAwarePageBuilder(
+      builder: (context, state) {
+        return InheritedCharacterName(
+          characterName: state.uri.queryParameters[kCharacterNameKey],
+          child: const CharacterPage(),
+        );
+      },
+    ),
+  );
 }
 
 class ArtistPage extends ConsumerWidget {
@@ -129,8 +129,8 @@ class ArtistPage extends ConsumerWidget {
 
     return builder != null
         ? artistName != null
-            ? builder(context, artistName)
-            : const InvalidPage(message: 'Invalid artist name')
+              ? builder(context, artistName)
+              : const InvalidPage(message: 'Invalid artist name')
         : const UnimplementedPage();
   }
 }
@@ -165,8 +165,8 @@ class CharacterPage extends ConsumerWidget {
 
     return builder != null
         ? characterName != null
-            ? builder(context, characterName)
-            : const InvalidPage(message: 'Invalid character name')
+              ? builder(context, characterName)
+              : const InvalidPage(message: 'Invalid character name')
         : const UnimplementedPage();
   }
 }

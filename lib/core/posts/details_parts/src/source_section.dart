@@ -56,9 +56,9 @@ class SourceSection extends StatelessWidget {
           child: Text(
             title ?? 'post.detail.source_label'.tr(),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 16,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 16,
+            ),
           ),
         ),
         Padding(

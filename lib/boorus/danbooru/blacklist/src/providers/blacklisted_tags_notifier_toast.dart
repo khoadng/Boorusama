@@ -38,32 +38,30 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
   Future<void> addWithToast({
     required BuildContext context,
     required String tag,
-  }) =>
-      add(
-        tagSet: {tag},
-        onSuccess: (tags) => showSuccessToast(
-          context,
-          'blacklisted_tags.updated'.tr(),
-        ),
-        onFailure: (e) => showErrorToast(
-          context,
-          '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
-        ),
-      );
+  }) => add(
+    tagSet: {tag},
+    onSuccess: (tags) => showSuccessToast(
+      context,
+      'blacklisted_tags.updated'.tr(),
+    ),
+    onFailure: (e) => showErrorToast(
+      context,
+      '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
+    ),
+  );
 
   Future<void> removeWithToast({
     required BuildContext context,
     required String tag,
-  }) =>
-      remove(
-        tag: tag,
-        onSuccess: (tags) => showSuccessToast(
-          context,
-          'blacklisted_tags.updated'.tr(),
-        ),
-        onFailure: () => showErrorToast(
-          context,
-          'blacklisted_tags.failed_to_remove'.tr(),
-        ),
-      );
+  }) => remove(
+    tag: tag,
+    onSuccess: (tags) => showSuccessToast(
+      context,
+      'blacklisted_tags.updated'.tr(),
+    ),
+    onFailure: () => showErrorToast(
+      context,
+      'blacklisted_tags.failed_to_remove'.tr(),
+    ),
+  );
 }

@@ -190,8 +190,9 @@ class TagEditHistoryCard extends StatelessWidget {
           version.updater.name.replaceAll('_', ' '),
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color:
-                DanbooruUserColor.of(context).fromLevel(version.updater.level),
+            color: DanbooruUserColor.of(
+              context,
+            ).fromLevel(version.updater.level),
           ),
         ),
       ),

@@ -8,10 +8,10 @@ enum DownloadFilter {
 }
 
 DownloadFilter convertFilter(String? filter) => switch (filter) {
-      'error' => DownloadFilter.failed,
-      'running' => DownloadFilter.inProgress,
-      _ => DownloadFilter.completed,
-    };
+  'error' => DownloadFilter.failed,
+  'running' => DownloadFilter.inProgress,
+  _ => DownloadFilter.completed,
+};
 
 const kFilterOptions = [
   DownloadFilter.completed,

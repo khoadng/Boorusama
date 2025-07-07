@@ -47,8 +47,9 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
         ),
         ListTile(
           title: const Text('Persistent search bar').tr(),
-          subtitle:
-              const Text('Keep the search bar visible while scrolling.').tr(),
+          subtitle: const Text(
+            'Keep the search bar visible while scrolling.',
+          ).tr(),
           trailing: Switch(
             value: settings.persistSearchBar,
             onChanged: (value) {

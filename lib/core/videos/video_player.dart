@@ -32,7 +32,7 @@ class BooruVideo extends StatefulWidget {
   final String url;
   final double? aspectRatio;
   final void Function(double current, double total, String url)?
-      onCurrentPositionChanged;
+  onCurrentPositionChanged;
   final void Function(VideoPlayerController controller)? onVideoPlayerCreated;
   final bool sound;
   final double speed;
@@ -60,11 +60,11 @@ class _BooruVideoState extends State<BooruVideo> {
   }
 
   Map<String, String> _buildHeaders() => {
-        if (widget.headers != null) ...widget.headers!,
-        'Range': 'bytes=0-',
-        'Acept-Encoding': 'identity;q=1, *;q=0',
-        'Priority': 'i',
-      };
+    if (widget.headers != null) ...widget.headers!,
+    'Range': 'bytes=0-',
+    'Acept-Encoding': 'identity;q=1, *;q=0',
+    'Priority': 'i',
+  };
 
   void _initVideoPlayerController() {
     _videoPlayerController = VideoPlayerController.networkUrl(
@@ -91,19 +91,22 @@ class _BooruVideoState extends State<BooruVideo> {
     );
 
     _initialized = false;
-    _videoPlayerController.initialize().then((_) {
-      if (mounted) {
-        setState(() {});
-        _initialized = true;
-        _clearInitializing();
-      }
-    }).catchError((error) {
-      if (mounted) {
-        setState(() {
-          _error = error.toString();
+    _videoPlayerController
+        .initialize()
+        .then((_) {
+          if (mounted) {
+            setState(() {});
+            _initialized = true;
+            _clearInitializing();
+          }
+        })
+        .catchError((error) {
+          if (mounted) {
+            setState(() {
+              _error = error.toString();
+            });
+          }
         });
-      }
-    });
 
     _listenToVideoPosition();
   }
@@ -172,7 +175,8 @@ class _BooruVideoState extends State<BooruVideo> {
     return Center(
       child: _initialized == true
           ? AspectRatio(
-              aspectRatio: widget.aspectRatio ??
+              aspectRatio:
+                  widget.aspectRatio ??
                   _videoPlayerController.value.aspectRatio,
               child: BooruHero(
                 tag: widget.heroTag,
@@ -182,7 +186,8 @@ class _BooruVideoState extends State<BooruVideo> {
                       Positioned.fill(
                         child: BooruImage(
                           borderRadius: BorderRadius.zero,
-                          aspectRatio: widget.aspectRatio ??
+                          aspectRatio:
+                              widget.aspectRatio ??
                               _videoPlayerController.value.aspectRatio,
                           imageUrl: thumb,
                         ),
@@ -195,72 +200,73 @@ class _BooruVideoState extends State<BooruVideo> {
               ),
             )
           : _error != null
-              ? Container(
-                  color: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                        ),
-                        child: Text(
-                          _error!,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+          ? Container(
+              color: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                    ),
+                    child: Text(
+                      _error!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'If this happens on a regular basis, consider using a different video player engine in the settings.',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      FilledButton(
-                        onPressed: widget.onOpenSettings,
-                        child: Text(
-                          'Open settings',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                )
-              : BooruHero(
-                  tag: widget.heroTag,
-                  child: thumb != null
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: BooruImage(
-                                borderRadius: BorderRadius.zero,
-                                aspectRatio: widget.aspectRatio ??
-                                    _videoPlayerController.value.aspectRatio,
-                                imageUrl: thumb,
-                              ),
-                            ),
-                          ],
-                        )
-                      : const SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'If this happens on a regular basis, consider using a different video player engine in the settings.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    onPressed: widget.onOpenSettings,
+                    child: Text(
+                      'Open settings',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : BooruHero(
+              tag: widget.heroTag,
+              child: thumb != null
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: BooruImage(
+                            borderRadius: BorderRadius.zero,
+                            aspectRatio:
+                                widget.aspectRatio ??
+                                _videoPlayerController.value.aspectRatio,
+                            imageUrl: thumb,
+                          ),
                         ),
-                ),
+                      ],
+                    )
+                  : const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
     );
   }
 }

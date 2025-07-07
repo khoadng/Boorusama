@@ -41,7 +41,8 @@ class HomeNavigationTile extends StatelessWidget {
         return NavigationTile(
           value: value,
           index: index,
-          showIcon: constraints.maxWidth > 200 ||
+          showIcon:
+              constraints.maxWidth > 200 ||
               constraints.maxWidth <= kMinSideBarWidth,
           showTitle: constraints.maxWidth > kMinSideBarWidth,
           selectedIcon: Icon(
@@ -51,7 +52,8 @@ class HomeNavigationTile extends StatelessWidget {
           ),
           icon: Icon(
             icon,
-            color: forceIconColor ??
+            color:
+                forceIconColor ??
                 (selected ? Theme.of(context).colorScheme.onSecondary : null),
             fill: forceFillIcon ? 1 : 0,
           ),
@@ -61,8 +63,9 @@ class HomeNavigationTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color:
-                  selected ? Theme.of(context).colorScheme.onSecondary : null,
+              color: selected
+                  ? Theme.of(context).colorScheme.onSecondary
+                  : null,
             ),
           ),
           onTap: (value) =>

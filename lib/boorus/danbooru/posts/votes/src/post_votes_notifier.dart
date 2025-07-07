@@ -16,21 +16,25 @@ import 'post_vote.dart';
 import 'post_vote_repository.dart';
 import 'providers.dart';
 
-final danbooruPostVotesProvider = NotifierProvider.family<PostVotesNotifier,
-    IMap<int, DanbooruPostVote?>, BooruConfigAuth>(
-  PostVotesNotifier.new,
-  dependencies: [
-    danbooruPostVoteRepoProvider,
-  ],
-);
+final danbooruPostVotesProvider =
+    NotifierProvider.family<
+      PostVotesNotifier,
+      IMap<int, DanbooruPostVote?>,
+      BooruConfigAuth
+    >(
+      PostVotesNotifier.new,
+      dependencies: [
+        danbooruPostVoteRepoProvider,
+      ],
+    );
 
-final danbooruPostVoteProvider =
-    Provider.autoDispose.family<DanbooruPostVote?, int>(
-  (ref, postId) {
-    final config = ref.watchConfigAuth;
-    return ref.watch(danbooruPostVotesProvider(config))[postId];
-  },
-);
+final danbooruPostVoteProvider = Provider.autoDispose
+    .family<DanbooruPostVote?, int>(
+      (ref, postId) {
+        final config = ref.watchConfigAuth;
+        return ref.watch(danbooruPostVotesProvider(config))[postId];
+      },
+    );
 
 class PostVotesNotifier
     extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfigAuth>
@@ -64,22 +68,22 @@ class PostVotesNotifier
 
   @override
   Future<List<DanbooruPostVote>> Function(List<DanbooruPost> posts)
-      get votesFetcher => (posts) async {
-            final user =
-                await ref.read(danbooruCurrentUserProvider(arg).future);
-            if (user == null) return [];
+  get votesFetcher => (posts) async {
+    final user = await ref.read(danbooruCurrentUserProvider(arg).future);
+    if (user == null) return [];
 
-            final postIds = posts.map((e) => e.id).toList();
+    final postIds = posts.map((e) => e.id).toList();
 
-            return repo.getPostVotesFromUser(postIds, user.id);
-          };
+    return repo.getPostVotesFromUser(postIds, user.id);
+  };
 }
 
 extension DanbooruVoteX on WidgetRef {
   void danbooruRemoveVote(int postId) {
     guardLogin(this, () async {
-      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
-          .removeVote(postId);
+      await read(
+        danbooruPostVotesProvider(readConfigAuth).notifier,
+      ).removeVote(postId);
 
       if (context.mounted) {
         showSuccessSnackBar(
@@ -92,8 +96,9 @@ extension DanbooruVoteX on WidgetRef {
 
   void danbooruUpvote(int postId) {
     guardLogin(this, () async {
-      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
-          .upvote(postId);
+      await read(
+        danbooruPostVotesProvider(readConfigAuth).notifier,
+      ).upvote(postId);
 
       if (context.mounted) {
         showSuccessSnackBar(
@@ -106,8 +111,9 @@ extension DanbooruVoteX on WidgetRef {
 
   void danbooruDownvote(int postId) {
     guardLogin(this, () async {
-      await read(danbooruPostVotesProvider(readConfigAuth).notifier)
-          .downvote(postId);
+      await read(
+        danbooruPostVotesProvider(readConfigAuth).notifier,
+      ).downvote(postId);
 
       if (context.mounted) {
         showSuccessSnackBar(

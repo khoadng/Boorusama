@@ -29,7 +29,8 @@ class DetailsConfigPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final details =
         layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
-    final previewDetails = layout.previewDetails ??
+    final previewDetails =
+        layout.previewDetails ??
         convertDetailsParts(uiBuilder.preview.keys.toList());
 
     return Scaffold(
@@ -53,8 +54,8 @@ class DetailsConfigPage extends ConsumerWidget {
                         ref,
                         params: DetailsLayoutManagerParams(
                           details: previewDetails,
-                          availableParts:
-                              uiBuilder.buildablePreviewParts.toSet(),
+                          availableParts: uiBuilder.buildablePreviewParts
+                              .toSet(),
                           defaultParts: uiBuilder.preview.keys.toSet(),
                           onUpdate: (parts) {
                             onLayoutUpdated(
@@ -96,10 +97,10 @@ class DetailsConfigPage extends ConsumerWidget {
             child: Text(
               'All changes are saved to your current profile.',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+                color: Theme.of(context).colorScheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ],

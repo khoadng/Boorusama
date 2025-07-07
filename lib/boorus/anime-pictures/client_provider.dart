@@ -8,13 +8,13 @@ import '../../core/http/providers.dart';
 
 final animePicturesClientProvider =
     Provider.family<AnimePicturesClient, BooruConfigAuth>(
-  (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+      (ref, config) {
+        final dio = ref.watch(dioProvider(config));
 
-    return AnimePicturesClient(
-      dio: dio,
-      baseUrl: config.url,
-      cookie: config.passHash,
+        return AnimePicturesClient(
+          dio: dio,
+          baseUrl: config.url,
+          cookie: config.passHash,
+        );
+      },
     );
-  },
-);

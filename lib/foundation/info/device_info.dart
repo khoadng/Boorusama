@@ -114,11 +114,11 @@ class DeviceInfo extends Equatable {
 
   @override
   List<Object?> get props => [
-        androidDeviceInfo,
-        iosDeviceInfo,
-        macOsDeviceInfo,
-        webBrowserInfo,
-        windowsDeviceInfo,
-        linuxDeviceInfo,
-      ];
+    androidDeviceInfo,
+    iosDeviceInfo,
+    macOsDeviceInfo,
+    webBrowserInfo,
+    windowsDeviceInfo,
+    linuxDeviceInfo,
+  ];
 }

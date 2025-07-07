@@ -9,8 +9,9 @@ class AutocompleteDto {
   factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
     return AutocompleteDto(
       name: json['name'] as String?,
-      parents:
-          (json['parents'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      parents: (json['parents'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       siblings: (json['siblings'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),

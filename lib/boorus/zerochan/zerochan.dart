@@ -5,17 +5,17 @@ import 'zerochan_builder.dart';
 import 'zerochan_repository.dart';
 
 BooruComponents createZerochan() => BooruComponents(
-      parser: YamlBooruParser.standard(
-        type: BooruType.zerochan,
-        constructor: (siteDef) => Zerochan(
-          name: siteDef.name,
-          protocol: siteDef.protocol,
-          sites: siteDef.sites,
-        ),
-      ),
-      createBuilder: ZerochanBuilder.new,
-      createRepository: (ref) => ZerochanRepository(ref: ref),
-    );
+  parser: YamlBooruParser.standard(
+    type: BooruType.zerochan,
+    constructor: (siteDef) => Zerochan(
+      name: siteDef.name,
+      protocol: siteDef.protocol,
+      sites: siteDef.sites,
+    ),
+  ),
+  createBuilder: ZerochanBuilder.new,
+  createRepository: (ref) => ZerochanRepository(ref: ref),
+);
 
 class Zerochan extends Booru {
   const Zerochan({

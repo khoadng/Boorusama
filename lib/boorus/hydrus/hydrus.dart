@@ -5,16 +5,16 @@ import 'hydrus_builder.dart';
 import 'hydrus_repository.dart';
 
 BooruComponents createHydrus() => BooruComponents(
-      parser: YamlBooruParser.standard(
-        type: BooruType.hydrus,
-        constructor: (siteDef) => Hydrus(
-          name: siteDef.name,
-          protocol: siteDef.protocol,
-        ),
-      ),
-      createBuilder: HydrusBuilder.new,
-      createRepository: (ref) => HydrusRepository(ref: ref),
-    );
+  parser: YamlBooruParser.standard(
+    type: BooruType.hydrus,
+    constructor: (siteDef) => Hydrus(
+      name: siteDef.name,
+      protocol: siteDef.protocol,
+    ),
+  ),
+  createBuilder: HydrusBuilder.new,
+  createRepository: (ref) => HydrusRepository(ref: ref),
+);
 
 class Hydrus extends Booru {
   const Hydrus({

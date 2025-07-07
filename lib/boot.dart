@@ -83,15 +83,16 @@ Future<void> boot(BootData bootData) async {
     onCreateNew: !bootData.isFossBuild
         ? (id) async {
             final settings = await settingRepository.load().run().then(
-                  (value) => value.fold(
-                    (l) => Settings.defaultSettings,
-                    (r) => r,
-                  ),
-                );
+              (value) => value.fold(
+                (l) => Settings.defaultSettings,
+                (r) => r,
+              ),
+            );
 
             bootLogger.l('Save default booru config');
-            await settingRepository
-                .save(settings.copyWith(currentBooruConfigId: id));
+            await settingRepository.save(
+              settings.copyWith(currentBooruConfigId: id),
+            );
           }
         // Skip creating default config in FOSS build
         : null,
@@ -99,11 +100,11 @@ Future<void> boot(BootData bootData) async {
 
   bootLogger.l('Load settings');
   final settings = await settingRepository.load().run().then(
-        (value) => value.fold(
-          (l) => Settings.defaultSettings,
-          (r) => r,
-        ),
-      );
+    (value) => value.fold(
+      (l) => Settings.defaultSettings,
+      (r) => r,
+    ),
+  );
 
   fvp.registerWith(
     options: {
@@ -141,8 +142,9 @@ Future<void> boot(BootData bootData) async {
   );
 
   bootLogger.l('Initialize device info');
-  final deviceInfo =
-      await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
+  final deviceInfo = await DeviceInfoService(
+    plugin: DeviceInfoPlugin(),
+  ).getDeviceInfo();
 
   bootLogger.l('Initialize i18n');
   await ensureI18nInitialized();
@@ -199,8 +201,9 @@ Future<void> boot(BootData bootData) async {
             booruDbProvider.overrideWithValue(boorus),
             tagInfoOverride,
             settingsRepoProvider.overrideWithValue(settingRepository),
-            settingsNotifierProvider
-                .overrideWith(() => SettingsNotifier(data.settings)),
+            settingsNotifierProvider.overrideWith(
+              () => SettingsNotifier(data.settings),
+            ),
             initialSettingsProvider.overrideWithValue(data.settings),
             booruConfigRepoProvider.overrideWithValue(booruUserRepo),
             booruConfigProvider.overrideWith(
@@ -239,8 +242,9 @@ Future<void> _initCert() async {
     // On Android 7 and below, the Let's Encrypt certificate is not trusted by default and needs to be added manually.
     final cert = await rootBundle.load('assets/ca/isrgrootx1.pem');
 
-    SecurityContext.defaultContext
-        .setTrustedCertificatesBytes(cert.buffer.asUint8List());
+    SecurityContext.defaultContext.setTrustedCertificatesBytes(
+      cert.buffer.asUint8List(),
+    );
   } catch (e) {
     // ignore errors here, maybe it's already trusted
   }

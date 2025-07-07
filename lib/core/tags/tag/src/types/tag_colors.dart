@@ -10,27 +10,27 @@ class TagColors {
     Color? meta,
     this.customColors = const {},
     Color? fallback,
-  })  : _fallback = fallback ?? general,
-        _artist = artist ?? general,
-        _character = character ?? general,
-        _copyright = copyright ?? general,
-        _meta = meta ?? general;
+  }) : _fallback = fallback ?? general,
+       _artist = artist ?? general,
+       _character = character ?? general,
+       _copyright = copyright ?? general,
+       _meta = meta ?? general;
 
   factory TagColors.light() => const TagColors(
-        artist: _red3,
-        character: _green3,
-        copyright: _purple3,
-        general: _azure4,
-        meta: _yellow2,
-      );
+    artist: _red3,
+    character: _green3,
+    copyright: _purple3,
+    general: _azure4,
+    meta: _yellow2,
+  );
 
   factory TagColors.dark() => const TagColors(
-        artist: _red6,
-        character: _green4,
-        copyright: _magenta6,
-        general: _blue5,
-        meta: _orange3,
-      );
+    artist: _red6,
+    character: _green4,
+    copyright: _magenta6,
+    general: _blue5,
+    meta: _orange3,
+  );
 
   factory TagColors.fromBrightness(Brightness brightness) {
     return brightness == Brightness.light

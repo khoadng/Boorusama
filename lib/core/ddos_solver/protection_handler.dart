@@ -12,9 +12,9 @@ class HttpProtectionHandler {
     required ContextProvider contextProvider,
     required CookieJar cookieJar,
     this.maxRetries = 3,
-  })  : _orchestrator = orchestrator,
-        _cookieJar = cookieJar,
-        _contextProvider = contextProvider;
+  }) : _orchestrator = orchestrator,
+       _cookieJar = cookieJar,
+       _contextProvider = contextProvider;
 
   final ProtectionOrchestrator _orchestrator;
   final CookieJar _cookieJar;
@@ -48,8 +48,9 @@ class HttpProtectionHandler {
           return existingHeaders;
         }
 
-        headers['cookie'] =
-            cookies.map((c) => '${c.name}=${c.value}').join('; ');
+        headers['cookie'] = cookies
+            .map((c) => '${c.name}=${c.value}')
+            .join('; ');
         headers['user-agent'] = userAgent;
       }
 

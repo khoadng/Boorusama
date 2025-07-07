@@ -9,8 +9,12 @@ import '../types/creator.dart';
 import '../types/creator_repository.dart';
 import 'local_providers.dart';
 
-final danbooruCreatorsProvider = NotifierProvider.family<CreatorsNotifier,
-    IMap<int, Creator>, BooruConfigAuth>(CreatorsNotifier.new);
+final danbooruCreatorsProvider =
+    NotifierProvider.family<
+      CreatorsNotifier,
+      IMap<int, Creator>,
+      BooruConfigAuth
+    >(CreatorsNotifier.new);
 
 final danbooruCreatorProvider = Provider.family<Creator?, int?>((ref, id) {
   if (id == null) return null;
@@ -33,8 +37,9 @@ class CreatorsNotifier
     final notInCached = ids.where((id) => !state.containsKey(id)).toList();
 
     final repo = await futureRepo;
-    final creators =
-        await repo.getCreatorsByIdStringComma(notInCached.join(','));
+    final creators = await repo.getCreatorsByIdStringComma(
+      notInCached.join(','),
+    );
 
     final map = {
       for (final creator in creators) creator.id: creator,

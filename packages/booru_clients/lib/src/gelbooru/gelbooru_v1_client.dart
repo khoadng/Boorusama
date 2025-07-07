@@ -16,11 +16,14 @@ class GelbooruV1Client with GelbooruClientFavorites {
     this.userId,
     Map<String, String>? headers,
     Dio? dio,
-  }) : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl,
-              headers: headers ?? {},
-            ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl,
+               headers: headers ?? {},
+             ),
+           );
 
   final Dio _dio;
 

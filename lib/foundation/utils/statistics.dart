@@ -67,7 +67,7 @@ StatisticalSummary calculateStats(List<double>? numbers) {
   // Calculate standard deviation
   final variance =
       numbers.map((x) => (x - mean) * (x - mean)).reduce((a, b) => a + b) /
-          numbers.length;
+      numbers.length;
   final standardDeviation = sqrt(variance);
 
   return StatisticalSummary(

@@ -26,7 +26,9 @@ class MostSearchTagList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigFilter;
 
-    return ref.watch(trendingTagsProvider(config)).when(
+    return ref
+        .watch(trendingTagsProvider(config))
+        .when(
           data: (searches) => searches.isNotEmpty
               ? SizedBox(
                   height: 40,
@@ -81,7 +83,8 @@ class _Chip extends ConsumerWidget {
       child: ChoiceChip(
         showCheckmark: false,
         disabledColor: Theme.of(context).chipTheme.disabledColor,
-        backgroundColor: colors?.backgroundColor ??
+        backgroundColor:
+            colors?.backgroundColor ??
             Theme.of(context).chipTheme.backgroundColor,
         selectedColor: Theme.of(context).colorScheme.onSurface,
         selected: isSelected,

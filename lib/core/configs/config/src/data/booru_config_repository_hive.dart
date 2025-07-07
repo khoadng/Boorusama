@@ -20,18 +20,18 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   final Box<String> box;
 
   static String defaultValue() => jsonEncode(
-        BooruConfigData.anonymous(
-          booru: BooruType.danbooru,
-          booruHint: BooruType.danbooru,
-          name: 'Default profile',
-          filter: BooruConfigRatingFilter.none,
-          url: 'https://safebooru.donmai.us/',
-          customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-          customBulkDownloadFileNameFormat:
-              kBoorusamaBulkDownloadCustomFileNameFormat,
-          imageDetaisQuality: null,
-        ),
-      );
+    BooruConfigData.anonymous(
+      booru: BooruType.danbooru,
+      booruHint: BooruType.danbooru,
+      name: 'Default profile',
+      filter: BooruConfigRatingFilter.none,
+      url: 'https://safebooru.donmai.us/',
+      customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat:
+          kBoorusamaBulkDownloadCustomFileNameFormat,
+      imageDetaisQuality: null,
+    ),
+  );
 
   @override
   Future<BooruConfig?> add(BooruConfigData booruConfigData) async {

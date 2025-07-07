@@ -31,7 +31,9 @@ class LanguagePage extends ConsumerWidget {
         body: child,
       ),
       child: SafeArea(
-        child: ref.watch(supportedLanguagesProvider).when(
+        child: ref
+            .watch(supportedLanguagesProvider)
+            .when(
               data: (supportedLanguages) => ListView.builder(
                 itemCount: supportedLanguages.length,
                 itemBuilder: (context, index) {

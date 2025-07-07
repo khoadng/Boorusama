@@ -51,8 +51,9 @@ class PostVersionDto extends Equatable {
       obsoleteAddedTags: json['obsolete_added_tags'],
       obsoleteRemovedTags: json['obsolete_removed_tags'],
       unchangedTags: json['unchanged_tags'],
-      updater:
-          json['updater'] != null ? UserDto.fromJson(json['updater']) : null,
+      updater: json['updater'] != null
+          ? UserDto.fromJson(json['updater'])
+          : null,
       previewFileUrl: json['post']?['preview_file_url'],
     );
   }
@@ -80,24 +81,24 @@ class PostVersionDto extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        postId,
-        tags,
-        addedTags,
-        removedTags,
-        updaterId,
-        updatedAt,
-        rating,
-        ratingChanged,
-        parentId,
-        parentChanged,
-        source,
-        sourceChanged,
-        version,
-        obsoleteAddedTags,
-        obsoleteRemovedTags,
-        unchangedTags,
-        updater,
-        previewFileUrl,
-      ];
+    id,
+    postId,
+    tags,
+    addedTags,
+    removedTags,
+    updaterId,
+    updatedAt,
+    rating,
+    ratingChanged,
+    parentId,
+    parentChanged,
+    source,
+    sourceChanged,
+    version,
+    obsoleteAddedTags,
+    obsoleteRemovedTags,
+    unchangedTags,
+    updater,
+    previewFileUrl,
+  ];
 }

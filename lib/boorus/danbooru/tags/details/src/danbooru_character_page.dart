@@ -25,8 +25,9 @@ class DanbooruCharacterPage extends ConsumerWidget {
         tagName: characterName,
         otherNames: switch (ref.watch(danbooruWikiProvider(characterName))) {
           WikiStateLoading _ => const TagOtherNames(otherNames: null),
-          final WikiStateLoaded s =>
-            TagOtherNames(otherNames: s.wiki.otherNames),
+          final WikiStateLoaded s => TagOtherNames(
+            otherNames: s.wiki.otherNames,
+          ),
           WikiStateError _ => const SizedBox.shrink(),
           WikiStateNotFound _ => const SizedBox.shrink(),
         },

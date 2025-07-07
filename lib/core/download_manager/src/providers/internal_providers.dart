@@ -7,8 +7,10 @@ import '../types/download_filter.dart';
 import '../types/download_task_update.dart';
 import 'download_task_updates_notifier.dart';
 
-final downloadFilterProvider =
-    StateProvider.family<DownloadFilter, String?>((ref, initialFilter) {
+final downloadFilterProvider = StateProvider.family<DownloadFilter, String?>((
+  ref,
+  initialFilter,
+) {
   return convertFilter(initialFilter);
 });
 

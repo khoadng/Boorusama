@@ -110,7 +110,10 @@ class PostStatisticsPage extends StatelessWidget {
                   );
                 },
               ),
-              ...stats.domains.topN(5).entries.map(
+              ...stats.domains
+                  .topN(5)
+                  .entries
+                  .map(
                     (e) => PostStatsTile(
                       title: e.key,
                       value: e.value.toString(),
@@ -306,33 +309,39 @@ class StatisticalSummaryDetailsPage extends StatelessWidget {
               ),
               PostStatsTile(
                 title: 'Highest',
-                value: formatter?.call(stats.highest) ??
+                value:
+                    formatter?.call(stats.highest) ??
                     stats.highest.toStringAsFixed(0),
               ),
               PostStatsTile(
                 title: 'Lowest',
-                value: formatter?.call(stats.lowest) ??
+                value:
+                    formatter?.call(stats.lowest) ??
                     stats.lowest.toStringAsFixed(0),
               ),
               const Divider(),
               PostStatsTile(
                 title: 'Median',
-                value: formatter?.call(stats.median) ??
+                value:
+                    formatter?.call(stats.median) ??
                     stats.median.toStringAsFixed(0),
               ),
               PostStatsTile(
                 title: '25th percentile',
-                value: formatter?.call(stats.percentile25) ??
+                value:
+                    formatter?.call(stats.percentile25) ??
                     stats.percentile25.toStringAsFixed(0),
               ),
               PostStatsTile(
                 title: '75th percentile',
-                value: formatter?.call(stats.percentile75) ??
+                value:
+                    formatter?.call(stats.percentile75) ??
                     stats.percentile75.toStringAsFixed(0),
               ),
               PostStatsTile(
                 title: '90th percentile',
-                value: formatter?.call(stats.percentile90) ??
+                value:
+                    formatter?.call(stats.percentile90) ??
                     stats.percentile90.toStringAsFixed(0),
               ),
             ],
@@ -368,10 +377,10 @@ class PostStatsTile extends StatelessWidget {
             child: Text(
               title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: titleColor,
-                  ),
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: titleColor,
+              ),
             ),
           ),
           const SizedBox(width: 8),

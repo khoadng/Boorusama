@@ -9,14 +9,16 @@ import 'parser.dart';
 
 final szurubooruCommentRepoProvider =
     Provider.family<CommentRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(szurubooruClientProvider(config));
+      final client = ref.watch(szurubooruClientProvider(config));
 
-  return CommentRepositoryBuilder(
-    fetch: (postId, {page}) => client.getComments(postId: postId).then(
-          (value) => value.map(parseSzurubooruComment).toList(),
-        ),
-    create: (postId, body) async => false,
-    update: (commentId, body) async => false,
-    delete: (commentId) async => false,
-  );
-});
+      return CommentRepositoryBuilder(
+        fetch: (postId, {page}) => client
+            .getComments(postId: postId)
+            .then(
+              (value) => value.map(parseSzurubooruComment).toList(),
+            ),
+        create: (postId, body) async => false,
+        update: (commentId, body) async => false,
+        delete: (commentId) async => false,
+      );
+    });

@@ -28,8 +28,9 @@ class PrivacyPage extends ConsumerWidget {
       children: [
         tracker.maybeWhen(
           data: (t) => ListTile(
-            title:
-                const Text('settings.privacy.enable_incognito_keyboard').tr(),
+            title: const Text(
+              'settings.privacy.enable_incognito_keyboard',
+            ).tr(),
             subtitle: const Text(
               'settings.privacy.enable_incognito_keyboard_notice',
             ).tr(),
@@ -56,8 +57,9 @@ class PrivacyPage extends ConsumerWidget {
             onChanged: (value) {
               notifer.updateSettings(
                 settings.copyWith(
-                  appLockType:
-                      value ? AppLockType.biometrics : AppLockType.none,
+                  appLockType: value
+                      ? AppLockType.biometrics
+                      : AppLockType.none,
                 ),
               );
             },

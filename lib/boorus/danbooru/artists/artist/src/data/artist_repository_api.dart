@@ -61,18 +61,17 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
     ArtistOrder? order,
     CancelToken? cancelToken,
     int? page,
-  }) =>
-      client
-          .getArtists(
-            name: name,
-            url: url,
-            isDeleted: isDeleted,
-            isBanned: isBanned,
-            hasTag: hasTag,
-            includeTag: includeTag,
-            order: order,
-            cancelToken: cancelToken,
-            page: page,
-          )
-          .then((value) => value.map((e) => artistDtoToArtist(e)).toList());
+  }) => client
+      .getArtists(
+        name: name,
+        url: url,
+        isDeleted: isDeleted,
+        isBanned: isBanned,
+        hasTag: hasTag,
+        includeTag: includeTag,
+        order: order,
+        cancelToken: cancelToken,
+        page: page,
+      )
+      .then((value) => value.map((e) => artistDtoToArtist(e)).toList());
 }

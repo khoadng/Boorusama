@@ -30,7 +30,7 @@ class BackgroundDownloaderScope extends ConsumerStatefulWidget {
 
   final Widget child;
   final void Function(Task task, NotificationType notificationType)
-      onTapNotification;
+  onTapNotification;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>

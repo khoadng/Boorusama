@@ -47,15 +47,15 @@ class _BooruSegmentedButtonState<T> extends State<BooruSegmentedButton<T>> {
             entry.value,
             style: selected == entry.key
                 ? widget.selectedTextStyle ??
-                    TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: colorScheme.onPrimary,
-                    )
+                      TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onPrimary,
+                      )
                 : widget.unselectedTextStyle ??
-                    TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                      TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
           ),
       },
       height: 32,
@@ -253,20 +253,22 @@ class _CustomSlidingSegmentedControlState<T>
             decoration: widget.thumbDecoration,
           ),
           Row(
-            children: widget.children.entries.map((item) {
-              final measureSize = MeasureSize(
-                onChange: (value) {
-                  calculateSize(
-                    size: value,
-                    item: item,
-                    isCacheEnabled: true,
+            children: widget.children.entries
+                .map((item) {
+                  final measureSize = MeasureSize(
+                    onChange: (value) {
+                      calculateSize(
+                        size: value,
+                        item: item,
+                        isCacheEnabled: true,
+                      );
+                    },
+                    child: _segmentItem(item),
                   );
-                },
-                child: _segmentItem(item),
-              );
 
-              return measureSize;
-            }).toList(growable: false),
+                  return measureSize;
+                })
+                .toList(growable: false),
           ),
         ],
       ),

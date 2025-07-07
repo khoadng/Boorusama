@@ -71,12 +71,13 @@ class BooruConfig extends Equatable {
           .values[json['deletedItemBehavior'] as int],
       ratingFilter: ratingFilter != null
           ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
-              BooruConfigRatingFilter.hideNSFW
+                BooruConfigRatingFilter.hideNSFW
           : BooruConfigRatingFilter.hideNSFW,
       bannedPostVisibility: bannedPostVisibility != null
-          ? BooruConfigBannedPostVisibility.values
-                  .getOrNull(bannedPostVisibility) ??
-              BooruConfigBannedPostVisibility.show
+          ? BooruConfigBannedPostVisibility.values.getOrNull(
+                  bannedPostVisibility,
+                ) ??
+                BooruConfigBannedPostVisibility.show
           : BooruConfigBannedPostVisibility.show,
       customDownloadFileNameFormat:
           json['customDownloadFileNameFormat'] as String?,
@@ -117,7 +118,7 @@ class BooruConfig extends Equatable {
       viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] == null
           ? null
           : BooruConfigViewerNotesFetchBehavior
-              .values[json['viewerNotesFetchBehavior'] as int],
+                .values[json['viewerNotesFetchBehavior'] as int],
     );
   }
 
@@ -154,34 +155,33 @@ class BooruConfig extends Equatable {
     required BooruType booruType,
     required String url,
     required String? customDownloadFileNameFormat,
-  }) =>
-      BooruConfig(
-        id: -1,
-        booruId: booruType.id,
-        booruIdHint: booruType.id,
-        apiKey: null,
-        login: null,
-        passHash: null,
-        name: 'new profile',
-        deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
-        ratingFilter: BooruConfigRatingFilter.none,
-        bannedPostVisibility: BooruConfigBannedPostVisibility.show,
-        url: url,
-        customDownloadFileNameFormat: customDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
-        customDownloadLocation: null,
-        imageDetaisQuality: null,
-        granularRatingFilters: null,
-        postGestures: null,
-        defaultPreviewImageButtonAction: null,
-        listing: null,
-        theme: null,
-        alwaysIncludeTags: null,
-        blacklistConfigs: null,
-        layout: null,
-        proxySettings: null,
-        viewerNotesFetchBehavior: null,
-      );
+  }) => BooruConfig(
+    id: -1,
+    booruId: booruType.id,
+    booruIdHint: booruType.id,
+    apiKey: null,
+    login: null,
+    passHash: null,
+    name: 'new profile',
+    deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
+    ratingFilter: BooruConfigRatingFilter.none,
+    bannedPostVisibility: BooruConfigBannedPostVisibility.show,
+    url: url,
+    customDownloadFileNameFormat: customDownloadFileNameFormat,
+    customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
+    customDownloadLocation: null,
+    imageDetaisQuality: null,
+    granularRatingFilters: null,
+    postGestures: null,
+    defaultPreviewImageButtonAction: null,
+    listing: null,
+    theme: null,
+    alwaysIncludeTags: null,
+    blacklistConfigs: null,
+    layout: null,
+    proxySettings: null,
+    viewerNotesFetchBehavior: null,
+  );
 
   final int id;
   final int booruId;
@@ -247,32 +247,32 @@ class BooruConfig extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        booruId,
-        booruIdHint,
-        apiKey,
-        login,
-        passHash,
-        name,
-        deletedItemBehavior,
-        ratingFilter,
-        bannedPostVisibility,
-        url,
-        customDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat,
-        customDownloadLocation,
-        imageDetaisQuality,
-        granularRatingFilters,
-        postGestures,
-        defaultPreviewImageButtonAction,
-        listing,
-        theme,
-        alwaysIncludeTags,
-        blacklistConfigs,
-        layout,
-        proxySettings,
-        viewerNotesFetchBehavior,
-      ];
+    id,
+    booruId,
+    booruIdHint,
+    apiKey,
+    login,
+    passHash,
+    name,
+    deletedItemBehavior,
+    ratingFilter,
+    bannedPostVisibility,
+    url,
+    customDownloadFileNameFormat,
+    customBulkDownloadFileNameFormat,
+    customDownloadLocation,
+    imageDetaisQuality,
+    granularRatingFilters,
+    postGestures,
+    defaultPreviewImageButtonAction,
+    listing,
+    theme,
+    alwaysIncludeTags,
+    blacklistConfigs,
+    layout,
+    proxySettings,
+    viewerNotesFetchBehavior,
+  ];
 
   @override
   String toString() {
@@ -321,9 +321,9 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     required String? login,
     required String? passHash,
     required this.proxySettings,
-  })  : _apiKey = apiKey,
-        _login = login,
-        _passHash = passHash;
+  }) : _apiKey = apiKey,
+       _login = login,
+       _passHash = passHash;
 
   factory BooruConfigAuth.fromConfig(BooruConfig config) {
     return BooruConfigAuth(
@@ -374,14 +374,14 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
 
   @override
   List<Object?> get props => [
-        booruId,
-        booruIdHint,
-        url,
-        apiKey,
-        login,
-        passHash,
-        proxySettings,
-      ];
+    booruId,
+    booruIdHint,
+    url,
+    apiKey,
+    login,
+    passHash,
+    proxySettings,
+  ];
 }
 
 class BooruConfigSearchFilter extends Equatable
@@ -417,21 +417,21 @@ class BooruConfigSearchFilter extends Equatable
   final BlacklistConfigs? blacklistConfigs;
 
   String get ratingVerdict => switch (ratingFilter) {
-        BooruConfigRatingFilter.none => 'unfiltered',
-        BooruConfigRatingFilter.hideExplicit => 'questionable',
-        BooruConfigRatingFilter.hideNSFW => 'sfw',
-        BooruConfigRatingFilter.custom => () {
-            final filters = granularRatingFiltersWithoutUnknown;
+    BooruConfigRatingFilter.none => 'unfiltered',
+    BooruConfigRatingFilter.hideExplicit => 'questionable',
+    BooruConfigRatingFilter.hideNSFW => 'sfw',
+    BooruConfigRatingFilter.custom => () {
+      final filters = granularRatingFiltersWithoutUnknown;
 
-            if (filters == null) return 'custom';
+      if (filters == null) return 'custom';
 
-            final str = granularRatingFilterToString(filters, sort: true);
+      final str = granularRatingFilterToString(filters, sort: true);
 
-            if (str == null) return 'custom';
+      if (str == null) return 'custom';
 
-            return 'filtered($str)';
-          }()
-      };
+      return 'filtered($str)';
+    }(),
+  };
 
   bool canView(String rating) {
     final parsedRating = mapStringToRating(rating);
@@ -462,13 +462,13 @@ class BooruConfigSearchFilter extends Equatable
 
   @override
   List<Object?> get props => [
-        ratingFilter,
-        granularRatingFilters,
-        alwaysIncludeTags,
-        deletedItemBehavior,
-        bannedPostVisibility,
-        blacklistConfigs,
-      ];
+    ratingFilter,
+    granularRatingFilters,
+    alwaysIncludeTags,
+    deletedItemBehavior,
+    bannedPostVisibility,
+    blacklistConfigs,
+  ];
 }
 
 class BooruConfigSearch extends Equatable {
@@ -534,9 +534,9 @@ class BooruConfigViewer extends Equatable {
 
   @override
   List<Object?> get props => [
-        imageDetaisQuality,
-        viewerNotesFetchBehavior,
-      ];
+    imageDetaisQuality,
+    viewerNotesFetchBehavior,
+  ];
 }
 
 mixin BooruConfigAuthMixin {
@@ -618,14 +618,14 @@ class LayoutConfigs extends Equatable {
     final details = json['details'] == null
         ? null
         : (json['details'] as List<dynamic>)
-            .map((e) => CustomDetailsPartKey.fromJson(e))
-            .toList();
+              .map((e) => CustomDetailsPartKey.fromJson(e))
+              .toList();
 
     final previewDetails = json['previewDetails'] == null
         ? null
         : (json['previewDetails'] as List<dynamic>)
-            .map((e) => CustomDetailsPartKey.fromJson(e))
-            .toList();
+              .map((e) => CustomDetailsPartKey.fromJson(e))
+              .toList();
 
     return LayoutConfigs(
       home: home,
@@ -635,9 +635,9 @@ class LayoutConfigs extends Equatable {
   }
 
   const LayoutConfigs.undefined()
-      : home = const CustomHomeViewKey.defaultValue(),
-        previewDetails = null,
-        details = null;
+    : home = const CustomHomeViewKey.defaultValue(),
+      previewDetails = null,
+      details = null;
 
   final CustomHomeViewKey? home;
   final List<CustomDetailsPartKey>? details;
@@ -651,8 +651,9 @@ class LayoutConfigs extends Equatable {
     return LayoutConfigs(
       home: home != null ? home() : this.home,
       details: details != null ? details() : this.details,
-      previewDetails:
-          previewDetails != null ? previewDetails() : this.previewDetails,
+      previewDetails: previewDetails != null
+          ? previewDetails()
+          : this.previewDetails,
     );
   }
 
@@ -724,7 +725,8 @@ Set<DetailsPart>? getLayoutPreviewParsedParts({
 extension BooruConfigRepositoryX on BooruConfigRepository {
   Future<BooruConfig?> getCurrentBooruConfigFrom(Settings settings) async {
     final booruConfigs = await getAll();
-    return booruConfigs
-        .firstWhereOrNull((e) => e.id == settings.currentBooruConfigId);
+    return booruConfigs.firstWhereOrNull(
+      (e) => e.id == settings.currentBooruConfigId,
+    );
   }
 }

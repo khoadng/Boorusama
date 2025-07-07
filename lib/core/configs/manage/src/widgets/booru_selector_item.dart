@@ -54,13 +54,13 @@ class BooruSelectorItem extends StatelessWidget {
   Widget _build(BuildContext context) {
     final logoSize = hideLabel
         ? kPreferredLayout.isMobile
-            ? direction == Axis.horizontal
-                ? 28.0
-                : 36.0
-            : 36.0
+              ? direction == Axis.horizontal
+                    ? 28.0
+                    : 36.0
+              : 36.0
         : direction == Axis.horizontal
-            ? 24.0
-            : null;
+        ? 24.0
+        : null;
 
     return Container(
       margin: direction == Axis.vertical
@@ -129,8 +129,8 @@ class BooruSelectorItem extends StatelessWidget {
               width: direction == Axis.vertical
                   ? 60
                   : hideLabel
-                      ? 52
-                      : 64,
+                  ? 52
+                  : 64,
               decoration: BoxDecoration(
                 border: direction == Axis.vertical
                     ? const Border(

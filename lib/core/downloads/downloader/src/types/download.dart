@@ -60,7 +60,8 @@ extension DownloadWithSettingsX on DownloadService {
     String? folderName,
     String? path,
   }) {
-    final downloadPath = path ??
+    final downloadPath =
+        path ??
         (config.hasCustomDownloadLocation
             ? config.customDownloadLocation
             : settings.downloadPath);

@@ -43,11 +43,10 @@ class BoorusamaColors extends ThemeExtension<BoorusamaColors> {
   ThemeExtension<BoorusamaColors> copyWith({
     Color? upvoteColor,
     Color? downvoteColor,
-  }) =>
-      BoorusamaColors(
-        upvoteColor: upvoteColor ?? this.upvoteColor,
-        downvoteColor: downvoteColor ?? this.downvoteColor,
-      );
+  }) => BoorusamaColors(
+    upvoteColor: upvoteColor ?? this.upvoteColor,
+    downvoteColor: downvoteColor ?? this.downvoteColor,
+  );
 
   @override
   ThemeExtension<BoorusamaColors> lerp(

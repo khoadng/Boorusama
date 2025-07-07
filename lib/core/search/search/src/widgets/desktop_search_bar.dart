@@ -143,8 +143,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
         builder: (context, query, child) {
-          final suggestionTags =
-              ref.watch(suggestionProvider((ref.watchConfigAuth, query.text)));
+          final suggestionTags = ref.watch(
+            suggestionProvider((ref.watchConfigAuth, query.text)),
+          );
 
           return Stack(
             children: [
@@ -196,16 +197,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     },
                     metatags:
                         ref.watchConfigAuth.booruType == BooruType.danbooru
-                            ? DanbooruMetatagsSection(
-                                onOptionTap: (value) {
-                                  textEditingController.text = '$value:';
-                                  // ignore: cascade_invocations
-                                  textEditingController
-                                      .setTextAndCollapseSelection('$value:');
-                                  setState(() {});
-                                },
-                              )
-                            : null,
+                        ? DanbooruMetatagsSection(
+                            onOptionTap: (value) {
+                              textEditingController.text = '$value:';
+                              // ignore: cascade_invocations
+                              textEditingController.setTextAndCollapseSelection(
+                                '$value:',
+                              );
+                              setState(() {});
+                            },
+                          )
+                        : null,
                   ),
                 ),
               if (kPreferredLayout.isMobile)

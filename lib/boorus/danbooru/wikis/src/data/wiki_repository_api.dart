@@ -16,6 +16,5 @@ class WikiRepositoryApi implements WikiRepository {
   Future<Wiki?> getWikiFor(
     String title, {
     CancelToken? cancelToken,
-  }) =>
-      client.getWiki(title).then(wikiDtoToWiki).catchError((_) => null);
+  }) => client.getWiki(title).then(wikiDtoToWiki).catchError((_) => null);
 }

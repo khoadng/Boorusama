@@ -9,9 +9,9 @@ class FileDetailTile extends StatelessWidget {
     this.value,
     this.valueTrailing,
   }) : assert(
-          valueLabel != null || value != null,
-          'valueLabel or value must be provided',
-        );
+         valueLabel != null || value != null,
+         'valueLabel or value must be provided',
+       );
 
   final String title;
   final String? valueLabel;
@@ -25,9 +25,9 @@ class FileDetailTile extends StatelessWidget {
       leading: Text(
         title,
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+        ),
       ),
       trailing: LayoutBuilder(
         builder: (context, constrainst) => Container(
@@ -37,18 +37,19 @@ class FileDetailTile extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
           width: constrainst.maxWidth * 0.55,
-          child: value ??
+          child:
+              value ??
               (valueLabel != null
                   ? valueTrailing != null
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _buildValue(context),
-                            const Spacer(),
-                            valueTrailing!,
-                          ],
-                        )
-                      : _buildValue(context)
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _buildValue(context),
+                              const Spacer(),
+                              valueTrailing!,
+                            ],
+                          )
+                        : _buildValue(context)
                   : null),
         ),
       ),

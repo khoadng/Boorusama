@@ -18,7 +18,8 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: padding ??
+      margin:
+          padding ??
           (dense
               ? const EdgeInsets.symmetric(
                   horizontal: 12,

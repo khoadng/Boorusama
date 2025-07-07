@@ -19,9 +19,9 @@ class UploadDateRangeSelectorButton extends ConsumerWidget {
     return OptionDropDownButton(
       alignment: AlignmentDirectional.centerStart,
       value: ref.watch(selectedUploadDateRangeSelectorTypeProvider),
-      onChanged: (value) => ref
-          .read(selectedUploadDateRangeSelectorTypeProvider.notifier)
-          .state = value ?? UploadDateRangeSelectorType.last30Days,
+      onChanged: (value) =>
+          ref.read(selectedUploadDateRangeSelectorTypeProvider.notifier).state =
+              value ?? UploadDateRangeSelectorType.last30Days,
       items: UploadDateRangeSelectorType.values
           .map(
             (value) => DropdownMenuItem(

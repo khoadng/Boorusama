@@ -13,11 +13,11 @@ extension DanbooruArtistUrlIterableX on Iterable<DanbooruArtistUrl> {
   }
 
   Iterable<DanbooruArtistUrl> filterDuplicates() => where(
-        (e) =>
-            !e.url.contains(_pixivStacc) &&
-            !e.url.contains(_pawooAccount) &&
-            !e.url.contains(_misskeyAccount) &&
-            !e.url.contains(_bskyProfile) &&
-            !e.url.contains(_twitterIntent),
-      ).toList();
+    (e) =>
+        !e.url.contains(_pixivStacc) &&
+        !e.url.contains(_pawooAccount) &&
+        !e.url.contains(_misskeyAccount) &&
+        !e.url.contains(_bskyProfile) &&
+        !e.url.contains(_twitterIntent),
+  ).toList();
 }

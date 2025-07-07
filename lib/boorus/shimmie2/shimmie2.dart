@@ -5,17 +5,17 @@ import 'shimmie2_builder.dart';
 import 'shimmie2_repository.dart';
 
 BooruComponents createShimmie2() => BooruComponents(
-      parser: YamlBooruParser.standard(
-        type: BooruType.shimmie2,
-        constructor: (siteDef) => Shimmie2(
-          name: siteDef.name,
-          protocol: siteDef.protocol,
-          sites: siteDef.sites,
-        ),
-      ),
-      createBuilder: Shimmie2Builder.new,
-      createRepository: (ref) => Shimmie2Repository(ref: ref),
-    );
+  parser: YamlBooruParser.standard(
+    type: BooruType.shimmie2,
+    constructor: (siteDef) => Shimmie2(
+      name: siteDef.name,
+      protocol: siteDef.protocol,
+      sites: siteDef.sites,
+    ),
+  ),
+  createBuilder: Shimmie2Builder.new,
+  createRepository: (ref) => Shimmie2Repository(ref: ref),
+);
 
 class Shimmie2 extends Booru {
   const Shimmie2({

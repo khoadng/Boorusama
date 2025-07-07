@@ -49,11 +49,15 @@ class DanbooruParser extends QueryParser<DanbooruTokenData> {
       }
     }
 
-    final parenPairs =
-        ParsingUtils.findParenthesesPairs(query, tagParenPositions);
+    final parenPairs = ParsingUtils.findParenthesesPairs(
+      query,
+      tagParenPositions,
+    );
 
-    final focusedPairIndex =
-        ParsingUtils.findFocusedPair(parenPairs, cursorPos);
+    final focusedPairIndex = ParsingUtils.findFocusedPair(
+      parenPairs,
+      cursorPos,
+    );
 
     return ParsingUtils.createParenthesesTokens(
       parenPairs,

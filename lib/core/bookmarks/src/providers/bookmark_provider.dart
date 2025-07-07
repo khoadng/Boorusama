@@ -50,16 +50,16 @@ final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   return bookmarks.isNotEmpty;
 });
 
-final bookmarkUrlResolverProvider =
-    Provider.autoDispose.family<ImageUrlResolver, int?>((ref, booruId) {
-  final booruType = intToBooruType(booruId);
+final bookmarkUrlResolverProvider = Provider.autoDispose
+    .family<ImageUrlResolver, int?>((ref, booruId) {
+      final booruType = intToBooruType(booruId);
 
-  final registry = ref.watch(booruEngineRegistryProvider);
+      final registry = ref.watch(booruEngineRegistryProvider);
 
-  final repo = registry.getRepository(booruType);
+      final repo = registry.getRepository(booruType);
 
-  return repo?.imageUrlResolver() ?? const DefaultImageUrlResolver();
-});
+      return repo?.imageUrlResolver() ?? const DefaultImageUrlResolver();
+    });
 
 final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
   (ref) => BookmarkImageCacheManager(),
@@ -91,8 +91,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
-              bookmarks: {for (final bookmark in bookmarks) bookmark.uniqueId}
-                  .toISet(),
+              bookmarks: {
+                for (final bookmark in bookmarks) bookmark.uniqueId,
+              }.toISet(),
             ),
           ),
         );
@@ -122,8 +123,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       );
       onSuccess?.call(filtered.length);
 
-      final ids =
-          filtered.map((p) => BookmarkUniqueId.fromPost(p, booruId)).toISet();
+      final ids = filtered
+          .map((p) => BookmarkUniqueId.fromPost(p, booruId))
+          .toISet();
 
       state = state.copyWith(bookmarks: state.bookmarks.addAll(ids));
     } catch (e) {
@@ -197,12 +199,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       await (await bookmarkRepository).removeBookmark(bookmark);
       // Clear all image variants
       await Future.wait([
-        _cacheManager
-            .clearCache(_cacheManager.generateCacheKey(bookmark.originalUrl)),
-        _cacheManager
-            .clearCache(_cacheManager.generateCacheKey(bookmark.sampleUrl)),
-        _cacheManager
-            .clearCache(_cacheManager.generateCacheKey(bookmark.thumbnailUrl)),
+        _cacheManager.clearCache(
+          _cacheManager.generateCacheKey(bookmark.originalUrl),
+        ),
+        _cacheManager.clearCache(
+          _cacheManager.generateCacheKey(bookmark.sampleUrl),
+        ),
+        _cacheManager.clearCache(
+          _cacheManager.generateCacheKey(bookmark.thumbnailUrl),
+        ),
       ]);
       onSuccess?.call();
       state = state.copyWith(
@@ -224,12 +229,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       await Future.wait(
         bookmarks.expand(
           (b) => [
-            _cacheManager
-                .clearCache(_cacheManager.generateCacheKey(b.originalUrl)),
-            _cacheManager
-                .clearCache(_cacheManager.generateCacheKey(b.sampleUrl)),
-            _cacheManager
-                .clearCache(_cacheManager.generateCacheKey(b.thumbnailUrl)),
+            _cacheManager.clearCache(
+              _cacheManager.generateCacheKey(b.originalUrl),
+            ),
+            _cacheManager.clearCache(
+              _cacheManager.generateCacheKey(b.sampleUrl),
+            ),
+            _cacheManager.clearCache(
+              _cacheManager.generateCacheKey(b.thumbnailUrl),
+            ),
           ],
         ),
       );
@@ -343,8 +351,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     final settings = ref.read(settingsProvider);
     final downloader = ref.read(downloadServiceProvider);
     final headers = {
-      AppHttpHeaders.userAgentHeader:
-          ref.read(userAgentProvider(config.auth.booruType)),
+      AppHttpHeaders.userAgentHeader: ref.read(
+        userAgentProvider(config.auth.booruType),
+      ),
       ...ref.read(extraHttpHeaderProvider(config.auth)),
       ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
     };

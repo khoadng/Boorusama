@@ -2,20 +2,16 @@
 import 'token.dart';
 import 'token_option.dart';
 
-typedef TokenData = ({
-  Token token,
-  List<TokenOption> options,
-});
+typedef TokenData = ({Token token, List<TokenOption> options});
 
 List<TokenData> parse(
   TokenizerConfigs configs,
   String format,
-) =>
-    parseParts(format, configs.tokenRegex)
-        .map((part) => _parseSingle(part, configs))
-        .where((e) => e.$1 != null)
-        .map((e) => (token: e.$1!, options: e.$2))
-        .toList();
+) => parseParts(format, configs.tokenRegex)
+    .map((part) => _parseSingle(part, configs))
+    .where((e) => e.$1 != null)
+    .map((e) => (token: e.$1!, options: e.$2))
+    .toList();
 
 (Token?, List<TokenOption>) _parseSingle(
   String tokenString,
@@ -26,12 +22,12 @@ List<TokenData> parse(
   final tokenOptions = parts.length > 1
       ? parseTokenOptions(parts[1], token?.name, configs)
       : configs.standaloneTokens.containsKey(parts[0])
-          ? parseTokenOptions(
-              configs.standaloneTokens[parts[0]]!,
-              token?.name,
-              configs,
-            )
-          : <TokenOption>[];
+      ? parseTokenOptions(
+          configs.standaloneTokens[parts[0]]!,
+          token?.name,
+          configs,
+        )
+      : <TokenOption>[];
 
   return (token, tokenOptions);
 }
@@ -46,29 +42,25 @@ List<String> splitTokenString(String input) {
 Token? parseToken(
   String value,
   Map<String, List<String>> tokenDef,
-) =>
-    tokenDef.containsKey(value) ? Token(name: value) : null;
+) => tokenDef.containsKey(value) ? Token(name: value) : null;
 
 List<TokenOption> parseTokenOptions(
   String value,
   String? token,
   TokenizerConfigs configs,
-) =>
-    value
-        .split(',')
-        .map((value) => parseTokenOption(value, token, configs))
-        .nonNulls
-        .toList();
+) => value
+    .split(',')
+    .map((value) => parseTokenOption(value, token, configs))
+    .nonNulls
+    .toList();
 
 TokenOption? parseTokenOption(
   String value,
   String? token,
   TokenizerConfigs configs,
-) =>
-    getTokenOption(token, TokenOptionPair.parse(value), configs);
+) => getTokenOption(token, TokenOptionPair.parse(value), configs);
 
 List<String> parseParts(
   String format,
   RegExp regExp,
-) =>
-    regExp.allMatches(format).map((match) => match.group(1)).nonNulls.toList();
+) => regExp.allMatches(format).map((match) => match.group(1)).nonNulls.toList();

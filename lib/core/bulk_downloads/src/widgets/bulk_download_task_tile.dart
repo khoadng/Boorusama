@@ -97,8 +97,9 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
                                     child: _InfoText(session),
                                   ),
                                   if (ref.watch(showPremiumFeatsProvider))
@@ -475,8 +476,8 @@ class _InfoText extends ConsumerWidget {
         DownloadSessionStatus.pending =>
           DownloadTranslations.createdStatus.tr(),
         DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
-            pageProgress.completed,
-          ).tr(),
+          pageProgress.completed,
+        ).tr(),
         DownloadSessionStatus.failed => 'Error',
         DownloadSessionStatus.allSkipped =>
           DownloadTranslations.allSkippedStatus.tr(),
@@ -560,20 +561,20 @@ class _ProgressBar extends ConsumerWidget {
     return switch (status) {
       DownloadSessionStatus.dryRun => _buildLinear(),
       _ => Builder(
-          builder: (context) {
-            final progressMap = ref.watch(
-              bulkDownloadProgressProvider,
-            );
+        builder: (context) {
+          final progressMap = ref.watch(
+            bulkDownloadProgressProvider,
+          );
 
-            final progress = progressMap[sessionId];
+          final progress = progressMap[sessionId];
 
-            return progress != null
-                ? _buildPercent(
-                    progress,
-                  )
-                : _buildLinear();
-          },
-        ),
+          return progress != null
+              ? _buildPercent(
+                  progress,
+                )
+              : _buildLinear();
+        },
+      ),
     };
   }
 
@@ -694,19 +695,22 @@ class _ResumeSuspensionButton extends ConsumerWidget {
         FontAwesomeIcons.play,
       ),
       onPressed: () {
-        ref.read(bulkDownloadProvider.notifier).resumeSuspendedSession(
-          sessionId,
-          downloadConfigs: DownloadConfigs(
-            authChangedConfirmation: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => AuthConfigChangedDialog(session: session),
-              );
+        ref
+            .read(bulkDownloadProvider.notifier)
+            .resumeSuspendedSession(
+              sessionId,
+              downloadConfigs: DownloadConfigs(
+                authChangedConfirmation: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) =>
+                        AuthConfigChangedDialog(session: session),
+                  );
 
-              return confirmed ?? false;
-            },
-          ),
-        );
+                  return confirmed ?? false;
+                },
+              ),
+            );
       },
     );
   }
@@ -728,19 +732,22 @@ class _ResumeAllButton extends ConsumerWidget {
         FontAwesomeIcons.play,
       ),
       onPressed: () {
-        ref.read(bulkDownloadProvider.notifier).resumeSession(
-          sessionId,
-          downloadConfigs: DownloadConfigs(
-            authChangedConfirmation: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => AuthConfigChangedDialog(session: session),
-              );
+        ref
+            .read(bulkDownloadProvider.notifier)
+            .resumeSession(
+              sessionId,
+              downloadConfigs: DownloadConfigs(
+                authChangedConfirmation: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) =>
+                        AuthConfigChangedDialog(session: session),
+                  );
 
-              return confirmed ?? false;
-            },
-          ),
-        );
+                  return confirmed ?? false;
+                },
+              ),
+            );
       },
     );
   }

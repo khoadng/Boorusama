@@ -5,17 +5,17 @@ import 'hybooru_builder.dart';
 import 'hybooru_repository.dart';
 
 BooruComponents createHybooru() => BooruComponents(
-      parser: YamlBooruParser.standard(
-        type: BooruType.hybooru,
-        constructor: (siteDef) => Hybooru(
-          name: siteDef.name,
-          protocol: siteDef.protocol,
-          sites: siteDef.sites,
-        ),
-      ),
-      createBuilder: HybooruBuilder.new,
-      createRepository: (ref) => HybooruRepository(ref: ref),
-    );
+  parser: YamlBooruParser.standard(
+    type: BooruType.hybooru,
+    constructor: (siteDef) => Hybooru(
+      name: siteDef.name,
+      protocol: siteDef.protocol,
+      sites: siteDef.sites,
+    ),
+  ),
+  createBuilder: HybooruBuilder.new,
+  createRepository: (ref) => HybooruRepository(ref: ref),
+);
 
 class Hybooru extends Booru {
   const Hybooru({

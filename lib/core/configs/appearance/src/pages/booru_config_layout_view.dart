@@ -32,8 +32,9 @@ class BooruConfigLayoutView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
-    final uiBuilder =
-        ref.watch(booruBuilderProvider(config.auth))?.postDetailsUIBuilder;
+    final uiBuilder = ref
+        .watch(booruBuilderProvider(config.auth))
+        ?.postDetailsUIBuilder;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),

@@ -37,42 +37,44 @@ class FetchStrategyBuilder {
   final bool? silent;
 
   FetchStrategy build() => (uri, failure) async {
-        if (failure == null) {
-          return FetchInstructions.attempt(uri: uri, timeout: timeout);
-        }
+    if (failure == null) {
+      return FetchInstructions.attempt(uri: uri, timeout: timeout);
+    }
 
-        if (!failure.isRetriableFailure ||
-            failure.totalDuration > totalFetchTimeout ||
-            failure.attemptCount >= maxAttempts) {
-          return FetchInstructions.giveUp(uri: uri, silent: silent);
-        }
+    if (!failure.isRetriableFailure ||
+        failure.totalDuration > totalFetchTimeout ||
+        failure.attemptCount >= maxAttempts) {
+      return FetchInstructions.giveUp(uri: uri, silent: silent);
+    }
 
-        final pauseBetweenRetries = initialPauseBetweenRetries *
-            math.pow(exponentialBackoffMultiplier, failure.attemptCount - 1);
+    final pauseBetweenRetries =
+        initialPauseBetweenRetries *
+        math.pow(exponentialBackoffMultiplier, failure.attemptCount - 1);
 
-        await Future.delayed(pauseBetweenRetries);
+    await Future.delayed(pauseBetweenRetries);
 
-        return FetchInstructions.attempt(uri: uri, timeout: timeout);
-      };
+    return FetchInstructions.attempt(uri: uri, timeout: timeout);
+  };
 }
 
-typedef FetchStrategy = Future<FetchInstructions> Function(
-  Uri uri,
-  FetchFailure? failure,
-);
+typedef FetchStrategy =
+    Future<FetchInstructions> Function(
+      Uri uri,
+      FetchFailure? failure,
+    );
 
 class FetchInstructions<T> {
   const FetchInstructions.giveUp({
     required this.uri,
     this.silent,
-  })  : shouldGiveUp = true,
-        timeout = Duration.zero;
+  }) : shouldGiveUp = true,
+       timeout = Duration.zero;
 
   const FetchInstructions.attempt({
     required this.uri,
     required this.timeout,
-  })  : shouldGiveUp = false,
-        silent = null;
+  }) : shouldGiveUp = false,
+       silent = null;
 
   final bool shouldGiveUp;
   final Duration timeout;

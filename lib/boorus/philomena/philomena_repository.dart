@@ -40,10 +40,10 @@ class PhilomenaRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => PhilomenaClient(
-          baseUrl: config.url,
-          dio: dio,
-          apiKey: config.apiKey,
-        ).getImages(tags: ['*']).then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      apiKey: config.apiKey,
+    ).getImages(tags: ['*']).then((value) => true);
   }
 
   @override

@@ -83,7 +83,9 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
     void Function(String message)? onFailure,
     void Function(String message)? onSuccess,
   }) async {
-    await ref.read(booruConfigFileHandlerProvider).exportToClipboard(
+    await ref
+        .read(booruConfigFileHandlerProvider)
+        .exportToClipboard(
           configs: state,
           onSucceed: () => onSuccess?.call('Copied to clipboard'),
           onError: (e) => onFailure?.call(e),
@@ -95,7 +97,10 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
     void Function(String message, List<BooruConfig> configs)? onSuccess,
     Future<bool> Function(BooruConfigExportData data)? onWillImport,
   }) async {
-    await ref.read(booruConfigFileHandlerProvider).importFromClipboard().then(
+    await ref
+        .read(booruConfigFileHandlerProvider)
+        .importFromClipboard()
+        .then(
           (value) => value.fold(
             (l) => onFailure?.call(l.toString()),
             (r) async {
@@ -120,25 +125,25 @@ mixin BooruConfigExportImportMixin on Notifier<List<BooruConfig>> {
   }) async {
     return tryDecodeData(data: jsonString)
         .map(
-      (a) => BooruConfigExportData(
-        data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),
-        exportData: a,
-      ),
-    )
+          (a) => BooruConfigExportData(
+            data: a.data.map((e) => BooruConfig.fromJson(e)).toList(),
+            exportData: a,
+          ),
+        )
         .fold(
-      (l) {
-        onFailure?.call(l.toString());
-      },
-      (data) async {
-        final willImport = await onWillImport?.call(data);
-        if (willImport == null || !willImport) return;
+          (l) {
+            onFailure?.call(l.toString());
+          },
+          (data) async {
+            final willImport = await onWillImport?.call(data);
+            if (willImport == null || !willImport) return;
 
-        final configRepo = ref.read(booruConfigRepoProvider);
+            final configRepo = ref.read(booruConfigRepoProvider);
 
-        await configRepo.clear();
-        state = await configRepo.addAll(data.data);
-        onSuccess?.call('Imported successfully', data.data);
-      },
-    );
+            await configRepo.clear();
+            state = await configRepo.addAll(data.data);
+            onSuccess?.call('Imported successfully', data.data);
+          },
+        );
   }
 }

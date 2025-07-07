@@ -11,14 +11,20 @@ import 'notes.dart';
 
 final notesControllerProvider = NotifierProvider.autoDispose
     .family<NotesControllerNotifier, NotesControllerState, Post>(
-  NotesControllerNotifier.new,
-);
+      NotesControllerNotifier.new,
+    );
 
-final notesProvider = NotifierProvider.family<NotesNotifier,
-    Map<int, IList<Note>>, BooruConfigAuth>(NotesNotifier.new);
+final notesProvider =
+    NotifierProvider.family<
+      NotesNotifier,
+      Map<int, IList<Note>>,
+      BooruConfigAuth
+    >(NotesNotifier.new);
 
-final currentNotesProvider =
-    Provider.autoDispose.family<IList<Note>?, Post>((ref, post) {
+final currentNotesProvider = Provider.autoDispose.family<IList<Note>?, Post>((
+  ref,
+  post,
+) {
   final allNotes = ref.watch(notesProvider(ref.watchConfigAuth));
 
   return allNotes[post.id];
@@ -30,8 +36,9 @@ final emptyNoteRepoProvider = Provider<NoteRepository>(
 
 final noteRepoProvider = Provider.family<NoteRepository, BooruConfigAuth>(
   (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+    final repo = ref
+        .watch(booruEngineRegistryProvider)
+        .getRepository(config.booruType);
 
     final noteRepo = repo?.note(config);
 

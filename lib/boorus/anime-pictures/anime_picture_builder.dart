@@ -34,51 +34,51 @@ class AnimePicturesBuilder
   AnimePicturesBuilder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat: null,
-            ),
-            child: CreateAnimePicturesConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: null,
+        ),
+        child: CreateAnimePicturesConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateAnimePicturesConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateAnimePicturesConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
+    final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<AnimePicturesPost>(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DefaultPostDetailsPage<AnimePicturesPost>(),
+    );
+  };
 
   @override
   HomePageBuilder get homePageBuilder =>
@@ -87,8 +87,8 @@ class AnimePicturesBuilder
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context) => const AnimePicturesCurrentUserIdScope(
-            child: AnimePicturesFavoritesPage(),
-          );
+        child: AnimePicturesFavoritesPage(),
+      );
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(

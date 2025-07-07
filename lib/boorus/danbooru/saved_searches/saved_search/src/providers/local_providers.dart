@@ -9,7 +9,7 @@ import '../types/saved_search_repository.dart';
 
 final danbooruSavedSearchRepoProvider =
     Provider.family<SavedSearchRepository, BooruConfigAuth>((ref, config) {
-  return SavedSearchRepositoryApi(
-    ref.watch(danbooruClientProvider(config)),
-  );
-});
+      return SavedSearchRepositoryApi(
+        ref.watch(danbooruClientProvider(config)),
+      );
+    });

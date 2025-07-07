@@ -26,10 +26,11 @@ extension ForumPostRepositoryX<T extends ForumPost> on ForumPostRepository<T> {
     int topicId, {
     required int page,
     int? limit,
-  }) =>
-      getForumPosts(topicId, page: page, limit: limit)
-          .run()
-          .then((value) => value.getOrElse((e) => <T>[]));
+  }) => getForumPosts(
+    topicId,
+    page: page,
+    limit: limit,
+  ).run().then((value) => value.getOrElse((e) => <T>[]));
 }
 
 class ForumPostRepositoryBuilder<T extends ForumPost>
@@ -39,21 +40,20 @@ class ForumPostRepositoryBuilder<T extends ForumPost>
   });
 
   final Future<List<T>> Function(int topicId, {required int page, int? limit})
-      fetch;
+  fetch;
 
   @override
   TaskEither<BooruError, List<T>> getForumPosts(
     int topicId, {
     required int page,
     int? limit,
-  }) =>
-      TaskEither.Do(($) async {
-        final value = await $(
-          tryFetchRemoteData(
-            fetcher: () => fetch(topicId, page: page, limit: limit),
-          ),
-        );
+  }) => TaskEither.Do(($) async {
+    final value = await $(
+      tryFetchRemoteData(
+        fetcher: () => fetch(topicId, page: page, limit: limit),
+      ),
+    );
 
-        return value;
-      });
+    return value;
+  });
 }

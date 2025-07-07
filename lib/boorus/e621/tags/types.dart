@@ -29,16 +29,16 @@ class E621Tag extends Equatable {
 
   @override
   List<Object> get props => [
-        id,
-        name,
-        postCount,
-        relatedTags,
-        relatedTagsUpdatedAt,
-        category,
-        isLocked,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    name,
+    postCount,
+    relatedTags,
+    relatedTagsUpdatedAt,
+    category,
+    isLocked,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 class E621RelatedTag extends Equatable {

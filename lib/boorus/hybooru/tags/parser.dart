@@ -34,8 +34,7 @@ TagCategory _mapTagTypeToTagCategory(TagType type) {
     TagType.character || TagType.person => TagCategory.character(),
     TagType.copyright ||
     TagType.series ||
-    TagType.studio =>
-      TagCategory.copyright(),
+    TagType.studio => TagCategory.copyright(),
     TagType.meta || TagType.system || TagType.rating => TagCategory.meta(),
     TagType.medium || TagType.fm || TagType.general => TagCategory.general(),
   };

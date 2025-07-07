@@ -21,27 +21,29 @@ extension PostStatisticsX on Iterable<Post> {
     final scores = map((x) => x.score.toDouble()).toList();
     final tagCounts = map((e) => e.tags.length.toDouble()).toList();
 
-    final ratingMap =
-        map((e) => e.rating).toList().count(selector: (e) => e.name);
+    final ratingMap = map(
+      (e) => e.rating,
+    ).toList().count(selector: (e) => e.name);
 
     final generalRatingPercentage = ratingMap.containsKey(Rating.general.name)
         ? ratingMap[Rating.general.name]! / length
         : 0.0;
     final sensitiveRatingPercentage =
         ratingMap.containsKey(Rating.sensitive.name)
-            ? ratingMap[Rating.sensitive.name]! / length
-            : 0.0;
+        ? ratingMap[Rating.sensitive.name]! / length
+        : 0.0;
     final questionableRatingPercentage =
         ratingMap.containsKey(Rating.questionable.name)
-            ? ratingMap[Rating.questionable.name]! / length
-            : 0.0;
+        ? ratingMap[Rating.questionable.name]! / length
+        : 0.0;
     final explicitRatingPercentage = ratingMap.containsKey(Rating.explicit.name)
         ? ratingMap[Rating.explicit.name]! / length
         : 0.0;
 
     final domainMap = countDomain(this);
-    final mediaTypeMap =
-        map((e) => e.format).toList().count(selector: (e) => e);
+    final mediaTypeMap = map(
+      (e) => e.format,
+    ).toList().count(selector: (e) => e);
 
     return (
       scores: calculateStats(scores),
@@ -124,8 +126,9 @@ void _mergeDomain(
   required String pattern,
   required String mergedDomain,
 }) {
-  final domains =
-      domainMap.keys.where((domain) => domain.contains(pattern)).toList();
+  final domains = domainMap.keys
+      .where((domain) => domain.contains(pattern))
+      .toList();
 
   for (final domain in domains) {
     final count = domainMap[domain]!;

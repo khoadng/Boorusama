@@ -44,20 +44,20 @@ extension TokenHandlerListX<T extends Post> on List<TokenHandler<T>> {
 
 class WidthTokenHandler<T extends Post> extends TokenHandler<T> {
   WidthTokenHandler()
-      : super('width', (post, config) => post.width.toInt().toString());
+    : super('width', (post, config) => post.width.toInt().toString());
 }
 
 class HeightTokenHandler<T extends Post> extends TokenHandler<T> {
   HeightTokenHandler()
-      : super('height', (post, config) => post.height.toInt().toString());
+    : super('height', (post, config) => post.height.toInt().toString());
 }
 
 class AspectRatioTokenHandler<T extends Post> extends TokenHandler<T> {
   AspectRatioTokenHandler()
-      : super('aspect_ratio', (post, config) => post.aspectRatio.toString());
+    : super('aspect_ratio', (post, config) => post.aspectRatio.toString());
 }
 
 class MPixelsTokenHandler<T extends Post> extends TokenHandler<T> {
   MPixelsTokenHandler()
-      : super('mpixels', (post, config) => post.mpixels.toString());
+    : super('mpixels', (post, config) => post.mpixels.toString());
 }

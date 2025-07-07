@@ -55,8 +55,8 @@ const _serviceName = 'Bulk Download Manager';
 
 final bulkDownloadProvider =
     NotifierProvider<BulkDownloadNotifier, BulkDownloadState>(
-  BulkDownloadNotifier.new,
-);
+      BulkDownloadNotifier.new,
+    );
 
 final bulkDownloadSessionsProvider = Provider<List<BulkDownloadSession>>((ref) {
   return ref.watch(bulkDownloadProvider.select((e) => e.sessions));
@@ -64,8 +64,8 @@ final bulkDownloadSessionsProvider = Provider<List<BulkDownloadSession>>((ref) {
 
 final bulkDownloadProgressProvider =
     NotifierProvider<BulkDownloadProgressNotifier, Map<String, double>>(
-  BulkDownloadProgressNotifier.new,
-);
+      BulkDownloadProgressNotifier.new,
+    );
 
 extension SessionActionX on BulkDownloadSession {
   bool get actionable {
@@ -177,8 +177,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           if (session?.status == DownloadSessionStatus.running &&
               session?.task?.notifications == true &&
               !isIOS()) {
-            final notification =
-                await ref.read(bulkDownloadNotificationProvider.future);
+            final notification = await ref.read(
+              bulkDownloadNotificationProvider.future,
+            );
             await notification.showProgressNotification(
               sessionId,
               session?.task?.prettyTags ?? 'Downloading...',
@@ -227,15 +228,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
                   ref
                       .read(taskFileSizeResolverProvider(event.task).future)
                       .then(
-                    (fileSize) {
-                      updateRecordFromTaskStream(
-                        event.task.group,
-                        event.task.taskId,
-                        DownloadRecordStatus.completed,
-                        fileSize: fileSize,
+                        (fileSize) {
+                          updateRecordFromTaskStream(
+                            event.task.group,
+                            event.task.taskId,
+                            DownloadRecordStatus.completed,
+                            fileSize: fileSize,
+                          );
+                        },
                       );
-                    },
-                  );
 
                   scheduleCompletionCheck(event.task.group);
                 }
@@ -451,7 +452,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final config = ref.readConfig;
 
     final path = task.path;
-    final directoryChecker = downloadConfigs?.directoryExistChecker ??
+    final directoryChecker =
+        downloadConfigs?.directoryExistChecker ??
         const FileSystemDirectoryExistChecker();
 
     // Check if directory exists
@@ -468,21 +470,25 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final fallbackSettings = ref.read(settingsProvider);
     final settings = downloadConfigs?.settings ?? fallbackSettings;
 
-    final fallbackDownloadFileUrlExtractor =
-        ref.read(downloadFileUrlExtractorProvider(config.auth));
+    final fallbackDownloadFileUrlExtractor = ref.read(
+      downloadFileUrlExtractorProvider(config.auth),
+    );
     final downloadFileUrlExtractor =
         downloadConfigs?.urlExtractor ?? fallbackDownloadFileUrlExtractor;
 
-    final fallbackHeaders =
-        ref.read(cachedBypassDdosHeadersProvider(config.url));
+    final fallbackHeaders = ref.read(
+      cachedBypassDdosHeadersProvider(config.url),
+    );
     final headers = downloadConfigs?.headers ?? fallbackHeaders;
 
-    final fileNameBuilder = downloadConfigs?.fileNameBuilder ??
+    final fileNameBuilder =
+        downloadConfigs?.fileNameBuilder ??
         ref.read(downloadFilenameBuilderProvider(config.auth)) ??
         fallbackFileNameBuilder;
 
-    final fallbackBlacklistedTags =
-        await ref.read(blacklistTagsProvider(config.filter).future);
+    final fallbackBlacklistedTags = await ref.read(
+      blacklistTagsProvider(config.filter).future,
+    );
     final blacklistedTags =
         downloadConfigs?.blacklistedTags ?? fallbackBlacklistedTags;
     final effectiveBlacklistedTags = {
@@ -497,8 +503,8 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     final notificationPermManager =
         downloadConfigs?.notificationPermissionManager != null
-            ? downloadConfigs!.notificationPermissionManager!
-            : ref.read(notificationPermissionManagerProvider);
+        ? downloadConfigs!.notificationPermissionManager!
+        : ref.read(notificationPermissionManagerProvider);
 
     final fileExistChecker =
         downloadConfigs?.existChecker ?? const FileSystemDownloadExistChecker();
@@ -595,8 +601,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       }
 
       // Then apply blacklist filtering
-      final filteredPosts =
-          await _filterBlacklistedTags(initialPosts, patterns);
+      final filteredPosts = await _filterBlacklistedTags(
+        initialPosts,
+        patterns,
+      );
       rawPosts = filteredPosts;
 
       var cumulativeIndex = 0;
@@ -707,8 +715,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      final stats =
-          await _withRepo((repo) => repo.getActiveSessionStats(sessionId));
+      final stats = await _withRepo(
+        (repo) => repo.getActiveSessionStats(sessionId),
+      );
 
       await _updateSessionWithState(sessionId, currentSession, stats: stats);
 
@@ -901,8 +910,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     try {
-      final currentSession =
-          await _withRepo((repo) => repo.getSession(sessionId));
+      final currentSession = await _withRepo(
+        (repo) => repo.getSession(sessionId),
+      );
 
       if (currentSession == null) {
         state = state.copyWith(error: SessionNotFoundError.new);
@@ -944,8 +954,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           status: DownloadRecordStatus.completed,
         ),
       );
-      final totalRecords =
-          await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
+      final totalRecords = await _withRepo(
+        (repo) => repo.getRecordsCountBySessionId(sessionId),
+      );
 
       if (completedCount == totalRecords) {
         await tryCompleteSession(
@@ -1039,8 +1050,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     final config = ref.readConfigAuth;
-    final initialSession =
-        await _withRepo((repo) => repo.createSession(task, config));
+    final initialSession = await _withRepo(
+      (repo) => repo.createSession(task, config),
+    );
 
     await _startDownloadWithSession(
       task,
@@ -1054,8 +1066,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final downloader = ref.read(downloadServiceProvider);
       final session = await _withRepo((repo) => repo.getSession(sessionId));
       final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
-      final notification =
-          await ref.read(bulkDownloadNotificationProvider.future);
+      final notification = await ref.read(
+        bulkDownloadNotificationProvider.future,
+      );
 
       // Cancel notification immediately
       await notification.cancelNotification(sessionId);
@@ -1176,8 +1189,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     var total = countInfo?.total;
     var completed = countInfo?.completed;
 
-    total ??=
-        await _withRepo((repo) => repo.getRecordsCountBySessionId(sessionId));
+    total ??= await _withRepo(
+      (repo) => repo.getRecordsCountBySessionId(sessionId),
+    );
     completed ??= await _withRepo(
       (repo) => repo.getRecordsCountBySessionId(
         sessionId,
@@ -1353,8 +1367,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     // Handle notifications based on status and notification settings
-    final notification =
-        await ref.read(bulkDownloadNotificationProvider.future);
+    final notification = await ref.read(
+      bulkDownloadNotificationProvider.future,
+    );
 
     // Only show notifications if task.notifications is true
     if (session?.task?.notifications ?? false) {
@@ -1399,8 +1414,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
       // Clone the task to prevent any changes to the original task
       final clonedOptions = DownloadOptions.fromTask(task);
-      final clonedTask =
-          await _withRepo((repo) => repo.createTask(clonedOptions));
+      final clonedTask = await _withRepo(
+        (repo) => repo.createTask(clonedOptions),
+      );
 
       final savedTask = await _withRepo(
         (repo) => repo.createSavedTask(
@@ -1596,16 +1612,12 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }
 }
 
-typedef RecordCountInfo = ({
-  int completed,
-  int total,
-});
+typedef RecordCountInfo = ({int completed, int total});
 
 Future<List<Post>> _filterBlacklistedTags(
   List<Post> posts,
   Iterable<List<TagExpression>>? patterns,
-) =>
-    Isolate.run(() => _filterInIsolate(posts, patterns));
+) => Isolate.run(() => _filterInIsolate(posts, patterns));
 
 List<Post> _filterInIsolate(
   List<Post> posts,

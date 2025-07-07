@@ -21,33 +21,32 @@ class BackgroundDownloader implements DownloadService {
     int? fileSize,
     bool? skipIfExists,
     Map<String, String>? headers,
-  }) =>
-      TaskEither.Do(
-        ($) async {
-          final downloadDirTask = await tryGetDownloadDirectory().run();
-          final downloadDir = downloadDirTask.fold((l) => null, (r) => r);
+  }) => TaskEither.Do(
+    ($) async {
+      final downloadDirTask = await tryGetDownloadDirectory().run();
+      final downloadDir = downloadDirTask.fold((l) => null, (r) => r);
 
-          final task = DownloadTask(
-            url: url,
-            filename: filename,
-            allowPause: true,
-            retries: 1,
-            baseDirectory: downloadDir != null
-                ? BaseDirectory.root
-                : BaseDirectory.applicationDocuments,
-            directory: downloadDir != null ? downloadDir.path : '',
-            updates: Updates.statusAndProgress,
-            metaData: metadata?.toJsonString() ?? '',
-            headers: headers,
-            group: metadata?.group ?? FileDownloader.defaultGroup,
-          );
-
-          return FileDownloader().enqueueIfNeeded(
-            task,
-            skipIfExists: skipIfExists,
-          );
-        },
+      final task = DownloadTask(
+        url: url,
+        filename: filename,
+        allowPause: true,
+        retries: 1,
+        baseDirectory: downloadDir != null
+            ? BaseDirectory.root
+            : BaseDirectory.applicationDocuments,
+        directory: downloadDir != null ? downloadDir.path : '',
+        updates: Updates.statusAndProgress,
+        metaData: metadata?.toJsonString() ?? '',
+        headers: headers,
+        group: metadata?.group ?? FileDownloader.defaultGroup,
       );
+
+      return FileDownloader().enqueueIfNeeded(
+        task,
+        skipIfExists: skipIfExists,
+      );
+    },
+  );
 
   @override
   DownloadTaskInfoOrError downloadCustomLocation({
@@ -57,28 +56,27 @@ class BackgroundDownloader implements DownloadService {
     DownloaderMetadata? metadata,
     bool? skipIfExists,
     Map<String, String>? headers,
-  }) =>
-      TaskEither.Do(
-        ($) async {
-          final task = DownloadTask(
-            url: url,
-            filename: filename,
-            baseDirectory: BaseDirectory.root,
-            directory: path,
-            allowPause: true,
-            retries: 1,
-            updates: Updates.statusAndProgress,
-            metaData: metadata?.toJsonString() ?? '',
-            headers: headers,
-            group: metadata?.group ?? FileDownloader.defaultGroup,
-          );
-
-          return FileDownloader().enqueueIfNeeded(
-            task,
-            skipIfExists: skipIfExists,
-          );
-        },
+  }) => TaskEither.Do(
+    ($) async {
+      final task = DownloadTask(
+        url: url,
+        filename: filename,
+        baseDirectory: BaseDirectory.root,
+        directory: path,
+        allowPause: true,
+        retries: 1,
+        updates: Updates.statusAndProgress,
+        metaData: metadata?.toJsonString() ?? '',
+        headers: headers,
+        group: metadata?.group ?? FileDownloader.defaultGroup,
       );
+
+      return FileDownloader().enqueueIfNeeded(
+        task,
+        skipIfExists: skipIfExists,
+      );
+    },
+  );
 
   @override
   Future<bool> cancelAll(String group) {
@@ -113,8 +111,8 @@ class TaskResponseAdapter implements HttpResponse {
   Uri get requestUri => Uri.tryParse(_update.task.url) ?? Uri();
   @override
   Map<String, dynamic> get headers => Map<String, dynamic>.from(
-        _update.responseHeaders ?? <String, String>{},
-      );
+    _update.responseHeaders ?? <String, String>{},
+  );
 }
 
 class TaskErrorAdapter implements HttpError {

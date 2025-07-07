@@ -28,15 +28,15 @@ class Dmail extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        ownerId,
-        fromId,
-        toId,
-        title,
-        body,
-        isRead,
-        isDeleted,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    ownerId,
+    fromId,
+    toId,
+    title,
+    body,
+    isRead,
+    isDeleted,
+    createdAt,
+    updatedAt,
+  ];
 }

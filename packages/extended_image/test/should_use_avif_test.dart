@@ -51,17 +51,18 @@ void main() {
       });
 
       test(
-          'returns true for Android 11 (API 30) and below with .avif extension',
-          () {
-        expect(
-          shouldUseAvif(
-            'test.avif',
-            platform: TargetPlatform.android,
-            androidVersion: 30,
-          ),
-          true,
-        );
-      });
+        'returns true for Android 11 (API 30) and below with .avif extension',
+        () {
+          expect(
+            shouldUseAvif(
+              'test.avif',
+              platform: TargetPlatform.android,
+              androidVersion: 30,
+            ),
+            true,
+          );
+        },
+      );
     });
 
     group('URL variations', () {

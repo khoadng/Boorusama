@@ -61,54 +61,57 @@ void main() {
     });
 
     test(
-        'upgrades from old version to new version with multiple sequential migrations',
-        () {
-      // Start with a legacy database at version 1.
-      db.execute('PRAGMA user_version = 1');
+      'upgrades from old version to new version with multiple sequential migrations',
+      () {
+        // Start with a legacy database at version 1.
+        db.execute('PRAGMA user_version = 1');
 
-      // Migration for version 2: create a new table.
-      // Migration for version 3: alter the table by adding a new column.
-      final migrations = [
-        BasicMigration(
-          version: 2,
-          onUp: (context) {
-            context.execute(
-              'CREATE TABLE multi_step (id INTEGER PRIMARY KEY, value TEXT)',
-            );
-          },
-        ),
-        BasicMigration(
-          version: 3,
-          onUp: (context) {
-            context.execute(
-              'ALTER TABLE multi_step ADD COLUMN extra TEXT DEFAULT "default"',
-            );
-          },
-        ),
-      ];
+        // Migration for version 2: create a new table.
+        // Migration for version 3: alter the table by adding a new column.
+        final migrations = [
+          BasicMigration(
+            version: 2,
+            onUp: (context) {
+              context.execute(
+                'CREATE TABLE multi_step (id INTEGER PRIMARY KEY, value TEXT)',
+              );
+            },
+          ),
+          BasicMigration(
+            version: 3,
+            onUp: (context) {
+              context.execute(
+                'ALTER TABLE multi_step ADD COLUMN extra TEXT DEFAULT "default"',
+              );
+            },
+          ),
+        ];
 
-      const targetVersion = 3;
-      DbMigrationManager.create(
-        db: db,
-        targetVersion: targetVersion,
-        migrations: migrations,
-      ).runMigrations();
+        const targetVersion = 3;
+        DbMigrationManager.create(
+          db: db,
+          targetVersion: targetVersion,
+          migrations: migrations,
+        ).runMigrations();
 
-      // Verify that user_version is updated.
-      final updatedVersion =
-          db.select('PRAGMA user_version').first.columnAt(0) as int;
-      expect(updatedVersion, equals(targetVersion));
+        // Verify that user_version is updated.
+        final updatedVersion =
+            db.select('PRAGMA user_version').first.columnAt(0) as int;
+        expect(updatedVersion, equals(targetVersion));
 
-      // Verify that the table was created and then altered.
-      final tableInfo = db.select("PRAGMA table_info('multi_step')");
-      final columns = tableInfo.map((row) => row['name']).toList();
-      expect(columns, containsAll(['id', 'value', 'extra']));
+        // Verify that the table was created and then altered.
+        final tableInfo = db.select("PRAGMA table_info('multi_step')");
+        final columns = tableInfo.map((row) => row['name']).toList();
+        expect(columns, containsAll(['id', 'value', 'extra']));
 
-      // Optionally, verify that the default value is in effect by inserting and selecting a row.
-      db.execute("INSERT INTO multi_step (id, value) VALUES (1, 'test')");
-      final row = db.select("SELECT extra FROM multi_step WHERE id = 1").first;
-      expect(row['extra'], equals('default'));
-    });
+        // Optionally, verify that the default value is in effect by inserting and selecting a row.
+        db.execute("INSERT INTO multi_step (id, value) VALUES (1, 'test')");
+        final row = db
+            .select("SELECT extra FROM multi_step WHERE id = 1")
+            .first;
+        expect(row['extra'], equals('default'));
+      },
+    );
 
     test('does nothing if no migrations are provided', () {
       const targetVersion = 1;
@@ -236,8 +239,9 @@ void main() {
           version: 1,
           onUp: (context) {
             migration2Counter++;
-            context
-                .execute('CREATE TABLE test_table2 (id INTEGER PRIMARY KEY)');
+            context.execute(
+              'CREATE TABLE test_table2 (id INTEGER PRIMARY KEY)',
+            );
           },
         ),
         BasicMigration(
@@ -266,16 +270,18 @@ void main() {
         BasicMigration(
           version: 2,
           onUp: (context) {
-            context
-                .execute('CREATE TABLE test_table3 (id INTEGER PRIMARY KEY)');
+            context.execute(
+              'CREATE TABLE test_table3 (id INTEGER PRIMARY KEY)',
+            );
           },
         ),
         BasicMigration(
           version: 3,
           onUp: (context) {
             // Intentional failure
-            context
-                .execute('ALTER TABLE non_existent_table ADD COLUMN name TEXT');
+            context.execute(
+              'ALTER TABLE non_existent_table ADD COLUMN name TEXT',
+            );
           },
         ),
       ];
@@ -370,13 +376,14 @@ void main() {
       ];
 
       const targetVersion = 1;
-      final migrationManager = DbMigrationManager.create(
-        db: db,
-        targetVersion: targetVersion,
-        migrations: migrations,
-      )
-        // Run the migration once.
-        ..runMigrations();
+      final migrationManager =
+          DbMigrationManager.create(
+              db: db,
+              targetVersion: targetVersion,
+              migrations: migrations,
+            )
+            // Run the migration once.
+            ..runMigrations();
       // Capture version after first run.
       final versionAfterFirst =
           db.select('PRAGMA user_version').first.columnAt(0) as int;
@@ -479,8 +486,9 @@ void main() {
       expect(columnNames, containsAll(['id', 'name', 'email']));
 
       // Pre-existing data should remain intact with the default value.
-      final row =
-          db.select("SELECT * FROM user_table WHERE name = 'Alice'").first;
+      final row = db
+          .select("SELECT * FROM user_table WHERE name = 'Alice'")
+          .first;
       expect(row['name'], equals('Alice'));
       expect(row['email'], equals('unknown'));
 
@@ -664,40 +672,41 @@ void main() {
     });
 
     test(
-        'fails appropriately with out-of-order migrations missing dependencies',
-        () {
-      final migrations = [
-        BasicMigration(
-          version: 2,
-          onUp: (context) {
-            // This will fail because v1 doesn't create the required table
-            context.execute('ALTER TABLE missing_table ADD COLUMN test TEXT');
-          },
-        ),
-        BasicMigration(
-          version: 1,
-          onUp: (context) {
-            context.execute(
-              'CREATE TABLE different_table (id INTEGER PRIMARY KEY)',
-            );
-          },
-        ),
-      ];
+      'fails appropriately with out-of-order migrations missing dependencies',
+      () {
+        final migrations = [
+          BasicMigration(
+            version: 2,
+            onUp: (context) {
+              // This will fail because v1 doesn't create the required table
+              context.execute('ALTER TABLE missing_table ADD COLUMN test TEXT');
+            },
+          ),
+          BasicMigration(
+            version: 1,
+            onUp: (context) {
+              context.execute(
+                'CREATE TABLE different_table (id INTEGER PRIMARY KEY)',
+              );
+            },
+          ),
+        ];
 
-      const targetVersion = 2;
-      final manager = DbMigrationManager.create(
-        db: db,
-        targetVersion: targetVersion,
-        migrations: migrations,
-      );
+        const targetVersion = 2;
+        final manager = DbMigrationManager.create(
+          db: db,
+          targetVersion: targetVersion,
+          migrations: migrations,
+        );
 
-      expect(manager.runMigrations, throwsException);
+        expect(manager.runMigrations, throwsException);
 
-      // Verify no tables were created (rollback worked)
-      final tables = db.select(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('different_table', 'missing_table')",
-      );
-      expect(tables, isEmpty);
-    });
+        // Verify no tables were created (rollback worked)
+        final tables = db.select(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('different_table', 'missing_table')",
+        );
+        expect(tables, isEmpty);
+      },
+    );
   });
 }

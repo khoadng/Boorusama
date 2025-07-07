@@ -22,8 +22,10 @@ import '../../../theme.dart';
 import '../../../widgets/drag_line.dart';
 import '../providers/task_update_ex.dart';
 
-final _checkResumableProvider =
-    FutureProvider.autoDispose.family<bool, Task>((ref, task) async {
+final _checkResumableProvider = FutureProvider.autoDispose.family<bool, Task>((
+  ref,
+  task,
+) async {
   return FileDownloader().taskCanResume(task);
 });
 
@@ -79,78 +81,82 @@ class SimpleDownloadTile extends ConsumerWidget {
         color: task.isCanceled ? Theme.of(context).colorScheme.hintColor : null,
         trailing: switch (task) {
           final TaskStatusUpdate s => switch (s.status) {
-              TaskStatus.failed =>
-                ref.watch(_checkResumableProvider(task.task)).when(
-                      data: (value) => value
-                          ? IconButton(
-                              onPressed: () => onResumeFailed.call(),
-                              icon: const Icon(
-                                Symbols.refresh,
-                                fill: 1,
-                              ),
-                            )
-                          : IconButton(
-                              onPressed: () => onRestart.call(),
-                              icon: const Icon(
-                                Symbols.refresh,
-                                fill: 1,
-                              ),
+            TaskStatus.failed =>
+              ref
+                  .watch(_checkResumableProvider(task.task))
+                  .when(
+                    data: (value) => value
+                        ? IconButton(
+                            onPressed: () => onResumeFailed.call(),
+                            icon: const Icon(
+                              Symbols.refresh,
+                              fill: 1,
                             ),
-                      loading: () => const Center(
-                        child: SizedBox(
-                          height: 12,
-                          width: 12,
-                          child: CircularProgressIndicator(),
-                        ),
+                          )
+                        : IconButton(
+                            onPressed: () => onRestart.call(),
+                            icon: const Icon(
+                              Symbols.refresh,
+                              fill: 1,
+                            ),
+                          ),
+                    loading: () => const Center(
+                      child: SizedBox(
+                        height: 12,
+                        width: 12,
+                        child: CircularProgressIndicator(),
                       ),
-                      error: (e, _) => const SizedBox.shrink(),
                     ),
-              TaskStatus.paused => IconButton(
-                  onPressed: () => onResume.call(),
-                  icon: const Icon(
-                    Symbols.play_arrow,
-                    fill: 1,
+                    error: (e, _) => const SizedBox.shrink(),
                   ),
-                ),
-              TaskStatus.running => IconButton(
-                  onPressed: () => onPause(),
-                  icon: const Icon(
-                    Symbols.pause,
-                    fill: 1,
-                  ),
-                ),
-              TaskStatus.complete => const Icon(
-                  Symbols.download_done,
-                  color: Colors.green,
-                ),
-              TaskStatus.enqueued => const SizedBox.shrink(),
-              TaskStatus.notFound => const SizedBox.shrink(),
-              TaskStatus.canceled => const SizedBox.shrink(),
-              TaskStatus.waitingToRetry =>
-                const Center(child: CircularProgressIndicator()),
-            },
-          TaskProgressUpdate _ => IconButton(
+            TaskStatus.paused => IconButton(
+              onPressed: () => onResume.call(),
+              icon: const Icon(
+                Symbols.play_arrow,
+                fill: 1,
+              ),
+            ),
+            TaskStatus.running => IconButton(
               onPressed: () => onPause(),
               icon: const Icon(
                 Symbols.pause,
                 fill: 1,
               ),
             ),
+            TaskStatus.complete => const Icon(
+              Symbols.download_done,
+              color: Colors.green,
+            ),
+            TaskStatus.enqueued => const SizedBox.shrink(),
+            TaskStatus.notFound => const SizedBox.shrink(),
+            TaskStatus.canceled => const SizedBox.shrink(),
+            TaskStatus.waitingToRetry => const Center(
+              child: CircularProgressIndicator(),
+            ),
+          },
+          TaskProgressUpdate _ => IconButton(
+            onPressed: () => onPause(),
+            icon: const Icon(
+              Symbols.pause,
+              fill: 1,
+            ),
+          ),
         },
         subtitle: switch (task) {
           final TaskStatusUpdate s => _TaskSubtitle(task: s),
-          final TaskProgressUpdate p => p.progress >= 0
-              ? LinearPercentIndicator(
-                  lineHeight: 2,
-                  percent: p.progress,
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  animation: true,
-                  animateFromLastPercent: true,
-                  trailing: Text(
-                    '${(p.progress * 100).floor()}%',
-                  ),
-                )
-              : const SizedBox.shrink(),
+          final TaskProgressUpdate p =>
+            p.progress >= 0
+                ? LinearPercentIndicator(
+                    lineHeight: 2,
+                    percent: p.progress,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    animation: true,
+                    animateFromLastPercent: true,
+                    trailing: Text(
+                      '${(p.progress * 100).floor()}%',
+                    ),
+                  )
+                : const SizedBox.shrink(),
         },
         url: task.task.url,
       ),
@@ -158,8 +164,9 @@ class SimpleDownloadTile extends ConsumerWidget {
   }
 }
 
-final _filePathProvider = FutureProvider.autoDispose
-    .family<String, Task>((ref, task) => task.filePath());
+final _filePathProvider = FutureProvider.autoDispose.family<String, Task>(
+  (ref, task) => task.filePath(),
+);
 
 class _TaskSubtitle extends ConsumerWidget {
   const _TaskSubtitle({
@@ -188,7 +195,9 @@ class _TaskSubtitle extends ConsumerWidget {
       exception == null
           ? switch (status) {
               TaskStatus.complete =>
-                ref.watch(_filePathProvider(task.task)).maybeWhen(
+                ref
+                    .watch(_filePathProvider(task.task))
+                    .maybeWhen(
                       data: (data) => _prettifyFilePathIfNeeded(data),
                       orElse: () => '...',
                     ),
@@ -276,23 +285,23 @@ class _ModalOptions extends ConsumerWidget {
 
 extension TaskCancelX on TaskUpdate {
   bool get isCanceled => switch (this) {
-        final TaskStatusUpdate u => u.status == TaskStatus.canceled,
-        TaskProgressUpdate _ => false,
-      };
+    final TaskStatusUpdate u => u.status == TaskStatus.canceled,
+    TaskProgressUpdate _ => false,
+  };
 
   bool get canCancel => switch (this) {
-        final TaskStatusUpdate u => switch (u.status) {
-            TaskStatus.failed => false,
-            TaskStatus.paused => false,
-            TaskStatus.running => true,
-            TaskStatus.enqueued => true,
-            TaskStatus.complete => false,
-            TaskStatus.notFound => false,
-            TaskStatus.canceled => false,
-            TaskStatus.waitingToRetry => true,
-          },
-        TaskProgressUpdate _ => true,
-      };
+    final TaskStatusUpdate u => switch (u.status) {
+      TaskStatus.failed => false,
+      TaskStatus.paused => false,
+      TaskStatus.running => true,
+      TaskStatus.enqueued => true,
+      TaskStatus.complete => false,
+      TaskStatus.notFound => false,
+      TaskStatus.canceled => false,
+      TaskStatus.waitingToRetry => true,
+    },
+    TaskProgressUpdate _ => true,
+  };
 }
 
 extension TaskExceptionX on TaskException {

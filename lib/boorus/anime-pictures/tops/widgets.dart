@@ -151,13 +151,17 @@ class _PopularExploreState extends ConsumerState<_DailyPopularExplore> {
 
     return ExploreSection(
       title: 'Daily',
-      builder: (_) =>
-          ref.watch(animePicturesDailyPopularProvider(params)).maybeWhen(
-                data: (r) => ExploreList(posts: r),
-                orElse: () => const ExploreList(posts: []),
-              ),
-      onPressed: ref.watch(animePicturesDailyPopularProvider(params)).maybeWhen(
-            data: (r) => () => widget.onPressed(r),
+      builder: (_) => ref
+          .watch(animePicturesDailyPopularProvider(params))
+          .maybeWhen(
+            data: (r) => ExploreList(posts: r),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: ref
+          .watch(animePicturesDailyPopularProvider(params))
+          .maybeWhen(
+            data: (r) =>
+                () => widget.onPressed(r),
             orElse: () => null,
           ),
     );
@@ -186,16 +190,19 @@ class _WeeklyPopularExploreState extends ConsumerState<_WeeklyPopularExplore> {
 
     return ExploreSection(
       title: 'Weekly',
-      builder: (_) =>
-          ref.watch(animePicturesWeeklyPopularProvider(params)).maybeWhen(
-                data: (r) => ExploreList(posts: r),
-                orElse: () => const ExploreList(posts: []),
-              ),
-      onPressed:
-          ref.watch(animePicturesWeeklyPopularProvider(params)).maybeWhen(
-                data: (r) => () => widget.onPressed(r),
-                orElse: () => null,
-              ),
+      builder: (_) => ref
+          .watch(animePicturesWeeklyPopularProvider(params))
+          .maybeWhen(
+            data: (r) => ExploreList(posts: r),
+            orElse: () => const ExploreList(posts: []),
+          ),
+      onPressed: ref
+          .watch(animePicturesWeeklyPopularProvider(params))
+          .maybeWhen(
+            data: (r) =>
+                () => widget.onPressed(r),
+            orElse: () => null,
+          ),
     );
   }
 }

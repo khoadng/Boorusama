@@ -10,10 +10,14 @@ import '../../../../../../core/configs/ref.dart';
 import '../data/providers.dart';
 import '../types/artist.dart';
 
-final danbooruArtistProvider = AsyncNotifierProvider.family<
-    DanbooruArtistNotifier, DanbooruArtist, String>(
-  DanbooruArtistNotifier.new,
-);
+final danbooruArtistProvider =
+    AsyncNotifierProvider.family<
+      DanbooruArtistNotifier,
+      DanbooruArtist,
+      String
+    >(
+      DanbooruArtistNotifier.new,
+    );
 
 class DanbooruArtistNotifier
     extends FamilyAsyncNotifier<DanbooruArtist, String> {

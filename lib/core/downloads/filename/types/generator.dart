@@ -40,7 +40,8 @@ abstract class DownloadFilenameGenerator<T extends Post> {
   String get defaultBulkDownloadFileNameFormat;
 }
 
-typedef DownloadFilenameTokenHandler<T extends Post> = String? Function(
-  T post,
-  DownloadFilenameTokenOptions options,
-);
+typedef DownloadFilenameTokenHandler<T extends Post> =
+    String? Function(
+      T post,
+      DownloadFilenameTokenOptions options,
+    );

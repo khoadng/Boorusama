@@ -29,7 +29,8 @@ class SettingsSliderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: padding ??
+      margin:
+          padding ??
           const EdgeInsets.only(
             left: 16,
             right: 16,

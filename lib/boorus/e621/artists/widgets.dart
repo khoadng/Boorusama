@@ -34,7 +34,9 @@ class _E621ArtistPageState extends ConsumerState<E621ArtistPage> {
     final config = ref.watchConfigSearch;
 
     return PostScope(
-      fetcher: (page) => ref.read(e621PostRepoProvider(config)).getPosts(
+      fetcher: (page) => ref
+          .read(e621PostRepoProvider(config))
+          .getPosts(
             queryFromTagFilterCategory(
               category: selectedCategory.value,
               tag: widget.artistName,

@@ -78,7 +78,9 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   }
 
   Widget _buildChip(String tag, bool editMode) {
-    final colors = ref.watch(booruChipColorsProvider).fromColor(
+    final colors = ref
+        .watch(booruChipColorsProvider)
+        .fromColor(
           Theme.of(context).colorScheme.primary,
         );
 

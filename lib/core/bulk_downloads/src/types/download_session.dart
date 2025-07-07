@@ -79,16 +79,16 @@ class DownloadSession extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        taskId,
-        startedAt,
-        completedAt,
-        currentPage,
-        totalPages,
-        status,
-        error,
-        task,
-        authHash,
-        siteUrl,
-      ];
+    id,
+    taskId,
+    startedAt,
+    completedAt,
+    currentPage,
+    totalPages,
+    status,
+    error,
+    task,
+    authHash,
+    siteUrl,
+  ];
 }

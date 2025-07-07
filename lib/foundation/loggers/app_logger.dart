@@ -18,7 +18,7 @@ class AppLogger implements Logger {
         dateTime: DateTime.now(),
         serviceName: serviceName,
         message: message,
-        level: LogLevel.error
+        level: LogLevel.error,
       ),
     );
   }
@@ -30,7 +30,7 @@ class AppLogger implements Logger {
         dateTime: DateTime.now(),
         serviceName: serviceName,
         message: message,
-        level: LogLevel.info
+        level: LogLevel.info,
       ),
     );
   }
@@ -42,7 +42,7 @@ class AppLogger implements Logger {
         dateTime: DateTime.now(),
         serviceName: serviceName,
         message: message,
-        level: LogLevel.warning
+        level: LogLevel.warning,
       ),
     );
   }
@@ -58,7 +58,7 @@ class AppLogger implements Logger {
         dateTime: DateTime.now(),
         serviceName: serviceName,
         message: message,
-        level: level ?? LogLevel.info
+        level: level ?? LogLevel.info,
       ),
     );
   }

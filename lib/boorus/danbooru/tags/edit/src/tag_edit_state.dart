@@ -44,11 +44,11 @@ class TagEditState extends Equatable {
 
   @override
   List<Object?> get props => [
-        tags,
-        toBeAdded,
-        toBeRemoved,
-        expandMode,
-        viewExpanded,
-        selectedTag,
-      ];
+    tags,
+    toBeAdded,
+    toBeRemoved,
+    expandMode,
+    viewExpanded,
+    selectedTag,
+  ];
 }

@@ -12,16 +12,16 @@ enum PackageType {
 
 extension PackageX on Package {
   String get typeDurationString => switch (type) {
-        PackageType.monthly => 'month',
-        PackageType.annual => 'year',
-        null => '',
-      };
+    PackageType.monthly => 'month',
+    PackageType.annual => 'year',
+    null => '',
+  };
 
   double get annualPrice => switch (type) {
-        PackageType.annual => product.rawPrice,
-        PackageType.monthly => product.rawPrice * 12,
-        null => 0,
-      };
+    PackageType.annual => product.rawPrice,
+    PackageType.monthly => product.rawPrice * 12,
+    null => 0,
+  };
 
   DealData? getAnnualToMonthlyDeal(List<Package> all) {
     if (type == PackageType.annual) {
@@ -62,10 +62,10 @@ class DealData extends Equatable {
 
   @override
   List<Object> get props => [
-        from,
-        to,
-        savings,
-      ];
+    from,
+    to,
+    savings,
+  ];
 }
 
 class Package extends Equatable {
@@ -81,10 +81,10 @@ class Package extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        product,
-        type,
-      ];
+    id,
+    product,
+    type,
+  ];
 }
 
 class Offering extends Equatable {
@@ -98,9 +98,9 @@ class Offering extends Equatable {
 
   @override
   List<Object> get props => [
-        id,
-        availablePackages,
-      ];
+    id,
+    availablePackages,
+  ];
 }
 
 abstract class Purchaser {
@@ -130,13 +130,13 @@ class ProductDetails extends Equatable {
 
   @override
   List<Object> get props => [
-        id,
-        title,
-        description,
-        price,
-        rawPrice,
-        currencyCode,
-      ];
+    id,
+    title,
+    description,
+    price,
+    rawPrice,
+    currencyCode,
+  ];
 }
 
 enum PurchaseStatus {
@@ -155,9 +155,9 @@ class PurchaseVerificationData extends Equatable {
   });
 
   const PurchaseVerificationData.empty()
-      : localVerificationData = '',
-        serverVerificationData = '',
-        source = '';
+    : localVerificationData = '',
+      serverVerificationData = '',
+      source = '';
 
   final String localVerificationData;
   final String serverVerificationData;
@@ -165,10 +165,10 @@ class PurchaseVerificationData extends Equatable {
 
   @override
   List<Object> get props => [
-        localVerificationData,
-        serverVerificationData,
-        source,
-      ];
+    localVerificationData,
+    serverVerificationData,
+    source,
+  ];
 }
 
 class PurchaseDetails extends Equatable {
@@ -188,12 +188,12 @@ class PurchaseDetails extends Equatable {
 
   @override
   List<Object?> get props => [
-        purchaseID,
-        productID,
-        verificationData,
-        transactionDate,
-        status,
-      ];
+    purchaseID,
+    productID,
+    verificationData,
+    transactionDate,
+    status,
+  ];
 }
 
 abstract class IAP {

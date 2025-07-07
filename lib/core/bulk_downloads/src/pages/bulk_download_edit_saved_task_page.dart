@@ -36,8 +36,9 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
         builder: (context) {
           final options = ref.watch(createDownloadOptionsProvider(initial));
           final androidSdkInt = ref.watch(
-            deviceInfoProvider
-                .select((value) => value.androidDeviceInfo?.version.sdkInt),
+            deviceInfoProvider.select(
+              (value) => value.androidDeviceInfo?.version.sdkInt,
+            ),
           );
           final validOptions = options.valid(androidSdkInt: androidSdkInt);
 

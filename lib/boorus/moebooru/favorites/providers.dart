@@ -8,8 +8,8 @@ import '../client_provider.dart';
 
 final moebooruFavoritesProvider =
     NotifierProvider.family<MoebooruFavoritesNotifier, Set<String>?, int>(
-  MoebooruFavoritesNotifier.new,
-);
+      MoebooruFavoritesNotifier.new,
+    );
 
 CancelToken _cancelToken = CancelToken();
 

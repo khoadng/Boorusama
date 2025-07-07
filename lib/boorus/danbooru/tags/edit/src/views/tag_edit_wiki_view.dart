@@ -46,68 +46,72 @@ class _TagEditzwikiViewState extends ConsumerState<TagEditWikiView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: widget.tag.toOption().fold(
-            () => const Center(
-              child: Text(
-                'Select a tag to view related tags',
+        () => const Center(
+          child: Text(
+            'Select a tag to view related tags',
+          ),
+        ),
+        (tag) => SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(
+                child: BooruSegmentedButton(
+                  segments: {
+                    for (final entry in relatedTabs) entry: entry.sentenceCase,
+                  },
+                  initialValue: selectTab,
+                  onChanged: (values) {
+                    setState(() {
+                      selectTab = values;
+                    });
+                  },
+                ),
               ),
-            ),
-            (tag) => SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                    child: BooruSegmentedButton(
-                      segments: {
-                        for (final entry in relatedTabs)
-                          entry: entry.sentenceCase,
-                      },
-                      initialValue: selectTab,
-                      onChanged: (values) {
-                        setState(() {
-                          selectTab = values;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  switch (selectTab) {
-                    'wiki' =>
-                      ref.watch(danbooruWikiTagsProvider(tag)).maybeWhen(
-                            data: (data) => data.isNotEmpty
-                                ? _RelatedTagChips(
-                                    tags: data,
-                                    isSelected: widget.isSelected,
-                                    onAdded: widget.onAdded,
-                                    onRemoved: widget.onRemoved,
-                                  )
-                                : const Center(child: Text('No tags found')),
-                            orElse: () => const Center(
-                              child: SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          ),
-                    _ => ref.watch(danbooruRelatedTagsProvider(tag)).maybeWhen(
-                          data: (data) => _RelatedTagChips(
-                            tags: data,
-                            isSelected: widget.isSelected,
-                            onAdded: widget.onAdded,
-                            onRemoved: widget.onRemoved,
-                          ),
-                          orElse: () => const Center(
-                            child: SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(),
-                            ),
+              const SizedBox(height: 12),
+              switch (selectTab) {
+                'wiki' =>
+                  ref
+                      .watch(danbooruWikiTagsProvider(tag))
+                      .maybeWhen(
+                        data: (data) => data.isNotEmpty
+                            ? _RelatedTagChips(
+                                tags: data,
+                                isSelected: widget.isSelected,
+                                onAdded: widget.onAdded,
+                                onRemoved: widget.onRemoved,
+                              )
+                            : const Center(child: Text('No tags found')),
+                        orElse: () => const Center(
+                          child: SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(),
                           ),
                         ),
-                  },
-                ],
-              ),
-            ),
+                      ),
+                _ =>
+                  ref
+                      .watch(danbooruRelatedTagsProvider(tag))
+                      .maybeWhen(
+                        data: (data) => _RelatedTagChips(
+                          tags: data,
+                          isSelected: widget.isSelected,
+                          onAdded: widget.onAdded,
+                          onRemoved: widget.onRemoved,
+                        ),
+                        orElse: () => const Center(
+                          child: SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
+              },
+            ],
           ),
+        ),
+      ),
     );
   }
 }
@@ -172,13 +176,13 @@ class _RelatedTagChips extends ConsumerWidget {
                   TextSpan(
                     text: '  ${NumberFormat.compact().format(tag.postCount)}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 11,
-                          color: Theme.of(context).brightness.isLight
-                              ? !selected
-                                  ? null
-                                  : Colors.white.withValues(alpha: 0.85)
-                              : Theme.of(context).colorScheme.hintColor,
-                        ),
+                      fontSize: 11,
+                      color: Theme.of(context).brightness.isLight
+                          ? !selected
+                                ? null
+                                : Colors.white.withValues(alpha: 0.85)
+                          : Theme.of(context).colorScheme.hintColor,
+                    ),
                   ),
                 ],
               ),

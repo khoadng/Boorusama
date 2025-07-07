@@ -28,7 +28,9 @@ class DanbooruPoolTiles extends ConsumerWidget {
     final params = (ref.watchConfigAuth, post.id);
 
     return SliverToBoxAdapter(
-      child: ref.watch(danbooruPostDetailsPoolsProvider(params)).maybeWhen(
+      child: ref
+          .watch(danbooruPostDetailsPoolsProvider(params))
+          .maybeWhen(
             data: (pools) => PoolTiles(pools: pools),
             orElse: () => const SizedBox.shrink(),
           ),
@@ -61,11 +63,12 @@ class DanbooruArtistInfoSection extends ConsumerWidget {
 
     return SliverToBoxAdapter(
       child: ArtistSection(
-        commentary:
-            ref.watch(danbooruArtistCommentaryProvider(params)).maybeWhen(
-                  data: (commentary) => commentary,
-                  orElse: () => const ArtistCommentary.empty(),
-                ),
+        commentary: ref
+            .watch(danbooruArtistCommentaryProvider(params))
+            .maybeWhen(
+              data: (commentary) => commentary,
+              orElse: () => const ArtistCommentary.empty(),
+            ),
         artistTags: post.artistTags,
         source: post.source,
       ),
@@ -95,8 +98,9 @@ class DanbooruStatsSection extends ConsumerWidget {
     return SliverToBoxAdapter(
       child: DanbooruPostStatsTile(
         post: post,
-        commentCount:
-            ref.watch(danbooruCommentCountProvider(params)).valueOrNull,
+        commentCount: ref
+            .watch(danbooruCommentCountProvider(params))
+            .valueOrNull,
       ),
     );
   }

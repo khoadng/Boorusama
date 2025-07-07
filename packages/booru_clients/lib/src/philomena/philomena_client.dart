@@ -4,16 +4,13 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'types/types.dart';
 
-typedef PhilomenaImages = ({
-  List<ImageDto> images,
-  int? count,
-});
+typedef PhilomenaImages = ({List<ImageDto> images, int? count});
 
 extension ListToPhilomenaImages on List<ImageDto> {
   PhilomenaImages toPhilomenaImages({int? count}) => (
-        images: this,
-        count: count,
-      );
+    images: this,
+    count: count,
+  );
 }
 
 class PhilomenaClient {
@@ -21,10 +18,13 @@ class PhilomenaClient {
     Dio? dio,
     required String baseUrl,
     this.apiKey,
-  }) : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl,
-            ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl,
+             ),
+           );
 
   final Dio _dio;
   final String? apiKey;

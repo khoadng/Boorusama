@@ -58,7 +58,9 @@ class SettingsNotifier extends Notifier<Settings> {
         final ns = settings.props[i];
 
         if (cs != ns) {
-          ref.read(loggerProvider).logI(
+          ref
+              .read(loggerProvider)
+              .logI(
                 'Settings',
                 'Settings updated: ${cs.runtimeType} $cs -> $ns',
               );
@@ -66,7 +68,9 @@ class SettingsNotifier extends Notifier<Settings> {
       }
       state = settings;
 
-      ref.read(analyticsProvider).whenData(
+      ref
+          .read(analyticsProvider)
+          .whenData(
             (a) => a?.logSettingsChangedEvent(
               oldValue: currentSettings,
               newValue: settings,
@@ -94,8 +98,9 @@ class SettingsNotifier extends Notifier<Settings> {
             (r) async {
               //FIXME: Duplicate code, abstract import with check
               final appVersion = ref.read(appVersionProvider);
-              if (appVersion
-                  .significantlyLowerThan(r.exportData.exportVersion)) {
+              if (appVersion.significantlyLowerThan(
+                r.exportData.exportVersion,
+              )) {
                 final shouldImport = await showBackwardImportAlertDialog(
                   context: context,
                   data: r.exportData,

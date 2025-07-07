@@ -75,14 +75,15 @@ void main() {
       const value3 = 'bar3';
       const key4 = 'foo4';
       const value4 = 'bar4';
-      final cacher = LruCacher<String, String>(
-        capacity: 3,
-      )
-        ..put(key, value)
-        ..put(key2, value2)
-        ..put(key3, value3)
-        ..put(key, value)
-        ..put(key4, value4);
+      final cacher =
+          LruCacher<String, String>(
+              capacity: 3,
+            )
+            ..put(key, value)
+            ..put(key2, value2)
+            ..put(key3, value3)
+            ..put(key, value)
+            ..put(key4, value4);
 
       expect(cacher.get(key), value);
       expect(cacher.get(key2), isNull);

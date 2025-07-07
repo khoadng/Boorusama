@@ -74,8 +74,9 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
                       subtitle: Row(
                         children: [
                           Text(
-                            'favorite_groups.group_item_counter'
-                                .plural(group.totalCount),
+                            'favorite_groups.group_item_counter'.plural(
+                              group.totalCount,
+                            ),
                           ),
                           if (!group.isPublic)
                             const Padding(
@@ -128,8 +129,9 @@ class _Preview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final preview = ref
-        .watch(danbooruFavoriteGroupPreviewProvider(group.postIds.firstOrNull));
+    final preview = ref.watch(
+      danbooruFavoriteGroupPreviewProvider(group.postIds.firstOrNull),
+    );
 
     return BooruImage(
       fit: BoxFit.cover,

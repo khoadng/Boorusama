@@ -42,62 +42,61 @@ class GelbooruV2Builder
   GelbooruV2Builder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat:
-                  kDefaultCustomDownloadFileNameFormat,
-            ),
-            child: CreateGelbooruV2ConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
+        ),
+        child: CreateGelbooruV2ConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
   HomePageBuilder get homePageBuilder =>
       (context) => const GelbooruV2HomePage();
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateGelbooruV2ConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateGelbooruV2ConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => GelbooruV2SearchPage(
-            params: params,
-          );
+        params: params,
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
+    final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<GelbooruV2Post>(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DefaultPostDetailsPage<GelbooruV2Post>(),
+    );
+  };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -106,24 +105,25 @@ class GelbooruV2Builder
   @override
   ArtistPageBuilder? get artistPageBuilder =>
       (context, artistName) => GelbooruV2ArtistPage(
-            artistName: artistName,
-          );
+        artistName: artistName,
+      );
 
   @override
   CharacterPageBuilder? get characterPageBuilder =>
       (context, characterName) => GelbooruV2ArtistPage(
-            artistName: characterName,
-          );
+        artistName: characterName,
+      );
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => CommentPageScaffold(
-            postId: postId,
-            useAppBar: useAppBar,
-          );
+        postId: postId,
+        useAppBar: useAppBar,
+      );
 
   @override
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder => () => {
+  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder =>
+      () => {
         Rating.explicit,
         Rating.questionable,
         Rating.sensitive,

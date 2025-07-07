@@ -38,120 +38,120 @@ class HomeSearchBar extends ConsumerWidget {
 
     return BooruSearchBar(
       enabled: false,
-      trailing: ref.watch(appUpdateStatusProvider).maybeWhen(
+      trailing: ref
+          .watch(appUpdateStatusProvider)
+          .maybeWhen(
             data: (status) => switch (status) {
               final UpdateAvailable d => IconButton(
-                  splashRadius: 12,
-                  icon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.error,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const FaIcon(
-                      FontAwesomeIcons.arrowUp,
-                      size: 14,
-                    ),
+                splashRadius: 12,
+                icon: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.error,
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      routeSettings:
-                          const RouteSettings(name: 'app_update_notice'),
-                      builder: (context) => Dialog(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'app_update.update_available',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge,
-                                    ).tr(),
-                                  ],
-                                ),
-                              ),
-                              Row(
+                  child: const FaIcon(
+                    FontAwesomeIcons.arrowUp,
+                    size: 14,
+                  ),
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    routeSettings: const RouteSettings(
+                      name: 'app_update_notice',
+                    ),
+                    builder: (context) => Dialog(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  _VersionChangeVisualizedText(status: d),
-                                ],
-                              ),
-                              const Divider(thickness: 1.5),
-                              Row(
-                                children: [
                                   Text(
-                                    'app_update.whats_new',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    'app_update.update_available',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge,
                                   ).tr(),
                                 ],
                               ),
-                              Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 4,
-                                  ),
-                                  child: SingleChildScrollView(
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: MarkdownBody(
-                                            data: d.releaseNotes,
-                                          ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _VersionChangeVisualizedText(status: d),
+                              ],
+                            ),
+                            const Divider(thickness: 1.5),
+                            Row(
+                              children: [
+                                Text(
+                                  'app_update.whats_new',
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ).tr(),
+                              ],
+                            ),
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 4,
+                                ),
+                                child: SingleChildScrollView(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: MarkdownBody(
+                                          data: d.releaseNotes,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('app_update.later').tr(),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
-                                  const SizedBox(width: 16),
-                                  FilledButton(
-                                    onPressed: () {
-                                      launchExternalUrlString(d.storeUrl);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('app_update.update').tr(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('app_update.later').tr(),
+                                ),
+                                const SizedBox(width: 16),
+                                FilledButton(
+                                  onPressed: () {
+                                    launchExternalUrlString(d.storeUrl);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('app_update.update').tr(),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
+              ),
               _ => const SizedBox.shrink(),
             },
             orElse: () => const SizedBox.shrink(),
@@ -183,17 +183,17 @@ class _VersionChangeVisualizedText extends StatelessWidget {
           TextSpan(
             text: status.currentVersion,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: Theme.of(context).colorScheme.hintColor,
-                ),
+              fontWeight: FontWeight.w800,
+              color: Theme.of(context).colorScheme.hintColor,
+            ),
           ),
           const TextSpan(text: '  ➞  '),
           TextSpan(
             text: status.storeVersion,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: Theme.of(context).colorScheme.error,
-                ),
+              fontWeight: FontWeight.w800,
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
         ],
       ),
@@ -261,7 +261,8 @@ class _SliverHomeSearchBarState
     super.initState();
     final tagInfo = ref.read(tagInfoProvider);
 
-    selectedTagController = widget.selectedTagController ??
+    selectedTagController =
+        widget.selectedTagController ??
         SelectedTagController.fromBooruBuilder(
           builder: widget.booruBuilder,
           tagInfo: tagInfo,

@@ -24,8 +24,9 @@ class CreateSavedSearchSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
+    final notifier = ref.watch(
+      danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier,
+    );
     final navigatorContext = navigatorKey.currentContext;
 
     return SavedSearchSheet(
@@ -37,10 +38,10 @@ class CreateSavedSearchSheet extends ConsumerWidget {
         label: label,
         onCreated: navigatorContext != null
             ? (data) => showSimpleSnackBar(
-                  context: navigatorContext,
-                  duration: AppDurations.shortToast,
-                  content: const Text('saved_search.saved_search_added').tr(),
-                )
+                context: navigatorContext,
+                duration: AppDurations.shortToast,
+                content: const Text('saved_search.saved_search_added').tr(),
+              )
             : null,
       ),
     );
@@ -57,8 +58,9 @@ class EditSavedSearchSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier);
+    final notifier = ref.watch(
+      danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier,
+    );
     final navigatorContext = navigatorKey.currentContext;
 
     return SavedSearchSheet(
@@ -70,12 +72,12 @@ class EditSavedSearchSheet extends ConsumerWidget {
         query: query,
         onUpdated: navigatorContext != null
             ? (data) => showSimpleSnackBar(
-                  context: navigatorContext,
-                  duration: AppDurations.shortToast,
-                  content: const Text(
-                    'saved_search.saved_search_updated',
-                  ).tr(),
-                )
+                context: navigatorContext,
+                duration: AppDurations.shortToast,
+                content: const Text(
+                  'saved_search.saved_search_updated',
+                ).tr(),
+              )
             : null,
       ),
     );

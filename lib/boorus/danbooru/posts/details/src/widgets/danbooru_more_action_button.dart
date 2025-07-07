@@ -79,15 +79,17 @@ class DanbooruMoreActionButton extends ConsumerWidget with CopyImageMixin {
             'download': const Text('download.download').tr(),
             'copy_image': const Text('Copy image'),
             if (config.hasLoginDetails())
-              'add_to_favgroup':
-                  const Text('post.action.add_to_favorite_group').tr(),
+              'add_to_favgroup': const Text(
+                'post.action.add_to_favorite_group',
+              ).tr(),
             if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
             'tag_history': const Text('View tag history'),
             if (!config.hasStrictSFW)
               'view_in_browser': const Text('post.detail.view_in_browser').tr(),
             if (post.hasFullView)
-              'view_original':
-                  const Text('post.image_fullview.view_original').tr(),
+              'view_original': const Text(
+                'post.image_fullview.view_original',
+              ).tr(),
             if (onStartSlideshow != null)
               'start_slideshow': const Text('Slideshow'),
             'settings': const Text('settings.settings').tr(),

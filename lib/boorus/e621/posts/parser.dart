@@ -25,7 +25,8 @@ E621Post postDtoToPost(PostDto dto, PostMetadata? metadata) {
     rating: mapStringToRating(dto.rating),
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
     isTranslated: dto.hasNotes ?? false,
-    hasParentOrChildren: dto.relationships?.hasChildren ??
+    hasParentOrChildren:
+        dto.relationships?.hasChildren ??
         false || dto.relationships?.parentId != null,
     format: format.isEmpty ? dto.file?.ext ?? '' : format,
     videoUrl: videoUrl,

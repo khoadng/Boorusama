@@ -16,10 +16,9 @@ class ExploreSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       title: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge
-            ?.copyWith(fontWeight: FontWeight.w700),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       floating: true,
       leading: onBack != null

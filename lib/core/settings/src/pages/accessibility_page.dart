@@ -45,8 +45,9 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         SettingsTile(
-          title:
-              const Text('settings.accessibility.swipeAreaToOpenSidebar').tr(),
+          title: const Text(
+            'settings.accessibility.swipeAreaToOpenSidebar',
+          ).tr(),
           subtitle: Text(
             'settings.accessibility.swipeAreaToOpenSidebarDescription',
             style: TextStyle(

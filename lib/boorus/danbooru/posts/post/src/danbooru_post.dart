@@ -49,40 +49,40 @@ class DanbooruPost extends Equatable
   });
 
   factory DanbooruPost.empty() => DanbooruPost(
-        id: 0,
-        thumbnailImageUrl: '',
-        sampleImageUrl: '',
-        originalImageUrl: '',
-        tags: const {},
-        copyrightTags: const {},
-        characterTags: const {},
-        artistTags: const {},
-        generalTags: const {},
-        metaTags: const {},
-        width: 1,
-        height: 1,
-        format: 'png',
-        md5: '',
-        lastCommentAt: null,
-        source: PostSource.none(),
-        createdAt: DateTime.now(),
-        score: 0,
-        upScore: 0,
-        downScore: 0,
-        favCount: 0,
-        uploaderId: 0,
-        approverId: 0,
-        rating: Rating.explicit,
-        fileSize: 0,
-        isBanned: false,
-        hasChildren: false,
-        hasLarge: false,
-        parentId: null,
-        duration: 0,
-        variants: const PostVariants.none(),
-        pixelHash: '',
-        metadata: null,
-      );
+    id: 0,
+    thumbnailImageUrl: '',
+    sampleImageUrl: '',
+    originalImageUrl: '',
+    tags: const {},
+    copyrightTags: const {},
+    characterTags: const {},
+    artistTags: const {},
+    generalTags: const {},
+    metaTags: const {},
+    width: 1,
+    height: 1,
+    format: 'png',
+    md5: '',
+    lastCommentAt: null,
+    source: PostSource.none(),
+    createdAt: DateTime.now(),
+    score: 0,
+    upScore: 0,
+    downScore: 0,
+    favCount: 0,
+    uploaderId: 0,
+    approverId: 0,
+    rating: Rating.explicit,
+    fileSize: 0,
+    isBanned: false,
+    hasChildren: false,
+    hasLarge: false,
+    parentId: null,
+    duration: 0,
+    variants: const PostVariants.none(),
+    pixelHash: '',
+    metadata: null,
+  );
 
   @override
   final int id;
@@ -165,11 +165,11 @@ class DanbooruPost extends Equatable
   final String pixelHash;
 
   bool get viewable => [
-        thumbnailImageUrl,
-        sampleImageUrl,
-        originalImageUrl,
-        md5,
-      ].every((e) => e != '');
+    thumbnailImageUrl,
+    sampleImageUrl,
+    originalImageUrl,
+    md5,
+  ].every((e) => e != '');
 
   @override
   final PostMetadata? metadata;
@@ -179,15 +179,15 @@ class DanbooruPost extends Equatable
 
   @override
   List<Object?> get props => [
-        id,
-        tags,
-        generalTags,
-        artistTags,
-        characterTags,
-        copyrightTags,
-        metaTags,
-        rating,
-      ];
+    id,
+    tags,
+    generalTags,
+    artistTags,
+    characterTags,
+    copyrightTags,
+    metaTags,
+    rating,
+  ];
 }
 
 const kCensoredTags = ['loli', 'shota'];
@@ -223,69 +223,68 @@ extension PostX on DanbooruPost {
     int? fileSize,
     double? width,
     double? height,
-  }) =>
-      DanbooruPost(
-        id: id ?? this.id,
-        thumbnailImageUrl: thumbnailImageUrl,
-        sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
-        originalImageUrl: originalImageUrl ?? this.originalImageUrl,
-        tags: tags ?? this.tags,
-        copyrightTags: copyrightTags ?? this.copyrightTags,
-        characterTags: characterTags ?? this.characterTags,
-        artistTags: artistTags ?? this.artistTags,
-        generalTags: generalTags ?? this.generalTags,
-        metaTags: metaTags ?? this.metaTags,
-        width: width ?? this.width,
-        height: height ?? this.height,
-        format: format ?? this.format,
-        md5: md5 ?? this.md5,
-        lastCommentAt: lastCommentAt ?? this.lastCommentAt,
-        source: source ?? this.source,
-        createdAt: createdAt,
-        score: score ?? this.score,
-        upScore: upScore ?? this.upScore,
-        downScore: downScore ?? this.downScore,
-        favCount: favCount ?? this.favCount,
-        uploaderId: uploaderId,
-        approverId: approverId,
-        rating: rating ?? this.rating,
-        fileSize: fileSize ?? this.fileSize,
-        isBanned: isBanned,
-        hasChildren: hasChildren ?? this.hasChildren,
-        hasLarge: hasLarge,
-        parentId: parentId ?? this.parentId,
-        duration: duration,
-        variants: variants,
-        pixelHash: pixelHash,
-        metadata: metadata,
-      );
+  }) => DanbooruPost(
+    id: id ?? this.id,
+    thumbnailImageUrl: thumbnailImageUrl,
+    sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
+    originalImageUrl: originalImageUrl ?? this.originalImageUrl,
+    tags: tags ?? this.tags,
+    copyrightTags: copyrightTags ?? this.copyrightTags,
+    characterTags: characterTags ?? this.characterTags,
+    artistTags: artistTags ?? this.artistTags,
+    generalTags: generalTags ?? this.generalTags,
+    metaTags: metaTags ?? this.metaTags,
+    width: width ?? this.width,
+    height: height ?? this.height,
+    format: format ?? this.format,
+    md5: md5 ?? this.md5,
+    lastCommentAt: lastCommentAt ?? this.lastCommentAt,
+    source: source ?? this.source,
+    createdAt: createdAt,
+    score: score ?? this.score,
+    upScore: upScore ?? this.upScore,
+    downScore: downScore ?? this.downScore,
+    favCount: favCount ?? this.favCount,
+    uploaderId: uploaderId,
+    approverId: approverId,
+    rating: rating ?? this.rating,
+    fileSize: fileSize ?? this.fileSize,
+    isBanned: isBanned,
+    hasChildren: hasChildren ?? this.hasChildren,
+    hasLarge: hasLarge,
+    parentId: parentId ?? this.parentId,
+    duration: duration,
+    variants: variants,
+    pixelHash: pixelHash,
+    metadata: metadata,
+  );
 }
 
 extension PostQualityVariantX on DanbooruPost {
   String get url180x180 => _getOrFallback(
-        PostQualityType.v180x180,
-        thumbnailImageUrl,
-      );
+    PostQualityType.v180x180,
+    thumbnailImageUrl,
+  );
 
   String get url360x360 => _getOrFallback(
-        PostQualityType.v360x360,
-        thumbnailImageUrl,
-      );
+    PostQualityType.v360x360,
+    thumbnailImageUrl,
+  );
 
   String get url720x720 => _getOrFallback(
-        PostQualityType.v720x720,
-        thumbnailImageUrl,
-      );
+    PostQualityType.v720x720,
+    thumbnailImageUrl,
+  );
 
   String get urlSample => _getOrFallback(
-        PostQualityType.sample,
-        sampleImageUrl,
-      );
+    PostQualityType.sample,
+    sampleImageUrl,
+  );
 
   String get urlOriginal => _getOrFallback(
-        PostQualityType.original,
-        originalImageUrl,
-      );
+    PostQualityType.original,
+    originalImageUrl,
+  );
 
   String _getOrFallback(
     PostQualityType type,
@@ -305,10 +304,10 @@ abstract interface class DanbooruTagDetails implements TagDetails {
 
 extension DanbooruTagDetailsX on DanbooruTagDetails {
   Set<String> get allTags => {
-        ...artistTags ?? {},
-        ...characterTags ?? {},
-        ...copyrightTags ?? {},
-        ...generalTags ?? {},
-        ...metaTags ?? {},
-      };
+    ...artistTags ?? {},
+    ...characterTags ?? {},
+    ...copyrightTags ?? {},
+    ...generalTags ?? {},
+    ...metaTags ?? {},
+  };
 }

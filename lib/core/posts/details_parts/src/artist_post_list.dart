@@ -40,33 +40,33 @@ class DefaultInheritedArtistPostsSection<T extends Post>
           .maybeWhen(
             data: (data) => data.artistTags.isNotEmpty
                 ? data.artistTags
-                    .map(
-                      (tag) => SliverArtistPostList(
-                        tag: tag,
-                        child: ref
-                            .watch(
-                              detailsArtistPostsProvider(
-                                (
-                                  ref.watchConfigFilter,
-                                  ref.watchConfigSearch,
-                                  tag
+                      .map(
+                        (tag) => SliverArtistPostList(
+                          tag: tag,
+                          child: ref
+                              .watch(
+                                detailsArtistPostsProvider(
+                                  (
+                                    ref.watchConfigFilter,
+                                    ref.watchConfigSearch,
+                                    tag,
+                                  ),
                                 ),
-                              ),
-                            )
-                            .maybeWhen(
-                              data: (data) => SliverPreviewPostGrid(
-                                posts: data,
-                                imageUrl: (p) => thumbUrlBuilder.generateUrl(
-                                  p,
-                                  settings: thumbSettings,
+                              )
+                              .maybeWhen(
+                                data: (data) => SliverPreviewPostGrid(
+                                  posts: data,
+                                  imageUrl: (p) => thumbUrlBuilder.generateUrl(
+                                    p,
+                                    settings: thumbSettings,
+                                  ),
                                 ),
+                                orElse: () =>
+                                    const SliverPreviewPostGridPlaceholder(),
                               ),
-                              orElse: () =>
-                                  const SliverPreviewPostGridPlaceholder(),
-                            ),
-                      ),
-                    )
-                    .toList()
+                        ),
+                      )
+                      .toList()
                 : [],
             orElse: () => [
               const SliverPreviewPostGridPlaceholder(),
@@ -199,10 +199,9 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
       gridDelegate: _getGridDelegate(constraints?.maxWidth),
       itemBuilder: (context, index) => Container(
         decoration: BoxDecoration(
-          color: Theme.of(context)
-              .colorScheme
-              .surfaceContainerHigh
-              .withValues(alpha: 0.5),
+          color: Theme.of(
+            context,
+          ).colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),

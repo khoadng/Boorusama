@@ -14,8 +14,9 @@ class SourceDto {
 
   factory SourceDto.fromJson(Map<String, dynamic> json) {
     return SourceDto(
-      artist:
-          json['artist'] != null ? ArtistDto.fromJson(json['artist']) : null,
+      artist: json['artist'] != null
+          ? ArtistDto.fromJson(json['artist'])
+          : null,
       artists: (json['artists'] as List<dynamic>?)
           ?.map((artist) => ArtistDto.fromJson(artist))
           .toList(),

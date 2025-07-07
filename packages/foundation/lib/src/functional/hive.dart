@@ -8,7 +8,7 @@ enum BoxError {
 }
 
 Either<BoxError, Iterable<E>> tryGetBoxValues<E>(Box<E> box) => Either.tryCatch(
-      () => box.values,
-      (error, stackTrace) =>
-          error is HiveError ? BoxError.boxClosed : BoxError.unknown,
-    );
+  () => box.values,
+  (error, stackTrace) =>
+      error is HiveError ? BoxError.boxClosed : BoxError.unknown,
+);

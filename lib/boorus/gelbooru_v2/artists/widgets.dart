@@ -25,17 +25,18 @@ class GelbooruV2ArtistPage extends ConsumerWidget {
 
     return ArtistPageScaffold(
       artistName: artistName,
-      fetcher: (page, selectedCategory) =>
-          ref.read(gelbooruV2ArtistCharacterPostRepoProvider(config)).getPosts(
-                queryFromTagFilterCategory(
-                  category: selectedCategory,
-                  tag: artistName,
-                  builder: (category) => category == TagFilterCategory.popular
-                      ? some('sort:score:desc')
-                      : none(),
-                ),
-                page,
-              ),
+      fetcher: (page, selectedCategory) => ref
+          .read(gelbooruV2ArtistCharacterPostRepoProvider(config))
+          .getPosts(
+            queryFromTagFilterCategory(
+              category: selectedCategory,
+              tag: artistName,
+              builder: (category) => category == TagFilterCategory.popular
+                  ? some('sort:score:desc')
+                  : none(),
+            ),
+            page,
+          ),
     );
   }
 }

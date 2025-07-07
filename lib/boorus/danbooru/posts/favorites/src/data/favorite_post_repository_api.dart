@@ -15,9 +15,9 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
 
   @override
   Future<bool> addToFavorites(int postId) => client
-          .addToFavorites(postId: postId)
-          .then((value) => true)
-          .catchError((Object obj) {
+      .addToFavorites(postId: postId)
+      .then((value) => true)
+      .catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioException _:
             final response = (obj as DioException).response;
@@ -30,9 +30,9 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
 
   @override
   Future<bool> removeFromFavorites(int postId) => client
-          .removeFromFavorites(postId: postId)
-          .then((value) => true)
-          .catchError((Object obj) {
+      .removeFromFavorites(postId: postId)
+      .then((value) => true)
+      .catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioException _:
             final response = (obj as DioException).response;
@@ -48,15 +48,14 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
     List<int> postIds,
     int userId,
     int limit,
-  ) =>
-      client
-          .filterFavoritesFromUserId(
-            postIds: postIds,
-            userId: userId,
-            limit: limit,
-          )
-          .then((value) => value.map(favoriteDtoToFavorite).toList())
-          .catchError((Object obj) => <Favorite>[]);
+  ) => client
+      .filterFavoritesFromUserId(
+        postIds: postIds,
+        userId: userId,
+        limit: limit,
+      )
+      .then((value) => value.map(favoriteDtoToFavorite).toList())
+      .catchError((Object obj) => <Favorite>[]);
 
   @override
   Future<List<Favorite>> getFavorites(int postId, int page) => client
@@ -69,7 +68,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
 }
 
 Favorite favoriteDtoToFavorite(FavoriteDto d) => Favorite(
-      id: d.id,
-      postId: d.postId,
-      userId: d.userId,
-    );
+  id: d.id,
+  postId: d.postId,
+  userId: d.userId,
+);

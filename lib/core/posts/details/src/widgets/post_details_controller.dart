@@ -23,9 +23,9 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.initialThumbnailUrl,
     required this.reduceAnimations,
     required this.dislclaimer,
-  })  : currentPage = ValueNotifier(initialPage),
-        _initialPage = initialPage,
-        currentPost = ValueNotifier(posts[initialPage]);
+  }) : currentPage = ValueNotifier(initialPage),
+       _initialPage = initialPage,
+       currentPost = ValueNotifier(posts[initialPage]);
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
   final List<T> posts;

@@ -9,8 +9,10 @@ import '../../../core/posts/favorites/providers.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
 
-final hydrusCanFavoriteProvider =
-    FutureProvider.family<bool, BooruConfigAuth>((ref, config) async {
+final hydrusCanFavoriteProvider = FutureProvider.family<bool, BooruConfigAuth>((
+  ref,
+  config,
+) async {
   final client = ref.watch(hydrusClientProvider(config));
 
   final services = await client.getServicesCached();
@@ -20,18 +22,18 @@ final hydrusCanFavoriteProvider =
 
 final ratingServiceNameProvider =
     FutureProvider.family<String?, BooruConfigAuth>((ref, config) async {
-  final client = ref.read(hydrusClientProvider(config));
+      final client = ref.read(hydrusClientProvider(config));
 
-  final services = await client.getServicesCached();
+      final services = await client.getServicesCached();
 
-  final key = getLikeDislikeRatingKey(services);
+      final key = getLikeDislikeRatingKey(services);
 
-  if (key == null) {
-    return null;
-  }
+      if (key == null) {
+        return null;
+      }
 
-  return services.firstWhereOrNull((e) => e.key == key)?.name;
-});
+      return services.firstWhereOrNull((e) => e.key == key)?.name;
+    });
 
 class HydrusFavoriteRepository extends FavoriteRepository<HydrusPost> {
   HydrusFavoriteRepository(this.ref, this.config);
@@ -45,11 +47,12 @@ class HydrusFavoriteRepository extends FavoriteRepository<HydrusPost> {
   bool canFavorite() => true;
 
   @override
-  Future<AddFavoriteStatus> addToFavorites(int postId) async =>
-      client.changeLikeStatus(fileId: postId, liked: true).then(
-            (value) =>
-                value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
-          );
+  Future<AddFavoriteStatus> addToFavorites(int postId) async => client
+      .changeLikeStatus(fileId: postId, liked: true)
+      .then(
+        (value) =>
+            value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
+      );
 
   @override
   Future<bool> removeFromFavorites(int postId) async =>

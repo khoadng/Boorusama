@@ -70,8 +70,7 @@ class TagExpression extends Equatable {
   factory TagExpression.parse(
     String expression, {
     TagExpressionParser parser = kDefaultTagParser,
-  }) =>
-      parser.parse(expression);
+  }) => parser.parse(expression);
 
   String get rawString {
     final operator = switch ((isNegative, isOr)) {

@@ -15,21 +15,21 @@ class CreatorDto {
   });
 
   factory CreatorDto.fromJson(Map<String, dynamic> json) => CreatorDto(
-        id: json['id'],
-        name: json['name'],
-        level: json['level'],
-        inviterId: json['inviter_id'],
-        createdAt: json['created_at'] == null
-            ? null
-            : DateTime.parse(json['created_at']),
-        postUpdateCount: json['post_update_count'],
-        noteUpdateCount: json['note_update_count'],
-        postUploadCount: json['post_upload_count'],
-        isBanned: json['is_banned'],
-        canApprovePosts: json['can_approve_posts'],
-        canUploadFree: json['can_upload_free'],
-        levelString: json['level_string'],
-      );
+    id: json['id'],
+    name: json['name'],
+    level: json['level'],
+    inviterId: json['inviter_id'],
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at']),
+    postUpdateCount: json['post_update_count'],
+    noteUpdateCount: json['note_update_count'],
+    postUploadCount: json['post_upload_count'],
+    isBanned: json['is_banned'],
+    canApprovePosts: json['can_approve_posts'],
+    canUploadFree: json['can_upload_free'],
+    levelString: json['level_string'],
+  );
 
   final int? id;
   final String? name;

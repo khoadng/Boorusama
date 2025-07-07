@@ -17,10 +17,10 @@ import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';
 
-final danbooruTagTileExpansionStateProvider =
-    StateProvider.autoDispose.family<bool, bool>((ref, value) {
-  return value;
-});
+final danbooruTagTileExpansionStateProvider = StateProvider.autoDispose
+    .family<bool, bool>((ref, value) {
+      return value;
+    });
 
 class DanbooruTagsTile extends ConsumerWidget {
   const DanbooruTagsTile({
@@ -37,11 +37,13 @@ class DanbooruTagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final tagDetails =
-        allowFetch ? ref.watch(danbooruTagListProvider(config))[post.id] : null;
+    final tagDetails = allowFetch
+        ? ref.watch(danbooruTagListProvider(config))[post.id]
+        : null;
     final count = tagDetails?.allTags.length ?? post.tags.length;
-    final isExpanded =
-        ref.watch(danbooruTagTileExpansionStateProvider(initialExpanded));
+    final isExpanded = ref.watch(
+      danbooruTagTileExpansionStateProvider(initialExpanded),
+    );
 
     return RawTagsTile(
       title: RawTagsTileTitle(
@@ -66,16 +68,21 @@ class DanbooruTagsTile extends ConsumerWidget {
       initiallyExpanded: initialExpanded,
       onExpansionChanged: (value) {
         ref
-            .read(
-              danbooruTagTileExpansionStateProvider(initialExpanded).notifier,
-            )
-            .state = value;
+                .read(
+                  danbooruTagTileExpansionStateProvider(
+                    initialExpanded,
+                  ).notifier,
+                )
+                .state =
+            value;
       },
       children: [
         if (isExpanded)
           PostTagList(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            tags: ref.watch(tagGroupsProvider((config, post))).maybeWhen(
+            tags: ref
+                .watch(tagGroupsProvider((config, post)))
+                .maybeWhen(
                   data: (data) => data,
                   orElse: () => null,
                 ),

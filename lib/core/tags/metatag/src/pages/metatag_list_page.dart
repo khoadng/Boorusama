@@ -53,8 +53,9 @@ class MetatagListPage extends StatelessWidget {
                   title: Text(tag.name),
                   trailing: tag.isFree
                       ? Chip(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                           label: Text(
                             'Free',
                             style: TextStyle(

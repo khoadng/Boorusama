@@ -24,8 +24,9 @@ class TagResolver {
     if (tags.isEmpty) return [];
 
     // Find tags with 0 post count that need resolution
-    final tagsNeedingResolution =
-        tags.where((tag) => tag.postCount == 0).toList();
+    final tagsNeedingResolution = tags
+        .where((tag) => tag.postCount == 0)
+        .toList();
 
     if (tagsNeedingResolution.isEmpty) return tags;
 
@@ -90,8 +91,10 @@ class TagResolver {
 
     try {
       final tagRepository = tagRepositoryBuilder!();
-      final unknownTags =
-          await tagRepository.getTagsByName(missingTagNames.toSet(), 1);
+      final unknownTags = await tagRepository.getTagsByName(
+        missingTagNames.toSet(),
+        1,
+      );
 
       // Convert resolved tags to CachedTag and save to cache
       final resolvedTags = <CachedTag>[];

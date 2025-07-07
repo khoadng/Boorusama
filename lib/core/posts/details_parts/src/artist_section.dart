@@ -61,18 +61,18 @@ class _ArtistSectionState extends State<ArtistSection> {
           if (artistTags.isNotEmpty)
             switch (widget.source) {
               final WebSource source => _Link(
-                  commentary: commentary,
-                  display: display,
-                  artistTags: artistTags,
-                  url: source.url,
-                  onChanged: onChanged,
-                ),
+                commentary: commentary,
+                display: display,
+                artistTags: artistTags,
+                url: source.url,
+                onChanged: onChanged,
+              ),
               NonWebSource _ => _Link(
-                  commentary: commentary,
-                  display: display,
-                  artistTags: artistTags,
-                  onChanged: onChanged,
-                ),
+                commentary: commentary,
+                display: display,
+                artistTags: artistTags,
+                onChanged: onChanged,
+              ),
               _ => const SizedBox.shrink(),
             }
           else
@@ -160,13 +160,13 @@ class _Link extends StatelessWidget {
               itemBuilder: (_) => [
                 switch (display) {
                   TranlationState.original => PopupMenuItem(
-                      value: TranlationState.translated,
-                      child: const Text('post.detail.show_translated').tr(),
-                    ),
+                    value: TranlationState.translated,
+                    child: const Text('post.detail.show_translated').tr(),
+                  ),
                   TranlationState.translated => PopupMenuItem(
-                      value: TranlationState.original,
-                      child: const Text('post.detail.show_original').tr(),
-                    ),
+                    value: TranlationState.original,
+                    child: const Text('post.detail.show_original').tr(),
+                  ),
                 },
               ],
             )

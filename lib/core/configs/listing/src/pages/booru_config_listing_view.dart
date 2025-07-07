@@ -45,9 +45,11 @@ class BooruConfigListingView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final listing = ref.watch(
-          editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-              .select((value) => value.listingTyped),
+    final listing =
+        ref.watch(
+          editBooruConfigProvider(
+            ref.watch(editBooruConfigIdProvider),
+          ).select((value) => value.listingTyped),
         ) ??
         ListingConfigs.undefined();
     final enable = listing.enable;
@@ -58,8 +60,8 @@ class BooruConfigListingView extends ConsumerWidget {
       child: Theme(
         data: Theme.of(context).copyWith(
           listTileTheme: Theme.of(context).listTileTheme.copyWith(
-                contentPadding: EdgeInsets.zero,
-              ),
+            contentPadding: EdgeInsets.zero,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

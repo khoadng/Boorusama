@@ -19,10 +19,10 @@ enum VoteState {
 }
 
 VoteState voteStateFromScore(int score) => switch (score) {
-      < 0 => VoteState.downvoted,
-      > 0 => VoteState.upvoted,
-      _ => VoteState.unvote,
-    };
+  < 0 => VoteState.downvoted,
+  > 0 => VoteState.upvoted,
+  _ => VoteState.unvote,
+};
 
 extension VoteStateX on VoteState {
   bool get isUpvoted => this == VoteState.upvoted;
@@ -30,8 +30,8 @@ extension VoteStateX on VoteState {
   bool get isUnvote => this == VoteState.unvote;
 
   int get score => switch (this) {
-        VoteState.upvoted => 1,
-        VoteState.downvoted => -1,
-        VoteState.unvote => 0
-      };
+    VoteState.upvoted => 1,
+    VoteState.downvoted => -1,
+    VoteState.unvote => 0,
+  };
 }

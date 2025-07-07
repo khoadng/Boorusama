@@ -68,7 +68,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                   .toList(),
             ),
           ),
-          ref.watch(dmailProvider).when(
+          ref
+              .watch(dmailProvider)
+              .when(
                 data: (dmails) => dmails.isNotEmpty
                     ? Expanded(
                         child: ListView.builder(
@@ -93,8 +95,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                     danbooruCreatorProvider(dmail.fromId),
                                   );
 
-                                  final color =
-                                      userColor.fromLevel(fromUser?.level);
+                                  final color = userColor.fromLevel(
+                                    fromUser?.level,
+                                  );
 
                                   return Text(
                                     fromUser?.name ?? '...',
@@ -120,7 +123,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                               ),
                               onTap: () {
                                 if (!dmail.isRead) {
-                                  client.markDmailAsRead(id: dmail.id).then(
+                                  client
+                                      .markDmailAsRead(id: dmail.id)
+                                      .then(
                                         (value) =>
                                             ref.invalidate(dmailProvider),
                                       );
@@ -134,16 +139,17 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                     ),
                                     builder: (context) =>
                                         DanbooruDmailDetailsPage(
-                                      dmail: dmail,
-                                      onDmailUnread: (context, dmail) {
-                                        client
-                                            .markDmailAsUnread(id: dmail.id)
-                                            .then(
-                                              (value) =>
-                                                  ref.invalidate(dmailProvider),
-                                            );
-                                      },
-                                    ),
+                                          dmail: dmail,
+                                          onDmailUnread: (context, dmail) {
+                                            client
+                                                .markDmailAsUnread(id: dmail.id)
+                                                .then(
+                                                  (value) => ref.invalidate(
+                                                    dmailProvider,
+                                                  ),
+                                                );
+                                          },
+                                        ),
                                   ),
                                 );
                               },

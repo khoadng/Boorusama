@@ -34,7 +34,8 @@ class Reboot extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     RebootData rebootData,
-  ) builder;
+  )
+  builder;
 
   @override
   State<Reboot> createState() => _RebootState();

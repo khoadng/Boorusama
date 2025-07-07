@@ -93,8 +93,11 @@ class PlayStoreUpdateChecker implements AppUpdateChecker {
     if (useCacheBuster) {
       parameters['_cb'] = DateTime.now().microsecondsSinceEpoch.toString();
     }
-    final url = Uri.https(playStorePrefixURL, '/store/apps/details', parameters)
-        .toString();
+    final url = Uri.https(
+      playStorePrefixURL,
+      '/store/apps/details',
+      parameters,
+    ).toString();
 
     return url;
   }
@@ -109,22 +112,28 @@ extension DocumentX on Document {
       const patternEndOfString = '"';
 
       final scripts = getElementsByTagName('script');
-      final infoElements =
-          scripts.where((element) => element.text.contains(patternName));
-      final additionalInfoElements =
-          scripts.where((element) => element.text.contains(patternCallback));
-      final additionalInfoElementsFiltered = additionalInfoElements
-          .where((element) => element.text.contains(patternVersion));
+      final infoElements = scripts.where(
+        (element) => element.text.contains(patternName),
+      );
+      final additionalInfoElements = scripts.where(
+        (element) => element.text.contains(patternCallback),
+      );
+      final additionalInfoElementsFiltered = additionalInfoElements.where(
+        (element) => element.text.contains(patternVersion),
+      );
 
       final nameElement = infoElements.first.text;
       final storeNameStartIndex =
           nameElement.indexOf(patternName) + patternName.length;
-      final storeNameEndIndex = storeNameStartIndex +
+      final storeNameEndIndex =
+          storeNameStartIndex +
           nameElement
               .substring(storeNameStartIndex)
               .indexOf(patternEndOfString);
-      final storeName =
-          nameElement.substring(storeNameStartIndex, storeNameEndIndex);
+      final storeName = nameElement.substring(
+        storeNameStartIndex,
+        storeNameEndIndex,
+      );
 
       final versionElement = additionalInfoElementsFiltered
           .where((element) => element.text.contains('"$storeName"'))
@@ -132,7 +141,8 @@ extension DocumentX on Document {
           .text;
       final storeVersionStartIndex =
           versionElement.lastIndexOf(patternVersion) + patternVersion.length;
-      final storeVersionEndIndex = storeVersionStartIndex +
+      final storeVersionEndIndex =
+          storeVersionStartIndex +
           versionElement
               .substring(storeVersionStartIndex)
               .indexOf(patternEndOfString);

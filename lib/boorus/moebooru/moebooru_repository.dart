@@ -46,11 +46,11 @@ class MoebooruRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => MoebooruClient(
-          baseUrl: config.url,
-          dio: dio,
-          login: config.login,
-          passwordHashed: config.apiKey,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      login: config.login,
+      passwordHashed: config.apiKey,
+    ).getPosts().then((value) => true);
   }
 
   @override

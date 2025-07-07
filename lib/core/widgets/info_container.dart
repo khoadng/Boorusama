@@ -48,8 +48,9 @@ class WarningContainer extends StatelessWidget {
         Icons.warning,
         color: Theme.of(context).colorScheme.error,
       ),
-      titleBackgroundColor:
-          Theme.of(context).colorScheme.error.withValues(alpha: 0.2),
+      titleBackgroundColor: Theme.of(
+        context,
+      ).colorScheme.error.withValues(alpha: 0.2),
       title: title,
       titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
@@ -89,7 +90,8 @@ class _TemplateContainerState extends State<TemplateContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: widget.margin ??
+      margin:
+          widget.margin ??
           const EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 8,

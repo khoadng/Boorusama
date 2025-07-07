@@ -44,61 +44,61 @@ class E621Builder
   E621Builder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat:
-                  kBoorusamaCustomDownloadFileNameFormat,
-            ),
-            child: CreateE621ConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+        ),
+        child: CreateE621ConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  HomePageBuilder get homePageBuilder => (context) => const E621HomePage();
+  HomePageBuilder get homePageBuilder =>
+      (context) => const E621HomePage();
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateE621ConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateE621ConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => E621SearchPage(
-            params: params,
-          );
+        params: params,
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as E621Post).toList();
+    final posts = payload.posts.map((e) => e as E621Post).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<E621Post>(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DefaultPostDetailsPage<E621Post>(),
+    );
+  };
 
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
@@ -111,9 +111,9 @@ class E621Builder
   @override
   CommentPageBuilder? get commentPageBuilder =>
       (context, useAppBar, postId) => E621CommentPage(
-            postId: postId,
-            useAppBar: useAppBar,
-          );
+        postId: postId,
+        useAppBar: useAppBar,
+      );
 
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>

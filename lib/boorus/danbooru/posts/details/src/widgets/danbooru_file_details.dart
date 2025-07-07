@@ -23,8 +23,9 @@ class DanbooruFileDetails extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagDetails =
-        ref.watch(danbooruTagListProvider(ref.watchConfigAuth))[post.id];
+    final tagDetails = ref.watch(
+      danbooruTagListProvider(ref.watchConfigAuth),
+    )[post.id];
     final userColor = DanbooruUserColor.of(context);
 
     return FileDetailsSection(

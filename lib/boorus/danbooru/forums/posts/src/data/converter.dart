@@ -21,10 +21,12 @@ DanbooruForumPostVote danbooruForumPostVoteDtoToDanbooruForumPostVote(
 DanbooruForumPost danbooruForumPostDtoToDanbooruForumPost(ForumPostDto dto) {
   return DanbooruForumPost(
     id: dto.id ?? -1,
-    createdAt:
-        dto.createdAt != null ? DateTime.parse(dto.createdAt!) : DateTime.now(),
-    updatedAt:
-        dto.updatedAt != null ? DateTime.parse(dto.updatedAt!) : DateTime.now(),
+    createdAt: dto.createdAt != null
+        ? DateTime.parse(dto.createdAt!)
+        : DateTime.now(),
+    updatedAt: dto.updatedAt != null
+        ? DateTime.parse(dto.updatedAt!)
+        : DateTime.now(),
     body: dto.body ?? 'No Body',
     isDeleted: dto.isDeleted ?? false,
     topicId: dto.topicId ?? -1,
@@ -32,8 +34,8 @@ DanbooruForumPost danbooruForumPostDtoToDanbooruForumPost(ForumPostDto dto) {
     updaterId: dto.updaterId ?? -1,
     votes: dto.votes != null
         ? dto.votes!
-            .map(danbooruForumPostVoteDtoToDanbooruForumPostVote)
-            .toList()
+              .map(danbooruForumPostVoteDtoToDanbooruForumPostVote)
+              .toList()
         : [],
   );
 }

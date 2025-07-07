@@ -65,12 +65,18 @@ class TokenOptionHelpModal extends StatelessWidget {
                             Flexible(child: Text(option)),
                             const SizedBox(width: 8),
                             switch (docs?.tokenOption) {
-                              IntegerTokenOption _ =>
-                                _buildOptionChip(context, 'integer'),
-                              BooleanTokenOption _ =>
-                                _buildOptionChip(context, 'boolean'),
-                              StringTokenOption _ =>
-                                _buildOptionChip(context, 'string'),
+                              IntegerTokenOption _ => _buildOptionChip(
+                                context,
+                                'integer',
+                              ),
+                              BooleanTokenOption _ => _buildOptionChip(
+                                context,
+                                'boolean',
+                              ),
+                              StringTokenOption _ => _buildOptionChip(
+                                context,
+                                'string',
+                              ),
                               _ => const SizedBox.shrink(),
                             },
                           ],

@@ -12,13 +12,15 @@ final hasBooruConfigsProvider = Provider<bool>((ref) {
   return configs.isNotEmpty;
 });
 
-final orderedConfigsProvider =
-    FutureProvider.autoDispose<IList<BooruConfig>>((ref) {
+final orderedConfigsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((
+  ref,
+) {
   final configs = ref.watch(booruConfigProvider);
 
   final configMap = {for (final config in configs) config.id: config};
-  final orders = ref
-      .watch(settingsProvider.select((value) => value.booruConfigIdOrderList));
+  final orders = ref.watch(
+    settingsProvider.select((value) => value.booruConfigIdOrderList),
+  );
 
   if (configMap.length != orders.length) {
     return configMap.values.toIList();

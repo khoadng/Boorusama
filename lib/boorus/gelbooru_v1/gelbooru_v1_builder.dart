@@ -38,44 +38,43 @@ class GelbooruV1Builder
   GelbooruV1Builder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat:
-                  kDefaultCustomDownloadFileNameFormat,
-            ),
-            child: CreateGelbooruV1ConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
+        ),
+        child: CreateGelbooruV1ConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreateGelbooruV1ConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateGelbooruV1ConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   SearchPageBuilder get searchPageBuilder =>
       (context, params) => GelbooruV1SearchPage(
-            params: params,
-          );
+        params: params,
+      );
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder =

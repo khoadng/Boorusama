@@ -43,8 +43,9 @@ class DummyIAP implements IAP {
   }
 
   Future<void> init() async {
-    final activePackages =
-        await getActiveSubscriptionPackages(subscriptionManager);
+    final activePackages = await getActiveSubscriptionPackages(
+      subscriptionManager,
+    );
 
     if (activePackages != null && activePackages.isNotEmpty) {
       _activeSubscription = activePackages.first;

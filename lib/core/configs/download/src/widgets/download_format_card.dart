@@ -35,7 +35,8 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
   final Widget Function(
     DownloadFilenameGenerator<Post> generator,
     String format,
-  )? previewBuilder;
+  )?
+  previewBuilder;
 
   @override
   ConsumerState<DownloadFormatCard> createState() => _DownloadFormatCardState();
@@ -75,8 +76,9 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: FilenamePreview(
-                      filename: widget.downloadFilenameBuilder!
-                          .generateSample(value.text),
+                      filename: widget.downloadFilenameBuilder!.generateSample(
+                        value.text,
+                      ),
                     ),
                   ),
           )

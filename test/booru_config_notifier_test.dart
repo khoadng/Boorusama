@@ -118,8 +118,9 @@ ProviderContainer createBooruConfigContainer({
         (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository(),
       ),
       settingsRepoProvider.overrideWithValue(settingsRepository),
-      settingsNotifierProvider
-          .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
+      settingsNotifierProvider.overrideWith(
+        () => SettingsNotifier(Settings.defaultSettings),
+      ),
       initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
       loggerProvider.overrideWithValue(mockLogger),
       trackerProvider.overrideWith((_) => DummyTracker()),
@@ -152,8 +153,9 @@ void main() {
         () async {
           reset(mockSettingsRepository);
 
-          when(() => mockSettingsRepository.save(any()))
-              .thenAnswer((_) async => true);
+          when(
+            () => mockSettingsRepository.save(any()),
+          ).thenAnswer((_) async => true);
 
           container = createBooruConfigContainer(
             settingsRepository: mockSettingsRepository,
@@ -439,8 +441,9 @@ void main() {
               test(
                 'should update current config to the first config',
                 () async {
-                  final currentConfig =
-                      container.read(currentBooruConfigProvider);
+                  final currentConfig = container.read(
+                    currentBooruConfigProvider,
+                  );
 
                   expect(
                     currentConfig.id,

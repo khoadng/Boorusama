@@ -26,12 +26,12 @@ class ClassicTagsTokenResolver<T extends Post>
 
   @override
   Set<String> get tokenKeys => {
-        'artist',
-        'character',
-        'copyright',
-        'general',
-        'meta',
-      };
+    'artist',
+    'character',
+    'copyright',
+    'general',
+    'meta',
+  };
 
   @override
   Future<Map<String, String?>> resolve(

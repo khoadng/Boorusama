@@ -35,8 +35,9 @@ DownloadTask mapToTask(Row row) {
 }
 
 DownloadSession mapToSession(Row row) {
-  final task =
-      tryDecodeJson<Map<String, dynamic>?>(row['task']).getOrElse((_) => null);
+  final task = tryDecodeJson<Map<String, dynamic>?>(
+    row['task'],
+  ).getOrElse((_) => null);
 
   return DownloadSession(
     id: row['id'],

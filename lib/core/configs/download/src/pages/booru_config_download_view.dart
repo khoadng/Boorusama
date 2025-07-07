@@ -21,12 +21,14 @@ class BooruConfigDownloadView extends ConsumerWidget {
     final config = ref.watch(initialBooruConfigProvider);
     final id = ref.watch(editBooruConfigIdProvider);
     final customDownloadFileNameFormat = ref.watch(
-      editBooruConfigProvider(id)
-          .select((value) => value.customDownloadFileNameFormat),
+      editBooruConfigProvider(
+        id,
+      ).select((value) => value.customDownloadFileNameFormat),
     );
     final customDownloadLocation = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.customDownloadLocation),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.customDownloadLocation),
     );
 
     return SingleChildScrollView(
@@ -48,10 +50,10 @@ class BooruConfigDownloadView extends ConsumerWidget {
           Text(
             'Leave empty to use the download location in settings.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 8),
           CustomDownloadFileNameSection(

@@ -27,9 +27,9 @@ class SettingsRepositoryHive implements SettingsRepository {
       );
 
   TaskEither<SettingsLoadError, dynamic> _openDb() => TaskEither.tryCatch(
-        () => _db,
-        (e, s) => SettingsLoadError.failedToOpenDatabase,
-      );
+    () => _db,
+    (e, s) => SettingsLoadError.failedToOpenDatabase,
+  );
 
   Either<SettingsLoadError, String> _getSettingsJson(dynamic db) {
     final jsonString = db.get(_settingsKey);
@@ -54,12 +54,10 @@ class SettingsRepositoryHive implements SettingsRepository {
 
   SettingsLoadError _mapJsonDecodeErrorToSettingsLoadError(
     JsonDecodeError error,
-  ) =>
-      switch (error) {
-        JsonDecodeError.invalidJsonFormat =>
-          SettingsLoadError.invalidJsonFormat,
-        _ => SettingsLoadError.unknown
-      };
+  ) => switch (error) {
+    JsonDecodeError.invalidJsonFormat => SettingsLoadError.invalidJsonFormat,
+    _ => SettingsLoadError.unknown,
+  };
 
   @override
   Future<bool> save(Settings setting) async {

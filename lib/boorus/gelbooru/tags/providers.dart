@@ -34,42 +34,44 @@ final invalidTags = [
 
 final gelbooruTagExtractorProvider =
     Provider.family<TagExtractor<GelbooruPost>, BooruConfigAuth>(
-  (ref, config) {
-    return TagExtractorBuilder(
-      sorter: TagSorter.defaults(),
-      fetcher: (post, options) async {
-        // Use read to avoid circular dependency
-        final tagResolver = ref.read(tagResolverProvider(config));
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) async {
+            // Use read to avoid circular dependency
+            final tagResolver = ref.read(tagResolverProvider(config));
 
-        final tagList = post.tags;
+            final tagList = post.tags;
 
-        // filter tagList to remove invalid tags
-        final filtered = tagList.where((e) => !invalidTags.contains(e)).toSet();
+            // filter tagList to remove invalid tags
+            final filtered = tagList
+                .where((e) => !invalidTags.contains(e))
+                .toSet();
 
-        if (filtered.isEmpty) return const [];
+            if (filtered.isEmpty) return const [];
 
-        final tags = await tagResolver.resolveRawTags(filtered);
+            final tags = await tagResolver.resolveRawTags(filtered);
 
-        return tags;
+            return tags;
+          },
+        );
       },
     );
-  },
-);
 
 final gelbooruAutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(gelbooruClientProvider(config));
+      final client = ref.watch(gelbooruClientProvider(config));
 
-  return AutocompleteRepositoryBuilder(
-    autocomplete: (query) async {
-      final dtos = await client.autocomplete(term: query.text, limit: 20);
+      return AutocompleteRepositoryBuilder(
+        autocomplete: (query) async {
+          final dtos = await client.autocomplete(term: query.text, limit: 20);
 
-      return dtos
-          .map(autocompleteDtoToAutocompleteData)
-          .where((e) => e != AutocompleteData.empty)
-          .toList();
-    },
-    persistentStorageKey:
-        '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
-  );
-});
+          return dtos
+              .map(autocompleteDtoToAutocompleteData)
+              .where((e) => e != AutocompleteData.empty)
+              .toList();
+        },
+        persistentStorageKey:
+            '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
+      );
+    });

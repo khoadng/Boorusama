@@ -28,7 +28,9 @@ class RelatedTagSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (query.isEmpty) return const SizedBox();
 
-    return ref.watch(danbooruRelatedTagProvider(query)).when(
+    return ref
+        .watch(danbooruRelatedTagProvider(query))
+        .when(
           data: (tag) => tag.tags.isNotEmpty
               ? RelatedTagHeader(
                   backgroundColor: backgroundColor,

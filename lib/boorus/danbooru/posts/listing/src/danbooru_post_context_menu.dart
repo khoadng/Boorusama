@@ -35,8 +35,10 @@ class DanbooruPostContextMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
+    final isBookmarked = bookmarkState.isBookmarked(
+      post,
+      booruConfig.booruIdHint,
+    );
     final hasAccount = booruConfig.hasLoginDetails();
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
 

@@ -18,13 +18,13 @@ abstract class SubscriptionManager {
 
 final subscriptionNotifierProvider =
     AsyncNotifierProvider<SubscriptionNotifier, Package?>(
-  SubscriptionNotifier.new,
-);
+      SubscriptionNotifier.new,
+    );
 
 final packagePurchaseProvider =
     AsyncNotifierProvider.autoDispose<PackagePurchaseNotifier, bool?>(
-  PackagePurchaseNotifier.new,
-);
+      PackagePurchaseNotifier.new,
+    );
 
 class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
   @override

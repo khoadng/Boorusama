@@ -8,16 +8,17 @@ import 'autocomplete_repository.dart';
 
 final autocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>(
-  (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
 
-    final autocompleteRepo = repo?.autocomplete(config);
+        final autocompleteRepo = repo?.autocomplete(config);
 
-    if (autocompleteRepo != null) {
-      return autocompleteRepo;
-    }
+        if (autocompleteRepo != null) {
+          return autocompleteRepo;
+        }
 
-    return ref.watch(emptyAutocompleteRepoProvider);
-  },
-);
+        return ref.watch(emptyAutocompleteRepoProvider);
+      },
+    );

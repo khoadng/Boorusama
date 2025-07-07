@@ -24,15 +24,15 @@ class SankakuArtistPage extends ConsumerWidget {
 
     return ArtistPageScaffold(
       artistName: artistName,
-      fetcher: (page, selectedCategory) =>
-          ref.read(sankakuPostRepoProvider(config)).getPosts(
-                [
-                  artistName,
-                  if (selectedCategory == TagFilterCategory.popular)
-                    'order:score',
-                ].join(' '),
-                page,
-              ),
+      fetcher: (page, selectedCategory) => ref
+          .read(sankakuPostRepoProvider(config))
+          .getPosts(
+            [
+              artistName,
+              if (selectedCategory == TagFilterCategory.popular) 'order:score',
+            ].join(' '),
+            page,
+          ),
     );
   }
 }

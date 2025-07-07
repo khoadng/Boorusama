@@ -32,8 +32,9 @@ class RelatedTagActionSheet extends ConsumerStatefulWidget {
 }
 
 class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
-  late final tags = widget.relatedTag.tags
-      .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity));
+  late final tags = widget.relatedTag.tags.sorted(
+    (a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +58,9 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
           title: Text(
             tags[index].tag.replaceAll('_', ' '),
             style: TextStyle(
-              color: ref
-                  .watch(tagColorProvider((auth, tags[index].category.name))),
+              color: ref.watch(
+                tagColorProvider((auth, tags[index].category.name)),
+              ),
             ),
           ),
           trailing: BooruPopupMenuButton(

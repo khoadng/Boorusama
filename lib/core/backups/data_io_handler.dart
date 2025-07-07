@@ -25,25 +25,24 @@ class DataIOHandler {
     required DeviceInfo deviceInfo,
     required String prefixName,
     required DataBackupConverter converter,
-  }) =>
-      DataIOHandler(
-        converter: converter,
-        permissionChecker: () => checkMediaPermissions(deviceInfo),
-        permissionRequester: () => requestMediaPermissions(deviceInfo),
-        exporter: (path, data) async {
-          final dir = Directory(path);
-          final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
-          final file = File(join(dir.path, '${prefixName}_$date.json'));
+  }) => DataIOHandler(
+    converter: converter,
+    permissionChecker: () => checkMediaPermissions(deviceInfo),
+    permissionRequester: () => requestMediaPermissions(deviceInfo),
+    exporter: (path, data) async {
+      final dir = Directory(path);
+      final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
+      final file = File(join(dir.path, '${prefixName}_$date.json'));
 
-          await file.writeAsString(data);
-        },
-        importer: (path) async {
-          final file = File(path);
-          final jsonString = await file.readAsString();
+      await file.writeAsString(data);
+    },
+    importer: (path) async {
+      final file = File(path);
+      final jsonString = await file.readAsString();
 
-          return jsonString;
-        },
-      );
+      return jsonString;
+    },
+  );
 
   final Future<PermissionStatus> Function() permissionChecker;
   final Future<PermissionStatus> Function() permissionRequester;
@@ -54,56 +53,55 @@ class DataIOHandler {
   TaskEither<ExportError, Unit> export({
     required List<dynamic> data,
     required String path,
-  }) =>
-      TaskEither.Do(
-        ($) async {
-          final status = await permissionChecker();
+  }) => TaskEither.Do(
+    ($) async {
+      final status = await permissionChecker();
 
-          if (status != PermissionStatus.granted) {
-            final status = await permissionRequester();
+      if (status != PermissionStatus.granted) {
+        final status = await permissionRequester();
 
-            if (status != PermissionStatus.granted) {
-              return $(TaskEither.left(const StoragePermissionDenied()));
-            }
-          }
+        if (status != PermissionStatus.granted) {
+          return $(TaskEither.left(const StoragePermissionDenied()));
+        }
+      }
 
-          final jsonString =
-              await $(converter.tryEncode(payload: data).toTaskEither());
-
-          return $(
-            TaskEither.tryCatch(
-              () async {
-                await exporter(path, jsonString);
-
-                return unit;
-              },
-              (e, st) {
-                if (e is PathAccessException) {
-                  return DataExportNotPermitted(
-                    error: e,
-                    stackTrace: st,
-                  );
-                } else {
-                  return DataExportError(
-                    error: e,
-                    stackTrace: st,
-                  );
-                }
-              },
-            ),
-          );
-        },
+      final jsonString = await $(
+        converter.tryEncode(payload: data).toTaskEither(),
       );
+
+      return $(
+        TaskEither.tryCatch(
+          () async {
+            await exporter(path, jsonString);
+
+            return unit;
+          },
+          (e, st) {
+            if (e is PathAccessException) {
+              return DataExportNotPermitted(
+                error: e,
+                stackTrace: st,
+              );
+            } else {
+              return DataExportError(
+                error: e,
+                stackTrace: st,
+              );
+            }
+          },
+        ),
+      );
+    },
+  );
 
   TaskEither<ImportError, ExportDataPayload> import({
     required String path,
-  }) =>
-      TaskEither.Do(
-        ($) async {
-          final json = await importer(path);
-          final data = await $(converter.tryDecode(data: json).toTaskEither());
+  }) => TaskEither.Do(
+    ($) async {
+      final json = await importer(path);
+      final data = await $(converter.tryDecode(data: json).toTaskEither());
 
-          return data;
-        },
-      );
+      return data;
+    },
+  );
 }

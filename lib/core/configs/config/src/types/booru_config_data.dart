@@ -50,33 +50,32 @@ class BooruConfigData extends Equatable {
     required String? customDownloadFileNameFormat,
     required String? customBulkDownloadFileNameFormat,
     required String? imageDetaisQuality,
-  }) =>
-      BooruConfigData(
-        booruId: booru.id,
-        booruIdHint: booruHint.id,
-        apiKey: '',
-        login: '',
-        passHash: null,
-        url: url,
-        name: name,
-        deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
-        ratingFilter: filter.index,
-        bannedPostVisibility: BooruConfigBannedPostVisibility.show.index,
-        customDownloadFileNameFormat: customDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
-        customDownloadLocation: null,
-        imageDetaisQuality: imageDetaisQuality,
-        granularRatingFilterString: null,
-        postGestures: null,
-        defaultPreviewImageButtonAction: null,
-        listing: null,
-        theme: null,
-        alwaysIncludeTags: null,
-        blacklistConfigs: null,
-        layout: null,
-        proxySettings: null,
-        viewerNotesFetchBehavior: null,
-      );
+  }) => BooruConfigData(
+    booruId: booru.id,
+    booruIdHint: booruHint.id,
+    apiKey: '',
+    login: '',
+    passHash: null,
+    url: url,
+    name: name,
+    deletedItemBehavior: BooruConfigDeletedItemBehavior.show.index,
+    ratingFilter: filter.index,
+    bannedPostVisibility: BooruConfigBannedPostVisibility.show.index,
+    customDownloadFileNameFormat: customDownloadFileNameFormat,
+    customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
+    customDownloadLocation: null,
+    imageDetaisQuality: imageDetaisQuality,
+    granularRatingFilterString: null,
+    postGestures: null,
+    defaultPreviewImageButtonAction: null,
+    listing: null,
+    theme: null,
+    alwaysIncludeTags: null,
+    blacklistConfigs: null,
+    layout: null,
+    proxySettings: null,
+    viewerNotesFetchBehavior: null,
+  );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
     try {
@@ -171,31 +170,31 @@ class BooruConfigData extends Equatable {
 
   @override
   List<Object?> get props => [
-        booruId,
-        booruIdHint,
-        apiKey,
-        login,
-        passHash,
-        name,
-        deletedItemBehavior,
-        ratingFilter,
-        bannedPostVisibility,
-        url,
-        customDownloadFileNameFormat,
-        customBulkDownloadFileNameFormat,
-        customDownloadLocation,
-        imageDetaisQuality,
-        granularRatingFilterString,
-        postGestures,
-        defaultPreviewImageButtonAction,
-        listing,
-        theme,
-        alwaysIncludeTags,
-        blacklistConfigs,
-        layout,
-        proxySettings,
-        viewerNotesFetchBehavior,
-      ];
+    booruId,
+    booruIdHint,
+    apiKey,
+    login,
+    passHash,
+    name,
+    deletedItemBehavior,
+    ratingFilter,
+    bannedPostVisibility,
+    url,
+    customDownloadFileNameFormat,
+    customBulkDownloadFileNameFormat,
+    customDownloadLocation,
+    imageDetaisQuality,
+    granularRatingFilterString,
+    postGestures,
+    defaultPreviewImageButtonAction,
+    listing,
+    theme,
+    alwaysIncludeTags,
+    blacklistConfigs,
+    layout,
+    proxySettings,
+    viewerNotesFetchBehavior,
+  ];
 }
 
 extension BooruConfigDataX on BooruConfigData {
@@ -304,8 +303,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       deletedItemBehavior: deletedItemBehavior != null
           ? deletedItemBehavior.index
           : this.deletedItemBehavior,
-      ratingFilter:
-          ratingFilter != null ? ratingFilter.index : this.ratingFilter,
+      ratingFilter: ratingFilter != null
+          ? ratingFilter.index
+          : this.ratingFilter,
       bannedPostVisibility: bannedPostVisibility != null
           ? bannedPostVisibility.index
           : this.bannedPostVisibility,
@@ -327,7 +327,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           : granularRatingFilterString,
       postGestures: postGestures != null
           ? postGestures()?.toJsonString() ??
-              const PostGestureConfig.undefined().toJsonString()
+                const PostGestureConfig.undefined().toJsonString()
           : this.postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction != null
           ? defaultPreviewImageButtonAction()

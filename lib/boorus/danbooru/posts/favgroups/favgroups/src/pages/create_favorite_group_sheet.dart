@@ -82,8 +82,8 @@ class _EditFavoriteGroupDialogState
             child: Text(
               'favorite_groups.group_name'.tr().toUpperCase(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           BooruTextField(
@@ -103,8 +103,8 @@ class _EditFavoriteGroupDialogState
             Text(
               'favorite_groups.all_posts'.tr().toUpperCase(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                fontWeight: FontWeight.w800,
+              ),
             ),
           if (widget.enableManualDataInput)
             const SizedBox(
@@ -155,8 +155,9 @@ class _EditFavoriteGroupDialogState
                             if (widget.initialData == null) {
                               ref
                                   .read(
-                                    danbooruFavoriteGroupsProvider(config)
-                                        .notifier,
+                                    danbooruFavoriteGroupsProvider(
+                                      config,
+                                    ).notifier,
                                   )
                                   .create(
                                     initialIds: textController.text,
@@ -164,15 +165,16 @@ class _EditFavoriteGroupDialogState
                                     isPrivate: isPrivate,
                                     onFailure: (message, translatable) =>
                                         showErrorToast(
-                                      context,
-                                      translatable ? message.tr() : message,
-                                    ),
+                                          context,
+                                          translatable ? message.tr() : message,
+                                        ),
                                   );
                             } else {
                               ref
                                   .read(
-                                    danbooruFavoriteGroupsProvider(config)
-                                        .notifier,
+                                    danbooruFavoriteGroupsProvider(
+                                      config,
+                                    ).notifier,
                                   )
                                   .edit(
                                     group: widget.initialData!,
@@ -186,8 +188,9 @@ class _EditFavoriteGroupDialogState
                             }
                           }
                         : null,
-                    child:
-                        const Text('favorite_groups.create_group_confirm').tr(),
+                    child: const Text(
+                      'favorite_groups.create_group_confirm',
+                    ).tr(),
                   ),
                 ),
               ],

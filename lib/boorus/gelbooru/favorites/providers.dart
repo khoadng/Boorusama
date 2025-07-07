@@ -20,15 +20,16 @@ class GelbooruFavoriteRepository extends FavoriteRepository<GelbooruPost> {
   bool canFavorite() => client.canFavorite;
 
   @override
-  Future<AddFavoriteStatus> addToFavorites(int postId) async =>
-      client.addFavorite(postId: postId).then(
-            (value) => switch (value) {
-              GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
-              GelbooruFavoriteStatus.alreadyFavorited =>
-                AddFavoriteStatus.alreadyExists,
-              _ => AddFavoriteStatus.failure,
-            },
-          );
+  Future<AddFavoriteStatus> addToFavorites(int postId) async => client
+      .addFavorite(postId: postId)
+      .then(
+        (value) => switch (value) {
+          GelbooruFavoriteStatus.success => AddFavoriteStatus.success,
+          GelbooruFavoriteStatus.alreadyFavorited =>
+            AddFavoriteStatus.alreadyExists,
+          _ => AddFavoriteStatus.failure,
+        },
+      );
 
   @override
   Future<bool> removeFromFavorites(int postId) async => client

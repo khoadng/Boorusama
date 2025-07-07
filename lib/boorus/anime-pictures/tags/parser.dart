@@ -15,10 +15,10 @@ AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) =>
     );
 
 Tag tagDtoToTag(TagDto e) => Tag(
-      name: e.tag ?? '???',
-      category: animePicturesTagTypeToTagCategory(e.type),
-      postCount: e.num ?? 0,
-    );
+  name: e.tag ?? '???',
+  category: animePicturesTagTypeToTagCategory(e.type),
+  postCount: e.num ?? 0,
+);
 
 final _reference = TagCategory.general().copyWith(
   id: 100,

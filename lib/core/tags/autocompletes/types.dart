@@ -92,8 +92,15 @@ class AutocompleteData extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [label, value, type, category, postCount, level, antecedent];
+  List<Object?> get props => [
+    label,
+    value,
+    type,
+    category,
+    postCount,
+    level,
+    antecedent,
+  ];
 }
 
 bool isSfwTag({
@@ -140,13 +147,13 @@ List<String> filterNsfwRawTagString(
 
   return shouldFilter
       ? tags
-          .where(
-            (e) => isSfwTag(
-              value: e,
-              nsfwTags: nsfwTags,
-            ),
-          )
-          .toList()
+            .where(
+              (e) => isSfwTag(
+                value: e,
+                nsfwTags: nsfwTags,
+              ),
+            )
+            .toList()
       : tags;
 }
 
@@ -157,15 +164,15 @@ IList<AutocompleteData> filterNsfw(
 }) {
   return shouldFilter
       ? data
-          .where(
-            (e) => isSfwTag(
-              value: e.value,
-              antecedent: e.antecedent,
-              nsfwTags: nsfwTags,
-            ),
-          )
-          .toList()
-          .lock
+            .where(
+              (e) => isSfwTag(
+                value: e.value,
+                antecedent: e.antecedent,
+                nsfwTags: nsfwTags,
+              ),
+            )
+            .toList()
+            .lock
       : data.lock;
 }
 
@@ -179,8 +186,9 @@ extension AutocompleteDataDisplayX on AutocompleteData {
         : value;
     final rawQuery = noOperatorQuery.replaceAll('_', ' ').toLowerCase();
     final metatag = metatagExtractor?.fromString(value);
-    final query =
-        metatag != null ? rawQuery.replaceFirst('$metatag:', '') : rawQuery;
+    final query = metatag != null
+        ? rawQuery.replaceFirst('$metatag:', '')
+        : rawQuery;
 
     String replaceAndHighlight(String text) {
       return text.replaceAllMapped(

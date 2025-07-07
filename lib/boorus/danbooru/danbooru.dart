@@ -11,10 +11,10 @@ import 'danbooru_builder.dart';
 import 'danbooru_repository.dart';
 
 BooruComponents createDanbooru() => BooruComponents(
-      parser: DanbooruParser(),
-      createBuilder: DanbooruBuilder.new,
-      createRepository: (ref) => DanbooruRepository(ref: ref),
-    );
+  parser: DanbooruParser(),
+  createBuilder: DanbooruBuilder.new,
+  createRepository: (ref) => DanbooruRepository(ref: ref),
+);
 
 final danbooruProvider = Provider<Danbooru>(
   (ref) {

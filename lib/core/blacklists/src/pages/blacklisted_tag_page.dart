@@ -41,8 +41,11 @@ class BlacklistedTagPage extends ConsumerWidget {
               builder: (context) => BlacklistedTagConfigSheet(
                 onSorted: (value) {
                   ref
-                      .read(selectedBlacklistedTagsSortTypeProvider.notifier)
-                      .state = value;
+                          .read(
+                            selectedBlacklistedTagsSortTypeProvider.notifier,
+                          )
+                          .state =
+                      value;
                 },
               ),
             );
@@ -61,22 +64,26 @@ class BlacklistedTagPage extends ConsumerWidget {
             .addTagWithToast(context, tag);
       },
       onEditTap: (oldTag, newTag) {
-        final oldBlacklistedTag =
-            sortedTags.firstWhereOrNull((e) => e.name == oldTag);
+        final oldBlacklistedTag = sortedTags.firstWhereOrNull(
+          (e) => e.name == oldTag,
+        );
 
         if (oldBlacklistedTag == null) {
           showErrorToast(context, 'Cannot find tag $oldTag');
           return;
         }
 
-        ref.read(globalBlacklistedTagsProvider.notifier).updateTag(
+        ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .updateTag(
               oldTag: oldBlacklistedTag,
               newTag: newTag,
             );
       },
       onRemoveTag: (tag) {
-        final blacklistedTag =
-            sortedTags.firstWhereOrNull((e) => e.name == tag);
+        final blacklistedTag = sortedTags.firstWhereOrNull(
+          (e) => e.name == tag,
+        );
 
         if (blacklistedTag == null) {
           showErrorToast(context, 'Cannot find tag $tag');

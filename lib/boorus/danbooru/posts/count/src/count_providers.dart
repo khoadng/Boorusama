@@ -9,10 +9,11 @@ import '../../../client_provider.dart';
 
 final danbooruPostCountRepoProvider =
     Provider.family<PostCountRepository, BooruConfigSearch>((ref, config) {
-  return PostCountRepositoryBuilder(
-    countTags: (tags) =>
-        ref.read(danbooruClientProvider(config.auth)).countPosts(tags: tags),
-    //TODO: this is a hack to get around the fact that count endpoint includes all ratings
-    extraTags: config.auth.url == kDanbooruSafeUrl ? ['rating:g'] : [],
-  );
-});
+      return PostCountRepositoryBuilder(
+        countTags: (tags) => ref
+            .read(danbooruClientProvider(config.auth))
+            .countPosts(tags: tags),
+        //TODO: this is a hack to get around the fact that count endpoint includes all ratings
+        extraTags: config.auth.url == kDanbooruSafeUrl ? ['rating:g'] : [],
+      );
+    });

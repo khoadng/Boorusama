@@ -40,8 +40,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
           children: [
             SettingsHeader(label: 'settings.general'.tr()),
             SettingsTile(
-              title: const Text('settings.image_details.ui_overlay.ui_overlay')
-                  .tr(),
+              title: const Text(
+                'settings.image_details.ui_overlay.ui_overlay',
+              ).tr(),
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => notifer.updateSettings(
@@ -55,8 +56,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               title: const Text('Slideshow mode'),
               selectedOption: settings.slideshowDirection,
               items: SlideshowDirection.values,
-              onChanged: (value) => notifer
-                  .updateSettings(settings.copyWith(slideshowDirection: value)),
+              onChanged: (value) => notifer.updateSettings(
+                settings.copyWith(slideshowDirection: value),
+              ),
               optionBuilder: (value) => Text(value.localize().tr()),
             ),
             SettingsTile(
@@ -158,11 +160,11 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
 }
 
 List<double> getSlideShowIntervalPossibleValue() => [
-      0.1,
-      0.25,
-      0.5,
-      ...[for (var i = 1; i <= 30; i += 1) i.toDouble()],
-    ];
+  0.1,
+  0.25,
+  0.5,
+  ...[for (var i = 1; i <= 30; i += 1) i.toDouble()],
+];
 
 class SettingsCardEntry extends StatelessWidget {
   const SettingsCardEntry({
@@ -216,7 +218,8 @@ class SettingsCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             vertical: 8,
           ),

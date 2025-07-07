@@ -16,11 +16,11 @@ import 'types.dart';
 
 final e621PopularPostRepoProvider =
     Provider.family<E621PopularRepository, BooruConfigAuth>((ref, config) {
-  return E621PopularRepositoryApi(
-    ref.watch(e621ClientProvider(config)),
-    config,
-  );
-});
+      return E621PopularRepositoryApi(
+        ref.watch(e621ClientProvider(config)),
+        config,
+      );
+    });
 
 class E621PopularRepositoryApi implements E621PopularRepository {
   E621PopularRepositoryApi(

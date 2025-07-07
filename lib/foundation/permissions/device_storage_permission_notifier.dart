@@ -21,11 +21,10 @@ class DeviceStoragePermissionState extends Equatable {
   DeviceStoragePermissionState copyWith({
     PermissionStatus? storagePermission,
     bool? isNotificationRead,
-  }) =>
-      DeviceStoragePermissionState(
-        storagePermission: storagePermission ?? this.storagePermission,
-        isNotificationRead: isNotificationRead ?? this.isNotificationRead,
-      );
+  }) => DeviceStoragePermissionState(
+    storagePermission: storagePermission ?? this.storagePermission,
+    isNotificationRead: isNotificationRead ?? this.isNotificationRead,
+  );
 
   @override
   List<Object> get props => [storagePermission, isNotificationRead];
@@ -45,8 +44,9 @@ class DeviceStoragePermissionNotifier
       logger.log(
         'Permission',
         'Storage permission status: ${status.name}',
-        level:
-            status == PermissionStatus.granted ? LogLevel.info : LogLevel.error,
+        level: status == PermissionStatus.granted
+            ? LogLevel.info
+            : LogLevel.error,
       );
 
       return DeviceStoragePermissionState(

@@ -16,8 +16,8 @@ final initialBooruConfigProvider = Provider.autoDispose<BooruConfig>(
 
 final editBooruConfigProvider = NotifierProvider.autoDispose
     .family<EditBooruConfigNotifier, BooruConfigData, EditBooruConfigId>(
-  EditBooruConfigNotifier.new,
-);
+      EditBooruConfigNotifier.new,
+    );
 
 extension UpdateDataX on WidgetRef {
   EditBooruConfigNotifier get editNotifier =>

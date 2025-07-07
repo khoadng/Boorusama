@@ -30,20 +30,21 @@ class AddToFavgroupList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
-    final filteredGroups =
-        ref.watch(danbooruFavoriteGroupFilterableProvider(config));
+    final filteredGroups = ref.watch(
+      danbooruFavoriteGroupFilterableProvider(config),
+    );
 
     return filteredGroups.toOption().fold(
-          () => const Padding(
-            padding: EdgeInsets.all(8),
-            child: Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
-          ),
-          (groups) => groups.isEmpty
-              ? const Center(child: Text('Empty'))
-              : _buildList(groups, context, ref, config),
-        );
+      () => const Padding(
+        padding: EdgeInsets.all(8),
+        child: Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      ),
+      (groups) => groups.isEmpty
+          ? const Center(child: Text('Empty'))
+          : _buildList(groups, context, ref, config),
+    );
   }
 
   Widget _buildList(
@@ -85,8 +86,9 @@ class AddToFavgroupList extends ConsumerWidget {
                       showSimpleSnackBar(
                         context: context,
                         duration: AppDurations.extraLongToast,
-                        content:
-                            translatable ? Text(message).tr() : Text(message),
+                        content: translatable
+                            ? Text(message).tr()
+                            : Text(message),
                       );
                     },
                     onSuccess: (newGroup) {

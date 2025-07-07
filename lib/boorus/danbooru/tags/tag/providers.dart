@@ -39,28 +39,28 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
 
 final danbooruTagExtractorProvider =
     Provider.family<TagExtractor<DanbooruPost>, BooruConfigAuth>(
-  (ref, config) {
-    return TagExtractorBuilder(
-      sorter: TagSorter.defaults(),
-      fetcher: (post, options) {
-        // Use read to avoid circular dependency
-        final tagResolver = ref.read(tagResolverProvider(config));
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) {
+            // Use read to avoid circular dependency
+            final tagResolver = ref.read(tagResolverProvider(config));
 
-        if (post case final DanbooruPost danbooruPost) {
-          final tags = _extractTagsFromPost(danbooruPost);
+            if (post case final DanbooruPost danbooruPost) {
+              final tags = _extractTagsFromPost(danbooruPost);
 
-          if (!options.fetchTagCount) {
-            return tags;
-          }
+              if (!options.fetchTagCount) {
+                return tags;
+              }
 
-          return tagResolver.resolvePartialTags(tags);
-        } else {
-          return TagExtractor.extractTagsFromGenericPost(post);
-        }
+              return tagResolver.resolvePartialTags(tags);
+            } else {
+              return TagExtractor.extractTagsFromGenericPost(post);
+            }
+          },
+        );
       },
     );
-  },
-);
 
 List<Tag> _extractTagsFromPost(DanbooruPost post) {
   final tags = <Tag>[];

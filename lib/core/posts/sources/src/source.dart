@@ -15,13 +15,13 @@ sealed class PostSource {
 
     return isWebSource(value)
         ? pixivId.toOption().fold(
-              () => RawWebSource(
-                faviconUrl: _getFavicon(value),
-                url: value,
-                uri: Uri.parse(value),
-              ),
-              (pixivId) => PostSource.pixiv(pixivId),
-            )
+            () => RawWebSource(
+              faviconUrl: _getFavicon(value),
+              url: value,
+              uri: Uri.parse(value),
+            ),
+            (pixivId) => PostSource.pixiv(pixivId),
+          )
         : NonWebSource(value);
   }
 
@@ -122,18 +122,17 @@ extension PostSourceX on PostSource {
   bool get isPixivSource => this is PixivSource;
 
   String? get url => whenWeb(
-        (source) => source.url,
-        () => null,
-      );
+    (source) => source.url,
+    () => null,
+  );
 
   T whenWeb<T>(
     T Function(WebSource source) onWeb,
     T Function() orElse,
-  ) =>
-      switch (this) {
-        final WebSource s => onWeb(s),
-        _ => orElse(),
-      };
+  ) => switch (this) {
+    final WebSource s => onWeb(s),
+    _ => orElse(),
+  };
 }
 
 extension WebSourceX on WebSource {

@@ -28,7 +28,8 @@ class SheetDragline extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: padding ??
+              padding:
+                  padding ??
                   const EdgeInsets.only(
                     top: 6,
                     bottom: 28,
@@ -40,8 +41,9 @@ class SheetDragline extends StatelessWidget {
                 height: height,
                 decoration: ShapeDecoration(
                   shape: const StadiumBorder(),
-                  color:
-                      isHolding ? colorScheme.primary : colorScheme.onSurface,
+                  color: isHolding
+                      ? colorScheme.primary
+                      : colorScheme.onSurface,
                 ),
               ),
             ),

@@ -30,9 +30,9 @@ class AuthConfigData extends Equatable {
   });
 
   AuthConfigData.fromConfig(BooruConfigData config)
-      : login = config.login,
-        apiKey = config.apiKey,
-        passHash = config.passHash;
+    : login = config.login,
+      apiKey = config.apiKey,
+      passHash = config.passHash;
 
   final String login;
   final String apiKey;
@@ -52,10 +52,10 @@ class AuthConfigData extends Equatable {
 
   @override
   List<Object?> get props => [
-        login,
-        apiKey,
-        passHash,
-      ];
+    login,
+    apiKey,
+    passHash,
+  ];
 }
 
 extension AuthConfigDataX on AuthConfigData {

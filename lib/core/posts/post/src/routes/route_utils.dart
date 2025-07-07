@@ -33,11 +33,13 @@ void goToImagePreviewPage(BuildContext context, Post post) {
     context: context,
     pageBuilder: (context, animation, secondaryAnimation) =>
         QuickPreviewImageDialog(
-      child: BooruImage(
-        fit: BoxFit.contain,
-        imageUrl: post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
-        placeholderUrl: post.thumbnailImageUrl,
-      ),
-    ),
+          child: BooruImage(
+            fit: BoxFit.contain,
+            imageUrl: post.isVideo
+                ? post.videoThumbnailUrl
+                : post.sampleImageUrl,
+            placeholderUrl: post.thumbnailImageUrl,
+          ),
+        ),
   );
 }

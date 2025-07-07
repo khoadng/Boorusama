@@ -61,11 +61,11 @@ class RawTagChip extends StatelessWidget {
                 TextSpan(
                   text: '  $subtitle',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 11,
-                        color: Theme.of(context).brightness.isLight
-                            ? Colors.white.withValues(alpha: 0.85)
-                            : Colors.grey.withValues(alpha: 0.85),
-                      ),
+                    fontSize: 11,
+                    color: Theme.of(context).brightness.isLight
+                        ? Colors.white.withValues(alpha: 0.85)
+                        : Colors.grey.withValues(alpha: 0.85),
+                  ),
                 ),
             ],
           ),

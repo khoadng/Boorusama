@@ -7,8 +7,8 @@ import 'data_converter.dart';
 
 final defaultBackupConverterProvider =
     Provider.family<DataBackupConverter, int>((ref, version) {
-  return DataBackupConverter(
-    version: version,
-    exportVersion: ref.watch(appVersionProvider),
-  );
-});
+      return DataBackupConverter(
+        version: version,
+        exportVersion: ref.watch(appVersionProvider),
+      );
+    });

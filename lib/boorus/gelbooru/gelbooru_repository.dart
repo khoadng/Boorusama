@@ -60,11 +60,11 @@ class GelbooruRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => GelbooruClient(
-          baseUrl: config.url,
-          dio: dio,
-          userId: config.login,
-          apiKey: config.apiKey,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      userId: config.login,
+      apiKey: config.apiKey,
+    ).getPosts().then((value) => true);
   }
 
   @override

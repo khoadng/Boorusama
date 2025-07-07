@@ -7,8 +7,8 @@ import 'saved_download_task_provider.dart';
 
 final savedTaskLockProvider =
     AsyncNotifierProvider<SavedTaskLockNotifier, SavedTaskLockState>(
-  SavedTaskLockNotifier.new,
-);
+      SavedTaskLockNotifier.new,
+    );
 
 final isSavedTaskLockedProvider = Provider.autoDispose.family<bool, String>(
   (ref, id) {

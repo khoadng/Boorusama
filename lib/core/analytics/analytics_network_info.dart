@@ -8,14 +8,14 @@ class AnalyticsNetworkInfo extends Equatable {
   });
 
   const AnalyticsNetworkInfo.error(String message)
-      : types = 'none',
-        state = 'error: $message';
+    : types = 'none',
+      state = 'error: $message';
 
   const AnalyticsNetworkInfo.connected(this.types) : state = 'connected';
 
   const AnalyticsNetworkInfo.disconnected()
-      : types = 'none',
-        state = 'disconnected';
+    : types = 'none',
+      state = 'disconnected';
 
   final String types;
   final String state;

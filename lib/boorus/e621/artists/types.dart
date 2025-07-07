@@ -8,9 +8,7 @@ class E621Artist extends Equatable {
     required this.otherNames,
   });
 
-  const E621Artist.empty()
-      : name = '',
-        otherNames = const [];
+  const E621Artist.empty() : name = '', otherNames = const [];
 
   final String name;
   final List<String> otherNames;

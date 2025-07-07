@@ -18,5 +18,4 @@ DanbooruUserFeedback userFeedbackDtoToUserFeedback(UserFeedbackDto dto) =>
 
 List<DanbooruUserFeedback> userFeedbackDtosToUserFeedbacks(
   List<UserFeedbackDto> dtos,
-) =>
-    dtos.map(userFeedbackDtoToUserFeedback).toList();
+) => dtos.map(userFeedbackDtoToUserFeedback).toList();

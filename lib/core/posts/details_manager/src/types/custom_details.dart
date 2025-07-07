@@ -29,8 +29,8 @@ class CustomDetailsPartKey extends Equatable {
   String toString() => name;
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   List<Object?> get props => [name];

@@ -11,19 +11,19 @@ import '../types/download_task_update.dart';
 
 final downloadTaskUpdatesProvider =
     NotifierProvider<DownloadTaskUpdatesNotifier, DownloadTaskUpdateState>(
-  DownloadTaskUpdatesNotifier.new,
-);
+      DownloadTaskUpdatesNotifier.new,
+    );
 
 final downloadTaskStreamControllerProvider =
     Provider<StreamController<TaskUpdate>>((ref) {
-  final controller = StreamController<TaskUpdate>.broadcast();
+      final controller = StreamController<TaskUpdate>.broadcast();
 
-  ref.onDispose(() {
-    controller.close();
-  });
+      ref.onDispose(() {
+        controller.close();
+      });
 
-  return controller;
-});
+      return controller;
+    });
 
 final downloadTaskStreamProvider = StreamProvider<TaskUpdate>((ref) {
   final controller = ref.watch(downloadTaskStreamControllerProvider);
@@ -35,13 +35,13 @@ final downloadTaskStreamProvider = StreamProvider<TaskUpdate>((ref) {
   return controller.stream;
 });
 
-final taskFileSizeResolverProvider =
-    FutureProvider.autoDispose.family<int, Task>((ref, task) async {
-  final path = await task.filePath();
-  final file = XFile(path);
+final taskFileSizeResolverProvider = FutureProvider.autoDispose
+    .family<int, Task>((ref, task) async {
+      final path = await task.filePath();
+      final file = XFile(path);
 
-  return file.length();
-});
+      return file.length();
+    });
 
 extension TaskX on Task {
   bool get isDefaultGroup => group == FileDownloader.defaultGroup;

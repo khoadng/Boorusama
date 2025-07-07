@@ -49,7 +49,9 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
       builder: (data) => TextButton(
         onPressed: canSubmit(data) && data.name.isNotEmpty
             ? () {
-                ref.read(booruConfigProvider.notifier).addOrUpdate(
+                ref
+                    .read(booruConfigProvider.notifier)
+                    .addOrUpdate(
                       id: editId,
                       newConfig: data,
                       initialData: config,
@@ -80,7 +82,9 @@ class UpdateBooruConfigButton extends ConsumerWidget {
       builder: (data) => TextButton(
         onPressed: canSubmit(data)
             ? () {
-                ref.read(booruConfigProvider.notifier).addOrUpdate(
+                ref
+                    .read(booruConfigProvider.notifier)
+                    .addOrUpdate(
                       id: editId,
                       newConfig: data,
                     );

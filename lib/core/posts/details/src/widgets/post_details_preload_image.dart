@@ -53,8 +53,9 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
           cacheHeight: 10,
           cacheWidth: 10,
           headers: {
-            AppHttpHeaders.userAgentHeader:
-                ref.watch(userAgentProvider(config.booruType)),
+            AppHttpHeaders.userAgentHeader: ref.watch(
+              userAgentProvider(config.booruType),
+            ),
             ...ref.watch(extraHttpHeaderProvider(config)),
             ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
           },

@@ -61,8 +61,9 @@ class DonationPage extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 24,
-      children:
-          appInfo.donationUrls.map((url) => _DonationIcon(url: url)).toList(),
+      children: appInfo.donationUrls
+          .map((url) => _DonationIcon(url: url))
+          .toList(),
     );
   }
 }

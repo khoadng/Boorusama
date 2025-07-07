@@ -99,18 +99,17 @@ Future<T?> showAppModalBarBottomSheet<T>({
   bool isDismissible = true,
   Duration? duration,
   RouteSettings? settings,
-}) =>
-    showBarModalBottomSheet<T>(
-      context: context,
-      settings: settings,
-      barrierColor: barrierColor,
-      duration: duration ?? AppDurations.bottomSheet,
-      backgroundColor: backgroundColor,
-      shape: shape,
-      bounce: bounce,
-      expand: expand,
-      animationCurve: animationCurve,
-      useRootNavigator: useRootNavigator,
-      isDismissible: isDismissible,
-      builder: builder,
-    );
+}) => showBarModalBottomSheet<T>(
+  context: context,
+  settings: settings,
+  barrierColor: barrierColor,
+  duration: duration ?? AppDurations.bottomSheet,
+  backgroundColor: backgroundColor,
+  shape: shape,
+  bounce: bounce,
+  expand: expand,
+  animationCurve: animationCurve,
+  useRootNavigator: useRootNavigator,
+  isDismissible: isDismissible,
+  builder: builder,
+);

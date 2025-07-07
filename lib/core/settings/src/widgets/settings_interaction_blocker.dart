@@ -38,7 +38,8 @@ class SettingsInteractionBlocker extends StatelessWidget {
         ),
         if (block)
           Padding(
-            padding: padding ??
+            padding:
+                padding ??
                 const EdgeInsets.symmetric(
                   vertical: 8,
                 ),
@@ -86,10 +87,10 @@ class ListingSettingsInteractionBlocker extends ConsumerWidget {
       description: RichText(
         text: TextSpan(
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+            color: Theme.of(context).colorScheme.hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
           children: [
             const TextSpan(
               text: 'These settings are overridden by custom listing. Go to ',
@@ -145,10 +146,10 @@ class ThemeSettingsInteractionBlocker extends ConsumerWidget {
       description: RichText(
         text: TextSpan(
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+            color: Theme.of(context).hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
           children: [
             const TextSpan(
               text: 'These settings are overridden by custom theme. Go to ',

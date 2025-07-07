@@ -14,33 +14,32 @@ String parseTextToHtml(String text) {
 }
 
 String _removePixivBoldTag(String text) => parse(
-      text,
-      RegExp(r'\[b](.*?)\[\/b\]'),
-      (match) => '${match.group(1)}',
-    );
+  text,
+  RegExp(r'\[b](.*?)\[\/b\]'),
+  (match) => '${match.group(1)}',
+);
 
 String parsePixivLink(String text) => parse(
-      text,
-      RegExp('<(http.*?)>'),
-      (match) => linkify(title: match.group(1), address: match.group(1)),
-    );
+  text,
+  RegExp('<(http.*?)>'),
+  (match) => linkify(title: match.group(1), address: match.group(1)),
+);
 
 String parseLink(String text) => parse(
-      text,
-      RegExp(linkPattern),
-      (match) => linkify(title: match.group(1), address: match.group(2)),
-    );
+  text,
+  RegExp(linkPattern),
+  (match) => linkify(title: match.group(1), address: match.group(2)),
+);
 
 // ignore: unused_element
 String parseUrl(String text) => parse(
-      text,
-      RegExp(urlPattern),
-      (match) => linkify(title: match.group(0), address: match.group(0)),
-    );
+  text,
+  RegExp(urlPattern),
+  (match) => linkify(title: match.group(0), address: match.group(0)),
+);
 
 String parse(
   String text,
   RegExp pattern,
   String Function(Match match) replace,
-) =>
-    text.replaceAllMapped(pattern, replace);
+) => text.replaceAllMapped(pattern, replace);

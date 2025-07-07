@@ -87,9 +87,9 @@ class _BulkDownloadCompletedPageState
               builderDelegate: PagedChildBuilderDelegate<BulkDownloadSession>(
                 itemBuilder: (context, session, index) =>
                     BulkDownloadCompletedSessionTile(
-                  session: session,
-                  onDelete: _refreshList,
-                ),
+                      session: session,
+                      onDelete: _refreshList,
+                    ),
                 noItemsFoundIndicatorBuilder: (context) => Center(
                   child: const Text(
                     'No completed download sessions',

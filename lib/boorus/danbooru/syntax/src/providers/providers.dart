@@ -9,8 +9,9 @@ import '../types/danbooru_parser.dart';
 import '../types/danbooru_styler.dart';
 import '../types/danbooru_tokens.dart';
 
-final danbooruGrammarProvider =
-    Provider<BooruGrammar<DanbooruTokenData>>((ref) {
+final danbooruGrammarProvider = Provider<BooruGrammar<DanbooruTokenData>>((
+  ref,
+) {
   return BooruGrammar<DanbooruTokenData>(
     parser: DanbooruParser(),
     styler: DanbooruStyler(),

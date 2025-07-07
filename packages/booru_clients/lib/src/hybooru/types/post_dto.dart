@@ -39,8 +39,9 @@ class PostDto {
       mime: json['mime'] as int?,
       posted: json['posted'] as String?,
       tags: json['tags'] as Map<String, dynamic>?,
-      sources:
-          (json['sources'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      sources: (json['sources'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       relations: (json['relations'] as List<dynamic>?)
           ?.map((e) => PostRelationDto.fromJson(e as Map<String, dynamic>))
           .toList(),

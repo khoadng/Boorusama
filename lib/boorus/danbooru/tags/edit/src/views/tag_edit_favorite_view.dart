@@ -33,8 +33,9 @@ class TagEditFavoriteView extends ConsumerStatefulWidget {
 class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
   @override
   Widget build(BuildContext context) {
-    final selectedLabel =
-        ref.watch(miscDataProvider(kTagEditFavoriteViewSelectedLabelKey));
+    final selectedLabel = ref.watch(
+      miscDataProvider(kTagEditFavoriteViewSelectedLabelKey),
+    );
 
     return SingleChildScrollView(
       child: FavoriteTagsFilterScope(
@@ -54,8 +55,9 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                 onSelect: (value) {
                   ref
                       .read(
-                        miscDataProvider(kTagEditFavoriteViewSelectedLabelKey)
-                            .notifier,
+                        miscDataProvider(
+                          kTagEditFavoriteViewSelectedLabelKey,
+                        ).notifier,
                       )
                       .put(value);
                 },
@@ -75,8 +77,9 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                           showCheckmark: false,
                           visualDensity: VisualDensity.compact,
                           selectedColor: Theme.of(context).colorScheme.primary,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surface,
                           onSelected: (value) => value
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),

@@ -8,10 +8,10 @@ class ShadowGradientOverlay extends StatelessWidget {
     super.key,
     this.height,
   }) : assert(
-          alignment == Alignment.bottomCenter ||
-              alignment == Alignment.topCenter,
-          'Alignment must be either topCenter or bottomCenter',
-        );
+         alignment == Alignment.bottomCenter ||
+             alignment == Alignment.topCenter,
+         'Alignment must be either topCenter or bottomCenter',
+       );
 
   final List<Color> colors;
   final Alignment alignment;

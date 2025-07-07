@@ -9,7 +9,7 @@ import 'favorite_post_repository_api.dart';
 
 final danbooruFavoriteRepoProvider =
     Provider.family<FavoritePostRepository, BooruConfigAuth>((ref, config) {
-  return FavoritePostRepositoryApi(
-    ref.watch(danbooruClientProvider(config)),
-  );
-});
+      return FavoritePostRepositoryApi(
+        ref.watch(danbooruClientProvider(config)),
+      );
+    });

@@ -37,8 +37,9 @@ class ReplyHeader extends StatelessWidget {
             '@${comment.authorName}',
             softWrap: true,
             style: TextStyle(
-              color:
-                  DanbooruUserColor.of(context).fromLevel(comment.authorLevel),
+              color: DanbooruUserColor.of(
+                context,
+              ).fromLevel(comment.authorLevel),
             ),
           ),
         ],

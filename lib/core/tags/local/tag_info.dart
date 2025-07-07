@@ -35,10 +35,10 @@ class TagInfo extends Equatable {
 
   @override
   List<Object?> get props => [
-        siteHost,
-        tagName,
-        category,
-        postCount,
-        metadata,
-      ];
+    siteHost,
+    tagName,
+    category,
+    postCount,
+    metadata,
+  ];
 }

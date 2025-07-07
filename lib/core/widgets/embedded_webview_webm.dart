@@ -18,12 +18,13 @@ class WebmVideoController {
     this.onCurrentPositionChanged,
     String? userAgent,
   }) {
-    _webViewController = WebViewController.fromPlatformCreationParams(
-      const PlatformWebViewControllerCreationParams(),
-    )
-      ..setUserAgent(userAgent)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.black);
+    _webViewController =
+        WebViewController.fromPlatformCreationParams(
+            const PlatformWebViewControllerCreationParams(),
+          )
+          ..setUserAgent(userAgent)
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setBackgroundColor(Colors.black);
 
     if (_webViewController.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(false);
@@ -47,8 +48,9 @@ class WebmVideoController {
 
   void _startPositionCheckTimer() {
     _positionCheckTimer?.cancel();
-    _positionCheckTimer =
-        Timer.periodic(const Duration(milliseconds: 50), (timer) async {
+    _positionCheckTimer = Timer.periodic(const Duration(milliseconds: 50), (
+      timer,
+    ) async {
       if (_playing) {
         final currentPosition = await getCurrentTime();
         final totalDuration = await getDuration();
@@ -83,15 +85,17 @@ class WebmVideoController {
   Future<void> play() async {
     _playing = true;
     _startPositionCheckTimer();
-    await _webViewController
-        .runJavaScript('document.getElementById("video").play();');
+    await _webViewController.runJavaScript(
+      'document.getElementById("video").play();',
+    );
   }
 
   Future<void> pause() async {
     _playing = false;
     _stopPositionCheckTimer();
-    await _webViewController
-        .runJavaScript('document.getElementById("video").pause();');
+    await _webViewController.runJavaScript(
+      'document.getElementById("video").pause();',
+    );
   }
 
   Future<void> seek(double seconds) async {
@@ -101,8 +105,9 @@ class WebmVideoController {
   }
 
   Future<void> mute(bool isMuted) async {
-    await _webViewController
-        .runJavaScript('document.getElementById("video").muted = $isMuted;');
+    await _webViewController.runJavaScript(
+      'document.getElementById("video").muted = $isMuted;',
+    );
   }
 
   Future<void> setPlaybackSpeed(double speed) async {
@@ -118,8 +123,9 @@ class WebmVideoController {
   }
 
   Future<void> setLoop(bool loop) async {
-    await _webViewController
-        .runJavaScript('document.getElementById("video").loop = $loop;');
+    await _webViewController.runJavaScript(
+      'document.getElementById("video").loop = $loop;',
+    );
   }
 
   // dispose timer
@@ -136,7 +142,8 @@ String urlToHtml(
 }) {
   final colorText = backgroundColor.hexWithoutAlpha;
   final mutedText = muted == true ? 'muted' : '';
-  late final videoHtml = '''
+  late final videoHtml =
+      '''
 <!DOCTYPE html>
 <html>
 <head>
@@ -179,7 +186,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final String url;
   final Color? backgroundColor;
   final void Function(double current, double total, String url)?
-      onCurrentPositionChanged;
+  onCurrentPositionChanged;
   final void Function(WebmVideoController controller)? onWebmVideoPlayerCreated;
   final bool autoPlay;
   final bool sound;

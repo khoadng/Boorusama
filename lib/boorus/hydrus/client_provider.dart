@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/http/providers.dart';
 
-final hydrusClientProvider =
-    Provider.family<HydrusClient, BooruConfigAuth>((ref, config) {
+final hydrusClientProvider = Provider.family<HydrusClient, BooruConfigAuth>((
+  ref,
+  config,
+) {
   final dio = ref.watch(dioProvider(config));
 
   return HydrusClient(

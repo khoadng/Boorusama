@@ -32,7 +32,9 @@ class DanbooruMetatagsSection extends ConsumerWidget {
     return MetatagsSection(
       onOptionTap: onOptionTap,
       metatags: metatags.toList(),
-      userMetatags: ref.watch(danbooruUserMetatagsProvider).maybeWhen(
+      userMetatags: ref
+          .watch(danbooruUserMetatagsProvider)
+          .maybeWhen(
             data: (tags) => tags,
             orElse: () => null,
           ),

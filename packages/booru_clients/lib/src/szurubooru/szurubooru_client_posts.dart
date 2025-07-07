@@ -8,10 +8,7 @@ const _kUpvoteScore = 1;
 const _kDownvoteScore = -1;
 const _kUnvoteScore = 0;
 
-typedef SzurubooruPosts = ({
-  List<PostDto> posts,
-  int? total,
-});
+typedef SzurubooruPosts = ({List<PostDto> posts, int? total});
 
 mixin SzurubooruClientPosts {
   Dio get dio;
@@ -34,10 +31,12 @@ mixin SzurubooruClientPosts {
     final total = response.data['total'] as int?;
 
     final posts = results
-        .map((e) => PostDto.fromJson(
-              e,
-              baseUrl: dio.options.baseUrl,
-            ))
+        .map(
+          (e) => PostDto.fromJson(
+            e,
+            baseUrl: dio.options.baseUrl,
+          ),
+        )
         .toList();
 
     return (

@@ -20,22 +20,21 @@ class DanbooruReportRepositoryApi implements DanbooruReportRepository {
     required DanbooruReportPeriod period,
     required DateTime from,
     required DateTime to,
-  }) =>
-      client
-          .getPostReport(
-            tags: tags,
-            period: switch (period) {
-              DanbooruReportPeriod.day => ReportPeriod.day,
-              DanbooruReportPeriod.week => ReportPeriod.week,
-              DanbooruReportPeriod.month => ReportPeriod.month,
-              DanbooruReportPeriod.year => ReportPeriod.year,
-            },
-            from: from,
-            to: to,
-          )
-          .then(
-            (value) => value
-                .map(danbooruReportDataPointDtoToDanbooruReportDataPoint)
-                .toList(),
-          );
+  }) => client
+      .getPostReport(
+        tags: tags,
+        period: switch (period) {
+          DanbooruReportPeriod.day => ReportPeriod.day,
+          DanbooruReportPeriod.week => ReportPeriod.week,
+          DanbooruReportPeriod.month => ReportPeriod.month,
+          DanbooruReportPeriod.year => ReportPeriod.year,
+        },
+        from: from,
+        to: to,
+      )
+      .then(
+        (value) => value
+            .map(danbooruReportDataPointDtoToDanbooruReportDataPoint)
+            .toList(),
+      );
 }

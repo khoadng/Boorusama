@@ -13,9 +13,9 @@ class CachedTag extends Equatable {
   const CachedTag.unknown({
     required this.siteHost,
     required this.tagName,
-  })  : postCount = null,
-        category = '',
-        metadata = null;
+  }) : postCount = null,
+       category = '',
+       metadata = null;
 
   final String siteHost;
   final String tagName;
@@ -25,12 +25,12 @@ class CachedTag extends Equatable {
 
   @override
   List<Object?> get props => [
-        siteHost,
-        tagName,
-        category,
-        postCount,
-        metadata,
-      ];
+    siteHost,
+    tagName,
+    category,
+    postCount,
+    metadata,
+  ];
 }
 
 class TagResolutionResult extends Equatable {
@@ -43,14 +43,14 @@ class TagResolutionResult extends Equatable {
   final List<String> missing;
 
   List<CachedTag> get allTags => [
-        ...found,
-        ...missing.map(
-          (tag) => CachedTag.unknown(
-            siteHost: '',
-            tagName: tag,
-          ),
-        ),
-      ];
+    ...found,
+    ...missing.map(
+      (tag) => CachedTag.unknown(
+        siteHost: '',
+        tagName: tag,
+      ),
+    ),
+  ];
 
   @override
   List<Object?> get props => [found, missing];

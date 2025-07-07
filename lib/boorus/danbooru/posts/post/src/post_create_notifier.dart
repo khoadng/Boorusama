@@ -13,8 +13,8 @@ import 'danbooru_post.dart';
 
 final danbooruPostCreateProvider = AsyncNotifierProvider.autoDispose
     .family<DanbooruPostCreateNotifier, DanbooruPost?, BooruConfigAuth>(
-  DanbooruPostCreateNotifier.new,
-);
+      DanbooruPostCreateNotifier.new,
+    );
 
 class DanbooruPostCreateNotifier
     extends AutoDisposeFamilyAsyncNotifier<DanbooruPost?, BooruConfigAuth> {

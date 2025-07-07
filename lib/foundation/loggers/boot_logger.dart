@@ -1,11 +1,7 @@
 // Project imports:
 import 'logger.dart';
 
-typedef BootLogData = ({
-  DateTime dateTime,
-  String message,
-  LogLevel level,
-});
+typedef BootLogData = ({DateTime dateTime, String message, LogLevel level});
 
 class BootLogger implements Logger {
   final List<BootLogData> _logs = [];
@@ -53,7 +49,7 @@ class BootLogger implements Logger {
       (
         dateTime: DateTime.now(),
         message: message,
-        level: level ?? LogLevel.info
+        level: level ?? LogLevel.info,
       ),
     );
   }

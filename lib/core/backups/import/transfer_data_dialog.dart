@@ -38,8 +38,8 @@ class TransferDataDialog extends ConsumerWidget {
         child: switch (step) {
           ImportStep.selection => SelectDataStep(url: url),
           _ => ImportingStep(
-              url: url,
-            ),
+            url: url,
+          ),
         },
       ),
     );
@@ -64,10 +64,12 @@ class ImportingStep extends ConsumerWidget {
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final reloadPayload =
-        ref.watch(importDataProvider(url).select((s) => s.reloadPayload));
-    final forceRestart =
-        ref.watch(importDataProvider(url).select((s) => s.forceReload));
+    final reloadPayload = ref.watch(
+      importDataProvider(url).select((s) => s.reloadPayload),
+    );
+    final forceRestart = ref.watch(
+      importDataProvider(url).select((s) => s.forceReload),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -92,61 +94,61 @@ class ImportingStep extends ConsumerWidget {
                 return switch (task.importStatus) {
                   ImportNotStarted _ => Text(task.name),
                   Importing _ => Row(
-                      children: [
-                        const SizedBox(
-                          width: 12,
-                          height: 12,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
+                    children: [
+                      const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
                         ),
-                        const SizedBox(width: 16),
-                        Text(task.name),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(task.name),
+                    ],
+                  ),
                   ImportQueued _ => Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 28),
-                        Text(
-                          task.name,
-                          style: TextStyle(
-                            color: colorScheme.hintColor,
-                          ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 28),
+                      Text(
+                        task.name,
+                        style: TextStyle(
+                          color: colorScheme.hintColor,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   final ImportError error => Row(
-                      children: [
-                        Icon(
-                          Icons.close,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        color: colorScheme.error,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(task.name),
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: error.message,
+                        triggerMode: TooltipTriggerMode.tap,
+                        showDuration: const Duration(seconds: 5),
+                        child: Icon(
+                          Icons.error,
+                          size: 16,
                           color: colorScheme.error,
                         ),
-                        const SizedBox(width: 4),
-                        Text(task.name),
-                        const SizedBox(width: 8),
-                        Tooltip(
-                          message: error.message,
-                          triggerMode: TooltipTriggerMode.tap,
-                          showDuration: const Duration(seconds: 5),
-                          child: Icon(
-                            Icons.error,
-                            size: 16,
-                            color: colorScheme.error,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   ImportDone _ => Row(
-                      children: [
-                        Icon(
-                          Icons.check,
-                          color: colorScheme.primary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(task.name),
-                      ],
-                    ),
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(task.name),
+                    ],
+                  ),
                 };
               }),
             ],
@@ -173,8 +175,9 @@ class ImportingStep extends ConsumerWidget {
                         horizontal: 8,
                       ),
                       decoration: BoxDecoration(
-                        color:
-                            colorScheme.errorContainer.withValues(alpha: 0.2),
+                        color: colorScheme.errorContainer.withValues(
+                          alpha: 0.2,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -198,54 +201,54 @@ class ImportingStep extends ConsumerWidget {
                   ],
                 )
               : reloadPayload != null
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FilledButton(
-                          onPressed: () {
-                            Reboot.start(
-                              context,
-                              RebootData(
-                                config: reloadPayload.selectedConfig,
-                                configs: reloadPayload.configs,
-                                settings: reloadPayload.settings ?? settings,
-                              ),
-                            );
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 14),
-                            child: Text(
-                              'Restart App',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        _buildCancelButton(
-                          context,
-                          isDone,
-                          reloadPayload,
-                          settings,
-                        ),
-                      ],
-                    )
-                  : FilledButton(
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FilledButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Reboot.start(
+                          context,
+                          RebootData(
+                            config: reloadPayload.selectedConfig,
+                            configs: reloadPayload.configs,
+                            settings: reloadPayload.settings ?? settings,
+                          ),
+                        );
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Text(
-                          'Done',
+                          'Restart App',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    _buildCancelButton(
+                      context,
+                      isDone,
+                      reloadPayload,
+                      settings,
+                    ),
+                  ],
+                )
+              : FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
       ],
     );
   }
@@ -395,11 +398,11 @@ class SelectDataStep extends ConsumerWidget {
           onPressed: state.atLeastOneSelected
               ? switch (serverCheckStatus) {
                   ServerCheckStatus.initial => () {
-                      serverCheckNotifier.check(url);
-                    },
+                    serverCheckNotifier.check(url);
+                  },
                   ServerCheckStatus.available => () {
-                      notifier.startImport();
-                    },
+                    notifier.startImport();
+                  },
                   _ => null,
                 }
               : null,

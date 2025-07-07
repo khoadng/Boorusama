@@ -60,13 +60,13 @@ class TagCategory extends Equatable {
   factory TagCategory.meta() => _metaTag;
 
   factory TagCategory.fromLegacyIdString(String? id) => switch (id) {
-        '0' || 'tag' => _generalTag,
-        '1' || 'artist' => _artistTag,
-        '3' || 'copyright' => _copyrightTag,
-        '4' || 'character' => _characterTag,
-        '5' || 'metadata' || 'meta' => _metaTag,
-        _ => _unknownTag,
-      };
+    '0' || 'tag' => _generalTag,
+    '1' || 'artist' => _artistTag,
+    '3' || 'copyright' => _copyrightTag,
+    '4' || 'character' => _characterTag,
+    '5' || 'metadata' || 'meta' => _metaTag,
+    _ => _unknownTag,
+  };
 
   factory TagCategory.fromLegacyId(int? id) =>
       TagCategory.fromLegacyIdString(id?.toString());
@@ -101,14 +101,14 @@ class TagCategory extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        darkColor,
-        lightColor,
-        displayName,
-        originalName,
-        order,
-      ];
+    id,
+    name,
+    darkColor,
+    lightColor,
+    displayName,
+    originalName,
+    order,
+  ];
 }
 
 extension BooruTagCategoryConverterX on TagCategory {

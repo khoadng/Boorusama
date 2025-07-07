@@ -14,10 +14,7 @@ import 'types/types.dart';
 
 const _kGelbooruUrl = 'https://gelbooru.com/';
 
-typedef GelbooruPosts = ({
-  List<PostDto> posts,
-  int? count,
-});
+typedef GelbooruPosts = ({List<PostDto> posts, int? count});
 
 class GelbooruClient
     with GelbooruClientFavorites, RequestDeduplicator<GelbooruPosts> {
@@ -28,25 +25,27 @@ class GelbooruClient
     this.apiKey,
     this.passHash,
     Dio? dio,
-  }) : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl ?? '',
-              headers: headers ?? {},
-            ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl ?? '',
+               headers: headers ?? {},
+             ),
+           );
 
   factory GelbooruClient.gelbooru({
     Dio? dio,
     String? login,
     String? apiKey,
     String? passHash,
-  }) =>
-      GelbooruClient(
-        baseUrl: _kGelbooruUrl,
-        dio: dio,
-        userId: login,
-        apiKey: apiKey,
-        passHash: passHash,
-      );
+  }) => GelbooruClient(
+    baseUrl: _kGelbooruUrl,
+    dio: dio,
+    userId: login,
+    apiKey: apiKey,
+    passHash: passHash,
+  );
 
   factory GelbooruClient.custom({
     Dio? dio,
@@ -54,14 +53,13 @@ class GelbooruClient
     String? apiKey,
     String? passHash,
     required String baseUrl,
-  }) =>
-      GelbooruClient(
-        baseUrl: baseUrl,
-        dio: dio,
-        userId: login,
-        apiKey: apiKey,
-        passHash: passHash,
-      );
+  }) => GelbooruClient(
+    baseUrl: baseUrl,
+    dio: dio,
+    userId: login,
+    apiKey: apiKey,
+    passHash: passHash,
+  );
 
   final Dio _dio;
   @override
@@ -75,17 +73,16 @@ class GelbooruClient
   Uri? getTestPostUri({
     required String userId,
     required String apiKey,
-  }) =>
-      Uri.tryParse(_dio.options.baseUrl)?.replace(
-        queryParameters: {
-          'page': 'dapi',
-          's': 'post',
-          'q': 'index',
-          'json': '1',
-          if (userId.isNotEmpty) 'user_id': userId,
-          if (apiKey.isNotEmpty) 'api_key': apiKey,
-        },
-      );
+  }) => Uri.tryParse(_dio.options.baseUrl)?.replace(
+    queryParameters: {
+      'page': 'dapi',
+      's': 'post',
+      'q': 'index',
+      'json': '1',
+      if (userId.isNotEmpty) 'user_id': userId,
+      if (apiKey.isNotEmpty) 'api_key': apiKey,
+    },
+  );
 
   Future<GelbooruPosts> getPosts({
     int? page,
@@ -117,17 +114,17 @@ class GelbooruClient
 
         final result = switch (data) {
           final Map m => () {
-              final count = m['@attributes']['count'] as int?;
+            final count = m['@attributes']['count'] as int?;
 
-              return (
-                posts: m.containsKey('post')
-                    ? (m['post'] as List)
+            return (
+              posts: m.containsKey('post')
+                  ? (m['post'] as List)
                         .map((item) => PostDto.fromJson(item, baseUrl))
                         .toList()
-                    : <PostDto>[],
-                count: count,
-              );
-            }(),
+                  : <PostDto>[],
+              count: count,
+            );
+          }(),
           _ => (posts: <PostDto>[], count: null),
         };
 
@@ -160,11 +157,12 @@ class GelbooruClient
 
     final baseUrl = _dio.options.baseUrl;
     return switch (data) {
-      final Map m => m.containsKey('post')
-          ? (m['post'] as List)
-              .map((item) => PostDto.fromJson(item, baseUrl))
-              .firstOrNull
-          : null,
+      final Map m =>
+        m.containsKey('post')
+            ? (m['post'] as List)
+                  .map((item) => PostDto.fromJson(item, baseUrl))
+                  .firstOrNull
+            : null,
       _ => null,
     };
   }
@@ -189,9 +187,10 @@ class GelbooruClient
       return switch (response.data) {
         final List l =>
           l.map((item) => AutocompleteDto.fromJson(item)).toList(),
-        final String s => (jsonDecode(s) as List<dynamic>)
-            .map((item) => AutocompleteDto.fromJson(item))
-            .toList(),
+        final String s =>
+          (jsonDecode(s) as List<dynamic>)
+              .map((item) => AutocompleteDto.fromJson(item))
+              .toList(),
         _ => <AutocompleteDto>[],
       };
     } on Exception catch (_) {
@@ -258,8 +257,9 @@ class GelbooruClient
         final commentId = idMatch?.group(1) ?? '';
 
         // Extract timestamp
-        final timestampMatch =
-            RegExp(r'commented at ([\d-]+ [\d:]+)').firstMatch(fullText);
+        final timestampMatch = RegExp(
+          r'commented at ([\d-]+ [\d:]+)',
+        ).firstMatch(fullText);
         final timestamp = timestampMatch?.group(1) ?? '';
 
         // Get user ID from href
@@ -272,18 +272,21 @@ class GelbooruClient
 
         final texts = div.nodes.whereType<Text>().toList();
         final body = texts.length >= 3 ? texts[2].text : '';
-        final effectiveBody =
-            quote.isNotEmpty ? '[quote]\n$quote[/quote]\n\n$body' : body;
+        final effectiveBody = quote.isNotEmpty
+            ? '[quote]\n$quote[/quote]\n\n$body'
+            : body;
 
         if (commentId.isNotEmpty) {
-          comments.add(CommentDto(
-            id: commentId,
-            body: effectiveBody,
-            creator: username,
-            creatorId: userId,
-            createdAt: timestamp,
-            postId: postId.toString(),
-          ));
+          comments.add(
+            CommentDto(
+              id: commentId,
+              body: effectiveBody,
+              creator: username,
+              creatorId: userId,
+              createdAt: timestamp,
+              postId: postId.toString(),
+            ),
+          );
         }
       } catch (e) {
         continue;

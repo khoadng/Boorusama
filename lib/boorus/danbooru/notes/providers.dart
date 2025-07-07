@@ -9,16 +9,16 @@ import '../client_provider.dart';
 
 final danbooruNoteRepoProvider =
     Provider.family<NoteRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(danbooruClientProvider(config));
+      final client = ref.watch(danbooruClientProvider(config));
 
-  return NoteRepositoryBuilder(
-    fetch: (postId) => client
-        .getNotes(
-          postId: postId,
-        )
-        .then((value) => value.map((e) => e.toEntity()).toList()),
-  );
-});
+      return NoteRepositoryBuilder(
+        fetch: (postId) => client
+            .getNotes(
+              postId: postId,
+            )
+            .then((value) => value.map((e) => e.toEntity()).toList()),
+      );
+    });
 
 extension NoteDtoX on NoteDto {
   Note toEntity() {

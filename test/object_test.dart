@@ -17,18 +17,20 @@ void main() {
     });
 
     test(
-        'should return double value when object is a string representation of a number',
-        () {
-      const stringValue = '5.5';
-      expect(stringValue.toDoubleOrNull(), equals(5.5));
-    });
+      'should return double value when object is a string representation of a number',
+      () {
+        const stringValue = '5.5';
+        expect(stringValue.toDoubleOrNull(), equals(5.5));
+      },
+    );
 
     test(
-        'should return null when object is not a num or string representation of a number',
-        () {
-      const nonNumericValue = true;
-      expect(nonNumericValue.toDoubleOrNull(), isNull);
-    });
+      'should return null when object is not a num or string representation of a number',
+      () {
+        const nonNumericValue = true;
+        expect(nonNumericValue.toDoubleOrNull(), isNull);
+      },
+    );
 
     test('should return null when object is null', () {
       // ignore: avoid_init_to_null

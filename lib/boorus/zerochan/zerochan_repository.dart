@@ -42,9 +42,10 @@ class ZerochanRepository extends BooruRepositoryDefault {
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(dioProvider(config));
 
-    return () => ZerochanClient(dio: dio, baseUrl: config.url)
-        .getPosts(strict: true)
-        .then((value) => true);
+    return () => ZerochanClient(
+      dio: dio,
+      baseUrl: config.url,
+    ).getPosts(strict: true).then((value) => true);
   }
 
   @override
@@ -99,15 +100,13 @@ class ZerochanTagColorGenerator implements TagColorGenerator {
       'mangaka' ||
       'studio' ||
       // This is from a fallback in case the tag is already searched in other boorus
-      'artist' =>
-        colors.artist,
+      'artist' => colors.artist,
       'source' ||
       'game' ||
       'visual_novel' ||
       'series' ||
       // This is from a fallback in case the tag is already searched in other boorus
-      'copyright' =>
-        colors.copyright,
+      'copyright' => colors.copyright,
       'character' => colors.character,
       'meta' => colors.meta,
       _ => colors.general,

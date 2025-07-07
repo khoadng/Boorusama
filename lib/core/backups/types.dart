@@ -12,7 +12,7 @@ sealed class ExportError {
 
 final class StoragePermissionDenied extends ExportError {
   const StoragePermissionDenied()
-      : super._('Permission to access storage denied');
+    : super._('Permission to access storage denied');
 }
 
 final class JsonEncodingError extends ExportError {
@@ -67,9 +67,9 @@ final class ImportInvalidJson extends ImportError {
 
 final class ImportInvalidJsonField extends ImportError {
   const ImportInvalidJsonField()
-      : super._(
-          'Missing required fields or invalid field type, are you sure this is a valid backup file?',
-        );
+    : super._(
+        'Missing required fields or invalid field type, are you sure this is a valid backup file?',
+      );
 }
 
 class ExportDataPayload {
@@ -86,9 +86,9 @@ class ExportDataPayload {
   final List<dynamic> data;
 
   Map<String, dynamic> toJson() => {
-        'version': version,
-        if (exportVersion != null) 'exportVersion': exportVersion.toString(),
-        'date': exportDate.toIso8601String(),
-        'data': data,
-      };
+    'version': version,
+    if (exportVersion != null) 'exportVersion': exportVersion.toString(),
+    'date': exportDate.toIso8601String(),
+    'data': data,
+  };
 }

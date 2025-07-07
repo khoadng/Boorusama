@@ -25,8 +25,10 @@ class BookmarkPostButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
+    final isBookmarked = bookmarkState.isBookmarked(
+      post,
+      booruConfig.booruIdHint,
+    );
 
     return isBookmarked
         ? IconButton(
@@ -71,8 +73,10 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
+    final isBookmarked = bookmarkState.isBookmarked(
+      post,
+      booruConfig.booruIdHint,
+    );
 
     return LikeButton(
       isLiked: isBookmarked,
@@ -109,8 +113,10 @@ extension BookmarkPostX on WidgetRef {
   void toggleBookmark(Post post) {
     final booruConfig = readConfigAuth;
     final bookmarkState = read(bookmarkProvider);
-    final isBookmarked =
-        bookmarkState.isBookmarked(post, booruConfig.booruIdHint);
+    final isBookmarked = bookmarkState.isBookmarked(
+      post,
+      booruConfig.booruIdHint,
+    );
 
     if (isBookmarked) {
       bookmarks.removeBookmarkWithToast(

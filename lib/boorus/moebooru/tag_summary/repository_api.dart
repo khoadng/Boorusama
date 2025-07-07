@@ -28,8 +28,10 @@ class MoebooruTagSummaryRepository
         return convertTagSummaryDtoToTagSummaryList(cached);
       }
 
-      final tagSummaryDto =
-          await deduplicate('key', () => client.getTagSummary());
+      final tagSummaryDto = await deduplicate(
+        'key',
+        () => client.getTagSummary(),
+      );
 
       await store.saveTagSummaries(tagSummaryDto);
 

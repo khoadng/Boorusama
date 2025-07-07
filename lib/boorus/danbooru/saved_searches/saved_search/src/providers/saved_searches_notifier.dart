@@ -8,10 +8,14 @@ import '../types/saved_search.dart';
 import '../types/saved_search_repository.dart';
 import 'local_providers.dart';
 
-final danbooruSavedSearchesProvider = AsyncNotifierProvider.family<
-    SavedSearchesNotifier, List<SavedSearch>, BooruConfigAuth>(
-  SavedSearchesNotifier.new,
-);
+final danbooruSavedSearchesProvider =
+    AsyncNotifierProvider.family<
+      SavedSearchesNotifier,
+      List<SavedSearch>,
+      BooruConfigAuth
+    >(
+      SavedSearchesNotifier.new,
+    );
 
 class SavedSearchesNotifier
     extends FamilyAsyncNotifier<List<SavedSearch>, BooruConfigAuth> {
@@ -65,8 +69,9 @@ class SavedSearchesNotifier
     final success = await repo.deleteSavedSearch(savedSearch.id);
 
     if (success) {
-      state =
-          AsyncData(currentState.where((d) => d.id != savedSearch.id).toList());
+      state = AsyncData(
+        currentState.where((d) => d.id != savedSearch.id).toList(),
+      );
       onDeleted?.call(savedSearch);
     } else {
       onFailure?.call();

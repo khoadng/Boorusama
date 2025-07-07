@@ -33,84 +33,76 @@ class PhilomenaBuilder
   PhilomenaBuilder();
 
   @override
-  CreateConfigPageBuilder get createConfigPageBuilder => (
+  CreateConfigPageBuilder get createConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
-      }) =>
-          CreateBooruConfigScope(
-            id: id,
-            config: BooruConfig.defaultConfig(
-              booruType: id.booruType,
-              url: id.url,
-              customDownloadFileNameFormat: null,
-            ),
-            child: CreatePhilomenaConfigPage(
-              backgroundColor: backgroundColor,
-            ),
-          );
+      }) => CreateBooruConfigScope(
+        id: id,
+        config: BooruConfig.defaultConfig(
+          booruType: id.booruType,
+          url: id.url,
+          customDownloadFileNameFormat: null,
+        ),
+        child: CreatePhilomenaConfigPage(
+          backgroundColor: backgroundColor,
+        ),
+      );
 
   @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder => (
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
         context,
         id, {
         backgroundColor,
         initialTab,
-      }) =>
-          UpdateBooruConfigScope(
-            id: id,
-            child: CreatePhilomenaConfigPage(
-              backgroundColor: backgroundColor,
-              initialTab: initialTab,
-            ),
-          );
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreatePhilomenaConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
+        ),
+      );
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-        final posts = payload.posts.map((e) => e as PhilomenaPost).toList();
+    final posts = payload.posts.map((e) => e as PhilomenaPost).toList();
 
-        return PostDetailsScope(
-          initialIndex: payload.initialIndex,
-          initialThumbnailUrl: payload.initialThumbnailUrl,
-          posts: posts,
-          scrollController: payload.scrollController,
-          dislclaimer: payload.dislclaimer,
-          child: const DefaultPostDetailsPage<PhilomenaPost>(),
-        );
-      };
+    return PostDetailsScope(
+      initialIndex: payload.initialIndex,
+      initialThumbnailUrl: payload.initialThumbnailUrl,
+      posts: posts,
+      scrollController: payload.scrollController,
+      dislclaimer: payload.dislclaimer,
+      child: const DefaultPostDetailsPage<PhilomenaPost>(),
+    );
+  };
 
   @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder => (
+  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
+      (
         imageQuality,
         rawPost,
         config,
-      ) =>
-          castOrNull<PhilomenaPost>(rawPost).toOption().fold(
-                () => rawPost.sampleImageUrl,
-                (post) => config.imageDetaisQuality.toOption().fold(
-                      () => post.sampleImageUrl,
-                      (quality) =>
-                          switch (stringToPhilomenaPostQualityType(quality)) {
-                        PhilomenaPostQualityType.full =>
-                          post.representation.full,
-                        PhilomenaPostQualityType.large =>
-                          post.representation.large,
-                        PhilomenaPostQualityType.medium =>
-                          post.representation.medium,
-                        PhilomenaPostQualityType.tall =>
-                          post.representation.tall,
-                        PhilomenaPostQualityType.small =>
-                          post.representation.small,
-                        PhilomenaPostQualityType.thumb =>
-                          post.representation.thumb,
-                        PhilomenaPostQualityType.thumbSmall =>
-                          post.representation.thumbSmall,
-                        PhilomenaPostQualityType.thumbTiny =>
-                          post.representation.thumbTiny,
-                        null => post.representation.small,
-                      },
-                    ),
-              );
+      ) => castOrNull<PhilomenaPost>(rawPost).toOption().fold(
+        () => rawPost.sampleImageUrl,
+        (post) => config.imageDetaisQuality.toOption().fold(
+          () => post.sampleImageUrl,
+          (quality) => switch (stringToPhilomenaPostQualityType(quality)) {
+            PhilomenaPostQualityType.full => post.representation.full,
+            PhilomenaPostQualityType.large => post.representation.large,
+            PhilomenaPostQualityType.medium => post.representation.medium,
+            PhilomenaPostQualityType.tall => post.representation.tall,
+            PhilomenaPostQualityType.small => post.representation.small,
+            PhilomenaPostQualityType.thumb => post.representation.thumb,
+            PhilomenaPostQualityType.thumbSmall =>
+              post.representation.thumbSmall,
+            PhilomenaPostQualityType.thumbTiny => post.representation.thumbTiny,
+            null => post.representation.small,
+          },
+        ),
+      );
 
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(

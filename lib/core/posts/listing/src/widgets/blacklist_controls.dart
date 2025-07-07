@@ -137,8 +137,10 @@ class _TagPages extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPage = ref.watch(_currentPageProvider);
-    final tags =
-        allTags.skip((currentPage - 1) * threshold).take(threshold).toList();
+    final tags = allTags
+        .skip((currentPage - 1) * threshold)
+        .take(threshold)
+        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

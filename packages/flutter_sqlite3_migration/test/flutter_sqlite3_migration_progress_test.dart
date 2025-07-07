@@ -35,10 +35,10 @@ void main() {
       ];
 
       DbMigrationManager.create(
-        db: db,
-        targetVersion: 2,
-        migrations: migrations,
-      )
+          db: db,
+          targetVersion: 2,
+          migrations: migrations,
+        )
         ..addProgressListener(
           MigrationProgressListener(onEvent: events.add),
         )
@@ -79,13 +79,14 @@ void main() {
         ),
       ];
 
-      final manager = DbMigrationManager.create(
-        db: db,
-        targetVersion: 1,
-        migrations: migrations,
-      )..addProgressListener(
-          MigrationProgressListener(onEvent: events.add),
-        );
+      final manager =
+          DbMigrationManager.create(
+            db: db,
+            targetVersion: 1,
+            migrations: migrations,
+          )..addProgressListener(
+            MigrationProgressListener(onEvent: events.add),
+          );
 
       expect(manager.runMigrations, throwsException);
 
@@ -122,10 +123,10 @@ void main() {
       ];
 
       DbMigrationManager.create(
-        db: db,
-        targetVersion: 1,
-        migrations: migrations,
-      )
+          db: db,
+          targetVersion: 1,
+          migrations: migrations,
+        )
         ..addProgressListener(
           MigrationProgressListener(onEvent: events.add),
         )
@@ -153,10 +154,10 @@ void main() {
       ];
 
       DbMigrationManager.create(
-        db: db,
-        targetVersion: 1,
-        migrations: migrations,
-      )
+          db: db,
+          targetVersion: 1,
+          migrations: migrations,
+        )
         ..addProgressListener(
           MigrationProgressListener(onEvent: events.add),
         )
@@ -185,11 +186,11 @@ void main() {
       ];
 
       DbMigrationManager.create(
-        db: db,
-        targetVersion: 1,
-        migrations: migrations,
-        mode: MigrationMode.repair,
-      )
+          db: db,
+          targetVersion: 1,
+          migrations: migrations,
+          mode: MigrationMode.repair,
+        )
         ..addProgressListener(
           MigrationProgressListener(onEvent: events.add),
         )

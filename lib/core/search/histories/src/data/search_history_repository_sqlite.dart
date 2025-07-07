@@ -50,8 +50,9 @@ class SearchHistoryRepositorySqlite
 
   @override
   Future<List<SearchHistory>> getHistories() async {
-    final result = db
-        .select('SELECT * FROM $kSearchHistoryTable ORDER BY updated_at DESC');
+    final result = db.select(
+      'SELECT * FROM $kSearchHistoryTable ORDER BY updated_at DESC',
+    );
 
     return result.map((row) {
       return SearchHistory(

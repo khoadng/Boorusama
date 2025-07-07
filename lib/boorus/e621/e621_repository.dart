@@ -67,7 +67,7 @@ const kE621PostSamples = [
     'source': 'https://example.com/example_filename.jpg',
     'rating': 'general',
     'index': '1',
-  }
+  },
 ];
 
 class E621Repository extends BooruRepositoryDefault {
@@ -101,11 +101,11 @@ class E621Repository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => E621Client(
-          baseUrl: config.url,
-          dio: dio,
-          login: config.login,
-          apiKey: config.apiKey,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      login: config.login,
+      apiKey: config.apiKey,
+    ).getPosts().then((value) => true);
   }
 
   @override

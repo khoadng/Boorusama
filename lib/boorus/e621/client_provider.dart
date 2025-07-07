@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/http/providers.dart';
 
-final e621ClientProvider =
-    Provider.family<E621Client, BooruConfigAuth>((ref, config) {
+final e621ClientProvider = Provider.family<E621Client, BooruConfigAuth>((
+  ref,
+  config,
+) {
   final dio = ref.watch(dioProvider(config));
 
   return E621Client(

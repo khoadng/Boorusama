@@ -3,10 +3,10 @@ import 'dart:collection';
 
 extension Iterables<E> on Iterable<E> {
   Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(
-        <K, List<E>>{},
-        (map, element) =>
-            map..putIfAbsent(keyFunction(element), () => <E>[]).add(element),
-      );
+    <K, List<E>>{},
+    (map, element) =>
+        map..putIfAbsent(keyFunction(element), () => <E>[]).add(element),
+  );
 }
 
 extension QueueX<E> on Queue<E> {

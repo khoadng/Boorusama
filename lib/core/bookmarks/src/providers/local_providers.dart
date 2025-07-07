@@ -48,7 +48,7 @@ List<Bookmark> filterBookmarks({
       .sorted(
         (a, b) => switch (sortType) {
           BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
-          BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt)
+          BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt),
         },
       )
       .toList();
@@ -56,40 +56,44 @@ List<Bookmark> filterBookmarks({
 
 final bookmarkEditProvider = StateProvider.autoDispose<bool>((ref) => false);
 
-final tagCountProvider =
-    FutureProvider.autoDispose.family<int, String>((ref, tag) async {
+final tagCountProvider = FutureProvider.autoDispose.family<int, String>((
+  ref,
+  tag,
+) async {
   final tagMap = await ref.watch(tagMapProvider.future);
 
   return tagMap[tag] ?? 0;
 });
 
-final bookmarkTagColorProvider =
-    FutureProvider.autoDispose.family<Color?, (BooruConfigAuth, String)>(
-  (ref, params) async {
-    final (config, tag) = params;
-    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
-    final tagType = await tagTypeStore.getTagCategory(config.url, tag);
-    final colorScheme = ref.watch(colorSchemeProvider);
+final bookmarkTagColorProvider = FutureProvider.autoDispose
+    .family<Color?, (BooruConfigAuth, String)>(
+      (ref, params) async {
+        final (config, tag) = params;
+        final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+        final tagType = await tagTypeStore.getTagCategory(config.url, tag);
+        final colorScheme = ref.watch(colorSchemeProvider);
 
-    final color =
-        ref.watch(booruRepoProvider(config))?.tagColorGenerator().generateColor(
+        final color = ref
+            .watch(booruRepoProvider(config))
+            ?.tagColorGenerator()
+            .generateColor(
               TagColorOptions(
                 tagType: tagType,
                 colors: TagColors.fromBrightness(colorScheme.brightness),
               ),
             );
 
-    return color;
-  },
-  dependencies: [colorSchemeProvider],
-);
+        return color;
+      },
+      dependencies: [colorSchemeProvider],
+    );
 
 final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
       .getAllBookmarksOrEmpty(
-    imageUrlResolver: (booruId) =>
-        ref.read(bookmarkUrlResolverProvider(booruId)),
-  );
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
 
   return bookmarks.fold<Map<String, int>>(
     {},
@@ -102,8 +106,9 @@ final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
   );
 });
 
-final tagSuggestionsProvider =
-    FutureProvider.autoDispose<List<String>>((ref) async {
+final tagSuggestionsProvider = FutureProvider.autoDispose<List<String>>((
+  ref,
+) async {
   final tag = ref.watch(tagInputProvider);
   if (tag.isEmpty) return const [];
 
@@ -126,16 +131,17 @@ final selectedBooruUrlProvider = StateProvider.autoDispose<String?>((ref) {
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(
-  (ref) => BookmarkSortType.newest,
-);
+      (ref) => BookmarkSortType.newest,
+    );
 
-final availableBooruUrlsProvider =
-    FutureProvider.autoDispose<List<String>>((ref) async {
+final availableBooruUrlsProvider = FutureProvider.autoDispose<List<String>>((
+  ref,
+) async {
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
       .getAllBookmarksOrEmpty(
-    imageUrlResolver: (booruId) =>
-        ref.read(bookmarkUrlResolverProvider(booruId)),
-  );
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
 
   return bookmarks.fold(
     <String>{},
