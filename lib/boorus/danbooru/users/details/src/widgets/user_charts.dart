@@ -128,7 +128,7 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
               reservedSize: 30,
               showTitles: true,
               getTitlesWidget: (value, meta) => SideTitleWidget(
-                axisSide: meta.axisSide,
+                meta: meta,
                 child: Text(
                   titles[value.toInt()]!,
                 ),

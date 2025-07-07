@@ -5,6 +5,7 @@ PODS:
   - connectivity_plus (0.0.1):
     - FlutterMacOS
   - cupertino_http (0.0.1):
+    - Flutter
     - FlutterMacOS
   - device_info_plus (0.0.1):
     - FlutterMacOS
@@ -17,7 +18,7 @@ PODS:
   - flutter_local_notifications (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - fvp (0.32.1):
+  - fvp (0.33.0):
     - Flutter
     - FlutterMacOS
     - mdk (~> 0.33.0)
@@ -27,7 +28,9 @@ PODS:
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - mdk (0.33.0)
+  - mdk (0.33.1)
+  - objective_c (0.0.1):
+    - FlutterMacOS
   - package_info_plus (0.0.1):
     - FlutterMacOS
   - pasteboard (0.0.1):
@@ -35,15 +38,15 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (8.10.3):
+  - purchases_flutter (8.10.5):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 13.37.0)
-  - PurchasesHybridCommon (13.37.0):
-    - RevenueCat (= 5.29.0)
-  - rate_my_app (2.3.0):
+    - PurchasesHybridCommon (= 14.0.2)
+  - PurchasesHybridCommon (14.0.2):
+    - RevenueCat (= 5.30.0)
+  - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.29.0)
+  - RevenueCat (5.30.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -87,7 +90,7 @@ PODS:
 DEPENDENCIES:
   - bonsoir_darwin (from `Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin`)
   - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos`)
-  - cupertino_http (from `Flutter/ephemeral/.symlinks/plugins/cupertino_http/macos`)
+  - cupertino_http (from `Flutter/ephemeral/.symlinks/plugins/cupertino_http/darwin`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - dynamic_color (from `Flutter/ephemeral/.symlinks/plugins/dynamic_color/macos`)
   - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
@@ -97,6 +100,7 @@ DEPENDENCIES:
   - fvp (from `Flutter/ephemeral/.symlinks/plugins/fvp/darwin`)
   - gal (from `Flutter/ephemeral/.symlinks/plugins/gal/darwin`)
   - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
+  - objective_c (from `Flutter/ephemeral/.symlinks/plugins/objective_c/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - pasteboard (from `Flutter/ephemeral/.symlinks/plugins/pasteboard/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
@@ -124,7 +128,7 @@ EXTERNAL SOURCES:
   connectivity_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos
   cupertino_http:
-    :path: Flutter/ephemeral/.symlinks/plugins/cupertino_http/macos
+    :path: Flutter/ephemeral/.symlinks/plugins/cupertino_http/darwin
   device_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
   dynamic_color:
@@ -143,6 +147,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/gal/darwin
   local_auth_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin
+  objective_c:
+    :path: Flutter/ephemeral/.symlinks/plugins/objective_c/macos
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   pasteboard:
@@ -173,24 +179,25 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   bonsoir_darwin: 29c7ccf356646118844721f36e1de4b61f6cbd0e
   connectivity_plus: 4adf20a405e25b42b9c9f87feff8f4b6fde18a4e
-  cupertino_http: 6c32f73dbc55c37731a5628323842d308b1bc307
+  cupertino_http: 94ac07f5ff090b8effa6c5e2c47871d48ab7c86c
   device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
   dynamic_color: b820c000cc68df65e7ba7ff177cb98404ce56651
   file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
   flutter_avif_macos: 9ed61d67adfbd6964eccb59971020fb55c31fc11
   flutter_local_notifications: 4bf37a31afde695b56091b4ae3e4d9c7a7e6cda0
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  fvp: 3f9a3f729e969cb76d1692c615c9e33508563121
+  fvp: 6a1a8e62cd61b90a4afeec44a367892d726bf377
   gal: baecd024ebfd13c441269ca7404792a7152fde89
-  local_auth_darwin: 553ce4f9b16d3fdfeafce9cf042e7c9f77c1c391
-  mdk: 7cccbeebec9a85f4e240ac14d9f603273636bb3b
+  local_auth_darwin: d2e8c53ef0c4f43c646462e3415432c4dab3ae19
+  mdk: 622e3452cea55a982c0712ec9ce931d8ec718b22
+  objective_c: ec13431e45ba099cb734eb2829a5c1cd37986cba
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   pasteboard: 278d8100149f940fb795d6b3a74f0720c890ecb7
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  purchases_flutter: b8d0d5a40cc90ee81ed27356c2524a01f987bee9
-  PurchasesHybridCommon: 1583b4532763b795f8ae61913102d6ef9ed556a8
-  rate_my_app: 567848e885b804d65eb9443f96e9fc2c30a06abb
-  RevenueCat: 5fa12c42c14b390dd2423897e925f407f474b8fa
+  purchases_flutter: 5e0399f70ac1e16b64ef9e31dd117d6abeb6c7ed
+  PurchasesHybridCommon: e1dbc7e7105c0845444cf82cf9d7c85eb9dbf918
+  rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
+  RevenueCat: 16058ecaa0b868e04cc7cf53a5de3fe0b96ca7d1
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
